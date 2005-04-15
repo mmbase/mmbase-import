@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.math.BigDecimal;
 
 /**
@@ -27,7 +28,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.37 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: CompareTag.java,v 1.38 2005-04-15 11:35:02 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -36,12 +37,16 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
 
     private Attribute value    = Attribute.NULL;
     private Attribute valueSet = Attribute.NULL;
+    private Attribute regexp   = Attribute.NULL;
     public void setValue(String v) throws JspTagException {
         value =  getAttribute(v);
     }
 
     public void setValueset(String vs) throws JspTagException {
         valueSet =  getAttribute(vs);
+    }
+    public void setRegexp(String r) throws JspTagException {
+        regexp =  getAttribute(r);
     }
 
     private Attribute referid2 = Attribute.NULL;
@@ -99,73 +104,79 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             throw new JspTagException("Cannot compare variable of type " + compare1.getClass().getName());
         }
 
-
-        // find compare2-set.
-        Set compareToSet = new HashSet();
-        if (value != Attribute.NULL) {
-            if (valueSet != Attribute.NULL) {
-                throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
-            }
-            if (referid2 != Attribute.NULL) {
-                throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
-            }
-            compareToSet.add(value.getValue(this));
-        } else if (valueSet != Attribute.NULL) {
-            if (referid2 != Attribute.NULL) {
-                throw new JspTagException("Cannot indicate 'referid2' and 'valueSet' attributes both");
-            }
-            compareToSet.addAll(valueSet.getList(this));
-        } else {
-            compareToSet.add(getCompare2());
-        }
-
-        Iterator i = compareToSet.iterator();
-
-
         boolean result = false;
-
-        if (compare1 instanceof Number) {
-            compare1 = new BigDecimal(compare1.toString()); 
-            while (i.hasNext()) {
-                Object compare2 = i.next();         
-                if (compare2 instanceof String) {
-                    if ("".equals(compare2)) { // do something reasonable in IsEmpty
-                        compare2 = new BigDecimal(0);
-                    } else {
-                        compare2 = new BigDecimal((String)compare2);
-                    }
-                } else if (compare2 instanceof Number) {
-                    compare2 = new BigDecimal(compare2.toString());
-                } else if (compare2 instanceof Node) {
-                    compare2 = new BigDecimal(((Node)compare2).getNumber());
-                }
-
-                if (doCompare((Comparable)compare1, (Comparable)compare2)) {
-                    result = true; 
-                    break;
-
-                }
-                
+        if (regexp != Attribute.NULL) {
+            if (value != Attribute.NULL || valueSet != Attribute.NULL) {
+                throw new JspTagException("Cannot use 'regexp' attribute in combination with 'value' of 'valueSet' attributes");
             }
-        } else { 
-            while (i.hasNext()) {
-                Object compare2 = i.next();         
-                if (compare2 instanceof Number) {
-                    compare2 = new BigDecimal(compare2.toString()); 
-                    Number compare1n;
-                    if ("".equals(compare1)) { // do something reasonable in IsEmpty
-                        compare1n = new BigDecimal(0);
-                    } else {
-                        compare1n = new BigDecimal((String)compare1);
+            Pattern pattern = Pattern.compile (regexp.getString(this));
+            result = pattern.matcher("" + compare1).matches();
+        } else {
+            // find compare2-set.
+            Set compareToSet = new HashSet();
+            if (value != Attribute.NULL) {
+                if (valueSet != Attribute.NULL) {
+                    throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
+                }
+                if (referid2 != Attribute.NULL) {
+                    throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
+                }
+                compareToSet.add(value.getValue(this));
+            } else if (valueSet != Attribute.NULL) {
+                if (referid2 != Attribute.NULL) {
+                    throw new JspTagException("Cannot indicate 'referid2' and 'valueSet' attributes both");
+                }
+                compareToSet.addAll(valueSet.getList(this));
+            } else {
+                compareToSet.add(getCompare2());
+            }
+            
+            Iterator i = compareToSet.iterator();
+            
+                        
+            if (compare1 instanceof Number) {
+                compare1 = new BigDecimal(compare1.toString()); 
+                while (i.hasNext()) {
+                    Object compare2 = i.next();         
+                    if (compare2 instanceof String) {
+                        if ("".equals(compare2)) { // do something reasonable in IsEmpty
+                            compare2 = new BigDecimal(0);
+                        } else {
+                            compare2 = new BigDecimal((String)compare2);
+                        }
+                    } else if (compare2 instanceof Number) {
+                        compare2 = new BigDecimal(compare2.toString());
+                    } else if (compare2 instanceof Node) {
+                        compare2 = new BigDecimal(((Node)compare2).getNumber());
                     }
-                    if (doCompare((Comparable)compare1n, (Comparable)compare2)) {
-                        result = true;
-                        break;
-                    }
-                } else { // both compare1 and compare2 are not Number, simply compare then
+                    
                     if (doCompare((Comparable)compare1, (Comparable)compare2)) {
-                        result = true;
+                        result = true; 
                         break;
+                        
+                    }
+                    
+                }
+            } else { 
+                while (i.hasNext()) {
+                    Object compare2 = i.next();         
+                    if (compare2 instanceof Number) {
+                        compare2 = new BigDecimal(compare2.toString()); 
+                        Number compare1n;
+                        if ("".equals(compare1)) { // do something reasonable in IsEmpty
+                            compare1n = new BigDecimal(0);
+                        } else {
+                            compare1n = new BigDecimal((String)compare1);
+                        }
+                        if (doCompare((Comparable)compare1n, (Comparable)compare2)) {
+                            result = true;
+                            break;
+                        }
+                    } else { // both compare1 and compare2 are not Number, simply compare then
+                        if (doCompare((Comparable)compare1, (Comparable)compare2)) {
+                            result = true;
+                            break;
+                        }
                     }
                 }
             }
