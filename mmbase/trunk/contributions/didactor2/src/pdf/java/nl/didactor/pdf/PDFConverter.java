@@ -53,11 +53,12 @@ public class PDFConverter {
             tidy.setDocType("omit");
             PipedOutputStream pipeout = new PipedOutputStream();
             PipedInputStream pipein = new PipedInputStream(pipeout);
+            Thread t = new PdfThread(pdf, parser, pipein);
+            t.start();
             tidy.parse(url.openStream(),pipeout);
-            parser.parse(pdf,pipein);
-            pdf.close();        
+            t.join();
         }
-        catch ( DocumentException e ) {
+        catch ( Exception e ) {
             throw new ServletException(e);
         }
     }
@@ -86,7 +87,24 @@ public class PDFConverter {
         footer.setBorder(Rectangle.NO_BORDER); 
         return footer;
     }
-   
+
+    private static class PdfThread extends Thread {
+        private HtmlParser parser;
+        private InputStream pipein;
+        private Document pdf;
+
+        PdfThread(Document pdf, HtmlParser parser, InputStream pipein) {
+               this.parser=parser;
+               this.pdf=pdf;
+               this.pipein=pipein;
+        }
+                
+        public void run() {
+            parser.parse(pdf,pipein);
+            pdf.close();
+        }
+    }
+    
 }
 
 
