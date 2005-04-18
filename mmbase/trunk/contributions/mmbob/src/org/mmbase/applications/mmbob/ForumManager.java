@@ -441,6 +441,14 @@ public class ForumManager {
        config.setGuestWriteModeType(mode);
    }
 
+    public static int getPreloadChangedThreadsTime() {
+        return config.getPreloadChangedThreadsTime();
+    }
+
+    public static int getSwapoutUnusedThreadsTime() {
+        return config.getSwapoutUnusedThreadsTime();
+    }
+
     public static String getXSLTPostingsOdd() {
         return config.getXSLTPostingsOdd();
     }
@@ -507,5 +515,15 @@ public class ForumManager {
 
     public static String getFooterPath() {
         return config.getFooterPath();
+    }
+
+    public int getPostThreadLoadedCount() {
+        int count = 0;
+        Enumeration i = forums.elements();
+        while (i.hasMoreElements()) {
+                Forum forum = (Forum)i.nextElement();
+                count += forum.getPostThreadLoadedCount();
+        }
+        return count;
     }
 }

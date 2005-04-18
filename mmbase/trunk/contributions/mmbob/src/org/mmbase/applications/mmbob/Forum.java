@@ -1186,4 +1186,15 @@ public class Forum {
 	return true;
    }
 
+
+    public int getPostThreadLoadedCount() {
+	int count = 0;
+       	Enumeration i = postareas.elements();
+	while (i.hasMoreElements()) {
+		PostArea pa = (PostArea)i.nextElement();
+		count += pa.getPostThreadLoadedCount();
+	}
+	return count;
+    }
+
 }

@@ -131,6 +131,7 @@ public class Controller {
             virtual.setValue("lastsubject", f.getLastSubject());
             virtual.setValue("lastposternumber",f.getLastPosterNumber());
             virtual.setValue("lastposrnumber",f.getLastPostNumber());
+            virtual.setValue("postthreadloadedcount", f.getPostThreadLoadedCount());
             list.add(virtual);
         }
         return list;
@@ -226,7 +227,6 @@ public class Controller {
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("pos", pos++);
                         virtual.setValue("subject", p.getSubject());
-                        log.info("Controller body="+p.getBody(imagecontext));
                         virtual.setValue("body", p.getBody(imagecontext));
                         virtual.setValue("edittime", p.getEditTime());
                         Poster po = f.getPoster(p.getPoster());

@@ -42,9 +42,14 @@ public class Posting {
     static private Logger log = Logging.getLoggerInstance(Posting.class);
 
     private int id;
+    private int createtime;
+    private int edittime;
     private int threadpos;
     private PostThread parent;
-    private Node node;
+    //private Node node;
+    private String subject;
+    private String c_body; 
+    private String c_poster; 
 
     private PostingBody postingBody = new PostingBody();
 
@@ -55,8 +60,13 @@ public class Posting {
      * @param parent postthread
      */
     public Posting(Node node, PostThread parent) {
-        this.node = node;
+        //this.node = node;
         this.id = node.getNumber();
+	this.c_body = node.getStringValue("c_body");
+	this.c_poster = node.getStringValue("c_poster");
+	this.subject = node.getStringValue("subject");
+	this.createtime = node.getIntValue("createtime");
+	this.edittime = node.getIntValue("edittime");
         this.parent = parent;
     }
 
@@ -79,7 +89,8 @@ public class Posting {
      * @param subject
      */
     public void setSubject(String subject) {
-        node.setValue("subject", subject);
+        //node.setValue("subject", subject);
+	this.subject = subject;
     }
 
     /**
@@ -91,10 +102,13 @@ public class Posting {
     public void setBody(String body,String imagecontext) {
         //node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
         //node.setStringValue("body", postingBody.transform(body));
+	log.info("SETBODY1");
+	Node node = ForumManager.getCloud().getNode(id);
         node.setStringValue("body", body);
         String parsed = node.getStringValue("body");
         parsed = translateBody(node.getStringValue("body"),imagecontext);
         node.setStringValue("c_body", parsed);
+	node.commit();
     }
 
     /**
@@ -103,7 +117,8 @@ public class Posting {
      * @param time Date/time (Epoch)
      */
     public void setEditTime(int time) {
-        node.setIntValue("edittime", time);
+	edittime =  time;
+        //node.setIntValue("edittime", time);
     }
 
     /**
@@ -112,7 +127,8 @@ public class Posting {
      * @return Date/time (Epoch)
      */
     public int getEditTime() {
-        return node.getIntValue("edittime");
+	return edittime;
+        //return node.getIntValue("edittime");
     }
 
     /**
@@ -134,7 +150,7 @@ public class Posting {
      * @param node posting
      */
     public void setNode(Node node) {
-        this.node = node;
+        id = node.getNumber();
     }
 
     /**
@@ -143,7 +159,8 @@ public class Posting {
      * @return subject of this posting
      */
     public String getSubject() {
-        return node.getStringValue("subject");
+        //return node.getStringValue("subject");
+	return subject;
     }
 
     /**
@@ -153,14 +170,17 @@ public class Posting {
      * @return body of this posting
      */
     public String getBody(String imagecontext) {
-        String parsed = node.getStringValue("c_body");
-	if (parsed.equals("")) {
-		parsed = translateBody(node.getStringValue("body"),imagecontext);
-		node.setValue("c_body",parsed);
+	if (c_body.equals("")) {
+	        long start = System.currentTimeMillis();
+        	Node node = ForumManager.getCloud().getNode(id);
+		c_body = translateBody(node.getStringValue("body"),imagecontext);
+		node.setValue("c_body",c_body);
 		node.commit();
-		return parsed;
+	        long end = System.currentTimeMillis();
+       	 	// log.info("translate performed time="+(end-start));
+		return c_body;
 	}
-        return node.getStringValue("c_body");
+	return c_body;
     }
 
     /**
@@ -169,7 +189,8 @@ public class Posting {
      * @return accountname/nick of the poster
      */
     public String getPoster() {
-        return node.getStringValue("c_poster");
+        //return node.getStringValue("c_poster");
+	return c_poster;
     }
 
     /**
@@ -178,7 +199,8 @@ public class Posting {
      * @return date/time (epoch)
      */
     public int getPostTime() {
-        return node.getIntValue("createtime");
+        //return node.getIntValue("createtime");
+	return createtime;
     }
 
     /**
@@ -187,6 +209,8 @@ public class Posting {
      * @return allways <code>true</code>
      */
     public boolean remove() {
+	log.info("SETBODY3");
+        Node node = ForumManager.getCloud().getNode(id);
         log.debug("going to remove posting: " + node.getNumber());
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastpostnumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastpostnumber");
@@ -197,7 +221,9 @@ public class Posting {
     }
 
     private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
+	log.info("SETBODY4");
         //check if nodenumber is somewhere referenced as a foreignkey
+        Node node = ForumManager.getCloud().getNode(id);
         NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
         log.debug("found: " + nodeList);
         NodeIterator it = nodeList.nodeIterator();
@@ -216,6 +242,13 @@ public class Posting {
      * @return allways <code>true</code>
      */
     public boolean save() {
+	log.info("SETBODY5");
+        Node node = ForumManager.getCloud().getNode(id);
+	node.setStringValue("c_body",c_body);
+	node.setStringValue("c_poster",c_poster);
+	node.setStringValue("subject",subject);
+	node.setIntValue("createtime",createtime);
+	node.setIntValue("edittime",edittime);
         node.commit();
         return true;
     }

@@ -64,7 +64,6 @@ public class PostArea {
         this.node = node;
 	this.id = node.getNumber();
 
-
 	config  = parent.getPostAreaConfig(getName());
 
         this.viewcount = node.getIntValue("viewcount");
@@ -156,6 +155,20 @@ public class PostArea {
     public int getPostThreadCountAvg() {
         if (postthreadcount == 0) return 0;
         return postcount / postthreadcount;
+    }
+
+    public int getPostThreadLoadedCount() {
+        if (postthreads == null) {
+		return 0;
+	} else {
+		int count = 0;
+        	Iterator i = postthreads.iterator();
+		while (i.hasNext()) {
+			PostThread pt = (PostThread)i.next();
+			if (pt.isLoaded()) count++;
+		}
+		return count;
+	}
     }
 
     /**
@@ -421,9 +434,10 @@ public class PostArea {
      * Fills the postthreads-Vector
      */
     private void readPostThreads() {
-        long start = System.currentTimeMillis();
         postthreads = new Vector();
 
+       	long start = System.currentTimeMillis();
+	log.info("reading threads");
         if (node != null) {
             NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
             NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
@@ -442,7 +456,8 @@ public class PostArea {
             NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
             while (i2.hasNext()) {
                 Node n2 = i2.nextNode();
-                PostThread postthread = new PostThread(this, ForumManager.getCloud().getNode(n2.getIntValue("postthreads.number")));
+                Node tmpn = ForumManager.getCloud().getNode(n2.getIntValue("postthreads.number"));
+                PostThread postthread = new PostThread(this, tmpn);
                 if (postthread.getState().equals("pinned")) {
                     postthreads.add(numberofpinned, postthread);
                     numberofpinned++;
@@ -452,8 +467,9 @@ public class PostArea {
                 namecache.put("" + n2.getValue("postthreads.number"), postthread);
             }
         }
+       	long end = System.currentTimeMillis();
+	log.info("end reading threads time="+(end-start));
 
-        long end = System.currentTimeMillis();
     }
 
     /**
@@ -710,9 +726,10 @@ public class PostArea {
      * called to maintain the memorycaches
      */
     public void maintainMemoryCaches() {
-        if (postthreads != null && firstcachecall) {
+	int ptime = ForumManager.getPreloadChangedThreadsTime();
+        if (ptime!=0 && postthreads != null && firstcachecall) {
             firstcachecall = false;
-            int time = (int) (System.currentTimeMillis() / 1000) - (24 * 3600 * 7);
+            int time = (int) (System.currentTimeMillis() / 1000) - ptime;
             Enumeration e = postthreads.elements();
             while (e.hasMoreElements()) {
                 PostThread t = (PostThread) e.nextElement();
@@ -723,6 +740,23 @@ public class PostArea {
                     //log.info("ITS OLD");
                 }
             }
+        }
+
+        if (postthreads != null) {
+	    int etime = ForumManager.getSwapoutUnusedThreadsTime();
+	    if (etime!=0) {
+            int time = (int) (System.currentTimeMillis() / 1000) - etime;
+            Enumeration e = postthreads.elements();
+            while (e.hasMoreElements()) {
+                PostThread t = (PostThread) e.nextElement();
+		if (t.isLoaded()) {
+                	int time2 = t.getLastUsed();
+	                if (time2 < time) {
+				t.swapOut();
+                	}
+		}
+            }
+	    }
         }
     }
 
