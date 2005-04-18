@@ -4,12 +4,12 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
+<!ELEMENT forums (generatedata*,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postarea*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?)>
+<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
@@ -93,3 +93,12 @@
 <!ELEMENT guestwritemode (#PCDATA)>
 <!ATTLIST guestwritemode type CDATA #IMPLIED>
 
+<!ELEMENT swapoutunusedthreads (#PCDATA)>
+<!ATTLIST swapoutunusedthreads minutes CDATA #IMPLIED>
+<!ATTLIST swapoutunusedthreads hours CDATA #IMPLIED>
+<!ATTLIST swapoutunusedthreads days CDATA #IMPLIED>
+
+<!ELEMENT preloadchangedthreads (#PCDATA)>
+<!ATTLIST preloadchangedthreads minutes CDATA #IMPLIED>
+<!ATTLIST preloadchangedthreads hours CDATA #IMPLIED>
+<!ATTLIST preloadchangedthreads days CDATA #IMPLIED>

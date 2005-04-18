@@ -36,6 +36,8 @@ public class ForumsConfig {
    private String logoutmodetype="open";
    private String guestreadmodetype="open";
    private String guestwritemodetype="open";
+   private int preloadchangedthreadstime = 0;
+   private int swapoutunusedthreadstime = 0;
 
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
@@ -144,8 +146,36 @@ public class ForumsConfig {
                             }
                         }
 
+			// get time
+			preloadchangedthreadstime = 0;
+                        String tmp = getAttributeValue(reader,n,"preloadchangedthreads","minutes");
+			try {
+				if (tmp!=null) preloadchangedthreadstime+=Integer.parseInt(tmp)*60;
+			} catch (Exception e) {} 
+                        tmp = getAttributeValue(reader,n,"preloadchangedthreads","hours");
+			try {
+				if (tmp!=null) preloadchangedthreadstime+=Integer.parseInt(tmp)*3600;
+			} catch (Exception e) {} 
+                        tmp = getAttributeValue(reader,n,"preloadchangedthreads","days");
+			try {
+				if (tmp!=null) preloadchangedthreadstime+=Integer.parseInt(tmp)*(3600*24);
+			} catch (Exception e) {} 
 
 
+			// get time
+			swapoutunusedthreadstime = 0;
+                        tmp = getAttributeValue(reader,n,"swapoutunusedthreads","minutes");
+			try {
+				if (tmp!=null) swapoutunusedthreadstime+=Integer.parseInt(tmp)*60;
+			} catch (Exception e) {} 
+                        tmp = getAttributeValue(reader,n,"swapoutunusedthreads","hours");
+			try {
+				if (tmp!=null) swapoutunusedthreadstime+=Integer.parseInt(tmp)*3600;
+			} catch (Exception e) {} 
+                        tmp = getAttributeValue(reader,n,"swapoutunusedthreads","days");
+			try {
+				if (tmp!=null) swapoutunusedthreadstime+=Integer.parseInt(tmp)*(3600*24);
+			} catch (Exception e) {} 
 			
                         accountcreationtype = getAttributeValue(reader,n,"accountcreation","type");
                         accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
@@ -400,6 +430,14 @@ public class ForumsConfig {
    public void setAvatarsGalleryEnabled(String mode) {
 	avatarsGalleryEnabled = mode;
    }
+
+    public int getPreloadChangedThreadsTime() {
+	return preloadchangedthreadstime;
+    }
+
+    public int getSwapoutUnusedThreadsTime() {
+	return swapoutunusedthreadstime;
+    }
 
     public String getXSLTPostingsOdd() {
         return xsltpostingsodd;
