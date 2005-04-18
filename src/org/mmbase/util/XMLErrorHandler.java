@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
  * @move org.mmbase.util.xml
  * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.14 2004-10-01 08:41:11 pierre Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.15 2005-04-18 13:55:02 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -115,10 +115,6 @@ public class XMLErrorHandler implements ErrorHandler {
         StringBuffer str = new StringBuffer();
         String systemId = ex.getSystemId();
         if (systemId != null) {
-            int index = systemId.lastIndexOf('/');
-            if (index != -1) {
-                systemId = systemId.substring(index + 1);
-            }
             str.append(systemId);
         }
         str.append(" line:");
