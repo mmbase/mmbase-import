@@ -5,6 +5,10 @@
     <generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
     <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
     <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
+
+    <preloadchangedthreads hours="24" />
+    <swapoutunusedthreads minutes="45" />
+
     <accountcreation type="open" />
     <accountremoval type="open" />
     <loginmode type="open" />
