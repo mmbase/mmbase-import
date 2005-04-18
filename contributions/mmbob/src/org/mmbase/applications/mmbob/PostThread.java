@@ -16,6 +16,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.cache.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -51,7 +52,9 @@ public class PostThread {
    private Vector postings=null;
    private int threadpos=0;
    private Vector writers=new Vector();
-    private PostingBody postingBody = new PostingBody();
+   private PostingBody postingBody = new PostingBody();
+   private boolean loaded = false;
+   private int lastused;
 
    public PostThread(PostArea parent,Node node) {
 	this.parent=parent;
@@ -71,7 +74,7 @@ public class PostThread {
 	this.lastpostnumber=node.getIntValue("lastpostnumber");
 
 	// read postings
-	// readPostings();
+	//readPostings();
    }
 
    public void setId(int id) {
@@ -203,6 +206,8 @@ public class PostThread {
 
    public Iterator getPostings(int page,int pagecount) {
 	if (postings==null) readPostings();
+	
+	lastused = (int)(System.currentTimeMillis() / 1000);
 
 	// get the range we want
 	int start=(page-1)*pagecount;
@@ -252,7 +257,14 @@ public class PostThread {
 		//} else {
 	    //	pnode.setStringValue("body",body);
 		//}
-        pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
+
+                //pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
+		// gerard this is wrong again ?
+		if (body.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
+                	pnode.setStringValue("body","<poster>"+body+"</poster>");
+		} else {
+                	pnode.setStringValue("body",body);
+		}
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();
@@ -311,20 +323,32 @@ public class PostThread {
      */
     public void readPostings() {
 	if (postings!=null) return;
-        long start=System.currentTimeMillis();
-	    postings=new Vector();
+	 postings=new Vector();
 	if (node!=null) {
+        	//long start=System.currentTimeMillis();
 		NodeIterator i=node.getRelatedNodes("postings").nodeIterator();
+        	//long end=System.currentTimeMillis();
+        	//log.info("getting list="+(end-start));
 		while (i.hasNext()) {
 			Node node=i.nextNode();
+        		//start=System.currentTimeMillis();
                         Posting posting=new Posting(node,this);
+        		//end=System.currentTimeMillis();
+        		//log.info("making posting="+(end-start));
 			posting.setThreadPos(threadpos++);
 			addWriter(posting);
                       	postings.add(posting);
+			//log.info("Fake read on node : "+node);
 		}
+
+		// very raw way to zap the cache
+		Cache cache = RelatedNodesCache.getCache();
+		cache.clear();
+		cache = NodeCache.getCache();
+		cache.clear();
 	}
-        long end=System.currentTimeMillis();
-        //log.info("READTIME POSTINGS="+(end-start)+" postingsize="+postings.size());
+	loaded = true;
+	lastused = (int)(System.currentTimeMillis() / 1000);
    }
 
    public boolean isLastPage(int page,int pagesize) {
@@ -496,5 +520,19 @@ public class PostThread {
     public PostArea getParent() {
 	return parent;
     }
+
+    public int getLastUsed() {
+	return lastused;
+    }
+
+    public boolean isLoaded() {
+	return loaded;
+    }
+
+    public void swapOut() {
+	postings = null;
+	loaded = false;
+    }
+
 }
 
