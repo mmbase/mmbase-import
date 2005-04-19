@@ -38,10 +38,10 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.116 2005-03-16 22:14:17 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.117 2005-04-19 20:20:56 michiel Exp $
  */
 
-public class CloudTag extends ContextReferrerTag implements CloudProvider {
+public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
 
 
     /**
@@ -171,6 +171,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
     public void setOnfail(String of) throws JspTagException {
         onfail = getAttribute(of);
+    }
+
+    // javadoc inherited (from ParameterHandler)
+    public void addParameter(String key, Object value) throws JspTagException {
+        if (cloud != null) {
+            cloud.setProperty(key, value);
+        }
     }
 
     /**
