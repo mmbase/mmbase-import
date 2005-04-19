@@ -1,0 +1,28 @@
+<mm:content type="text/html" language="en" expires="-1" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"  xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.page import="java.io.*" />
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title>KUPU- receiver</title>
+    </head>
+    <body >
+      <jsp:scriptlet>
+        StringBuffer received = new StringBuffer();
+        BufferedReader r  =  new BufferedReader(request.getReader());
+        String line = r.readLine();
+        while (line != null) {
+        received.append(line);
+          line = r.readLine();             
+        }
+      </jsp:scriptlet>
+      <mm:log>
+        <jsp:expression>received</jsp:expression>
+      </mm:log>
+      <p>
+        Received:
+      </p>
+      <pre>
+        <jsp:expression>received</jsp:expression>
+      </pre>
+    </body>
+  </html>
+</mm:content>
