@@ -1,0 +1,11 @@
+<kupu:feature
+    name="test"
+    implementation="mmbase"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    >
+  <kupu:part name="comments">
+    <script type="text/javascript" src="kupudrawers.js"> </script>
+  </kupu:part>
+</kupu:feature>
+

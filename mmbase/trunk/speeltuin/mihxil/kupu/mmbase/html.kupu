@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="html"
+    implementation="mmbase"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    >
+  <kupu:id>$Id: html.kupu,v 1.1 2005-04-19 21:04:45 michiel Exp $</kupu:id>
+  <kupu:part name="html">
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page" 
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+      <mm:content type="text/html" expires="0">
+        <kupu:define-slot name="html" />
+      </mm:content>
+    </html>
+  </kupu:part>
+</kupu:feature>
