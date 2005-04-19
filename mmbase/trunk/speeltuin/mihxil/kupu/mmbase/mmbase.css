@@ -1,0 +1,72 @@
+
+#node {   
+  position: absolute;
+  top: 0px;
+  left: 300px;
+  right: 0px;
+
+  margin: 0px;
+  z-index:0;
+} 
+
+
+#node td {
+  vertical-align: top;
+}
+#node input {
+  user-input: enabled;
+}
+
+
+#tree { 
+  position: absolute;  
+  z-index: 0;
+  top: 0px;
+  left: 0px;
+  width: 300px;
+  margin: 0px;
+ 
+}
+#tree li.on a.turnon {
+  display: none;
+}
+#tree li.off a.turnoff {
+  display: none;
+}
+		
+#preview { 
+  background-color: blue;
+  margin: 0px;
+}
+
+#kupu { 
+  position: absolute;
+  left: 300px;
+  right: 0px;
+  top: 200px;
+  background-color: white;
+  margin: 0px;
+  z-index: 1;
+}
+
+#kupu div.kupu-editorframe {
+  position: absolute;
+  left: 0px;
+  right: 21em;
+  top: 30px;
+  background-color: white;
+  margin: 0px;
+}
+#kupu div.kupu-toolboxes {
+  top: 0px;
+  right: 0px;
+  width: 19.4em;
+  margin: 0px;
+}
+#kupu div#toolbar { 
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  height: 30px;
+}
