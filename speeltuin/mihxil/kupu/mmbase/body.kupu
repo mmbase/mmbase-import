@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="body"
+    implementation="mmbase"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    i18n:domain="kupu"
+    >
+    <kupu:id>$Id: body.kupu,v 1.1 2005-04-19 21:04:45 michiel Exp $</kupu:id>
+
+  <kupu:part name="body">
+    <body onload="kupu = startKupu();  mmbaseInit();">
+      <kupu:define-slot name="body" />
+    </body>
+  </kupu:part>
+
+  <kupu:part name="fulleditor">
+    <div class="kupu-fulleditor">
+      <kupu:define-slot name="fulleditor" />
+    </div>
+  </kupu:part>
+
+  <kupu:part name="editorframe">
+    <div class="kupu-editorframe">
+      <form>					
+        <iframe id="kupu-editor"
+                class="kupu-editor-iframe"
+                frameborder="0"
+                src="start.jsp"
+                scrolling="auto">
+
+        </iframe>
+        <textarea
+         class="kupu-editor-textarea" 
+         id="kupu-editor-textarea"> </textarea>
+      </form>
+    </div>
+  </kupu:part>
+
+</kupu:feature>

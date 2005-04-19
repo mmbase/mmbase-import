@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="head"
+    implementation="mmbase"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+    >
+  <kupu:id>$Id: head.kupu,v 1.1 2005-04-19 21:04:45 michiel Exp $</kupu:id>
+
+  <kupu:part name="meta">
+    <title>MMBase Editor</title>
+    <mm:import id="kupu_common">../common</mm:import>
+  </kupu:part>
+
+  <kupu:part name="jsincludes">
+    <script type="text/javascript" src="${kupu_common}/sarissa.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupueditor.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupubasetools.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupuloggers.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"> </script>
+    <!-- script type="text/javascript" src="../../i18n.js/i18n.js"> </script-->
+    <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"> </script>
+  </kupu:part>
+
+  <kupu:part name="styles">
+    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css" />
+  </kupu:part>
+
+
+  <kupu:part name="bootstrap-editor">
+    <script type="text/javascript" src="kupuinit.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupustart.js"> </script>
+  </kupu:part>
+
+</kupu:feature>

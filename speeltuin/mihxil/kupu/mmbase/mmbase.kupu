@@ -1,0 +1,35 @@
+<kupu:feature name="mmbase" implementation="mmbase"
+              xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+              xmlns:kupu="http://kupu.oscom.org/namespaces/dist" >
+
+  <kupu:part name="jsincludes">
+    <script type="text/javascript" src="mmbase.js"> </script>
+  </kupu:part>
+
+  <kupu:part name="styles">
+    <link href="mmbase.css" rel="stylesheet" type="text/css" />
+  </kupu:part>
+
+
+  <kupu:part name="tree-div">
+    <div id="tree">
+      <mm:include page="tree.jspx" />
+    </div>
+  </kupu:part>
+  <kupu:part name="node-div">
+    <div id="node">
+      <mm:include page="node.jspx" />
+    </div>
+  </kupu:part>
+  <kupu:part name="preview-div">
+    <div id="node">
+      <mm:include page="preview.jspx" />
+    </div>
+  </kupu:part>
+  <kupu:part name="kupu-div">
+    <div id="kupu">
+      <kupu:define-slot name="fulleditor" />
+    </div>
+  </kupu:part>
+
+</kupu:feature>
