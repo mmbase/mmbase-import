@@ -8,6 +8,11 @@ body
 	padding: 0px;
 }
 
+table {
+   margin-left:auto;
+   margin-right:auto;
+}
+
 td
 {
 	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
