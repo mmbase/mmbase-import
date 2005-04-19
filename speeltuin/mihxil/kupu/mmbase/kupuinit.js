@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.1 2005-04-19 21:04:45 michiel Exp $
+// $Id: kupuinit.js,v 1.2 2005-04-19 21:58:19 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -20,8 +20,6 @@ function initKupu(iframe) {
     
     // now some config values
     var conf = loadDictFromXML(document, 'kupuconfig');
-
-	alert('hoi');    
 
     // the we create the document, hand it over the id of the iframe
     var doc = new KupuDocument(iframe);
@@ -146,7 +144,6 @@ function initKupu(iframe) {
     // remove tags that aren't in the XHTML DTD
     var nonxhtmltagfilter = new NonXHTMLTagFilter();
     kupu.registerFilter(nonxhtmltagfilter);
-	alert('laats');				
 
 
     return kupu;
