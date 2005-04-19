@@ -62,6 +62,8 @@
 <%@ include file="loadtranslations.jsp" %>
 
 <div class="header">
+    <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
+    <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                                               
 <div class="bodypart">
@@ -245,6 +247,8 @@
 </div>
 
 <div class="footer">
+    <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
+    <jsp:include page="<%=footerpath%>"/>
 </div>
 
 </mm:locale>
