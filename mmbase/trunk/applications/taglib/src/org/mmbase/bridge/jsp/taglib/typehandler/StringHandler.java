@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.36 2005-04-04 15:04:19 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.37 2005-04-19 12:39:57 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -110,10 +110,6 @@ public class StringHandler extends AbstractTypeHandler {
                     String value;
                     if (guiType.indexOf("password") > -1) {
                         buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
-                        String opt = tag.getOptions();
-                        if (opt != null && opt.indexOf("noautocomplete") > -1) { 
-                            buffer.append("autocomplete=\"off\" ");
-                        }
                         buffer.append("name=\"");
                         if (guiType.indexOf("md5") > -1) {
                             value = "";
@@ -122,11 +118,18 @@ public class StringHandler extends AbstractTypeHandler {
                         }
                     } else {
                         buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
-                        
-                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
+                        if (guiType.indexOf("confirmpassword") > -1) {
+                            value = " ";
+                        } else {
+                            value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
+                        }
                     }
                     buffer.append(prefix(field.getName()));
                     buffer.append("\" ");
+                    String opt = tag.getOptions();
+                    if (opt != null && opt.indexOf("noautocomplete") > -1) { 
+                        buffer.append("autocomplete=\"off\" ");
+                    }                    
                     addExtraAttributes(buffer);
                     buffer.append(" value=\"");
                     buffer.append(value);
@@ -168,10 +171,10 @@ public class StringHandler extends AbstractTypeHandler {
         }
 
         fieldValue = tag.encode(fieldValue, field);
-        if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
+        if (fieldValue != null && ! fieldValue.equals("") && ! fieldValue.equals(node.getValue(fieldName))) {
             if (guiType.indexOf("password") > -1) {
                 String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
-                if (confirmValue!=null) {
+                if (confirmValue != null) {
                     if (!confirmValue.equals(fieldValue)) {
                         throw new JspTagException("Confirmation password not equal to new password value.");
                     }
