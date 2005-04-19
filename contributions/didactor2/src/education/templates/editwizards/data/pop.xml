@@ -33,6 +33,19 @@
          <field name="firstname" ftype="data"/>
          <field ftype="startwizard" wizardname="people" />
       </item>
+      <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down">
+        <search-filter>
+            <name>Achternaam bevat</name>
+            <search-fields>lastname</search-fields>
+        </search-filter>
+        <search-filter>
+            <name>Voornaam bevat</name>
+            <search-fields>firstname</search-fields>
+        </search-filter>
+      </command>
+      <command name="startwizard" inline="true" wizardname="people" objectnumber="new">
+         <prompt>Nieuw</prompt>
+      </command>
       <action type="create">
          <relation destinationtype="people" role="related">
          </relation>
