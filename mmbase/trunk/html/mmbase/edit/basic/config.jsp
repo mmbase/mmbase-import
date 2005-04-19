@@ -8,13 +8,14 @@
 <body class="basic">
 
   <mm:context referid="config" id="config">
-    <mm:write cookie="mmjspeditors_style"     referid="style_sheet" />
-    <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
-    <mm:write cookie="mmjspeditors_language"  referid="lang"         />
-    <mm:write cookie="mmjspeditors_country"   referid="country"         />
-    <mm:write cookie="mmjspeditors_session"   referid="session"      />
+    <mm:write cookie="mmjspeditors_style"         referid="style_sheet" />
+    <mm:write cookie="mmjspeditors_liststyle"     referid="liststyle"   />
+    <mm:write cookie="mmjspeditors_language"      referid="lang"         />
+    <mm:write cookie="mmjspeditors_country"       referid="country"         />
+    <mm:write cookie="mmjspeditors_session"       referid="session"      />
     <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
-    <mm:write cookie="mmjspeditors_page_size"   referid="page_size"      />
+    <mm:write cookie="mmjspeditors_page_size"     referid="page_size"      />
+    <mm:write cookie="mmjspeditors_xmlmode"       referid="xmlmode"      />
   </mm:context>  
   <form name="config">
     <table class="edit" summary="editor configuration" width="93%"  cellspacing="1" cellpadding="3" border="0">
@@ -96,6 +97,17 @@
             <mm:notpresent referid="foundcountry">
               <option value="<mm:write referid="config.country" />" selected="selected"><mm:locale language="$config.lang" country="$config.country" jspvar="loc"><%= loc.getDisplayCountry(loc)%></mm:locale></option>
             </mm:notpresent>
+          </select>
+        </td>        
+      </tr>
+      <tr>
+        <td><%= m.getString("config.xmlmode") %></td>  
+        <td>
+          <select name="mmjspeditors_xmlmode">
+            <mm:import id="xmlmodes" vartype="list">flat,xml,kupu</mm:import>
+            <mm:aliaslist referid="xmlmodes">
+              <option value="<mm:write />" <mm:compare referid2="config.xmlmode">selected="selected"</mm:compare>><mm:write /></option>
+            </mm:aliaslist>
           </select>
         </td>        
       </tr>
