@@ -39,7 +39,7 @@
 </mm:nodefunction>
 
 <mm:include page="path.jsp?type=$pathtype" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 
 <mm:node referid="forumid">
   <tr>

@@ -27,7 +27,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
   <form action="<mm:url page="removeforum_confirm.jsp"></mm:url>" method="post">
   <tr><th colspan="3">Selecteer forum dat je wilt verwijderen</th></tr>
   <tr><td colspan="3" align="middle">
@@ -41,6 +41,7 @@
 	<p />
 	<center>
 	<input type="submit" value="Ja, Verwijderen">
+        </center>
   	</form>
 	</td>
 	<td>
@@ -49,7 +50,8 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Oops, Nee">
+	<input type="submit" value="Oops, Nee"> \
+        </center>
   	</form>
 	</td>
 	</tr>

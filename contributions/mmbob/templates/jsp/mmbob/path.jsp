@@ -7,7 +7,7 @@
 <mm:import externid="posterid" />
 <mm:import externid="logoutmodetype">open</mm:import> 
 <%@ include file="loadtranslations.jsp" %>
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
 <tr><td align="left">
 <mm:compare value="index" referid="type">
 	<mm:node number="$forumid">

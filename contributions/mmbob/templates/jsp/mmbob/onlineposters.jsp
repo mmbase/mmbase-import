@@ -37,7 +37,7 @@
 <div class="bodypart">
 
 <mm:include page="path.jsp?type=$pathtype" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 <tr><th ><mm:write referid="mlg.Account" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
   	<mm:nodelistfunction set="mmbob" name="getPostersOnline" referids="forumid">
 	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="id" />&pathtype=onlineposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>

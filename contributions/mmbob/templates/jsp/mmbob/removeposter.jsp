@@ -71,6 +71,7 @@
       <p />
       <center>
       <input type="submit" value="<mm:write referid="mlg.Cancel" />">
+      </center>
       </form>
     </td>
   </tr>

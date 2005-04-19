@@ -117,10 +117,9 @@
 		</mm:write>
 	</td>
 	</tr>
-  <tr><td>
+  <tr><td align="center">
   	<form action="<mm:url page="privatemessages.jsp" referids="forumid"></mm:url>" method="post">
 	<p />
-	<center>
 	<mm:write referid="folderaction">
 	<input type="hidden" name="action" value="removefolder">
 	<input type="hidden" name="foldername" value="<mm:node referid="mailboxid"><mm:field name="name" /></mm:node>">
@@ -134,10 +133,9 @@
 	</mm:write>
   	</form>
 	</td>
-	<td>
+	<td align="center">
   	<form action="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid"></mm:url>" method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>

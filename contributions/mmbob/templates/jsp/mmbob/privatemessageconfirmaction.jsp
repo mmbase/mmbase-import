@@ -130,10 +130,9 @@
 		</mm:write>
 	</td>
 	</tr>
-  <tr><td>
+  <tr><td align="center">
   <form action="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid" />" method="post">
 	<p />
-	<center>
 	<input type="hidden" name="messageid" value="<mm:write referid="messageid" />" />
 	<mm:write referid="folderaction">
 	<mm:compare referid2="mlg.delete">
@@ -146,10 +145,9 @@
 	</mm:write>
   	</form>
 	</td>
-	<td>
+	<td align="center">
   	<form action="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid,messageid" />" method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>

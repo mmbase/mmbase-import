@@ -34,7 +34,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3" align="left" ><mm:write referid="mlg.Add_moderator_for" /> : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
   
   </th></tr>
@@ -63,14 +63,13 @@
 	<input type="submit" value="<mm:write referid="mlg.Add" />">
   	</form>
 	</td>
-	<td>
+	<td align="center">
   	<form action="<mm:url page="postarea.jsp">
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
   	</form>
 	</td>

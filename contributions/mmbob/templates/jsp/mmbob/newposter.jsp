@@ -45,7 +45,7 @@
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart" align="center">
+<div class="bodypart">
 
 <mm:include page="path.jsp?type=$pathtype" />
 <mm:compare referid="feedback" value="none">
@@ -83,7 +83,7 @@
 			</td></tr>
 	<tr><th colspan="2">
         <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg.Save"/>">
+        <center><input type="submit" value="<mm:write referid="mlg.Save"/>"></center>
 	</form>
 	</th></tr>
 </table>
@@ -125,7 +125,7 @@
 			</td></tr>
 	<tr><th colspan="2">
         <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg.Save"/>">
+        <center><input type="submit" value="<mm:write referid="mlg.Save"/>"></center>
 	</form>
 	</th></tr>
 </table>
@@ -167,7 +167,7 @@
 			</td></tr>
 	<tr><th colspan="2">
         <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg.Save"/>">
+        <center><input type="submit" value="<mm:write referid="mlg.Save"/>"></center>
 	</form>
 	</th></tr>
 </table>

@@ -32,7 +32,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Change_existing_forum" /></th></tr>
 
   <mm:node number="$forumid">
@@ -62,7 +62,6 @@
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
@@ -71,7 +70,7 @@
 </div>
 
 <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%">
   <tr><th colspan="3">Login instellingen</th></tr>
   <form action="<mm:url page="index.jsp">
         <mm:param name="forumid" value="$forumid" />
@@ -215,7 +214,6 @@
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   </form>
   </td>

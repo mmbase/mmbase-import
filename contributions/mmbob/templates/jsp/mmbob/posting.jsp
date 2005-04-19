@@ -43,7 +43,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <mm:import externid="postingid" />
   
   <mm:notpresent referid="noedit">
@@ -70,7 +70,7 @@
 	<tr><th valign="top"><mm:write referid="mlg.Message" /><center><table width="99"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><quote poster="<mm:field name="c_poster"/>"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></quote></textarea></td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="postreply">
-	<center><input type="submit" value="<mm:write referid="mlg.Save" />">
+	<center><input type="submit" value="<mm:write referid="mlg.Save" />"></center>
   	</form>
 	</td>
 	<td>
@@ -84,6 +84,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
+        </center>
   	</form>
 	</td>
 	</tr>
@@ -100,7 +101,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Ok"/>">
-
+        </center>
   	</form>
 	</td>
 	</tr>

@@ -31,7 +31,7 @@
 </div>
                                                                                               
 <div class="bodypart">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Change_existing_area" /></th></tr>
 
   <mm:node number="$postareaid">
@@ -55,7 +55,6 @@
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>

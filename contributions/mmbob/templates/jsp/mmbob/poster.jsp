@@ -108,7 +108,7 @@
 </mm:node>
 <tr><th colspan="2">
 <input type="hidden" name="action" value="editposter">
-<center><input type="submit" value="<mm:write referid="mlg.Save" />">
+<center><input type="submit" value="<mm:write referid="mlg.Save" />"></center>
 </form>
 </th></tr>
 </mm:compare>
