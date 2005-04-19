@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.15 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: ValueIntercepter.java,v 1.16 2005-04-19 19:01:41 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -252,6 +252,7 @@ public class ValueIntercepter {
      *                this is either a type name (i.e. "STRING"), an empty string (""), or a wildcard ("*").
      *                An empty settype adds the processor to all types except the 'object' type.
      *                A wildcard adds the processor to all types, including the 'object' type.
+     * @since MMBase-1.8
      */
     private static void addProcessorToFieldSet(Processor processor, Map[] processorMaps, String guiType, String type) {
         if (type.equals("") || type.equals("*")) {
@@ -272,6 +273,39 @@ public class ValueIntercepter {
             getProcessorMap(processorMaps, Field.TYPE_LIST).put(guiType, processor);
         } else {
             getProcessorMap(processorMaps, getType(type)).put(guiType, processor);
+        }
+    }
+
+    /**
+     * Sets the given processor in the correct location of the given processors array, using the
+     * given type.  The array is a one dimensional array which will only be used for providing
+     * defaults, the 'real' arrays are two-dimensional.  If the type is '*' the processor wil be set
+     * for all types (even for 'object'), if the type is '', then for all but object.
+     * @param processor The processor to be remembered
+     * @param processors The processor array in which to store.
+     * @param type       For which type.
+     
+     * @since MMBase-1.8
+     */
+    private static void setDefaultProcessor(Processor processor, Processor[] processors, String type) {
+        if (type.equals("") || type.equals("*")) {
+            if (type.equals("*")) {
+                processors[0] = processor;
+            }
+            // set for all except 'object'.
+            processors[Field.TYPE_STRING] = processor;
+            processors[Field.TYPE_INTEGER] = processor;
+            processors[Field.TYPE_BYTE] = processor;
+            processors[Field.TYPE_FLOAT] = processor;
+            processors[Field.TYPE_DOUBLE] = processor;
+            processors[Field.TYPE_LONG] = processor;
+            processors[Field.TYPE_XML] = processor;
+            processors[Field.TYPE_NODE] = processor;
+            processors[Field.TYPE_DATETIME] = processor;
+            processors[Field.TYPE_BOOLEAN] = processor;
+            processors[Field.TYPE_LIST] = processor;
+        } else {
+            processors[getType(type)] = processor;
         }
     }
 
@@ -313,12 +347,7 @@ public class ValueIntercepter {
                 Element setProcessorElement = (Element) f.nextElement();
                 String setTypeString = setProcessorElement.getAttribute("type");
                 Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);
-                if (setTypeString.equals("")) {
-                    defaultSetProcessor[fieldType][0] = newProcessor;
-                } else {
-                    int setFieldType =  getType(setTypeString);
-                    defaultSetProcessor[fieldType][setFieldType] = newProcessor;
-                }
+                setDefaultProcessor(newProcessor, defaultSetProcessor[fieldType], setTypeString);
                 log.service("Defined for field type " + typeString + "/DEFAULT setprocessor (" + setTypeString + ")" + newProcessor);
             }
 
@@ -327,12 +356,7 @@ public class ValueIntercepter {
                 Element getProcessorElement = (Element) f.nextElement();
                 String getTypeString = getProcessorElement.getAttribute("type");
                 Processor newProcessor = (Processor) createProcessor(reader, getProcessorElement);
-                if (getTypeString.equals("")) {
-                    defaultGetProcessor[fieldType][0] = newProcessor;
-                } else {
-                    int getFieldType = getType(getTypeString);
-                    defaultGetProcessor[fieldType][getFieldType] = newProcessor;
-                }
+                setDefaultProcessor(newProcessor, defaultGetProcessor[fieldType], getTypeString);
                 log.service("Defined for field type " + typeString + "/DEFAULT getprocessor (" + getTypeString + ")" + newProcessor);
             }
 
@@ -364,7 +388,7 @@ public class ValueIntercepter {
                     String setTypeString = setProcessorElement.getAttribute("type");
                     Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);
                     addProcessorToFieldSet(newProcessor, setProcessor[fieldType], guiType, setTypeString);
-                    log.service("Defined for field type " + typeString + "/" + guiType + " getprocessor(" + ("".equals(setTypeString) ? "ALL TYPES" : setTypeString)  + ") " + newProcessor);
+                    log.service("Defined for field type " + typeString + "/" + guiType + " setprocessor(" + ("".equals(setTypeString) ? "ALL TYPES" : setTypeString)  + ") " + newProcessor);
                 }
 
                 h = reader.getChildElements(specializationElement, "getprocessor");
@@ -372,7 +396,7 @@ public class ValueIntercepter {
                     Element getProcessorElement = (Element) h.nextElement();
                     String getTypeString = getProcessorElement.getAttribute("type");
                     Processor newProcessor = (Processor) createProcessor(reader, getProcessorElement);
-                    addProcessorToFieldSet(newProcessor, setProcessor[fieldType], guiType, getTypeString);
+                    addProcessorToFieldSet(newProcessor, getProcessor[fieldType], guiType, getTypeString);
                     log.service("Defined for field type " + typeString + "/" + guiType + " getprocessor(" + ("".equals(getTypeString) ? "ALL TYPES" : getTypeString)  + ") " + newProcessor);
                 }
             }
@@ -408,7 +432,9 @@ public class ValueIntercepter {
         int type = field.getType();
 
         if (type == Field.TYPE_UNKNOWN) {
-            if (node.getNumber()!=-1) log.warn("TYPE UNKNOWN commit " + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            if (node.getNumber() != -1) {
+                log.warn("TYPE UNKNOWN commit " + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            }
             return;
         }
 
@@ -434,7 +460,9 @@ public class ValueIntercepter {
     public static final Object processSet(final int setType, final Node node, final Field field, final  Object value) {
         int type = field.getType();
         if (type == Field.TYPE_UNKNOWN) {
-            if (node.getNumber()!=-1) log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            if (node.getNumber() != -1) {
+                log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            }
             return value;
         }
 
@@ -464,7 +492,9 @@ public class ValueIntercepter {
         int type = field.getType();
 
         if (type == Field.TYPE_UNKNOWN) {
-            if (node.getNumber()!=-1) log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            if (node.getNumber() != -1) {
+                log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            }
             return value;
         }
 
@@ -486,6 +516,7 @@ public class ValueIntercepter {
             }
         }
         if (processor == null) return value;
+
         return processor.process(node, field, value);
 
     }
