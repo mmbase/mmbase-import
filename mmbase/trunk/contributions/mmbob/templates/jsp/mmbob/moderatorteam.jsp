@@ -38,7 +38,7 @@
 
 <mm:include page="path.jsp?type=$pathtype" />
 <mm:node referid="forumid">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%" align="center" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
 	<tr><th><mm:write referid="mlg.Administrators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
 	<mm:related path="rolerel,posters" constraints="rolerel.role like '%administrato%'">
 	<mm:node element="posters">
@@ -49,7 +49,7 @@
 </table>
 
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
 	<tr><th><mm:write referid="mlg.Moderators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
 	<mm:related path="postareas">
 	<mm:node element="postareas">

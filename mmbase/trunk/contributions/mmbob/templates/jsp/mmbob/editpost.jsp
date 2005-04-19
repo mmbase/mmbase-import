@@ -38,7 +38,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <mm:node referid="postingid">
   <tr><th colspan="3"><mm:write referid="mlg.Edit_message" /></th></tr>
   <form action="<mm:url page="thread.jsp">
@@ -59,7 +59,7 @@
 		</mm:compare>
 	</td></tr>
 	<tr><th width="150"><mm:write referid="mlg.Topic"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:field name="subject" />" ></td></th>
-	<tr><th valign="top"><mm:write referid="mlg.Message"/><center>
+	<tr><th valign="top" align="center"><mm:write referid="mlg.Message"/>
 
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
 <mm:field name="smileysenabled"><mm:compare value="true">
@@ -67,14 +67,14 @@
 </mm:compare></mm:field>
 </mm:nodefunction>
 
-</center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></textarea>
+</th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></textarea>
 </td></tr>
-	<tr><th>&nbsp;</th><td>
+	<tr><th>&nbsp;</th><td align="center">
 	<input type="hidden" name="action" value="editpost">
-	<center><input type="submit" value="<mm:write referid="mlg.Save"/>">
+	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
-	<td>
+	<td align="center">
 	</mm:node>
   	<form action="<mm:url page="thread.jsp">
 	<mm:param name="forumid" value="$forumid" />
@@ -83,7 +83,6 @@
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>

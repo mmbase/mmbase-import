@@ -35,7 +35,7 @@
 <div class="header">
 </div>
 
-<div class="bodypart" align="center">
+<div class="bodypart">
 
 <mm:include page="path.jsp?type=$pathtype" />
 <table cellpadding="0" cellspacing="0" style="margin-top : 20px;" width="95%">

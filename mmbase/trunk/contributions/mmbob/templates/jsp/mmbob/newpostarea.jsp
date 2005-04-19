@@ -33,7 +33,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Add_new_postarea" /></th></tr>
 
   <form action="<mm:url page="index.jsp">
@@ -51,13 +51,12 @@
 	<input type="submit" value="<mm:write referid="mlg.Add" />">
   	</form>
 	</td>
-	<td>
+	<td align="center">
   	<form action="<mm:url page="index.jsp">
 	<mm:param name="forumid" value="$forumid" />
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
   	</form>
 	</td>

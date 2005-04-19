@@ -62,14 +62,13 @@
   
   <tr>
     <td align="center" ><input type="submit" value="<mm:write referid="mlg.Enable" />"> </td>
-    <td>
+    <td align="center">
       </form> 
       <form action="<mm:url page="index.jsp">
 	<mm:param name="forumid" value="$forumid" />
 	</mm:url>"
  	method="post">
       <p />
-      <center>
       <input type="submit" value="<mm:write referid="mlg.Cancel" />">
       </form>
     </td>

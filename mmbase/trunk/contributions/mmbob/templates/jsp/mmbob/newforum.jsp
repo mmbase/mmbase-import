@@ -16,7 +16,6 @@
 </mm:present>
 <!-- end action check -->
 
-<center>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3">Nieuw forum aanmaken</th></tr>
 
@@ -42,12 +41,11 @@
 	<input type="submit" value="Aanmaken">
   	</form>
 	</td>
-	<td>
+	<td align="center">
   	<form action="<mm:url page="forums.jsp">
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="Laat maar">
   	</form>
 	</td>

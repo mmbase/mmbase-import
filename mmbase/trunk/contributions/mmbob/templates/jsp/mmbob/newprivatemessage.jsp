@@ -36,7 +36,7 @@
 
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.send"/> <mm:write referid="mlg.private_message" /></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
 	<tr><th><mm:write referid="mlg.To"/></th><td colspan="2">
@@ -50,7 +50,7 @@
 	<tr><th><mm:write referid="mlg.Message" /></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="newprivatemessage">
-	<center><input type="submit" value="<mm:write referid="mlg.Send"/> <mm:write referid="mlg.message"/>">
+	<center><input type="submit" value="<mm:write referid="mlg.Send"/> <mm:write referid="mlg.message"/>"></center>
   	</form>
 	</td>
 	<td>
@@ -62,6 +62,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+        </center>
   	</form>
 	</td>
 	</tr>

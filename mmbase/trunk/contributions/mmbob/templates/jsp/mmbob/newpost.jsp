@@ -34,7 +34,7 @@
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart" align="center">
+<div class="bodypart">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Add_new_topic" /></th></tr>
   <form action="<mm:url page="postarea.jsp">
@@ -66,7 +66,7 @@
 </td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="newpost">
-	<center><input type="submit" value="<mm:write referid="mlg.Save" />">
+	<center><input type="submit" value="<mm:write referid="mlg.Save" />"></center>
   	</form>
 	</td>
 	<td>
@@ -78,6 +78,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
+        </center>
   	</form>
 	</td>
 	</tr>
