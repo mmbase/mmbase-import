@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="xmlconfig"
+    implementation="mmbase"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    >
+
+
+  <kupu:part name="xmlconfig">
+    <div style="display: none;">
+      <xml id="kupuconfig" class="kupuconfig">
+        <kupuconfig>
+          <kupu:define-slot name="kupuconfig" />
+        </kupuconfig>
+      </xml>
+    </div>
+  </kupu:part>
+
+
+  <kupu:part name="defaultconfig">
+    <dst>receive.jsp</dst>
+    <use_css>0</use_css>
+    <reload_after_save>0</reload_after_save>
+    <strict_output>0</strict_output>
+    <content_type>application/xhtml+xml</content_type>
+    <compatible_singletons>1</compatible_singletons>
+    <table_classes>
+      <class>plain</class>
+      <class>listing</class>
+      <class>grid</class>
+      <class>data</class>
+    </table_classes>
+  </kupu:part>
+ 
+</kupu:feature>
