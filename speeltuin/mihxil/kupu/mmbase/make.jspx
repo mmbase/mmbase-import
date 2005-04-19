@@ -1,3 +1,12 @@
+<!-- Trying to build the editor dynamicaly,
+     but kupu's make.xsl is not really compatible with Xalan, it seems.
+     Anyhow, you'd start with enabling XInclude:
+     - Place new xercesImpl in WEB-INF/lib
+     - Place: /WEB-INF/classes/META-INF/services/org.apache.xerces.xni.parser.XMLParserConfiguration  containing:
+     org.apache.xerces.parsers.XIncludeParserConfiguration
+
+    TODO: hack make.xsl to work with Xalan too.
+  -->
 <html xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
