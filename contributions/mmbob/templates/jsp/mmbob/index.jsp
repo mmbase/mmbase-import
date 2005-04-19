@@ -13,7 +13,7 @@
 <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
 
 <mm:compare referid="forumid" value="unknown">
-	<table align="center" cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" >
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" >
 		<tr><th>MMBob system error</th></tr>
 		<tr><td height="40"><b>ERROR: </b> No forum id is provided, if this is a new install try <a href="forums.jsp">forums.jsp</a> instead to create a new forum.</td></tr>
 	</table>
@@ -44,7 +44,7 @@
   <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
   <mm:include page="path.jsp?type=index" referids="logoutmodetype" />
 
-  <table cellpadding="0" cellspacing="0" class="list"  style="margin-top : 10px;" width="95%" align="center">
+  <table cellpadding="0" cellspacing="0" class="list"  style="margin-top : 10px;" width="95%">
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <tr>
       <mm:compare referid="posterid" value="-1">
@@ -160,7 +160,7 @@
   </mm:nodefunction>
 </table>
 
-<table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" align="center">
+<table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
   <tr>
    <td align="right">
 	<a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg.The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg.Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg.All_members" /></a></a>
@@ -168,7 +168,7 @@
   </tr>
 </table>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
    <tr><th><mm:write referid="mlg.area_name" /></th><th><mm:write referid="mlg.topics" /></th><th><mm:write referid="mlg.messages" /></th><th><mm:write referid="mlg.views" /></th><th><mm:write referid="mlg.last_posting" /></th></tr>
   		  <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
 		        <mm:import id="guestreadmodetype" reset="true"><mm:field name="guestreadmodetype" /></mm:import>
@@ -198,7 +198,7 @@
 		  </mm:nodelistfunction>
 </table>
   <mm:compare referid="adminmode" value="true">
-	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
 	<tr><th align="left"><mm:write referid="mlg.Admin_tasks" /></th></tr>
 	<td>
 	<p />

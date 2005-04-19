@@ -29,7 +29,7 @@
 <div class="bodypart">
 
 <mm:nodefunction set="mmbob" name="getForumsConfig">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%">
   <tr><th colspan="3">Login instellingen</th></tr>
   <form action="<mm:url page="forums.jsp" />" method="post">
 	<input type="hidden" name="action" value="changeconfigs">
@@ -172,7 +172,6 @@
   <td>
   	<form action="<mm:url page="forums.jsp" />" method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   </form>
   </td>

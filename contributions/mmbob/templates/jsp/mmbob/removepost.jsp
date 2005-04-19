@@ -38,7 +38,7 @@
 
 <mm:node referid="postingid">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th width="25%" align="left"><mm:write referid="mlg.Member" /></th><th align="left"><mm:write referid="mlg.Topic"/> : <mm:field name="subject" /></th></tr>
   <mm:import id="tdvar">listpaging</mm:import>
   <tr>
@@ -71,7 +71,7 @@
 </table>
 </mm:node>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="75%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="75%">
   <tr><th colspan="3" align="center"><mm:write referid="mlg.Are_you_sure"/></th></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp">
@@ -85,6 +85,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Yes_delete"/>">
+        </center>
   	</form>
 	</td>
 	<td>
@@ -97,6 +98,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+        </center>
   	</form>
 	</td>
 	</tr>

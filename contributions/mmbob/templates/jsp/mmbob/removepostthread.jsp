@@ -26,14 +26,14 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <TITLE>MMBob</TITLE>
-</HEAD>
+   <title>MMBob</title>
+</head>
 <body>
 
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart" align="center">
+<div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
   <tr><th colspan="3"><mm:write referid="mlg.Delete"/> <mm:write referid="mlg.topic"/>: <mm:node referid="postthreadid">'<mm:field name="subject" />'</mm:node> </th></tr>
@@ -45,6 +45,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Yes_delete"/>">
+        </center>
   	</form>
 	</td>
 	<td>
@@ -56,6 +57,7 @@
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+        </center>
   	</form>
 	</td>
 	</tr>

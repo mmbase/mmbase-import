@@ -40,7 +40,7 @@
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart" align="center">
+<div class="bodypart">
 
 <mm:compare referid="ismoderator" value="false">
   <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
@@ -89,11 +89,11 @@
 		</mm:field>
 		</td></th>
 
-	<tr><th>&nbsp;</th><td>
+	<tr><th>&nbsp;</th><td align="center">
 	<input type="hidden" name="action" value="editpostthread">
-	<center><input type="submit" value="<mm:write referid="mlg.Save"/>">
+	<input type="submit" value="<mm:write referid="mlg.Save"/>">
 	</td>
-	<td>
+	<td align="center">
 	</mm:node>
         </form>
   	<form action="<mm:url page="postarea.jsp">
@@ -102,7 +102,6 @@
 	</mm:url>"
  	method="post">
 	<p />
-	<center>
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>

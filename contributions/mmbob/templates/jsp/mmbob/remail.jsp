@@ -87,15 +87,14 @@
 										      
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%" align="center">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
 <mm:present referid="mailed">
 <form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
 <tr><th align="left" ><p />
 <mm:write referid="mlg.Login_mail_sent" />. <br />
 <%--<mm:write referid="wpassword" /> - <mm:write referid="feedback"/>--%>
 </th></tr>
-<tr><td>
-<center>
+<tr><td align="center">
 <input type="submit" value="Terug naar het forum">
 </form>
 </td></tr>
@@ -111,16 +110,14 @@
 <mm:write referid="mlg.Please_enter_your_login_name" /><p />
 <mm:write referid="mlg.login_name"/> : <input name="wantedaccount" size="15">
 </th></tr>
-<tr><td>
+<tr><td align="center">
 <input type="hidden" name="action" value="remail">
-<center>
 <input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.send"/>">
 </form>
 </td>
-<td>
+<td align="center">
 <form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
 <p />
-<center>
 <input type="submit" value="<mm:write referid="mlg.Cancel"/>">
 </form>
 </td>
