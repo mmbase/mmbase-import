@@ -1,9 +1,10 @@
 <kupu:feature name="mmbase" implementation="mmbase"
               xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+              xmlns:jsp="http://java.sun.com/JSP/Page"
               xmlns:kupu="http://kupu.oscom.org/namespaces/dist" >
 
   <kupu:part name="jsincludes">
-    <script type="text/javascript" src="mmbase.js"> </script>
+    <script type="text/javascript" src="mmbase.js"><jsp:text> </jsp:text></script>
   </kupu:part>
 
   <kupu:part name="styles">

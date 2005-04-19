@@ -3,12 +3,13 @@
     name="saveonpart"
     implementation="mmbase"
     xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     >
-  <kupu:id>$Id: saveonpart.kupu,v 1.1 2005-04-19 21:04:45 michiel Exp $</kupu:id>
+  <kupu:id>$Id: saveonpart.kupu,v 1.2 2005-04-19 21:23:58 michiel Exp $</kupu:id>
 
   <kupu:part name="jsincludes">
-    <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"><jsp:text> </jsp:text></script>
   </kupu:part>
 
 </kupu:feature>

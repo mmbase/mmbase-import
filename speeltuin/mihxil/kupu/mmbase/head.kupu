@@ -4,9 +4,10 @@
     implementation="mmbase"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.1 2005-04-19 21:04:45 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.2 2005-04-19 21:23:58 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
     <title>MMBase Editor</title>
@@ -14,24 +15,24 @@
   </kupu:part>
 
   <kupu:part name="jsincludes">
-    <script type="text/javascript" src="${kupu_common}/sarissa.js"> </script>
-    <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"> </script>
-    <script type="text/javascript" src="${kupu_common}/kupueditor.js"> </script>
-    <script type="text/javascript" src="${kupu_common}/kupubasetools.js"> </script>
-    <script type="text/javascript" src="${kupu_common}/kupuloggers.js"> </script>
-    <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/sarissa.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupueditor.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupubasetools.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupuloggers.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
     <!-- script type="text/javascript" src="../../i18n.js/i18n.js"> </script-->
-    <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"> </script>
+    <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
   </kupu:part>
 
   <kupu:part name="styles">
-    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css" />
+    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link>
   </kupu:part>
 
 
   <kupu:part name="bootstrap-editor">
-    <script type="text/javascript" src="kupuinit.js"> </script>
-    <script type="text/javascript" src="${kupu_common}/kupustart.js"> </script>
+    <script type="text/javascript" src="kupuinit.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupustart.js"><jsp:text> </jsp:text></script>
   </kupu:part>
 
 </kupu:feature>

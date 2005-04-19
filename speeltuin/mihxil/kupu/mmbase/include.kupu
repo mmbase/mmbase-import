@@ -1,6 +1,6 @@
 <kupu:include
   xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
-  xmlns:xi="http://www.w3.org/2003/XInclude"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
   >
 
   <!-- Include features -->
