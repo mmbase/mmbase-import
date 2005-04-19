@@ -19,7 +19,7 @@
 
 
   <kupu:part name="defaultconfig">
-    <dst>receive.jsp</dst>
+    <dst>receive.jspx</dst>
     <use_css>0</use_css>
     <reload_after_save>0</reload_after_save>
     <strict_output>0</strict_output>

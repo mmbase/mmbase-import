@@ -5,7 +5,8 @@
      >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" required="true" />
-  <mm:cloud>      
+  <mm:cloud>
+    <mm:param name="org.mmbase.xml-mode" value="kupu" />
     <mm:node referid="node">
       <mm:field name="body" />
     </mm:node>
