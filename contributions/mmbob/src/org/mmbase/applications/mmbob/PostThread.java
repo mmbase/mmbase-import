@@ -258,14 +258,7 @@ public class PostThread {
 	    //	pnode.setStringValue("body",body);
 		//}
 
-                //pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
-		// gerard this is wrong again ?
-		if (body.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
-                	pnode.setStringValue("body","<poster>"+body+"</poster>");
-		} else {
-                	pnode.setStringValue("body",body);
-		}
-
+                pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();
                 RelationManager rm=ForumManager.getCloud().getRelationManager("postthreads","postings","related");
