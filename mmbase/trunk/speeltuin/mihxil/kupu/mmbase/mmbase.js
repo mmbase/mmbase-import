@@ -57,9 +57,7 @@ function loadNode(nodeNumber) {
         nodeBodyXml = request.responseXML.xml;
     }
 
-    alert("bla1 " + nodeBodyXml);
     kupu.setHTMLBody(nodeBodyXml);
-    alert("bla2");
     currentNode = nodeNumber;
     
 }
