@@ -40,21 +40,21 @@ function loadNode(nodeNumber) {
         loadedNodeBodies.add(currentNode, kupu.getHTMLBody());
     }
     var nodeXml = loadedNodes.get(nodeNumber);
-    if (nodeXml == undefined) {						  
-        var request = Sarissa.getXmlHttpRequest();
+    if (nodeXml == undefined) {					
+        var request = new XMLHttpRequest();
         request.open('GET', 'node.jspx?node=' + nodeNumber, false);
         request.send('');
-        nodeXml = request.responseXML.xml;
+        nodeXml = Sarissa.serialize(request.responseXML);
     }
         
     nodeDiv.innerHTML = nodeXml;
 
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
     if (nodeBodyXml == null) {
-        var request = Sarissa.getXmlHttpRequest();
+        var request = new XMLHttpRequest();
         request.open('GET', 'node.body.jspx?node=' + nodeNumber, false);
         request.send('');
-        nodeBodyXml = request.responseXML.xml;
+        nodeBodyXml = Sarissa.serialize(request.responseXML);
     }
 
     kupu.setHTMLBody(nodeBodyXml);
@@ -66,10 +66,10 @@ function loadNode(nodeNumber) {
  * Load a part from the 'tree' of nodes. A request is done, and the div with the correct id is filled.
  */
 function loadRelated(nodeNumber) {
-    var request = Sarissa.getXmlHttpRequest();
+    var request = new XMLHttpRequest();
     request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
     request.send(null);
-    document.getElementById('node_' + nodeNumber + '_related').innerHTML = request.responseXML.xml;
+    document.getElementById('node_' + nodeNumber + '_related').innerHTML = Sarissa.serialize(request.responseXML);
     document.getElementById('node_' + nodeNumber + '_li').className = 'on';
     
 }
@@ -78,7 +78,6 @@ function loadRelated(nodeNumber) {
  * Unload a part from the 'tree' of nodes. The div with the correct id is made empty.
  */
 function unloadRelated(nodeNumber) {
-    var request = Sarissa.getXmlHttpRequest();
     document.getElementById('node_' + nodeNumber + '_related').innerHTML = '';
     document.getElementById('node_' + nodeNumber + '_li').className = 'off';
     
