@@ -4,7 +4,7 @@
 
   One of the advantages is that you can use EL.
 
-  $Id: web-2.4.xml,v 1.2 2005-01-03 15:27:47 michiel Exp $
+  $Id: web-2.4.xml,v 1.3 2005-04-20 20:24:29 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -147,6 +147,7 @@
   </servlet-mapping>
 
   <welcome-file-list>
+    <welcome-file>index.jspx</welcome-file>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
