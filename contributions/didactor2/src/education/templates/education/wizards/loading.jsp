@@ -2,6 +2,11 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
+
+<%
+   session.removeAttribute("show_metadata_in_list");
+%>
+
 <html>
 <head></head>
     <body>
