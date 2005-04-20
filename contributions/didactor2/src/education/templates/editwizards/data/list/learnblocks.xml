@@ -16,7 +16,7 @@
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="learnblocks-noorigin" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="learnblocks" objectnumber="new" />
 
   <command name="search" nodepath="learnblocks" fields="name" age="-1" orderby="number" directions="down">
     <prompt>Zoeken naar Leerblokken</prompt>
