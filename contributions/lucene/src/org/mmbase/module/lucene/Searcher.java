@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.3 2004-12-21 12:07:25 pierre Exp $
+ * @version $Id: Searcher.java,v 1.4 2005-04-20 14:32:12 pierre Exp $
  **/
 public class Searcher {
 
@@ -36,12 +36,10 @@ public class Searcher {
     private String index;
     private MMBase mmbase;
     private String[] allIndexedFields;
-    private boolean mergeText = false;
 
-    Searcher(String index, String[] allIndexedFields, boolean mergeText, MMBase mmbase) {
+    Searcher(String index, String[] allIndexedFields, MMBase mmbase) {
         this.index = index;
         this.allIndexedFields = allIndexedFields;
-        this.mergeText = mergeText;
         this.mmbase = mmbase;
     }
 
@@ -101,8 +99,10 @@ public class Searcher {
     protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
         IndexSearcher searcher = new IndexSearcher(index);
         Query query;
-        if (mergeText) {
+        if (fields == null || fields.length == 0) {
             query = QueryParser.parse(value,"fulltext",analyzer);
+        } else if (fields.length == 0) {
+            query = QueryParser.parse(value,fields[0],analyzer);
         } else {
             query = MultiFieldQueryParser.parse(value,fields,analyzer);
         }

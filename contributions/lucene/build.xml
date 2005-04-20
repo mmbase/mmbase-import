@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE project
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="Lucene" default="package" basedir=".">
+  <property name="project.name"    value="lucene" />
+  <property name="project.package" value="org/mmbase/applications/lucene" />
+  <property name="project.jars.dir" location="extrajars" />
+  <property name="project.jars.includes" value="pdfbox-0.6.4.jar,tm-extractors-0.4.jar,lucene-1.4.3.jar" />
+
+  &base;
+
+</project>
