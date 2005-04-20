@@ -13,8 +13,11 @@
   </mm:notpresent>
   <mm:present referid="node">
     <mm:cloud>      
+      <mm:param name="org.mmbase.xml-mode" value="kupu" />
+
       <mm:node id="node" referid="node">
         <mm:notpresent referid="loadonly">
+          <mm:field name="number" />
           <form>
             <table>
               <mm:fieldlist fields="title,subtitle,intro">

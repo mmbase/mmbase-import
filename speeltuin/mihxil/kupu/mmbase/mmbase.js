@@ -21,6 +21,8 @@ function Map() {
  */
 
 var loadedNodes      = new Map();
+var loadedTrees      = new Map();
+var uncollapsedNodes = new Array();
 var loadedNodeBodies = new Map();
 
 function mmbaseInit() {
@@ -40,7 +42,7 @@ function loadNode(nodeNumber) {
         loadedNodeBodies.add(currentNode, kupu.getHTMLBody());
     }
     var nodeXml = loadedNodes.get(nodeNumber);
-    if (nodeXml == undefined) {					
+    if (nodeXml == null) {					
         var request = new XMLHttpRequest();
         request.open('GET', 'node.jspx?node=' + nodeNumber, false);
         request.send('');
@@ -72,12 +74,17 @@ function loadNode(nodeNumber) {
  * Load a part from the 'tree' of nodes. A request is done, and the div with the correct id is filled.
  */
 function loadRelated(nodeNumber) {
-    var request = new XMLHttpRequest();
-    request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
-    request.send(null);
-    document.getElementById('node_' + nodeNumber + '_related').innerHTML = Sarissa.serialize(request.responseXML);
-    document.getElementById('node_' + nodeNumber + '_li').className = 'on';
-    
+    var treeXml = loadedTrees.get(nodeNumber);
+    if (treeXml == null) {
+        var request = new XMLHttpRequest();
+        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
+        request.send(null);
+        treeXml = Sarissa.serialize(request.responseXML);
+        loadedTrees.add(nodeNumber, treeXml);
+    }
+    document.getElementById('node_' + nodeNumber + '_related').innerHTML = treeXml;
+    document.getElementById('node_' + nodeNumber + '_related').className = 'on';    
+    uncollapsedNodes[nodeNumber] = true;
 }
 
 /**
@@ -85,6 +92,27 @@ function loadRelated(nodeNumber) {
  */
 function unloadRelated(nodeNumber) {
     document.getElementById('node_' + nodeNumber + '_related').innerHTML = '';
-    document.getElementById('node_' + nodeNumber + '_li').className = 'off';
-    
+    document.getElementById('node_' + nodeNumber + '_related').className = 'off';
+    uncollapsedNodes[nodeNumber] = null;
 }
+
+function reloadTree() {
+    var request = new XMLHttpRequest();
+    request.open('GET', 'tree.jspx?parent=true', false);    
+    request.send(null);
+    document.getElementById('tree').innerHTML = Sarissa.serialize(request.responseXML);
+    alert(" " + i + ":" + uncollapsedNodes.length + " " + uncollapsedNodes[i]);
+}
+
+/**
+ * Load a part from the 'tree' of nodes. A request is done, and the div with the correct id is filled.
+ */
+function createSubNode(nodeNumber) {
+    var request = new XMLHttpRequest();
+    request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);    
+    request.send('');
+    alert(Sarissa.serialize(request.responseXML));
+    reloadTree();
+
+}
+

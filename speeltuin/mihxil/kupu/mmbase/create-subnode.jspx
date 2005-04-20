@@ -1,0 +1,31 @@
+<mm:content type="text/xml" expires="0"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:jsp="http://java.sun.com/JSP/Page" 
+     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+     >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user">
+    <mm:param name="org.mmbase.xml-mode" value="kupu" />
+
+    <mm:import externid="node" required="true" />
+    <mm:node id="node" referid="node">
+      <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
+        <mm:maxnumber value="1" />
+        <mm:sortorder field="pos" direction="down" />
+        <mm:listrelations>
+          <mm:field name="pos" id="pos" write="false"/>
+        </mm:listrelations>
+      </mm:listrelationscontainer>
+    </mm:node>
+    
+    <mm:createnode id="segment" type="segments">
+      <mm:setfield name="title">Nieuwe titel</mm:setfield>
+      <mm:setfield name="body"><mmxf><p>Zie ook <a href="http://www.google.com">google.</a></p></mmxf></mm:setfield>
+    </mm:createnode>
+
+    <mm:createrelation source="node" destination="segment" role="index">
+      <mm:setfield name="pos">${pos + 1}</mm:setfield>
+    </mm:createrelation>
+    <info>Created ${node} -${pos +1}- ${segment}</info>
+  </mm:cloud>
+</mm:content>

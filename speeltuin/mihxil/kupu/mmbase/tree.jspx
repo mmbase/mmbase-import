@@ -1,29 +1,42 @@
-<div class="tree"
+<mm:cloud
      xmlns="http://www.w3.org/1999/xhtml"
      xmlns:jsp="http://java.sun.com/JSP/Page" 
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
      >
   <jsp:output omit-xml-declaration="true" />
-  <mm:cloud>
-    <mm:import externid="node">pol_default</mm:import>
-    <mm:node id="n" referid="node">
-      <ul id="node_${n}">
-        <mm:relatednodes type="segments" id="segment" role="posrel" orderby="posrel.pos">
-          <li id="node_${segment}_li" class="off">
-            <a href="javascript: loadNode(${segment});"><mm:field name="index" /> <mm:nodeinfo type="gui" /></a><br />
-            <mm:relatednodescontainer type="segments" role="posrel">
-              <mm:size>
-                <mm:isgreaterthan value="0">
-                  <a class="turnon"  href="javascript: loadRelated(${segment});">+</a>
-                  <a class="turnoff" href="javascript: unloadRelated(${segment});">-</a>
-                  <div id="node_${segment}_related">
-                  </div>
-                </mm:isgreaterthan>
-              </mm:size>
-            </mm:relatednodescontainer>
-          </li>          
-        </mm:relatednodes>
-      </ul>
-    </mm:node>
-  </mm:cloud>
-</div>
+  
+  <mm:param name="org.mmbase.xml-mode" value="kupu" />
+  <mm:import externid="parent" />
+  <mm:import externid="node">pol_default</mm:import>
+  <mm:node id="n" referid="node">
+    <ul id="node_${n}">
+      <mm:relatednodes type="segments" id="segment" role="index" orderby="index.pos" searchdir="destination">
+        <li id="node_${segment}_li">
+          <a href="javascript: loadNode(${segment});"><mm:field name="index" /> <mm:nodeinfo type="gui" /></a>
+          <mm:relatednodescontainer type="segments" role="index" searchdirs="destination">
+            <div id="node_${segment}_related" class="off">
+              <ul id="node_${segment}">
+                <li>
+                  <mm:size>
+                    <mm:isgreaterthan value="0">
+                      <a class="turnon"  href="javascript: loadRelated(${segment});">                    
+                        + <img class="icon" src="icons/map.gif" />
+                      </a>
+                      <a class="turnoff" href="javascript: unloadRelated(${segment});">
+                        - <img class="icon" src="icons/map-open.gif" />
+                      </a>
+                    </mm:isgreaterthan>
+                  </mm:size>
+                  <a class="create" href="javascript: createSubNode(${segment});">Nieuw</a>
+                </li>
+              </ul>
+            </div>
+          </mm:relatednodescontainer>
+        </li>          
+      </mm:relatednodes>
+    </ul>
+  </mm:node>
+  <mm:present referid="parent">
+    <p class="debug"><a class="related" href="javascript: reloadTree();">reload</a></p>
+  </mm:present>
+</mm:cloud>
