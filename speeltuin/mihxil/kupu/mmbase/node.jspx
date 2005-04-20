@@ -5,6 +5,7 @@
      >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" />
+  <mm:import externid="loadonly" />
   <mm:notpresent referid="node">
     <p>
       No node loaded.
@@ -12,15 +13,18 @@
   </mm:notpresent>
   <mm:present referid="node">
     <mm:cloud>      
-      <mm:node referid="node">
-        <form>
-          <table>
-            <mm:fieldlist fields="title,subtitle,intro">
-              <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
-            </mm:fieldlist>
-          </table>
-        </form>
+      <mm:node id="node" referid="node">
+        <mm:notpresent referid="loadonly">
+          <form>
+            <table>
+              <mm:fieldlist fields="title,subtitle,intro">
+                <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+              </mm:fieldlist>
+            </table>
+          </form>
+        </mm:notpresent>
       </mm:node>
+      <mm:write session="kupu_node" referid="node" />
     </mm:cloud>
   </mm:present>
 </div>

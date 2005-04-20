@@ -10,7 +10,7 @@
       <ul id="node_${n}">
         <mm:relatednodes type="segments" id="segment" role="posrel" orderby="posrel.pos">
           <li id="node_${segment}_li" class="off">
-            <a href="javascript: loadNode(${segment});"><mm:nodeinfo type="gui" /></a><br />
+            <a href="javascript: loadNode(${segment});"><mm:field name="index" /> <mm:nodeinfo type="gui" /></a><br />
             <mm:relatednodescontainer type="segments" role="posrel">
               <mm:size>
                 <mm:isgreaterthan value="0">
