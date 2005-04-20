@@ -47,12 +47,8 @@
 </mm:node>
 
 <%-- some sending email code--%>
-<mm:remove referid="mail1"/>
-<mm:createnode type="emails" id="mail1">
-  <mm:setfield name="from"><mm:write referid="from"/></mm:setfield>
-  <mm:setfield name="to"><mm:write referid="to"/></mm:setfield>
-  <mm:setfield name="subject">Uitnodiging om feedback te geven.</mm:setfield>
-  <mm:setfield name="body"><HTML>
+<mm:import id="subject">Uitnodiging om feedback te geven.</mm:import>
+<mm:import id="body"><HTML>
 Beste <mm:write referid="inviteefname"/><br/>
 <br/>
 <b><mm:write referid="userfname"/></b> heeft je uitgenodigd om zijn competentie <b><mm:write referid="compname"/></b> te beoordelen.<br/>
@@ -61,10 +57,5 @@ Beste <mm:write referid="inviteefname"/><br/>
 <br/>
 Je kunt je beoordeling geven op <a href="<%= linktofeedback %>">link</a>.<br/>
 <br/>
-Bij voorbaat dank.</HTML></mm:setfield>
-  <mm:setfield name="type">0</mm:setfield>
-  <mm:setfield name="date"><%=System.currentTimeMillis()/1000%></mm:setfield> 
-</mm:createnode>
-<mm:node referid="mail1">
-  <mm:setfield name="type">1</mm:setfield>
-</mm:node> 
+Bij voorbaat dank.</HTML></mm:import>
+<%@include file="sendmail.jsp" %>

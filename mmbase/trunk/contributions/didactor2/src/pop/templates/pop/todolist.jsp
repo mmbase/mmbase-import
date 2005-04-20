@@ -46,12 +46,13 @@
                   <input type="checkbox" name="ids" value="<mm:field name="number"/>">
                 </di:cell>
                 <di:cell>
-                  <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder">
-                      <mm:param name="todonumber"><mm:field name="number"/></mm:param>
-                      <mm:param name="command">addtodo</mm:param>
-                      <mm:param name="returnto">no</mm:param>
-                    </mm:treefile>"><mm:field name="name"/>
-                  </a>
+                  <mm:field name="name" jspvar="todoName" vartype="String">
+                    <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder">
+                        <mm:param name="todonumber"><mm:field name="number"/></mm:param>
+                        <mm:param name="command">addtodo</mm:param>
+                        <mm:param name="returnto">no</mm:param>
+                      </mm:treefile>"><% if (todoName.length()>0) { %><%= todoName %><% } else { %>...<% } %></a>
+                  </mm:field>
                 </di:cell>
                 <di:cell>                   
                   <mm:field name="durationvalue"/>

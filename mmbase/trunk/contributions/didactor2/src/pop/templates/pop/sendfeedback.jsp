@@ -1,11 +1,11 @@
 <mm:import externid="nfeedback"/>
-<mm:import externid="feedback1"/>
+<mm:import jspvar="feedback1" externid="feedback1"/>
 <mm:import jspvar="feedback2" externid="feedback2"/>
 <% boolean isSuccess = false; %>
 <mm:node number="$nfeedback">
   <mm:field name="status">
     <mm:compare value="0">
-      <% isSuccess = true; %>
+      <% isSuccess = true; %><html  >
       <mm:setfield>-1</mm:setfield>
       <mm:setfield name="rank"><mm:write referid="feedback1"/></mm:setfield>
       <mm:setfield name="text"><mm:write referid="feedback2"/></mm:setfield>
@@ -32,24 +32,16 @@
 
 
 <%-- some sending email code--%>
-<mm:remove referid="mail1"/>
-<mm:createnode type="emails" id="mail1">
-  <mm:setfield name="from"><mm:write referid="from"/></mm:setfield>
-  <mm:setfield name="to"><mm:write referid="to"/></mm:setfield>
-  <mm:setfield name="subject">TODO NB</mm:setfield>
-  <mm:setfield name="body"><HTML>
+<mm:import id="subject">TODO NB</mm:import>
+<mm:import id="body"><HTML>
 Beste <b><mm:write referid="userfname"/>,<br/>
 <br/>
 Je hebt de volgende beoordeling over <b><mm:write referid="compname"/></b> van <b><mm:write referid="inviteefname"/></b> ontvangen:
 <br/>
+Samengewerkt door middel van: "<%= feedback1.replaceAll("\\n", "<br/>") %>"<br/>
 <%= feedback2.replaceAll("\\n", "<br/>") %><br/>
-</HTML></mm:setfield>
-  <mm:setfield name="type">0</mm:setfield>
-  <mm:setfield name="date"><%=System.currentTimeMillis()/1000%></mm:setfield> 
-</mm:createnode>
-<mm:node referid="mail1">
-  <mm:setfield name="type">1</mm:setfield>
-</mm:node> 
+</HTML></mm:import>
+<%@include file="sendmail.jsp" %>
 
 <p>Je beoordeling over <b><mm:write referid="compname"/></b> is verstuurd <b><mm:write referid="userfname"/></b>.</p>
 

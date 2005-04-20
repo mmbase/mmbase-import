@@ -42,7 +42,7 @@
         <td>Verwachte duur</td>
         <td>
           <input name="durationvalue" class="popDurationFormInput" type="text" size="15" maxlength="15" value="<mm:write referid="durationvalue"/>">
-          <select name="durationmeasure">
+          <select name="durationmeasure" class="popDurationFormSelect">
             <option value="1"<mm:compare referid="durationmeasure" value="1"> selected</mm:compare>>uur</option>
             <option value="2"<mm:compare referid="durationmeasure" value="2"> selected</mm:compare>>dag</option>
             <option value="3"<mm:compare referid="durationmeasure" value="3"> selected</mm:compare>>week</option>
@@ -55,7 +55,7 @@
         <tr>
           <td>Competentie</td>
           <td>
-            <select name="todocomp">
+            <select name="todocomp" class="popCompFormSelect">
               <option value="-1">...</option>
               <%@ include file="getcompetencies.jsp" %>
               <%  TreeMap competenciesIterator = (TreeMap) allCompetencies.clone();
@@ -73,7 +73,12 @@
         </tr>
       </mm:compare>
     </table>
-    <input type="submit" class="formbutton" value="aanmaken">
+    <mm:compare referid="todonumber" value="-1">
+      <input type="submit" class="formbutton" value="aanmaken">
+    </mm:compare>
+    <mm:compare referid="todonumber" value="-1" inverse="true">
+      <input type="submit" class="formbutton" value="opslaan">
+    </mm:compare>
     <input type="submit" class="formbutton" value="terug" onClick="newtodoform.command.value='continue'">
   </form>
 </div>
