@@ -21,6 +21,7 @@
 
 
          String sRequest_Submitted = request.getParameter("submitted");
+         String sRequest_DoCloseMetaeditor = request.getParameter("close");
 
          if (sRequest_Submitted == null)
          {//Empty form
@@ -222,21 +223,47 @@
                               %>
                                  <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
                                  <script>
-                                    top.frames['menu'].document.images['img_<%= sNode %>'].src='gfx/metaerror.gif';
+                                    try
+                                    {
+                                       top.frames['menu'].document.images['img_<%= sNode %>'].src='gfx/metaerror.gif';
+                                    }
+                                    catch(err)
+                                    {
+                                    }
                                  </script>
                               <%
                            }
                            else
                            {
-                              %>
-                                 Metadata is opgeslagen.
-                                 <script>
-                                    top.frames['menu'].document.images['img_<%= sNode %>'].src='gfx/metavalid.gif';
-                                    window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>;'", 3000);
-                                 </script>
-                                 <br/><br/>
-                                 <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
-                              <%
+                              if(session.getAttribute("show_metadata_in_list") == null)
+                              {//We use metaeditor from content_metadata or not?
+                                 %>
+                                    Metadata is opgeslagen.
+                                    <script>
+                                       try
+                                       {
+                                          top.frames['menu'].document.images['img_<%= sNode %>'].src='gfx/metavalid.gif';
+                                       }
+                                       catch(err)
+                                       {
+                                       }
+                                       window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>;'", 3000);
+                                    </script>
+                                    <br/><br/>
+                                    <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
+                                 <%
+                              }
+                              else
+                              {
+                                 if ((sRequest_DoCloseMetaeditor != null) && (sRequest_DoCloseMetaeditor.equals("yes")))
+                                 {//User has selected "SAVE&CLOSE"
+                                    response.sendRedirect((String) session.getAttribute("metalist_url"));
+                                 }
+                                 else
+                                 {
+                                    response.sendRedirect("metaedit.jsp?number=" + sNode + "&random=" + (new Date()).getTime());
+                                 }
+                              }
                            }
 
                         }

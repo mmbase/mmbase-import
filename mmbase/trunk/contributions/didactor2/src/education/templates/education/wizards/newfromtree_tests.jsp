@@ -16,13 +16,13 @@
    </mm:relatednodes>
 
    <%
-      String[] arrstrBuilders = {"mcquestions",
-                                "openquestions",
-                                "rankingquestions",
-                                "couplingquestions",
-                                "hotspotquestions",
-                                "valuequestions",
-                                "dropquestions"};
+      String[] arrstrBuilders = {"mcquestions-origin",
+                                "openquestions-origin",
+                                "rankingquestions-origin",
+                                "couplingquestions-origin",
+                                "hotspotquestions-origin",
+                                "valuequestions-origin",
+                                "dropquestions-origin"};
 
       String[] arrstrNames = {"createNewMcquestions",
                               "createNewOpenquestions",
