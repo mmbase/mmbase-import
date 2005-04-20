@@ -128,7 +128,7 @@
 <mm:compare referid="education_top_menu" value="components">
    <% //----------------------- Components come from here ----------------------- %>
    <di:hasrole role="systemadministrator">
-      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='<fmt:message key="editComponentsDescription"/>' target="text"><fmt:message key="editComponents"/></nobr></a>
+      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='<fmt:message key="editComponentsDescription"/>' target="_top"><fmt:message key="editComponents"/></nobr></a>
       <br>
       <div id='components_0' style='display: none'>
       </div>
@@ -139,7 +139,7 @@
 <mm:compare referid="education_top_menu" value="roles">
    <% //----------------------- Roles come from here ----------------------- %>
    <di:hasrole role="systemadministrator">
-      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='' target="text"><fmt:message key="roles"/></nobr></a>
+      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=roles&nodepath=roles&fields=name&orderby=name' title='' target="text"><fmt:message key="roles"/></nobr></a>
       <br>
       <div id='components_0' style='display: none'>
          <%// edit people,rolerel, education %>
@@ -196,7 +196,7 @@
 
 <mm:compare referid="education_top_menu" value="content_metadata">
    <% //----------------------- Metadata for components comes from here ----------------------- %>
-   <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>"><fmt:message key="educationMenuContentMetadata"/></a></nobr>
+   <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='#' title="<fmt:message key="filemanagement"/>"><fmt:message key="educationMenuContentMetadata"/></a></nobr>
    <br>
    <div id='content_metadata_0' style='display: none'>
       <%
@@ -262,7 +262,7 @@
 <mm:compare referid="education_top_menu" value="filemanagement">
    <% //----------------------- Filemanagement comes from here ----------------------- %>
    <di:hasrole role="filemanager">
-      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>" target="text"><fmt:message key="filemanagement"/></a></nobr>
+      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>" target="_top"><fmt:message key="filemanagement"/></a></nobr>
       <br>
       <div id='filemanagement_0' style='display: none'>
 
@@ -275,53 +275,57 @@
 <mm:compare referid="education_top_menu" value="competence">
    <% //----------------------- Competence comes from here ----------------------- %>
    <%// has to be only for admin I believe %>
-   <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='' target="text">Competentie beheer</nobr></a>
+   <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='' target="_top"><fmt:message key="competence"/></nobr></a>
    <br>
    <div id='competence_0' style='display: none'>
-      <table border="0" cellpadding="0" cellspacing="0">
-         <tr>
-            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=competencies&nodepath=competencies&searchfields=name&fields=name' title='Bewerk competenties' target="text">Competenties</a></nobr></td>
-         </tr>
-      </table>
+      <%
+         String[] arrstrNames =    {"Competenties",
+                                    "Preassessments",
+                                    "Postassessments",
+                                    "Profielen",
+                                    "P.O.P."};
+         String[] arrstrBuilders = {"competencies",
+                                    "preassessments",
+                                    "postassessments",
+                                    "profiles",
+                                    "pop"};
+         String[] arrstrWizards =  {"competencies",
+                                    "preassessments",
+                                    "postassessments",
+                                    "profiles",
+                                    "pop"};
 
-      <table border="0" cellpadding="0" cellspacing="0">
-         <tr>
-            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=preassessments&nodepath=preassessments&searchfields=name&fields=name' title='Bewerk preassessments' target="text">Preassessments</a></nobr></td>
-         </tr>
-      </table>
+         String[] arrstrTitles =   {"Bewerk competenties",
+                                    "Bewerk preassessments",
+                                    "Bewerk postassessments",
+                                    "Bewerk profielen",
+                                    "Bewerk persoonlijk opleidingplan"};
 
-      <table border="0" cellpadding="0" cellspacing="0">
-         <tr>
-            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=postassessments&nodepath=postassessments&searchfields=name&fields=name' title='Bewerk preassessments' target="text">Postassessments</a></nobr></td>
-         </tr>
-      </table>
 
-      <table border="0" cellpadding="0" cellspacing="0">
-         <tr>
-            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=profiles&nodepath=profiles&searchfields=name&fields=name' title='Bewerk profielen' target="text">Profielen</a></nobr></td>
-         </tr>
-      </table>
+         for(int f = 0; f < arrstrNames.length; f++)
+         {
+            %>
+               <table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                        <%
+                           if(f == arrstrNames.length - 1)
+                           {
+                              %><td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td><%
 
-      <table border="0" cellpadding="0" cellspacing="0">
-         <tr>
-            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-            <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=pop&nodepath=pop&searchfields=name&fields=name' title='Bewerk persoonlijk opleidingplan' target="text">P.O.P.</a></nobr></td>
-         </tr>
-      </table>
+                           }
+                           else
+                           {
+                              %><td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td><%
+                           }
+                        %>
+                     <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=<%= arrstrWizards[f] %>&nodepath=<%= arrstrBuilders[f] %>&searchfields=name&fields=name' title="<%= arrstrTitles[f] %>" target="text"><%= arrstrNames[f] %></a></nobr></td>
+                  </tr>
+               </table>
+            <%
+         }
+      %>
 
    </div>
 

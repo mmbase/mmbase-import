@@ -17,6 +17,11 @@
       {
          session.setAttribute("education_topmenu_course", request.getParameter("course"));
       }
+
+      if(session.getAttribute("education_topmenu_mode") == null)
+      {//Default active element in education top menu
+         session.setAttribute("education_topmenu_mode", "components");
+      }
    %>
 
    <html>
