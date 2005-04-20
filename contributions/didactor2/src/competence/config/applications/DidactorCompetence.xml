@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCompetence" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorCompetence" maintainer="didactor.nl" version="8" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -16,13 +16,15 @@
       <builder maintainer="didactor.nl" version="2">poprel</builder>
       <builder maintainer="didactor.nl" version="2">todoitems</builder>
       <builder maintainer="didactor.nl" version="2">popfeedback</builder>
+      <builder maintainer="didactor.nl" version="2">intakeresults</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
-        <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+      <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
       <reldef source="needcomp" target="needcomp" direction="bidirectional" guisourcename="NeedComp" guitargetname="NeedComp" builder="insrel" />
       <reldef source="developcomp" target="developcomp" direction="bidirectional" guisourcename="DevelopComp" guitargetname="DevelopComp" builder="insrel" />
       <reldef source="havecomp" target="havecomp" direction="bidirectional" guisourcename="HaveComp" guitargetname="HaveComp" builder="insrel" />
+      <reldef source="comprel" target="comprel" direction="bidirectional" guisourcename="CompRel" guitargetname="CompRel" builder="poprel" />
     </neededreldeflist>
 
     <allowedrelationlist>
@@ -47,6 +49,12 @@
         <relation from="popfeedback" to="people" type="related" />
         <relation from="competencies" to="popfeedback" type="related" />
         <relation from="competencies" to="todoitems" type="related" />
+
+        <relation from="competencies" to="tests" type="comprel" />
+
+        <!-- Structure for saving intake results -->
+        <relation from="copybooks" to="intakeresults" type="related" />
+        <relation from="tests" to="intakeresults" type="related" />
     </allowedrelationlist>
 
     <datasourcelist>
