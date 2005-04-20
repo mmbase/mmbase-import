@@ -1,0 +1,26 @@
+<!ELEMENT luceneindex (index*)>
+
+<!ELEMENT index (query*)>
+<!ATTLIST index name NMTOKEN #IMPLIED>
+<!ATTLIST index optimize NMTOKEN #IMPLIED>
+
+<!ELEMENT query (constraint*,field*)>
+<!ATTLIST query type NMTOKEN #IMPLIED>
+<!ATTLIST query path NMTOKEN #IMPLIED>
+<!ATTLIST query searchdirs NMTOKEN #IMPLIED>
+<!ATTLIST query element NMTOKEN #IMPLIED>
+<!ATTLIST query optimize NMTOKEN #IMPLIED>
+
+<!ELEMENT constraint EMPTY>
+<!ATTLIST constraint field NMTOKEN #IMPLIED>
+<!ATTLIST constraint value NMTOKEN #IMPLIED>
+<!ATTLIST constraint operator NMTOKEN #IMPLIED>
+<!ATTLIST constraint inverse NMTOKEN #IMPLIED>
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name NMTOKEN #REQUIRED>
+<!ATTLIST field alias NMTOKEN #REQUIRED>
+<!ATTLIST field keyword NMTOKEN #IMPLIED>
+<!ATTLIST field store NMTOKEN #IMPLIED>
+<!ATTLIST field password NMTOKEN #IMPLIED>
+
