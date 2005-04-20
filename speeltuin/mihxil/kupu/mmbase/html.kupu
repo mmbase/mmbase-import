@@ -4,14 +4,16 @@
     implementation="mmbase"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     >
-  <kupu:id>$Id: html.kupu,v 1.2 2005-04-19 21:23:58 michiel Exp $</kupu:id>
+  <kupu:id>$Id: html.kupu,v 1.3 2005-04-20 20:36:10 michiel Exp $</kupu:id>
   <kupu:part name="html">
     <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page" 
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-      <mm:content type="text/html" expires="0">
-        <kupu:define-slot name="html" />
-      </mm:content>
+      <mm:cloud rank="basic user">
+        <mm:content type="text/html" expires="0">
+          <kupu:define-slot name="html" />
+        </mm:content>
+      </mm:cloud>
     </html>
   </kupu:part>
 </kupu:feature>

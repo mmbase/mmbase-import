@@ -27,10 +27,18 @@
   margin: 0px;
  
 }
-#tree li.on a.turnon {
+#tree ul { 
+  list-style-type: none;          
+
+ }
+#tree div.on a.turnon {
   display: none;
 }
-#tree li.off a.turnoff {
+#tree div.off a.turnoff {
+  display: none;
+}
+
+#tree div.off a.create {
   display: none;
 }
 		
@@ -69,4 +77,8 @@
   right: 0px;
   top: 0px;
   height: 30px;
+}
+
+img.icon { 
+  border: 0px;
 }
