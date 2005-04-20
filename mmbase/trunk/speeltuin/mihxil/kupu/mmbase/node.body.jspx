@@ -1,14 +1,14 @@
-<body
-     xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:jsp="http://java.sun.com/JSP/Page" 
-     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-     >
+<mm:content type="text/xml"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="node" required="true" />
-  <mm:cloud>
-    <mm:param name="org.mmbase.xml-mode" value="kupu" />
-    <mm:node referid="node">
+  <mm:import id="node" externid="kupu_node" required="true" from="session" />
+
+  <mm:node id="node" referid="node">
+    <mm:formatter xslt="xslt/2kupu.xslt" escape="none">
       <mm:field name="body" />
-    </mm:node>
-  </mm:cloud>
-</body>
+    </mm:formatter>
+  </mm:node>
+  <mm:write session="kupu_node" referid="node" />
+</mm:content>

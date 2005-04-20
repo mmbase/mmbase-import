@@ -5,6 +5,7 @@
       <title>KUPU- receiver</title>
     </head>
     <body >
+      <mm:import externid="kupu_node" from="session" />
       <jsp:scriptlet>
         StringBuffer received = new StringBuffer();
         BufferedReader r  =  new BufferedReader(request.getReader());
@@ -15,6 +16,7 @@
         }
       </jsp:scriptlet>
       <mm:log>
+        Node: <mm:node referid="kupu_node"><mm:field name="number" /></mm:node>
         <jsp:expression>received</jsp:expression>
       </mm:log>
       <p>

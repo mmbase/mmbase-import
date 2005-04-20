@@ -45,6 +45,11 @@ function loadNode(nodeNumber) {
         request.open('GET', 'node.jspx?node=' + nodeNumber, false);
         request.send('');
         nodeXml = Sarissa.serialize(request.responseXML);
+        //nodeXml = request.responseXML.xml;
+    } else {
+        var request = new XMLHttpRequest();
+        request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
+        request.send('');        
     }
         
     nodeDiv.innerHTML = nodeXml;
@@ -52,9 +57,10 @@ function loadNode(nodeNumber) {
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
     if (nodeBodyXml == null) {
         var request = new XMLHttpRequest();
-        request.open('GET', 'node.body.jspx?node=' + nodeNumber, false);
+        request.open('GET', 'node.body.jspx', false);
         request.send('');
         nodeBodyXml = Sarissa.serialize(request.responseXML);
+        //nodeBodyXml = request.responseXML.xml;
     }
 
     kupu.setHTMLBody(nodeBodyXml);
