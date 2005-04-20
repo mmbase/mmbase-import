@@ -1,21 +1,30 @@
 <?xml version="1.0"?>
-<!DOCTYPE luceneindex PUBLIC "-//MMBase//DTD luceneindex config 1.0//EN" "http://www.mmbase.org/dtd/luceneindex_2_0.dtd">
+<!DOCTYPE luceneindex PUBLIC "-//MMBase//DTD luceneindex config 2.0//EN" "http://www.mmbase.org/dtd/luceneindex_2_0.dtd">
 <luceneindex>
   <index>
-    <constraints type="documents">
+    <query type="documents">
       <field name="title" />
       <field name="subtitle" />
       <field name="intro" />
       <field name="body" />
+      <field name="begin" />
+      <field name="end" />
+      <field name="visible" />
       <field name="handle" />
       <field name="documentnummer" />
-    </builder>
-    <constraints type="cases">
-      <field name="title" />
-      <field name="subtitle" />
-      <field name="intro" />
-      <field name="body" />
-      <field name="casusnummer" />
-    </builder>
+    </query>
+    <query path="cases,documents" element="cases">
+      <field name="cases.title" />
+      <field name="cases.subtitle" />
+      <field name="cases.intro" />
+      <field name="cases.body" />
+      <field name="documents.title" />
+      <field name="documents.subtitle" />
+      <field name="documents.documentnummer" />
+      <field name="cases.begin" alias="begin" />
+      <field name="cases.end" alias="end" />
+      <field name="cases.visible" alias="visible" />
+      <field name="cases.casusnummer" />
+    </query>
   </index>
 </luceneindex>
