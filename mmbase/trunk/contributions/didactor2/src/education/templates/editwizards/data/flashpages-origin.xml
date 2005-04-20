@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="flashpages">
+          <relation destination="$origin" role="posrel" createdir="source"/>
        </object>
     </action>
 
@@ -45,7 +46,7 @@
             <prompt>Layout</prompt>
             <optionlist select="layout" />
         </field>
-
+ 
         <list role="related" extends="list/online.xml" />
         <list minoccurs="1" maxoccurs="1" role="related" extends="list/attachments.xml" />
     </form-schema>

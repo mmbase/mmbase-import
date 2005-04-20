@@ -6,6 +6,7 @@
 
     <action type="create">
        <object type="learnblocks">
+          <relation destination="$origin" role="posrel" createdir="source"/>
        </object>
     </action>
 

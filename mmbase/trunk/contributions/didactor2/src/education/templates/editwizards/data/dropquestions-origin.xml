@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="dropquestions">
+          <relation destination="$origin" role="posrel" createdir="source"/>
           <field name="layout">0</field>
        </object>
     </action>

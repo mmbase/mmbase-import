@@ -1,19 +1,18 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title>Waarde vraag Editor</title>
+    <title>Hotspot vraag Editor</title>
 
     <action type="create">
-        <object type="valuequestions">
+       <object type="hotspotquestions">
+            <relation destination="$origin" role="posrel" createdir="source"/>
             <field name="layout">0</field>
-            <field name="type">0</field>
         </object>
     </action>
 
-
-
     <action type="load">
-        <relation destination="valueanswers" role="posrel" />
+        <relation destination="hotspotanswers" role="related" />
+   <relation destination="images" role="related" />
         <relation destination="feedback" role="related" />
         <relation destination="metadata" role="related">
           <object type="metadata">
@@ -47,68 +46,87 @@
 
     <action type="delete" />
 
+
+        <lists>
+       <optionlist name="correctlist">
+           <option id="0">Nee</option>
+      <option id="1">Ja</option>
+            </optionlist>
+   </lists>
+
+
     <steps>
         <step form-schema="step1" />
         <!-- step form-schema="step2" / -->
     </steps>
 
     <form-schema id="step1">
-        <title>Waarde vraag invoeren</title>
+        <title>Hotspot vraag invoeren</title>
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
+        <list destination="hotspotanswers" role="related" ordertype="number" orderby="x1">
 
-       <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="valueanswers">
-            <title>Bijbehorende antwoorden</title>
+
+
+   <title>Bijbehorende hotspots</title>
             <item>
-                <field name="text" ftype="data">
-                    <prompt>Tekst</prompt>
-                    <description>De antwoord tekst</description>
+                <field name="x1" ftype="line">
+                    <prompt>X</prompt>
+                    <description>X positie (linksboven = 0)</description>
                 </field>
-                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
-                <field wizardname="valueanswers" ftype="startwizard"/>
-            </item>
+                <field name="y1" ftype="line">
+                    <prompt>Y</prompt>
+                    <description>Y positie (linksboven = 0)</description>
+                </field>
+                <field name="x2" ftype="line">
+                    <prompt>Breedte</prompt>
+                    <description>Breedte in pixels</description>
+                </field>
+                <field name="y2" ftype="line">
+                    <prompt>Hoogte</prompt>
+                    <description>Hoogte in pixels</description>
+                </field>
+      <field name="correct" ftype="enum">
+          <prompt>Correct</prompt>
+          <optionlist select="correctlist" />
+      </field>
+       </item>
 
-            <!-- deze is voor de 'command name="insert"' -->
+
             <action type="create">
-                 <relation role="posrel" destinationtype="valueanswers">
-                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                <relation role="related">
+                    <object type="hotspotanswers" />
                 </relation>
-             </action>
+            </action>
 
-            <!-- deze is voor de 'command name="search"'
             <action type="add">
-                <relation role="posrel">
-                    <object type="valueanswers">
-                        <field name="text"/>
-                    </object>
+                <relation role="related">
+                    <object type="hotspotanswers" />
                 </relation>
-            </action> -->
+            </action>
 
-            <command name="search" nodepath="valueanswers" fields="text" age="-1" orderby="number" directions="down">
+<!--            <command name="search" nodepath="hotspotanswers" fields="text" age="-1" orderby="number" directions="down">
                 <prompt>Zoeken naar Antwoorden</prompt>
                 <search-filter>
                     <name>Tekst bevat</name>
                     <search-fields>text</search-fields>
                 </search-filter>
-            </command>
+            </command> -->
 
-            <command name="startwizard" inline="true" wizardname="valueanswers" objectnumber="new">
-                <prompt>Nieuwe Waarde antwoord</prompt>
-            </command>
-
+            <command name="insert" />
         </list>
+   <list role="related" extends="list/images.xml" />
         <list role="related" extends="list/feedback.xml" />
     </form-schema>
-
     <form-schema id="step2">
         <title>Metadata invoeren</title>
         <list extends="list/metadatalangstring.xml"/>
         <list extends="list/metadatadate.xml"/>
         <list extends="list/metadatavocabulary.xml"/>
     </form-schema>
-
 </wizard-schema>
+
