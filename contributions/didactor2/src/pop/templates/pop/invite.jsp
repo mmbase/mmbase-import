@@ -8,7 +8,7 @@
         <input type="hidden" name="myfeedback1" value="<mm:write referid="myfeedback1"/>">
         <input type="hidden" name="myfeedback2" value="<mm:write referid="myfeedback2"/>">
         <p>Nodig een collega uit om een beoordeling te geven over uw competentie: <b><mm:write referid="compname"/></b></p>
-        <table width="90%" border="1">
+        <table class="font" width="90%">
           <tr>
             <td width="80">Ontvanger</td>
             <td>

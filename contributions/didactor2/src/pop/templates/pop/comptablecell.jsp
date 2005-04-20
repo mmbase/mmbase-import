@@ -30,6 +30,7 @@
                            <mm:param name="todonumber"><mm:field name="todoitems.number"/></mm:param>
                            <mm:param name="command">addtodo</mm:param>
                            <mm:param name="returnto">no</mm:param>
-                         </mm:treefile>"><mm:field name="todoitems.name"/></a><br/>
+                         </mm:treefile>"><mm:field name="todoitems.name" jspvar="todoName" vartype="String"
+                         ><% if (todoName.length()>0) { %><%= todoName %><% } else { %>...<% } %></mm:field></a><br/>
                 </mm:list>
               </td>

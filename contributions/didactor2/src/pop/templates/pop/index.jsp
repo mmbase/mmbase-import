@@ -27,10 +27,13 @@
 
 <%-- right section --%>
 <div class="mainContent">
+<mm:compare referid="command" value="getinvite">
+  <mm:import id="currentpop" reset="true">0</mm:import>
+</mm:compare>
 <mm:compare referid="currentpop" value="-1">
-<div class="contentBody"> 
-  <p>Er is geen POP voor jou aangemaakt. Neem contact op met de systeembeheerder om een POP voor je aan te maken.</p>
-</div>
+  <div class="contentBody"> 
+    <p>Er is geen POP voor jou aangemaakt. Neem contact op met de systeembeheerder om een POP voor je aan te maken.</p>
+  </div>
 </mm:compare>
 <mm:compare referid="currentpop" value="-1" inverse="true">
 <mm:compare referid="currentfolder" value="-1">
@@ -82,9 +85,19 @@
 </mm:compare>
 <mm:compare referid="currentfolder" value="1">
   <div class="contentHeader">Voortgangsmonitor</div>
-  <jsp:include page="voortgang.jsp">
-    <jsp:param name="msg" value="<%= msgString %>"/>
-  </jsp:include>
+  <mm:compare referid="command" value="intake">
+    <mm:import id="competencies" jspvar="competencies" />
+    <jsp:include page="intaketest.jsp">
+      <jsp:param name="competencies" value="<%= competencies %>"/>
+    </jsp:include>
+    <mm:remove referid="command"/>
+    <mm:import id="command">-1</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="no">
+    <jsp:include page="voortgang.jsp">
+      <jsp:param name="msg" value="<%= msgString %>"/>
+    </jsp:include>
+  </mm:compare>
 </mm:compare>
 <mm:compare referid="currentfolder" value="2">
   <div class="contentHeader">Persoonlijke taken</div>

@@ -44,7 +44,8 @@
             <% isEmpty = false; %>
             <input type="checkbox" name="ids" value="<mm:field name="todoitems.number"/>"><a href="#1"
                 onclick="editcompform.command.value='addtodo';editcompform.todonumber.value='<mm:field name="todoitems.number"/>';editcompform.submit();return false;"
-              ><mm:field name="todoitems.name"/></a><br/>
+              ><mm:field name="todoitems.name" jspvar="todoName" vartype="String"
+              ><% if (todoName.length()>0) { %><%= todoName %><% } else { %>...<% } %></mm:field></a><br/>
           </mm:list>
           <% if (isEmpty) { %>&nbsp<% } %>
         </td>

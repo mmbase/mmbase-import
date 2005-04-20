@@ -5,11 +5,88 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+<%@include file="/education/tests/definitions.jsp" %> 
 <%@ include file="getids.jsp" %>
+
+<%	String intakeCompetencies = ""; 
+	String notpassedIntakes = ""; 
+%>
+
 <mm:import externid="msg">-1</mm:import>
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
   <div class="contentBody">
-    empty
+    <div><table class="listTable">
+      <tr style="vertical-align:top;">
+        <th class="listHeader">Titel opleiding</th>
+        <th class="listHeader">Intake</th>
+        <th class="listHeader">Gestart</th>
+        <th class="listHeader">Voortgang</th>
+        <th class="listHeader">&nbsp;</th>
+      </tr>
+      <mm:list nodes="$user" path="people,classrel,classes,educations" fields="educations.number"
+          orderby="educations.number" directions="UP">
+        <mm:import id="education" reset="true"><mm:field name="educations.number"/></mm:import>
+        <mm:import id="class" reset="true"><mm:field name="classes.number"/></mm:import>
+        <%@ include file="getprogress.jsp" %>
+
+        <tr style="vertical-align:top;">
+          <td class="listItem"><mm:field name="educations.name"/><br/> from class <mm:field name="classes.name"/></td>
+          <td class="listItem" style="text-align:center">
+            <mm:compare referid="intake" value="1">
+              <img src="<mm:treefile page="/pop/gfx/check.gif" objectlist="$includePath" referids="$referids"/>"
+                border="0"/>
+            </mm:compare>
+            <mm:compare referid="intake" value="0">
+              <img src="<mm:treefile page="/pop/gfx/cross.gif" objectlist="$includePath" referids="$referids"/>"
+                border="0"/>
+            </mm:compare>
+          </td>
+          <td class="listItem" style="text-align:center">
+            <mm:compare referid="startflag" value="1">
+              <img src="<mm:treefile page="/pop/gfx/check.gif" objectlist="$includePath" referids="$referids"/>"
+                border="0"/>
+            </mm:compare>
+            <mm:compare referid="startflag" value="0">
+              <img src="<mm:treefile page="/pop/gfx/cross.gif" objectlist="$includePath" referids="$referids"/>"
+                border="0"/>
+            </mm:compare>
+          </td>
+          <td class="listItem">
+              <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
+                        referids="$referids,currentfolder">
+                      <mm:param name="education"><mm:field name="educations.number"/></mm:param>
+                      <mm:param name="command">detail</mm:param>
+                    </mm:treefile>">            <div class="progressMeter">
+<img src="/didactor/gfx/bar_left.gif" width=4 height=13 alt="" /><img src="/didactor/gfx/bar_center.gif" width="<mm:write referid="progress"/>" height="13" alt="" /><img src="/didactor/gfx/bar_right.gif" width=4 height=13 alt="" />
+            </div></a><mm:write referid="progress"/>%</td>
+          <td class="listItem">
+            <mm:compare referid="intake" value="1">
+              <mm:compare referid="startflag" value="1">
+                <mm:compare referid="finished" value="0">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+                      <mm:param name="education"><mm:field name="educations.number" /></mm:param>
+                    </mm:treefile>'" value="verder" title="Ga verder met deze cursus">
+                </mm:compare>
+              </mm:compare>
+              <mm:compare referid="startflag" value="0">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+                      <mm:param name="education"><mm:field name="educations.number" /></mm:param>
+                    </mm:treefile>'" value="start"
+                    title="Begin met deze cursus">
+              </mm:compare>
+            </mm:compare>
+            <mm:compare referid="intake" value="0">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
+                        referids="$referids,currentfolder">
+                      <mm:param name="intakes"><%= notpassedIntakes %></mm:param>
+                      <mm:param name="command">intake</mm:param>
+                    </mm:treefile>'" value="intake" 
+                    title="Doe de intake voor deze cursus">
+            </mm:compare>
+          </td>
+        </tr>
+      </mm:list>
+    </table></div>
   </div>
 </fmt:bundle>
 </mm:cloud>

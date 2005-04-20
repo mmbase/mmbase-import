@@ -15,10 +15,10 @@
               ><mm:field name="people.firstname"
                /> <mm:field name="people.lastname"
             /></mm:list></b></p>
-        <table width="90%" border="1">
+        <table class="font" width="90%">
           <tr>
             <td width="180">Aan samengewerkt door middel van</td>
-            <td><input name="feedback1" type="text" size="50" maxlength="255"></td>
+            <td><input name="feedback1" type="text" class="formInput" size="50" maxlength="255"></td>
           </tr>
           <tr>
             <td>Beoordeling</td>

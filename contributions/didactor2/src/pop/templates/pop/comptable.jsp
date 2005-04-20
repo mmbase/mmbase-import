@@ -12,8 +12,6 @@
     <mm:compare referid="msg" value="-1" inverse="true">
       <mm:write referid="msg"/>
     </mm:compare>
-  <mm:listnodescontainer type="pop">
-  <mm:constraint field="number" referid="currentpop" operator="EQUAL"/>
     <div><table class="poplistTable">
       <tr style="vertical-align:top;">
         <th class="listHeader">&nbsp;</th>
@@ -22,7 +20,7 @@
         <th class="listHeader">Zelfbeoordeling</th>
         <th class="listHeader">Voornemens</th>
       </tr>
-      <mm:listnodes>
+      <mm:node number="$currentpop">
         <%@ include file="getcompetencies.jsp" %>
         <%  TreeMap competenciesIterator = (TreeMap) allCompetencies.clone();
             while(competenciesIterator.size()>0) { 
@@ -74,9 +72,8 @@
               competenciesIterator.remove(thisCompetencie);
             } 
         %>
-      </mm:listnodes>
+      </mm:node>
     </table></div>
-  </mm:listnodescontainer>
 </div>
 </fmt:bundle>
 </mm:cloud>
