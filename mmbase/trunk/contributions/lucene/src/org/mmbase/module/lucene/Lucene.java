@@ -12,17 +12,22 @@ package org.mmbase.module.lucene;
 import java.util.*;
 import org.w3c.dom.*;
 
-import org.mmbase.util.*;
-import org.mmbase.util.Queue;
+import org.mmbase.bridge.BridgeException;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.*;
+import org.mmbase.util.Queue;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.6 2005-03-22 08:48:54 pierre Exp $
+ * @version $Id: Lucene.java,v 1.7 2005-04-20 14:32:12 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -39,10 +44,11 @@ public class Lucene extends Module implements MMBaseObserver {
     private static long INITIAL_WAIT_TIME = 5 * 60 * 1000; // initial wait time after startup, default 5 minutes
     private static long WAIT_TIME = 5 * 1000; // wait time bewteen individual checks, default 5 seconds
 
+    private long initialWaitTime = INITIAL_WAIT_TIME;
+
     private static final Logger log = Logging.getLoggerInstance(Lucene.class);
 
     MMBase mmbase;
-    String[] allIndexedFields = null;
 
     private String luceneIndexPath = "WEB-INF/data/lucene";
     private String configFile = "utils/luceneindex.xml";
@@ -117,7 +123,18 @@ public class Lucene extends Module implements MMBaseObserver {
         super.init();
         mmbase = MMBase.getMMBase();
         String fullIndexPath = MMBaseContext.getServletContext().getRealPath(luceneIndexPath);
-        readOnly = !"true".equals(getInitParameter("readonly"));
+        readOnly = "true".equals(getInitParameter("readonly"));
+
+        String time = getInitParameter("initialwaittime");
+        if (time != null) {
+            try {
+                initialWaitTime = Long.parseLong(time);
+                log.debug("Set initial wait time to "+time+" milliseconds");
+            } catch (NumberFormatException nfe) {
+                log.warn("Invalid value '"+time+"' for property 'initialwaittime'");
+            }
+        }
+
         readConfiguration(fullIndexPath);
         addFunction(searchFunction);
         addFunction(searchSizeFunction);
@@ -125,9 +142,9 @@ public class Lucene extends Module implements MMBaseObserver {
             addFunction(fullIndexFunction);
             scheduler = new Scheduler();
             log.info("Module Lucene started");
-            // full index ??
+            // full index ?
             String fias = getInitParameter("fullindexatstartup");
-            if ("true".equals(fias)) {
+            if (initialWaitTime <= 0 || "true".equals(fias)) {
                 scheduler.fullIndex();
             }
         }
@@ -153,11 +170,191 @@ public class Lucene extends Module implements MMBaseObserver {
                     // in one go
                     Set parentSet = (Set)parentProperties.get("fieldset");
                     fieldSet.addAll(parentSet);
-                    // mark this builder as a specialization index buidler
+                    // mark this builder as a specialization index builder
                     // specialization index builders are skipped during full index
                     builderProperties.put("specialization",Boolean.TRUE);
                 }
                 builder = builder.getParentBuilder();
+            }
+        }
+    }
+
+    protected List getFields(NodeList fieldElements, Indexer.QueryDefinition queryDefinition, Set allIndexedFieldsSet,
+                        boolean storeText, boolean mergeText) {
+        List fieldList = new ArrayList();
+        queryDefinition.fields = new ArrayList();
+        for (int k = 0; k < fieldElements.getLength(); k++) {
+            Element fieldElement = (Element) fieldElements.item(k);
+            if (fieldElement.hasAttribute("name")) {
+                String fieldName = fieldElement.getAttribute("name");
+                fieldList.add(fieldName);
+
+                Indexer.FieldDefinition fieldDefinition = new Indexer.FieldDefinition();
+                fieldDefinition.fieldName = fieldName;
+                if (fieldElement.hasAttribute("keyword")) {
+                    fieldDefinition.keyWord = "true".equals(fieldElement.getAttribute("keyword"));
+                } else {
+                    FieldDefs field = queryDefinition.builderResolver.getField(fieldName);
+                    int type = field.getDBType();
+                    fieldDefinition.keyWord =
+                        type == FieldDefs.TYPE_DATETIME || type == FieldDefs.TYPE_BOOLEAN ||
+                        type == FieldDefs.TYPE_INTEGER || type == FieldDefs.TYPE_LONG ||
+                        type == FieldDefs.TYPE_DOUBLE || type == FieldDefs.TYPE_FLOAT;
+                }
+                String alias = null;
+                if (fieldElement.hasAttribute("alias")) {
+                    alias = fieldElement.getAttribute("alias");
+                } else if (mergeText && !fieldDefinition.keyWord) {
+                    alias = "fulltext";
+                }
+                if (alias != null) {
+                    fieldDefinition.alias = alias;
+                    if (!fieldDefinition.keyWord) {
+                        allIndexedFieldsSet.add(alias);
+                    }
+                } else if (!fieldDefinition.keyWord) {
+                    allIndexedFieldsSet.add(fieldName);
+                }
+                if (fieldElement.hasAttribute("store")) {
+                    fieldDefinition.storeText = "true".equals(fieldElement.getAttribute("store"));
+                } else {
+                    fieldDefinition.storeText = !fieldDefinition.keyWord && storeText;
+                }
+                if (fieldElement.hasAttribute("password")) {
+                    fieldDefinition.decryptionPassword = fieldElement.getAttribute("password");
+                }
+                queryDefinition.fields.add(fieldDefinition);
+            } else {
+                 log.warn("field tag has no 'name' attribute");
+           }
+        }
+        return fieldList;
+    }
+
+    private Step getStep(SearchQuery query, String stepName) {
+        List steps = query.getSteps();
+        for (Iterator i = steps.iterator(); i.hasNext();) {
+            Step step = (Step)i.next();
+            if (stepName.equals(step.getAlias()) || stepName.equals(step.getTableName())) {
+                return step;
+            }
+        }
+        return null;
+    }
+
+
+    protected void addConstraints(Indexer.QueryDefinition queryDefinition, NodeList constraintsElements) throws BridgeException, SearchQueryException {
+        if (constraintsElements.getLength() > 0 ) {
+            Constraint constraints = null;
+            for (int k = 0; k < constraintsElements.getLength(); k++) {
+                Element constraintElement = (Element) constraintsElements.item(k);
+                Step step = queryDefinition.mainStep;
+                FieldDefs fieldDef = null;
+                String fieldName = constraintElement.getAttribute("field");
+                int pos = fieldName.indexOf(".");
+                if (pos == -1) {
+                    fieldDef = queryDefinition.builderResolver.getField(fieldName);
+                } else {
+                    String stepName = fieldName.substring(0,pos);
+                    fieldName = fieldName.substring(pos+1);
+                    step = getStep(queryDefinition.query, stepName);
+                    fieldDef = mmbase.getBuilder(step.getTableName()).getField(fieldName);
+                }
+                StepField field = new BasicStepField(step,fieldDef);
+                String value = constraintElement.getAttribute("value");
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(field, value);
+                if (constraintElement.hasAttribute("operator")) {
+                    String operator = constraintElement.getAttribute("operator");
+                    constraint.setOperator(Queries.getOperator(operator));
+                }
+                if (constraintElement.hasAttribute("inverse")) {
+                    constraint.setInverse("true".equals(constraintElement.getAttribute("inverse")));
+                }
+                if (constraints == null) {
+                    constraints = constraint;
+                } else if (constraints instanceof BasicCompositeConstraint) {
+                    ((BasicCompositeConstraint)constraints).addChild(constraint);
+                } else {
+                    constraints = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND).addChild(constraints).addChild(constraint);
+                }
+            }
+            queryDefinition.query.setConstraint(constraints);
+        }
+    }
+
+    protected void addToIndex (NodeList queryElements, Collection queries, Set allIndexedFieldsSet, boolean storeText, boolean mergeText) {
+        for (int j = 0; j < queryElements.getLength(); j++) {
+            Element queryElement = (Element) queryElements.item(j);
+            try {
+                if (queryElement.hasAttribute("optimize")) {
+                    String optimize = queryElement.getAttribute("optimize");
+                    storeText = optimize.equals("none");
+                    mergeText = optimize.equals("full");
+                }
+
+                if (queryElement.hasAttribute("type") || queryElement.hasAttribute("name") || queryElement.hasAttribute("path")) {
+                    String element = null;
+                    String path = null;
+                    if (queryElement.hasAttribute("type")) {
+                        path = queryElement.getAttribute("type");
+                    } else if (queryElement.hasAttribute("name")) {
+                        path = queryElement.getAttribute("name");
+                    } else{
+                        if (queryElement.hasAttribute("element")) {
+                          element = queryElement.getAttribute("element");
+                        }
+                        path = queryElement.getAttribute("path");
+                    }
+                    List builders  = StringSplitter.split(path);
+                    if (element == null) {
+                        element = (String)builders.get(builders.size()-1);
+                    }
+
+                    List searchDirs = Collections.EMPTY_LIST;
+                    if (queryElement.hasAttribute("searchdirs")) {
+                        String dirs = queryElement.getAttribute("searchdirs");
+                        searchDirs = StringSplitter.split(dirs);
+                    }
+
+                    Indexer.QueryDefinition queryDefinition = new Indexer.QueryDefinition();
+                    queryDefinition.elementBuilder = mmbase.getBuilder(element);
+                    if (element.equals(path)) {
+                        queryDefinition.builderResolver = queryDefinition.elementBuilder;
+                    } else {
+                        queryDefinition.builderResolver = mmbase.getClusterBuilder();
+                    }
+
+                    List fields = getFields(queryElement.getElementsByTagName("field"), queryDefinition, allIndexedFieldsSet, storeText, mergeText);
+                    if (fields.size() > 0) {
+
+                        if (element.equals(path)) {
+                            queryDefinition.query = new NodeSearchQuery(queryDefinition.elementBuilder);
+                            queryDefinition.mainStep = (Step)queryDefinition.query.getSteps().get(0);
+                        } else {
+                            queryDefinition.query = mmbase.getClusterBuilder().getMultiLevelSearchQuery(
+                                        null, fields, null, builders, null, null, null, searchDirs);
+                            queryDefinition.mainStep = getStep(queryDefinition.query, element);
+                        }
+                        addConstraints(queryDefinition,queryElement.getElementsByTagName("constraint"));
+
+                        queries.add(queryDefinition);
+
+                        if (!readOnly) {
+                            queryDefinition.elementBuilder.addLocalObserver(this);
+                            queryDefinition.elementBuilder.addRemoteObserver(this);
+                        }
+                        if (log.isDebugEnabled()) {
+                             log.debug("Configured builder " + element + " with query:" + queryDefinition.query);
+                        }
+                    } else {
+                        log.warn("constraints tag has no valid fields");
+                    }
+                } else {
+                    log.warn("constraints tag has no 'path' attribute");
+                }
+            } catch (Exception e) {
+                log.warn("Invalid query for index");
+                log.error(Logging.stackTrace(e));
             }
         }
     }
@@ -177,8 +374,8 @@ public class Lucene extends Module implements MMBaseObserver {
                 if (indexerMap.containsKey(indexName)) {
                     log.warn("Index with name " + indexName + "already exists");
                 } else {
-                    boolean storeText = true;
-                    boolean mergeText = true;
+                    boolean storeText = false; // default: no text fields are stored in the index unless noted otherwise
+                    boolean mergeText = true; // default: all text fields have the "fulltext" alias unless noted otherwise
                     if (indexElement.hasAttribute("optimize")) {
                         String optimize = indexElement.getAttribute("optimize");
                         storeText = optimize.equals("none");
@@ -186,54 +383,21 @@ public class Lucene extends Module implements MMBaseObserver {
                     }
                     if (defaultIndex==null) defaultIndex = indexName;
                     Set allIndexedFieldsSet = new HashSet();
-                    Map buildersToIndex = new HashMap();
-                    NodeList builderElements = root.getElementsByTagName("builder");
-                    for (int j = 0; j < builderElements.getLength(); j++) {
-                        Element builderElement = (Element) builderElements.item(j);
-                        if (builderElement.hasAttribute("name")) {
-                            String builderName = builderElement.getAttribute("name");
-                            MMObjectBuilder builder = mmbase.getBuilder(builderName);
-                            if (builder != null) {
-                                Set builderSet = new HashSet();
-                                NodeList fieldElements = builderElement.getElementsByTagName("field");
-                                for (int k = 0 ; k < fieldElements.getLength(); k++) {
-                                    Element fieldElement = (Element) fieldElements.item(k);
-                                    if (fieldElement.hasAttribute("name")) {
-                                        String fieldName = fieldElement.getAttribute("name");
-                                        builderSet.add(fieldName);
-                                        allIndexedFieldsSet.add(fieldName);
-                                    } else {
-                                        log.warn("field tag has no 'name' attribute");
-                                    }
-                                }
-                                if (builderSet.size() > 0) {
-                                    Map builderProperties = new HashMap();
-                                    builderProperties.put("fieldset",builderSet);
-                                    buildersToIndex.put(builderName, builderProperties);
-                                    if (!readOnly) {
-                                        builder.addLocalObserver(this);
-                                        builder.addRemoteObserver(this);
-                                    }
-                                    if (log.isDebugEnabled()) {
-                                         log.debug("Configured builder "+builderName+" with field set:" + builderSet);
-                                    }
-                                } else {
-                                    log.warn("builder tag has no valid fields");
-                                }
-                            } else {
-                                log.warn("builder with name '" + builderName +"' does not exist.");
-                            }
-                        } else {
-                            log.warn("builder tag has no 'name' attribute");
-                        }
-                    }
-                    OptimizeBuilderConfig(buildersToIndex);
+                    Collection queries = new ArrayList();
+                    // constraints
+                    NodeList queryElements = root.getElementsByTagName("query");
+                    addToIndex(queryElements, queries, allIndexedFieldsSet, storeText, mergeText);
+                    // builder
+                    queryElements = root.getElementsByTagName("builder");
+                    addToIndex(queryElements, queries, allIndexedFieldsSet, storeText, mergeText);
+
+                    /** OptimizeBuilderConfig(buildersToIndex); **/
                     String thisIndex = fullIndexPath + java.io.File.separator + indexName;
-                    Indexer indexer = new Indexer(thisIndex,buildersToIndex,storeText,mergeText,mmbase);
+                    Indexer indexer = new Indexer(thisIndex,queries,mmbase);
                     log.service("Add lucene index with name " + indexName);
                     indexerMap.put(indexName,indexer);
                     String[]  allIndexedFields = (String[])allIndexedFieldsSet.toArray(new String[0]);
-                    Searcher searcher = new Searcher(thisIndex,allIndexedFields,mergeText,mmbase);
+                    Searcher searcher = new Searcher(thisIndex,allIndexedFields,mmbase);
                     searcherMap.put(indexName,searcher);
                 }
             }
@@ -294,7 +458,7 @@ public class Lucene extends Module implements MMBaseObserver {
         public void run() {
             log.debug("Start Lucene Scheduler");
             try {
-                Thread.sleep(INITIAL_WAIT_TIME);
+                Thread.sleep(initialWaitTime);
             } catch (InterruptedException ie) {
                 return;
             }
@@ -321,7 +485,7 @@ public class Lucene extends Module implements MMBaseObserver {
                         indexer.deleteIndex(assignment.number);
                     }
                 }
-           }
+            }
         }
 
         public void updateIndex(String number) {
