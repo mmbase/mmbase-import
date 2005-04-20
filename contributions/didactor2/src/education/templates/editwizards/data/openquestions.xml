@@ -6,11 +6,10 @@
 
     <action type="create">
        <object type="openquestions">
-          <relation destination="$origin" role="posrel" createdir="source"/>
           <field name="layout">0</field>
        </object>
     </action>
-    
+
 
     <action type="load">
         <relation destination="openanswers" role="related" />

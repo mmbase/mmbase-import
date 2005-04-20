@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="mcquestions">
+          <relation destination="$origin" role="posrel" createdir="source"/>
           <field name="layout">0</field>
           <field name="type">0</field>
        </object>
