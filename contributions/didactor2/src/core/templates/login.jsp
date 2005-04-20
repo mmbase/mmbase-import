@@ -40,6 +40,19 @@
          <mm:write referid="extraheader" escape="none" />
    </head>
 <body>
+   <script>
+      try
+      {<% //Prevent from loading /login.jsp in frame %>
+         if (top.frames.length > 0)
+         {
+            top.location.href = document.location.href;
+         }
+      }
+      catch(err)
+      {
+      }
+   </script>
+
    <div class="content">
         <div class="applicationMenubarCockpit" style="white-space: nowrap">
          <img src="<mm:treefile write="true" page="/gfx/spacer.gif" objectlist="$includePath" />" width="1" height="15" border="0" alt="" />
