@@ -1,12 +1,19 @@
-<%@ page errorPage="exception.jsp"
-%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
-%><%@ page import="org.w3c.dom.Document"
-%><%
+<%@ page errorPage="exception.jsp"%>
+<%@ include file="settings.jsp"%>
+<mm:locale language="<%=ewconfig.language%>">
+<mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname">
+<mm:log jspvar="log">
+<%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
+<%@ page import="org.w3c.dom.Document"%>
+
+
+
+<%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+     * @version  $Id: list.jsp,v 1.2 2005-04-20 20:57:00 azemskov Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -19,6 +26,7 @@ log.trace("list.jsp");
 
 Config.ListConfig listConfig = null; // stores the configuration specific for this list.
 Config.SubConfig    top = null;
+
 
 if (! ewconfig.subObjects.empty()) {
     top  = (Config.SubConfig) ewconfig.subObjects.peek();
@@ -52,6 +60,17 @@ if (! ewconfig.subObjects.empty()) {
         throw new WizardException("Popup without parent");
     }
 }
+
+//System.out.println(new Date() + " " + request.getParameter("metadata"));
+if(request.getParameter("metadata") == null)
+{
+   if(session.getAttribute("show_metadata_in_list") != null)
+   {//try to restore state of this list from session
+      listConfig = (Config.ListConfig) session.getAttribute("metalist_mode");
+   }
+}
+
+
 
 if (listConfig == null) {
     listConfig = configurator.createList(cloud);
@@ -191,8 +210,49 @@ NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
 
-for (int i=0; i < results.size(); i++) {
+
+String imageName = "";
+String sAltText = "";
+String sPathPrefix = "../../education/wizards/";
+String sURL = "";
+
+//We have to find the proper wizard to collect the URL for the returning from Metaeditor
+String[][] arrstrContentMetadataConfig = (String[][]) session.getAttribute("content_metadata_names");
+String sWizard = null;
+String sField  = null;
+for(int f = 0; f < arrstrContentMetadataConfig.length; f++)
+{
+   if(arrstrContentMetadataConfig[f][2].equals(manager.getName()))
+   {
+      sWizard = arrstrContentMetadataConfig[f][1];
+      sField  = arrstrContentMetadataConfig[f][3];
+   }
+}
+
+
+if((request.getParameter("metadata") != null) && (request.getParameter("metadata").equals("yes")) )
+{
+   session.setAttribute("show_metadata_in_list", "true");
+   session.setAttribute("metalist_url", request.getRequestURI() + "?wizard=" + sWizard + "&nodepath=" + manager.getName() + "&searchfields=" + sField + "&fields=" + sField + "&search=yes&orderby=" + sField);
+   session.setAttribute("metalist_mode", listConfig);
+}
+
+
+for (int i=0; i < results.size(); i++)
+{
     Node item = results.getNode(i);
+
+    if(session.getAttribute("show_metadata_in_list") != null)
+    {
+       %>
+          <mm:node number="<%= "" + item.getNumber()%>">
+             <%@include file="/education/wizards/whichimage.jsp"%>
+          </mm:node>
+       <%
+//       item.setValue("title", item.getValue("title") + " <a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' alt='" + sAltText + "'></a>");
+       sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' alt='" + sAltText + "'></a>";
+    }
+
     org.w3c.dom.Node obj;
     if (listConfig.multilevel) {
         obj = addObject(docel, item.getIntValue(listConfig.mainObjectName+".number"), i+1 + start,
@@ -202,7 +262,7 @@ for (int i=0; i < results.size(); i++) {
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldname = (String)listConfig.fieldList.get(j);
-        
+
         Field field = null;
         String value = "";
         if (listConfig.multilevel) {
@@ -222,14 +282,18 @@ for (int i=0; i < results.size(); i++) {
         } else {
           value = item.getStringValue("gui(" + fieldname + ")");
         }
-        addField(obj, field.getGUIName(), value, field.getGUIType());
-    }
+        addField(obj, field.getGUIName(), value , field.getGUIType());
 
+        if(session.getAttribute("show_metadata_in_list") != null)
+        {//If we are showing the metadata also, we have to add this column
+           addField(obj, "metadata", sURL,    field.getGUIType());
+        }
+    }
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
     }
-    Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
-    Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
+    Utils.setAttribute(obj, "mayedit",     "" + item.mayWrite());
+    Utils.setAttribute(obj, "maydelete",   "" + item.mayWrite());
 }
 
 

@@ -1,6 +1,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+
+<%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
+
 <%
    String imageName = "";
    String sAltText = "";
@@ -9,7 +12,7 @@
 <%
    if(session.getAttribute("education_topmenu_mode") == null)
    {//Default active element in education top menu
-      session.setAttribute("education_topmenu_mode", "educations");
+      session.setAttribute("education_topmenu_mode", "components");
    }
 %>
 
@@ -189,6 +192,71 @@
       </div>
    </di:hasrole>
 </mm:compare>
+
+
+<mm:compare referid="education_top_menu" value="content_metadata">
+   <% //----------------------- Metadata for components comes from here ----------------------- %>
+   <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>"><fmt:message key="educationMenuContentMetadata"/></a></nobr>
+   <br>
+   <div id='content_metadata_0' style='display: none'>
+      <%
+         String[][] arrstrContentMetadataConfig = new String[5][4];
+
+         arrstrContentMetadataConfig[0][0]  = cloud.getNodeManager("images").getGUIName();
+         arrstrContentMetadataConfig[1][0]  = cloud.getNodeManager("attachments").getGUIName();
+         arrstrContentMetadataConfig[2][0]  = cloud.getNodeManager("audiotapes").getGUIName();
+         arrstrContentMetadataConfig[3][0]  = cloud.getNodeManager("videotapes").getGUIName();
+         arrstrContentMetadataConfig[4][0]  = cloud.getNodeManager("urls").getGUIName();
+
+
+         arrstrContentMetadataConfig[0][1] = "image";
+         arrstrContentMetadataConfig[1][1] = "attachment";
+         arrstrContentMetadataConfig[2][1] = "audiotapes";
+         arrstrContentMetadataConfig[3][1] = "videotapes";
+         arrstrContentMetadataConfig[4][1] = "urls";
+
+
+         arrstrContentMetadataConfig[0][2] = "images";
+         arrstrContentMetadataConfig[1][2] = "attachments";
+         arrstrContentMetadataConfig[2][2] = "audiotapes";
+         arrstrContentMetadataConfig[3][2] = "videotapes";
+         arrstrContentMetadataConfig[4][2] = "urls";
+
+         arrstrContentMetadataConfig[0][3] = "title";
+         arrstrContentMetadataConfig[1][3] = "title";
+         arrstrContentMetadataConfig[2][3] = "title";
+         arrstrContentMetadataConfig[3][3] = "title";
+         arrstrContentMetadataConfig[4][3] = "name";
+
+
+         session.setAttribute("content_metadata_names", arrstrContentMetadataConfig);
+
+         for (int f = 0; f < arrstrContentMetadataConfig.length; f++)
+         {
+            %>
+               <table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                     <%
+                        if(f == arrstrContentMetadataConfig.length - 1)
+                        {
+                           %><td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td><%
+                        }
+                        else
+                        {
+                           %><td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td><%
+                        }
+                     %>
+                     <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes' title='Bewerk afbeeldingen' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
+                  </tr>
+               </table>
+            <%
+         }
+      %>
+   </div>
+</mm:compare>
+
 
 
 <mm:compare referid="education_top_menu" value="filemanagement">
@@ -415,7 +483,7 @@
                </mm:islessthan>
 
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=tests_&objectnumber=new' title='<fmt:message key="createNewTestDescription"/>' target="text"><fmt:message key="createNewTest"/></a></nobr></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=tests-origin&objectnumber=new' title='<fmt:message key="createNewTestDescription"/>' target="text"><fmt:message key="createNewTest"/></a></nobr></td>
          </tr>
       </table>
 
@@ -643,7 +711,7 @@
                                     <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                                  </mm:islessthan>
                                  <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                                 <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=learnblocks&objectnumber=new&origin=<mm:field name="number"/>' title="<fmt:message key="createNewLearnblockDescription"/>" target="text"><fmt:message key="createNewLearnblock"/></a></nobr></td>
+                                 <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<fmt:message key="createNewLearnblockDescription"/>" target="text"><fmt:message key="createNewLearnblock"/></a></nobr></td>
                               </tr>
                            </table>
 
