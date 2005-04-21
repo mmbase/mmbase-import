@@ -128,7 +128,7 @@
 <mm:compare referid="education_top_menu" value="components">
    <% //----------------------- Components come from here ----------------------- %>
    <di:hasrole role="systemadministrator">
-      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='<fmt:message key="editComponentsDescription"/>' target="_top"><fmt:message key="editComponents"/></nobr></a>
+      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/frame.jsp" objectlist="$includePath" />' title='<fmt:message key="editComponentsDescription"/>' target="text"><fmt:message key="editComponents"/></nobr></a>
       <br>
       <div id='components_0' style='display: none'>
       </div>
@@ -275,7 +275,7 @@
 <mm:compare referid="education_top_menu" value="competence">
    <% //----------------------- Competence comes from here ----------------------- %>
    <%// has to be only for admin I believe %>
-   <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />' title='' target="_top"><fmt:message key="competence"/></nobr></a>
+   <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href="#" title=""><fmt:message key="competence"/></nobr></a>
    <br>
    <div id='competence_0' style='display: none'>
       <%
