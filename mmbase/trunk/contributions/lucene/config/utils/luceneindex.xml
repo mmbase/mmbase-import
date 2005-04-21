@@ -3,6 +3,7 @@
 <luceneindex>
   <index>
     <query type="documents">
+      <constraint field="visible" value="1" />
       <field name="title" />
       <field name="subtitle" />
       <field name="intro" />
@@ -14,6 +15,7 @@
       <field name="documentnummer" />
     </query>
     <query path="cases,documents" element="cases">
+      <constraint field="cases.visible" value="1" />
       <field name="cases.title" />
       <field name="cases.subtitle" />
       <field name="cases.intro" />
