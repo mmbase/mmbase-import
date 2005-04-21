@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<toc label="MMBase documentation" topic="index.html">
+  <topic label="Security" href="../org.mmbase.documentation.system.configuration.security">
+    <topic label="Context security" href="../org.mmbase.documentation.system.configuration.security.cloud/index.html"/>
+    <topic label="Cloud Context security" href="../org.mmbase.documentation.system.configuration.security.cloud/index.html"/>
+  </topic>
+  <topic label="Storage" href="../org.mmbase.documentation.system.configuration.storage/index.html">
+    <topic label="implementation" href="../org.mmbase.documentation.system.core.storage/index.html"/>
+  </topic>
+  <topic label="Configuration" href="../org.mmbase.documentation.system.configuration/index.html"/>
+  <topic label="MMBase core" href="core.html">
+    <topic label="extending" href="../org.mmbase.documentation.system.core.extending/index.html"/>
+    <topic label="Extending builder" href="../org.mmbase.documentation.system.core.extending.builder/index.html"/>
+    <topic label="Extending relations" href="../org.mmbase.documentation.system.core.extending.relations/index.html"/>
+    <topic label="Query framework" href="../org.mmbase.documentation.system.core.query/index.html"/>
+  </topic>
+  <topic label="Remoting" href="remoting">
+    <topic label="Dove" href="../org.mmbase.documentation.system.core.remoting.dove/index.html"/>
+    <topic label="Rmmci" href="../org.mmbase.documentation.system.core.remoting.rmmci/index.html"/>
+    <topic label="Xml importer" href="../org.mmbase.documentation.system.core.remoting.xmlimporter/index.html"/>
+  </topic>
+  <topic label="Deploy" href="../org.mmbase.documentation.system.deploy.tomcat/index.html"/>
+  <topic label="initialisation" href="../org.mmbase.documentation.system.initialisation/index.html"/>
+</toc>
