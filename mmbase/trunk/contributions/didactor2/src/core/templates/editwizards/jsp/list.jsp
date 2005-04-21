@@ -13,7 +13,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.2 2005-04-20 20:57:00 azemskov Exp $
+     * @version  $Id: list.jsp,v 1.3 2005-04-21 14:33:13 azemskov Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -61,9 +61,10 @@ if (! ewconfig.subObjects.empty()) {
     }
 }
 
-//System.out.println(new Date() + " " + request.getParameter("metadata"));
 if(request.getParameter("metadata") == null)
-{
+{/*if we don't begin a new entity
+  (like http://localhost:8080/editwizards/jsp/list.jsp?wizard=image&nodepath=images&searchfields=title&fields=title&search=yes&orderby=title&metadata=yes,
+   we have to check the previous state in session*/
    if(session.getAttribute("show_metadata_in_list") != null)
    {//try to restore state of this list from session
       listConfig = (Config.ListConfig) session.getAttribute("metalist_mode");
@@ -210,28 +211,24 @@ NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
 
-
 String imageName = "";
 String sAltText = "";
 String sPathPrefix = "../../education/wizards/";
 String sURL = "";
-
-//We have to find the proper wizard to collect the URL for the returning from Metaeditor
-String[][] arrstrContentMetadataConfig = (String[][]) session.getAttribute("content_metadata_names");
-String sWizard = null;
-String sField  = null;
-for(int f = 0; f < arrstrContentMetadataConfig.length; f++)
-{
-   if(arrstrContentMetadataConfig[f][2].equals(manager.getName()))
-   {
-      sWizard = arrstrContentMetadataConfig[f][1];
-      sField  = arrstrContentMetadataConfig[f][3];
-   }
-}
-
-
 if((request.getParameter("metadata") != null) && (request.getParameter("metadata").equals("yes")) )
 {
+   //We have to find the proper wizard to make the URL for the returning from Metaeditor
+   String[][] arrstrContentMetadataConfig = (String[][]) session.getAttribute("content_metadata_names");
+   String sWizard = null;
+   String sField  = null;
+   for(int f = 0; f < arrstrContentMetadataConfig.length; f++)
+   {
+      if(arrstrContentMetadataConfig[f][2].equals(manager.getName()))
+      {
+         sWizard = arrstrContentMetadataConfig[f][1];
+         sField  = arrstrContentMetadataConfig[f][3];
+      }
+   }
    session.setAttribute("show_metadata_in_list", "true");
    session.setAttribute("metalist_url", request.getRequestURI() + "?wizard=" + sWizard + "&nodepath=" + manager.getName() + "&searchfields=" + sField + "&fields=" + sField + "&search=yes&orderby=" + sField);
    session.setAttribute("metalist_mode", listConfig);
