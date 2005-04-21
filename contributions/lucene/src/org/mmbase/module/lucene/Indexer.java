@@ -29,6 +29,7 @@ import org.textmining.text.extraction.WordExtractor;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.HugeNodeListIterator;
 import org.mmbase.module.lucene.query.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -45,7 +46,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.5 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: Indexer.java,v 1.6 2005-04-21 18:16:38 pierre Exp $
  **/
 public class Indexer {
 
@@ -140,56 +141,26 @@ public class Indexer {
     }
 
     /**
-     * Runs a query for the given cursor, an returns the nodes resultering from the call.
-     * Each call a maximum of 50 results are returned. The offset in the query is deternmined by teh cursor.
-     * Each call to the method updates the cursor offset, so repeatedly calling the method with the
-     * same cursor instance iterates through the entire qyery.<br />
-     * Note: The method does not take into account any updates that will change the result of running the query,
-     * so it is possible that some nodes are not indexed, or indexed multiple times, if changes are made to
-     * the database that change the query result.
+     * Runs a query for the given cursor, an returns a NodeIterator to run over the nodes.
+     * This implementation uses a HugeNodeListIterator.
      * @param cursor the cursor with query and offset information
      * @param limited if <code>true</code>, the query should be limited to the node where the cursor is focused on
-     * @return the query result as a list of Nodes
+     * @return the query result as a NodeIterator object
      * @throws SearchQueryException is the query to create the index out of failed
      */
-    protected NodeList getNodes(IndexCursor cursor, boolean limited) throws SearchQueryException {
-        if (cursor.offset == cursor.END_OF_QUERY) return null;
-
+    protected NodeIterator getNodeIterator(IndexCursor cursor, boolean limited) throws SearchQueryException {
         Query query = (Query)cursor.query.clone();
         String numberFieldName = "number";
         if (cursor.isMultiLevel) {
             numberFieldName = cursor.elementManager.getName()+".number";
-            StepField numberField = query.createStepField(numberFieldName);
-            query.addSortOrder(numberField,SortOrder.ORDER_ASCENDING);
         }
         if (limited) {
             Constraint constraint = Queries.createConstraint(query, numberFieldName, FieldCompareConstraint.EQUAL, new Integer(cursor.nodeNumber));
             Queries.addConstraint(query,constraint);
         }
-        query.setOffset(cursor.offset);
-        query.setMaxNumber(cursor.maxNodesInQuery);
-
-        if (log.isDebugEnabled()) {
-            log.debug("get nodes:" + query);
-        }
-
-        NodeList nodes;
-        if (cursor.isMultiLevel) {
-            nodes = cloud.getList(query);
-        } else {
-            nodes = cursor.elementManager.getList((NodeQuery)query);
-        }
-        if (nodes != null && nodes.size() > 0) {
-            if (nodes.size() < cursor.maxNodesInQuery) {
-                cursor.offset = cursor.END_OF_QUERY;
-            } else {
-                cursor.offset = cursor.offset + nodes.size();
-            }
-            return nodes;
-        } else {
-            cursor.offset = cursor.END_OF_QUERY;
-            return null;
-        }
+        StepField numberField = query.createStepField(numberFieldName);
+        query.addSortOrder(numberField,SortOrder.ORDER_ASCENDING);
+        return new HugeNodeListIterator(query, cursor.maxNodesInQuery);
     }
 
     /**
@@ -203,26 +174,19 @@ public class Indexer {
         if (log.isDebugEnabled()) {
             log.debug("index builder "+cursor.elementManager.getName());
         }
-        NodeList nodes = getNodes(cursor, limited);
-        while (nodes != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("index "+nodes.size()+" nodes.");
+        for (NodeIterator i = getNodeIterator(cursor,limited); i.hasNext();) {
+            Node node = i.nextNode();
+            int nodeNumber = -1;
+            if (cursor.isMultiLevel) {
+                nodeNumber = node.getIntValue(cursor.elementManager.getName() +".number");
+            } else {
+                nodeNumber = node.getNumber();
             }
-            for (NodeIterator i = nodes.nodeIterator(); i.hasNext();) {
-                Node node = i.nextNode();
-                int nodeNumber = -1;
-                if (cursor.isMultiLevel) {
-                    nodeNumber = node.getIntValue(cursor.elementManager.getName() +".number");
-                } else {
-                    nodeNumber = node.getNumber();
-                }
-                if (nodeNumber != cursor.nodeNumber) {
-                    indexData(cursor);
-                    cursor.init(nodeNumber);
-                }
-                storeData(node, cursor);
+            if (nodeNumber != cursor.nodeNumber) {
+                indexData(cursor);
+                cursor.init(nodeNumber);
             }
-            nodes = getNodes(cursor, limited);
+            storeData(node, cursor);
         }
         indexData(cursor);
     }
@@ -414,11 +378,6 @@ public class Indexer {
      */
     class IndexCursor extends IndexDefinition {
 
-        /**
-         * Value for the cursor offset to indicate the end of the query.
-         */
-        public static final int END_OF_QUERY = -1;
-
        // map with data to index for each field
         private Map data = new HashMap();
 
@@ -433,11 +392,6 @@ public class Indexer {
          * Current number of the main element node to index
          */
         int nodeNumber = -1;
-
-        /**
-         * Current offset in the query
-         */
-        int offset = 0;
 
         /**
          * Current writer into the index
