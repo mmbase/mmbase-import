@@ -21,51 +21,53 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.queryParser.*;
 
 import org.mmbase.util.*;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.4 2005-04-20 14:32:12 pierre Exp $
+ * @version $Id: Searcher.java,v 1.5 2005-04-21 14:28:43 pierre Exp $
  **/
 public class Searcher {
 
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
 
     private String index;
-    private MMBase mmbase;
     private String[] allIndexedFields;
 
-    Searcher(String index, String[] allIndexedFields, MMBase mmbase) {
+    Searcher(String index, String[] allIndexedFields) {
         this.index = index;
         this.allIndexedFields = allIndexedFields;
-        this.mmbase = mmbase;
     }
 
-    public List search(String value) {
-        return search(value, null, null, new StopAnalyzer(), null, allIndexedFields, 0, -1);
+    public List search(Cloud cloud, String value) {
+        return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, 0, -1);
     }
 
-    public List search(String value, int offset, int max) {
-        return search(value, null, null, new StopAnalyzer(), null, allIndexedFields, offset, max);
+    public List search(Cloud cloud, String value, int offset, int max) {
+        return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, offset, max);
     }
 
-    public List search(String value, Query extraQuery, int offset, int max) {
-        return search(value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+    public List search(Cloud cloud, String value, Query extraQuery, int offset, int max) {
+        return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
 
-    public List search(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
+    public List search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
         List list = new LinkedList();
         if (value!=null && !value.equals("")) {
             try {
                 Hits hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
                 if (hits != null) {
-                    MMObjectBuilder root = mmbase.getRootBuilder();
                     for (int i = offset; (i < offset+max || max < 0) && i < hits.length(); i++) {
-                        MMObjectNode node = root.getNode(hits.doc(i).get("number"));
-                        if (node != null) {
+                        String hit = hits.doc(i).get("number");
+                        // If you may not read a node, it is not returned.
+                        if (cloud.mayRead(hit)) {
+                            Node node = cloud.getNode(hit);
                             list.add(node);
+                        } else {
+                            // what to do if you may not read a node?
                         }
                     }
                 }
@@ -76,15 +78,15 @@ public class Searcher {
         return list;
     }
 
-    public int searchSize(String value) {
-        return searchSize(value, null, null, new StopAnalyzer(), null, allIndexedFields);
+    public int searchSize(Cloud cloud, String value) {
+        return searchSize(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields);
     }
 
-    public int searchSize(String value, Query extraQuery) {
-        return searchSize(value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields);
+    public int searchSize(Cloud cloud, String value, Query extraQuery) {
+        return searchSize(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields);
     }
 
-    public int searchSize(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) {
+    public int searchSize(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) {
         if (value!=null && !value.equals("")) {
             try {
                 Hits hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
@@ -112,7 +114,7 @@ public class Searcher {
             booleanQuery.add(extraQuery, true, false);
             query = booleanQuery;
         }
-log.info("Final query:"+query);
+        log.debug("Final query:"+query);
         return searcher.search(query,filter,sort);
     }
 
