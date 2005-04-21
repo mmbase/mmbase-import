@@ -3,40 +3,86 @@
      xmlns:jsp="http://java.sun.com/JSP/Page" 
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
      >
+<!-- 
+  Shows:
+  <div class="tree on" id="node_[]">
+     <a>link to node</a>
+     <ul>
+       <li> [+/-] new </li>
+       <li> 
+         <div class="tree off" id="node_[1]">
+           <a>index First subchapter</a>
+           <ul>
+             <li> [+/-] new </li>
+           </ul>
+         </div>
+       </li>
+       <li> 
+         <div class="tree off" id="node_[2]" class="off">
+           <a>index Second subchapter</a>
+           <ul>
+             <li> [+/-] new </li>
+           </ul>
+         </div>
+       </li>
+        .....
+     </ul>
+  </div>
+
+-->        
   <jsp:output omit-xml-declaration="true" />
   
   <mm:param name="org.mmbase.xml-mode" value="kupu" />
   <mm:import externid="parent" />
   <mm:import externid="node">pol_default</mm:import>
   <mm:node id="n" referid="node">
-    <ul id="node_${n}">
-      <mm:relatednodes type="segments" id="segment" role="index" orderby="index.pos" searchdir="destination">
-        <li id="node_${segment}_li">
-          <a href="javascript: loadNode(${segment});"><mm:field name="index" /> <mm:nodeinfo type="gui" /></a>
-          <mm:relatednodescontainer type="segments" role="index" searchdirs="destination">
-            <div id="node_${segment}_related" class="off">
-              <ul id="node_${segment}">
+    <div class="tree on" id="node_${n}">
+      <a href="javascript: loadNode(${n});"><mm:nodeinfo type="gui" /></a>
+      <ul>
+        <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
+          <mm:sortorder field="pos" />       
+          <li>
+            <mm:size>
+              <mm:isgreaterthan value="0">
+                <a class="turnoff" href="javascript: unloadRelated(${n});">
+                  <img class="icon" src="icons/map-open.gif" />
+                </a>
+              </mm:isgreaterthan>
+            </mm:size>
+            <a class="create" href="javascript: createSubNode(${n});">+</a>
+
+        </li>
+        <mm:listrelations id="rel">
+          <li> 
+            <mm:relatednode id="segment">
+              <div id="node_${segment}" class="tree off">
+                <a href="javascript: loadNode(${segment});"><mm:nodeinfo type="gui" /></a>
+              <ul>
                 <li>
-                  <mm:size>
-                    <mm:isgreaterthan value="0">
-                      <a class="turnon"  href="javascript: loadRelated(${segment});">                    
-                        + <img class="icon" src="icons/map.gif" />
-                      </a>
-                      <a class="turnoff" href="javascript: unloadRelated(${segment});">
-                        - <img class="icon" src="icons/map-open.gif" />
-                      </a>
-                    </mm:isgreaterthan>
-                  </mm:size>
-                  <a class="create" href="javascript: createSubNode(${segment});">Nieuw</a>
+                  <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
+                    <mm:sortorder field="pos" />
+                    <mm:size>
+                      <mm:isgreaterthan value="0">
+                        <a class="turnon"  href="javascript: loadRelated(${segment});">                    
+                          <img class="icon" src="icons/map.gif" />
+                        </a>
+                      </mm:isgreaterthan>
+                      <mm:compare value="0">
+                        <a class="create" href="javascript: createSubNode(${segment});">+</a>
+                      </mm:compare>
+                    </mm:size>
+                  </mm:listrelationscontainer>
                 </li>
               </ul>
-            </div>
-          </mm:relatednodescontainer>
-        </li>          
-      </mm:relatednodes>
-    </ul>
+              </div>
+            </mm:relatednode>
+          </li>
+        </mm:listrelations>
+        </mm:listrelationscontainer>
+      </ul>
+    <mm:present referid="parent">
+      <p class="debug"><a class="related" href="javascript: reloadTree();">reload</a></p>
+    </mm:present>    
+    </div>
   </mm:node>
-  <mm:present referid="parent">
-    <p class="debug"><a class="related" href="javascript: reloadTree();">reload</a></p>
-  </mm:present>
 </mm:cloud>

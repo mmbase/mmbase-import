@@ -21,7 +21,7 @@
           <form>
             <table>
               <mm:fieldlist fields="title,subtitle,intro">
-                <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+                <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo  options="noempty" type="input" /></td></tr>
               </mm:fieldlist>
             </table>
           </form>
