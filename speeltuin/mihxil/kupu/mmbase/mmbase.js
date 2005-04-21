@@ -64,6 +64,8 @@ function loadNode(nodeNumber) {
         //nodeBodyXml = Sarissa.serialize(request.responseXML);
         nodeBodyXml = request.responseXML.xml;
     }
+    alert("received" + nodeBodyXml);
+    
 
     kupu.setHTMLBody(nodeBodyXml);
     currentNode = nodeNumber;
@@ -116,7 +118,7 @@ function reloadTree() {
     //var tree =  Sarissa.serialize(request.responseXML);
     var tree = request.responseXML.xml;
     document.getElementById('tree').innerHTML = tree;
-    alert(" " + uncollapsedNodes.length + " " + uncollapsedNodes);
+    // alert(" " + uncollapsedNodes.length + " " + uncollapsedNodes);
 }
 
 /**
