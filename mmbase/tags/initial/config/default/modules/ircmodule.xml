@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!-- DOCTYPE stats PUBLIC "//MMBase - stats module//" "http://www.mmbase.org/dtd/stats.dtd" -->
+<ircmodule>
+	<ircServer>irc.xs4all.nl</ircServer>
+	<nickname>mmbase2</nickname>
+	<channel>mmbase2</channel>
+	<refreshUrl>www.mmbase.org:8080</refrshUrl>
+	<refreshTime>4</refreshTime>
+</ircmodule>

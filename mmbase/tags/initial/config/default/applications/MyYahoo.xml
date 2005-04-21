@@ -1,0 +1,45 @@
+<application name="MyYahoo" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+	  <builder maintainer="mmbase.org" version="12">pools</builder>
+	  <builder maintainer="mmbase.org" version="11">urls</builder>
+	  <builder maintainer="mmbase.org" version="12">jumpers</builder>
+	</neededbuilderlist>	
+
+	<neededreldeflist>
+	  <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	  <relation from="pools" to="pools" type="related" />
+	  <relation from="pools" to="urls" type="related" />
+	  <relation from="pools" to="jumpers" type="related" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+	  <datasource builder="pools" path="MyYahoo/pools.xml" />
+	  <datasource builder="urls" path="MyYahoo/urls.xml" />
+	  <datasource builder="jumpers" path="MyYahoo/jumpers.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+	  <relationsource builder="insrel" path="MyYahoo/insrel.xml" />	
+	</relationsourcelist>
+
+	<contextsourcelist>
+		<contextsource path="MyYahoo/backup.xml" type="depth" goal="backup"/>
+	</contextsourcelist>
+
+
+	<description>
+		MyYahoo is a small application to show you how easy it is to create 
+		a program something like the topic/url/search kind of interface first
+		shown on yahoo.
+	</description>
+
+	<install-notice>
+		This will be dispayed when the application is installed using the
+		install tool. In this case it will tell you to do /yahoo to see the
+		MyYahoo application in action.
+	</install-notice>
+</application>

@@ -1,0 +1,34 @@
+<!--
+     mmci.dtd
+       - DTD for the MMCI interface definition for the remote generator
+-->
+<!ELEMENT mmci (class*) >
+
+<!ELEMENT class ( method*) >
+<!ATTLIST class implements CDATA #REQUIRED >
+<!ATTLIST class name ID #REQUIRED >
+<!ATTLIST class shortname NMTOKEN #REQUIRED >
+
+<!ELEMENT method (input, output) >
+<!ATTLIST method name NMTOKEN #REQUIRED >
+
+<!ELEMENT input ( array | classReference | primitiveclass | sunclass )* >
+
+<!ELEMENT output ( array | classReference | primitiveclass | sunclass )* >
+
+<!ELEMENT array EMPTY >
+<!ATTLIST array classname NMTOKEN #IMPLIED >
+<!ATTLIST array name ( byte | java.lang.Object ) #REQUIRED >
+<!ATTLIST array shortname ( Object | byte ) #REQUIRED >
+
+<!ELEMENT classReference EMPTY >
+<!ATTLIST classReference name NMTOKEN #REQUIRED >
+
+<!ELEMENT primitiveclass EMPTY >
+<!ATTLIST primitiveclass classname ( java.lang.Boolean | java.lang.Double | java.lang.Float | java.lang.Integer | java.lang.Long | java.lang.Void ) #REQUIRED >
+<!ATTLIST primitiveclass name ( boolean | double | float | int | long | void ) #REQUIRED >
+<!ATTLIST primitiveclass shortname ( boolean | double | float | int | long | void ) #REQUIRED >
+
+<!ELEMENT sunclass EMPTY >
+<!ATTLIST sunclass name NMTOKEN #REQUIRED >
+

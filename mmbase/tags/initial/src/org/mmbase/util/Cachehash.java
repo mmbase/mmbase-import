@@ -1,0 +1,50 @@
+/*
+
+VPRO (C)
+
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
+
+*/
+package org.mmbase.util;
+
+import java.util.*;
+
+/**
+ * CacheHash, a hashtable that keeps info on max size, type to be able to
+ * let the parent control it better for cache/writeback caches
+ *
+ * @author Daniel Ockeloen
+ */
+public class Cachehash extends Hashtable {
+    	public static final int TEMP 		= 0;
+    	public static final int SAVE 		= 1;
+    	public static final int DELAYEDSAVE 	= 2;
+	private Object obj;
+	private int type;
+	private int max;
+
+	public Cachehash(int type, int max) {
+		this.type=type;	
+		this.max=max;	
+	}
+
+	public Cachehash(int type, int max, Hashtable newHash) {
+		Object O;
+		this.type=type;	
+		this.max=max;	
+		for (Enumeration t=newHash.keys();t.hasMoreElements();) {
+			O=t.nextElement();
+			put(O,newHash.get(O));
+		}
+	}
+		
+	public int getType() {
+		return(type);
+	}
+
+	public int getMax() {
+		return(max);
+	}
+}

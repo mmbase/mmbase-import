@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE mmbaseroot PUBLIC "//MMBase - mmbaseroot module//" "http://www.mmbase.org/dtd/mmbaseroot.dtd">
+<!--
+  MMBase core propertie file, defines most of the mmbase wide properties
+  See install docs on how to set these. important ones are the first 4 they
+  need to be set to be able to run mmbase (also see jdbc.xml).
+
+  Good luck with MMbase.
+-->
+<MMBASEROOT>
+
+  <!--
+	<DATABASE> defines which database we are using as defined in your config 
+	databases directory (default : org/mmbase/config/default/databases/). It
+	is defined by a xml file for example sql92.xml or mysql.xml. This should 
+	be set in combo with the jdbc.xml files (where you define the database 
+	server and how to connect to it.
+
+	sql92 for default SQL92 database (normally not used)
+	mysql for MySQL (www.mysql.com)
+	informix for Informix Universal Server (www.informix.com)
+
+	** remark : more database are supported or are easy to support, check
+	            www.mmbase.org's howto's on this we will complete this list
+		    as soon as possble **
+
+  -->
+  <DATABASE>mysql</DATABASE>
+
+  <!-- 
+  	<BASENAME> You can have multiple mmbase systems inside your database 
+	if you want this can be very handy when testing of for running multiple 
+	setups inside one database its added as a preset to all your table names 
+	like : BASENAME=test will result in table names like test_object and 
+	test_urls.
+  -->
+  <BASENAME>install</BASENAME>
+
+  <!-- 
+	<MACHINENAME> defines the name that is used in the mmbase cluster, 
+	it is used for the mmservers objects. Make sure that this is different 
+	for each node in your cluster. This is not the machines dns name 
+	(as defined by host as name or ip number).
+  -->
+  <MACHINENAME>UE450</MACHINENAME>
+
+
+  <!-- 
+	<HOST> the host or ip number of the machine this mmbase node is 
+	running on. Its important that this name is set correctly because its 
+	used for communication between mmbase nodes and external devices 
+	(xml or jini based).
+  -->
+  <HOST>194.109.206.6</HOST>
+
+
+  <!-- 
+	<LANGUAGE> defines the used language in the gui when possible, 
+	it is defined with the domain postfix like uk, nl, us etc etc these are
+	used in MMLANGUAGE.properties, *.def files (example urls.def).
+  -->
+  <LANGUAGE>us</LANGUAGE>
+
+
+  <!--
+	<MULTICASTHOST> mmbase nodes in a cluster use multicast to talk to 
+	eachother this defines what 'channel' we are talking to its now set 
+	to the default local network so unless you know what you are doing 
+	leave it to ALL-SYSTEMS.MCAST.NET.
+  -->
+  <MULTICASTHOST>ALL-SYSTEMS.MCAST.NET</MULTICASTHOST>
+
+  <!--
+	<MULTICASTPORT> on what port does this multicast talking between nodes 
+	take place, This can be set to any port but check if something else on 
+	your network is allready using multicast when you have problems.
+  -->
+  <MULTICASTPORT>16042</MULTICASTPORT>
+
+  <!--
+	<DTDBASE> defines the homebase for the DTD's used by the objects 
+	(urls, cdtracks, images etc etc). Normally this is set to 
+	www.mmbase.org but you can aim it to your own system if you defined 
+	extra objects yourself. Its not used at the moment for anything vital.
+  -->
+  <DTDBASE>http://www.mmbase.org</DTDBASE>
+
+  <!--
+	<AUTHTYPE> defines what authorisation type is used, This is a plugin 
+	system at the moment we only support 2 types :
+
+	none (only perform name/password checks based on accounts.properties)
+
+	basic (use the default authorisation system, based on groups and 
+	relations see the install/example docs how to enable this DON'T 
+	set it before creating the needed tables/objects as defined in these docs).
+  -->
+  <AUTHTYPE>none</AUTHTYPE>
+
+</MMBASEROOT>
+

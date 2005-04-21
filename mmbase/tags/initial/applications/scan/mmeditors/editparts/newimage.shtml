@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#FF0000" VLINK="#551A8B" ALINK="#FF0000">
+<PROCESSOR MMEDIT>
+<CENTER>
+<SECURE>
+
+<SCRIPT LANGUAGE = "JavaScript">
+<!--
+function jumpPage(form) {
+	i = form.SelectMenu.options[form.SelectMenu.selectedIndex];
+	location.href = "/mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3+"+i.value;
+}
+// -->
+</SCRIPT>
+<FORM>
+<BR>
+Selecteer apparaat
+<BR>
+
+<select NAME="SelectMenu" onChange="jumpPage(this.form)">
+<IF $PARAM4=N>
+<option value="$PARAM4">$PARAM4
+</IF>
+<IF $MOD-INFO-USER-NAME^==daniel>
+</IF>
+<option value="upload">upload
+<option value="scanner1">scanner1
+<option value="camera1">camera1
+<option value="pccard1">pccard1
+<option value="pccard2">pccard2
+</select>
+</FORM>
+<HR>
+<IF $PARAM4=N>
+<INCLUDE /mmeditors/editparts/imgdevice-$PARAM4.shtml>
+<ELSE>
+<INCLUDE /mmeditors/editparts/imgdevice-upload.shtml>
+</IF>
+</BODY>
+</HTML>

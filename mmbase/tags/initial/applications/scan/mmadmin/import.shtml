@@ -1,0 +1,73 @@
+<PROCESSOR MMBASE>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="beeld/bg1.jpg" TEXT="#FFFFFF" BGCOLOR="#fffffe" LINK="#000000" ALINK="#ffffff" VLINK="#333333"><CENTER>
+<BR>
+<BR>
+<BR>
+<PART /mmadmin/nav.shtml>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>MMEdit import tool</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>&nbsp;</B>
+	</TD>
+</TR>
+<FORM ACTION="import.shtml" METHOD="POST">
+<TR>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			Import file (eg '/tmp/test' .xml will be loaded)
+		</TD>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			<INPUT NAME="PRC-VAR-importdir" SIZE="30" VALUE="/tmp/test">
+		</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			Import type	
+		</TD>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			<SELECT INPUT NAME="PRC-VAR-importtype">
+			<OPTION VALUE="XML">XML (mmbase-dtd's)
+			<OPTION VALUE="VPRO">VPRO-Import
+			<OPTION VALUE="TAB">Tab-Delim.
+			</SELECT>
+		</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			Options		
+		</TD>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			<INPUT TYPE="checkbox" NAME="ids"> include id's<BR>
+			<INPUT TYPE="checkbox" NAME="merge"> merge<BR>
+			<BR>
+		</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			All options filled in then submit
+		</TD>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			<INPUT TYPE="SUBMIT" VALUE="IMPORT">
+		</TD>
+</TR>
+		<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+		<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMIMPORT">
+		<INPUT TYPE="hidden" NAME="PRC-CMD-IMPORTXML">
+
+	</FORM>
+</TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- DOCTYPE sendmail PUBLIC "//MMBase - linkchecker module//" "http://www.mmbase.org/dtd/linkchecker.dtd" -->
+<!-- 	This module sends all incorrect urls to a certain person.
+		Make sure that you enabled the sendmail module and that you
+		have specified the mailhost in sendmail.properties. -->
+
+
+<linkchecker>
+	<!-- Who is the sender of the mail? -->
+	<from>info@mmbase.org</from>
+
+	<!-- To who do you want to send the list of incorrect urls? -->
+	<to>rob@mmbase.org</to>
+</linkchecker>
+
+
+
+

@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!-- DOCTYPE mmlangauge PUBLIC "//MMBase - mmlanguage module//" "http://www.mmbase.org/dtd/mmlanguage.dtd" -->
+<!--
+-->
+<MMLANGUAGE>
+
+<!-- nl, dutch -->
+<nl_other_editors>Andere Editors</nl_other_editors>
+<nl_search>Zoeken</nl_search>
+<nl_ok>Ok</nl_ok>
+<nl_new>Nieuw</nl_new>
+<nl_fields>Velden</nl_fields>
+<nl_relations>Relaties</nl_relations>
+<nl_remove>Verwijder</nl_remove>
+<nl_display>Weergave</nl_display>
+<nl_to>tot</nl_to>
+<nl_of_total>van totaal</nl_of_total>
+<nl_back>terug</nl_back>
+<nl_yes>Ja</nl_yes>
+<nl_no>Nee</nl_no>
+<nl_remove_object>Object Verwijderen</nl_remove_object>
+<nl_change_field>Verander Veld</nl_change_field>
+<nl_go_to>Ga Naar</nl_go_to>
+<nl_save_changes>Veranderingen Bewaren</nl_save_changes>
+<nl_do_not_save_changes>Veranderingen Niet Bewaren</nl_do_not_save_changes>
+<nl_create_relation>Relatie Aanmaken</nl_create_relation>
+<nl_remove_relation>Relatie Verwijderen</nl_remove_relation>
+<nl_do_not_create_relation>Relatie Niet Aanmaken</nl_do_not_create_relation>
+<nl_age>Leeftijd</nl_age>
+<nl_none>Geen</nl_none>
+<nl_results_found>resultaten gevonden</nl_results_found>
+
+<!-- us, english -->
+<us_other_editors>Other Editors</us_other_editors>
+<us_search>Search</us_search>
+<us_ok>Oke</us_ok>
+<us_new>New</us_new>
+<us_fields>Fields</us_fields>
+<us_relations>Relations</us_relations>
+<us_remove>Remove</us_remove>
+<us_display>Display</us_display>
+<us_to>to</us_to>
+<us_of_total>of total</us_of_total>
+<us_back>Back</us_back>
+<us_yes>Yes</us_yes>
+<us_no>No</us_no>
+<us_remove_object>Remove Object</us_remove_object>
+<us_change_field>Change Field</us_change_field>
+<us_go_to>Go To</us_go_to>
+<us_save_changes>Save Changes</us_save_changes>
+<us_do_not_save_changes>Don't Save Changes</us_do_not_save_changes>
+<us_create_relation>Create Relation</us_create_relation>
+<us_remove_relation>Remove Relation</us_remove_relation>
+<us_do_not_create_relation>Don't Create Relation</us_do_not_create_relation>
+<us_age>Age</us_age>
+<us_none>No</us_none>
+<us_results_found>results found</us_results_found>
+
+<!-- fr, French -->
+<fr_other_editors>D'autres e'diteurs</fr_other_editors>
+<fr_search>recherche</fr_search>
+<fr_ok>Ok</fr_ok>
+<fr_new>Nouveau</fr_new>
+<fr_fields>Zones</fr_fields>
+<fr_relations>Relations</fr_relations>
+<fr_remove>Retirent</fr_remove>
+<fr_display>Affichange</fr_display>
+<fr_to>to</fr_to>
+<fr_of_total>de total</fr_of_total>
+<fr_back>Dos</fr_back>
+<fr_yes>Qui</fr_yes>
+<fr_no>Non</fr_no>
+<fr_remove_object>Retirent Objets</fr_remove_object>
+<fr_change_field>changez la zone</fr_change_field>
+<fr_go_to>allez</fr_go_to>
+<fr_save_changes>l'économiser change</fr_save_changes>
+<fr_do_not_save_changes>Ne sauvegardez pas les changements</fr_do_not_save_changes>
+<fr_create_relation>Créez la relation</fr_create_relation>
+<fr_remove_relation>Enlevez la relation</fr_remove_relation>
+<fr_do_not_create_relation>Ne créez pas la relation</fr_do_not_create_relation>
+<fr_age>âge</fr_age>
+<fr_none>Aucun</fr_none>
+<fr_results_found>results found</fr_results_found>
+
+</MMLANGUAGE>
