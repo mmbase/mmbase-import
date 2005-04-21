@@ -17,6 +17,8 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Encode;
 import org.mmbase.util.transformers.Sql;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A TypeHandler for strings, textareas and text-input.
@@ -25,10 +27,12 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.37 2005-04-19 12:39:57 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.38 2005-04-21 12:01:11 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
+
+private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
 
     /**
      * Constructor for StringHandler.
@@ -83,7 +87,7 @@ public class StringHandler extends AbstractTypeHandler {
                 }
             } else { // not 'owner'
 
-                if (guiType.equals("field")) {
+                if (guiType.equals("field") || guiType.equals("html") || field.getType() == Field.TYPE_XML) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
@@ -91,9 +95,16 @@ public class StringHandler extends AbstractTypeHandler {
                         buffer.append(" name=\"");
                         buffer.append(prefix(field.getName()));
                         buffer.append("\">");
+                        String value = "";
                         if (node != null) {
-                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                            value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
                         }
+                        if (value.equals("")) {
+                            if (tag.getOptions().indexOf("noempty") > -1) {
+                                value = " ";
+                            }
+                        }
+                        buffer.append(value);
                         buffer.append("</textarea>");
                     } else {
                         buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
@@ -101,9 +112,16 @@ public class StringHandler extends AbstractTypeHandler {
                         buffer.append(" name=\"");
                         buffer.append(prefix(field.getName()));
                         buffer.append("\">");
+                        String value = "";
                         if (node != null) {
-                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                            value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
                         }
+                        if (value.equals("")) {
+                            if (tag.getOptions().indexOf("noempty") > -1) {
+                                value = " ";
+                            }
+                        }
+                        buffer.append(value);
                         buffer.append("</textarea>");
                     } 
                 } else { // not 'field' perhaps it's 'string'.
@@ -150,6 +168,8 @@ public class StringHandler extends AbstractTypeHandler {
         String fieldName = field.getName();
         String guiType = field.getGUIType();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+        log.info("Received " + fieldValue);
+
         if (fieldName.equals("owner")) {
             if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
                 node.setContext(fieldValue);
@@ -171,6 +191,7 @@ public class StringHandler extends AbstractTypeHandler {
         }
 
         fieldValue = tag.encode(fieldValue, field);
+        log.info("Received " + fieldValue);
         if (fieldValue != null && ! fieldValue.equals("") && ! fieldValue.equals(node.getValue(fieldName))) {
             if (guiType.indexOf("password") > -1) {
                 String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
