@@ -46,8 +46,8 @@ function loadNode(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'node.jspx?node=' + nodeNumber, false);
         request.send('');
-        nodeXml = Sarissa.serialize(request.responseXML);
-        //nodeXml = request.responseXML.xml;
+		//nodeXml = Sarissa.serialize(request.responseXML);
+        nodeXml = request.responseXML.xml;
     } else {
         var request = new XMLHttpRequest();
         request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
@@ -61,8 +61,8 @@ function loadNode(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'node.body.jspx', false);
         request.send('');
-        nodeBodyXml = Sarissa.serialize(request.responseXML);
-        //nodeBodyXml = request.responseXML.xml;
+        //nodeBodyXml = Sarissa.serialize(request.responseXML);
+        nodeBodyXml = request.responseXML.xml;
     }
 
     kupu.setHTMLBody(nodeBodyXml);
@@ -79,7 +79,8 @@ function loadRelated(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
         request.send('');
-        treeXml = Sarissa.serialize(request.responseXML);
+        //    treeXml = Sarissa.serialize(request.responseXML);
+        treeXml = request.responseXML.xml;
         loadedTrees.add(nodeNumber, treeXml);
     }
     var related = document.getElementById('node_' + nodeNumber);
@@ -100,7 +101,8 @@ function unloadRelated(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
         request.send('');
-        html = Sarissa.serialize(request.responseXML);
+        // html = Sarissa.serialize(request.responseXML);
+        html = request.responseXML.xml;
     }
     related.innerHTML = html;
     related.className = 'tree off';
@@ -111,7 +113,9 @@ function reloadTree() {
     var request = new XMLHttpRequest();
     request.open('GET', 'tree.jspx?parent=true', false);    
     request.send('');
-    document.getElementById('tree').innerHTML = Sarissa.serialize(request.responseXML);
+    //var tree =  Sarissa.serialize(request.responseXML);
+    var tree = request.responseXML.xml;
+    document.getElementById('tree').innerHTML = tree;
     alert(" " + uncollapsedNodes.length + " " + uncollapsedNodes);
 }
 
@@ -122,7 +126,9 @@ function createSubNode(nodeNumber) {
     var request = new XMLHttpRequest();
     request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);    
     request.send('');
-    alert(Sarissa.serialize(request.responseXML));
+    //var result = Sarissa.serialize(request.responseXML);
+    var result = request.responseXML.xml;
+    alert(result);          
     reloadTree();
 
 }
