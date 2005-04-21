@@ -1,13 +1,18 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.core;
+
+import java.util.*;
+import java.net.*;
+import java.sql.*;
+
 
 /**
  * Event/changes interface for MMObjectNodes this is a callback  
@@ -15,31 +20,8 @@ package org.mmbase.module.core;
  * itself as a change listener on Builder to recieve signals if nodes change.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseObserver.java,v 1.8 2003-05-23 10:58:39 michiel Exp $
  */
 public interface MMBaseObserver {
-    /**
-     * Called when a remote node is changed.
-     *
-     * @param machine Name of the machine that changed the node.
-     * @param number  Number of the changed node as a <code>String</code>
-     * @param builder Type of the changed node
-     * @param ctype   command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-     * @return always <code>true</code>
-     * @todo javadoc is copied from MMObjectBuilder, but MMObjectBuilder is not an MMBaseObserver
-     */
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype);
-
-    /**
-     * Called when a local node is changed.
-     *
-     * @param machine Name of the machine that changed the node.
-     * @param number  Number of the changed node as a <code>String</code>
-     * @param builder Type of the changed node
-     * @param ctype   command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-     * @return always <code>true</code>
-     * @todo javadoc is copied from MMObjectBuilder, but MMObjectBuilder is not an MMBaseObserver
-     */
-
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype);
+	public boolean nodeRemoteChanged(String number,String builder,String ctype);
+	public boolean nodeLocalChanged(String number,String builder,String ctype);
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="applications/content/src"/>
+    <classpathentry kind="src" path="applications/contentsecurity/src"/>
+    <classpathentry kind="src" path="applications/developer/src"/>
+    <classpathentry kind="src" path="applications/users/src"/>
+    <classpathentry kind="src" path="applications/versioning/src"/>
+    <classpathentry kind="src" path="applications/workflow/src"/>
+    <classpathentry kind="src" path="modules/minixml/src"/>
+    <classpathentry kind="src" path="modules/mmbaseconfig/src"/>
+    <classpathentry kind="src" path="modules/mmbasedoclet/src"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="lib" path="/usr/local/java/lib/tools.jar"/>
+    <classpathentry kind="lib" path="/home/keesj/work/mmbase/applications/rmmci/build/rmmci.jar"/>
+    <classpathentry kind="lib" path="/home/keesj/mmsite/WEB-INF/lib/mmbase.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,83 +1,33 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.database;
 
+import java.util.*;
 import java.sql.*;
 
 /**
  * JDBCInterface is _only_ the module JDBC interface who setup the connections
  * it has nothing tofo with the JDBC interface.
- *
- * @duplicate Not really needed. Remove and reference JDBC directly. Note that direct
- *            references to JDBC will be removed from most of the core (only the storagemanagerfactory
- *            will reference the JDBC module directly)
- * @author vpro
- * @version $Id: JDBCInterface.java,v 1.7 2004-10-07 17:22:35 pierre Exp $
  */
 public interface JDBCInterface {
 
-    /**
-     * @javadoc
-     */
-    public String makeUrl();
-    /**
-     * @javadoc
-     */
-    public String makeUrl(String dbm);
-    /**
-     * @javadoc
-     */
-    public String makeUrl(String host, String dbm);
-    /**
-     * @javadoc
-     */
-    public String makeUrl(String host, int port, String dbm);
+	public String makeUrl();
+	public String makeUrl(String dbm);
+	public String makeUrl(String host,String dbm);
+	public String makeUrl(String host,int port,String dbm);
 
-    // JDBC Pools
-    /**
-     * @javadoc
-     */
-    public MultiConnection getConnection(String url, String name, String password) throws SQLException;
+	// JDBC Pools
+	public MultiConnection getConnection(String url, String name, String password) throws SQLException;
+	public MultiConnection getConnection(String url) throws SQLException;
 
-    /**
-     * @javadoc
-     */
-    public MultiConnection getConnection(String url) throws SQLException;
-
-    /**
-     * @javadoc
-     */
-    public Connection getDirectConnection(String url) throws SQLException;
-
-    /**
-     * @javadoc
-     */
-    public Connection getDirectConnection(String url, String name, String password) throws SQLException;
-
-    /**
-     * @javadoc
-     */
-    public String getUser();
-
-    /**
-     * @javadoc
-     */
-    public String getPassword();
-
-    /**
-     * @javadoc
-     */
-    public String getDatabaseName();
-
-    /**
-     * @javadoc
-     */
-    public void checkTime();
+	public Connection getDirectConnection(String url) throws SQLException;
+	public Connection getDirectConnection(String url,String name,String password) throws SQLException;
+	public void checkTime();
 }

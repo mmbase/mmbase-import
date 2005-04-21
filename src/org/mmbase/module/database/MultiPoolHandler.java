@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.database;
@@ -16,89 +16,64 @@ import java.util.*;
  * MultiPoolHandler handles multi pools so we can have more than one database
  * open and they can all have a multipool.
  *
- */
- 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
+ */	
 public class MultiPoolHandler {
-    private static final Logger log = Logging.getLoggerInstance(MultiPoolHandler.class);
-    private int maxConnections;
-    private int maxQueries;
-    private Map pools = new Hashtable();
-    private DatabaseSupport databaseSupport;
+private int maxConnections;
+private int maxQuerys;
+Hashtable Pools=new Hashtable();
 
-    public MultiPoolHandler(DatabaseSupport databaseSupport, int maxConnections) {
-        this(databaseSupport, maxConnections, 500);
-    }
-
-    public MultiPoolHandler(DatabaseSupport databaseSupport, int maxConnections,int maxQueries) {
-	this.maxConnections = maxConnections;
-	this.maxQueries     = maxQueries;
-	this.databaseSupport= databaseSupport;
-    }
-
-    public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-	MultiPool pool = (MultiPool) pools.get(url + "," + name + "," + password);
-	if (pool != null) {
-	    return pool.getFree();
-	} else {
-            log.service("No multipool present, creating one now");
-            synchronized(pools) {
-                pool = new MultiPool(databaseSupport, url, name, password, maxConnections, maxQueries);
-                if (pools.put(url + "," + name + "," + password, pool) != null) {
-                    log.error("Replaced an old MultiPool!? " + Logging.stackTrace());
-                }
-                return pool.getFree();
-            }
+	public MultiPoolHandler(int maxConnections) {
+		this.maxConnections=maxConnections;
+		this.maxQuerys=500;
 	}
-    }
-
-    /**
-     * Calls shutdown of all registered MultiPools
-     * @since MMBase-1.6.2
-     */
-    public void shutdown() {
-        for (Iterator i = pools.values().iterator(); i.hasNext();) {
-            MultiPool pool = (MultiPool) i.next();
-	    pool.shutdown();
+	public MultiPoolHandler(int maxConnections,int maxQuerys) {
+		this.maxConnections=maxConnections;
+		this.maxQuerys=maxQuerys;
 	}
-    }
 
-    public void checkTime() {
-	for (Iterator i = pools.values().iterator(); i.hasNext();) {
-	    MultiPool pool = (MultiPool) i.next();
-	    pool.checkTime();
+	public MultiConnection getConnection(String url, String name, String password) throws SQLException {
+		MultiPool pool=(MultiPool)Pools.get(url+","+name+","+password);
+		if (pool!=null) {
+			return(pool.getFree());
+		} else {
+			pool=new MultiPool(url,name,password,maxConnections,maxQuerys);
+			Pools.put(url+","+name+","+password,pool);
+			return(pool.getFree());
+		}
 	}
-    }
 
-    public Set keySet() {
-	return pools.keySet();
-    }
+	public void checkTime() {
+		for (Enumeration e=Pools.elements();e.hasMoreElements();) {
+			MultiPool pool=(MultiPool)e.nextElement();
+			pool.checkTime();
+		}
+	}
 
-    /*
-    public Enumeration keys() {
-	return pools.keys();
-    }
-    */
+	public Enumeration elements() {
+		return(Pools.elements());
+	}
 
-    public MultiPool get(String id) {
-        return (MultiPool) pools.get(id);
-    }
+	public Enumeration keys() {
+		return(Pools.keys());
+	}
 
-    public void setMaxConnections(int max) {
-        maxConnections = max;
-    }
+	public MultiPool get(String id) {
+		return((MultiPool)Pools.get(id));
+	}
 
-    public int getMaxConnections() {
-        return maxConnections;
-    }
+	public void setMaxConnections(int max) {
+		maxConnections=max;
+	}
 
-    public void setMaxQuerys(int max) {
-	maxQueries = max;
-    }
+	public int getMaxConnections() {
+		return(maxConnections);
+	}
 
-    public int getMaxQuerys() {
-	return maxQueries;
-    }
+	public void setMaxQuerys(int max) {
+		maxQuerys=max;
+	}
+
+	public int getMaxQuerys() {
+		return(maxQuerys);
+	}
 }

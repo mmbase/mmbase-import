@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.util;
@@ -13,15 +13,14 @@ package org.mmbase.util;
  * Interface to sort objects.
  * @see org.mmbase.util.SortedVector
  *
- * @deprecated I think this is the same as java.util.Comparable
  * @author Rico Jansen
- * @version $Id: Sortable.java,v 1.7 2004-09-30 16:08:39 pierre Exp $
+ * @version 05-Mar-1997
  */
-public interface Sortable {
-
-    /**
-     * The compare function called by SortedVector to sort things
-     * @see org.mmbase.util.SortedVector
-     */
-    public abstract int compare(Sortable other);
+public interface Sortable
+{
+	/** 
+	 * The compare function called by SortedVector to sort things
+	 * @see org.mmbase..util.SortedVector
+	 */
+	public abstract int compare(Sortable other);
 }

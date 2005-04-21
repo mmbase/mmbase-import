@@ -9,27 +9,26 @@ See http://www.MMBase.org/license
  */
 
 package org.mmbase.bridge.remote.generator;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.*;
+import org.xml.sax.*;
+import org.apache.xml.serialize.*;
 import java.io.*;
 import java.util.*;
 
-import javax.xml.parsers.*;
-
-import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.xml.XMLWriter;
-import org.w3c.dom.*;
-
 /**
- * @author Kees Jongenburger <keesj@dds.nl>
+ * @author Kees Jongenburger <keesj@framfab.nl>
  **/
-public class MMCI {
-    Map classes;
-    List classesList;
+public class MMCI{
+    Hashtable classes;
+    Vector classesVector;
 
     private static MMCI STATIC_MMCI = null;
 
     public MMCI(){
-        classes = new HashMap();
-        classesList = new ArrayList();
+        classes = new Hashtable();
+        classesVector = new Vector();
     }
 
     public static MMCI getDefaultMMCI() throws Exception{
@@ -38,34 +37,40 @@ public class MMCI {
 
     public static MMCI getDefaultMMCI(String fileName) throws Exception{
         if (MMCI.STATIC_MMCI == null){
-            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
-            MMCI.STATIC_MMCI =  MMCI.fromXML(db.parse(fileName));
+            // get a new documentbuilder...
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            // turn validating on..
+            //  && MMBaseContext.isInitialized());
+            DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+            EntityResolver resolver = new DummyEntityResolver();
+            documentBuilder.setEntityResolver(resolver);
+            dfactory.setValidating(false);
+            MMCI.STATIC_MMCI =  MMCI.fromXML(documentBuilder.parse(fileName));
         }
         return MMCI.STATIC_MMCI;
     }
 
     public static MMCI fromXML(Document document) throws Exception{
         MMCI mmci =  new MMCI();
-        Element xmle = document.getDocumentElement();
-        NodeList nls = xmle.getChildNodes();
-        for(int i = 0; i < nls.getLength(); i++) {
-            Node element = nls.item(i);
+        Element xmle=document.getDocumentElement();
+        NodeList nls=xmle.getChildNodes();
+        for(int i=0; i<nls.getLength(); i++) {
+            Node element=nls.item(i);
             if (element instanceof Element) {
                 XMLClass myClass = XMLClass.fromXML((Element)element);
-                if (myClass == null) throw new Exception("Not found " + element);
-                mmci.classes.put(myClass.getName(), myClass);
-                mmci.classesList.add(myClass);
+                mmci.classes.put(myClass.getName(),myClass);
+                mmci.classesVector.addElement(myClass);
             }
         }
         return mmci;
     }
 
-    public List getClasses(){
-        return classesList;
+    public Vector getClasses(){
+        return classesVector;
     }
-    public XMLClass getClass(String name)  {
-        if (classes.get(name) == null) {
-            return null;
+    public XMLClass getClass(String name) throws NotInMMCIException{
+        if (classes.get(name) == null){
+            throw new NotInMMCIException("Class " + name + " is not known to the MMCI");
         }
         return (XMLClass)((XMLClass)classes.get(name)).clone(true);
     }
@@ -79,7 +84,6 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
@@ -102,34 +106,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.RelationStep",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.StepField",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.AggregatedField",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SortOrder",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldNullConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompareFieldsConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueInConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueBetweenConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
-
-        //Since you can use search query objects in the bridge, the important parts of the search query interfaces need to be remotely available as well.
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
-        //xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
-
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.UserContext",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.AuthenticationData",doc));
-
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
     }
 
     public static void main(String [] argv) throws Exception{
@@ -146,10 +123,12 @@ public class MMCI {
             if (argv.length==1) {
                 os = new FileOutputStream(argv[0]);
             }
-        OutputStreamWriter w = new OutputStreamWriter(os);
-        XMLWriter.write(doc,w,true);
-            w.flush();
-        w.close();
+            OutputFormat format = new OutputFormat(doc);
+            format.setIndenting(true);
+            format.setPreserveSpace(false);
+            XMLSerializer prettyXML = new XMLSerializer(os,format);
+            prettyXML.serialize(doc);
+            os.flush();
         }
     }
 

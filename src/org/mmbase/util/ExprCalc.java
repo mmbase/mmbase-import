@@ -1,180 +1,195 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.util;
 
+/******************************************************************
+  Class to calculate expressions. It implements a simple LL(1)
+  grammar to calculate simple expressions with the basic 
+  operators +,-,*,/ and brackets.
+
+  the grammar in EBNF notation:
+
+  <expr>   -> <term> { '+' <term> } | <term> { '-' <term> } .
+  <term>   -> <fact> { '*' <fact> } | <fact> { '/' <fact> } .
+  <fact>   -> <nmeral> | '(' <expr> ')' .
+
+  Autor:  Arnold Beck
+
+  email:  beck@informatik.htw-dresden.de 
+******************************************************************/
+
+import java.lang.*;
 import java.util.*;
-import org.mmbase.util.logging.*;
 
+public class ExprCalc
+{
+  private StringTokenizer T;
 
-/**
- * Class to calculate expressions. It implements a simple LL(1)
- * grammar to calculate simple expressions with the basic
- * operators +,-,*,/ and brackets.
- * <br />
- * The grammar in EBNF notation:
- * <br />
- * &lt;expr&gt;   -&gt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } <br />
- * &lt;term&gt;   -&gt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } <br />
- * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br />
- *
- * @author Arnold Beck
- * @version $Id: ExprCalc.java,v 1.12 2004-09-29 14:29:24 pierre Exp $
- */
-public class ExprCalc {
-    private static final int MC_SYMB=1;
-    private static final int MC_NUM =2;
-    private static final int MC_NONE=0;
-    private static final int MC_EOT =-1;
+  private static final int MC_SYMB=1;
+  private static final int MC_NUM =2;
+  private static final int MC_NONE=0;
+  private static final int MC_EOT =-1;
 
-    private static final Logger log = Logging.getLoggerInstance(ExprCalc.class);
+  // a token is represented by an tokencode (MCode)
+  // and a tokenvalue (MSym or MNum) depending on
+  // the tokencode
 
-    // a token is represented by an tokencode (MCode)
-    // and a tokenvalue (MSym or MNum) depending on
-    // the tokencode
+  private int	 MCode;
+  private char   MSymb;
+  private double MNum;
 
-    private StringTokenizer tokenizer;
-    private String          input;
+  private double Result;
 
-    private int	   mCode;
-    private char   mSymb;
-    private double mNum;
+  /***************************************************************
+  Construcor, takes a String representing the expression
+  ***************************************************************/
 
-    private double result;
+  public ExprCalc(String input) 
+  {
+    T=new StringTokenizer(input,"+-*/()% \t",true);
+    MCode=MC_NONE;
+    Result = expr();
+    if (MCode!=MC_EOT) {
+		System.out.println("ExprCalc-> Error");
+	}
+  }
 
-    /**
-     * Constructor of ExrpCalc
-     * @param input a <code>String</code> representing the expression
-     */
-    public ExprCalc(String input) {
-        this.input = input;
-        tokenizer = new StringTokenizer(input, "+-*/()% \t", true);
-        mCode = MC_NONE;
-        result = expr();
-        if (mCode != MC_EOT) {
-            log.error("Could not evaluate expression: '" + input + "'");
-        }
+  /**************************************************************
+  returns the calculated value of the expression
+  **************************************************************/
+
+  public double getResult() {return Result;}
+
+  /**************************************************************
+  the lexer to prduce a token when MCode is MC_NONE
+  **************************************************************/
+
+  private boolean lex() 
+  {
+    String Token;
+    if (MCode==MC_NONE)
+    {
+      MCode=MC_EOT;MSymb='\0';MNum=0.0;
+      try
+      {
+        do 
+          Token=T.nextToken();
+        while (Token.equals(" ")||Token.equals("\t"));
+      }
+      catch(NoSuchElementException e)  {return false;}
+      // numeral
+      if (Character.isDigit(Token.charAt(0)))
+      {
+        int i;
+        for(i=0;i<Token.length() && 
+                (Character.isDigit(Token.charAt(i)) ||
+                 Token.charAt(i)=='.');i++);
+        if (i!=Token.length()) {
+			System.out.println("ExprCalc-> Error");
+		}
+        try {MNum=(Double.valueOf(Token)).doubleValue();}
+        catch (NumberFormatException e)
+        {
+			System.out.println("ExprCalc-> Error");
+		}
+        MCode=MC_NUM;
+      }
+      // symbol
+      else
+      {
+        MSymb=Token.charAt(0);
+        MCode=MC_SYMB;
+      }
     }
+    return true;
+  }
 
-    /**
-     * Returns the calculated value of the expression
-     */
-    public double getResult() {
-        return result;
+  /****************************************************************
+  expr implements the rule 
+  <expr>   -> <term> { '+' <term> } | <term> { '-' <term> } .
+  ****************************************************************/
+
+  private double expr() 
+  {
+    double tmp=term();
+    while (lex()
+        && MCode==MC_SYMB
+        && (MSymb=='+' || MSymb=='-'))
+    {
+      MCode=MC_NONE;
+      if (MSymb=='+')tmp+=term(); else
+                     tmp-=term();
     }
+    if (MCode==MC_SYMB && MSymb=='(' 
+    ||  MCode==MC_SYMB && MSymb==')' 
+    ||  MCode==MC_EOT);
+    else {
+		System.out.println("ExprCalc-> Error");
+	}
+    return tmp;
+  }
 
-    /**
-     * The lexer to produce a token when mCode is MC_NONE
-     */
-    private boolean lex() {
-        String token;
-        if (mCode==MC_NONE) {
-            mCode=MC_EOT;mSymb='\0';mNum=0.0;
-            try {
-                do {
-                  token = tokenizer.nextToken();
-                } while (token.equals(" ")||token.equals("\t"));
-            } catch(NoSuchElementException e)  {
-                return false;
-            }
-            // numeral
-            if (Character.isDigit(token.charAt(0))) {
-                int i;
-                for(i=0;i<token.length() &&
-                    (Character.isDigit(token.charAt(i)) ||
-                     token.charAt(i)=='.');i++) { };
-                if (i!=token.length()) {
-                    log.error("Could not evaluate expression '" + token + "' of '" + input + "'");
-                }
-                try {
-                    mNum=(Double.valueOf(token)).doubleValue();
-                } catch (NumberFormatException e) {
-                    log.error("Could not evaluate expression ('" + token + "' not a number) of '" + input + "'");
-                }
-                mCode=MC_NUM;
-            } else {          // symbol
-                mSymb=token.charAt(0);
-                mCode=MC_SYMB;
-            }
-        }
-        return true;
+  /****************************************************************
+  term implements the rule 
+  <term>   -> <fact> { '*' <fact> } | <fact> { '/' <fact> } .
+  ****************************************************************/
+  
+  private double term() 
+  {
+    double tmp=fac();
+    while (lex()
+        && MCode==MC_SYMB
+        && (MSymb=='*' || MSymb=='/' || MSymb=='%'))
+    {
+      MCode=MC_NONE;
+      if (MSymb=='*')tmp*=fac();
+      else if (MSymb=='/') tmp/=fac();
+      else tmp%=fac();
     }
+    return tmp;
+  }
 
-    /**
-     * expr implements the rule: <br />
-     * &lt;expr&gt; -&lt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } .
-     */
-    private double expr() {
-        double tmp = term();
-        while (lex() && mCode == MC_SYMB && (mSymb == '+' || mSymb == '-')) {
-            mCode=MC_NONE;
-            if (mSymb=='+') {
-                tmp += term();
-            } else {
-                tmp -= term();
-            }
-        }
-        if (mCode==MC_SYMB && mSymb=='('
-            ||  mCode==MC_SYMB && mSymb==')'
-            ||  mCode==MC_EOT) {
+  /****************************************************************
+  fac implements the rule 
+  <fact>   -> <nmeral> | '(' <expr> ')' .
+  ****************************************************************/
 
-        } else {
-            log.error("expr: Could not evaluate expression '" + input + "'");
-        }
-        return tmp;
+  private double fac() 
+  {
+    double tmp=-1;
+    boolean minus=false;
+   
+    if(lex()&& MCode==MC_SYMB && MSymb=='-')
+    {
+      MCode=MC_NONE;
+      minus=true;
     }
-
-    /**
-     * term implements the rule: <br />
-     * &lt;term&gt; -&lt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } .
-     */
-    private double term() {
-        double tmp=fac();
-        while (lex() && mCode==MC_SYMB && (mSymb=='*' || mSymb=='/' || mSymb=='%')) {
-          mCode=MC_NONE;
-          if (mSymb=='*') {
-            tmp *= fac();
-          } else if (mSymb=='/') {
-            tmp /= fac();
-          } else {
-            tmp %= fac();
-          }
-        }
-        return tmp;
-    }
-
-    /**
-     * fac implements the rule <br />
-     * &lt;fact&gt;  -&lt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' .
-     */
-    private double fac() {
-        double tmp =- 1;
-        boolean minus=false;
-
-        if(lex()&& mCode==MC_SYMB && mSymb=='-') {
-            mCode = MC_NONE;
-            minus = true;
-        }
-        if(lex() && mCode==MC_SYMB && mSymb=='(') {
-            mCode = MC_NONE;
-            tmp = expr();
-            if(lex() && mCode!=MC_SYMB || mSymb!=')') {
-                log.error("fac1: Could not evaluate expression '" + input + "'");
-            }
-            mCode=MC_NONE;
-        } else if (mCode==MC_NUM) {
-            mCode=MC_NONE;
-            tmp=mNum;
-        } else {
-            log.error("fac2: Could not evaluate expression '" + input + "'");
-        }
-        if (minus) tmp = -tmp;
-        return tmp;
-    }
+    if(lex() && MCode==MC_SYMB && MSymb=='(')
+    {
+      MCode=MC_NONE;
+      tmp=expr();
+      if(lex() && MCode!=MC_SYMB || MSymb!=')') 
+		{
+			System.out.println("ExprCalc-> Error");
+		}
+      MCode=MC_NONE;
+    }else
+    if (MCode==MC_NUM)
+    {
+      MCode=MC_NONE;
+      tmp=MNum;
+    }else {
+		System.out.println("ExprCalc-> Error");
+	}
+    if (minus) tmp=-tmp;
+    return tmp;
+  }
+  
 }

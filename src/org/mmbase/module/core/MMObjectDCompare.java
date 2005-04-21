@@ -1,20 +1,20 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.core;
 
+import java.util.*;
 import org.mmbase.util.*;
 
 /**
  * MMObjectNodeCompare can me used as a compare function in Sortable
  * objects from org.mmbase.util (hitlisted)
- * @deprecated This nearly duplicates MMObjectCompare. If the inverse of a comparable is needed, this can be implemented more genericly. Btw, this is not used.
  *
  */
 public class MMObjectDCompare implements CompareInterface {

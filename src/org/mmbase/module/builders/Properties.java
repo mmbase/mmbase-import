@@ -1,41 +1,83 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.sql.*;
+import java.io.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.*;
 
 /**
- * @version $Id: Properties.java,v 1.10 2003-03-04 14:12:22 nico Exp $
+ * @author Rob Vermeulen  
+ * @version aaaaaalmost a 1998 version 
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
-    private static Logger log = Logging.getLoggerInstance(Properties.class.getName());
+/*
+	public int insert(String owner, MMObjectNode node) {
+		int res = super.insert( owner, node );
+		// signal prop insert to zap parents node prop cache
+		if ((node != null) && (res!=-1)) {
+			mmb.mmc.changedNode(node.getIntValue("parent"), getTableName(),"p");
+		}
+		return res;
+	}
+*/
+
+/*
+	public boolean commit(MMObjectNode node) {
+		if (super.commit(node)) {
+			// signal prop insert to zap parents node prop cache
+			mmb.mmc.changedNode(node.getIntValue("parent"),getTableName(),"p");
+			return true;
+		}
+		else return false;
+	}
+*/
 
 	public String getGUIIndicator(MMObjectNode node) {
-		String str=node.getStringValue("key");
+		String str=node.getStringValue("name");
 		if (str.length()>15) {
 			return(str.substring(0,12)+"...");
 		} else {
 			return(str);
 		}
 	}
+
+	public String getGUIIndicator(String field,MMObjectNode node) {
+		/*
+		if (field.equals("storage")) {
+			int val=node.getIntValue("storage");
+			switch(val) {
+				case 1: return("Muziek");
+				case 2: return("Muziek geen backup");
+				case 3: return("Spraak");
+				case 4: return("Spraak geen backup");
+				default: return("Onbepaald");
+			}
+		}
+		*/
+		return(null);
+	}
 	
-	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-		super.nodeRemoteChanged(machine,number,builder,ctype);
-		return(nodeChanged(machine,number,builder,ctype));
+	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
+		super.nodeRemoteChanged(number,builder,ctype);
+		return(nodeChanged(number,builder,ctype));
 	}
 
-	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-		super.nodeLocalChanged(machine,number,builder,ctype);
-		return(nodeChanged(machine,number,builder,ctype));
+	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+		super.nodeLocalChanged(number,builder,ctype);
+		return(nodeChanged(number,builder,ctype));
 	}
 
 	
@@ -56,31 +98,29 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
 	*/
 
-	public boolean nodeChanged(String machine,String number, String builder, String ctype) {
+	public boolean nodeChanged(String number, String builder, String ctype) {
 		if (builder.equals(tableName)) {
-			log.debug("nodeChanged(): Property change ! "+machine+","+number+","+builder+","+ctype);
+			System.out.println("Propertie change ! "+number+","+builder+","+ctype);
 			if (ctype.equals("d")) {
 				// Should zap node prop cache parent, but node already gone...
 			}
-/*
-			 else if (ctype.equals("p")) {
+			 /* else if (ctype.equals("p")) {
 				// The passed node number is node number of parent!
 				if (isNodeCached(Integer.parseInt(number))) {
 					MMObjectNode pnode=getNode(number);
 					if (pnode!=null) {
-						log.debug("nodeChanged(): Zapping node prop cache for "+number);
+						System.out.println("Zapping node prop cache for "+number);
 						pnode.delPropertiesCache();
 					}
 				}
-			}
-*/
+			} */
 			    else if (ctype.equals("c") || ctype.equals("n") || ctype.equals("f")) { 
 				// The passed node number is node of prop node
 				MMObjectNode node=getNode(number);
 				if (node!=null) {
 					int parent=node.getIntValue("parent");
 					if (isNodeCached(parent)) {
-						log.debug("nodeChanged(): Zapping node properties cache for "+parent);
+						System.out.println("Zapping node properties cache for "+parent);
 						MMObjectNode pnode=getNode(parent);	
 						if (pnode!=null) pnode.delPropertiesCache();
 					}	

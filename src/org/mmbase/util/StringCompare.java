@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.util;
@@ -14,18 +14,17 @@ package org.mmbase.util;
  * @see org.mmbase.util.SortedVector
  * @see org.mmbase.util.CompareInterface
  *
- * @deprecated Should implement java.util.Comparator, or should not exist, because this is java.lang.String's 'natural' order.
  * @author Rico Jansen
- * @version $Id: StringCompare.java,v 1.7 2004-09-30 16:08:39 pierre Exp $
+ * @version 05-Mar-1997
  */
 public class StringCompare implements CompareInterface {
 
-    /**
-     * The compare function called by SortedVector to sort things
-     * @see org.mmbase.util.SortedVector
-     * @see org.mmbase.util.CompareInterface
-     */
-    public int compare(Object thisone,Object other) {
-        return(((String)thisone).compareTo((String)other));
-    }
+	/** 
+	 * The compare function called by SortedVector to sort things
+	 * @see org.mmbase.util.SortedVector
+	 * @see org.mmbase.util.CompareInterface
+	 */
+	public int compare(Object thisone,Object other) {
+		return(((String)thisone).compareTo((String)other));
+	}
 }

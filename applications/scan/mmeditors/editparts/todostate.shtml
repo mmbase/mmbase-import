@@ -22,7 +22,7 @@
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
+			<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 
@@ -38,7 +38,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E1>
 					<OPTION VALUE="-1">Unknown
@@ -48,7 +48,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E2>
 					<OPTION VALUE="-1"> Unknown
@@ -58,7 +58,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E3>
 					<OPTION VALUE="-1"> Unknown
@@ -68,7 +68,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E4>
 					<OPTION VALUE="-1"> Unknown
@@ -78,7 +78,7 @@
 					<OPTION VALUE="4" SELECTED> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E5>
 					<OPTION VALUE="-1"> Unknown
@@ -88,7 +88,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5" SELECTED> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E6>
 					<OPTION VALUE="-1"> Unknown
@@ -98,7 +98,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6" SELECTED> Testing
-					<OPTION VALUE="7"> Finished
+					<OPTION VALUE="7"> Fisnished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E7>
 					<OPTION VALUE="-1"> Unknown
@@ -108,10 +108,10 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7" SELECTED> Finished
+					<OPTION VALUE="7" SELECTED> Fisnished
 				</IF>
 				</SELECT><BR>
-				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
+				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
 			</FORM>
 		</TD>
 	</TR>
@@ -129,7 +129,7 @@
 <TABLE CELLSPACING=0 COLS=14 BGCOLOR="#CCCCCC" WIDTH="352">
 <TR>
 <TD>
-<INCLUDE /mmeditors/help/$MOD-MMLANGUAGE-LANGUAGE^/$MOD-MMEDIT-STATE-GETBUILDER^/$PARAM1.shtml>
+<INCLUDE /mmeditors/help/$MOD-MMEDIT-STATE-GETBUILDER^/$PARAM1.shtml>
 </TD>
 </TR>
 </TABLE>

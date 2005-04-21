@@ -9,7 +9,7 @@
 <!--
 function jumpPage(form){
 	i = form.SelectMenu.options[form.SelectMenu.selectedIndex];
-	location.href = "$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts//audiosource.shtml?source+Bron+"+i.value;
+	location.href = "/mmeditors/editparts//audiosource.shtml?source+Bron+"+i.value;
 }
 // -->
 </SCRIPT>

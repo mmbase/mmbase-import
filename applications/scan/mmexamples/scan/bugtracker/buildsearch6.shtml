@@ -1,9 +1,0 @@
-<IF $SESSION-SISSUE^=N>
-	<IF $SESSION-S1^==>
-		<DO SESSION-S1=bugreports.issue=='*$SESSION-SISSUE^*'>
-	</IF>
-	<IF $SESSION-S1^=N>
-		<DO SESSION-S1=$SESSION-S1^+bugreports.issue=='*$SESSION-SISSUE^*'>
-	</IF>
-</IF>
-<GOTO index.shtml?s>

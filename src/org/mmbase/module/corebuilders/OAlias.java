@@ -1,193 +1,136 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
-import org.mmbase.cache.Cache;
+import java.sql.*;
+import java.io.*;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
-
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.module.database.*;
+import org.mmbase.util.*;
 
 /**
- * The OAlias builder is an optional corebuilder used to associate aliases with nodes.
- * Each OAlias object contains a name field (the alias), and a destination field (the number of
- * the object referenced).
- * This builder is not used directly. If you add aliases, use {@link MMObjectBuilder#createAlias} instead
- * of the builder's insert method.
- * MMBase will run without this builder, but most applications use aliases.
- *
  * @author Rico Jansen
- * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.18 2004-09-02 12:52:18 michiel Exp $
+ * @version 3-Feb-1999
  */
 
 public class OAlias extends MMObjectBuilder {
 
-    private static final Logger log = Logging.getLoggerInstance(OAlias.class);
+	public final static String buildername = "OAlias";
+	private final static LRUHashtable numbercache=new LRUHashtable(128);
 
-    // alias -> node-number (Integer)
-    private Cache numberCache = new Cache(128) {
-        public String getName()        { return "AliasCache"; }
-        public String getDescription() { return "Cache for node aliases"; }
-        };
+	public OAlias() {
+	}
 
-    private static final Integer NOT_FOUND = new Integer(-1);
+	public OAlias(MMBase m) {
+		this.mmb=m;
+		this.tableName="oalias";
+		this.description="Object Aliases name substitution for objects";
+		this.dutchSName="Object Alias";
+		init();
+		m.mmobjs.put(tableName,this);
+	}
 
-    public OAlias() {
-        numberCache.putCache();
-    }
+	/*	
+	public boolean create() {
+		// create the main object table
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t (name varchar(64) not null"
+				+", description varchar(128)"
+				+", destination integer not null) under "+mmb.baseName+"_object_t");
+			System.out.println("Created "+tableName);
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("can't create type "+tableName);
+			e.printStackTrace();
+		}
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t (unique (name)"
+				+", primary key(number)) under "+mmb.baseName+"_object");
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("can't create table "+tableName);
+			e.printStackTrace();
+		}
+		return(false);
+	}
+	*/
 
-    public boolean init() {
-        boolean res = super.init();
-        if (res) checkAddTmpField("_destination");
-        return res;
-    }
+	/**
+	* insert a new object, normally not used (only subtables are used)
+	*/
+	/*
+	public int insert(String owner,MMObjectNode node) {
+		String name=node.getStringValue("name");
+		String description=node.getStringValue("description");
+		int destination=node.getIntValue("destination");
+		
+		if (name==null) name="";
+		if (description==null) description="";
 
-    /**
-     * Obtain the number of a node through its alias
-     * @param alias the alias of the desired node
-     * @return the number of the node, or -1 if the alias does not exist
-     * @see #getAliasedNode
-     */
-    public int getNumber(String name) {
-        if (log.isDebugEnabled()) {
-            log.debug("Finding oalias node '" + name + "'");
-        }
+		int number=getDBKey();
+		if (number==-1) return(-1);
+		try {
+			MultiConnection con=mmb.getConnection();
+			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values(?,?,?,?,?,?)");
+				stmt.setInt(1,number);
+				stmt.setInt(2,oType);
+				stmt.setString(3,owner);
+				stmt.setString(4,name);
+				stmt.setString(5,description);
+				stmt.setInt(6,destination);
+				stmt.executeUpdate();
+				stmt.close();
+				con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error on : "+number+" "+owner);
+			return(-1);
+		}
+		signalNewObject(tableName,number);
+		return(number);	
+	}
+	*/
 
-        Integer nodeNumber = (Integer) numberCache.get(name);
-        if (nodeNumber == null) {
-            try {
-                NodeSearchQuery query = new NodeSearchQuery(this);
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
-                query.setConstraint(constraint);
-                Iterator i = getNodes(query).iterator();
-                if (i.hasNext()) {
-                    MMObjectNode node = (MMObjectNode) i.next();
-                    int rtn = node.getIntValue("destination");
-                    numberCache.put(name, new Integer(rtn));
-                    return rtn;
-                } else {
-                    numberCache.put(name, NOT_FOUND);
-                    return -1;
-                }
-            } catch (SearchQueryException sqe) {
-                log.error(sqe.toString());
-                return -1;
-            }
-        } else {
-            return nodeNumber.intValue();
-        }
-    }
+	public int getNumber(String name) {
+		int rtn=-1;
+		MMObjectNode node;
 
-    /**
-     * Obtain the alias of a node. If a node has more aliases, it returns only one.
-     * Which one is not specified.
-     * @param number the number of the node
-     * @return the alias of the node, or null if it does not exist
-     * @see #getNumber
-     * @todo No caching here?
-     */
-    public String getAlias(int number) {
-        NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), new Integer(number));
-        query.setConstraint(constraint);
-        try {
-            Iterator i = getNodes(query).iterator();
-            if (i.hasNext()) {
-                MMObjectNode node = (MMObjectNode)i.next();
-                return node.getStringValue("name");
-            } else {
-                return null;
-            }
-        } catch (SearchQueryException sqe) {
-            log.error(sqe.toString());
-            return null;
+		node=(MMObjectNode)numbercache.get(name);
+		if (node==null) {
+			Enumeration e=search("WHERE name='"+name+"'");
+			if (e.hasMoreElements()) {
+				node=(MMObjectNode)e.nextElement();
+				rtn=node.getIntValue("destination");
+				numbercache.put(name,node);
+			}
+		} else {
+			rtn=node.getIntValue("destination");
+		}
+		return(rtn);
+	}
 
-        }
-    }
+	public MMObjectNode getAliasedNode(String nodename) {
+		int nr;
+		MMObjectNode node=null;
 
-    /**
-     * Obtain a node from the cloud through its alias
-     * @param alias the alias of the desired node
-     * @return the node, or null if the alias does not exist
-     * @throws RuntimeException if the alias exists but the node itself doesn't (this indicates
-     *                          an inconsistency in the database)
-     * @see #getNumber
-     */
-    public MMObjectNode getAliasedNode(String alias) {
-        MMObjectNode node = null;
-        int nr = getNumber(alias);
-        if (nr > 0) {
-            try {
-                node = getNode(nr);
-            } catch (RuntimeException e) {
-                log.error("Alias '" + alias + "' points to non-existing node with number " + nr);
-                throw e;
-            }
-        }
-        return node;
-    }
-    /**
-     * Creates an alias for the node with the given number, and updates the alias cache.
-     *
-     * @since MMBase-1.7
-     */
-
-    public void createAlias(String alias, int number) {
-        MMObjectNode node = getNewNode("system");
-        node.setValue("name", alias);
-        node.setValue("destination", number);
-        node.insert("system");
-        numberCache.remove(alias);
-
-    }
-
-    /**
-     * Remove a node from the cloud and update the cache
-     * @param node The node to remove.
-     */
-    public void removeNode(MMObjectNode node) {
-        String name = node.getStringValue("name");
-        super.removeNode(node);
-        numberCache.remove(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     * If a node is changed or newly created, this adds the new or updated alias to the
-     * cache.
-     * @since MMBase-1.7.1
-     */
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        if (builder.equals(getTableName())) {
-            if (ctype.equals("c") || ctype.equals("n")) {
-                // should remove aliasses referencing this number from numberCache here
-                MMObjectNode node = getNode(number);
-                numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
-            } else if (ctype.equals("d")) {
-                Integer n = new Integer(number);
-                Iterator i = numberCache.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    Object value = entry.getValue();
-                    if (n.equals(value)) {
-                        i.remove();
-                    }
-                }
-            }
-       }
-       return super.nodeRemoteChanged(machine, number, builder, ctype);
-    }
-
+		nr=getNumber(nodename);
+		if (nr>0) {
+			node=getNode(nr);
+		}
+		return(node);
+	}
 }

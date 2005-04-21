@@ -1,9 +1,0 @@
-<display name="JumperPage" version="1" create-date="Dec 20, 2001 11:53:22 AM" MD5="hier moet nog een functie voor komen">
-
-	<description>This web page will show all jumpers.</description>
-
-	<requires>
-	</requires>
-
-	<default-web-path>mmexamples/jumpers/scan</default-web-path>
-</display>

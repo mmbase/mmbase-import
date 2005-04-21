@@ -1,179 +1,222 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.builders;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.sql.*;
 
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.database.*;
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.StringTagger;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.RelativeTime;
 
 /**
- * @javadoc
- * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.20 2004-10-25 08:08:36 pierre Exp $
+ * @version 8 Dec 1999 
  */
 public class AnnotRel extends InsRel {
 
     // Defining possible annotation types
-    public final static int HOURS = 0;
+    public final static int HOURS   = 0;
     public final static int MINUTES = 1;
     public final static int SECONDS = 2;
-    public final static int MILLIS = 3;
-    /*
-        public final static int LINES   = 4;
-        public final static int WORDS   = 5;
-        public final static int CHARS   = 6;
-        public final static int PIXELS  = 7;
-        public final static int ROWS    = 8;
-        public final static int COLS    = 9;
-    */
-    // logger
-    private static Logger log = Logging.getLoggerInstance(AnnotRel.class.getName());
+    public final static int MILLIS  = 3;
+/*
+    public final static int LINES   = 4;
+    public final static int WORDS   = 5;
+    public final static int CHARS   = 6;
+    public final static int PIXELS  = 7;
+    public final static int ROWS    = 8;
+    public final static int COLS    = 9;
+*/
 
-    /**
-     * Sets defaults for a node.
-     * Initializes all numeric fields to 0, and sets the annotation type to {@link #MILLIS}.
-     * @param node The node to set the defaults of.
-     */
-    public void setDefaults(MMObjectNode node) {
-        super.setDefaults(node);
-        // Set the default value for pos and length to 0 (0:0:0.0)
-        node.setValue("pos", 0);
-        node.setValue("end", 0);
-        node.setValue("length", 0);
-        // All time values are default stored in milliseconds.
-        node.setValue("type", MILLIS);
-    }
+	int relnumber=-1;
 
-    /**
-     * What should a GUI display for this node/field combo.
-     * Displays the pos, end, and length fields as time-values,
-     * and the annotation type field as a descriptive string.
-     * @param node The node to display
-     * @param field the name field of the field to display
-     * @return the display of the node's field as a <code>String</code>, null if not specified
+	/**
+	 * setDefaults for a node
+	 */
+	public void setDefaults(MMObjectNode node) {
+		// Set the default value for pos and length to 0 (0:0:0.0)
+		node.setValue("pos",0);
+		node.setValue("length",0);
+		// All time values are default stored in milliseconds.
+		node.setValue("type",MILLIS);
+
+		if (relnumber==-1) {
+			RelDef bul=(RelDef)mmb.getMMObject("reldef");
+			if (bul!=null) {
+				relnumber=bul.getGuessedByName(tableName);
+				if (relnumber==-1) System.out.println("AnnotRel-> Can not guess name");
+			} else {
+				System.out.println("AnnotRel-> Can not reach RelDef");
+			}
+		}
+		node.setValue("rnumber",relnumber);
+	}
+
+	/**
+     * get GUIIndicator
      */
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("pos")) {
-            int time = node.getIntValue("pos");
-            return RelativeTime.convertIntToTime(time);
-        } else if (field.equals("end")) {
-            int time = node.getIntValue("end");
-            return RelativeTime.convertIntToTime(time);
-        } else if (field.equals("length")) {
-            int time = node.getIntValue("length");
-            return RelativeTime.convertIntToTime(time);
-        } else if (field.equals("type")) {
-            int val = node.getIntValue("type");
-            if (val == HOURS) {
-                return "Hours";
-            } else if (val == MINUTES) {
-                return "Minuten"; // return "Minutes";
-            } else if (val == SECONDS) {
-                return "Seconden"; // return "Seconds";
-            } else if (val == MILLIS) {
-                return "Milliseconden"; // return "Milliseconds";
+    public String getGUIIndicator(String field,MMObjectNode node) {
+		if (field.equals("pos")){
+			int time = node.getIntValue("pos");
+			return RelativeTime.convertIntToTime(time);
+
+		} else if (field.equals("length")){
+			int time = node.getIntValue("length");
+			return RelativeTime.convertIntToTime(time);
+
+		} else if (field.equals("type")) {
+            int val=node.getIntValue("type");
+            if (val==HOURS) {
+                return("Hours");
+            } else if (val==MINUTES) {
+                return("Minuten");
+            } else if (val==SECONDS) {
+                return("Seconden");
+            } else if (val==MILLIS) {
+                return("Milliseconden");
             }
 
             /*
               else if (val==LINES) {
-                return "Regels";
+                return("Regels");
             } else if (val==WORDS) {
-                return "Woorden";
+                return("Woorden");
             } else if (val==CHARS) {
-                return "Karakters";
+                return("Karakters");
             } else if (val==PIXELS) {
-                return "Pixels";
+                return("Pixels");
             } else if (val==ROWS) {
-                return "Rijen";
+                return("Rijen");
             } else if (val==COLS) {
-                return "Kolommen";
+                return("Kolommen");
             }
             */
         }
-        return null;
+        return(null);
     }
 
-    /**
-     * The hook that passes all form related pages to the correct handler.
-     * This method is not supported.
-     * @param sp The PageInfo
-     * @param command the command to execute
-     * @param cmds the commands (PRC-CMD) to process
-     * @param vars variables (PRC-VAR) to use
-     * @return the result value as a <code>String</code>
-     */
-    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
-        log.debug("process: This method isn't implemented yet.");
-        return false;
+//NOTE : getList, replace process, getEditRelativeTimeField en setEditRelativeTimeField can all be 
+//removed, since we now use INFO.java for relativetime manipulation.
+
+	/**
+    * getList all for frontend code
+    */
+    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+        System.out.println("AnnotRel::getList This method isn't implemented yet.");
+        return(null);
     }
 
-    /**
-     * Obtains a string value by performing the provided command.
-     * This method is not supported.
-     * @param sp The PageInfo
-     * @param tok the command to execute
-     * @return the result value as a <code>String</code>
-     */
-    public String replace(PageInfo sp, StringTokenizer command) {
-        log.debug("replace: This method isn't implemented yet.");
-        return "";
-    }
+	/**
+ 	 * Execute the commands provided in the form values
+	 */
+	public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+		System.out.println("AnnotRel::process: This method isn't implemented yet.");
+		return false;
+	}
 
-    /**
-     * Provides additional functionality when setting field values.
-     * This method makes sure that the pos, end, and length values have the
-     * correct value.
-     * @param node the node whose fields are changed
-     * @param field the fieldname that is changed
-     * @return <code>true</code> if the call was handled.
-     */
-    public boolean setValue(MMObjectNode node, String field) {
-        if (field.equals("end")) {
-            int pos = node.getIntValue("pos");
-            int end = node.getIntValue("end");
-            if (end != -1)
-                node.setValue("length", (end - pos));
-        } else if (field.equals("pos")) {
-            int pos = node.getIntValue("pos");
-            int end = node.getIntValue("end");
-            if (end != -1)
-                node.setValue("length", (end - pos));
-        } else if (field.equals("length")) {
-            // extra check needed to make sure we don't create a loop !
-            // XXX: ???
-            int pos = node.getIntValue("pos");
-            int end = node.getIntValue("end");
-            int len = node.getIntValue("length");
+	/**
+    * replace all for frontend code
+    */
+	public String replace(scanpage sp, StringTokenizer command) {
+
+        if (command.hasMoreTokens()) {
+            String token=command.nextToken();
+			System.out.println("AnnotRel::replace: The nextToken = "+token);
+			//RELTIME means RelativeTime.
+			if (token.equals("GETFIELDRELTIME")) {
+				// System.out.println("AnnotRel::replace: This method isn't implemented yet.");
+        		// return("GETFIELDRELTIME not implemented yet, says the AnnotRel builder.");
+
+                return (getEditRelativeTimeField(command.nextToken(), command.nextToken()));
+
+            } else if (token.equals("SETFIELDRELTIME")) {
+				// System.out.println("AnnotRel::replace: This method isn't implemented yet.");
+        		// return("SETFIELDRELTIME not implemented yet, says the AnnotRel builder.");
+
+                return (setEditRelativeTimeField(command));
+            } 
         }
-        return true;
+        return("No command defined, says the AnnotRel builder.");
+    }		
+
+	/**
+	 *	This method retrieves the RelativeTimeField value that was filled in before by extracting it from
+	 * 	the editnode, and returns it as a string to the user. 
+	 * 	@param what The time field that's requested for.
+	 * 	@param fieldname The fieldname of the annotrel node that's currently being edited.
+	 * 	@returns The fieldname value as a String.
+	 */
+ 	String getEditRelativeTimeField (String what, String fieldname) {
+		String res = new String ();
+		int timeValue = 0;
+
+		System.out.println("AnnotRel::getEditRelativeTimeField: fieldname = "+fieldname);
+
+		if (what.equals ("HOURS")) {
+			res += RelativeTime.getHours(timeValue);
+			System.out.println("AnnotRel::getEditRelativeTimeField::getHours() = "+res);
+			// return ("HOURS not implemented yet.");
+		} else if (what.equals ("MINUTES")) {
+		 	res += RelativeTime.getMinutes(timeValue);
+			System.out.println("AnnotRel::getEditRelativeTimeField::getHours() = "+res);
+			// return ("MINUTES not implemented yet.");
+		} else if (what.equals ("SECONDS")) {
+			res += RelativeTime.getSeconds(timeValue);
+			System.out.println("AnnotRel::getEditRelativeTimeField::getHours() = "+res);
+			// return ("SECONDS not implemented yet.");
+		} else if (what.equals ("MILLIS")) {
+			res += RelativeTime.getMillis(timeValue);
+			System.out.println("AnnotRel::getEditRelativeTimeField::getHours() = "+res);
+			// return ("MILLIS not implemented yet.");
+		} else {
+			return ("No timeAttribute OR Invalid timeAttribute provided!"); 
+		}
+
+		// return ("getEditRelativeTimeField Not Implemented yet");
+		return (res);
     }
 
-    public Object getValue(MMObjectNode node, String field) {
-        if (field.equals("ms_pos")) {
-            int pos = node.getIntValue("pos");
-            //format to pos is in ms
-            return new SimpleDateFormat("hh:mm.0").format(new Date(pos));
-        } else if (field.equals("ms_length")) {
-            int len = node.getIntValue("length");
-            return new SimpleDateFormat("hh:mm").format(new Date(len));
-        } else if (field.equals("end")) {
-            int pos = node.getIntValue("pos");
-            int len = node.getIntValue("length");
-            int end = pos + len;
-            return ("" + end);
-        }
-        return (null);
-    }
+	/**
+	 *	This method sets the RelativeTime value by using the timefield values h,m,s and ms.  
+	 * 	@param commands A StringTokenizer object containing the remainder of the $MOD String.
+	 * 	@returns The calculated timeValue in milliseconds as a stringValue.
+	 */
+ 	String setEditRelativeTimeField(StringTokenizer command) {
+
+		String hours, minutes, seconds, millis, value;
+		int time = 0;
+
+        if (command.hasMoreTokens() && (command.countTokens() == 4) ) {
+
+			hours   = command.nextToken();
+			minutes = command.nextToken();
+			seconds = command.nextToken();
+			millis  = command.nextToken();
+			value   = hours + ":" + minutes + ":" + seconds + "." + millis;
+
+			time = RelativeTime.convertTimeToInt(value);
+			System.out.println ("AnnotRel::setEditRelativeTimeField -> Storing time: " +time);
+
+			return (""+time);
+
+		} else {
+			String error = "Annotrel::setEditRelativeTimeField: Error, Amount of timeValues is != 4 (h,m,s,ms)"; 
+			System.out.println(error); 
+			return error;
+		}
+	}
+
 }

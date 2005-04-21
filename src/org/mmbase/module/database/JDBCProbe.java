@@ -1,65 +1,82 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.database;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.util.*;
 
 /**
  * JDBCProbe checks all JDBC connection every X seconds to find and
  * remove bad connections works using a callback into JDBC.
  *
- * @version $Id: JDBCProbe.java,v 1.11 2004-10-07 17:22:35 pierre Exp $
+ * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class JDBCProbe implements Runnable {
-    private static final Logger log = Logging.getLoggerInstance(JDBCProbe.class);
 
-    private JDBC parent = null;
-    private long checkTime;
+	Thread kicker = null;
+	JDBC parent=null;
+	String name;
+	String input;
+	int len;
+
+	public JDBCProbe(JDBC parent) {
+		this.parent=parent;
+		init();
+	}
+
+	public void init() {
+		this.start();	
+	}
 
 
-    public JDBCProbe(JDBC parent) {
-        this(parent, 30);
-    }
+	/**
+	 * Starts the admin Thread.
+	 */
+	public void start() {
+		/* Start up the main thread */
+		if (kicker == null) {
+			kicker = new Thread(this,"JDBCProbe");
+			kicker.start();
+		}
+	}
+	
+	/**
+	 * Stops the admin Thread.
+	 */
+	public void stop() {
+		/* Stop thread */
+		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.suspend();
+		kicker.stop();
+		kicker = null;
+	}
 
-    public JDBCProbe(JDBC parent, int ct) {
-        this(parent, (long) ct * 1000);
-    }
-
-    public JDBCProbe(JDBC parent, long ct) {
-        this.parent = parent;
-        checkTime = ct;
-        Thread t = new Thread(this, "JDBCProbe");
-        t.setDaemon(true);
-        t.start();
-    }
-
-    /**
-     * admin probe, try's to make a call to all the maintainance calls.
-     */
-    public void run () {
-        log.info("JDBC probe starting");
-        while (true) {
-            try {
-                Thread.sleep(checkTime);
-            } catch(InterruptedException e) {
-                log.info("Interrupted " + e.getMessage());
-            }
-
-            try {
-                parent.checkTime();
-            } catch (Exception e) {
-                log.error(e.getMessage());
-
-            }
-        }
-    }
+	/**
+	 * admin probe, try's to make a call to all the maintainance calls.
+	 */
+	public void run () {
+		//System.out.println("JDBC probe starting");
+		while (kicker!=null) {
+			try{
+				Thread.sleep(30000);
+			} catch(InterruptedException e) {
+			}
+			try {
+				parent.checkTime();
+			} catch (Exception e) {
+			}
+		}
+	}
 }

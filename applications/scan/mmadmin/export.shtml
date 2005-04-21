@@ -5,9 +5,13 @@
    <TITLE>MMADMIN tools</TITLE>
 </HEAD>
 
-<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#000000" LINK="#000000" ALINK="#555555" VLINK="#555555"><CENTER>
+<BODY BACKGROUND="beeld/bg1.jpg" TEXT="#FFFFFF" BGCOLOR="#fffffe" LINK="#000000" ALINK="#ffffff" VLINK="#333333"><CENTER>
 <BR>
-<TABLE width=80% cellspacing=0 cellpadding=3 border=1>
+<BR>
+<BR>
+<PART /mmadmin/nav.shtml>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
 <TR>
 	<TD BGCOLOR="FFFFFF">
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
@@ -20,31 +24,30 @@
 </TR>
 <TR>
 	<FORM ACTION="export.shtml" METHOD="POST">
-		<TD BGCOLOR="#00425A">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
 			Which builder
 		</TD>
-		<TD BGCOLOR="#00425A">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
 			<SELECT INPUT NAME="PRC-VAR-builder">
-
-			<LIST OBJECTS TYPE="typedef" FIELDS="name,description" WHERE="">
+			<LIST OBJECTS TYPE="typedef" FIELDS="name" WHERE="" DBSORT="name">
 			<OPTION>$ITEM1
 			</LIST>
 			</SELECT>
 		</TD>
 </TR>
 <TR>
-		<TD BGCOLOR="#00425A">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
 			Export file (eg '/tmp/test' .xml will be added)
 		</TD>
-		<TD BGCOLOR="#00425A">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
 			<INPUT NAME="PRC-VAR-exportdir" SIZE="30" VALUE="/tmp/test">
 		</TD>
 </TR>
 <TR>
-		<TD BGCOLOR="#00425A">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
 			All options filled in then gogogo
 		</TD>
-		<TD BGCOLOR="#00425A">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
 			<INPUT TYPE="SUBMIT" VALUE="EXPORT">
 		</TD>
 

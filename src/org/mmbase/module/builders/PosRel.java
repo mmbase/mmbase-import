@@ -1,33 +1,47 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.sql.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 /**
- * Like InsRel, only with a GUIIndicator tailored for a relation with a 'pos' field.
- *
- * @application Tools
  * @author Rico Jansen
- * @author Michiel Meeuwissen.
- * @version $Id: PosRel.java,v 1.8 2004-10-08 12:30:01 pierre Exp $
  */
 public class PosRel extends InsRel {
 
-    public PosRel() {
-    }
+	int relnumber=-1;
 
-    public String getGUIIndicator(MMObjectNode node) {
-        return super.getGUIIndicator(node) + ":" + node.getStringValue("pos");
-    }
+	public PosRel() {
+	}
 
+	/**
+	* setDefaults for a node
+	*/
+	public void setDefaults(MMObjectNode node) {
+		if (relnumber==-1) {
+			RelDef bul=(RelDef)mmb.getMMObject("reldef");
+			if (bul!=null) {
+				relnumber=bul.getGuessedByName(tableName);
+				if (relnumber==-1) System.out.println("PosRel-> Can not guess name");
+			} else {
+				System.out.println("PosRel-> Can not reach RelDef");
+			}
+		}
+		node.setValue("rnumber",relnumber);
+	}
 
 }

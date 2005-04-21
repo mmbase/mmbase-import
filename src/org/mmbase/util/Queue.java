@@ -1,302 +1,249 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
 */
 package org.mmbase.util;
 
 import java.util.*;
+import java.lang.*;
 
-/**
- * A list object that allows firstin-firstout retrieval of data.
- * When querying for data that is not (yet) available, the retrieve-process sleeps
- * until it is notified of a change.
- * In 1.5, this class need to be replaced with the java.util.concurrent.BlockingQueue&lt;E&gt; interface.
- *
- * @author vpro
- * @version $Id: Queue.java,v 1.6 2004-09-30 14:07:11 pierre Exp $
- */
 public class Queue {
 
-    /**
-     * Default size of 32 for the queue if none is specified.
-     */
-    public static int DEFAULT_QUEUE_SIZE = 32;
+	QueueElement head,tail;
+	int flip=0;int len=0;
 
-    /**
-     * Default timeout of 0 for a blocking append call.
-     * Not used
-     */
-    public static int DEFAULT_APPEND_TIMEOUT = 0;
+	//private Object[] items;
+	//public Object[] items;
+	public Vector items;
+	//private Object isNotFull = new Object(); 
 
-    /**
-     * Default timeout of 0 for a blocking get call.
-     * Not used
-     */
-    public static int DEFAULT_GET_TIMEOUT = 0;
+	private int first;			// pointer to last item in queue
+	private int count;			// current # of items in queue
+	private int maxcount;		// max # of items to be allowed in queue
+	private int queuesize;		// actual size of items[] array
+	public int appendTimeoutTime;	// how long to wait for an append() or get()
+	public int getTimeoutTime;	// before checking to see if we should give up
+	long get1,get2;;
 
-    /**
-     * The time to wait until an attempt to append an item times out.
-     * Not used
-     */
-    public int appendTimeoutTime;
-    /**
-     * The time to wait until an attempt to get an item times out.
-     * Not used
-     */
-    public int getTimeoutTime;
+	/**
+	 * Default size of 32 for the queue if none is specified.
+	 */
+	public static int DEFAULT_QUEUE_SIZE = 32; // seems reasonable, I guess
 
-    // the fields below should be private
+	/**
+	 * Default timeout of 0 for a blocking append call
+	 */ 
+	public static int DEFAULT_APPEND_TIMEOUT = 0; // by default we don't care about timeouts
 
-    /**
-     * The head element of the queue.
-     * This is the element that will be returned first by a {@link #get}.
-     */
-    QueueElement head;
-    /**
-     * The tail element of the queue.
-     * This is the element that was last added using {@link #append}.
-     */
-    QueueElement tail;
+	/**
+	 * Default timeout of 0 for a blocking get call
+	 */
+	public static int DEFAULT_GET_TIMEOUT = 0; // by default we don't care about timeouts
 
-    /**
-     * The real number of items in the queue.
-     */
-    int len=0;
+	/**
+	 * Constructs the queue with the default queue size set to
+	 * DEFAULT_QUEUE_SIZE, and the append timeout set to
+	 * DEFAULT_APPEND_TIMEOUT
+	 *
+	 * @see Queue#DEFAULT_QUEUE_SIZE
+	 * @see Queue#DEFAULT_APPEND_TIMEOUT
+	 */
+	public Queue() {
+		this(DEFAULT_QUEUE_SIZE, DEFAULT_APPEND_TIMEOUT, DEFAULT_GET_TIMEOUT);
+	}
 
-    /**
-     * Max # of items to be allowed in queue.
-     * Not really used.
-     */
-    private int queuesize;
+	/**
+	 * Constructs the queue, sets the max number of queueable
+	 * items to the given size, sets the append timeout
+	 * to DEFAULT_APPEND_TIMEOUT, and sets the get timeout to
+	 * DEFAULT_GET_TIMEOUT
+	 *
+	 * @param size The maximum size of the queue
+	 * @see Queue#DEFAULT_APPEND_TIMEOUT
+	 */
+	public Queue(int size) {
+		this(size, DEFAULT_APPEND_TIMEOUT, DEFAULT_GET_TIMEOUT);
+	}
 
-    // fields below are not used any more, should be removed
+	/**
+	 * Constructs the queue, sets the max number of queueable
+	 * items to the given size, and sets the append() and get() timeouts
+	 * to the given values.
+	 *
+	 * @param size The maximum size of the queue
+	 * @param appendTimeout If we can't append() within this many milliseconds,
+	 *											the appendTimeout() method is called before retrying.
+	 * @param getTimeout If we can't get() something within this many
+	 *									 milliseconds, the getTimeout() method is called.
+	 * @see Queue#appendTimeout
+	 * @see Queue#getTimeout
+	 */
+	public Queue(int size, int appendTimeout, int getTimeout) {
 
-    public Vector items;
-    int flip=0;
-    long get1,get2;
+		appendTimeoutTime = appendTimeout;
+		getTimeoutTime = getTimeout;
 
-    //private Object[] items;
-    //public Object[] items;
-    //private Object isNotFull = new Object();
+		queuesize = size;		// initial size of the queue
+		items = new Vector(queuesize);
 
-    private int first;            // pointer to last item in queue
-    private int count;            // current # of items in queue
-    private int maxcount;        // max # of items to be allowed in queue
+		first = count = 0;
+		maxcount = size;		// max elements in queue
+	}
 
-    /**
-     * Constructs the queue with the default queue size set to
-     * DEFAULT_QUEUE_SIZE, and the append timeout set to
-     * DEFAULT_APPEND_TIMEOUT
-     *
-     * @see Queue#DEFAULT_QUEUE_SIZE
-     * @see Queue#DEFAULT_APPEND_TIMEOUT
-     */
-    public Queue() {
-        this(DEFAULT_QUEUE_SIZE, DEFAULT_APPEND_TIMEOUT, DEFAULT_GET_TIMEOUT);
-    }
+	public void newQueue(int size, int appendTimeout, int getTimeout) {
 
-    /**
-     * Constructs the queue, sets the max number of queueable
-     * items to the given size, sets the append timeout
-     * to DEFAULT_APPEND_TIMEOUT, and sets the get timeout to
-     * DEFAULT_GET_TIMEOUT
-     *
-     * @param size The maximum size of the queue
-     * @see Queue#DEFAULT_APPEND_TIMEOUT
-     */
-    public Queue(int size) {
-        this(size, DEFAULT_APPEND_TIMEOUT, DEFAULT_GET_TIMEOUT);
-    }
+		appendTimeoutTime = appendTimeout;
+		getTimeoutTime = getTimeout;
 
-    /**
-     * Constructs the queue, sets the max number of queueable
-     * items to the given size, and sets the append() and get() timeouts
-     * to the given values.
-     *
-     * @param size The maximum size of the queue
-     * @param appendTimeout If we can't append() within this many milliseconds,
-     *                      the appendTimeout() method is called before retrying.
-     * @param getTimeout If we can't get() something within this many
-     *                   milliseconds, the getTimeout() method is called.
-     * @see Queue#appendTimeout
-     * @see Queue#getTimeout
-     */
-    public Queue(int size, int appendTimeout, int getTimeout) {
+		queuesize = size;		// initial size of the queue
+		items = new Vector(queuesize);
 
-        // better call newQueue...
-        appendTimeoutTime = appendTimeout;
-        getTimeoutTime = getTimeout;
+		first = count = 0;
+		maxcount = size;		// max elements in queue
+	}
 
-        queuesize = size;        // initial size of the queue
-        items = new Vector(queuesize);
+	/** 
+	 * Returns the size of the queue
+	 */
+	public int queueSize() {
+		return queuesize;
+	}
 
-        first = count = 0;
-        maxcount = size;        // max elements in queue
-    }
+	/**
+	 * Returns the number of items currently in the queue.
+	 */
+	public int count() {
+		//return items.size();
+		return(len); 
+	}
 
-    /**
-     * Re-uinitializes the queue, sets the max number of queueable
-     * items to the given size, and sets the append() and get() timeouts
-     * to the given values.
-     *
-     * @param size The maximum size of the queue
-     * @param appendTimeout If we can't append() within this many milliseconds,
-     *                      the appendTimeout() method is called before retrying.
-     * @param getTimeout If we can't get() something within this many
-     *                   milliseconds, the getTimeout() method is called.
-     */
-    public void newQueue(int size, int appendTimeout, int getTimeout) {
+	/** 
+	 * Appends the given item to the queue. This method calls a
+	 * synchronized append method, so that it won't interfere with a get
+	 * call. The method will block if the queue is full, and it won't
+	 * block otherwise.
+	 *
+	 * @param item The item to be appended to the queue */
+	public synchronized void append(Object item) {
+		// put a object in the vector and wait on it
+		// it should be able to block if full
+		QueueElement p=new QueueElement();
+		p.obj=item;
 
-        appendTimeoutTime = appendTimeout;
-        getTimeoutTime = getTimeout;
+		if (tail==null) {
+			head=p;	
+		} else {
+			tail.next=p;
+		}	
+		p.next=null;
+		tail=p;
+		len++;
+		flip++;
+		if (flip>99) {
+			//System.out.println("Qeueu len="+len+" ("+this+")");
+			flip=0;
+		}
+		//System.out.println("Qeueu len="+len+" ("+this+")");
+		notify(); // scream that a new one has reached us.
+	}
 
-        queuesize = size;        // initial size of the queue
-        items = new Vector(queuesize);
+	/**
+	 * Pulls an item off of the queue. This method will block until
+	 * something is found. This method is synchronized so it doesn't
+	 * interfere with the append call.
+	 *
+	 * @return The bottom object of the queue. 
+	 */
 
-        first = count = 0;
-        maxcount = size;        // max elements in queue
-    }
+	public synchronized Object get() {
+		try {
+			while(head==null) {
+				wait();
+			}
+		} catch(InterruptedException e) {
+			return(null);
+		}
+		QueueElement p=head;
+		head=head.next;
+		if (head==null) {
+			tail=null;
+		}
+		len--;
+		return(p.obj);
+	}
 
-    /**
-     * Returns the size of the queue
-     */
-    public int queueSize() {
-        return queuesize;
-    }
+	/** 
+	 * This is called every time we timeout while waiting to append
+	 * something to the queue. You can use this to figure out if
+	 * you want to increase the queue size. A real hacker could override
+	 * this to keep statistics, and use the resize() function to increase
+	 * the size of the queue after a bunch of timeouts. NOTE - <b> DON'T </b>
+	 * use the resize() method from within this method - the code will
+	 * hang forever. You should instead flag another thread to do the
+	 * resize.
+	 *
+	 * @see Queue#appendTimeoutTime
+	 */
+	public void appendTimeout() {
+		// no default behavior
+	}
 
-    /**
-     * Returns the number of items currently in the queue.
-     */
-    public int count() {
-        //return items.size();
-        return len;
-    }
+	/**
+	 * Pretty much the same thing as the getTimeout() method, but for
+	 * blocking get() timeouts. REMEMBER: DON'T call resize() from within
+	 * this method.
+	 *
+	 * @see Queue#getTimeoutTime
+	 */
+	public void getTimeout() {
+		// no default behavior
+	}
 
-    /**
-     * Appends the given item to the queue. This method calls a
-     * synchronized append method, so that it won't interfere with a get
-     * call. The method will block if the queue is full, and it won't
-     * block otherwise.
-     *
-     * @param item The item to be appended to the queue */
-    public synchronized void append(Object item) {
-        // put a object in the vector and wait on it
-        // it should be able to block if full
-        QueueElement p=new QueueElement();
-        p.obj=item;
+	/**
+	 * Resizes the queue so that it can contain at most the given
+	 * number of items in it. Note - the queue may already have more
+	 * than the given number of items in it, if so, nothing will be
+	 * allowed in the queue until it shrinks to contain fewer than the
+	 * new maximum number of elements in it.
+	 *
+	 * @param newsize The new maximum size of the queue
+	 */
 
-        if (tail==null) {
-            head=p;
-        } else {
-            tail.next=p;
-        }
-        p.next=null;
-        tail=p;
-        len++;
-        flip++;
-        if (flip>99) {
-            flip=0;
-        }
-        notify(); // scream that a new one has reached us.
-    }
+	public synchronized void resize(int newsize) {
+		/*
+		synchronized (isNotFull) {
+			if (newsize < maxcount) {	// shrinking the queue
+				maxcount = newsize;
+	
+			} else if (newsize > maxcount) { // growing the queue
+	
+				if (newsize <= queuesize) {		// queue size is still bigger 
+					maxcount = newsize;			 // than the new size
+		
+				} else {					 // (newsize > queuesize)
+					Object[] newItems = new Object[newsize];
+		
+					for (int x = 1; x <= count; x++) {
+						newItems[x - 1] = items[(first + x - 1) % queuesize];
+					}
+		
+					items = newItems;
+					queuesize = newsize;
+					maxcount = newsize;
+					first = 0;
+				}
 
-    /**
-     * Pulls an item off of the queue. This method will block until
-     * something is found. This method is synchronized so it doesn't
-     * interfere with the append call.
-     *
-     * @return The bottom object of the queue.
-     */
-
-    public synchronized Object get() {
-        try {
-            while(head==null) {
-                wait();
-            }
-        } catch(InterruptedException e) {
-            return null;
-        }
-        QueueElement p=head;
-        head=head.next;
-        if (head==null) {
-            tail=null;
-        }
-        len--;
-        return p.obj;
-    }
-
-    /**
-     * This is called every time we timeout while waiting to append
-     * something to the queue. You can use this to figure out if
-     * you want to increase the queue size. A real hacker could override
-     * this to keep statistics, and use the resize() function to increase
-     * the size of the queue after a bunch of timeouts. NOTE - <b> DON'T </b>
-     * use the resize() method from within this method - the code will
-     * hang forever. You should instead flag another thread to do the
-     * resize.
-     *
-     * @see Queue#appendTimeoutTime
-     */
-    public void appendTimeout() {
-        // no default behavior
-    }
-
-    /**
-     * Pretty much the same thing as the getTimeout() method, but for
-     * blocking get() timeouts. REMEMBER: DON'T call resize() from within
-     * this method.
-     *
-     * @see Queue#getTimeoutTime
-     */
-    public void getTimeout() {
-        // no default behavior
-    }
-
-    /**
-     * Resizes the queue so that it can contain at most the given
-     * number of items in it. Note - the queue may already have more
-     * than the given number of items in it, if so, nothing will be
-     * allowed in the queue until it shrinks to contain fewer than the
-     * new maximum number of elements in it.
-     *
-     * @param newsize The new maximum size of the queue
-     */
-
-    public synchronized void resize(int newsize) {
-        /*
-        synchronized (isNotFull) {
-            if (newsize < maxcount) {    // shrinking the queue
-                maxcount = newsize;
-
-            } else if (newsize > maxcount) { // growing the queue
-
-                if (newsize <= queuesize) {        // queue size is still bigger
-                    maxcount = newsize;             // than the new size
-
-                } else {                     // (newsize > queuesize)
-                    Object[] newItems = new Object[newsize];
-
-                    for (int x = 1; x <= count; x++) {
-                        newItems[x - 1] = items[(first + x - 1) % queuesize];
-                    }
-
-                    items = newItems;
-                    queuesize = newsize;
-                    maxcount = newsize;
-                    first = 0;
-                }
-
-                isNotFull.notify();    // let any stuck appends proceed
-            }
-        }
-        */
-        queuesize = newsize;
-        maxcount = newsize;
-    }
-
+				isNotFull.notify();	// let any stuck appends proceed
+			}
+		}
+		*/
+		queuesize = newsize;
+		maxcount = newsize;
+	}
+	
 }

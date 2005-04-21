@@ -1,6 +1,0 @@
-  <tag>
-    <name>usercalwriter</name>
-    <tagclass>nl.didactor.agenda.UserCalendarWriterTag</tagclass>
-    <!-- bodycontent>JSP</bodycontent -->
-    <info>...</info>
-  </tag>

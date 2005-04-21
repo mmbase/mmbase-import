@@ -1,452 +1,342 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+VPRO (C)
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
 
- */
+*/
 package org.mmbase.module;
 
-import java.util.*;
+import java.lang.*;
 import java.net.*;
-
-import javax.servlet.*;
+import java.util.*;
+import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-import org.mmbase.util.functions.*;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
-
 /**
- * An MMBase Module is an extension of this class, which is configured by an XML in the &lt;mmbase
- * config dir &gt;/modules directory. All XML's (which are defined 'active') in this directory are
- * automaticly loaded, and all found 'Module's are then initialized.
- *
- * There are several Modules which are more or less compulsary in MMBase, like the 'mmbaseroot'
- * module, the actual core of MMBase implemented by {@see org.mmbase.module.core.MMBase}, and the
- * 'jdbc' module.
+ * Module , the wrapper for the modules.
  *
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
- * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.62 2005-03-16 19:16:28 michiel Exp $
+ * @version 26 Nov 1996
  */
-public abstract class Module extends FunctionProvider {
+public abstract class Module {
 
-    /**
-     * @javadoc
-     */
-    static Map modules;
+	private Object SecurityObj;
+	private String moduleName=null;
+	protected final Hashtable state=new Hashtable();
+	// org.mmbase private UsersInterface users;
+	private Hashtable mimetypes;
 
-    // logger instance
-    private static final Logger log = Logging.getLoggerInstance(Module.class);
+	private static Hashtable modules;
+	private static String mmbaseconfig;
+	
+	private Hashtable properties;
+	private static ModuleProbe mprobe;
+	private static boolean debug=false;
 
-    /**
-     * This function returns the Module's version number as an Integer.
-     * It takes no parameters.
-     * This function can be called through the function framework.
-     * @since MMBase-1.8
-     */
-    protected Function getVersionFunction = new AbstractFunction("getVersion", Parameter.EMPTY, ReturnType.INTEGER) {
-        public Object getFunctionValue(Parameters arguments) {
-            return new Integer(getVersion());
-        }
-    };
+		
+	/**
+ 	 * variable to synchronize SecurityObj
+ 	 */
+	private Object synobj=new Object();
 
-    /**
-     * This function returns the Module's maintainer as a String.
-     * It takes no parameters.
-     * This function can be called through the function framework.
-     * @since MMBase-1.8
-     */
-    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer", Parameter.EMPTY, ReturnType.STRING) {
-        public Object getFunctionValue(Parameters arguments) {
-            return getMaintainer();
-        }
-    };
+	public Module() {
+		String StartedAt=(new Date(DateSupport.currentTimeMillis())).toString();
+		//String StartedAt=(new Date()).toString();
+		state.put("Start Time",StartedAt);
+		// org.mmbase mimetypes=Environment.getProperties(this,"mimetypes");
+	}
+	
+	public final void setName(String name) {
+		if (moduleName==null) {
+			moduleName=name;
+		}
+	}
 
-    String moduleName = null;
-    Hashtable state = new Hashtable();
-    Hashtable properties; // would like this to be LinkedHashMap (predictable order)
-    String maintainer;
-    int version;
+	/**
+	 * Inits the module (startup final step 2).
+	 * This is called second on startup, the module is expected
+	 * to read the environment variables it needs. Startup threads,
+	 * open connections etc.
+	 */
+	public abstract void init();
 
-    // startup call.
-    private boolean started = false;
+	public abstract void onload();
 
-    public Module() {
-        addFunction(getVersionFunction);
-        addFunction(getMaintainerFunction);
-        String startedAt = (new Date(System.currentTimeMillis())).toString();
-        state.put("Start Time", startedAt);
-    }
+	/**
+	 * state, returns the state hashtable that is/can be used to debug. Should
+	 * be overridden when live state should be done.
+	 */
+	 public Hashtable state() {
+		return(state);
+	 }
 
-    public final void setName(String name) {
-        if (moduleName == null) {
-            moduleName = name;
-        }
-    }
+	/**
+	 * Gets his init-parameters
+ 	 */
+    protected String getInitParameter(String key) {
+		if (properties!=null) {
+			String value=(String)properties.get(key);
+			return(value);
+		} else {
+			System.out.println("Module -> getInitParameters called before they where loaded");	
+		}
+		return(null);
+	}
 
-    /**
-     * Starts the module.
-     * This module calls the {@link #init()} of a module exactly once.
-     * In other words, once the init() is called, it does not call it again.
-     * This method is final and cannot be overridden.
-     * It is used to safely initialize modules during startup, and allows other modules
-     * to force the 'startup' of another module without risk.
-     */
-    public final void startModule() {
-        if (started) return;
-        synchronized(Module.class) {
-            init();
-            started = true;
-        }
-    }
 
-    /**
-     * Returns whether the module has started (has been initialized or is in
-     * its initialization fase).
-     */
-    public final boolean hasStarted() {
-        return started;
-    }
+	/**
+	 * Returns the properties to the subclass. 
+	 */
+   	protected Hashtable getProperties(String propertytable) {
+		//String filename="/usr/local/vpro/james/adminopen/modules/";
+		//return(results);		
+		return(null);
+		//return(Environment.getProperties(this,propertytable));
+	}
+	
+	/**
+	 * Returns one propertyvalue to the subclass.
+	 */
+	/* daniel, org.mmbase needs fix
+	*/
+	protected String getProperty(String name, String var) {
+		//return(Environment.getProperty(this,name,var));
+		return("");
+	} 
 
-    /**
-     * Initializes the module.
-     * Init must be overridden to read the environment variables it needs.
-     * <br />
-     * This method is called by {@link #startModule()}, which makes sure it is not called
-     * more than once. You should not call init() directly, call startModule() instead.
-     */
-    public void init() {
-    }
+	/* daniel, org.mmbase
+   	protected Object removeProperty(String propertytable, String key) {
+		return(Environment.removeProperty(this,propertytable,key));
+	}
+	*/
+	
+	/**
+	 * Adds a property to the propertytabel 
+	 */
+	/* daniel, org.mmbase
+	protected String putProperty(String propertytable, String key, String value) {
+		return(String)(Environment.putProperty(this,propertytable,key,value));
+	}
+	*/
+ 
+	/**
+	 * Adds a property to the propertytabel 
+	 */
+	/* daniel, org.mmbase
+	protected String putInitProperty(String key, String value) {
+		return(String)(Environment.putProperty(this,"module/"+moduleName,key,value));
+	} 
+	*/
 
-    /**
-     * prepares the module when loaded.
-     * Onload must be overridden to execute methods that need to be performed when the module
-     * is loaded but before any other modules are initailized.
-     * <br />
-     * This method is called by {@link #startModules()}. You should not call onload() directly.
-     * @scope protected
-     */
-    public void onload() {
-    }
+	/**
+	 * Gets own modules properties
+	 */
+   	protected Hashtable getInitParameters() {
+		return(null);
+		//org.mmabse return(Environment.getProperties(this,"module/"+moduleName));
+	}
 
-    /**
-     * Shuts down the module. This method is called by shutdownModules.
-     *
-     * @since MMBase-1.6.2
-     */
-    protected void shutdown() {
-        // on default, nothing needs to be done.
-    }
 
-    /**
-     * state, returns the state hashtable that is/can be used to debug. Should
-     * be overridden when live state should be done.
-     */
-    public Hashtable state() {
-        return state;
-    }
 
-    /**
-     * Sets an init-parameter key-value pair
-     */
-    public void setInitParameter(String key,String value) {
-        if (properties != null) {
-            properties.put(key,value);
-        }
-    }
+	/**
+ 	 * Gets all the modules of the Environment that this worker may access. If allowed.
+ 	 */
+	protected final Object getModules() {
+		return(null);
+	}
 
-    /**
-     * Gets an init-parameter  key-value pair
-     */
-    public String getInitParameter(String key) {
-        if (properties != null) {
-            String value=(String)properties.get(key);
-            if (value == null) {
-                key = key.toLowerCase();
-                value = (String)properties.get(key);
-            }
-            return value;
-        } else {
-            log.error("getInitParameters(" + key + "): No properties found, called before they where loaded");
-        }
-        return null;
-    }
 
-    /**
-     * Returns the properties to the subclass.
-     */
-    protected Hashtable getProperties(String propertytable) {
-        //String filename="/usr/local/vpro/james/adminopen/modules/";
-        //return results;
-        return null;
-        //return Environment.getProperties(this,propertytable);
-    }
+	/**
+	 *	Get user Module property
+	 */
+	/* daniel, org.mmbase
+	protected final String getUserModuleProperty(String userName,String name,int type) {
+		if (users!=null && userName!=null) {
+			return(users.getModuleProperty(moduleName,userName,name,type));
+		} else {
+			return(null);
+		}
+	}
+	*/
 
-    /**
-     * Returns one propertyvalue to the subclass.
-     */
-    protected String getProperty(String name, String var) {
-        return "";
-    }
+	/**
+	 *	Get user Module property
+	 */
+	/* daniel, org.mmbase
+	protected final String getUserModuleProperty(String userName,String name) {
+		return(getUserModuleProperty(userName,name,1));
+	}
+	*/
 
-    /**
-     * Gets own modules properties
-     */
-    public Hashtable getInitParameters() {
-        return properties;
-    }
+	/**
+	 *	Get user Module property
+	 */
+	/* daniel, org.mmbase
+	protected final boolean setUserModuleProperty(String userName,String name,String value, int type) {
+		if (users!=null && userName!=null) {
+			return(users.setModuleProperty(moduleName,userName,name,value,type));
+		} else {
+			return(false);
+		}
+	}
+	*/
 
-    /**
-     * Returns an iterator of all the modules that are currently active.
-     * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
-     * Unlike {@link #getModule}, this method does not automatically load modules if this hadn't occurred yet.
-     * @return an <code>Iterator</code> with all active modules
-     */
-    public static final Iterator getModules() {
-        if (modules == null) {
-            return null;
-        } else {
-            return modules.values().iterator();
-        }
-    }
+	/**
+	 *	Get user Module property
+	 */
+	/* daniel, org.mmbase
+	protected final boolean setUserModuleProperty(String userName,String name,String value) {
+		return(setUserModuleProperty(userName,name,value,1));
+	}
+	*/
+	
+	/** 
+	 * getName
+ 	 */
+	/* daniel, org.mmbase
+	protected final String getName(Object asker) {
+		return Environment.getName(asker);
+	}
+	*/
 
-    /**
-     *  Returns the name of the module
-     * @return the module name
-     */
-    public final String getName() {
-        return moduleName; // org.mmbase
-    }
 
-    /**
-     * provide some info on the module
-     */
-    public String getModuleInfo() {
-        return "No module info provided";
-    }
+	public final String getName() {
+		return(null); // org.mmbase
+	}
 
-    /**
-     * maintainance call called by the admin module every x seconds.
-     */
-    public void maintainance() {
-    }
+	/** 
+	 * provide some info on the module
+ 	 */
+	 public String getModuleInfo() {
+		return("No module info provided");
+	 }
 
-    /**
-     * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
-     * which is set when servscan is loaded.
-     * Fixed on 22 December 1999 by daniel & davzev.
-     * XXX: why is this in Module???
-     * @param ext A String containing the extension.
-     * @return The mimetype.
-     */
-    public String getMimeType(String ext) {
-        return getMimeTypeFile("dummy."+ext);
-    }
+	/**
+	* maintainance call called by the admin module every x seconds.
+	*/
+	public void maintainance() {
+	}
 
-    public String getMimeTypeFile(String fileName) {
-        ServletContext sx = MMBaseContext.getServletContext();
-        String mimeType = sx.getMimeType(fileName);
-        if (mimeType == null) {
-            log.warn("getMimeType(" + fileName + "): Can't find mimetype retval=null -> setting mimetype to default text/html");
-            mimeType = "text/html";
-        }
-        return mimeType;
-    }
 
-    /**
-     * Calls shutdown of all registered modules.
-     *
-     * @since MMBase-1.6.2
-     */
-    public static synchronized final void shutdownModules() {
-        Iterator i = getModules();
-        while (i.hasNext()) {
-            Module m = (Module) i.next();
-            log.service("Shutting down " + m.getName());
-            m.shutdown();
-            log.service("Shut down " + m.getName());
-        }
-        modules = null;
-    }
+	public String getMimeType(String ext) {
+		// org.mmbase return((String)mimetypes.get(ext));
+		return("image/jpeg");
+	}
 
-    public static synchronized final void startModules() {
-        // call the onload to get properties
-        log.service("Starting modules " + modules.keySet());
-        for (Iterator i = modules.values().iterator(); i.hasNext();) {
-            Module mod = (Module)i.next();
-            if( log.isDebugEnabled() ) {
-                log.debug("startModules(): modules.onload(" + mod + ")");
-            }
-            try {
-                mod.onload();
-            } catch (Exception f) {
-                log.warn("startModules(): modules(" + mod + ") not found to 'onload'!", f);
-            }
-        }
-        // so now really give em their init
-        if (log.isDebugEnabled()) {
-            log.debug("startModules(): init the modules(" + modules + ")");
-        }
-        for (Iterator i = modules.values().iterator(); i.hasNext();) {
-            Module mod = (Module) i.next();
-            log.info("Starting module " + mod.getName());
-            if ( log.isDebugEnabled()) {
-                log.debug("startModules(): mod.startModule(" + mod + ")");
-            }
-            try {
-                mod.startModule();
-            } catch (Exception f) {
-                log.error("startModules(): module(" + mod + ") not found to 'init'!: " + f.getClass() + ": " + f.getMessage());
-                log.error(Logging.stackTrace(f));
-            }
-        }
-    }
 
-    /**
-     * Retrieves a reference to a Module.
-     * This call does not ensure that the requested module has been initialized.
-     * XXX: return type Object in stead of Module?
-     *
-     * @param name the name of the module to retrieve
-     * @return a refernce to a <code>Module</code>, or <code>null</code> if the
-     *      module does not exist or is inactive.
-     */
-    public static Object getModule(String name) {
-        return getModule(name, false);
-    }
+	public static synchronized final Hashtable loadModulesFromDisk() {
+		Class newclass;
 
-    /**
-     * Retrieves a reference to a Module.
-     * If you set the <code>startOnLoad</code> to <code>true</code>,
-     * this call ensures that the requested module has been initialized by
-     * calling the {@link #startModule()} method.
-     * This is needed if you need to call Module methods from the init() of
-     * another module.
-     *
-     * XXX: return type Object in stead of Module?
-     *
-     * @param name the name of the module to retrieve
-     * @param startOnLoad whetehr to make sure the module has been started or not.
-     * @return a reference to a <code>Module</code>, or <code>null</code> if the
-     *      module does not exist or is inactive.
-     */
-    public static Object getModule(String name, boolean startOnLoad) {
-        // are the modules loaded yet ? if not load them
-        if (modules == null) {
-            synchronized(Module.class) {
-                if (modules == null) { // still null after obtaining lock
-                    log.service("Loading MMBase modules...");
-                    modules = loadModulesFromDisk();
-                    if (log.isDebugEnabled()) {
-                        log.debug("getModule(" + name + "): Modules not loaded, loading them..");
-                    }
-                    startModules();
-                    // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-                    new ModuleProbe().start();
-                }
-            }
-        }
-        // try to obtain the ref to the wanted module
-        Object obj = modules.get(name.toLowerCase());
-        if (obj == null) { // try case sensitivily as well?
-            obj = modules.get(name);
-        }
-        if (obj != null) {
-            // make sure the module is started, as this method could
-            // have been called from the init() of another Module
-            if (startOnLoad) {
-                ((Module) obj).startModule();
-            }
-            return obj;
-        } else {
-            return null;
-        }
-    }
 
-    public String getMaintainer() {
-        return maintainer;
-    }
+		System.out.println("MMBASE -> mmbase.config="+System.getProperty("mmbase.config"));
+		mmbaseconfig=System.getProperty("mmbase.config");
+		MMBaseContext.setConfigPath(mmbaseconfig);
 
-    public void setMaintainer(String m) {
-        maintainer = m;
-    }
+		// the container for the started modules
+		Hashtable results=new Hashtable();
+	
+		// get us a propertie reader	
+		ExtendedProperties Reader=new ExtendedProperties();
 
-    public void setVersion(int v) {
-        version = v;
-    }
+		// load the properties file of this server
+		String filename=mmbaseconfig+"/modules.properties";
+		filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
+		filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
 
-    public int getVersion() {
-        return version;
-    }
 
-    /**
-     * Loads all module-xml present in <mmbase-config-dir>/modules.
-     * @return A HashTable with <module-name> --> Module-instance
-     * @scope  private (only called from getModule)
-     */
-    private static synchronized Hashtable loadModulesFromDisk() {
-        Hashtable results = new Hashtable();
-        ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
-        Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
-        log.info("In " + rl + " the following module XML's were found " + modules);
-        Iterator i = modules.iterator();
-        while (i.hasNext()) {
-            String file = (String) i.next();
-            String fileName = ResourceLoader.getName(file);
-            XMLModuleReader parser;
-            org.xml.sax.InputSource is = null;
-            try {
-                is = rl.getInputSource(file);
-                parser = new XMLModuleReader(is);
-            } catch (Throwable t) {
-                log.error("Could not load module with xml '" + (is == null ? "NULL" : is.getSystemId()) + "': " + t.getMessage());
-                continue;
-            }
+		Hashtable mods = Reader.readProperties(filename);
 
-            if (parser.getStatus().equals("active")) {
-                String className = parser.getClassFile();
-                // try starting the module and give it its properties
-                try {
-                    log.service("Loading module " + fileName + " with class " + className);
-                    Module mod;
-                    if (parser.getURLString() != null){
-                        log.service("loading module from jar " + parser.getURLString());
-                        URL url = new URL(parser.getURLString());
-                        URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
-                        Class newClass = c.loadClass(className);
-                        mod = (Module) newClass.newInstance();
-                    } else {
-                        Class newClass = Class.forName(className);
-                        mod = (Module) newClass.newInstance();
-                    }
+		// oke try loading all these modules and start em up
+		for (Enumeration e=mods.keys();e.hasMoreElements();) {
+			String key=(String)e.nextElement();
+			String value=(String)mods.get(key);
+			//System.out.println("MODULE="+key+" VAL="+value);
 
-                    results.put(fileName, mod);
+			// try starting the module and give it its properties
+			try {
+				newclass=Class.forName(value);
+				//System.out.println("Module -> Loaded load class : "+newclass);
+				Object mod = newclass.newInstance();
+				if (mod!=null) {
+					results.put(key,mod);
+	
+					// try to load the properties that are defined for this module	
+					filename=mmbaseconfig+"/modules/"+key+".properties";
+					filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
+					filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
 
-                    mod.properties =  parser.getProperties();
+					// extra check to load propertie files from weird places (security reasons for example)
+					String tmp=System.getProperty("mmbase.mod_"+key);
+					if (tmp!=null) {
+						System.out.println("Reading "+key+" mod file from : "+tmp);
+						filename=tmp;
+					}	
+					Hashtable modprops = Reader.readProperties(filename);
+					//System.out.println("MOD "+key+" "+modprops);
+					if (modprops!=null) {
+						((Module)mod).properties=modprops;	
+					}
+				}
+			} catch(Exception f) {
+				f.printStackTrace();
+			}
+		}
+		return(results);
+	}
 
-                    // set the module name property using the module's filename
-                    // maybe we need a parser.getModuleName() function to improve on this
-                    mod.setName(fileName);
+	public static synchronized final void startModules() {
 
-                    mod.setMaintainer(parser.getModuleMaintainer());
-                    mod.setVersion(parser.getModuleVersion());
-                } catch (ClassNotFoundException cnfe) {
-                    log.error("Could not load class with name '" + className + "', " +
-                              "which was specified in the module:'" + file + " '(" + cnfe + ")" );
-                } catch (Exception e) {
-                    log.error("Error while loading module class" + Logging.stackTrace(e));
-                }
-            }
-        }
-        return results;
-    }
+		// call the onload to get properties
+		for (Enumeration e=modules.elements();e.hasMoreElements();) {
+			Module mod=(Module)e.nextElement();
+			//System.out.println("ONLOAD THE MOD="+mod);
+			try {
+				mod.onload();		
+			} catch (Exception f) {
+				System.out.println("mod not found");
+				f.printStackTrace();
+			}
+		}
+
+		// so now really give em their init
+		for (Enumeration e=modules.elements();e.hasMoreElements();) {
+			Module mod=(Module)e.nextElement();
+			if (debug) System.out.println("INIT THE MOD="+mod);
+			try {
+				mod.init();		
+			} catch (Exception f) {
+				System.out.println("mod not found");
+				f.printStackTrace();
+			}
+		}
+	}
+
+	public static final Object getModule(String name) {
+
+		// are the modules loaded yet ? if not load them
+		if (modules==null) {
+			//System.out.println("Modules still NULL calling to startup");
+			modules=loadModulesFromDisk();
+			startModules();
+			// also start the maintaince thread that calls all modules every x seconds
+			mprobe = new ModuleProbe(modules);
+		}
+
+		// try to obtain the ref to the wanted module
+		Object obj=modules.get(name);	
+		if (obj!=null) {
+			return(obj);
+		} else {
+			System.out.println("Module-> no module loaded with name : "+name);
+			return(null);
+		}
+	}	
 
 }

@@ -14,7 +14,7 @@
 <TR>
 <TD ALIGN="LEFT">
 <FONT SIZE="2" face=helvetica,arial,geneva COLOR="#FFFFFF">
-	  <A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/index.shtml" TARGET="_top"><IMG SRC="beeld/pijl.gif" BORDER=0 VSPACE=0 HSPACE=10></A>
+	  <A HREF="/mmeditors/index.shtml" TARGET="_top"><IMG SRC="beeld/pijl.gif" BORDER=0 VSPACE=0 HSPACE=10></A>
 	editors
 </FONT>
 </TD>

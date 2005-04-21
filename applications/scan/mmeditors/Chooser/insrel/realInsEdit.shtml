@@ -27,7 +27,7 @@
 <TABLE WIDTH="100%" BORDER=0 CELLPADDING="2" CELLSPACING="1">
 	<LIST "SELECT-GETOBJECTFIELDS">
    <TR>
-      <TD BGCOLOR="#FF0000" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/$ITEM5.shtml?$ITEM1+$ITEM4" TARGET="Work">##</A></FONT></TD>
+      <TD BGCOLOR="#FF0000" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/editparts/$ITEM5.shtml?$ITEM1+$ITEM4" TARGET="Work">##</A></FONT></TD>
       <TD BGCOLOR="#000000" WIDTH="190">
       
       <FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica">$ITEM4</FONT>
@@ -55,7 +55,7 @@
 <TABLE WIDTH="100%" BORDER=0 CELLPADDING="2" CELLSPACING="1">
 	<LIST "SELECT-GETOBJECTRELATIONS2">
    <TR>
-      <TD BGCOLOR="#0000FF" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/insEditor.shtml?insrel+$ITEM1" TARGET="_top"><FONT COLOR="#0000FF">##</A></FONT></TD>
+      <TD BGCOLOR="#0000FF" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/insEditor.shtml?insrel+$ITEM1" TARGET="_top"><FONT COLOR="#0000FF">##</A></FONT></TD>
       <TD BGCOLOR="#000000" WIDTH="190">
       
       <FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica">$ITEM3</FONT>
@@ -69,7 +69,7 @@
 
 	<LIST "SELECT-GETOBJECTRELATIONS">
    <TR>
-      <TD BGCOLOR="#0000FF" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/addEditor.shtml?$ITEM2+$MOD-MMEDIT-STATE-GETEDITNODE^" TARGET="_top"><FONT COLOR="#0000FF">##</A></FONT></TD>
+      <TD BGCOLOR="#0000FF" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/addEditor.shtml?$ITEM2+$MOD-MMEDIT-STATE-GETEDITNODE^" TARGET="_top"><FONT COLOR="#0000FF">##</A></FONT></TD>
       <TD BGCOLOR="#000000" WIDTH="190">
       
       <FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica">$ITEM2</FONT>
@@ -86,12 +86,12 @@
 	<TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-save_changes </B></FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/Chooser/insrel/saveins.shtml" TARGET="_top"><FONT COLOR="#53DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/Chooser/insrel/saveins.shtml" TARGET="_top"><FONT COLOR="#53DE31">##</FONT></TD>
 	</TR>
 	<TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-do_not_change </B></FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/Chooser/insrel/nosave.shtml" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/Chooser/insrel/nosave.shtml" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
    </TR>
    <ELSE>
 
@@ -99,10 +99,10 @@
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
 	  <IF $SESSION-FROMNODE^==$MOD-MMEDIT-STATE-GETEDITDSTNODE^>	
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-go_to :</B> $MOD-MMEDIT-STATE-GETEDITSRCDUTCHNAME^ ( <B>$MOD-MMEDIT-STATE-GETEDITSRCGUIINDICATOR^</B> ) </FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/select.shtml?$MOD-MMEDIT-STATE-GETEDITSRCNODE^" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/select.shtml?$MOD-MMEDIT-STATE-GETEDITSRCNODE^" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
 	  <ELSE>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-go_to :</B> $MOD-MMEDIT-STATE-GETEDITDSTDUTCHNAME^ ( <B>$MOD-MMEDIT-STATE-GETEDITDSTGUIINDICATOR^</B> ) </FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/select.shtml?$MOD-MMEDIT-STATE-GETEDITDSTNODE^" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/select.shtml?$MOD-MMEDIT-STATE-GETEDITDSTNODE^" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
 	  </IF>
 	 </TR>
 
@@ -114,12 +114,12 @@
 	  <TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-remove</B> </FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/Chooser/insrel/askremove.shtml" TARGET="Work"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/Chooser/insrel/askremove.shtml" TARGET="Work"><FONT COLOR="#63DE31">##</FONT></TD>
 	 </TR>
 	  <TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-back</B> </FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/Chooser/insrel/back.shtml" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/Chooser/insrel/back.shtml" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
 	 </TR>
 	</IF>
 </TABLE>
