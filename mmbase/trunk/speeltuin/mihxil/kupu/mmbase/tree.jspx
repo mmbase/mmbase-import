@@ -33,6 +33,8 @@
   <jsp:output omit-xml-declaration="true" />
   
   <mm:param name="org.mmbase.xml-mode" value="kupu" />
+  <mm:node number="pol_default" id="root" />
+  <mm:param name="org.mmbase.index-root" referid="root" />
   <mm:import externid="parent" />
   <mm:import externid="node">pol_default</mm:import>
   <mm:node id="n" referid="node">
@@ -80,9 +82,11 @@
         </mm:listrelations>
         </mm:listrelationscontainer>
       </ul>
+      <!--
     <mm:present referid="parent">
       <p class="debug"><a class="related" href="javascript: reloadTree();">reload</a></p>
     </mm:present>    
+    -->
     </div>
   </mm:node>
 </mm:cloud>
