@@ -11,8 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.StringBufferWriter;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +28,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.8 2004-01-19 17:22:10 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.9 2005-04-21 12:01:11 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -57,7 +56,9 @@ public class XmlHandler extends StringHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        if(! search) {
+        String xmlmode = node == null ? "" : "" + node.getCloud().getProperty(Cloud.PROP_XMLMODE);
+        if (xmlmode.equals("")) xmlmode = "xml";
+        if(! search && xmlmode.equals("xml")) {
             StringBuffer buffer = new StringBuffer();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
@@ -95,6 +96,10 @@ public class XmlHandler extends StringHandler {
                     throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
                 } catch(TransformerException te) {
                     throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
+                }
+            } else {
+                if (tag.getOptions().indexOf("noempty") > -1) {
+                    buffer.append(" ");
                 }
             }
             buffer.append("</textarea>");

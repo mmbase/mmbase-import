@@ -15,6 +15,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
@@ -22,10 +24,11 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.28 2004-12-22 14:58:45 pierre Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.29 2005-04-21 12:01:11 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
+    private static final Logger log = Logging.getLoggerInstance(AbstractTypeHandler.class);
 
     protected FieldInfoTag tag;
 
@@ -76,7 +79,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (fieldValue == null) {
 
         } else {
-            if (! fieldValue.equals(node.getValue(fieldName))) {
+            if (! fieldValue.equals(node.getStringValue(fieldName))) {
+                //log.info("Field " + field + " " + node.getValue(fieldName) + " --> " + fieldValue);
                 node.setValue(fieldName,  fieldValue);
                 return true;
             }

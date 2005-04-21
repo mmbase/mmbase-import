@@ -29,7 +29,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.15 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ByteHandler.java,v 1.16 2005-04-21 12:01:11 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -103,14 +103,25 @@ public class ByteHandler extends AbstractTypeHandler {
             }
             node.setByteValue(fieldName, bytes);
             NodeManager nm = node.getNodeManager();
-            if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals(""))) {
+            if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals("")) &&
+                cc.find(tag.getPageContext(), prefix("mimetype")) == null
+                ) {
                 node.setStringValue("mimetype", fileType);
             }
-            if (nm.hasField("filename") && (fileName != null) && (! fileName.equals(""))) {
+            if (nm.hasField("filename") && (fileName != null) && (! fileName.equals("")) &&
+                cc.find(tag.getPageContext(), prefix("filename")) == null
+                ) {
                 node.setStringValue("filename", fileName);
             }
-            if (nm.hasField("size")) {
+            if (nm.hasField("size") && 
+                cc.find(tag.getPageContext(), prefix("size")) == null
+                ) {
                 node.setIntValue("size", bytes.length);
+            }
+            if (nm.hasField("filesize") && 
+                cc.find(tag.getPageContext(), prefix("filesize")) == null
+                ) {
+                node.setIntValue("filesize", bytes.length);
             }
         }
 
