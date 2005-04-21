@@ -22,7 +22,6 @@
 
 <%@ include file="getids.jsp" %>
 
-<di:hasrole role="student">
 <%@ include file="leftpanel.jsp" %>
 
 <%-- right section --%>
@@ -111,7 +110,6 @@
   </div>
 </div>
 </mm:compare>
-</di:hasrole>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </fmt:bundle>
 </mm:cloud>
