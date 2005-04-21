@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.3 2005-04-20 14:32:12 pierre Exp $
+ * @version $Id: Indexer.java,v 1.4 2005-04-21 07:11:41 pierre Exp $
  **/
 public class Indexer {
 
@@ -94,9 +94,8 @@ public class Indexer {
     public void updateIndex(String number) {
         deleteIndex(number);
         try {
-            MMObjectBuilder root = mmbase.getRootBuilder();
             IndexWriter writer = new IndexWriter(index, new StandardAnalyzer(), false);
-            MMObjectNode node = root.getNode(number);
+            MMObjectNode node = mmbase.getRootBuilder().getNode(number);
             if (node != null) {
                 // process all queries
                 for (Iterator i = queries.iterator(); i.hasNext();) {
@@ -240,7 +239,8 @@ public class Indexer {
         if (cursor.nodeNumber != -1) {
             Document document = new Document();
             document.add(Field.Keyword("builder", cursor.elementBuilder.getTableName()));
-            document.add(Field.Keyword("number", ""+cursor.nodeNumber));
+            document.add(Field.Keyword("number", "" + cursor.nodeNumber));
+log.service("Index node " + cursor.nodeNumber);
             for (Iterator i = cursor.fields.iterator(); i.hasNext(); ) {
                 FieldDefinition fieldDefinition = (FieldDefinition)i.next();
                 String fieldName = fieldDefinition.alias;
@@ -551,7 +551,6 @@ public class Indexer {
          * @param fieldName the name of the field
          */
         void addToIndexed(int number, String fieldName) {
-log.info("addToIndexed: "+ number + "_" + fieldName);
             indexed.add(number + "_" + fieldName);
         }
 
