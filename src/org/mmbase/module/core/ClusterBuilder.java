@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.69 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ClusterBuilder.java,v 1.70 2005-04-21 14:31:35 pierre Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -306,26 +306,56 @@ public class ClusterBuilder extends VirtualBuilder {
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param orderVec the fieldnames on which you want to sort.
-     * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
+     * @param directions A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
      * @param searchDir Specifies in which direction relations are to be
      *      followed, this must be one of the values defined by this class.
      * @return a <code>Vector</code> containing all matching nodes
+     * @deprecated use {@link #searchMultiLevelVector(List snodes, List fields, String pdistinct, List tables, String where,
+     *               List orderVec, List directions, List searchDirs)}
      */
-    public Vector searchMultiLevelVector(
-        Vector snodes,
-        Vector fields,
-        String pdistinct,
-        Vector tables,
-        String where,
-        Vector orderVec,
-        Vector direction,
-        int searchdir) {
+    public Vector searchMultiLevelVector(List snodes, List fields, String pdistinct, List tables, String where, List sortFields,
+            List directions, int searchDir) {
+        List searchDirs = new ArrayList();
+        searchDirs.add(new Integer(searchDir));
+        return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
+    }
 
+    /**
+     * Return all the objects that match the searchkeys.
+     * The constraint must be in one of the formats specified by {@link
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * QueryConvertor#setConstraint()}.
+     *
+     * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
+     *      listed in the tables parameter.
+     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
+     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
+     *      Examples: 'people.lastname'
+     * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
+     * @param tables The builder chain. A list containing builder names.
+     *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
+     *      a relation builder by placing the name of the builder between two builders to search.
+     *      Example: company,people or typedef,authrel,people.
+     * @param where The constraint, must be in one of the formats specified by {@link
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        QueryConvertor#setConstraint()}.
+     *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
+     * @param orderVec the fieldnames on which you want to sort.
+     * @param directions A list of values containing, for each field in the order parameter, a value indicating whether the sort is
+     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
+     *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
+     * @param searchDirs Specifies in which direction relations are to be followed. You can specify a direction for each
+     *      relation in the path. If you specify less directions than there are relations, the last specified direction is used
+     *      for the remaining relations. If you specify an empty list the default direction is BOTH.
+     * @return a <code>Vector</code> containing all matching nodes
+     */
+    public Vector searchMultiLevelVector(List snodes, List fields, String pdistinct, List tables, String where, List sortFields,
+        List directions, List searchDirs) {
         // Try to handle using the SearchQuery framework.
         try {
-            SearchQuery query = getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, orderVec, direction, searchdir);
+            SearchQuery query = getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
             List clusterNodes = getClusterNodes(query);
             return new Vector(clusterNodes);
         } catch (Exception e) {
@@ -450,20 +480,61 @@ public class ClusterBuilder extends VirtualBuilder {
      *        If less values are supplied then there are fields in order,
      *        the first value in the list is used for the remaining fields.
      *        Default value is <code>'UP'</code>.
-     * @param searchDir Specifies in which direction relations are to be
+     * @param searchDirs Specifies in which direction relations are to be
+     *        followed, this must be one of the values defined by this class.
+     * @deprecated use {@link #getMultiLevelSearchQuery(List snodes, List fields, String pdistinct, List tables, String where,
+     *               List orderVec, List directions, int searchDir)}
+     * @return the resulting search query.
+     * @since MMBase-1.7
+     */
+    public BasicSearchQuery getMultiLevelSearchQuery(List snodes, List fields, String pdistinct, List tables, String where,
+            List sortFields, List directions, int searchDir) {
+        List searchDirs = new ArrayList();
+        searchDirs.add(new Integer(searchDir));
+        return getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
+    }
+
+    /**
+     * Creates search query that selects all the objects that match the
+     * searchkeys.
+     * The constraint must be in one of the formats specified by {@link
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * QueryConvertor#setConstraint()}.
+     *
+     * @param snodes <code>null</code> or a list of numbers
+     *        of nodes to start the search with.
+     *        These have to be present in the first table listed in the
+     *        tables parameter.
+     * @param fields List of fieldnames to return.
+     *        These should be formatted as <em>stepalias.field</em>,
+     *        e.g. 'people.lastname'
+     * @param pdistinct 'YES' if the records returned need to be
+     *        distinct (ignoring case).
+     *        Any other value indicates double values can be returned.
+     * @param tables The builder chain, a list containing builder names.
+     *        The search is formed by following the relations between
+     *        successive builders in the list.
+     *        It is possible to explicitly supply a relation builder by
+     *        placing the name of the builder between two builders to search.
+     *        Example: company,people or typedef,authrel,people.
+     * @param where The constraint, must be in one of the formats specified by {@link
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        QueryConvertor#setConstraint()}.
+     *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
+     * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.
+     * @param directions <code>null</code> or a list of values containing, for each field in the
+     *        <code>sortFields</code> parameter, a value indicating whether the sort is
+     *        ascending (<code>UP</code>) or descending (<code>DOWN</code>).
+     *        If less values are supplied then there are fields in order,
+     *        the first value in the list is used for the remaining fields.
+     *        Default value is <code>'UP'</code>.
+     * @param searchDirs Specifies in which direction relations are to be
      *        followed, this must be one of the values defined by this class.
      * @return the resulting search query.
      * @since MMBase-1.7
      */
-    public BasicSearchQuery getMultiLevelSearchQuery(
-        List snodes,
-        List fields,
-        String pdistinct,
-        List tables,
-        String where,
-        List sortFields,
-        List directions,
-        int searchdir) {
+    public BasicSearchQuery getMultiLevelSearchQuery(List snodes, List fields, String pdistinct, List tables, String where,
+            List sortFields, List directions, List searchDirs) {
 
         // Create the query.
         BasicSearchQuery query= new BasicSearchQuery();
@@ -529,7 +600,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
 
-        addRelationDirections(query, searchdir, roles);
+        addRelationDirections(query, searchDirs, roles);
 
         // Add constraints.
         // QueryConverter supports the old formats for backward compatibility.
@@ -903,25 +974,31 @@ public class ClusterBuilder extends VirtualBuilder {
      * Adds relation directions.
      *
      * @param query The search query.
-     * @param searchDir Specifies in which direction relations are to be
-     *      followed, this must be one of the values defined by this class.
+     * @param searchDirs Specifies in which direction relations are to be followed. You can specify a direction for each
+     *      relation in the path. If you specify less directions than there are relations, the last specified direction is used
+     *      for the remaining relations. If you specify an empty list the default direction is BOTH.
      * @param roles Map of tablenames mapped to <code>Integer</code> values,
      *        representing the nodenumber of the corresponing RelDef node.
      * @since MMBase-1.7
      */
     // package visibility!
-    void addRelationDirections(BasicSearchQuery query, int searchDir, Map roles) {
+    void addRelationDirections(BasicSearchQuery query, List searchDirs, Map roles) {
 
         Iterator iSteps = query.getSteps().iterator();
+        Iterator iSearchDirs = searchDirs.iterator();
+        int searchDir = RelationStep.DIRECTIONS_BOTH;
+
         if (! iSteps.hasNext()) return; // nothing to be done.
         BasicStep sourceStep = (BasicStep)iSteps.next();
         BasicStep destinationStep = null;
+
         while (iSteps.hasNext()) {
             if (destinationStep != null) {
                 sourceStep = destinationStep;
             }
             BasicRelationStep relationStep= (BasicRelationStep)iSteps.next();
             destinationStep= (BasicStep)iSteps.next();
+            if (iSearchDirs.hasNext()) searchDir = ((Integer)iSearchDirs.next()).intValue();
 
             // Determine typedef number of the source-type.
             int sourceType = sourceStep.getBuilder().getObjectType();
