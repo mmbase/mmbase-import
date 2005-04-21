@@ -37,7 +37,8 @@
 #tree div.off a.turnoff {
 
 }
-#tree div.off a.create {
+#tree a.create {
+	  text-decoration: none;
 }
 		
 #preview { 

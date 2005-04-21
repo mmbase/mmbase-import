@@ -17,7 +17,6 @@
 
       <mm:node id="node" referid="node">
         <mm:notpresent referid="loadonly">
-          <mm:field name="number" />
           <form>
             <table>
               <mm:fieldlist fields="title,subtitle,intro">

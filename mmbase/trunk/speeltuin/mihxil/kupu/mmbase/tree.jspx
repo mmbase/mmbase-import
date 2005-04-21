@@ -49,7 +49,7 @@
                 </a>
               </mm:isgreaterthan>
             </mm:size>
-            <a class="create" href="javascript: createSubNode(${n});">+</a>
+            <a class="create" title="New" href="javascript: createSubNode(${n});">+</a>
 
         </li>
         <mm:listrelations id="rel">
@@ -68,7 +68,7 @@
                         </a>
                       </mm:isgreaterthan>
                       <mm:compare value="0">
-                        <a class="create" href="javascript: createSubNode(${segment});">+</a>
+                        <a class="create" title="New" href="javascript: createSubNode(${segment});">+</a>
                       </mm:compare>
                     </mm:size>
                   </mm:listrelationscontainer>
