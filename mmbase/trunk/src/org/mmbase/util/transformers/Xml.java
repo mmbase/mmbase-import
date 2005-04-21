@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.12 2004-10-13 11:14:23 michiel Exp $
+ * @version $Id: Xml.java,v 1.13 2005-04-21 10:05:17 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -60,6 +60,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * Attributes of XML tags cannot contain quotes.
      */
     public static String XMLAttributeEscape(String att, char quot) {
+        if (att == null) return "";
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
