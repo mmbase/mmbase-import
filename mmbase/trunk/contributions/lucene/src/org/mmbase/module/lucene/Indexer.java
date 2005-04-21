@@ -14,6 +14,7 @@ import java.util.*;
 import java.io.*;
 
 import org.apache.lucene.document.*;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
 
@@ -26,8 +27,9 @@ import org.pdfbox.util.PDFTextStripper;
 
 import org.textmining.text.extraction.WordExtractor;
 
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.module.lucene.query.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
@@ -43,7 +45,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.4 2005-04-21 07:11:41 pierre Exp $
+ * @version $Id: Indexer.java,v 1.5 2005-04-21 14:28:43 pierre Exp $
  **/
 public class Indexer {
 
@@ -53,21 +55,21 @@ public class Indexer {
     private String index;
     // Collection with queries to run
     private Collection queries;
-    // refernce to mmbase
-    private MMBase mmbase;
+    // reference to the cloud
+    private Cloud cloud;
     // format for dates to index
     static private final DateFormat simpleFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
      * @param index Name of the index
-     * @param queries a collection of QueryDefinitions that select the nodes to index, and contain options on the fields to index.
-     * @param mmbase The MMBase instance
+     * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
+     * @param cloud The Cloud to use for querying
      */
-    Indexer(String index, Collection queries, MMBase mmbase) {
+    Indexer(String index, Collection queries, Cloud cloud) {
         this.index = index;
         this.queries = queries;
-        this.mmbase = mmbase;
+        this.cloud = cloud;
     }
 
     /**
@@ -95,13 +97,13 @@ public class Indexer {
         deleteIndex(number);
         try {
             IndexWriter writer = new IndexWriter(index, new StandardAnalyzer(), false);
-            MMObjectNode node = mmbase.getRootBuilder().getNode(number);
+            Node node = cloud.getNode(number);
             if (node != null) {
                 // process all queries
                 for (Iterator i = queries.iterator(); i.hasNext();) {
-                    QueryDefinition queryDefinition = (QueryDefinition)i.next();
-                    if (queryDefinition.elementBuilder == node.getBuilder()) {
-                        IndexCursor cursor = new IndexCursor(queryDefinition, writer);
+                    IndexDefinition indexDefinition = (IndexDefinition)i.next();
+                    if (indexDefinition.elementManager.equals(node.getNodeManager())) {
+                        IndexCursor cursor = new IndexCursor(indexDefinition, writer);
                         cursor.nodeNumber = node.getNumber();
                         indexQuery(cursor, true);
                     }
@@ -122,8 +124,8 @@ public class Indexer {
             IndexWriter writer = new IndexWriter(index, new StandardAnalyzer(), true);
             // process all queries
             for (Iterator i = queries.iterator(); i.hasNext();) {
-                QueryDefinition queryDefinition = (QueryDefinition)i.next();
-                IndexCursor cursor = new IndexCursor(queryDefinition, writer);
+                IndexDefinition indexDefinition = (IndexDefinition)i.next();
+                IndexCursor cursor = new IndexCursor(indexDefinition, writer);
                 indexQuery(cursor, false);
             }
             writer.optimize();
@@ -132,7 +134,8 @@ public class Indexer {
             }
             writer.close();
         } catch (Exception e) {
-            log.error("Cannot run FullIndex:"+e.getMessage());
+            log.error("Cannot run FullIndex: "+e.getMessage());
+            log.error(Logging.stackTrace(e));
         }
     }
 
@@ -146,28 +149,22 @@ public class Indexer {
      * the database that change the query result.
      * @param cursor the cursor with query and offset information
      * @param limited if <code>true</code>, the query should be limited to the node where the cursor is focused on
-     * @return the query result as a list of MMObjectNodes
+     * @return the query result as a list of Nodes
      * @throws SearchQueryException is the query to create the index out of failed
      */
-    protected List getNodes(IndexCursor cursor, boolean limited) throws SearchQueryException {
+    protected NodeList getNodes(IndexCursor cursor, boolean limited) throws SearchQueryException {
         if (cursor.offset == cursor.END_OF_QUERY) return null;
 
-        ModifiableQuery query = new ModifiableQuery(cursor.query);
-        FieldDefs fieldDef = cursor.elementBuilder.getField(MMObjectBuilder.FIELD_NUMBER);
-        StepField numberField = new BasicStepField(cursor.mainStep,fieldDef);
-        if (!(cursor.query instanceof NodeSearchQuery)) {
-            List fields = new ArrayList(query.getFields());
-            fields.add(numberField);
-            query.setFields(fields);
-            query.setSortOrders(Collections.singletonList(new BasicSortOrder(numberField)));
+        Query query = (Query)cursor.query.clone();
+        String numberFieldName = "number";
+        if (cursor.isMultiLevel) {
+            numberFieldName = cursor.elementManager.getName()+".number";
+            StepField numberField = query.createStepField(numberFieldName);
+            query.addSortOrder(numberField,SortOrder.ORDER_ASCENDING);
         }
         if (limited) {
-            Constraint constraint = new BasicFieldValueConstraint(numberField, new Integer(cursor.nodeNumber));
-            Constraint originalConstraint = query.getConstraint();
-            if (originalConstraint != null) {
-                constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND).addChild(originalConstraint).addChild(constraint);
-            }
-            query.setConstraint(constraint);
+            Constraint constraint = Queries.createConstraint(query, numberFieldName, FieldCompareConstraint.EQUAL, new Integer(cursor.nodeNumber));
+            Queries.addConstraint(query,constraint);
         }
         query.setOffset(cursor.offset);
         query.setMaxNumber(cursor.maxNodesInQuery);
@@ -176,11 +173,11 @@ public class Indexer {
             log.debug("get nodes:" + query);
         }
 
-        List nodes;
-        if (cursor.query instanceof NodeSearchQuery) {
-            nodes = mmbase.getSearchQueryHandler().getNodes(query, cursor.elementBuilder);
+        NodeList nodes;
+        if (cursor.isMultiLevel) {
+            nodes = cloud.getList(query);
         } else {
-            nodes = mmbase.getSearchQueryHandler().getNodes(query, mmbase.getClusterBuilder());
+            nodes = cursor.elementManager.getList((NodeQuery)query);
         }
         if (nodes != null && nodes.size() > 0) {
             if (nodes.size() < cursor.maxNodesInQuery) {
@@ -204,18 +201,18 @@ public class Indexer {
      */
     public void indexQuery(IndexCursor cursor, boolean limited) throws SearchQueryException, IOException {
         if (log.isDebugEnabled()) {
-            log.debug("index builder "+cursor.elementBuilder.getTableName());
+            log.debug("index builder "+cursor.elementManager.getName());
         }
-        List nodes = getNodes(cursor, limited);
+        NodeList nodes = getNodes(cursor, limited);
         while (nodes != null) {
             if (log.isDebugEnabled()) {
                 log.debug("index "+nodes.size()+" nodes.");
             }
-            for (Iterator i = nodes.iterator(); i.hasNext();) {
-                MMObjectNode node = (MMObjectNode)i.next();
+            for (NodeIterator i = nodes.nodeIterator(); i.hasNext();) {
+                Node node = i.nextNode();
                 int nodeNumber = -1;
-                if (node instanceof ClusterNode) {
-                    nodeNumber = node.getIntValue(cursor.elementBuilder.getTableName() +".number");
+                if (cursor.isMultiLevel) {
+                    nodeNumber = node.getIntValue(cursor.elementManager.getName() +".number");
                 } else {
                     nodeNumber = node.getNumber();
                 }
@@ -238,11 +235,11 @@ public class Indexer {
     public void indexData(IndexCursor cursor) throws IOException {
         if (cursor.nodeNumber != -1) {
             Document document = new Document();
-            document.add(Field.Keyword("builder", cursor.elementBuilder.getTableName()));
+            document.add(Field.Keyword("builder", cursor.elementManager.getName()));
             document.add(Field.Keyword("number", "" + cursor.nodeNumber));
-log.service("Index node " + cursor.nodeNumber);
+            log.debug("Index node " + cursor.nodeNumber);
             for (Iterator i = cursor.fields.iterator(); i.hasNext(); ) {
-                FieldDefinition fieldDefinition = (FieldDefinition)i.next();
+                IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
                 String fieldName = fieldDefinition.alias;
                 if (fieldName == null)  fieldName = fieldDefinition.fieldName;
                 if (document.getField(fieldName) == null) {
@@ -269,7 +266,7 @@ log.service("Index node " + cursor.nodeNumber);
         }
     }
 
-    boolean shouldIndex(MMObjectNode node, IndexCursor cursor, String fieldName) {
+    boolean shouldIndex(Node node, IndexCursor cursor, String fieldName) {
         // determine number
         int pos = fieldName.indexOf(".");
         if (pos != -1) {
@@ -286,52 +283,55 @@ log.service("Index node " + cursor.nodeNumber);
 
     /**
      * Store data from field in a node into the cursor
-     * @param node the MMObjectNode to copy data from
+     * @param node the Node to copy data from
      * @param cursor the cursor to hold the data
      */
-    public void storeData(MMObjectNode node, IndexCursor cursor) {
+    public void storeData(Node node, IndexCursor cursor) {
         for (Iterator i = cursor.fields.iterator(); i.hasNext(); ) {
-            FieldDefinition fieldDefinition = (FieldDefinition)i.next();
+            IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.fieldName;
             String alias = fieldDefinition.alias;
             if (alias == null)  alias = fieldDefinition.fieldName;
             String decryptionPassword = fieldDefinition.decryptionPassword;
-            FieldDefs field = node.getBuilder().getField(fieldName);
             if (shouldIndex(node, cursor, fieldName)) {
-                int type = field.getDBType();
+                // some hackery
+                int type = org.mmbase.bridge.Field.TYPE_UNKNOWN;
+                if (fieldDefinition.stepField != null) type = fieldDefinition.stepField.getType();
                 String documentText = null;
                 switch (type) {
-                    case FieldDefs.TYPE_DATETIME : {
+                    case org.mmbase.bridge.Field.TYPE_DATETIME : {
                         try {
-                            String value = simpleFormat.format(node.getDateValue(fieldName));
-                            if (log.isDebugEnabled()) {
-                                log.trace("add " + alias + " keyword:" + value);
-                            }
-                            cursor.storeFieldData(alias, value);
+                            documentText = simpleFormat.format(node.getDateValue(fieldName));
                         } catch (Exception e) {
                             // can't index dates prior to 1970, pretty dumb if you ask me
                         }
                         break;
                     }
-                    case FieldDefs.TYPE_BOOLEAN : {
+                    case org.mmbase.bridge.Field.TYPE_BOOLEAN : {
                         if (log.isDebugEnabled()) {
                             log.trace("add " + alias + " keyword:" + node.getIntValue(fieldName));
                         }
-                        cursor.storeFieldData(alias, "" + node.getIntValue(fieldName));
+                        documentText = "" + node.getIntValue(fieldName);
                         break;
                     }
-                    case FieldDefs.TYPE_INTEGER :
-                    case FieldDefs.TYPE_LONG :
-                    case FieldDefs.TYPE_DOUBLE :
-                    case FieldDefs.TYPE_FLOAT : {
-                        if (log.isDebugEnabled()) {
-                            log.trace("add " + alias + " keyword:" + node.getStringValue(fieldName));
+                    case org.mmbase.bridge.Field.TYPE_NODE :
+                    case org.mmbase.bridge.Field.TYPE_INTEGER :
+                    case org.mmbase.bridge.Field.TYPE_LONG :
+                    case org.mmbase.bridge.Field.TYPE_DOUBLE :
+                    case org.mmbase.bridge.Field.TYPE_FLOAT : {
+                        documentText =  node.getStringValue(fieldName);
+                        break;
+                    }
+                    case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
+                    case org.mmbase.bridge.Field.TYPE_BYTE : {
+                        String mimeType = "unknown";
+                        if (cursor.isMultiLevel) {
+                            int pos = fieldName.indexOf(".");
+                            Node subNode = node.getNodeValue(fieldName.substring(0,pos));
+                            mimeType = subNode.getStringValue("mimetype");
+                        } else {
+                            mimeType = node.getStringValue("mimetype");
                         }
-                        cursor.storeFieldData(alias, node.getStringValue(fieldName));
-                        break;
-                    }
-                    case FieldDefs.TYPE_BYTE : {
-                        String mimeType = node.getStringValue("mimetype");
                         if (mimeType.equalsIgnoreCase("application/pdf")) {
                             if (log.isDebugEnabled()) {
                                 log.trace("index " + alias + " as pdf document");
@@ -398,111 +398,21 @@ log.service("Index node " + cursor.nodeNumber);
                     }
                 }
                 if (documentText != null) {
-                    cursor.storeFieldTextData(alias, documentText);
+                    if (fieldDefinition.keyWord) {
+                        cursor.storeFieldData(alias, documentText);
+                    } else {
+                        cursor.storeFieldTextData(alias, documentText);
+                    }
                 }
             }
         }
     }
 
     /**
-     * Defines options for a field to index.
-     */
-    static class FieldDefinition {
-
-        /**
-         * Name of the field
-         */
-        String fieldName = null;
-
-        /**
-         * If <code>true</code>, the field's value is stored as a keyword.
-         */
-        boolean keyWord = false;
-
-        /**
-         * If <code>true</code>, the field's value is stored and can be returned
-         * when search results are given.
-         */
-        boolean storeText = false;
-
-        /**
-         * If not <code>null</code>, this is the fieldname under which the value is indexed.
-         * Fieldnames with similar values are pooled together.
-         */
-        String alias = null;
-
-        /**
-         * Password for unlocking the content of binary fields that may contain encrypted pdf documents.
-         */
-        String decryptionPassword = "";
-
-        FieldDefinition() {
-        }
-
-    }
-
-    /**
-     * Defines a query and possible options for the fields to index.
-     */
-    static class QueryDefinition {
-
-        /**
-         * The default maximum number of nodes that are returned by a call to the searchqueryhandler.
-         */
-        public static final int MAX_NODES_IN_QUERY = 50;
-
-        /**
-         * The builder whose nodes function as the main 'element' for the query.
-         */
-        MMObjectBuilder elementBuilder = null;
-
-        /**
-         * The builder who represents teh query and is used to resolve fieldnames and other query elements.
-         */
-        MMObjectBuilder builderResolver = null;
-
-        /**
-         * A collection of FieldDefinition objects, containing properties for the fields to index.
-         */
-        Collection fields = null;
-
-        /**
-         * The query to run
-         */
-        BasicSearchQuery query = null;
-
-        /**
-         * The step in the query that targets the main element
-         */
-        Step mainStep = null;
-
-        /**
-         * The maximum number of nodes that are returned by a call to the searchqueryhandler.
-         */
-        int maxNodesInQuery = MAX_NODES_IN_QUERY;
-
-        QueryDefinition() {
-        }
-
-        /**
-         * Constructor, copies all data from the specified QueryDefinition object.
-         */
-        QueryDefinition(QueryDefinition queryDefiniton) {
-            this.elementBuilder = queryDefiniton.elementBuilder;
-            this.builderResolver = queryDefiniton.builderResolver;
-            this.fields = queryDefiniton.fields;
-            this.query = queryDefiniton.query;
-            this.mainStep = queryDefiniton.mainStep;
-            this.maxNodesInQuery = queryDefiniton.maxNodesInQuery;
-        }
-
-    }
-
-    /**
      * Defines a 'cursor' with which to run through the results of a query, and to
      * collect data to index.
      */
-    class IndexCursor extends QueryDefinition {
+    class IndexCursor extends IndexDefinition {
 
         /**
          * Value for the cursor offset to indicate the end of the query.
@@ -511,6 +421,9 @@ log.service("Index node " + cursor.nodeNumber);
 
        // map with data to index for each field
         private Map data = new HashMap();
+
+       // map with data to index for each field
+        private Map fieldTypes = new HashMap();
 
         // set with numbers of nodes indexed so far - used to prevent the indexing
         // of fields already indexed
@@ -531,8 +444,8 @@ log.service("Index node " + cursor.nodeNumber);
          */
         IndexWriter writer;
 
-        IndexCursor(QueryDefinition queryDefinition, IndexWriter writer) {
-            super(queryDefinition);
+        IndexCursor(IndexDefinition indexDefinition, IndexWriter writer) {
+            super(indexDefinition);
             this.writer = writer;
         }
 
@@ -576,8 +489,12 @@ log.service("Index node " + cursor.nodeNumber);
             } catch (ClassCastException cce) {
                 log.warn("Tried to store data of '" + fieldName + "' as a standard index, but data was already stored as a special index");
             }
-            if (sb == null) sb = new StringBuffer();
-            sb.append(" ").append(value);
+            if (sb == null) {
+                sb = new StringBuffer();
+            } else {
+                sb.append(" ");
+            }
+            sb.append(value);
             data.put(fieldName, sb);
         }
 
