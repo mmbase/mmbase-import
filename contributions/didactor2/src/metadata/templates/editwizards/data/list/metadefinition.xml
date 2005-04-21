@@ -1,6 +1,6 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="metadefinition" role="related" minoccurs="0" maxoccurs="*">
-  <title>Bijbehorende Metadata Definitie</title>
+<list destination="metadefinition" role="related" minoccurs="0" maxoccurs="*" orderby="metadefinition.name">
+  <title>Bijbehorende Metadata Definitie!</title>
   <item>
     <field name="name" ftype="data">
       <prompt>Naam</prompt>
@@ -14,29 +14,16 @@
     <field name="handler" ftype="data">
       <prompt>Handler</prompt>
     </field>
-
     <field ftype="startwizard" wizardname="metadefinition" />
   </item>
 
   <action type="create">
-    <relation destinationtype="metadata" role="related">
-      <object type="metadata">
-        <relation destinationtype="metadefinition" role="related"/>
-      </object>
-    </relation>
+    <relation destinationtype="metadefinition" role="related">
+     </relation>
   </action>
 
-  <action type="add">
-    <relation destinationtype="metadata" role="related">
-      <object type="metadefintion">
-      </object>
-    </relation>
-  </action>
-
-  <action type="load">
-  </action>
-
-  <command name="startwizard" inline="true" wizardname="metadata" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="metadefinition-noorigin" objectnumber="new" >
+  </command>
 
   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar metadata definities</prompt>

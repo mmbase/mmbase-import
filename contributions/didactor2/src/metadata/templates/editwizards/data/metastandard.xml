@@ -31,11 +31,7 @@
     </field>
 
 
-    <list destination="metadefinition" role="related" extends="list/metadefinition.xml" orderby="name">
-       <item>
-          <field ftype="startwizard" wizardname="metadefinition.xml" />
-       </item>
-    </list>
+    <list destination="metadefinition" role="related" extends="list/metadefinition.xml" />
 
     <!--<list destination="metavocabulary" role="related" extends="list/metavocabularydefinition.xml" />-->
 
