@@ -32,14 +32,12 @@
 
  }
 #tree div.on a.turnon {
-  display: none;
+
 }
 #tree div.off a.turnoff {
-  display: none;
-}
 
+}
 #tree div.off a.create {
-  display: none;
 }
 		
 #preview { 

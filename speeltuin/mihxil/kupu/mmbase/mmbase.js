@@ -22,11 +22,11 @@ function Map() {
 
 var loadedNodes      = new Map();
 var loadedTrees      = new Map();
+var unloadedTrees      = new Map();
 var uncollapsedNodes = new Array();
 var loadedNodeBodies = new Map();
 
 function mmbaseInit() {
-
 }
 
 
@@ -78,30 +78,41 @@ function loadRelated(nodeNumber) {
     if (treeXml == null) {
         var request = new XMLHttpRequest();
         request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
-        request.send(null);
+        request.send('');
         treeXml = Sarissa.serialize(request.responseXML);
         loadedTrees.add(nodeNumber, treeXml);
     }
-    document.getElementById('node_' + nodeNumber + '_related').innerHTML = treeXml;
-    document.getElementById('node_' + nodeNumber + '_related').className = 'on';    
-    uncollapsedNodes[nodeNumber] = true;
+    var related = document.getElementById('node_' + nodeNumber);
+    unloadedTrees.add(nodeNumber, related.innerHTML);
+    related.innerHTML = treeXml;
+    related.className = 'tree on';    
+    uncollapsedNodes['node' + nodeNumber] = true;
 }
 
 /**
  * Unload a part from the 'tree' of nodes. The div with the correct id is made empty.
  */
 function unloadRelated(nodeNumber) {
-    document.getElementById('node_' + nodeNumber + '_related').innerHTML = '';
-    document.getElementById('node_' + nodeNumber + '_related').className = 'off';
-    uncollapsedNodes[nodeNumber] = null;
+    var related = document.getElementById('node_' + nodeNumber);    
+    var html = unloadedTrees.get(nodeNumber);   
+    if (html == null) {
+        // just fall-back
+        var request = new XMLHttpRequest();
+        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
+        request.send('');
+        html = Sarissa.serialize(request.responseXML);
+    }
+    related.innerHTML = html;
+    related.className = 'tree off';
+    uncollapsedNodes['node' + nodeNumber] = null;
 }
 
 function reloadTree() {
     var request = new XMLHttpRequest();
     request.open('GET', 'tree.jspx?parent=true', false);    
-    request.send(null);
+    request.send('');
     document.getElementById('tree').innerHTML = Sarissa.serialize(request.responseXML);
-    alert(" " + i + ":" + uncollapsedNodes.length + " " + uncollapsedNodes[i]);
+    alert(" " + uncollapsedNodes.length + " " + uncollapsedNodes);
 }
 
 /**
