@@ -28,6 +28,7 @@
         <mm:import id="education" reset="true"><mm:field name="educations.number"/></mm:import>
         <mm:import id="class" reset="true"><mm:field name="classes.number"/></mm:import>
         <%@ include file="getprogress.jsp" %>
+        <mm:import id="progressvalue" jspvar="progress" vartype="Double" reset="true"><mm:write referid="progress"/></mm:import>
 
         <tr style="vertical-align:top;">
           <td class="listItem"><mm:field name="educations.name"/><br/> from class <mm:field name="classes.name"/></td>
@@ -56,9 +57,8 @@
                         referids="$referids,currentfolder">
                       <mm:param name="education"><mm:field name="educations.number"/></mm:param>
                       <mm:param name="command">detail</mm:param>
-                    </mm:treefile>">            <div class="progressMeter">
-<img src="/didactor/gfx/bar_left.gif" width=4 height=13 alt="" /><img src="/didactor/gfx/bar_center.gif" width="<mm:write referid="progress"/>" height="13" alt="" /><img src="/didactor/gfx/bar_right.gif" width=4 height=13 alt="" />
-            </div></a><mm:write referid="progress"/>%</td>
+                    </mm:treefile>">
+<img src="/didactor/pop/gfx/1.gif" width=4 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 alt="" border="0" /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/4.gif" width=<%= 100-progress.doubleValue() %> height=13 alt="" border="0" /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 alt="" border="0" /></a><mm:write referid="progress"/>%</td>
           <td class="listItem">
             <mm:compare referid="intake" value="1">
               <mm:compare referid="startflag" value="1">
