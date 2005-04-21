@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<plugin name="org.mmbase.documentation.system.configuration" id="org.mmbase.documentation.system.configuration" version="1.0" provider-name="MMBase.org">
+  <extension point="org.eclipse.help.toc">
+    <toc file="system.xml" primary="true"/>
+  </extension>
+</plugin>
