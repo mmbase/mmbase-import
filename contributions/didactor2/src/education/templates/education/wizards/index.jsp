@@ -14,8 +14,8 @@
       <td height="90%" valign="MIDDLE">
          <iframe width="970px" height="28" frameborder="1" marginheight="0" marginwidth="0" scrolling="no" src="<mm:treefile write="true" page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />"></iframe>
          <br/>
-         <iframe src="<mm:treefile write="true" page="/education/wizards/code.jsp" objectlist="$includePath" />" id="menu" name="menu" width="240" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
-         <iframe name="text" id="text" width="730" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
+         <iframe src="<mm:treefile write="true" page="/education/wizards/code.jsp" objectlist="$includePath" />"    id="menu" name="menu" width="240" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
+         <iframe src="<mm:treefile write="true" page="/education/wizards/loading.jsp" objectlist="$includePath" />" id="text" name="text" width="730" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
       </td>
    </tr>
 </table>
