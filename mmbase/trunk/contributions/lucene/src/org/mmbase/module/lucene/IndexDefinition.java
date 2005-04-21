@@ -17,14 +17,14 @@ import org.mmbase.module.lucene.query.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexDefinition.java,v 1.1 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: IndexDefinition.java,v 1.2 2005-04-21 18:16:38 pierre Exp $
  **/
 class IndexDefinition extends QueryDefinition {
 
     /**
      * The default maximum number of nodes that are returned by a call to the searchqueryhandler.
      */
-    public static final int MAX_NODES_IN_QUERY = 50;
+    public static final int MAX_NODES_IN_QUERY = 200;
 
     /**
      * The maximum number of nodes that are returned by a call to the searchqueryhandler.
