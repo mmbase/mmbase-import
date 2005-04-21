@@ -19,7 +19,7 @@
 
 <!ELEMENT field (#PCDATA)>
 <!ATTLIST field name NMTOKEN #REQUIRED>
-<!ATTLIST field alias NMTOKEN #REQUIRED>
+<!ATTLIST field alias NMTOKEN #IMPLIED>
 <!ATTLIST field keyword NMTOKEN #IMPLIED>
 <!ATTLIST field store NMTOKEN #IMPLIED>
 <!ATTLIST field password NMTOKEN #IMPLIED>

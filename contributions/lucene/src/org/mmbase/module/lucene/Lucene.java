@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.7 2005-04-20 14:32:12 pierre Exp $
+ * @version $Id: Lucene.java,v 1.8 2005-04-21 07:11:41 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -261,7 +261,43 @@ public class Lucene extends Module implements MMBaseObserver {
                     fieldDef = mmbase.getBuilder(step.getTableName()).getField(fieldName);
                 }
                 StepField field = new BasicStepField(step,fieldDef);
-                String value = constraintElement.getAttribute("value");
+                Object value = constraintElement.getAttribute("value");
+                // convert value for stupid searchquery
+                int type = fieldDef.getDBType();
+                switch (type) {
+                    case FieldDefs.TYPE_DATETIME : {
+                        value = Casting.toDate(value);
+                        break;
+                    }
+                    case FieldDefs.TYPE_BOOLEAN : {
+                        value = "true".equals((String)value) ? Boolean.TRUE : Boolean.FALSE;
+                        break;
+                    }
+                    case FieldDefs.TYPE_NODE : {
+                        MMObjectNode node = mmbase.getRootBuilder().getNode((String)value);
+                        if (node == null) {
+                            throw new IllegalArgumentException("node with number/alias " + value + "does not exist");
+                        }
+                        value = new Long(node.getNumber());
+                        break;
+                    }
+                    case FieldDefs.TYPE_INTEGER : {
+                        value = new Integer((String)value);
+                        break;
+                    }
+                    case FieldDefs.TYPE_LONG : {
+                        value = new Long((String)value);
+                        break;
+                    }
+                    case FieldDefs.TYPE_DOUBLE : {
+                        value = new Double((String)value);
+                        break;
+                    }
+                    case FieldDefs.TYPE_FLOAT : {
+                        value = new Float((String)value);
+                        break;
+                    }
+                }
                 BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(field, value);
                 if (constraintElement.hasAttribute("operator")) {
                     String operator = constraintElement.getAttribute("operator");
