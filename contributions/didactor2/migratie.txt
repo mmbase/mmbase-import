@@ -1,5 +1,11 @@
 Migratie issues
 
+2005-04-22
+
+    Urls, attachments etc. are now ordered on a page.
+
+    please run /migrate-2005-04-22.jsp to update current data.
+
 2005-04-14
 
 Two fields have been added to the flashpages object. Run the following code to
