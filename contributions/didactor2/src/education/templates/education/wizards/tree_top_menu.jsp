@@ -67,7 +67,7 @@
    <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 
       <body onLoad="try{top.frames['menu'].location.reload();} catch(err){};">
-         <table border="0" cellpadding="0" cellspacing="0" class="titlefield2" style="width:965px; background:#DEDEDE;">
+         <table border="0" cellpadding="0" cellspacing="0" class="titlefield2" style="width:965px;height:23px;background:#DEDEDE;">
             <form onSubmit="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';">
                <input type="hidden" name="mode" value="educations"/>
                <tr>
