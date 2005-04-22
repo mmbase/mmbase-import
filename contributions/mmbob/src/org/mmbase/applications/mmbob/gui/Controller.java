@@ -132,6 +132,7 @@ public class Controller {
             virtual.setValue("lastposternumber",f.getLastPosterNumber());
             virtual.setValue("lastposrnumber",f.getLastPostNumber());
             virtual.setValue("postthreadloadedcount", f.getPostThreadLoadedCount());
+            virtual.setValue("memorysize", ((float)f.getMemorySize())/(1024*1024)+"MB");
             list.add(virtual);
         }
         return list;

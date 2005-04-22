@@ -34,8 +34,10 @@ public class Poster {
     private int id, postcount, sessionstart, lastsessionend, state;
     private int quotanumber,quotaused;
     private int avatar = 0;
-    private String firstname, lastname, email, level, location, gender, password;
-    private Node node;
+    private int lastseen = 0;
+    private int firstlogin = -1;
+    private String account,firstname, lastname, email, level, location, gender, password;
+    //private Node node;
     private Forum parent;
     private HashMap mailboxes;
     private HashMap seenthreads = new HashMap();
@@ -51,10 +53,23 @@ public class Poster {
      */
     public Poster(Node node, Forum parent) {
 
-	    this.quotanumber=10;
-	    this.quotaused=-1;
+	this.quotanumber=10;
+	this.quotaused=-1;
         this.parent = parent;
-        this.node = node;
+        //this.node = node;
+	id = node.getIntValue("posters.number");
+	//state = node.getIntValue("posters.state");
+	state = -1;
+	account = node.getStringValue("posters.account");
+	firstname = node.getStringValue("posters.firstname");
+	lastname = node.getStringValue("posters.lastname");
+	postcount = node.getIntValue("posters.postcount");
+	level = node.getStringValue("posters.level");
+	location = node.getStringValue("posters.location");
+	gender = node.getStringValue("posters.gender");
+	firstlogin = node.getIntValue("posters.firstlogin");
+	lastsessionend = node.getIntValue("posters.lastseen");
+	/*
         this.id = node.getNumber();
         this.state = node.getIntValue("state");
         this.firstname=getAliased("firstname");
@@ -64,12 +79,17 @@ public class Poster {
         this.level = node.getStringValue("level");
         this.location=getAliased("location");
         this.gender=getAliased("gender");
-        int fl = node.getIntValue("firstlogin");
-        if (fl == -1) {
+        this.firstlogin = node.getIntValue("firstlogin");
+        lastsessionend = node.getIntValue("lastseen");
+	*/
+
+	/*
+        if (firstlogin == -1) {
             node.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
             syncNode(ForumManager.FASTSYNC);
         }
-        lastsessionend = node.getIntValue("lastseen");
+	*/
+	lastseen = lastsessionend;
         sessionstart = (int) (System.currentTimeMillis() / 1000);
     }
 
@@ -150,7 +170,8 @@ public class Poster {
      * @return accountname / nick
      */
     public String getAccount() {
-        return getAliased("account");
+        //return getAliased("account");
+	return account;
     }
 
     /**
@@ -271,7 +292,7 @@ public class Poster {
      * @return date/time (epoch)
      */
     public int getFirstLogin() {
-        return node.getIntValue("firstlogin");
+        return firstlogin;
     }
 
     /**
@@ -280,7 +301,7 @@ public class Poster {
      * @return date/time (epoch)
      */
     public int getLastSeen() {
-        return node.getIntValue("lastseen");
+        return lastseen;
     }
 
     /**
@@ -315,9 +336,11 @@ public class Poster {
      *
      * @param node
      */
+	/*
     public void setNode(Node node) {
         this.node = node;
     }
+	*/
 
     /**
      * get a node for a poster
@@ -325,6 +348,7 @@ public class Poster {
      * @return poster
      */
     public Node getNode() {
+        Node node = ForumManager.getCloud().getNode(id);
         return node;
     }
 
@@ -334,6 +358,7 @@ public class Poster {
      * @param queue syncQueue that must be used
      */
     private void syncNode(int queue) {
+        Node node = ForumManager.getCloud().getNode(id);
         node.setIntValue("postcount", postcount);
         node.setStringValue("level", level);
         node.setStringValue("gender", gender);
@@ -345,14 +370,15 @@ public class Poster {
      * update "lastseen" for the poster, and add the posternode to the syncQueue
      */
     public void signalSeen() {
-        int oldtime = node.getIntValue("lastseen");
+        int oldtime = lastseen;
         int onlinetime = ((int) (System.currentTimeMillis() / 1000)) - (parent.getPosterExpireTime());
 
         if (oldtime < onlinetime) {
             parent.newPosterOnline(this);
         }
-
-        node.setIntValue("lastseen", (int) ((System.currentTimeMillis() / 1000)));
+        Node node = ForumManager.getCloud().getNode(id);
+        lastseen =  (int) ((System.currentTimeMillis() / 1000));
+        node.setIntValue("lastseen", lastseen);
         ForumManager.syncNode(node, ForumManager.SLOWSYNC);
     }
 
@@ -360,6 +386,7 @@ public class Poster {
      * Save the poster, and add the node to the syncQueue
      */
     public void savePoster() {
+        Node node = ForumManager.getCloud().getNode(id);	
         node.setValue("firstname", firstname);
         node.setValue("lastname", lastname);
         node.setValue("email", email);
@@ -375,14 +402,8 @@ public class Poster {
      */
     private void readImages() {
         if (avatar == 0) avatar = -1;
+        Node node = ForumManager.getCloud().getNode(id);
         if (node != null) {
-            /*
-                    NodeIterator i=node.getRelatedNodes("images").nodeIterator();
-                    while (i.hasNext()) {
-                            Node node=i.nextNode();
-                            avatar=node.getNumber();
-            }
-            */
             int oldrelnumber = -1;
             RelationIterator i = node.getRelations("rolerel", "images").relationIterator();
             while (i.hasNext()) {
@@ -417,6 +438,7 @@ public class Poster {
      * @return <code>true</code> if this method is called
      */
     public boolean remove() {
+        Node node = ForumManager.getCloud().getNode(id);
         log.debug("going to remove poster: " + node.getNumber());
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastposternumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastposternumber");
@@ -429,6 +451,7 @@ public class Poster {
 
     private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
         //check if nodenumber is somewhere referenced as a foreignkey
+        Node node = ForumManager.getCloud().getNode(id);
         NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
         log.debug("found: " + nodeList);
         NodeIterator it = nodeList.nodeIterator();
@@ -447,6 +470,7 @@ public class Poster {
      */
     public boolean disable() {
         this.state = STATE_DISABLED;
+        Node node = ForumManager.getCloud().getNode(id);
         node.setIntValue("state",this.state);
         ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
@@ -459,6 +483,7 @@ public class Poster {
      */
     public boolean enable() {
         this.state = STATE_ACTIVE;
+        Node node = ForumManager.getCloud().getNode(id);
         node.setIntValue("state",this.state);
         ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
@@ -507,6 +532,7 @@ public class Poster {
      */
     private void readMailboxes() {
         mailboxes = new HashMap();
+        Node node = ForumManager.getCloud().getNode(id);
         if (node != null) {
             RelationIterator i = node.getRelations("posmboxrel", "forummessagebox").relationIterator();
             while (i.hasNext()) {
@@ -548,6 +574,7 @@ public class Poster {
             mnode.setIntValue("carboncopymode", carboncopymode);
             mnode.commit();
 
+            Node node = ForumManager.getCloud().getNode(id);
             RelationManager rm = ForumManager.getCloud().getRelationManager("posters", "forummessagebox", "posmboxrel");
             if (rm != null) {
                 Node rel = rm.createRelation(node, mnode);
@@ -569,6 +596,7 @@ public class Poster {
    * get aliases version of this field
    */
    public String getAliased(String key) {
+        Node node = ForumManager.getCloud().getNode(id);
         //long start = System.currentTimeMillis();
         String value = parent.getAliased(node,"posters."+key);
         if (value==null)  {

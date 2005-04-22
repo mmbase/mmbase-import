@@ -17,6 +17,7 @@ import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.cache.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -79,8 +80,6 @@ public class PostArea {
         this.lastpostnumber=node.getIntValue("lastpostnumber");
         this.lastposternumber=node.getIntValue("lastposternumber");
 
-        // read postareas
-        // don't read all, readPostThreads();
         readRoles();
     }
 
@@ -96,9 +95,11 @@ public class PostArea {
      * set the node for the postarea
      * @param node postarea
      */
+	/*
     public void setNode(Node node) {
         this.node = node;
     }
+	*/
 
     /**
      * set the name for the postarea
@@ -170,6 +171,23 @@ public class PostArea {
 		return count;
 	}
     }
+
+
+    public int getMemorySize() {
+        if (postthreads == null) {
+		return 0;
+	} else {
+		int size = 0;
+        	Iterator i = postthreads.iterator();
+		while (i.hasNext()) {
+			PostThread pt = (PostThread)i.next();
+			size += pt.getMemorySize();
+		}
+		return size;
+	}
+    }
+
+
 
     /**
      * get the number of pages for this postarea
@@ -445,19 +463,28 @@ public class PostArea {
             Step step1 = query.addStep(postareasmanager);
             RelationStep step2 = query.addRelationStep(postthreadsmanager);
             StepField f1 = query.addField(step1, postareasmanager.getField("number"));
-            StepField f2 = query.addField(step2.getNext(), postthreadsmanager.getField("number"));
             StepField f3 = query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposttime"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("number"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("subject"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("creator"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("viewcount"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("postcount"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("c_lastpostsubject"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposter"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposttime"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("lastposternumber"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("lastpostnumber"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("mood"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("ttype"));
+
             query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
 
-            //query.setConstraint(query.createConstraint(f1,node)); // werkt niet meer
             query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
-            //f3.addNode(node.getNumber()); // dit werkt niet, snap ik de docs niet ?
 
             NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
             while (i2.hasNext()) {
                 Node n2 = i2.nextNode();
-                Node tmpn = ForumManager.getCloud().getNode(n2.getIntValue("postthreads.number"));
-                PostThread postthread = new PostThread(this, tmpn);
+                PostThread postthread = new PostThread(this, n2);
                 if (postthread.getState().equals("pinned")) {
                     postthreads.add(numberofpinned, postthread);
                     numberofpinned++;
@@ -469,6 +496,18 @@ public class PostArea {
         }
        	long end = System.currentTimeMillis();
 	log.info("end reading threads time="+(end-start));
+
+        // very raw way to zap the cache
+        Cache cache = RelatedNodesCache.getCache();
+        cache.clear();
+        cache = NodeCache.getCache();
+        cache.clear();
+        cache = NodeCache.getCache();
+        cache.clear();
+        cache = MultilevelCache.getCache();
+        cache.clear();
+        cache = NodeListCache.getCache();
+        cache.clear();
 
     }
 

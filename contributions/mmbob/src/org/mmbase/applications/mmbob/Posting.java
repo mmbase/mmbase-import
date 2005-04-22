@@ -25,6 +25,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.SizeOf;
 
 import javax.xml.transform.*;
 
@@ -49,6 +50,7 @@ public class Posting {
     //private Node node;
     private String subject;
     private String c_body; 
+    private String body; 
     private String c_poster; 
 
     private PostingBody postingBody = new PostingBody();
@@ -60,14 +62,40 @@ public class Posting {
      * @param parent postthread
      */
     public Posting(Node node, PostThread parent) {
-        //this.node = node;
-        this.id = node.getNumber();
-	this.c_body = node.getStringValue("c_body");
-	this.c_poster = node.getStringValue("c_poster");
-	this.subject = node.getStringValue("subject");
-	this.createtime = node.getIntValue("createtime");
-	this.edittime = node.getIntValue("edittime");
+        id = node.getIntValue("postings.number");
+	c_body = node.getStringValue("postings.c_body");
+	if (c_body.equals("")) {
+		body = node.getStringValue("postings.body");
+	} else {
+		body = "";
+	}
+	c_poster = node.getStringValue("postings.c_poster");
+	subject = node.getStringValue("postings.subject");
+	createtime = node.getIntValue("postings.createtime");
+	edittime = node.getIntValue("postings.edittime");
         this.parent = parent;
+
+	/*
+        SizeOf sizeof =  new SizeOf();
+        Node dn = ForumManager.getCloud().getNode(1);
+        int dns=sizeof.sizeof(dn);
+
+	int size = c_body.length();
+	size +=node.getStringValue("body").length();
+	size +=c_poster.length();
+	size +=subject.length();
+        sizeof =  new SizeOf();
+        log.info("SIZE="+(sizeof.sizeof(node)-dns)+" data="+size);
+	*/
+    }
+
+    public int getMemorySize() {
+	int size = c_body.length();
+	size +=body.length();
+	size +=c_poster.length();
+	size +=subject.length();
+	size += 16; // int values
+	return size;
     }
 
     /**
@@ -102,7 +130,6 @@ public class Posting {
     public void setBody(String body,String imagecontext) {
         //node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
         //node.setStringValue("body", postingBody.transform(body));
-	log.info("SETBODY1");
 	Node node = ForumManager.getCloud().getNode(id);
         node.setStringValue("body", body);
         String parsed = node.getStringValue("body");
@@ -173,7 +200,8 @@ public class Posting {
 	if (c_body.equals("")) {
 	        long start = System.currentTimeMillis();
         	Node node = ForumManager.getCloud().getNode(id);
-		c_body = translateBody(node.getStringValue("body"),imagecontext);
+		c_body = translateBody(body,imagecontext);
+		body="";
 		node.setValue("c_body",c_body);
 		node.commit();
 	        long end = System.currentTimeMillis();
