@@ -13,10 +13,10 @@
     <action type="load">
         <relation destination="mmevents" role="related" />
         <relation destination="images" role="sizerel" />
-        <relation destination="audiotapes" role="related" />
-        <relation destination="videotapes" role="related" />
-        <relation destination="attachments" role="related" />
-        <relation destination="urls" role="related" />
+        <relation destination="audiotapes" role="posrel" />
+        <relation destination="videotapes" role="posrel" />
+        <relation destination="attachments" role="posrel" />
+        <relation destination="urls" role="posrel" />
         <relation destination="competencies" role="needcomp" />
         <relation destination="competencies" role="developcomp" />
         <relation destination="paragraphs" role="posrel">
@@ -73,10 +73,10 @@
         </field>
 
         <list role="sizerel" extends="list/sizedimages.xml" />
-     <list role="related" extends="list/attachments.xml" />
-       <list role="related" extends="list/audiotapes.xml" />
-        <list role="related" extends="list/videotapes.xml" />
-        <list destination="urls" role="related" extends="list/urls.xml" />
+        <list role="posrel" extends="list/attachments-posrel.xml" />
+        <list role="posrel" extends="list/audiotapes-posrel.xml" />
+        <list role="posrel" extends="list/videotapes-posrel.xml" />
+        <list destination="urls" role="posrel" extends="list/urls-posrel.xml" />
         <list role="related" extends="list/online.xml" />
     </form-schema>
 
