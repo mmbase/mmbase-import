@@ -20,6 +20,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.cache.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -682,8 +685,33 @@ public class Forum {
             totalusersnew = 0;
             int onlinetime = ((int) (System.currentTimeMillis() / 1000)) - (getPosterExpireTime());
             int newtime = ((int) (System.currentTimeMillis() / 1000)) - (24 * 60 * 60 * 7);
+	    log.info("Start reading posters");
+            // NodeIterator i = node.getRelatedNodes("posters", "forposrel", "both").nodeIterator();
 
-            NodeIterator i = node.getRelatedNodes("posters", "forposrel", "both").nodeIterator();
+
+
+            NodeManager forumsmanager = ForumManager.getCloud().getNodeManager("forums");
+            NodeManager postersmanager = ForumManager.getCloud().getNodeManager("posters");
+            Query query = ForumManager.getCloud().createQuery();
+            Step step1 = query.addStep(forumsmanager);
+            RelationStep step2 = query.addRelationStep(postersmanager);
+            StepField f1 = query.addField(step1, forumsmanager.getField("number"));
+            query.addField(step2.getNext(), postersmanager.getField("number"));
+            //query.addField(step2.getNext(), postersmanager.getField("state"));
+            query.addField(step2.getNext(), postersmanager.getField("account"));
+            query.addField(step2.getNext(), postersmanager.getField("firstname"));
+            query.addField(step2.getNext(), postersmanager.getField("lastname"));
+            query.addField(step2.getNext(), postersmanager.getField("postcount"));
+            query.addField(step2.getNext(), postersmanager.getField("level"));
+            query.addField(step2.getNext(), postersmanager.getField("location"));
+            query.addField(step2.getNext(), postersmanager.getField("gender"));
+            query.addField(step2.getNext(), postersmanager.getField("firstlogin"));
+            query.addField(step2.getNext(), postersmanager.getField("lastseen"));
+
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
+
+            NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
+	    log.info("Start reading posters 2");
             while (i.hasNext()) {
                 Node node = i.nextNode();
                 Poster p = new Poster(node, this);
@@ -697,8 +725,20 @@ public class Forum {
                     newPoster(p);
                 }
             }
+	    log.info("end reading posters");
         }
         long end = System.currentTimeMillis();
+        // very raw way to zap the cache
+        Cache cache = RelatedNodesCache.getCache();
+        cache.clear();
+        cache = NodeCache.getCache();
+        cache.clear();
+        cache = NodeCache.getCache();
+        cache.clear();
+        cache = MultilevelCache.getCache();
+        cache.clear();
+        cache = NodeListCache.getCache();
+        cache.clear();
     }
 
     /**
@@ -1195,6 +1235,21 @@ public class Forum {
 		count += pa.getPostThreadLoadedCount();
 	}
 	return count;
+    }
+
+
+    public int getMemorySize() {
+        if (postareas == null) {
+		return 0;
+	} else {
+		int size = 0;
+       		Enumeration i = postareas.elements();
+		while (i.hasMoreElements()) {
+			PostArea pa = (PostArea)i.nextElement();
+			size += pa.getMemorySize();
+		}
+		return size;
+	}
     }
 
 }
