@@ -4,9 +4,14 @@
   <forums account="admin" password="admin2k" language="en">
     <generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
     <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
-    <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
+    <generatedata role="firstnames" file="generate/firstnames.txt" tokenizer="," />
+    <generatedata role="surnames" file="generate/surnames.txt" tokenizer="," />
+    <generatedata role="providers" file="generate/providers.txt" tokenizer="," />
+    <generatedata role="places" file="generate/places.txt" tokenizer="," />
+    <generatedata role="areas" file="generate/areas.txt" tokenizer="," />
+    <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" " />
 
-    <preloadchangedthreads hours="24" />
+    <preloadchangedthreads days="1" />
     <swapoutunusedthreads minutes="45" />
 
     <accountcreation type="open" />
