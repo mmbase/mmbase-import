@@ -54,6 +54,7 @@ public class PostersHandler extends Handler {
 		}
 	}
 	} catch(Exception e) {
+		e.printStackTrace();
 	}
 	Generate.setState(0);
     }
@@ -63,11 +64,11 @@ public class PostersHandler extends Handler {
 		String firstname=generateFirstName();
 		String lastname=generateSurName();
 		String account=firstname+lastname.substring(0,1)+i;
+		log.info("account="+account);
 		String password=account;
 		String email=firstname+lastname+"@"+generateProvider();
 		String gender="male";
 		String location=generatePlace();
-
 
 		Forum f=ForumManager.getForum(forumid);
 		if (f!=null) {
