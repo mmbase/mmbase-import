@@ -25,14 +25,16 @@
                                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-   <tr><th>Forum naam</th><th>berichten</th><th>views</th><th>gebruikers</th></tr>
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
+   <tr><th>Forum naam</th><th>berichten</th><th>views</th><th>gebruikers</th><th>threadsloaded</th><th>memory size</th></tr>
   <mm:nodelistfunction set="mmbob" name="getForums">
 			<tr>
 			<td><a href="index.jsp?forumid=<mm:field name="id" />"><mm:field name="name" /></a></td>
 			<td><mm:field name="postcount" /></td>
 			<td><mm:field name="viewcount" /></td>
 			<td><mm:field name="posterstotal" /></td>
+			<td><mm:field name="postthreadloadedcount" /></td>
+                        <td><mm:field name="memorysize" /></td>
 			</tr>
   </mm:nodelistfunction>
 </table>
