@@ -36,7 +36,6 @@ public class PostArea {
     static private Logger log = Logging.getLoggerInstance(PostArea.class);
 
     private int id;
-    private Node node;
     private Forum parent;
     private Hashtable moderators = new Hashtable();
     private String moderatorsline;
@@ -52,6 +51,8 @@ public class PostArea {
     private int lastpostnumber;
     private int lastposternumber;
     private int numberofpinned = 0;
+    private String name;
+    private String description;
     private String lastposter;
     private String lastpostsubject;
 
@@ -62,8 +63,9 @@ public class PostArea {
      */
     public PostArea(Forum parent, Node node) {
         this.parent = parent;
-        this.node = node;
 	this.id = node.getNumber();
+        name = node.getStringValue("name");
+        description = node.getStringValue("description");
 
 	config  = parent.getPostAreaConfig(getName());
 
@@ -106,7 +108,7 @@ public class PostArea {
      * @param name postareaname
      */
     public void setName(String name) {
-        node.setValue("name", name);
+        this.name = name;
     }
 
     /**
@@ -114,7 +116,7 @@ public class PostArea {
      * @param description postareadescription
      */
     public void setDescription(String description) {
-        node.setValue("description", description);
+        this.description = description;
     }
 
     /**
@@ -122,7 +124,7 @@ public class PostArea {
      * @return postareaname
      */
     public String getName() {
-        return node.getStringValue("name");
+        return name;
     }
 
     /**
@@ -130,7 +132,7 @@ public class PostArea {
      * @return postareadescription
      */
     public String getDescription() {
-        return node.getStringValue("description");
+        return description;
     }
 
     /**
@@ -384,6 +386,7 @@ public class PostArea {
      */
     public boolean removeModerator(Poster mp) {
         if (isModerator(mp.getAccount())) {
+            Node node = ForumManager.getCloud().getNode(id);
             RelationIterator i = node.getRelations("rolerel", "posters").relationIterator();
             while (i.hasNext()) {
                 Relation rel = i.nextRelation();
@@ -415,6 +418,7 @@ public class PostArea {
         if (isModerator(mp.getAccount())) return true;
         RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "posters", "rolerel");
         if (rm != null) {
+            Node node = ForumManager.getCloud().getNode(id);
             Node rel = rm.createRelation(node, mp.getNode());
             rel.setStringValue("role", "moderator");
             rel.commit();
@@ -456,7 +460,6 @@ public class PostArea {
 
        	long start = System.currentTimeMillis();
 	log.info("reading threads");
-        if (node != null) {
             NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
             NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
             Query query = ForumManager.getCloud().createQuery();
@@ -479,7 +482,7 @@ public class PostArea {
 
             query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
 
-            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
+            query.setConstraint(query.createConstraint(f1, new Integer(id)));
 
             NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
             while (i2.hasNext()) {
@@ -493,7 +496,6 @@ public class PostArea {
                 }
                 namecache.put("" + n2.getValue("postthreads.number"), postthread);
             }
-        }
        	long end = System.currentTimeMillis();
 	log.info("end reading threads time="+(end-start));
 
@@ -508,7 +510,6 @@ public class PostArea {
         cache.clear();
         cache = NodeListCache.getCache();
         cache.clear();
-
     }
 
     /**
@@ -557,6 +558,7 @@ public class PostArea {
             ptnode.commit();
             RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "postthreads", "areathreadrel");
             if (rm != null) {
+	        Node node = ForumManager.getCloud().getNode(id);
                 Node rel = rm.createRelation(node, ptnode);
                 rel.commit();
                 PostThread postthread = new PostThread(this, ptnode);
@@ -671,6 +673,7 @@ public class PostArea {
      * @param queue syncQueue that must be used
      */
     private void syncNode(int queue) {
+        Node node = ForumManager.getCloud().getNode(id);
         node.setIntValue("postcount", postcount);
         node.setIntValue("postthreadcount", postthreadcount);
         node.setIntValue("viewcount", viewcount);
@@ -687,7 +690,7 @@ public class PostArea {
      * fills the HashTable "moderators" with all known moderators for this postarea
      */
     private void readRoles() {
-        if (node != null) {
+	    Node node = ForumManager.getCloud().getNode(id);
             RelationIterator i = node.getRelations("rolerel", "posters").relationIterator();
             while (i.hasNext()) {
                 Relation rel = i.nextRelation();
@@ -703,8 +706,6 @@ public class PostArea {
                     moderators.put(po.getAccount(), po);
                 }
             }
-        }
-
     }
 
     /**
@@ -724,6 +725,7 @@ public class PostArea {
                 postthreads.remove("" + t.getId());
             }
         }
+        Node node = ForumManager.getCloud().getNode(id);
         node.delete(true);
         return true;
     }
