@@ -120,7 +120,7 @@
         </mm:countrelations>
 
        
-        <mm:relatednodes type="attachments">
+        <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
             <br/>
             <p>
             <mm:field name="title"/>
@@ -131,7 +131,7 @@
             </p>
         </mm:relatednodes>
 
-        <mm:relatednodes type="audiotapes">
+        <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
         <br/>
         <p>
         <mm:field name="title"/>
@@ -148,7 +148,7 @@
         </p>
         </mm:relatednodes>
 
-        <mm:relatednodes type="videotapes">
+        <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
         <br/>
         <p>
             <mm:field name="title"/>
@@ -165,7 +165,7 @@
         </p>
         </mm:relatednodes>
 
-        <mm:relatednodes type="urls">
+        <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
         <br/>
         <p>
             <mm:field name="name"/>
