@@ -52,7 +52,7 @@
  
   </table>
  
-    <mm:relatednodes type="attachments">
+    <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
     <p>
       <a href="<mm:attachment/>"><mm:field name="title"/></a>
       <br/>
@@ -61,7 +61,7 @@
     </mm:relatednodes>
 
   <div class="audiotapes">
-    <mm:relatednodes type="audiotapes">
+    <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
       <mm:field name="title"/>
       <br/>
       <mm:field name="subtitle"/>
@@ -78,7 +78,7 @@
   </div>
 
   <div class="videotapes">
-    <mm:relatednodes type="videotapes">
+    <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
       <mm:field name="title"/>
       <br/>
       <mm:field name="subtitle"/>
@@ -95,7 +95,7 @@
   </div>
 
   <div class="urls">
-    <mm:relatednodes type="urls">
+    <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
       <a href="<mm:field name="url" />"><mm:field name="name"/></a>
       <br/>
       <mm:field name="description"/>
