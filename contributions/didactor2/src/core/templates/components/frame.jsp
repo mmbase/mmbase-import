@@ -16,6 +16,10 @@
 </head>
 
 <body>
+   <%
+      String sReturnURL = request.getRequestURI();
+   %>
+   <mm:import id="components_show_cockpit" reset="true">false</mm:import>
    <%@include file="body.jsp" %>
 </body>
 

@@ -51,6 +51,10 @@
 
    <div class="maincontent">
       <div class="contentHeader">Componenteditor</div>
+      <%
+         String sReturnURL = request.getRequestURI();
+      %>
+      <mm:import id="components_show_cockpit" reset="true">true</mm:import>
       <%@include file="body.jsp"%>
    </div>
 
