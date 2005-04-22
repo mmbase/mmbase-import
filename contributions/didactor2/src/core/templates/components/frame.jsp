@@ -17,7 +17,7 @@
 
 <body>
    <%
-      String sReturnURL = request.getRequestURI();
+      String sReturnURL = request.getRequestURL().toString();
    %>
    <mm:import id="components_show_cockpit" reset="true">false</mm:import>
    <%@include file="body.jsp" %>
