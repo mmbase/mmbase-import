@@ -61,23 +61,25 @@ public class PostThread {
    private boolean loaded = false;
    private int lastused;
 
-   public PostThread(PostArea parent,Node node) {
+   public PostThread(PostArea parent,Node node,boolean prefixwanted) {
+        String prefix="";
+        if (prefixwanted) prefix = "posttreads.";
 	this.parent=parent;
-	this.subject=node.getStringValue("postthreads.subject");
-	this.creator=node.getStringValue("postthreads.creator");
-	this.id=node.getIntValue("postthreads.number");
-	this.viewcount=node.getIntValue("postthreads.viewcount");
+	this.subject=node.getStringValue(prefix+"subject");
+	this.creator=node.getStringValue(prefix+"creator");
+	this.id=node.getIntValue(prefix+"number");
+	this.viewcount=node.getIntValue(prefix+"viewcount");
 	if (viewcount==-1) viewcount=0;
-	this.postcount=node.getIntValue("postthreads.postcount");
+	this.postcount=node.getIntValue(prefix+"postcount");
 	if (postcount==-1) postcount=0;
 
-	lastpostsubject=node.getStringValue("postthreads.c_lastpostsubject");
-	lastposter=node.getStringValue("postthreads.c_lastposter");
-	lastposttime=node.getIntValue("postthreads.c_lastposttime");
-	lastposternumber=node.getIntValue("postthreads.lastposternumber");
-	lastpostnumber=node.getIntValue("postthreads.lastpostnumber");
-	mood=node.getStringValue("postthreads.mood");
-	ttype=node.getStringValue("postthreads.ttype");
+	lastpostsubject=node.getStringValue(prefix+"c_lastpostsubject");
+	lastposter=node.getStringValue(prefix+"c_lastposter");
+	lastposttime=node.getIntValue(prefix+"c_lastposttime");
+	lastposternumber=node.getIntValue(prefix+"lastposternumber");
+	lastpostnumber=node.getIntValue(prefix+"lastpostnumber");
+	mood=node.getStringValue(prefix+"mood");
+	ttype=node.getStringValue(prefix+"ttype");
    }
 
    public void setId(int id) {
@@ -284,7 +286,7 @@ public class PostThread {
                 if (rm!=null) {
                         Node rel=rm.createRelation(node,pnode);
                         rel.commit();
-        		Posting posting=new Posting(pnode,this);
+        		Posting posting=new Posting(pnode,this,false);
 			posting.setThreadPos(threadpos++);
 		        postings.add(posting);
 
@@ -362,7 +364,7 @@ public class PostThread {
 		while (i.hasNext()) {
 			Node node=i.nextNode();
         		//start=System.currentTimeMillis();
-                        Posting posting=new Posting(node,this);
+                        Posting posting=new Posting(node,this,true);
         		//end=System.currentTimeMillis();
         		//log.info("making posting="+(end-start));
 			posting.setThreadPos(threadpos++);

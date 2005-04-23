@@ -16,6 +16,9 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.module.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 
@@ -56,11 +59,14 @@ public class ForumsConfig {
    private int quotamax = 100;
    private int quotasoftwarning = 60;
    private int quotawarning = 80;
+   private boolean firstrun = true;
 
     public ForumsConfig (XMLBasicReader reader,Element n) {
         subs = null;
         subs = new HashMap();
         log.debug("subhasmap cleared");
+	if (firstrun) checkCloudModel();
+	firstrun = false;
 	decodeConfig(reader,n);
     }
 
@@ -549,6 +555,145 @@ public class ForumsConfig {
             scan.close();
         } catch(Exception e) {
             log.error(Logging.stackTrace(e));
+        }
+        return true;
+    }
+
+    private void checkCloudModel() {
+	log.info("checking mmbob cloud model");
+        checkRelDef("related", "related", 1, "Related", "Relared", "insrel");
+        checkRelDef("posrel", "posrel", 1, "Posrel", "Posrel", "posrel");
+        checkRelDef("rolerel", "rolerel", 1, "RoleRel", "RoleRel", "rolerel");
+        checkRelDef("posmboxrel", "posmboxrel", 1, "PosMBoxRel", "PosMBoxRel", "posmboxrel");
+        checkRelDef("forposrel", "forposrel", 1, "ForPosRel", "ForPosRel", "forposrel");
+        checkRelDef("forarearel", "forerearel", 1, "ForAreaRel", "ForAreaRel", "forarearel");
+        checkRelDef("areathreadrel", "areathreadrel", 1, "AreaThreadRel", "AreaThreadRel", "areathreadrel");
+    	checkTypeRel("forummessagebox", "forumprivatemessage", "related",-1);
+    	checkTypeRel("postareas", "posters", "rolerel",-1);
+    	checkTypeRel("images", "posters", "rolerel",-1);
+    	checkTypeRel("postthreads", "postings", "related",-1);
+    	checkTypeRel("posters", "avatarsets", "related",-1);
+    	checkTypeRel("avatarsets", "images", "posrel",-1);
+    	checkTypeRel("posters", "forimmessagebox", "posmboxrel",-1);
+    	checkTypeRel("forums", "posters", "forposrel",-1);
+    	checkTypeRel("forums", "posters", "rolerel",-1);
+    	checkTypeRel("forums", "postareas", "forarearel",-1);
+    	checkTypeRel("postareas", "postthreads", "areathreadrel",-1);
+    }
+
+
+    /**
+     * Checks and if required installs an allowed type relation (typerel object).
+     *
+     * @param  sname  source type name of the type relation
+     * @param  dname  destination type name of the type relation
+     * @param  rname  role name of the type relation
+     * @param  count  cardinality of the type relation
+     * @return        <code>true</code> if succesfull, <code>false</code> if an error occurred
+     */
+    private boolean checkTypeRel(String sname, String dname, String rname, int count) {
+        MMBase mmb = MMBase.getMMBase();
+        TypeRel typerel = mmb.getTypeRel();
+        if (typerel != null) {
+            TypeDef typedef = mmb.getTypeDef();
+            if (typedef == null) {
+                //return result.error("Can't get typedef builder");
+                return false;
+            }
+            RelDef reldef = mmb.getRelDef();
+            if (reldef == null) {
+                //return result.error("Can't get reldef builder");
+                return false;
+            }
+
+            // figure out rnumber
+            int rnumber = reldef.getNumberByName(rname);
+            if (rnumber == -1) {
+                //return result.error("No reldef with role '"+rname+"' defined");
+                return false;
+            }
+
+            // figure out snumber
+            int snumber = typedef.getIntValue(sname);
+            if (snumber == -1) {
+                //return result.error("No builder with name '"+sname+"' defined");
+                return false;
+            }
+
+            // figure out dnumber
+            int dnumber = typedef.getIntValue(dname);
+            if (dnumber == -1) {
+                //return result.error("No builder with name '"+dname+"' defined");
+                return false;
+            }
+
+            if (!typerel.contains(snumber, dnumber, rnumber, TypeRel.STRICT)) {
+                MMObjectNode node = typerel.getNewNode("system");
+                node.setValue("snumber", snumber);
+                node.setValue("dnumber", dnumber);
+                node.setValue("rnumber", rnumber);
+                node.setValue("max", count);
+                int id = typerel.insert("system", node);
+                if (id != -1) {
+                    log.info("TypeRel (" + sname + "," + dname + "," + rname + ") installed");
+                } else {
+                    log.info("TypeRel (" + sname + "," + dname + "," + rname + ") not installed");
+                    return false;
+                }
+            }
+            return true;
+        } else {
+	    log.info("Can't get the typerel builder");
+            return false;
+        }
+    }
+
+
+    /**
+     * Checks whether a given relation definition exists, and if not, creates that definition.
+     *
+     * @param  sname     source name of the relation definition
+     * @param  dname     destination name of the relation definition
+     * @param  dir       directionality (uni or bi)
+     * @param  sguiname  source GUI name of the relation definition
+     * @param  dguiname  destination GUI name of the relation definition
+     * @param  builder   references the builder to use (only in new format)
+     * @param  step      Description of the Parameter
+     * @return           <code>true</code> if succesfull, <code>false</code> if an error occurred
+     */
+    private boolean checkRelDef(String sname, String dname, int dir, String sguiname, String dguiname, String buildername) {
+        MMBase mmb = MMBase.getMMBase();
+        int builder = mmb.getTypeDef().getIntValue(buildername);
+        RelDef reldef = mmb.getRelDef();
+        if (reldef != null) {
+            log.debug("checking reldef " + sname + "/" + dname + " ..");
+            if (reldef.getNumberByName(sname + "/" + dname) == -1) {
+                MMObjectNode node = reldef.getNewNode("system");
+                node.setValue("sname", sname);
+                node.setValue("dname", dname);
+                node.setValue("dir", dir);
+                node.setValue("sguiname", sguiname);
+                node.setValue("dguiname", dguiname);
+                if (reldef.usesbuilder) {
+                    // if builder is unknown (falsely specified), use the InsRel builder
+                    if (builder <= 0) {
+                        builder = mmb.getInsRel().oType;
+                    }
+                    node.setValue("builder", builder);
+                }
+                int id = reldef.insert("system", node);
+                if (id != -1) {
+                    log.info("checking reldef " + sname + "/" + dname + " ..installed");
+                } else {
+                    log.info("checking reldef " + sname + "/" + dname + " .. not installed");
+                    return false;
+                }
+            } else {
+                log.debug("checking reldef " + sname + "/" + dname + " .. allready installed");
+            }
+        } else {
+	    log.info("Can't use reldef !");
+            return false;
         }
         return true;
     }

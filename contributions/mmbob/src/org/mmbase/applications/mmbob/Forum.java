@@ -685,10 +685,6 @@ public class Forum {
             totalusersnew = 0;
             int onlinetime = ((int) (System.currentTimeMillis() / 1000)) - (getPosterExpireTime());
             int newtime = ((int) (System.currentTimeMillis() / 1000)) - (24 * 60 * 60 * 7);
-	    log.info("Start reading posters");
-            // NodeIterator i = node.getRelatedNodes("posters", "forposrel", "both").nodeIterator();
-
-
 
             NodeManager forumsmanager = ForumManager.getCloud().getNodeManager("forums");
             NodeManager postersmanager = ForumManager.getCloud().getNodeManager("posters");
@@ -711,10 +707,9 @@ public class Forum {
             query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
 
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
-	    log.info("Start reading posters 2");
             while (i.hasNext()) {
                 Node node = i.nextNode();
-                Poster p = new Poster(node, this);
+                Poster p = new Poster(node, this,true);
                 posters.put(new Integer(p.getId()), p);
                 posternames.put(p.getAccount(), p);
                 totalusers++;
@@ -771,7 +766,7 @@ public class Forum {
                 Node rel = rm.createRelation(node, pnode);
                 rel.commit();
 
-                Poster p = new Poster(pnode, this);
+                Poster p = new Poster(pnode, this,false);
                 posters.put(new Integer(p.getId()), p);
                 onlineposters.add(p);
                 posternames.put(p.getAccount(), p);
@@ -796,7 +791,9 @@ public class Forum {
      * @return always <code>false</code> (ToDo ??)
      */
     public boolean addAdministrator(Poster ap) {
+	log.info("A1");
         if (!isAdministrator(ap.getAccount())) {
+	log.info("A2");
             RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "posters", "rolerel");
             if (rm != null) {
                 Node rel = rm.createRelation(node, ap.getNode());
