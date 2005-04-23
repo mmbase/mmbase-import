@@ -51,37 +51,24 @@ public class Poster {
      * @param node   poster Node
      * @param parent Forum that the poster belongs to
      */
-    public Poster(Node node, Forum parent) {
-
+    public Poster(Node node, Forum parent,boolean prefixwanted) {
+	String prefix="";
+	if (prefixwanted) prefix = "posters.";
 	this.quotanumber=10;
 	this.quotaused=-1;
         this.parent = parent;
         //this.node = node;
-	id = node.getIntValue("posters.number");
-	//state = node.getIntValue("posters.state");
+	id = node.getIntValue(prefix+"number");
 	state = -1;
-	account = node.getStringValue("posters.account");
-	firstname = node.getStringValue("posters.firstname");
-	lastname = node.getStringValue("posters.lastname");
-	postcount = node.getIntValue("posters.postcount");
-	level = node.getStringValue("posters.level");
-	location = node.getStringValue("posters.location");
-	gender = node.getStringValue("posters.gender");
-	firstlogin = node.getIntValue("posters.firstlogin");
-	lastsessionend = node.getIntValue("posters.lastseen");
-	/*
-        this.id = node.getNumber();
-        this.state = node.getIntValue("state");
-        this.firstname=getAliased("firstname");
-        this.lastname=getAliased("lastname");
-        this.email=getAliased("email");
-        this.postcount = node.getIntValue("postcount");
-        this.level = node.getStringValue("level");
-        this.location=getAliased("location");
-        this.gender=getAliased("gender");
-        this.firstlogin = node.getIntValue("firstlogin");
-        lastsessionend = node.getIntValue("lastseen");
-	*/
+	account = node.getStringValue(prefix+"account");
+	firstname = node.getStringValue(prefix+"firstname");
+	lastname = node.getStringValue(prefix+"lastname");
+	postcount = node.getIntValue(prefix+"postcount");
+	level = node.getStringValue(prefix+"level");
+	location = node.getStringValue(prefix+"location");
+	gender = node.getStringValue(prefix+"gender");
+	firstlogin = node.getIntValue(prefix+"firstlogin");
+	lastsessionend = node.getIntValue(prefix+"lastseen");
 
 	/*
         if (firstlogin == -1) {

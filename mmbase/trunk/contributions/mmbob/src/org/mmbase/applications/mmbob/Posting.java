@@ -61,32 +61,22 @@ public class Posting {
      * @param node   postingnode
      * @param parent postthread
      */
-    public Posting(Node node, PostThread parent) {
-        id = node.getIntValue("postings.number");
-	c_body = node.getStringValue("postings.c_body");
+    public Posting(Node node, PostThread parent,boolean prefixwanted) {
+        String prefix="";
+        if (prefixwanted) prefix = "postings.";
+
+        id = node.getIntValue(prefix+"number");
+	c_body = node.getStringValue(prefix+"c_body");
 	if (c_body.equals("")) {
-		body = node.getStringValue("postings.body");
+		body = node.getStringValue(prefix+"body");
 	} else {
 		body = "";
 	}
-	c_poster = node.getStringValue("postings.c_poster");
-	subject = node.getStringValue("postings.subject");
-	createtime = node.getIntValue("postings.createtime");
-	edittime = node.getIntValue("postings.edittime");
+	c_poster = node.getStringValue(prefix+"c_poster");
+	subject = node.getStringValue(prefix+"subject");
+	createtime = node.getIntValue(prefix+"createtime");
+	edittime = node.getIntValue(prefix+"edittime");
         this.parent = parent;
-
-	/*
-        SizeOf sizeof =  new SizeOf();
-        Node dn = ForumManager.getCloud().getNode(1);
-        int dns=sizeof.sizeof(dn);
-
-	int size = c_body.length();
-	size +=node.getStringValue("body").length();
-	size +=c_poster.length();
-	size +=subject.length();
-        sizeof =  new SizeOf();
-        log.info("SIZE="+(sizeof.sizeof(node)-dns)+" data="+size);
-	*/
     }
 
     public int getMemorySize() {

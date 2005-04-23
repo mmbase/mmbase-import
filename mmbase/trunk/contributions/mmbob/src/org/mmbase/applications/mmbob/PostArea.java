@@ -487,7 +487,7 @@ public class PostArea {
             NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
             while (i2.hasNext()) {
                 Node n2 = i2.nextNode();
-                PostThread postthread = new PostThread(this, n2);
+                PostThread postthread = new PostThread(this, n2,true);
                 if (postthread.getState().equals("pinned")) {
                     postthreads.add(numberofpinned, postthread);
                     numberofpinned++;
@@ -561,7 +561,7 @@ public class PostArea {
 	        Node node = ForumManager.getCloud().getNode(id);
                 Node rel = rm.createRelation(node, ptnode);
                 rel.commit();
-                PostThread postthread = new PostThread(this, ptnode);
+                PostThread postthread = new PostThread(this, ptnode,false);
 
                 // now add the first 'reply' (wrong name since its not a reply)
                 postthread.postReply(subject, poster, body);
