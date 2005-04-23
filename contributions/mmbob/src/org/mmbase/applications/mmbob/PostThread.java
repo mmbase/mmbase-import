@@ -63,7 +63,7 @@ public class PostThread {
 
    public PostThread(PostArea parent,Node node,boolean prefixwanted) {
         String prefix="";
-        if (prefixwanted) prefix = "posttreads.";
+        if (prefixwanted) prefix = "postthreads.";
 	this.parent=parent;
 	this.subject=node.getStringValue(prefix+"subject");
 	this.creator=node.getStringValue(prefix+"creator");
