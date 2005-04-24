@@ -16,6 +16,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.applications.mmbob.*;
@@ -56,7 +57,8 @@ public class ReplysHandler extends Handler {
 		if (a!=null) {
 			Enumeration threads=a.getPostThreads();
 			PostThread postthread;
-			
+		
+			int j = 0;	
 			for (int i=0;i<generatecount;i++) {
 				log.info("generate reply : "+i);
 	
@@ -77,6 +79,21 @@ public class ReplysHandler extends Handler {
 				}
 
 				createReply(postthread,poster,i);
+
+				j++;
+				if (j>99) {
+        				Cache cache = RelatedNodesCache.getCache();
+				        cache.clear();
+				        cache = NodeCache.getCache();
+				        cache.clear();
+				        cache = NodeCache.getCache();
+				        cache.clear();
+				        cache = MultilevelCache.getCache();
+				        cache.clear();
+				        cache = NodeListCache.getCache();
+				        cache.clear();
+					j=0;
+				}
 			}
 		}
 	}
