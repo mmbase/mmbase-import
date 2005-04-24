@@ -697,7 +697,6 @@ public class Forum {
      * them all.
      */
     private void preCachePosters() {
-        long start = System.currentTimeMillis();
         if (node != null) {
             totalusers = 0;
             totalusersnew = 0;
@@ -713,6 +712,7 @@ public class Forum {
             query.addField(step2.getNext(), postersmanager.getField("number"));
             //query.addField(step2.getNext(), postersmanager.getField("state"));
             query.addField(step2.getNext(), postersmanager.getField("account"));
+            query.addField(step2.getNext(), postersmanager.getField("password"));
             query.addField(step2.getNext(), postersmanager.getField("firstname"));
             query.addField(step2.getNext(), postersmanager.getField("lastname"));
             query.addField(step2.getNext(), postersmanager.getField("postcount"));
@@ -727,7 +727,9 @@ public class Forum {
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
+        	//long start = System.currentTimeMillis();
                 Poster p = new Poster(node, this,true);
+        	//long end = System.currentTimeMillis();
                 posters.put(new Integer(p.getId()), p);
                 posternames.put(p.getAccount(), p);
                 totalusers++;
@@ -736,11 +738,9 @@ public class Forum {
                 }
                 if (p.getFirstLogin() == -1 || p.getFirstLogin() > newtime) {
                     newPoster(p);
-                }
+               	}
             }
-	    log.info("end reading posters");
         }
-        long end = System.currentTimeMillis();
         // very raw way to zap the cache
         Cache cache = RelatedNodesCache.getCache();
         cache.clear();
@@ -810,9 +810,7 @@ public class Forum {
      * @return always <code>false</code> (ToDo ??)
      */
     public boolean addAdministrator(Poster ap) {
-	log.info("A1");
         if (!isAdministrator(ap.getAccount())) {
-	log.info("A2");
             RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "posters", "rolerel");
             if (rm != null) {
                 Node rel = rm.createRelation(node, ap.getNode());

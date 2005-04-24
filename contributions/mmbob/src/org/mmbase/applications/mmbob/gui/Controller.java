@@ -1602,7 +1602,7 @@ public class Controller {
     * get login information for this poster
     */
     public MMObjectNode forumLogin(String forumid,String account,String password) {
-        log.debug("going to login with account: " + account + " and password " + password);
+        log.info("going to login with account: " + account + " and password " + password);
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
                 MMObjectNode virtual = builder.getNewNode("admin");
 		Forum f=ForumManager.getForum(forumid);
