@@ -61,6 +61,7 @@ public class Poster {
 	id = node.getIntValue(prefix+"number");
 	state = -1;
 	account = node.getStringValue(prefix+"account");
+	password = node.getStringValue(prefix+"password");
 	firstname = node.getStringValue(prefix+"firstname");
 	lastname = node.getStringValue(prefix+"lastname");
 	postcount = node.getIntValue(prefix+"postcount");
