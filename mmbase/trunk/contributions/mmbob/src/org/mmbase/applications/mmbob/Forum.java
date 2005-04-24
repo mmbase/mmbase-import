@@ -476,11 +476,29 @@ public class Forum {
         long start = System.currentTimeMillis();
         if (node != null) {
             NodeIterator i = node.getRelatedNodes("postareas").nodeIterator();
+	    int newcount = 0;
+	    int newthreadcount = 0;
             while (i.hasNext()) {
                 Node node2 = i.nextNode();
                 PostArea area = new PostArea(this, node2);
+		newcount +=area.getPostCount();
+		newthreadcount +=area.getPostThreadCount();
                 postareas.put("" + node2.getNumber(), area);
             }
+
+         // check the count number
+         if (postcount!=newcount) {
+                log.info("resync of postforumcount : "+postcount+" "+newcount);
+                postcount = newcount;
+                save();
+         }
+
+         // check the threadcount number
+         if (postthreadcount!=newthreadcount) {
+                log.info("resync of postforumtreadcount : "+postthreadcount+" "+newthreadcount);
+                postthreadcount = newthreadcount;
+                save();
+         }
         }
         long end = System.currentTimeMillis();
     }
@@ -754,7 +772,8 @@ public class Forum {
 
             pnode.setStringValue("password", md5passwd);
             log.debug("set password: " + password + " as md5 it looks like this: " + md5passwd);
-            //  pnode.setStringValue("password",password);
+	    pnode.setStringValue("firstname","");
+	    pnode.setStringValue("lastname","");
             pnode.setIntValue("postcount", 0);
             pnode.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
             pnode.setIntValue("lastseen", ((int) (System.currentTimeMillis() / 1000)));

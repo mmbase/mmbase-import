@@ -213,11 +213,13 @@ public class Poster {
      * @return firstname
      */
     public String getFirstName() {
-        return getAliased("firstname");
+        //return getAliased("firstname");
+	return firstname;
     }
 
    public String getPassword() {
-        return getAliased("password");
+        //return getAliased("password");
+	return password;
    }
 
    public void setPassword(String password) {
@@ -234,7 +236,8 @@ public class Poster {
      * @return lastname
      */
     public String getLastName() {
-        return getAliased("lastname");
+        //return getAliased("lastname");
+        return lastname;
     }
 
     /**
@@ -582,6 +585,7 @@ public class Poster {
    /** 
    * get aliases version of this field
    */
+	/*
    public String getAliased(String key) {
         Node node = ForumManager.getCloud().getNode(id);
         //long start = System.currentTimeMillis();
@@ -593,6 +597,7 @@ public class Poster {
         //log.info("getAlias Speed = "+(end-start)+"ms");
         return value;
    }
+	*/
 
    public boolean isQuotaReached() {
 	if (quotaused<quotanumber) {

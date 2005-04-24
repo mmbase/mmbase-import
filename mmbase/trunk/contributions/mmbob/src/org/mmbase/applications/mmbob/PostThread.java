@@ -278,6 +278,7 @@ public class PostThread {
                 	pnode.setStringValue("body",nbody);
 		}
 
+	        pnode.setStringValue("c_body",""); 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
 		pnode.setIntValue("edittime",-1);
                 pnode.commit();
@@ -360,17 +361,26 @@ public class PostThread {
 
 	        NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
         	long end=System.currentTimeMillis();
+		int newcount = 0;
         	//log.info("getting list="+(end-start));
 		while (i.hasNext()) {
 			Node node=i.nextNode();
         		//start=System.currentTimeMillis();
                         Posting posting=new Posting(node,this,true);
+			newcount++;
         		//end=System.currentTimeMillis();
         		//log.info("making posting="+(end-start));
 			posting.setThreadPos(threadpos++);
 			addWriter(posting);
                       	postings.add(posting);
 			//log.info("Fake read on node : "+node);
+		}
+
+		// check the count number
+		if (postcount!=newcount) {
+			log.info("resync of posttreadcount : "+postcount+" "+newcount);
+			postcount = newcount;
+			save();
 		}
 
 		// very raw way to zap the cache
@@ -565,6 +575,10 @@ public class PostThread {
 
     public boolean isLoaded() {
 	return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+	this.loaded = loaded;
     }
 
     public void swapOut() {
