@@ -16,6 +16,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.applications.mmbob.*;
@@ -52,6 +53,7 @@ public class ThreadsHandler extends Handler {
         	Forum f=ForumManager.getForum(inforum);
 		Enumeration posters=f.getPosters();
 		Poster poster;
+		int j = 0;
 		for (int i=0;i<generatecount;i++) {
 			log.info("generate thread : "+i);
 			if (posters.hasMoreElements()) {
@@ -61,6 +63,20 @@ public class ThreadsHandler extends Handler {
 				poster=(Poster)posters.nextElement();
 			}
 			createThread(inforum,inpostarea,poster,i);
+			j++;
+			if (j>99) {
+        			Cache cache = RelatedNodesCache.getCache();
+			        cache.clear();
+			        cache = NodeCache.getCache();
+			        cache.clear();
+			        cache = NodeCache.getCache();
+			        cache.clear();
+			        cache = MultilevelCache.getCache();
+			        cache.clear();
+			        cache = NodeListCache.getCache();
+			        cache.clear();
+				j=0;
+			}
 		}
 	}
 	} catch(Exception e) {

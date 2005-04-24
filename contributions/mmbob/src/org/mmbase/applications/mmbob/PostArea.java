@@ -109,6 +109,8 @@ public class PostArea {
      */
     public void setName(String name) {
         this.name = name;
+        syncNode(ForumManager.FASTSYNC);
+
     }
 
     /**
@@ -483,11 +485,14 @@ public class PostArea {
             query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
 
             query.setConstraint(query.createConstraint(f1, new Integer(id)));
-
             NodeIterator i2 = ForumManager.getCloud().getList(query).nodeIterator();
+	    int newcount = 0;
+	    int newthreadcount = 0;
             while (i2.hasNext()) {
                 Node n2 = i2.nextNode();
                 PostThread postthread = new PostThread(this, n2,true);
+		newcount += postthread.getPostCount();
+		newthreadcount++;
                 if (postthread.getState().equals("pinned")) {
                     postthreads.add(numberofpinned, postthread);
                     numberofpinned++;
@@ -498,6 +503,21 @@ public class PostArea {
             }
        	long end = System.currentTimeMillis();
 	log.info("end reading threads time="+(end-start));
+
+         // check the count number
+         if (postcount!=newcount) {
+                log.info("resync of postareacount : "+postcount+" "+newcount);
+                postcount = newcount;
+                save();
+         }
+
+         // check the threadcount number
+         if (postthreadcount!=newthreadcount) {
+                log.info("resync of postareathreadcount : "+postthreadcount+" "+newthreadcount);
+                postthreadcount = newthreadcount;
+                save();
+         }
+
 
         // very raw way to zap the cache
         Cache cache = RelatedNodesCache.getCache();
@@ -562,6 +582,7 @@ public class PostArea {
                 Node rel = rm.createRelation(node, ptnode);
                 rel.commit();
                 PostThread postthread = new PostThread(this, ptnode,false);
+		postthread.setLoaded(true);
 
                 // now add the first 'reply' (wrong name since its not a reply)
                 postthread.postReply(subject, poster, body);
@@ -674,7 +695,8 @@ public class PostArea {
      */
     private void syncNode(int queue) {
         Node node = ForumManager.getCloud().getNode(id);
-        node.setIntValue("postcount", postcount);
+        node.setStringValue("name", name);
+        node.setStringValue("description", description);
         node.setIntValue("postthreadcount", postthreadcount);
         node.setIntValue("viewcount", viewcount);
         node.setIntValue("c_lastposttime", lastposttime);
@@ -775,10 +797,8 @@ public class PostArea {
             while (e.hasMoreElements()) {
                 PostThread t = (PostThread) e.nextElement();
                 int time2 = t.getLastPostTime();
-                if (time2 > time) {
+                if (time2==-1 || time2 > time) {
                     t.readPostings();
-                } else {
-                    //log.info("ITS OLD");
                 }
             }
         }

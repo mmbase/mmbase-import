@@ -415,6 +415,53 @@ public class Controller {
     }
 
 
+    public List getPosters(String forumid,String searchkey,int page,int pagesize) {
+	searchkey=searchkey.toLowerCase();
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+		int startpos = page*pagesize;
+		int i = 1;
+		int j = 1;
+            	Enumeration e = f.getPosters();
+            	while (e.hasMoreElements()) {
+                	Poster p = (Poster) e.nextElement();
+               		String account =  p.getAccount().toLowerCase();
+               		String firstname = p.getFirstName().toLowerCase();
+               		String lastname = p.getLastName().toLowerCase();
+               		String location = p.getLocation().toLowerCase();
+			if (searchkey.equals("*") || account.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1 || location.indexOf(searchkey)!=-1) {
+				if (i>startpos) {
+                			MMObjectNode virtual = builder.getNewNode("admin");
+               	 			virtual.setValue("number", p.getId());
+                			virtual.setValue("account", p.getAccount());
+                			virtual.setValue("firstname",p.getFirstName());
+                			virtual.setValue("lastname", p.getLastName());
+                			virtual.setValue("location", p.getLocation());
+                			virtual.setValue("lastseen", p.getLastSeen());
+					if (page!=0) {
+						virtual.setValue("prevpage",page-1);
+					} else {
+						virtual.setValue("prevpage",-1);
+					}
+					virtual.setValue("nextpage",-1);
+					list.add(virtual);
+					j++;	
+					if (j>pagesize) {
+						virtual.setValue("nextpage",page+1);
+						break;
+					}
+				}
+				i++;
+			}
+		}
+            }
+        return list;
+    }
+
+
     /**
      * List all the posters not allready a moderator (so possible moderators) for this postarea
      *
