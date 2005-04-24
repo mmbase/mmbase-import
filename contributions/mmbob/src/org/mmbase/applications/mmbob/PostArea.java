@@ -698,6 +698,7 @@ public class PostArea {
         node.setStringValue("name", name);
         node.setStringValue("description", description);
         node.setIntValue("postthreadcount", postthreadcount);
+        node.setIntValue("postcount", postcount);
         node.setIntValue("viewcount", viewcount);
         node.setIntValue("c_lastposttime", lastposttime);
         node.setStringValue("c_lastposter", lastposter);
