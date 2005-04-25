@@ -18,23 +18,23 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.5 2003-03-10 11:50:56 pierre Exp $
+ * @version $Id: BasicStep.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
-    
+
     /** Associated builder. */
     private MMObjectBuilder builder = null;
-    
+
     /** Alias property. */
     private String alias = null;
-    
+
     /**
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
     private SortedSet nodes = new TreeSet();
-    
+
     /**
      * Constructor.
      *
@@ -49,7 +49,7 @@ public class BasicStep implements Step {
         }
         this.builder = builder;
     }
-    
+
     /**
      * Sets alias property.
      *
@@ -65,7 +65,7 @@ public class BasicStep implements Step {
         this.alias = alias;
         return this;
     }
-    
+
     /**
      * Adds node to nodes.
      *
@@ -81,7 +81,7 @@ public class BasicStep implements Step {
         nodes.add(new Integer(nodeNumber));
         return this;
     }
-    
+
     /**
      * Gets the associated builder.
      *
@@ -90,22 +90,22 @@ public class BasicStep implements Step {
     public MMObjectBuilder getBuilder() {
         return builder;
     }
-    
+
     // javadoc is inherited
     public String getTableName() {
         return builder.getTableName();
     }
-    
+
     // javadoc is inherited
     public String getAlias() {
         return alias;
     }
-    
+
     // javadoc is inherited
     public SortedSet getNodes() {
         return Collections.unmodifiableSortedSet(nodes);
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -120,19 +120,21 @@ public class BasicStep implements Step {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return 41 * builder.getTableName().hashCode()
         + (alias == null? 0: 43 * alias.hashCode()) + 47 * nodes.hashCode();
     }
-    
+
     // javadoc is inherited
     public String toString() {
-        return "Step(tablename:" + getTableName()
-        + ", alias:" + alias 
-        + ", nodes:" + nodes
-        + ")";
+        StringBuffer sb = new StringBuffer("Step(tablename:").
+        append(getTableName()).
+        append(", alias:").append(alias).
+        append(", nodes:").append(nodes).
+        append(")");
+        return sb.toString();
     }
-    
+
 }

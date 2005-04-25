@@ -16,18 +16,18 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.5 2003-11-27 17:58:41 robmaris Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint
 implements CompositeConstraint {
-    
+
     /** The child constraints. */
     private List childs = new ArrayList();
-    
+
     /** The logical operator. */
     private int logicalOperator = 0;
-    
+
     /**
      * Constructor.
      *
@@ -45,7 +45,7 @@ implements CompositeConstraint {
         }
         this.logicalOperator = logicalOperator;
     }
-    
+
     /**
      * Adds new child constraint.
      *
@@ -73,19 +73,30 @@ implements CompositeConstraint {
         }
         return this;
     }
-        
-    
+
+
     // javadoc is inherited
     public List getChilds() {
         // return a unmodifiable list
         return Collections.unmodifiableList(childs);
     }
-    
+
     // javadoc is inherited
     public int getLogicalOperator() {
         return logicalOperator;
     }
-    
+
+    /**
+     * Returns a description of the logical operator
+     */
+    public String getLogicalOperatorDescription() {
+        try {
+            return CompositeConstraint.LOGICAL_OPERATOR_DESCRIPTIONS[logicalOperator];
+        } catch (IndexOutOfBoundsException ioobe) {
+            return null;
+        }
+    }
+
     // javadoc is inherited
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
@@ -104,7 +115,7 @@ implements CompositeConstraint {
         }
         return result;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -120,22 +131,20 @@ implements CompositeConstraint {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
-        return super.hashCode() 
+        return super.hashCode()
         + 109 * logicalOperator
         + 71 * childs.hashCode();
     }
-    
+
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
         append(isInverse()).
-        append(", operator:").
-        append(getLogicalOperator()).
-        append(", childs:").
-        append(getChilds()).
+        append(", operator:").append(getLogicalOperatorDescription()).
+        append(", childs:").append(getChilds()).
         append(")");
         return sb.toString();
     }

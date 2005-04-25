@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.8 2005-04-21 10:06:09 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.9 2005-04-25 14:56:57 pierre Exp $
  * @since   MMBase-1.7
  */
 
@@ -78,7 +78,7 @@ public  class GrowingTreeList extends TreeList {
     }
 
     /**
-     * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before 
+     * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before
      * the tree is 'started'.
      * All but the first step of this query are added. This query itself is never used.
      * @return Query which is used as a template
@@ -89,7 +89,7 @@ public  class GrowingTreeList extends TreeList {
         return pathElementTemplate;
     }
 
-   
+
 
     public int size() {
         while (! foundEnd) {
@@ -106,7 +106,7 @@ public  class GrowingTreeList extends TreeList {
     }
 
     /**
-     * 
+     *
      */
     protected void addPathElement() {
         if (! pathElementTemplate.isUsed()) {
@@ -133,9 +133,9 @@ public  class GrowingTreeList extends TreeList {
                     }
                 }
 
-                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()), 
+                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()),
                                             role,
-                                            RelationStep.DIRECTIONALITY_NAMES[relationStepTemplate.getDirectionality()]);
+                                            RelationStep.DIRECTIONALITY_DESCRIPTIONS[relationStepTemplate.getDirectionality()]);
                 if (newStep == null) {
                     foundEnd = true;
                     break;
@@ -152,7 +152,7 @@ public  class GrowingTreeList extends TreeList {
                     Queries.addConstraint(newQuery, newStepConstraint);
                     Queries.addConstraint(newQuery, newRelationStepConstraint);
                 }
-                
+
 
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), stepTemplate, newQuery, nextStep);
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), relationStepTemplate, newQuery, newStep);

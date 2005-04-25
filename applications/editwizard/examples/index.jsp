@@ -16,7 +16,8 @@
     <li><a href="<mm:url page="logo/" />">This example shows how to add a logo</a></li>
     <li><a href="<mm:url page="newftype/" />">This example shows how to create a new ftype</a></li>
     <li><a href="<mm:url page="advanced/" />">Some more sophisticated examples</a></li>
-    <li><a href="<mm:url page="finalist/" />">Some other sophisticated examples</a></li>
+    <li><a href="<mm:url page="preditor/" />">An example of a wizard with a different look ("preditor look")</a></li>
+    <li><a href="<mm:url page="finalist/" />">An example of a wizard with a different look ("finalist look")</a></li>
     <li><a href="<mm:url page="startwizard/" />">All kind of 'start-wizards'</a></li>
   </ul>
   <hr />

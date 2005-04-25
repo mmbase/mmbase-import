@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mmbase.storage.search.*;
  * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Id: BasicRelationStep.java,v 1.8 2004-02-23 19:01:03 pierre Exp $
+ * @version $Id: BasicRelationStep.java,v 1.9 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
@@ -119,9 +120,32 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         return directionality;
     }
 
+    /**
+     * Returns a description of the part
+     */
+    public String getDirectionalityDescription() {
+        try {
+            return RelationStep.DIRECTIONALITY_DESCRIPTIONS[directionality];
+        } catch (IndexOutOfBoundsException ioobe) {
+            return null;
+        }
+    }
+
     // javadoc is inherited
     public Integer getRole() {
         return role;
+    }
+
+    // javadoc is inherited
+    public String getRoleDescription() {
+        String roleName = "reldef:"+role;
+        if (role != null && getBuilder() != null) {
+            MMObjectNode node = getBuilder().getNode(role.intValue());
+            if (node != null) {
+                roleName = node.getGUIIndicator();
+            }
+        }
+        return roleName;
     }
 
     // javadoc is inherited
@@ -170,9 +194,9 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         append(", nodes:").
         append(getNodes()).
         append(", dir:").
-        append(RelationStep.DIRECTIONALITY_NAMES[getDirectionality()]).
+        append(getDirectionalityDescription()).
         append(", role:").
-        append(getRole()).
+        append(getRoleDescription()).
         append(")");
         return sb.toString();
     }

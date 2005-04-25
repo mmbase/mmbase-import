@@ -16,15 +16,15 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompareFieldsConstraint.java,v 1.4 2003-03-10 11:50:54 pierre Exp $
+ * @version $Id: BasicCompareFieldsConstraint.java,v 1.5 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
-public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint 
+public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint
 implements CompareFieldsConstraint {
-    
+
     /** The second associated field. */
     private StepField field2 = null;
-    
+
     /**
      * Constructor.
      *
@@ -34,32 +34,32 @@ implements CompareFieldsConstraint {
      */
     public BasicCompareFieldsConstraint(StepField field1, StepField field2) {
         super(field1);
-        
+
         // Test for non-null value.
         if (field2 == null) {
             throw new IllegalArgumentException(
             "Invalid field2 value: " + field2);
         }
-        
+
         // Test for matching fieldtype.
         if (field1.getType() != field2.getType()) {
             throw new IllegalArgumentException(
-            "Fieldtypes do not match: " + field1.getType() 
+            "Fieldtypes do not match: " + field1.getType()
             + " and " + field2.getType());
         }
         this.field2 = field2;
     }
-    
+
     // javadoc is inherited
     public StepField getField2() {
         return field2;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
-            BasicCompareFieldsConstraint constraint 
+            BasicCompareFieldsConstraint constraint
                 = (BasicCompareFieldsConstraint) obj;
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
@@ -74,7 +74,7 @@ implements CompareFieldsConstraint {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
@@ -88,14 +88,10 @@ implements CompareFieldsConstraint {
     public String toString() {
         StringBuffer sb = new StringBuffer("CompareFieldsConstraint(inverse:").
         append(isInverse()).
-        append(", field:").
-        append(getField().getAlias()).  // TODO RvM: handle null alias.
-        append(", casesensitive:").
-        append(isCaseSensitive()).
-        append(", operator:").
-        append(getOperator()).
-        append(", field2:").
-        append(getField2().getAlias()). // TODO RvM: handle null alias.
+        append(", field:").append(getFieldName()).
+        append(", casesensitive:").append(isCaseSensitive()).
+        append(", operator:").append(getOperatorDescription()).
+        append(", field2:").append(BasicStepField.getFieldName(getField2())).
         append(")");
         return sb.toString();
     }
