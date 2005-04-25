@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.4 2004-11-30 14:09:27 pierre Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.5 2005-04-25 13:34:36 pierre Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -103,37 +103,6 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         }
     }
 
-    public int getDatePart() throws JspTagException {
-        String cs = part.getString(this).toUpperCase();
-        if (cs.equals("")) {
-            return -1;
-        } else if (cs.equals("CENTURY")) {
-            return FieldValueDateConstraint.CENTURY;
-        } else if (cs.equals("YEAR")) {
-            return FieldValueDateConstraint.YEAR;
-        } else if (cs.equals("MONTH")) {
-            return FieldValueDateConstraint.MONTH;
-        } else if (cs.equals("QUARTER")) {
-            return FieldValueDateConstraint.QUARTER;
-        } else if (cs.equals("WEEK")) {
-            return FieldValueDateConstraint.WEEK;
-        } else if (cs.equals("DAYOFYEAR")) {
-            return FieldValueDateConstraint.DAY_OF_YEAR;
-        } else if (cs.equals("DAY") || cs.equals("DAYOFMONTH")) {
-            return FieldValueDateConstraint.DAY_OF_MONTH;
-        } else if (cs.equals("DAYOFWEEK")) {
-            return FieldValueDateConstraint.DAY_OF_WEEK;
-        } else if (cs.equals("HOUR")) {
-            return FieldValueDateConstraint.HOUR;
-        } else if (cs.equals("MINUTE")) {
-            return FieldValueDateConstraint.MINUTE;
-        } else if (cs.equals("SECOND")) {
-            return FieldValueDateConstraint.SECOND;
-        } else {
-            throw new JspTagException("Unknown value '" + cs + "' for part attribute");
-        }
-    }
-
     private Constraint addConstraint(Query query) throws JspTagException {
         int op = Queries.getOperator(operator.getString(this));
 
@@ -171,7 +140,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         }
 
         Constraint newConstraint = Queries.createConstraint(query, field.getString(this), Queries.getOperator(operator.getString(this)),
-                                                            compareValue, compareValue2, getCaseSensitive(), getDatePart());
+                                                            compareValue, compareValue2, getCaseSensitive(), Queries.getDateTimePart(part.getString(this)));
 
         //buildConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this), getCaseSensitive());
 
