@@ -14,6 +14,9 @@
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">allposters</mm:import>
 <mm:import externid="posterid" id="profileid" />
+<mm:import externid="searchkey">*</mm:import>
+<mm:import externid="page">0</mm:import>
+<mm:import id="pagesize">25</mm:import>
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -43,7 +46,13 @@
 <mm:include page="path.jsp?type=$pathtype" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 
-<mm:node referid="forumid">
+  <tr>
+	<form action="<mm:url page="allposters.jsp" referids="forumid" />" method="post">
+	<th colspan="4">
+	Search : <input name="searchkey" size="20" value="<mm:write referid="searchkey" />" />
+	</th>
+	</form>
+  </tr>
   <tr>
     <th><mm:write referid="mlg.Account" /></th>
     <th><mm:write referid="mlg.Location" /></th>
@@ -53,8 +62,7 @@
     </mm:compare>
   </tr>
 
-	<mm:related path="forposrel,posters">
-	<mm:node element="posters">
+<mm:nodelistfunction set="mmbob" name="getPosters" referids="forumid,searchkey,page,pagesize">
   <tr>
     <td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td>
     <td><mm:field name="location" /></td>
@@ -72,10 +80,28 @@
       </td>
     </mm:compare>
   </tr>
-	</mm:node>
-	</mm:related>
+  <mm:last>
+	<tr>
+	<td align="right" colspan="2">
+		<mm:field name="prevpage"> 
+		<mm:compare value="-1" inverse="true">
+		<mm:import id="page" reset="true"><mm:field name="prevpage" /></mm:import>
+		<a href="<mm:url page="allposters.jsp" referids="forumid,searchkey,page" />"><<<--</a>
+		</mm:compare>
+		</mm:field>
+	</td>
+	<td align="left" colspan="2">
+		<mm:field name="nextpage"> 
+		<mm:compare value="-1" inverse="true">
+		<mm:import id="page" reset="true"><mm:field name="nextpage" /></mm:import>
+		<a href="<mm:url page="allposters.jsp" referids="forumid,searchkey,page" />">-->>></a>
+		</mm:compare>
+		</mm:field>
+	</td>
+	</tr>
+  </mm:last>
+  </mm:nodelistfunction>
 </table>
-</mm:node>
 </div>
 
 <div class="footer">
