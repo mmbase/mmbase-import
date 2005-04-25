@@ -15,17 +15,17 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSortOrder.java,v 1.5 2003-07-14 20:47:11 michiel Exp $
+ * @version $Id: BasicSortOrder.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
-    
+
     /** Associated stepfield. */
     private StepField field = null;
-    
+
     /** Direction property. */
     private int direction = SortOrder.ORDER_ASCENDING;
-    
+
     /**
      * Constructor.
      * Creates new BasicSortOrder instance, with
@@ -41,7 +41,7 @@ public class BasicSortOrder implements SortOrder {
         }
         this.field = field;
     }
-    
+
     /**
      * Sets direction.
      *
@@ -58,17 +58,28 @@ public class BasicSortOrder implements SortOrder {
         this.direction = direction;
         return this;
     }
-    
+
     // javadoc is inherited
     public StepField getField() {
         return field;
     }
-    
+
     // javadoc is inherited
     public int getDirection() {
         return direction;
     }
-    
+
+    /**
+     * Returns a description of the direction of the sort order
+     */
+    public String getDirectionDescription() {
+        try {
+            return SortOrder.ORDER_DESCRIPTIONS[direction];
+        } catch (IndexOutOfBoundsException ioobe) {
+            return null;
+        }
+    }
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj instanceof SortOrder) {
@@ -81,18 +92,18 @@ public class BasicSortOrder implements SortOrder {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         String alias = field.getStep().getAlias();
-        return 
-            61 * field.getFieldName().hashCode() 
+        return
+            61 * field.getFieldName().hashCode()
             + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction;
     }
 
     // javadoc is inherited
     public String toString() {
-        return "SortOrder(field:" + getField().getAlias() + ", dir:" + getDirection() + ")";
+        return "SortOrder(field:" + BasicStepField.getFieldName(getField()) + ", dir:" + getDirectionDescription() + ")";
     }
-    
+
 }

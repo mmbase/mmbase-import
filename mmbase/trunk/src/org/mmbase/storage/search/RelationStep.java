@@ -17,7 +17,7 @@ package org.mmbase.storage.search;
  * Note that tables can also be joined using FieldCompareConstraints.
  *
  * @author Rob van Maris
- * @version $Id: RelationStep.java,v 1.8 2005-04-25 09:04:50 pierre Exp $
+ * @version $Id: RelationStep.java,v 1.9 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public interface RelationStep extends Step {
@@ -58,10 +58,10 @@ public interface RelationStep extends Step {
 
     /**
      * Directionality names corresponding to the direction values.
-     * As a result DIRECTIONALITY_NAMES[directionality] is the directionality
+     * As a result DIRECTIONALITY_DESCRIPTIONS[directionality] is the directionality
      * name: "both", "destination", "source", "all" or "either".
      */
-     String[] DIRECTIONALITY_NAMES = new String[] {
+    public final static String[] DIRECTIONALITY_DESCRIPTIONS = new String[] {
          "both",
          "destination",
          "source",

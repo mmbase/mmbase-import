@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * A constraint on a 'part' of a DateTime field. E.g. where extract(YEAR, lastmodified) = 2004.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFieldValueDateConstraint.java,v 1.2 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: BasicFieldValueDateConstraint.java,v 1.3 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.8
  */
 public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint implements FieldValueDateConstraint {
@@ -45,6 +45,17 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
         return part;
     }
 
+    /**
+     * Returns a description of the part
+     */
+    public String getPartDescription() {
+        try {
+            return FieldValueDateConstraint.PART_DESCRIPTIONS[part];
+        } catch (IndexOutOfBoundsException ioobe) {
+            return null;
+        }
+    }
+
     public void setPart(int p) {
         part = p;
     }
@@ -61,6 +72,14 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
 
     // javadoc is inherited
     public String toString() {
-        return super.toString() + ", date-part: " + getPart();
+        StringBuffer sb = new StringBuffer("BasicFieldValueDateConstraint(inverse:").
+        append(isInverse()).
+        append(", field:").append(getFieldName()).
+        append(", casesensitive:").append(isCaseSensitive()).
+        append(", operator:").append(getOperatorDescription()).
+        append(", value:").append(getValue()).
+        append(", date-part:").append(getPartDescription()).
+        append(")");
+        return sb.toString();
     }
 }

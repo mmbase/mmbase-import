@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.7 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.8 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint
@@ -117,14 +117,10 @@ implements FieldValueBetweenConstraint {
     public String toString() {
         StringBuffer sb = new StringBuffer("FieldValueBetweenConstraint(inverse:").
         append(isInverse()).
-        append(", field:").
-        append(getField().getAlias()). // TODO RvM: handle null alias.
-        append(", casesensitive:").
-        append(isCaseSensitive()).
-        append(", lower:").
-        append(getLowerLimit()).
-        append(", upper:").
-        append(getUpperLimit()).
+        append(", field:").append(getFieldName()).
+        append(", casesensitive:").append(isCaseSensitive()).
+        append(", lower:").append(getLowerLimit()).
+        append(", upper:").append(getUpperLimit()).
         append(")");
         return sb.toString();
     }

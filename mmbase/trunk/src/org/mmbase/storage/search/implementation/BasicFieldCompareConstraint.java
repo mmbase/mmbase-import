@@ -17,15 +17,14 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldCompareConstraint.java,v 1.6 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: BasicFieldCompareConstraint.java,v 1.7 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
-public class BasicFieldCompareConstraint extends BasicFieldConstraint 
-implements FieldCompareConstraint {
-    
+public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint {
+
     /** The operator. */
     private int operator = FieldCompareConstraint.EQUAL;
-    
+
     /**
      * Constructor.
      * Protected, so only subclasses can be instantiated.
@@ -33,10 +32,10 @@ implements FieldCompareConstraint {
      * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    protected BasicFieldCompareConstraint(StepField field) { 
+    protected BasicFieldCompareConstraint(StepField field) {
         super(field);
     }
-    
+
     /**
      * Sets operator.
      *
@@ -45,14 +44,14 @@ implements FieldCompareConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldCompareConstraint setOperator(int operator) {
-        
+
         // Test for defined operator value.
         if (operator < FieldCompareConstraint.LESS
         || operator > FieldCompareConstraint.LIKE) {
             throw new IllegalArgumentException(
             "Invalid operator value: " + operator );
         }
-        
+
         // Test "LIKE" operator only used with string type field.
         if (operator == FieldCompareConstraint.LIKE
         && getField().getType() != FieldDefs.TYPE_STRING
@@ -61,21 +60,32 @@ implements FieldCompareConstraint {
             "LIKE operator not allowed for this field type: "
             + getField().getType());
         }
-        
+
         this.operator = operator;
         return this;
     }
-    
+
     // javadoc is inherited
     public int getOperator() {
         return operator;
     }
-    
+
+    /**
+     * Returns a description of the operator
+     */
+    public String getOperatorDescription() {
+        try {
+            return FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator];
+        } catch (IndexOutOfBoundsException ioobe) {
+            return null;
+        }
+    }
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
-            BasicFieldCompareConstraint constraint 
+            BasicFieldCompareConstraint constraint
                 = (BasicFieldCompareConstraint) obj;
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
@@ -87,10 +97,22 @@ implements FieldCompareConstraint {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
         + 113 * operator;
     }
+
+    // javadoc is inherited
+    public String toString() {
+        StringBuffer sb = new StringBuffer("BasicFieldCompareConstraint(inverse:").
+        append(isInverse()).
+        append(", field:").append(getFieldName()).
+        append(", casesensitive:").append(isCaseSensitive()).
+        append(", operator:").append(getOperatorDescription()).
+        append(")");
+        return sb.toString();
+    }
+
 }

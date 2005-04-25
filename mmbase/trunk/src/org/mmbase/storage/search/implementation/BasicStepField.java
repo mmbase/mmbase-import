@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.14 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: BasicStepField.java,v 1.15 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -208,19 +208,6 @@ public class BasicStepField implements StepField {
         + (alias == null? 0: 59 * alias.hashCode());
     }
 
-    // javadoc is inherited
-    public String toString() {
-        StringBuffer sb = new StringBuffer("StepField(step:");
-        if (getStep().getAlias() == null) {
-            sb.append(getStep().getTableName());
-        } else {
-            sb.append(getStep().getAlias());
-        }
-        sb.append(", fieldname:").append(getFieldName()).
-        append(", alias:").append(getAlias()).append(")");
-        return sb.toString();
-    }
-
     /**
      * Utility method, compares steps by their alias or table name.
      * Steps are considered equal if their aliases are equal.
@@ -246,6 +233,48 @@ public class BasicStepField implements StepField {
         } else {
             return alias1.equals(step2.getAlias());
         }
+    }
+
+    /**
+     * Returns the field's fieldname, possibly extended with the step's name if known.
+     * May return null or partial fieldnames if not all data is available (for use in debugging).
+     * @param field the fieldname whose name to return
+     */
+    static public String getFieldName(StepField field) {
+        String fieldName = null;
+        if (field != null) {
+            fieldName = field.getAlias();
+            if (fieldName == null) {
+                fieldName = field.getFieldName();
+            }
+            Step step = field.getStep();
+            if (step != null)  {
+                if (step.getAlias() != null) {
+                    fieldName = step.getAlias() + "." + fieldName;
+                } else {
+                    fieldName = step.getTableName() + "." + fieldName;
+                }
+            }
+        }
+        return fieldName;
+    }
+
+
+    // javadoc is inherited
+    public String toString() {
+        StringBuffer sb = new StringBuffer("StepField(step:");
+        if (getStep() == null) {
+            sb.append("null");
+        } else {
+            if (getStep().getAlias() == null) {
+                sb.append(getStep().getTableName());
+            } else {
+                sb.append(getStep().getAlias());
+            }
+        }
+        sb.append(", fieldname:").append(getFieldName()).
+        append(", alias:").append(getAlias()).append(")");
+        return sb.toString();
     }
 
 }
