@@ -71,6 +71,7 @@
     <disallowed-field name="keys" replacement="m_keys"/>
     <disallowed-field name="local" replacement="m_local"/> <!-- standard SQL keyword -->
     <disallowed-field name="month" replacement="m_month"/> <!-- standard SQL keyword -->
+    <disallowed-field name="option" replacement="m_option"/> <!-- standard SQL keyword -->
     <disallowed-field name="order" replacement="m_order"/> <!-- standard SQL keyword -->
     <disallowed-field name="parent" replacement="m_parent"/>
     <disallowed-field name="read" replacement="m_read"/> <!-- standard SQL keyword -->
