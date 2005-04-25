@@ -26,7 +26,7 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.15 2005-03-16 10:32:10 michiel Exp $
+ * @version $Id: Rank.java,v 1.16 2005-04-25 14:25:18 michiel Exp $
  */
 public final class Rank implements Comparable, java.io.Serializable {
 
@@ -130,7 +130,7 @@ public final class Rank implements Comparable, java.io.Serializable {
     }
 
     /**
-     * Returns all ranks currently known by security implemetation.  Default and to start with there
+     * Returns all ranks currently known by the security implemetation.  Default and to start with there
      * are three ranks available: 'anonymous', 'basic user' and 'administrator'.  You probably
      * should never remove them.
      * @since MMBase-1.6.4
