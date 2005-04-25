@@ -56,7 +56,7 @@ public class Controller {
      * @param sactiveid MMBase node number of the active poster
      * @return List of postareas that matches the given params
      */
-    public List getPostAreas(String id, String sactiveid) {
+    public List getPostAreas(String id, String sactiveid,String mode) {
         List list = new ArrayList();
         try {
             int activeid = Integer.parseInt(sactiveid);
@@ -82,6 +82,11 @@ public class Controller {
                     virtual.setValue("lastpostnumber",area.getLastPostNumber());
 	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
        	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
+		   if (mode.equals("stats")) {
+            	   	 virtual.setValue("postthreadloadedcount", area.getPostThreadLoadedCount());
+            	   	 virtual.setValue("postingsloadedcount", area.getPostingsLoadedCount());
+                   	 virtual.setValue("memorysize", ((float)area.getMemorySize())/(1024*1024)+"MB");
+		   }
                     list.add(virtual);
 
                     if (activeid != -1) {
@@ -108,7 +113,7 @@ public class Controller {
      * @return List of (virtual) MMObjectNode-objects representing the available forums
      *
      */
-    public static List getForums() {
+    public static List getForums(String mode) {
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
@@ -131,8 +136,11 @@ public class Controller {
             virtual.setValue("lastsubject", f.getLastSubject());
             virtual.setValue("lastposternumber",f.getLastPosterNumber());
             virtual.setValue("lastposrnumber",f.getLastPostNumber());
-            virtual.setValue("postthreadloadedcount", f.getPostThreadLoadedCount());
-            virtual.setValue("memorysize", ((float)f.getMemorySize())/(1024*1024)+"MB");
+            if (mode.equals("stats")) {
+            	virtual.setValue("postthreadloadedcount", f.getPostThreadLoadedCount());
+            	virtual.setValue("postingsloadedcount", f.getPostingsLoadedCount());
+            	virtual.setValue("memorysize", ((float)f.getMemorySize())/(1024*1024)+"MB");
+            }
             list.add(virtual);
         }
         return list;
