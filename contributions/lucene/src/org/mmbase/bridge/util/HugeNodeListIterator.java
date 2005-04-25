@@ -24,7 +24,7 @@ import java.util.*;
  * are removed from the query-caches.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.1 2005-04-21 18:16:38 pierre Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.2 2005-04-25 07:49:02 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -32,20 +32,21 @@ public class HugeNodeListIterator implements NodeIterator {
 
     public static final int DEFAULT_BATCH_SIZE = 10000;
 
-    private static final Logger log = Logging.getLoggerInstance(HugeNodeListIterator.class);
-
     // will not work through RMMCI, because caches are accessed.
     protected static MultilevelCache multilevelCache  = MultilevelCache.getCache();
-    protected static NodeListCache nodeListCache      = NodeListCache.getCache();
+    protected static NodeListCache nodeListCache = NodeListCache.getCache();
+
+    // log
+    private static final Logger log = Logging.getLoggerInstance(HugeNodeListIterator.class);
 
     protected NodeIterator nodeIterator;
-    protected Node         nextNode;
-    protected Node         previousNode;
+    protected Node nextNode;
+    protected Node previousNode;
 
-    protected Query   originalQuery;
-    protected int     batchSize = DEFAULT_BATCH_SIZE;
+    protected Query originalQuery;
+    protected int batchSize = DEFAULT_BATCH_SIZE;
 
-    protected int     nextIndex = 0;
+    protected int nextIndex = 0;
 
     /**
      * Constructor for this Iterator.
@@ -91,14 +92,22 @@ public class HugeNodeListIterator implements NodeIterator {
      */
     protected void executeQuery(Query currentQuery) {
         currentQuery.setMaxNumber(batchSize);
+        if (log.isDebugEnabled()) {
+            log.trace("Running query: " + currentQuery);
+        }
+        NodeList list;
         if (originalQuery instanceof NodeQuery) {
             NodeQuery nq = (NodeQuery) currentQuery;
-            nodeIterator = nq.getNodeManager().getList(nq).nodeIterator();
+            list = nq.getNodeManager().getList(nq);
             nodeListCache.remove(nq);
         } else {
-            nodeIterator = currentQuery.getCloud().getList(currentQuery).nodeIterator();
+            list = currentQuery.getCloud().getList(currentQuery);
             multilevelCache.remove(currentQuery);
         }
+        if (log.isDebugEnabled()) {
+            log.trace("Query result: " + list.size() + " nodes");
+        }
+        nodeIterator = list.nodeIterator();
     }
 
     /**
@@ -173,6 +182,97 @@ public class HugeNodeListIterator implements NodeIterator {
     }
 
     /**
+     * Used by nextNode and previousNode. Does a field-by-field compare of two Node objects to check
+     * if they are equal. One would expect the equals-member function of Node to be useable for
+     * this, but that seems not to be the case.
+     */
+     /*
+    protected boolean equals(Node node1, Node node2) {
+        if (node1 == null) return node2 == null;
+        if (node2 == null) return node1 == null;
+        Iterator i = node1.getNodeManager().getFields().iterator();
+        while (i.hasNext()) {
+            Field f = (Field) i.next();
+            String name = f.getName();
+            Object value = node1.getValue(name);
+            if (value == null) {
+                if (node2.getValue(name) != null) return false;
+            } else {
+                if (! value.equals(node2.getValue(name))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    */
+
+    /**
+     * Used by nextNode and previousNode. Does a field-by-field compare of two Node objects, on
+     * the fields used to order the nodes.
+     * This is used to determine whether a node comes after or before another - allowing
+     * the node iterator to skip nodes it already 'had'.
+     * @return -1 if node1 is smaller than node 2, 0 if both nodes are equals, and +1 is node 1 is greater than node 2.
+     */
+    protected int compares(Node node1, Node node2) {
+        if (node1 == null) return -1;
+        if (node2 == null) return +1;
+        int result = 0;
+        Iterator i = originalQuery.getSortOrders().iterator();
+        while (result == 0 && i.hasNext()) {
+            SortOrder order = (SortOrder) i.next();
+            Object value = getOrderFieldValue(node1, order);
+            Object value2 = getOrderFieldValue(node2, order);
+            // compare values - if they differ, detemrine whether
+            // they are bigger or smaller and return the result
+            // remaining fields are not of interest ionce a difference is found
+            if (value == null) {
+                if (value2 != null) {
+                    result = -1;
+                }
+            } else if (value2 == null) {
+                result = 1;
+            } else {
+                // compare the results
+                try {
+                    result = ((Comparable)value).compareTo(value2);
+                } catch (ClassCastException cce) {
+                    // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
+                    // warn and ignore this sortorder
+                    log.warn("Cannot compare values " + value +" and " + value2 + " in sortorder field " +
+                        order.getField().getFieldName() + " in step " + order.getField().getStep().getAlias());
+                }
+            }
+            // if the order of this field is descending,
+            // then the result of the comparison is the reverse (the node is 'greater' if the value is 'less' )
+            if (order.getDirection() == SortOrder.ORDER_DESCENDING) {
+                result = -result;
+            }
+        }
+        // if all fields match - return 0 as if equal
+        return result;
+    }
+
+    /**
+     * Obtains a value for the field of a sortorder from a given node.
+     * Used to set constraints based on sortorder.
+     */
+    private Object getOrderFieldValue(Node node, SortOrder order) {
+        String fieldName = order.getField().getFieldName();
+        Object value = node.getValue(fieldName);
+        if (value == null) {
+            value = node.getValue(order.getField().getStep().getAlias() + "." + fieldName);
+            if (value == null) {
+                value = node.getValue(order.getField().getStep().getTableName() + "." + fieldName);
+            }
+        }
+        if (value instanceof Node) {
+            value = new Integer(((Node)value).getNumber());
+        }
+        return value;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * Implementation calculates also the next next Node, and gives back the 'old' next Node, from
@@ -190,21 +290,27 @@ public class HugeNodeListIterator implements NodeIterator {
                 // We don't use offset to determin the 'next' batch of query results
                 // because there could have been deletions/insertions.
                 // We use the sort-order to apply a constraint.
-                for (Iterator orders = originalQuery.getSortOrders().iterator(); orders.hasNext();) {
-                    SortOrder order = (SortOrder) orders.next();
-                    String fieldName = order.getField().getFieldName();
-                    if (fieldName.equals("number")) {
-                        Constraint cons;
-                        if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
-                            cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.GREATER, new Integer(previousNode.getIntValue(fieldName)));
-                        } else {
-                            cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.LESS, new Integer(previousNode.getIntValue(fieldName)));
-                        }
-                        Queries.addConstraint(currentQuery, cons);
-                    }
+                SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
+                Object value = getOrderFieldValue(previousNode, order);
+                Constraint cons;
+                if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
+                    cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.GREATER_EQUAL, value);
+                } else {
+                    cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.LESS_EQUAL, value);
                 }
+                Queries.addConstraint(currentQuery, cons);
+
                 executeNextQuery(currentQuery);
 
+                // perhaps the sort-order did not find a unique result, skip some nodes in that case.
+                // XXX This goes wrong if (which is unlikely) there follow more nodes than 'batchSize'.
+                while(nextNode != null && compares(nextNode, previousNode) <= 0) {
+                    if (nodeIterator.hasNext()) {
+                        nextNode = nodeIterator.nextNode();
+                    } else {
+                        nextNode = null;
+                    }
+                }
             }
 
             return previousNode; // looks odd, but really is wat is meant.
@@ -225,26 +331,25 @@ public class HugeNodeListIterator implements NodeIterator {
             if (nodeIterator.hasPrevious()) {
                 previousNode = nodeIterator.previousNode();
             } else {
-                // TODO: we can probably determine beforehand whether another query is needed (based on the number of results of
-                // the last query). Perhasp we should test on this and so skip the running of a (superfluous) final query?
                 Query currentQuery = (Query) originalQuery.clone();
-                // We don't use offset to determin the 'next' batch of query results
-                // because there could have been deletions/insertions.
-                // We use the sort-order to apply a constraint.
-                for (Iterator orders = originalQuery.getSortOrders().iterator(); orders.hasNext();) {
-                    SortOrder order = (SortOrder) orders.next();
-                    String fieldName = order.getField().getFieldName();
-                    if (fieldName.equals("number")) {
-                        Constraint cons;
-                        if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
-                            cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.LESS, new Integer(nextNode.getIntValue(order.getField().getFieldName())));
-                        } else {
-                            cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.GREATER, new Integer(nextNode.getIntValue(order.getField().getFieldName())));
-                        }
-                        Queries.addConstraint(currentQuery, cons);
+                SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
+                Object value = getOrderFieldValue(nextNode, order);
+                Constraint cons;
+                if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
+                    cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.LESS_EQUAL, value);
+                } else {
+                    cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.GREATER_EQUAL, value);
+                }
+                Queries.addConstraint(currentQuery, cons);
+                executePreviousQuery(currentQuery);
+                while(previousNode != null && compares(nextNode, previousNode) >= 0) {
+                    if (nodeIterator.hasPrevious()) {
+                        previousNode = nodeIterator.previousNode();
+                    } else {
+                        previousNode = null;
                     }
                 }
-                executePreviousQuery(currentQuery);
+
             }
             return nextNode;
         } else {
@@ -252,8 +357,7 @@ public class HugeNodeListIterator implements NodeIterator {
         }
     }
 
-
-    /**
+   /**
      * @throws UnsupportedOperationException
      */
     public void remove() {
@@ -287,6 +391,5 @@ public class HugeNodeListIterator implements NodeIterator {
         }
 
     }
-
 
 }
