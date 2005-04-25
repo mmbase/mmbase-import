@@ -14,6 +14,8 @@ import java.util.*;
 
 import org.xml.sax.InputSource;
 
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -31,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.53 2005-03-16 12:47:51 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.54 2005-04-25 14:23:23 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -237,19 +239,27 @@ public class TypeDef extends MMObjectBuilder {
     private boolean readCache() {
         // at least fill in typedef
         log.service("Reading typedef caches");
-        numberToNameCache = new Hashtable();
-        nameToNumberCache = new Hashtable();
-        for (Enumeration e = search(null); e.hasMoreElements();) {
-            MMObjectNode n= (MMObjectNode) e.nextElement();
-            Integer number= n.getIntegerValue("number");
-            String name  = n.getStringValue("name");
-            if (number != null && name != null) {
-                nameToNumberCache.put(name,number);
-                numberToNameCache.put(number,name);
-            } else {
-                log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
+        numberToNameCache = Collections.synchronizedMap(new HashMap());
+        nameToNumberCache = Collections.synchronizedMap(new HashMap());
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        log.info("query: " + query);
+        try {
+            Iterator typedefs = getNodes(query).iterator();
+            while (typedefs.hasNext()) {
+                MMObjectNode n = (MMObjectNode) typedefs.next();
+                Integer number = n.getIntegerValue("number");
+                String name    = n.getStringValue("name");
+                if (number != null && name != null) {
+                    nameToNumberCache.put(name,number);
+                    numberToNameCache.put(number,name);
+                } else {
+                    log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
+                }
             }
-         }
+        } catch (SearchQueryException sqe) {
+            // should never happen.
+            log.error(sqe);
+        }
         return true;
     }
 
@@ -260,8 +270,8 @@ public class TypeDef extends MMObjectBuilder {
      * @return the object type as an int, -1 if not defined.
      */
     public int getIntValue(String builderName) {
-        Integer result=(Integer)getNameToNumberCache().get(builderName);
-        if (result!=null) {
+        Integer result = (Integer) getNameToNumberCache().get(builderName);
+        if (result != null) {
             return result.intValue();
         } else {
             return -1;
@@ -622,13 +632,22 @@ public class TypeDef extends MMObjectBuilder {
                     throw new RuntimeException("Cannot delete this builder, it is referenced in reldef #" + reldef.getNumber());
                 }
             }
-            Enumeration e = mmb.getTypeRel().search("WHERE snumber=" + builder.oType + " OR dnumber=" + builder.oType);
-            if (e.hasMoreElements()) {
-                String typerels = "#" + ((MMObjectNode)e.nextElement()).getNumber();
-                while (e.hasMoreElements()) {
-                    typerels = typerels + ", #" + ((MMObjectNode)e.nextElement()).getNumber();
+            try {
+                NodeSearchQuery q = new NodeSearchQuery(mmb.getTypeRel());
+                Integer value = new Integer(builder.oType);
+                BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
+                BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), value);
+                BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), value);
+                constraint.addChild(constraint1);
+                constraint.addChild(constraint2);
+                q.setConstraint(constraint);
+                List typerels = mmb.getTypeRel().getNodes(q);
+                if (typerels.size() > 0) {
+                    throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
                 }
-                throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
+            } catch (SearchQueryException sqe) {
+                // should never happen
+                log.error(sqe);
             }
         }
     }
