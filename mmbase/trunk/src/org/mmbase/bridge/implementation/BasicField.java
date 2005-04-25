@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.16 2005-03-16 16:01:23 michiel Exp $
+ * @version $Id: BasicField.java,v 1.17 2005-04-25 14:17:50 michiel Exp $
  */
 public class BasicField implements Field, Comparable {
 
@@ -132,6 +132,10 @@ public class BasicField implements Field, Comparable {
         case TYPE_BOOLEAN: return Boolean.class;
         default: return null;
         }
+    }
+
+    public String toString() {
+        return getName() + "(" + getTypeAsClass().toString() + " /  " + getGUIType() + ")";
     }
 
     /**
