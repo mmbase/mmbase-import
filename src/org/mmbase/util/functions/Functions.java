@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: Functions.java,v 1.4 2005-04-25 14:09:40 michiel Exp $
  */
 public class Functions {
 
@@ -140,9 +140,11 @@ public class Functions {
                     name = name.substring(0, underscore);
                 }
                 if (! map.containsKey(name)) { // overriding works, but don't do backwards :-)
-                    log.debug("Found a function definition '" + name + "' in " + clazz);
                     try {
                         Parameter[] params = (Parameter[])field.get(null);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Found a function definition '" + name + "' in " + clazz + " with parameters " + Arrays.asList(params));
+                        }
                         // This is a but ugly, but needed for backward compatibility:
                         // Add the node parameter if it is not yet exists and the class is an ObjectBuilder.
                         // This code will be removed in the future
