@@ -1252,6 +1252,16 @@ public class Forum {
     }
 
 
+    public int getPostingsLoadedCount() {
+	int count = 0;
+       	Enumeration i = postareas.elements();
+	while (i.hasMoreElements()) {
+		PostArea pa = (PostArea)i.nextElement();
+		count += pa.getPostingsLoadedCount();
+	}
+	return count;
+    }
+
     public int getMemorySize() {
         if (postareas == null) {
 		return 0;
