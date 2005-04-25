@@ -12,16 +12,29 @@ package org.mmbase.storage.search;
 /**
  * A sortorder specifies sorting of a single field.
  * <p>
- * This corresponds to use of ORDER BY in SQL SELECT-syntax. 
+ * This corresponds to use of ORDER BY in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: SortOrder.java,v 1.2 2003-03-10 11:50:51 pierre Exp $
+ * @version $Id: SortOrder.java,v 1.3 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public interface SortOrder {
 
+    /** Order for <em>ascending</em> sort order. */
     int ORDER_ASCENDING = 1;
+
+    /** Order for <em>descending</em> sort order. */
     int ORDER_DESCENDING = 2;
+
+    /**
+     * Order descriptions corresponding to the order values:
+     * {@link #ORDER_ASCENDING}, and {@link #ORDER_DESCENDING}
+     */
+    public final static String[] ORDER_DESCRIPTIONS = new String[] {
+         null, // not specified
+         "ascending",
+         "descending"
+    };
 
     /**
      * Gets the associated field.
@@ -38,27 +51,27 @@ public interface SortOrder {
     int getDirection();
 
     /**
-     * Compares this sortorder to the specified object. The result is 
-     * <code>true</code> if and only if the argument is a non-null 
+     * Compares this sortorder to the specified object. The result is
+     * <code>true</code> if and only if the argument is a non-null
      * SortOrder object associated with the same field, using the same
      * sort direction.
-     * 
+     *
      * @param obj The object to compare with.
-     * @return <code>true</code> if the objects are equal, 
+     * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
     public boolean equals(Object obj);
-    
+
     // javadoc is inherited
     public int hashCode();
 
     /**
-     * Returns a string representation of this SortOrder. 
-     * The string representation has the form 
+     * Returns a string representation of this SortOrder.
+     * The string representation has the form
      * "SortOrder(field:&lt;field&gt;, dir:&lt;dir&gt;)"
-     * where 
+     * where
      * <ul>
-     * <li><em>&lt;field&gt;</em> is the field alias returned by 
+     * <li><em>&lt;field&gt;</em> is the field alias returned by
      *     <code>getField().getAlias()</code>
      * <li><em>&lt;dir&gt;</em> is the direction returned by
      *     {@link #getDirection getDirection()}
@@ -68,11 +81,11 @@ public interface SortOrder {
      */
     public String toString();
 
-    /** @link dependency 
+    /** @link dependency
      * @clientRole 0-1*/
     /*#StepField lnkStepField;*/
 
-    /** @link dependency 
+    /** @link dependency
      * @clientRole **/
     /*#SearchQuery lnkSearchQuery;*/
 }
