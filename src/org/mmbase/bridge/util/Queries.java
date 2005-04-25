@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.51 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: Queries.java,v 1.52 2005-04-25 13:34:36 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -381,8 +381,45 @@ abstract public class Queries {
         } else {
             throw new BridgeException("Unknown Field Compare Operator '" + op + "'");
         }
-
     }
+
+    /**
+     * Creates a part constant for use by createConstraint
+     * @param s String representation of a datetime part
+     * @return FieldValueDateConstraint part constant
+     * @see #createConstraint(Query, String, int, Object, Object, boolean, int)
+     */
+    public static int getDateTimePart(String s) {
+        String sPart = s.toUpperCase();
+        if (sPart.equals("")) {
+            return -1;
+        } else if (sPart.equals("CENTURY")) {
+            return FieldValueDateConstraint.CENTURY;
+        } else if (sPart.equals("YEAR")) {
+            return FieldValueDateConstraint.YEAR;
+        } else if (sPart.equals("MONTH")) {
+            return FieldValueDateConstraint.MONTH;
+        } else if (sPart.equals("QUARTER")) {
+            return FieldValueDateConstraint.QUARTER;
+        } else if (sPart.equals("WEEK")) {
+            return FieldValueDateConstraint.WEEK;
+        } else if (sPart.equals("DAYOFYEAR")) {
+            return FieldValueDateConstraint.DAY_OF_YEAR;
+        } else if (sPart.equals("DAY") || sPart.equals("DAYOFMONTH")) {
+            return FieldValueDateConstraint.DAY_OF_MONTH;
+        } else if (sPart.equals("DAYOFWEEK")) {
+            return FieldValueDateConstraint.DAY_OF_WEEK;
+        } else if (sPart.equals("HOUR")) {
+            return FieldValueDateConstraint.HOUR;
+        } else if (sPart.equals("MINUTE")) {
+            return FieldValueDateConstraint.MINUTE;
+        } else if (sPart.equals("SECOND")) {
+            return FieldValueDateConstraint.SECOND;
+        } else {
+            throw new BridgeException("Unknown datetime part '" + sPart + "'");
+        }
+    }
+
     /**
      * Used in implementation of createConstraint
      * @param stringValue string representation of a number
