@@ -177,6 +177,21 @@ public class PostArea {
     }
 
 
+    public int getPostingsLoadedCount() {
+        if (postthreads == null) {
+		return 0;
+	} else {
+		int count = 0;
+        	Iterator i = postthreads.iterator();
+		while (i.hasNext()) {
+			PostThread pt = (PostThread)i.next();
+			if (pt.isLoaded()) count+=pt.getPostCount();
+		}
+		return count;
+	}
+    }
+
+
     public int getMemorySize() {
         if (postthreads == null) {
 		return 0;
@@ -808,12 +823,14 @@ public class PostArea {
 	    int etime = ForumManager.getSwapoutUnusedThreadsTime();
 	    if (etime!=0) {
             int time = (int) (System.currentTimeMillis() / 1000) - etime;
+            int time4 = (int) (System.currentTimeMillis() / 1000) - ptime;
             Enumeration e = postthreads.elements();
             while (e.hasMoreElements()) {
                 PostThread t = (PostThread) e.nextElement();
 		if (t.isLoaded()) {
                 	int time2 = t.getLastUsed();
-	                if (time2 < time) {
+                	int time3 = t.getLastPostTime();
+	                if (time2 < time && time4 > time3) {
 				t.swapOut();
                 	}
 		}
