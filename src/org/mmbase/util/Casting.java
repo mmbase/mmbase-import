@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.40 2005-03-16 10:45:48 michiel Exp $
+ * @version $Id: Casting.java,v 1.41 2005-04-25 13:32:34 pierre Exp $
  */
 
 import java.util.*;
@@ -244,10 +244,10 @@ public class Casting {
                 return o;
             }
         } else {
-            if (o instanceof String) {                
+            if (o instanceof String) {
                 return escape(escaper, (String) o);
             } else {
-                return o;                
+                return o;
             }
         }
 
@@ -277,7 +277,7 @@ public class Casting {
     /**
      * Convert an object to a List.
      * A String is split up (as if it was a comma-separated String).
-     * Individual objects are wra[pped and reyturned as Lists with one item.
+     * Individual objects are wrapped and returned as Lists with one item.
      * <code>null</code> is returned as an empty list.
      * @param o the object to convert
      * @return the converted value as a <code>List</code>
