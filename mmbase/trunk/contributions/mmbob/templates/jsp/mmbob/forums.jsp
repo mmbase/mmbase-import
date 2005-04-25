@@ -19,8 +19,6 @@
 <body>
 
 <div class="header">
-    <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
-    <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                                               
 <div class="bodypart">
@@ -38,13 +36,14 @@
 			</tr>
   </mm:nodelistfunction>
 </table>
-	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
 	<tr><th align="left">Administratie Functies</th></tr>
 	<td>
 	<p />
 	<a href="<mm:url page="newforum.jsp"></mm:url>">Forum toevoegen</a><br />
 	<a href="<mm:url page="removeforum.jsp"></mm:url>">Forum verwijderen</a><br />
 	<a href="<mm:url page="changeforums.jsp"></mm:url>">Forums settings</a><br />
+	<a href="<mm:url page="stats.jsp"></mm:url>">Forums statistics</a><br />
 	<p />
 	</td>
 	</tr>
@@ -53,8 +52,6 @@
 </div>
                                                                                                               
 <div class="footer">
-    <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
-    <jsp:include page="<%=footerpath%>"/>
 </div>
 
 </body>

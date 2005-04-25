@@ -354,6 +354,7 @@
 		<type>class</type>
 		<class>org.mmbase.applications.mmbob.gui.Controller</class>
 		<method>getForums</method>
+		<param name="mode" type="String" description="list mode">default</param>
 		<return type="NodeList"> 
 			<field name="name" type="String" description="Name of the forum" />
 			<field name="id" type="int" description="Id of the forum (a MMBase node number from the.mmbob.builder)" />
@@ -472,6 +473,24 @@
 		<class>org.mmbase.applications.mmbob.gui.Controller</class>
 		<method>getPostersOnline</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<return type="NodeList"> 
+			<field name="id" type="int" description="MMBase node number of a moderator (poster)" />
+			<field name="account" type="String" description="Account name of this moderator" />
+			<field name="firstname" type="String" description="Firstname of this moderator" />
+			<field name="lastname" type="String" description="Last name of this moderator" />
+		</return> 
+	</function>
+
+
+	<function name="getPosters">
+		<description>Get the posters now online in this forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getPosters</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="searchkey" type="String" description="searchkey" />
+		<param name="page" type="int" description="page number" />
+		<param name="pagesize" type="int" description="size per page" />
 		<return type="NodeList"> 
 			<field name="id" type="int" description="MMBase node number of a moderator (poster)" />
 			<field name="account" type="String" description="Account name of this moderator" />
@@ -637,6 +656,7 @@
 		<method>getPostAreas</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="posterid" type="String" description="MMBase node number of the active poster" />
+		<param name="mode" type="String" description="list mode">default</param>
 		<return type="NodeList"> 
 			<field name="name" type="String" description="Name of this PostArea" />
 			<field name="description" type="String" description="Description of this PostArea" />
