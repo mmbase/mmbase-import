@@ -24,7 +24,7 @@ import java.util.*;
  * are removed from the query-caches.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.2 2005-04-25 07:49:02 pierre Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.1 2005-04-25 09:02:40 pierre Exp $
  * @since   MMBase-1.8
  */
 
