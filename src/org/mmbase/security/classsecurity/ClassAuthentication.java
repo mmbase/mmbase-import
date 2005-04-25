@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  * 
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.5 2005-01-30 16:46:39 nico Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.6 2005-04-25 14:27:48 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -153,7 +153,9 @@ public class ClassAuthentication {
                     if (className.startsWith("org.mmbase.bridge.implementation.")) continue;
                     log.trace("Checking " + className);
                     if (p.matcher(className).matches()) {
-                        log.debug("" + className + " matches!");
+                        if (log.isDebugEnabled()) {
+                            log.debug("" + className + " matches! ->" + n + " " + n.getMap());
+                        }
                         return n;
                     }
                 }
