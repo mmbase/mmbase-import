@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * A bit like {@link java.util.ResourceBundle} (on which it is based), but it creates
  * SortedMap's. The order of the entries of the Map can be influenced in tree ways. You can
- * associate the keys with JAVA constants (and there natural ordering can be used), you can wrap the
+ * associate the keys with JAVA constants (and their natural ordering can be used), you can wrap the
  * keys in a 'wrapper' (which can be of any type, the sole restriction being that there is a
  * constructor with String argument or of the type of the assiocated JAVA constant if that happened
  * too, and the natural order of the wrapper can be used (a wrapper of some Number type would be
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.5 2005-03-16 19:06:05 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.6 2005-04-25 14:11:30 michiel Exp $
  */
 public class SortedBundle {
 
