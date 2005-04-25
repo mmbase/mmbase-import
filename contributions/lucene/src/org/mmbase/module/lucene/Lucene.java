@@ -26,19 +26,23 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.9 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: Lucene.java,v 1.10 2005-04-25 14:53:22 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
-    /** Public ID of the Lucene config DTD version 1.0 */
-    public static final String PUBLIC_ID_LUCENE_1_0 = "-//MMBase//DTD luceneindex config 1.0//EN";
-    /** DTD resource filename of the Lucene config DTD version 1.0 */
-    public static final String DTD_LUCENE_1_0 = "luceneindex_1_0.dtd";
+    /** Public ID of the Lucene config DTD version 2.0 */
+    public static final String PUBLIC_ID_LUCENE_2_0 = "-//MMBase//DTD luceneindex config 2.0//EN";
+    /** DTD resource filename of the Lucene config DTD version 2.0 */
+    public static final String DTD_LUCENE_2_0 = "luceneindex_2_0.dtd";
 
     /** Public ID of the most recent Lucene config DTD */
-    public static final String PUBLIC_ID_LUCENE = PUBLIC_ID_LUCENE_1_0;
+    public static final String PUBLIC_ID_LUCENE = PUBLIC_ID_LUCENE_2_0;
     /** DTD repource filename of the most recent Lucene config DTD */
-    public static final String DTD_LUCENE = DTD_LUCENE_1_0;
+    public static final String DTD_LUCENE = DTD_LUCENE_2_0;
+
+    static {
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
+    }
 
     // initial wait time after startup, default 5 minutes
     private static final long INITIAL_WAIT_TIME = 5 * 60 * 1000;

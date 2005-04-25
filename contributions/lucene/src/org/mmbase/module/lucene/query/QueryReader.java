@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.1 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: QueryReader.java,v 1.2 2005-04-25 14:53:22 pierre Exp $
  **/
 public class QueryReader {
 
@@ -47,13 +47,43 @@ public class QueryReader {
         for (int k = 0; k < constraintsElements.getLength(); k++) {
             Element constraintElement = (Element) constraintsElements.item(k);
             String fieldName = constraintElement.getAttribute("field");
-            Object value = constraintElement.getAttribute("value");
+            Object value = null;
+            if (constraintElement.hasAttribute("value")) {
+                if (constraintElement.hasAttribute("field2")) {
+                    throw new IllegalArgumentException("Can only have one of 'value' or 'field2'");
+                }
+                value = constraintElement.getAttribute("value");
+            } else if (constraintElement.hasAttribute("field2")) {
+                value = queryDefinition.query.createStepField(constraintElement.getAttribute("field2"));
+            }
             int operator = FieldCompareConstraint.EQUAL;
             if (constraintElement.hasAttribute("operator")) {
                 String sOperator = constraintElement.getAttribute("operator");
                 operator = Queries.getOperator(sOperator);
             }
-            Constraint constraint = Queries.createConstraint(queryDefinition.query, fieldName, operator, value, null, false, -1);
+            int part = -1;
+            if (constraintElement.hasAttribute("part")) {
+                String sPart = constraintElement.getAttribute("part");
+                part = Queries.getDateTimePart(sPart);
+            }
+            Object value2 = null;
+            if (constraintElement.hasAttribute("value2")) {
+                if (operator != Queries.OPERATOR_BETWEEN) {
+                    throw new IllegalArgumentException("Can only use 'value2' attribute with operator BETWEEN");
+                }
+                value2 = constraintElement.getAttribute("value2");
+            }
+            if (operator == Queries.OPERATOR_BETWEEN && value2 == null) {
+                throw new IllegalArgumentException("Operator BETWEEN requires attribute 'value2'");
+            }
+            if (operator == Queries.OPERATOR_IN && (value instanceof String)) {
+                value = Casting.toList(value);
+            }
+            boolean caseSensitive = false;
+            if (constraintElement.hasAttribute("casesensitive")) {
+                caseSensitive = "true".equals(constraintElement.getAttribute("casesensitive"));
+            }
+            Constraint constraint = Queries.createConstraint(queryDefinition.query, fieldName, operator, value, value2, caseSensitive, part);
             if (constraintElement.hasAttribute("inverse")) {
                 queryDefinition.query.setInverse(constraint, "true".equals(constraintElement.getAttribute("inverse")));
             }
