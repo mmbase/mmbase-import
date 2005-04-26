@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.18 2004-12-22 14:58:45 pierre Exp $
+ * @version $Id: DateHandler.java,v 1.19 2005-04-26 15:14:16 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -111,7 +111,23 @@ public class DateHandler extends AbstractTypeHandler {
 
 
         String options = tag.getOptions();
-        if (options == null || options.indexOf("date") > -1) {
+        boolean doDate = true;
+        boolean doTime = true;
+        if (options != null) {
+            boolean time = false;
+            if (options.indexOf("time") > -1) {
+                doTime = true;
+                time = true;
+                doDate = false;
+                
+            } 
+            if (options.indexOf("date") > -1) {
+                doDate = true;
+                doTime = time;
+            }
+        }
+
+        if (doDate) {
             String dayName = prefix(field.getName() + "_day");
             String searchDay =  (String) container.find(tag.getPageContext(), dayName);
             int checkDay;
@@ -171,7 +187,7 @@ public class DateHandler extends AbstractTypeHandler {
             yearFieldValue(cal, buffer);
             buffer.append("\" />");
         }
-        if (options == null || options.indexOf("time") > -1) {
+        if (doTime) {
             String hourName = prefix(field.getName() + "_hour");
             String searchHour =  (String) container.find(tag.getPageContext(), hourName);
             int checkHour;
