@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.7 2005-04-21 11:13:09 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.8 2005-04-26 08:51:03 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -71,8 +71,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
         List rSteps     = r.getSteps();
         for (int i = 0 ; i < querySteps.size(); i++) {
             Step queryStep = (Step) querySteps.get(i);
-            Step rStep = (Step) rSteps.get(i);            
-            log.info("Copyuing" + queryStep);
+            Step rStep = (Step) rSteps.get(i);
             Queries.copyConstraint(query.getConstraint(), queryStep, r, rStep);  
             Queries.copySortOrders(query.getSortOrders(), queryStep, r, rStep);  
         }
