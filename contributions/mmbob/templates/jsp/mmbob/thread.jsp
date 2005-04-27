@@ -80,7 +80,7 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
 	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
-			(<mm:field name="pagecount" />) 
+			(<mm:field name="pagecount" id="pagecount" />) 
 			<mm:field name="navline" />
 			<mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
 		  </mm:nodefunction>
@@ -108,7 +108,7 @@
                                <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
 			 	</mm:compare>
                                <mm:compare referid="threadstate" value="closed" inverse="true">
-                                    <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                                    <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,pagesize,page,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
                                </mm:compare>
                            </mm:compare>
 		     
@@ -218,7 +218,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3"><mm:write referid="mlg.Fast_reply"/></th></tr>
-  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
+  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,pagecount@page" />#reply" method="post" name="posting">
 	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
 
 		<mm:compare referid="posterid" value="-1" inverse="true">

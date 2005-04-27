@@ -6,6 +6,8 @@
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="forumid" />
+<mm:import externid="page" />
+<mm:import externid="pagesize" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
 
@@ -29,6 +31,9 @@
   	<mm:compare value="closed"><mm:import id="noedit">true</mm:import></mm:compare>
   </mm:field>
 </mm:node>
+<mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
+<mm:field name="pagecount" id="pagecount" write="false" />
+</mm:nodefunction>
 
 <html>
 <head>
@@ -56,7 +61,8 @@
 	<mm:param name="postareaid" value="$postareaid" />
 	<mm:param name="postthreadid" value="$postthreadid" />
 	<mm:param name="postingid" value="$postingid" />
-	</mm:url>" method="post" name="posting">
+	<mm:param name="page" value="$pagecount" />
+	</mm:url>#reply" method="post" name="posting">
 	<tr><th><mm:write referid="mlg.Name" /></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
@@ -81,6 +87,7 @@
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	<mm:param name="postthreadid" value="$postthreadid" />
+	<mm:param name="page" value="$pagecount" />
 	</mm:url>"
  	method="post">
 	<p />
