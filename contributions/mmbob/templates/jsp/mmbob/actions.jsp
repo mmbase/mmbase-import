@@ -57,7 +57,8 @@
 	<mm:import externid="poster" />
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
-	<mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body">
+	<mm:import externid="mood">happy</mm:import>
+	<mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body,mood">
 	</mm:nodefunction>
 </mm:compare>
 

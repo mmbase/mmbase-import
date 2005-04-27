@@ -259,6 +259,7 @@
 		<param name="subject" type="String" description="Subject of the new post" />
 		<param name="poster" type="String" description="Posterid to be attached to the postthread as its creator" />
 		<param name="body" type="String" description="Body of the new post" />
+		<param name="mood" type="String" description="Body of the new post">normal</param>
 		<return type="Node"> 
 			<field name="postthreadid" type="int" description="Newly related id (MMBase node number)" />
 		</return> 
