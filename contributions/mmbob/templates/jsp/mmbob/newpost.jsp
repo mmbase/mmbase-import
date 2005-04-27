@@ -56,6 +56,18 @@
 		</mm:compare>
 	</td></tr>
 	<tr><th width="150"><mm:write referid="mlg.Topic" /></th><td colspan="2"><input name="subject" style="width: 100%" ></td></th>
+	<tr><th width="150"><mm:write referid="mlg.Mood" /></th><td colspan="2">
+		<select name="mood">
+		<option value="normal"><mm:write referid="mlg.normal"/>
+		<option value="mad"><mm:write referid="mlg.mad"/>
+		<option value="happy"><mm:write referid="mlg.happy"/>
+		<option value="sad"><mm:write referid="mlg.sad"/>
+		<option value="question"><mm:write referid="mlg.question"/>
+		<option value="warning"><mm:write referid="mlg.warning"/>
+		<option value="joke"><mm:write referid="mlg.joke"/>
+		<option value="idea"><mm:write referid="mlg.idea"/>
+		<option value="suprised"><mm:write referid="mlg.surprised"/>
+		</select></td></th>
 	<tr><th valign="top"><mm:write referid="mlg.Message" /><center>
 
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
