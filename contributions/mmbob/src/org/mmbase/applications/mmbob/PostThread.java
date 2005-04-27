@@ -71,6 +71,7 @@ public class PostThread {
 	this.viewcount=node.getIntValue(prefix+"viewcount");
 	if (viewcount==-1) viewcount=0;
 	this.postcount=node.getIntValue(prefix+"postcount");
+	this.state=node.getStringValue(prefix+"state");
 	if (postcount==-1) postcount=0;
 
 	lastpostsubject=node.getStringValue(prefix+"c_lastpostsubject");
