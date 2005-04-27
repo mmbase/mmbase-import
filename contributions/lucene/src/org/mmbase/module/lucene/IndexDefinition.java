@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
+import java.util.List;
+import java.util.ArrayList;
 import org.w3c.dom.*;
 
 import org.mmbase.module.lucene.query.*;
@@ -17,7 +19,7 @@ import org.mmbase.module.lucene.query.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexDefinition.java,v 1.2 2005-04-21 18:16:38 pierre Exp $
+ * @version $Id: IndexDefinition.java,v 1.3 2005-04-27 12:50:32 pierre Exp $
  **/
 class IndexDefinition extends QueryDefinition {
 
@@ -31,6 +33,12 @@ class IndexDefinition extends QueryDefinition {
      */
     int maxNodesInQuery = MAX_NODES_IN_QUERY;
 
+    /**
+     * Subqueries for this index. The subqueries are lists whose starting element is the element node from the
+     * current index result.
+     */
+    List subQueries = new ArrayList();
+
     IndexDefinition(Element queryElement) {
         super(queryElement);
     }
@@ -41,6 +49,7 @@ class IndexDefinition extends QueryDefinition {
     IndexDefinition(IndexDefinition queryDefinition) {
         super(queryDefinition);
         this.maxNodesInQuery = queryDefinition.maxNodesInQuery;
+        this.subQueries = queryDefinition.subQueries;
     }
 
 }
