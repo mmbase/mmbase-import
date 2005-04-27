@@ -495,6 +495,7 @@ public class PostArea {
             query.addField(step2.getNext(), postthreadsmanager.getField("lastposternumber"));
             query.addField(step2.getNext(), postthreadsmanager.getField("lastpostnumber"));
             query.addField(step2.getNext(), postthreadsmanager.getField("mood"));
+            query.addField(step2.getNext(), postthreadsmanager.getField("state"));
             query.addField(step2.getNext(), postthreadsmanager.getField("ttype"));
 
             query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
