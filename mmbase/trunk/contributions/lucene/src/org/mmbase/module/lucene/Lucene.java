@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.10 2005-04-25 14:53:22 pierre Exp $
+ * @version $Id: Lucene.java,v 1.11 2005-04-27 12:50:32 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -81,6 +81,15 @@ public class Lucene extends Module implements MMBaseObserver {
         public Object getFunctionValue(Parameters arguments) {
             scheduler.fullIndex();
             return null;
+        }
+    };
+
+    /**
+     * This function returns the status of the scheduler.
+     */
+    protected Function statusFunction = new AbstractFunction("status", Parameter.EMPTY, ReturnType.INTEGER) {
+        public Object getFunctionValue(Parameters arguments) {
+            return new Integer(scheduler.getStatus());
         }
     };
 
@@ -187,37 +196,44 @@ public class Lucene extends Module implements MMBaseObserver {
         return "This module performs lucene searches and maintains indices";
     }
 
-    protected void addToIndex (NodeList queryElements, Collection queries, Set allIndexedFieldsSet, boolean storeText, boolean mergeText) {
-        for (int j = 0; j < queryElements.getLength(); j++) {
-            Element queryElement = (Element) queryElements.item(j);
-            try {
-                if (queryElement.hasAttribute("optimize")) {
-                    String optimize = queryElement.getAttribute("optimize");
-                    storeText = optimize.equals("none");
-                    mergeText = optimize.equals("full");
-                }
-
-                QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
-
-                QueryDefinition queryDefinition = QueryReader.parseQuery(queryElement, configurer, cloud);
-
-                queries.add(queryDefinition);
-
-                String elementName = queryDefinition.elementManager.getName();
-                if (!readOnly) {
-                    // register. Unfortunately this can currently only be done through the core
-                    MMObjectBuilder builder = mmbase.getBuilder(elementName);
-                    builder.addLocalObserver(this);
-                    builder.addRemoteObserver(this);
-                }
-
-                if (log.isDebugEnabled()) {
-                     log.debug("Configured builder " + elementName + " with query:" + queryDefinition.query);
-                }
-            } catch (Exception e) {
-                log.warn("Invalid query for index");
-                log.error(Logging.stackTrace(e));
+    protected void addToIndex (Element queryElement, Collection queries, Set allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom) {
+        try {
+            if (queryElement.hasAttribute("optimize")) {
+                String optimize = queryElement.getAttribute("optimize");
+                storeText = optimize.equals("none");
+                mergeText = optimize.equals("full");
             }
+
+            QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
+
+            IndexDefinition queryDefinition = (IndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
+
+            queries.add(queryDefinition);
+
+            String elementName = queryDefinition.elementManager.getName();
+            if (!readOnly) {
+                // register. Unfortunately this can currently only be done through the core
+                MMObjectBuilder builder = mmbase.getBuilder(elementName);
+                builder.addLocalObserver(this);
+                builder.addRemoteObserver(this);
+            }
+
+            NodeList childNodes = queryElement.getChildNodes();
+            for (int k = 0; k < childNodes.getLength(); k++) {
+                if (childNodes.item(k) instanceof Element) {
+                    Element childElement = (Element) childNodes.item(k);
+                    if ("related".equals(childElement.getTagName())) {
+                        addToIndex(childElement, queryDefinition.subQueries, allIndexedFieldsSet, storeText, mergeText, elementName);
+                    }
+                }
+            }
+
+            if (log.isDebugEnabled()) {
+                 log.debug("Configured builder " + elementName + " with query:" + queryDefinition.query);
+            }
+        } catch (Exception e) {
+            log.warn("Invalid query for index");
+            log.error(Logging.stackTrace(e));
         }
     }
 
@@ -246,12 +262,18 @@ public class Lucene extends Module implements MMBaseObserver {
                     if (defaultIndex==null) defaultIndex = indexName;
                     Set allIndexedFieldsSet = new HashSet();
                     Collection queries = new ArrayList();
-                    // constraints
-                    NodeList queryElements = root.getElementsByTagName("query");
-                    addToIndex(queryElements, queries, allIndexedFieldsSet, storeText, mergeText);
-                    // builder
-                    queryElements = root.getElementsByTagName("builder");
-                    addToIndex(queryElements, queries, allIndexedFieldsSet, storeText, mergeText);
+                    // lists
+                    NodeList childNodes = indexElement.getChildNodes();
+                    for (int k = 0; k < childNodes.getLength(); k++) {
+                        if (childNodes.item(k) instanceof Element) {
+                            Element childElement = (Element) childNodes.item(k);
+                            if ("list".equals(childElement.getTagName())||
+                                "builder".equals(childElement.getTagName()) || // backward comp. old finalist lucene
+                                "table".equals(childElement.getTagName())) { // backward comp. finalist lucene
+                               addToIndex(childElement, queries, allIndexedFieldsSet, storeText, mergeText, null);
+                            }
+                        }
+                    }
 
                     String thisIndex = indexPath + java.io.File.separator + indexName;
                     Indexer indexer = new Indexer(thisIndex,queries,cloud);
@@ -307,13 +329,24 @@ public class Lucene extends Module implements MMBaseObserver {
 
     class Scheduler extends Thread {
 
-        boolean startFullIndex = false;
-        Queue indexAssignments = new Queue();
+        static final int IDLE = 0;
+        static final int IDLE_AFTER_ERROR = -1;
+        static final int BUSY_INDEX = 1;
+        static final int BUSY_FULL_INDEX = 2;
+
+        // status of the scheduler
+        private int status = IDLE;
+        // assignments: tasks to run
+        private Queue indexAssignments = new Queue();
 
         Scheduler() {
             super("Lucene.Scheduler");
             setDaemon(true);
             start();
+        }
+
+        public int getStatus() {
+            return status;
         }
 
         public void run() {
@@ -326,25 +359,34 @@ public class Lucene extends Module implements MMBaseObserver {
             while (true) {
                 log.debug("Obtain Assignment");
                 Assignment assignment = (Assignment)indexAssignments.get();
-                // do operation...
-                if (assignment.operation == Assignment.FULL_INDEX) {
-                    log.debug("start full index");
-                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                        Indexer indexer = (Indexer) i.next();
-                        indexer.fullIndex();
+                try {
+                    // do operation...
+                    if (assignment.operation == Assignment.FULL_INDEX) {
+                        log.debug("start full index");
+                        status = BUSY_FULL_INDEX;
+                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                            Indexer indexer = (Indexer) i.next();
+                            indexer.fullIndex();
+                        }
+                    } else if (assignment.operation == Assignment.UPDATE_INDEX) {
+                        log.debug("update index");
+                        status = BUSY_INDEX;
+                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                            Indexer indexer = (Indexer) i.next();
+                            indexer.updateIndex(assignment.number);
+                        }
+                    } else if (assignment.operation == Assignment.DELETE_INDEX) {
+                        log.debug("delete index");
+                        status = BUSY_INDEX;
+                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                            Indexer indexer = (Indexer) i.next();
+                            indexer.deleteIndex(assignment.number);
+                        }
                     }
-                } else if (assignment.operation == Assignment.UPDATE_INDEX) {
-                    log.debug("update index");
-                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                        Indexer indexer = (Indexer) i.next();
-                        indexer.updateIndex(assignment.number);
-                    }
-                } else if (assignment.operation == Assignment.DELETE_INDEX) {
-                    log.debug("delete index");
-                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                        Indexer indexer = (Indexer) i.next();
-                        indexer.deleteIndex(assignment.number);
-                    }
+                    status = IDLE;
+                } catch (RuntimeException rte) {
+                    log.error(rte.getMessage());
+                    status = IDLE_AFTER_ERROR;
                 }
             }
         }
@@ -365,9 +407,12 @@ public class Lucene extends Module implements MMBaseObserver {
 
         public void fullIndex() {
             log.debug("schedule full index");
-            Assignment assignment = new Assignment();
-            assignment.operation = Assignment.FULL_INDEX;
-            indexAssignments.append(assignment);
+            // only schedule a full index if none is currently busy.
+            if (status != BUSY_FULL_INDEX) {
+                Assignment assignment = new Assignment();
+                assignment.operation = Assignment.FULL_INDEX;
+                indexAssignments.append(assignment);
+            }
         }
 
         class Assignment {
