@@ -27,7 +27,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
   <mm:nodelistfunction set="mmbob" name="getForums" referids="mode">
     <mm:import id="forumid" reset="true"><mm:field name="id"/></mm:import>
-    <mm:import id="forumname" reset="true"><mm:field name="forumname"/></mm:import>
+    <mm:import id="forumname" reset="true"><mm:field name="name"/></mm:import>
 
    		<tr><th>Forum naam</th><th>berichten</th><th>views</th><th>threadsloaded</th><th>postingsloaded</th><th>memory size</th></tr>
 		<tr>
