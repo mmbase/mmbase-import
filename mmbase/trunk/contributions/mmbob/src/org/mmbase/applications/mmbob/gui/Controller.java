@@ -1141,7 +1141,7 @@ public class Controller {
      * @param body Body of the new post
      * @return  (virtual) MMObjectNode containing the postthreadid of the newly created post
      */
-    public MMObjectNode newPost(String forumid, String postareaid, String subject, String poster, String body) {
+    public MMObjectNode newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         MMObjectNode virtual = builder.getNewNode("admin");
@@ -1151,7 +1151,7 @@ public class Controller {
             PostArea a = f.getPostArea(postareaid);
 	    Poster p=f.getPoster(poster);
             if (a != null && (p==null || !p.isBlocked())) {
-                int postthreadid = a.newPost(subject, poster, body);
+                int postthreadid = a.newPost(subject, poster, body,mood);
                 virtual.setValue("postthreadid", postthreadid);
             }
         }
