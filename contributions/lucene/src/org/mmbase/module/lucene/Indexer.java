@@ -46,11 +46,20 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.6 2005-04-21 18:16:38 pierre Exp $
+ * @version $Id: Indexer.java,v 1.7 2005-04-27 12:50:32 pierre Exp $
  **/
 public class Indexer {
 
-    private static final Logger log = Logging.getLoggerInstance(Indexer.class);
+    /** identifies a standard query */
+    static public final int STANDARD_QUERY = 0;
+    /** identifies a limited query */
+    static public final int LIMITED_QUERY = 1;
+    /** identifies a subquery */
+    static public final int SUBQUERY = 2;
+
+    static private final Logger log = Logging.getLoggerInstance(Indexer.class);
+    // format for dates to index
+    static private final DateFormat simpleFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     // Name of the index
     private String index;
@@ -58,8 +67,6 @@ public class Indexer {
     private Collection queries;
     // reference to the cloud
     private Cloud cloud;
-    // format for dates to index
-    static private final DateFormat simpleFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
@@ -106,7 +113,7 @@ public class Indexer {
                     if (indexDefinition.elementManager.equals(node.getNodeManager())) {
                         IndexCursor cursor = new IndexCursor(indexDefinition, writer);
                         cursor.nodeNumber = node.getNumber();
-                        indexQuery(cursor, true);
+                        indexQuery(cursor, LIMITED_QUERY);
                     }
                 }
             }
@@ -127,7 +134,7 @@ public class Indexer {
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
                 IndexCursor cursor = new IndexCursor(indexDefinition, writer);
-                indexQuery(cursor, false);
+                indexQuery(cursor, STANDARD_QUERY);
             }
             writer.optimize();
             if (log.isDebugEnabled()) {
@@ -144,37 +151,42 @@ public class Indexer {
      * Runs a query for the given cursor, an returns a NodeIterator to run over the nodes.
      * This implementation uses a HugeNodeListIterator.
      * @param cursor the cursor with query and offset information
-     * @param limited if <code>true</code>, the query should be limited to the node where the cursor is focused on
+     * @param queryType the type of query
      * @return the query result as a NodeIterator object
      * @throws SearchQueryException is the query to create the index out of failed
      */
-    protected NodeIterator getNodeIterator(IndexCursor cursor, boolean limited) throws SearchQueryException {
+    protected NodeIterator getNodeIterator(IndexCursor cursor, int queryType) throws SearchQueryException {
         Query query = (Query)cursor.query.clone();
+        String elementNumberFieldName = "number";
         String numberFieldName = "number";
         if (cursor.isMultiLevel) {
-            numberFieldName = cursor.elementManager.getName()+".number";
+            elementNumberFieldName = cursor.elementManager.getName()+".number";
+            numberFieldName = elementNumberFieldName;
+            if (queryType == SUBQUERY) {
+                numberFieldName = ((Step)cursor.query.getSteps().get(0)).getAlias()+".number";
+            }
         }
-        if (limited) {
+        if (queryType == LIMITED_QUERY || queryType == SUBQUERY) {
             Constraint constraint = Queries.createConstraint(query, numberFieldName, FieldCompareConstraint.EQUAL, new Integer(cursor.nodeNumber));
             Queries.addConstraint(query,constraint);
         }
-        StepField numberField = query.createStepField(numberFieldName);
-        query.addSortOrder(numberField,SortOrder.ORDER_ASCENDING);
+        StepField elementNumberField = query.createStepField(elementNumberFieldName);
+        query.addSortOrder(elementNumberField,SortOrder.ORDER_ASCENDING);
         return new HugeNodeListIterator(query, cursor.maxNodesInQuery);
     }
 
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      * @param cursor the cursor with query and offset information
-     * @param limited if <code>true</code>, the query should be limited to the node where the cursor is focused on
+     * @param queryType the type of query
      * @throws SearchQueryException is the query to create the index out of failed
      * @throws IOException if the Lucene index could not be written to
      */
-    public void indexQuery(IndexCursor cursor, boolean limited) throws SearchQueryException, IOException {
+    public void indexQuery(IndexCursor cursor, int queryType) throws SearchQueryException, IOException {
         if (log.isDebugEnabled()) {
             log.debug("index builder "+cursor.elementManager.getName());
         }
-        for (NodeIterator i = getNodeIterator(cursor,limited); i.hasNext();) {
+        for (NodeIterator i = getNodeIterator(cursor,queryType); i.hasNext();) {
             Node node = i.nextNode();
             int nodeNumber = -1;
             if (cursor.isMultiLevel) {
@@ -183,12 +195,24 @@ public class Indexer {
                 nodeNumber = node.getNumber();
             }
             if (nodeNumber != cursor.nodeNumber) {
-                indexData(cursor);
-                cursor.init(nodeNumber);
+                if (queryType != SUBQUERY) {
+                    indexData(cursor);
+                }
+                cursor.init(nodeNumber, queryType != SUBQUERY);
+                for (Iterator j = cursor.subQueries.iterator(); j.hasNext(); ) {
+                    IndexDefinition queryDefinition = (IndexDefinition) j.next();
+                    IndexCursor localCursor = new IndexCursor(queryDefinition);
+                    localCursor.nodeNumber = nodeNumber;
+                    indexQuery(localCursor, SUBQUERY);
+                    cursor.subCursors.add(localCursor);
+                }
+
             }
             storeData(node, cursor);
         }
-        indexData(cursor);
+        if (queryType != SUBQUERY) {
+            indexData(cursor);
+        }
     }
 
     /**
@@ -202,31 +226,44 @@ public class Indexer {
             document.add(Field.Keyword("builder", cursor.elementManager.getName()));
             document.add(Field.Keyword("number", "" + cursor.nodeNumber));
             log.debug("Index node " + cursor.nodeNumber);
-            for (Iterator i = cursor.fields.iterator(); i.hasNext(); ) {
-                IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
-                String fieldName = fieldDefinition.alias;
-                if (fieldName == null)  fieldName = fieldDefinition.fieldName;
-                if (document.getField(fieldName) == null) {
-                    String value = cursor.getFieldDataAsString(fieldName);
-                    if (fieldDefinition.keyWord) {
-                        if (log.isDebugEnabled()) {
-                            log.trace("add " + fieldName + " text, keyword" + value);
-                        }
-                        document.add(Field.Keyword(fieldName, value));
-                    } else if (fieldDefinition.storeText) {
-                        if (log.isDebugEnabled()) {
-                            log.trace("add " + fieldName + " text, store");
-                        }
-                        document.add(Field.Text(fieldName, value));
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            log.trace("add " + fieldName + " text, no store");
-                        }
-                        document.add(Field.UnStored(fieldName, value));
+            indexData(cursor,document);
+            cursor.writer.addDocument(document);
+        }
+    }
+
+    /**
+     * Index the data from the cursor.
+     * @param cursor the cursor that holds the data
+     * @throws IOException if the Lucene index could not be written to
+     */
+    public void indexData(IndexCursor cursor, Document document) throws IOException {
+        for (Iterator i = cursor.fields.iterator(); i.hasNext(); ) {
+            IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
+            String fieldName = fieldDefinition.alias;
+            if (fieldName == null)  fieldName = fieldDefinition.fieldName;
+            if (document.getField(fieldName) == null) {
+                String value = cursor.getFieldDataAsString(fieldName);
+                if (fieldDefinition.keyWord) {
+                    if (log.isDebugEnabled()) {
+                        log.trace("add " + fieldName + " text, keyword" + value);
                     }
+                    document.add(Field.Keyword(fieldName, value));
+                } else if (fieldDefinition.storeText) {
+                    if (log.isDebugEnabled()) {
+                        log.trace("add " + fieldName + " text, store");
+                    }
+                    document.add(Field.Text(fieldName, value));
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.trace("add " + fieldName + " text, no store");
+                    }
+                    document.add(Field.UnStored(fieldName, value));
                 }
             }
-            cursor.writer.addDocument(document);
+        }
+        for (Iterator i = cursor.subCursors.iterator(); i.hasNext(); ) {
+            IndexCursor subCursor = (IndexCursor)i.next();
+            indexData(subCursor, document);
         }
     }
 
@@ -388,6 +425,9 @@ public class Indexer {
         // of fields already indexed
         private Set indexed = new HashSet();
 
+        // set with subcursors with ersults from subqueries
+        private Set subCursors = new HashSet();
+
         /**
          * Current number of the main element node to index
          */
@@ -396,7 +436,11 @@ public class Indexer {
         /**
          * Current writer into the index
          */
-        IndexWriter writer;
+        IndexWriter writer = null;
+
+        IndexCursor(IndexDefinition indexDefinition) {
+            super(indexDefinition);
+        }
 
         IndexCursor(IndexDefinition indexDefinition, IndexWriter writer) {
             super(indexDefinition);
@@ -406,10 +450,12 @@ public class Indexer {
         /**
          * Initialize the cursor to accept data for a specified (main element node) number.
          */
-        void init(int number) {
+        void init(int number, boolean clearData) {
             nodeNumber = number;
-            data = new HashMap();
-            indexed = new HashSet();
+            if (clearData) {
+                data = new HashMap();
+                indexed = new HashSet();
+            }
         }
 
         /**
