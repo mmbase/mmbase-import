@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.6 2005-01-06 20:24:33 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.7 2005-04-27 11:24:58 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -104,13 +104,15 @@ public class NodeProviderHelper implements NodeProvider {
         if (thisTag.id != Attribute.NULL) {
             thisTag.getContextProvider().getContextContainer().registerNode(getId(), node);
         }
-        if (jspvar != null && node != null && ! checked) {
+        if (jspvar != null && node != null) {
             PageContext pc = thisTag.getPageContext();
-            Object was = pc.getAttribute(jspvar);
-            if (was != null && ! was.equals(node)) {
-                throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was + "), can't write " + node + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
+            if (!checked) {
+                Object was = pc.getAttribute(jspvar);
+                if (was != null && ! was.equals(node)) {
+                    throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was + "), can't write " + node + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
+                }
+                checked = true;
             }
-            checked = true;
             pc.setAttribute(jspvar, node);
         }
     }
