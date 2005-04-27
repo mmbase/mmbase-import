@@ -228,6 +228,9 @@ public class Controller {
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
+		    log.info("PAGE="+page);
+		    if (page==-1) page=t.getPageCount(pagesize);
+		    log.info("PAGE2="+page);
                     Iterator e = t.getPostings(page, pagesize);
                     int pos = ((page - 1) * pagesize) + 1;
 
