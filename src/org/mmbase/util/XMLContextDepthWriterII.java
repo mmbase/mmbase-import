@@ -41,7 +41,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: XMLContextDepthWriterII.java,v 1.8 2003-03-10 11:51:14 pierre Exp $
+ * @version $Id: XMLContextDepthWriterII.java,v 1.8.2.1 2005-04-28 12:00:03 keesj Exp $
  */
 public class XMLContextDepthWriterII  {
 
@@ -139,6 +139,20 @@ public class XMLContextDepthWriterII  {
     static void writeNodes(XMLApplicationReader app, HashSet nodes, String targetpath, MMBase mmb, Vector resultmsgs,
             boolean isRelation) {
 
+        //before we write the data first sort the list
+        //so that node fields that point to the same node type
+        //have more chance to exist. A example of this is the community
+        //where the message nodes contain a thread nodefield
+        //upon creation there first must exist a thread message 
+        //so the "thread message" will have a lower number
+        List list = new Vector();
+        list.addAll(nodes);
+        Collections.sort(list, new Comparator(){
+            public int compare(Object o1, Object o2) {
+                return ((Integer)o1).compareTo((Integer)o2);
+            }            
+        }
+        );
         // Retrieve an enumeration of sources to write
         // The list of sources retrieved is dependent on whether the nodes to write are data or relation nodes
         Enumeration res;
@@ -164,7 +178,7 @@ public class XMLContextDepthWriterII  {
         MMObjectBuilder bul = mmb.getMMObject("typedef"); // get Typedef object
         int nrofnodes=0;	// set total nodes to export to zero (is this used?).
         // Store all the nodes that apply using their corresponding NodeWriter object
-        for (Iterator nods=nodes.iterator(); nods.hasNext(); ) {
+        for (Iterator nods=list.iterator(); nods.hasNext(); ) {
         // retrieve the node to export
             int nr = ((Integer)nods.next()).intValue();
             MMObjectNode node = bul.getNode(nr);
