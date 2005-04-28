@@ -9,8 +9,6 @@
 
 
 
-<mm:import externid="intakes" jspvar="intakes" required="true"/>
-
 <%@include file="/shared/setImports.jsp" %>
 
 <%@include file="/education/tests/definitions.jsp" %>
@@ -24,41 +22,97 @@
      final String SEPARATOR = "_";
 
   %> 
+<%	String intakeCompetencies = ""; 
+	String notpassedIntakes = ""; 
+%>
 
 
-<html>
+<%-- find user's copybook --%>
 
-<head>
+<mm:import id="copybookNo"/>
 
-   <title>Content</title>
+<mm:node number="$user">
 
-   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath"/>"/>
+  <mm:relatedcontainer path="classrel,classes">
 
-</head>
+    <mm:constraint field="classes.number" value="$class"/>
 
-<body>
+    <mm:related>
 
+      <mm:node element="classrel">
 
+        <mm:relatednodes type="copybooks">
 
+          <mm:remove referid="copybookNo"/>
 
+          <mm:field id="copybookNo" name="number" write="false"/>
 
-<%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
+        </mm:relatednodes>
 
-<form name="questionform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder"/>" method="POST">
-<input type="hidden" name="command" value="intaketest">
-<mm:list nodes="<%= intakes %>" path="tests">
-  <mm:node element="tests">
+      </mm:node>
+
+    </mm:related>  
+
+  </mm:relatedcontainer>
+
+</mm:node> 
+
+<mm:import id="gatekeeper" reset="true">1</mm:import>
+<mm:import id="incompletetestNo" reset="true">-1</mm:import>
+<mm:node number="$education">
+  <mm:relatednodes type="tests" role="related">
     <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
+    <%@include file="teststatus.jsp"%>
+    <mm:compare referid="teststatus" value="incomplete">
+       <mm:import id="incompletetestNo" reset="true"><mm:field name="number"/></mm:import>
+    </mm:compare>
+    <mm:compare referid="teststatus" value="failed">
+       <mm:import id="gatekeeper" reset="true">0</mm:import>
+    </mm:compare>
+  </mm:relatednodes>
+</mm:node>
 
-    <h1><mm:field name="name"/></h1>
+<mm:compare referid="gatekeeper" value="0">
+  <%-- "you failed the test for this education and are not allowed to continue, please contact your teacher / coach for advice" --%>
+  <p>Je hebt de intake-toets voor deze opleiding niet gehaald en kunt daarom niet aan de opleiding beginnen. 
+     Neem contact op met je coach of docent voor advies.</p>
+<input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder"/>'" value="terug">
+</mm:compare>
+<mm:compare referid="gatekeeper" value="0" inverse="true">
+  <mm:compare referid="incompletetestNo" value="-1" inverse="true">
+    <%-- "you now start with test for this education" --%>
+    <p>Om met deze opleiding te beginnen moet je de volgende intake-toets doen.</p>
+    <mm:treeinclude page="/pop/buildtest.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
+    </mm:treeinclude> 
+  </mm:compare>
+  <mm:compare referid="incompletetestNo" value="-1">
+    <%-- "you passed the test for this education and will now continue with the preassesment for the competencies developed 
+         in this education" --%>
+    <%@ include file="getprogress.jsp" %>
+    
+    <% if (!notpassedIntakes.equals("")) { %>
 
-    <mm:relatednodes type="questions" max="1" comparator="SHUFFLE">
+    <p>Je hebt de intake-toets voor deze opleiding gehaald. Je gaat nu door met de preassesment om te bepalen welke competenties je nog moet
+       ontwikkelen binnen deze opleiding.</p>
+
+    <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
+
+    <form name="questionform" action="<mm:treefile page="/pop/intakerate.jsp" objectlist="$includePath" referids="$referids,currentfolder"/>" method="POST">
+    <input type="hidden" name="command" value="intaketest">
+    <mm:list nodes="<%= notpassedIntakes %>" path="tests">
+      <mm:node element="tests">
+        <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
+
+        <h1><mm:field name="name"/></h1>
+    
+        <mm:relatednodes type="questions" max="1" comparator="SHUFFLE">
 
              <mm:import id="page">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
 
              <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
 
-               <mm:param name="question"><mm:field name="number"/></mm:param>
+               <mm:param name="question"><mm:field id="questionNo" name="number"/></mm:param>
 
 	       <mm:param name="testnumber"><mm:write referid="testNo"/></mm:param>
 
@@ -66,29 +120,29 @@
 
 
 
-             <input type="hidden" name="shown<mm:field name="number"/>" value="<mm:field name="number"/>"/>
+             <input type="hidden" name="shown<mm:write referid="testNo"/>" value="<mm:field name="number"/>"/>
 
+        </mm:relatednodes>
 
+      <br/>
 
-             <%-- See default value of questionsShowed --%>
+      <br/>
+      </mm:node>
+    </mm:list>
+    <input type="hidden" name="intakes" value="<%= notpassedIntakes %>"/>
+    <input type="submit" value="<di:translate id="buttontextdone">OK</di:translate>" class="formbutton"/>
+    </form>
 
+    <% } else { %>
+      <p>Je bent klaar met de preassesment voor deze opleiding en kunt nu aan de opleiding beginnen</p>
+      <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+          </mm:treefile>'" value="start" title="Begin met deze cursus">
+    <% } %>
 
-  </mm:relatednodes>
+  </mm:compare>
+</mm:compare>
 
-  <br/>
-
-  <br/>
-  </mm:node>
-</mm:list>
-<input type="submit" value="<di:translate id="buttontextdone">OK</di:translate>" class="formbutton"/>
-</form>
-  </div>
-
-
-
-</body>
-
-</html>
+</div>
 
 </fmt:bundle>
 
