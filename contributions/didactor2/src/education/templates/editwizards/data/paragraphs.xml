@@ -29,5 +29,6 @@
       </field>
       <list include="paragraphs\add_images_pos2rel_position.xml" />
       <list include="paragraphs\add_attachments_posrel.xml" />
+      <list include="paragraphs\add_exturls_posrel.xml" />
    </form-schema>
 </wizard-schema>

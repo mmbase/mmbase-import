@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="ExtendedText" maintainer="didactor.nl" version="1" auto-deploy="true">
+<application name="ExtendedText" maintainer="didactor.nl" version="2" auto-deploy="true">
     <requirements>
     </requirements>
 
     <neededbuilderlist>
         <builder maintainer="mmbase.org" version="0">attachments</builder>
         <builder maintainer="mmbase.org" version="1">paragraphs</builder>
+        <builder maintainer="mmbase.org" version="1">urls</builder>
         <builder maintainer="mmbase.org" version="0">images</builder>
         <builder maintainer="mmbase.org" version="0">pos2rel</builder>
 
@@ -26,6 +27,7 @@
 
         <relation from="paragraphs" to="images"      type="pos2rel" />
         <relation from="paragraphs" to="attachments" type="posrel" />
+        <relation from="paragraphs" to="urls" type="posrel" />
     </allowedrelationlist>
 
     <datasourcelist>
