@@ -1,12 +1,14 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@page import="java.net.URL, nl.didactor.pdf.PDFConverter, java.io.ByteArrayOutputStream"%>
+
+
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
-	<%@include file="/shared/setImports.jsp"%>
-<mm:import externid="number" required="true" jspvar="number"/>
-<mm:import externid="action"/>
-<mm:present referid="action">
-    <mm:compare referid="action" value="mail">
+   <%@include file="/shared/setImports.jsp"%>
+   <mm:import externid="number" required="true" jspvar="number"/>
+   <mm:import externid="action"/>
+   <mm:present referid="action">
+   <mm:compare referid="action" value="mail">
 
 
     <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=1">
@@ -46,7 +48,7 @@
          <mm:setfield name="type">0</mm:setfield>
     </mm:createnode>
 
-    
+
     <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
     <mm:createrelation role="related" source="attachment" destination="emailNode"/>
 
@@ -63,8 +65,6 @@
 </head>
 <body>
      <a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="number"/>&provider=<mm:write referid="provider"/>"><img src="printPDF.gif" alt="Bekijk als PDF" border="0"></a> <a href="pdfchooser.jsp?action=mail&number=<mm:write referid="number"/>" target="_top"><img src="mailPDF.gif" alt="Mail als PDF" border="0"/></a>
-
-   
 </body>
 </html>
 
