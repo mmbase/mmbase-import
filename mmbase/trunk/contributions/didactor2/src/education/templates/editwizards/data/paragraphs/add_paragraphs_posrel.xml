@@ -22,6 +22,7 @@
 
       <list include="paragraphs/add_images_pos2rel_position.xml" />
       <list include="paragraphs/add_attachments_posrel.xml" />
+      <list include="paragraphs/add_exturls_posrel.xml" />
    </item>
 
    <command name="insert">
