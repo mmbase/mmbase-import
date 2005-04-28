@@ -254,7 +254,17 @@
             <%
          }
       %>
-   </div>
+               <table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                     <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+                     <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=providers&nodepath=providers' target="text">Bewerk welkom pagina</a></nobr></td>
+                  </tr>
+               </table>
+
+      
+      </div>
 </mm:compare>
 
 
