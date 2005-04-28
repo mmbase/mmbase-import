@@ -2,7 +2,11 @@
 <mm:cloud jspvar="cloud">
 <mm:node number="studentrole" id="studentrole" />
 <mm:listnodes type="people" id="student">
-   <mm:createrelation source="student" destination="studentrole" role="related" />
+   <mm:remove referid="hasrole" />
+   <mm:relatednodes type="roles" max="1"><mm:import id="hasrole" /></mm:relatednodes>
+   <mm:notpresent referid="hasrole">
+      <mm:createrelation source="student" destination="studentrole" role="related" />
+   </mm:notpresent>
 </mm:listnodes>
 </mm:cloud>
 
