@@ -26,10 +26,23 @@
 
 
 <mm:node number="$learnobject">
-  <h1><mm:field name="name"/></h1>
+
+   <mm:field name="showtitle">
+      <mm:compare value="1">
+         <h1><mm:field name="name"/></h1>
+      </mm:compare>
+   </mm:field>
+
   <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/></mm:import>
   <%@include file="/shared/cleanText.jsp"%>
+
+   <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="node_id"><mm:write referid="learnobject"/></mm:param>
+      <mm:param name="path_segment">../</mm:param>
+   </mm:treeinclude>
 </mm:node>
+
+
 
 </body>
 </html>
