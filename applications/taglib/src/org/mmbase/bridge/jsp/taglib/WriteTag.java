@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.46 2005-03-29 16:08:56 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.42.2.2 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -69,8 +69,6 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     public void setRequest(String s) throws JspTagException {
         requestVar = getAttribute(s);
     }
-
-
 
     /*
       // A page attribute is not needed, because we have already taglib vars, which take the same function (and are actually stored here)
@@ -123,7 +121,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             if (pageContext.getSession() == null) {
                 throw new JspTagException("Cannot write to session if session is disabled");
             }
-            pageContext.getSession().setAttribute(sessionVar.getString(this), helper.getValue());
+            pageContext.setAttribute(sessionVar.getString(this), helper.getValue(), PageContext.SESSION_SCOPE);
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         if (requestVar != Attribute.NULL) {
@@ -132,9 +130,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         }
         if (applicationVar != Attribute.NULL) {
             pageContext.setAttribute(applicationVar.getString(this), helper.getValue(), PageContext.APPLICATION_SCOPE);
-            helper.overrideWrite(false); // default behavior is not to write to page if wrote to application.
+            helper.overrideWrite(false); // default behavior is not to write to page if wrote to application
         }
-
         if (cookie != Attribute.NULL) {
             Object v = helper.getValue();
             String cookievalue;
@@ -147,8 +144,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             }
 
             // remove all cookies with given name
-            HttpServletRequest request   = ((HttpServletRequest)  pageContext.getRequest());
-            HttpServletResponse response = ((HttpServletResponse) pageContext.getResponse());
+            HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+            HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
             
             if (log.isDebugEnabled()) {
                 log.debug("Writing cookie " + cookie + " / " + v);
@@ -159,7 +156,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             if (cookies != null) { 
                 for (int i = 0; i< cookies.length; i++) {
                     Cookie c = cookies[i];
-                    if (c.getName().equals(cookie.toString())) {
+                    if (c.getName().equals(cookie)) {
                         cookiecount++;
                     }
                 }
@@ -194,7 +191,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("End writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
+
         helper.doEndTag();
-        return super.doEndTag();
+        return super.doEndTag();        
     }
 }

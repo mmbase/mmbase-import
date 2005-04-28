@@ -2,12 +2,6 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-  <display-name>MMBase distro</display-name>
-  <description>
-    MMBase is an open-source content managment system. See http://www.mmbase.org/
-  </description>
-
-
   <!-- uncomment this and fill in the right value, if your app-server
   does not succeed to determin this automaticly.
   <context-param>
@@ -56,22 +50,6 @@
 
 
 
-  <!-- 
-      Charset-remover filter 
-      If you want to serve application/smil and other realmedia-types by JSP
-      on Tomcat, you may want to use this filter.  It can be configured with
-      WEB-INF/config/charsetremover.properties It arranges that no 'charset=' part is present in
-      the Content-Type response-headers of the configured Content-Types. It is actually more
-      correct to include charset, but real-player does not understand it.  
-  -->
-  <!--
-  <filter>
-    <filter-name>charsetremover</filter-name>
-    <filter-class>org.mmbase.servlet.CharsetRemoverFilter</filter-class>
-  </filter>
-  -->
-
-
   <!-- Filter for jumpers
    Uncomment this code if you want to activate the jumpers filter.
    You need to install the jumpers builder first
@@ -83,7 +61,12 @@
     <description>Filter used for jumpers</description>
     <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
   </filter>
-  -->
+
+  <filter-mapping>
+    <filter-name>Jumpers Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+-->
 
 	<!-- Overrides config/module/mmbaseroot.xml#encoding -->
   <!-- Filter Character Encoding
@@ -95,23 +78,6 @@
       <param-value>UTF-8</param-value>
     </init-param>
   </filter>
-  -->
-
-
-<!-- 
-  Filter mappings.
-
-  <filter-mapping>
-    <filter-name>charsetremover</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-
-  <filter-mapping>
-    <filter-name>Jumpers Filter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
 
   <filter-mapping>
     <filter-name>Set Character Encoding</filter-name>
@@ -240,6 +206,16 @@
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
+  </taglib>
+
+  <!-- mmbase-community-taglib,
+  Only works when community-application has been activated, which can
+  be done after activating the needed builders (community, channel, chatter, message,
+  people). To use it you also need the communityprc module to be active.
+  -->
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
   </taglib>
 
   <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)-->

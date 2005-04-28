@@ -41,7 +41,7 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
         MMObjectBuilder bul=parent.getMMObject(tb);
         if (bul==null) {
-            log.warn("MMBaseChangeDummy -> Unknown builder="+tb);
+            System.out.println("MMBaseChangeDummy -> Unknown builder="+tb);
             return(false);
         } 
     

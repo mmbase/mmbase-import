@@ -3,7 +3,7 @@
 %><%@include file="import.jsp" %><%@include file="settings.jsp"
 %><mm:content language="$language" type="text/html" expires="0">
 <mm:import id="url">create_context.jsp</mm:import>
-<mm:cloud loginpage="login.jsp" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
   <h1><%=getPrompt(m,"create_context")%></h1>
   <%@include file="you.div.jsp" %>
   

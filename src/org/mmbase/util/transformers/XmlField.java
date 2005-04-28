@@ -4,14 +4,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.mmbase.util.StringObject;
-import org.mmbase.util.ResourceLoader;
 
+import org.mmbase.module.core.MMBaseContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.29 2005-03-16 19:01:38 michiel Exp $
+ * @version $Id: XmlField.java,v 1.21.2.3 2004-06-04 08:18:54 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -42,9 +37,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int HTML_BLOCK_BR  = 9;
     public final static int HTML_BLOCK_NOSURROUNDINGP     = 10;
     public final static int HTML_BLOCK_BR_NOSURROUNDINGP  = 11;
-
-    // default doctype
-    public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
+    
 
     // cannot be decoded:
     public final static int ASCII = 51;
@@ -53,7 +46,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private final static String CODING = "UTF-8"; // This class only support UTF-8 now.
 
     // for validation only.
-    private final static String XML_HEADER = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n" + XML_DOCTYPE;
+    private final static String XML_HEADER =
+        "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>" 
+        + " \n<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
     private final static String XML_TAGSTART = "<mmxf>";
     private final static String XML_TAGEND   = "</mmxf>";
 
@@ -77,11 +72,11 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             obj.insert(0, "\n"); // in the loop \n- is deleted, so it must be there.
         } else {
             while (true) {
-                pos = obj.indexOf("\n-", pos); // search the first
+                pos = obj.indexOf("\n-", pos); // search the first 
                 if (pos == -1 || obj.length() <= pos + 2) break;
                 if (obj.charAt(pos + 2) != '-') break;
                 pos += 2;
-            }
+            } 
         }
 
         listwhile : while (pos != -1) {
@@ -129,10 +124,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             } else { // search for next list
                 while (true) {
                     pos = obj.indexOf("\n-", pos);
-                    if (pos == -1 || obj.length() <= pos + 2) break;
+                    if (pos == -1 || obj.length() <= pos + 2) break; 
                     if (obj.charAt(pos + 2) != '-') break; // should not start with two -'s, because this is some seperation line
                     pos += 2;
-                }
+                } 
             }
         }
         // make sure that the list is closed:
@@ -158,16 +153,16 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         // things. But basicly emphasizion is content, isn't it?
 
         int posEmphOpen = obj.indexOf("_", 0);
-        int posTagOpen = obj.indexOf("<", 0); // must be closed before next tag opens.
+        int posTagOpen = obj.indexOf("<", 0); // must be closed before next tag opens. 
 
 
         OUTER:
         while (posEmphOpen != -1) {
 
-            if (posTagOpen > 0 &&
+            if (posTagOpen > 0 && 
                 posTagOpen < posEmphOpen) { // ensure that we are not inside existing tags
                 int posTagClose = obj.indexOf(">", posTagOpen);
-                if (posTagClose == -1) break;
+                if (posTagClose == -1) break;                
                 posEmphOpen = obj.indexOf("_", posTagClose);
                 posTagOpen  = obj.indexOf("<", posTagClose);
                 continue;
@@ -181,19 +176,21 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 // or not starting a word
                 posEmphOpen = obj.indexOf("_", posEmphOpen + 1);
                 continue;
-            }
+            }  
 
             // now find closing _.
             int posEmphClose = obj.indexOf("_", posEmphOpen + 1);
             if (posEmphClose == -1) break;
+            char previousChar = obj.charAt(posEmphClose -1);
             while((posEmphClose + 1) < obj.length() &&
                   (Character.isLetterOrDigit(obj.charAt(posEmphClose + 1)))
                   ) {
-                posEmphClose = obj.indexOf("_", posEmphClose + 1);
+                posEmphClose = obj.indexOf("_", posEmphClose + 1);   
                 if (posEmphClose == -1) break OUTER;
+                previousChar = obj.charAt(posEmphClose - 1);
             }
 
-            if (posTagOpen > 0
+            if (posTagOpen > 0 
                 && posEmphClose > posTagOpen) {
                 posEmphOpen = obj.indexOf("_", posTagOpen); // a tag opened before emphasis close, ignore then too, and re-search
                 continue;
@@ -224,7 +221,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      *
      */
 
-    private static void handleHeaders(StringObject obj) {
+    private static void handleHeaders(StringObject obj) { 
         // handle headers
         int requested_level;
         char ch;
@@ -247,18 +244,18 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     break;
                 }
             }
-            StringBuffer add = new StringBuffer();
+            String add = "";
             for (; requested_level <= level; level--) {
                 // same or higher level section
-                add.append("</section>");
+                add += "</section>";
             }
             level++;
             for (; requested_level > level; level++) {
-                add.append("<section>");
+                add += "<section>";
             }
-            add.append("<section><h>");
+            add += "<section><h>";
 
-            obj.insert(pos, add.toString());
+            obj.insert(pos, add);
             pos += add.length();
 
             // search end title of  header;
@@ -307,7 +304,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         while (pos != -1) {
             // delete the 2 new lines of the p.
             obj.delete(pos, 2);
-
+            
             if (leaveExtraNewLines) {
                 while (obj.length() > pos && obj.charAt(pos) == '\n') {
                     pos++;
@@ -342,6 +339,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 obj.insert(obj.length(), "</p>");
             }
         }
+    }
+
+    private static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines) {
+        handleParagraphs(obj, leaveExtraNewLines, true);
     }
 
     /**
@@ -381,13 +382,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
         return obj;
     }
-
+    
 
     private static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
         // the order _is_ important!
         handleList(obj);
         handleParagraphs(obj, leaveExtraNewLines, surroundingP);
-        if (sections) {
+        if (sections) { 
             handleHeaders(obj);
         }
         handleEmph(obj);
@@ -452,7 +453,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
     /**
      * So poor, that it actually generates pieces of XHTML 1.1 blocks (so, no use of sections).
-     *
+     * 
      * @see #richToXML
      * @since MMBase-1.7
      */
@@ -461,7 +462,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         StringObject obj = prepareData(data);
         handleRich(obj, false, multipibleBrs, surroundingP);   // no <section> tags, leave newlines if multipble br's requested
         handleNewlines(obj);
-        handleFormat(obj, false);
+        handleFormat(obj, false); 
         return obj.toString();
     }
 
@@ -472,7 +473,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     /**
      * So poor, that it actually generates pieces of XHTML 1.1 inlines (so, no use of section, br, p).
-     *
+     * 
      * @since MMBase-1.7
      */
     public static String poorToHTMLInline(String data) {
@@ -484,12 +485,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
 
-
+    
     /**
      *  chop of the mmxf xml tagstart and tagend:
      */
 
-    final static private String xmlBody(String s) {
+    final static private String xmlBody(String s) {   
         return s.substring(XML_TAGSTART.length(), s.length() - XML_TAGEND.length());
     }
 
@@ -499,10 +500,19 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     private static String XSLTransform(String xslfile, String data) {
         try {
-            TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer(new StreamSource(ResourceLoader.getConfigurationRoot().getResourceAsStream("xslt/" + xslfile)));
+            String xslPath = MMBaseContext.getConfigPath() + File.separator + "xslt" + File.separator + xslfile;
+
+            javax.xml.transform.TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
+
+            //log.error("xslpath: " + xslPath);
+            javax.xml.transform.Transformer transformer =
+                tFactory.newTransformer(
+                    new javax.xml.transform.stream.StreamSource(new File(xslPath).getAbsoluteFile()));
+
             java.io.StringWriter res = new java.io.StringWriter();
-            transformer.transform(new StreamSource(new StringReader(data)), new StreamResult(res));
+            transformer.transform(
+                new javax.xml.transform.stream.StreamSource(new java.io.StringReader(data)),
+                new javax.xml.transform.stream.StreamResult(res));
             return res.toString();
         } catch (Exception e) {
             return "XSL transformation did not succeed: " + e.toString() + "\n" + data;
@@ -540,7 +550,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         } catch (javax.xml.parsers.ParserConfigurationException pce) {
             throw new FormatException("[sax parser] not well formed xml: " + pce.toString());
         } catch (org.xml.sax.SAXException se) {
-            log.debug("", se);
+            se.printStackTrace();
             //throw new FormatException("[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")");
         } catch (java.io.IOException ioe) {
             throw new FormatException("[io] not well formed xml: " + ioe.toString());
@@ -696,7 +706,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             default :
                 throw new UnknownCodingException(getClass(), to);
             }
-
+            
         } catch (FormatException fe) {
             log.error(fe.toString() + " source: \n" + result);
         }

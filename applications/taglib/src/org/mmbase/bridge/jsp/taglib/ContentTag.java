@@ -10,19 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.User;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
+import javax.servlet.jsp.tagext.BodyContent;
 import java.util.*;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.StringSplitter;
 
-import org.mmbase.util.*;
-import org.mmbase.security.UserContext;
-
+import org.mmbase.util.XMLBasicReader;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Element;
 
@@ -35,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.36 2005-03-24 13:41:30 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.21.2.4 2004-08-02 15:25:29 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -46,39 +43,24 @@ public class ContentTag extends LocaleTag  {
 
     private static final long DEFAULT_EXPIRE_TIME = 60; // one minute
 
-    public static final String ESCAPER_KEY = "org.mmbase.bridge.jsp.taglib.escaper";
-
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; } 
             public String  getType()    { return "text/html"; } 
             public String  getEncoding(){ return "ISO-8859-1"; } 
         };
 
-    private static final Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
-    private static final Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
-    private static final Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
-    private static final Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
+    private static Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
+    private static Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
+    private static Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
+    private static Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
 
-    private static final Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
-
+    private static Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
 
     static {
         try {
             log = Logging.getLoggerInstance(ContentTag.class);
             org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
-            ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
-                    public void onChange(String resource) {
-                        defaultEscapers.clear();
-                        defaultPostProcessors.clear();
-                        defaultEncodings.clear();
-                        charTransformers.clear();
-                        contentTypes.clear();
-                        initialize(getResourceLoader(), resource);
-                    }
-                };
-            watcher.add("content.xml");
-            watcher.start();
-            watcher.onChange("content.xml");
+            initialize();
         } catch (Exception e) {
             log.error(e.toString());
         }
@@ -112,36 +94,9 @@ public class ContentTag extends LocaleTag  {
     /**
      * Initialize the write-escapers for MMBase taglib.
      */
-    private static void initialize(ResourceLoader taglibLoader, String resource) {
+    private static void initialize() {
         log.service("Reading taglib write-escapers");
-        InputStream stream = ContentTag.class.getResourceAsStream("resources/taglibcontent.xml");
-        if (stream != null) {
-            log.info("Reading backwards compatible resource " + ContentTag.class.getName()+"/resources/taglibcontext.xml");
-            InputSource escapersSource = new InputSource(stream);
-            readXML(escapersSource);
-        }
-        List resources = taglibLoader.getResourceList(resource);
-        log.info("Using " + resources);
-        ListIterator i = resources.listIterator();
-        while (i.hasNext()) i.next();
-        while (i.hasPrevious()) {
-            try {
-                URL u = (URL) i.previous();
-                log.info("Reading " + u);
-                URLConnection con = u.openConnection();
-                if (con.getDoInput()) {
-                    InputSource source = new InputSource(con.getInputStream());
-                    readXML(source);
-                }
-            } catch (Exception e) {
-                log.error(e);
-            }
-        }       
-        
-    }
-
-    protected static void readXML(InputSource escapersSource) {
-        
+        InputSource escapersSource = new InputSource(ContentTag.class.getResourceAsStream("resources/taglibcontent.xml"));
         XMLBasicReader reader  = new XMLBasicReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
 
@@ -150,11 +105,7 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) e.nextElement();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            if (charTransformers.containsKey(id)) {
-                log.warn("Replaced an escaper '" + id + "' : " + ct );
-            } else {
-                log.service("Found an escaper '" + id + "' : " + ct);
-            }
+            log.service("Found an escaper '" + id + "' : " + ct);
             charTransformers.put(id, ct);
         }
         log.service("Reading content tag post-processors");
@@ -163,11 +114,7 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) e.nextElement();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            if (charTransformers.containsKey(id)) {
-                log.warn("Replaced an postprocessor '" + id + "' : " + ct);
-            } else {
-                log.service("Found an postprocessor '" + id + "' : " + ct);
-            }
+            log.service("Found an postprocessor '" + id + "' : " + ct);
             charTransformers.put(id, ct);
         }
 
@@ -245,12 +192,6 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-
-    /*
-    protected int getVersion() {
-        return 1;
-    }
-    */
     
 
     /**
@@ -290,12 +231,10 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException if not transformer with given id was configured
      */
 
-    public static CharTransformer getCharTransformer(String id) throws JspTagException {
-
+    protected static CharTransformer getCharTransformer(String id) throws JspTagException {
         if (id.indexOf(',') > 0) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
-            // Iterator ids = StringSplitter.split(id).iterator();
-            Iterator ids = Arrays.asList( id.trim().split("\\s*,\\s*") ).iterator();
+            Iterator ids = StringSplitter.split(id).iterator();
             while (ids.hasNext()) {
                 String i = (String) ids.next();
                 CharTransformer c = (CharTransformer) charTransformers.get(i);
@@ -317,38 +256,20 @@ public class ContentTag extends LocaleTag  {
      */
 
     public CharTransformer getWriteEscaper() throws JspTagException {
-        return (CharTransformer) pageContext.getAttribute(ESCAPER_KEY);
-    }
-    private CharTransformer prevEscaper = null;
-
-    protected void setWriteEscaper() throws JspTagException {
-        prevEscaper = getWriteEscaper();
-        CharTransformer esc;
         if (! escaper.getString(this).equals("")) { 
-            esc =  getCharTransformer(escaper.getString(this));
-        }  else {
-            String defaultEscaper = (String) defaultEscapers.get(getType());
-            if (defaultEscaper != null) {                
-                esc = getCharTransformer(defaultEscaper);
-            } else {
-                esc = COPY;
-            }
-        }
-        pageContext.setAttribute(ESCAPER_KEY, esc);
-    }
-    protected void unsetWriteEscaper() {
-        if (prevEscaper == null) {
-            pageContext.removeAttribute(ESCAPER_KEY);
+            return getCharTransformer(escaper.getString(this));
+        } 
+        String defaultEscaper = (String) defaultEscapers.get(getType());
+        if (defaultEscaper != null) {                
+            return getCharTransformer(defaultEscaper);
         } else {
-            pageContext.setAttribute(ESCAPER_KEY, prevEscaper);
+            return COPY;
         }
     }
-
 
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
-        setWriteEscaper();
         String type = getType();
 
         if (! type.equals("")) {
@@ -399,18 +320,13 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    public int doEndTag() throws JspTagException {
-        unsetWriteEscaper();
-        return super.doEndTag();
-    }
-
 
     /** 
      * Sets a user. This is used by cloud-tag. It does not do it if the user is anonymous, so for
      * the moment it is only checked for 'null'.
      */
 
-    void setUser(UserContext newUser) throws JspTagException {
+    void setUser(User newUser) throws JspTagException {
         //user = newUser;
         if (newUser != null) {
             long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);

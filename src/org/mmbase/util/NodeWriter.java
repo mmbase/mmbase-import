@@ -19,11 +19,10 @@ import org.mmbase.util.logging.*;
 /**
  * Utility class for writing xml files for data- and relation sources, suppied by an application export class.
  * Does not support or export dtd information.
- * @application Applications-I
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.23 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.20 2003-10-24 10:09:15 pierre Exp $
  */
 public class NodeWriter{
 
@@ -82,17 +81,17 @@ public class NodeWriter{
 
         write("<" + builderName + " "
               + "exportsource=\"mmbase://"+   // was: mmbase://127.0.0.1/install/b1
-              mmb.getHost()+"/"+mmb.getStorageManagerFactory().getCatalog()+"/"+mmb.getBaseName()+"\" "+
+              mmb.getHost()+"/"+mmb.getJDBC().getDatabaseName()+"/"+mmb.getBaseName()+"\" "+
               "timestamp=\""+timestamp+"\">\n"); // was : 20000602143030
         // initialize the nr of nodes written
         nrOfNodes = 0;
     }
 
     /**
-     *  Writes a node (object) to the datasource file.
-     *  Relationsources are stored in a slightly different format from data sources.
-     *  @param node The object to store.
-     */
+    *  Writes a node (object) to the datasource file.
+    *  Relationsources are stored in a slightly different format from data sources.
+    *  @param node The object to store.
+    */
     public void write(MMObjectNode node) {
         // retrieve basic information of the node
         int number=node.getIntValue("number");
@@ -122,15 +121,15 @@ public class NodeWriter{
             write(">\n");
         } else {
             // For a data node, store the alias if at all possible.
-            String tm = mmb.getOAlias().getAlias(number);
-            if (tm == null) {
-                write("\t<node number=\"" + number+"\" owner=\"" + owner + "\">\n");
+            String tm=mmb.OAlias.getAlias(number);
+            if (tm==null) {
+                write("\t<node number=\""+number+"\" owner=\""+owner+"\">\n");
             } else {
-                write("\t<node number=\"" + number+"\" owner=\"" + owner + "\" alias=\"" + tm + "\">\n");
+                write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
             }
         }
-        MMObjectBuilder bul=node.parent;
-        Enumeration nd=bul.getFields().elements();
+    MMObjectBuilder bul=node.parent;
+    Enumeration nd=bul.getFields().elements();
         while (nd.hasMoreElements()) {
             FieldDefs def=(FieldDefs)nd.nextElement();
             if (def.inStorage()) {
@@ -161,8 +160,8 @@ public class NodeWriter{
     }
 
     /**
-     *  Writes a footer to the xml file, and closes the file.
-     */
+    *  Writes a footer to the xml file, and closes the file.
+    */
     public void done() {
         // write the footer
         write("</"+ builderName + ">\n");
@@ -177,9 +176,9 @@ public class NodeWriter{
     }
 
     /**
-     *  Writes a string datasource file.
-     *  @param s The string to store.
-     */
+    *  Writes a string datasource file.
+    *  @param s The string to store.
+    */
     private void write(String s) {
         try {
             fw.write(s);
@@ -189,17 +188,17 @@ public class NodeWriter{
     }
 
     /**
-     *  Creates a description string of a field in a node for use in a datasource file.
-     *  Binary data (such as images) are stored as seperate binary files, the string then contains
-     *  a reference in lieu of the actual value.
-     *  A number of 'special purpose' fields (number, owner, otype) are skipped and not written.
-     *  Other fields are added 'in line'.
-     *  @param key the fieldname to store
-     *  @param node The node wose field to store
-     *  @param targetpath the path where any binary files may be stored
-     *  @param mmb MMBase object for retrieving type info
-     *  @return A <code>String</code> descriving in xml-format the field's content (or a reference to that content)
-     */
+    *  Creates a description string of a field in a node for use in a datasource file.
+    *  Binary data (such as images) are stored as seperate binary files, the string then contains
+    *  a reference in lieu of the actual value.
+    *  A number of 'special purpose' fields (number, owner, otype) are skipped and not written.
+    *  Other fields are added 'in line'.
+    *  @param key the fieldname to store
+    *  @param node The node wose field to store
+    *  @param targetpath the path where any binary files may be stored
+    *  @param mmb MMBase object for retrieving type info
+    *  @return A <code>String</code> descriving in xml-format the field's content (or a reference to that content)
+    */
     private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
         if (!key.equals("number") && !key.equals("owner") && !key.equals("otype")) {
             // this is a bad way of doing it imho
@@ -225,11 +224,11 @@ public class NodeWriter{
     }
 
     /**
-     *  Stores binary data in a file
-     *  @param filename path of the file to store the data
-     *  @param value binary data to store (byte array)
-     *  @return <code>true</code> if the write was succesful, <code>false</code> if an exception occurred
-     */
+    *  Stores binary data in a file
+    *  @param filename path of the file to store the data
+    *  @param value binary data to store (byte array)
+    *  @return <code>true</code> if the write was succesful, <code>false</code> if an exception occurred
+    */
     static boolean saveFile(String filename,byte[] value) {
         File sfile = new File(filename);
         try {
@@ -244,4 +243,5 @@ public class NodeWriter{
         }
         return true;
     }
+
 }

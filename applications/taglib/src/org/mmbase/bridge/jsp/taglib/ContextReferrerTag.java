@@ -10,14 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.GenericResponseWrapper;
 
-import java.util.Locale;
+import java.util.*;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -26,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.68 2005-03-16 16:49:13 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.5 2005-03-14 18:33:24 michiel Exp $
  * @see ContextTag
  */
 
@@ -56,6 +58,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected  Attribute  id        = Attribute.NULL; // hides String id of TagSupport
 
+    /**
+     * A String representing the current page. Only used for debugging purposes.
+     */
     private String       thisPage = null;
 
     void setPageContextOnly(PageContext pc) {
@@ -63,54 +68,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         // the 'page' Context
     }
 
-
     public PageContext getPageContext() {
         return pageContext;
-    }
-
-    /**
-     * @since MMBase-1.7.4
-     */
-    protected ContextTag getPageContextTag() {
-        if (pageContextTag == null) {
-
-            pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
-            
-            
-            if (pageContextTag == null) { // not yet put
-                log.debug("No pageContextTag found in pagecontext, creating..");
-                if (pageLog.isServiceEnabled()) {
-                    HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
-                    //thisPage = request.getRequestURI();
-                    String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
-                    String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
-                    thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
-                    pageLog.service("Parsing JSP page: " + thisPage + 
-                                    (queryString != null ? "?" + queryString : ""));
-                }
-                pageContextTag = new ContextTag();
-                pageContextTag.setId(null);
-                
-                // page context has no id, this also avoids that it tries
-                // registering itself in the parent (which it is itself)
-                // so don't change this!
-                
-                pageContextTag.setPageContextOnly(pageContext);
-                
-                // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
-                // register also the tag itself under __context.
-                // _must_ set __context before calling setPageContext otherwise in infinite loop.
-                pageContextTag.createContainer(null);
-                pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
-                pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
-                
-                // there is one implicit ContextTag in every page.
-                // its id is null, it is registered in the pageContext as __context.
-                //
-                // it is called pageContext, because it is similar to the pageContext, but not the same.
-            }
-        } 
-        return pageContextTag;
     }
 
     public void setPageContext(PageContext pc) {
@@ -125,9 +84,43 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             log.debug("setting page context: " + this.getClass().getName());
         }
         setPageContextOnly(pc); // make pageContext availabe
-        pageContextTag = null;
-        getPageContextTag();
+        pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
 
+
+        if (pageContextTag == null) { // not yet put
+            log.debug("No pageContextTag found in pagecontext, creating..");
+            if (pageLog.isServiceEnabled()) {
+                HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+                //thisPage = request.getRequestURI();
+
+                String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
+                thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
+
+                String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
+                pageLog.service("Parsing JSP page: " + thisPage +
+                                (queryString != null ? "?" + queryString : ""));
+            }
+            pageContextTag = new ContextTag();
+            pageContextTag.setId(null);
+            
+            // page context has no id, this also avoids that it tries
+            // registering itself in the parent (which it is itself)
+            // so don't change this!
+
+            pageContextTag.setPageContextOnly(pageContext);
+
+            // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
+            // register also the tag itself under __context.
+            // _must_ set __context before calling setPageContext otherwise in infinite loop.
+            pageContextTag.createContainer(null);
+            pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
+            pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
+
+            // there is one implicit ContextTag in every page.
+            // its id is null, it is registered in the pageContext as __context.
+            //
+            // it is called pageContext, because it is similar to the pageContext, but not the same.
+        }
     }
 
     /**
@@ -143,9 +136,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public void setId(String i) {
         try {
-            if ("_".equals(i)) {
-                throw new RuntimeException("'_' is not a valid id (it is reserved for the 'current writer')");
-            }
             id = getAttribute(i);
         } catch (JspTagException j) {
             throw new RuntimeException(j);
@@ -224,7 +214,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
-        pageContextTag = null;
+
         /*
         id = null;
         referid   = Attribute.NULL;
@@ -340,7 +330,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     final public TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
-        TagSupport cTag = (TagSupport) findAncestorWithClass(this, clazz);
+        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
         if (cTag == null) {
             if (exception) {
                 throw new JspTagException ("Could not find parent of type " + clazz.getName());
@@ -357,7 +347,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 log.debug(" with id ("  + tagId + ")");
             }
             while (! tagId.equals(cTag.getId())) {
-                cTag = (TagSupport) findAncestorWithClass(cTag, clazz);
+                cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
                         throw new JspTagException ("Could not find parent Tag of type " + clazz.getName() + " with id " + tagId);
@@ -416,7 +406,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         ContextProvider contextTag = (ContextProvider) findParentTag(cl, contextid, false);
         if (contextTag == null) {
             log.debug("Didn't find one, take the pageContextTag");
-            contextTag = getPageContextTag();
+            contextTag = pageContextTag;
             if (contextTag == null) {
                 throw new RuntimeException("Did not find pageContextTag!");
             }

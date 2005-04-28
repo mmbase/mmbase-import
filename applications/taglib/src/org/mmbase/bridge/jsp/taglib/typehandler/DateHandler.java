@@ -10,18 +10,17 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import javax.servlet.jsp.JspTagException;
-
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
+import java.util.Calendar;
+import java.util.Date;
+
+
 import org.mmbase.storage.search.*;
-import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -31,16 +30,14 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.19 2005-04-26 15:14:16 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.14.2.3 2004-05-26 21:58:53 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(DateHandler.class);
 
+    private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
     private static boolean EXIST_YEAR_0 = false;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
-    private static final Date NODATE = new Date(-1);
 
     /**
      * Constructor for LongHandler.
@@ -77,13 +74,13 @@ public class DateHandler extends AbstractTypeHandler {
         Calendar cal = Calendar.getInstance();
         if (node !=null) {
             if (node.getLongValue(field.getName()) != -1) {
-                cal.setTime(node.getDateValue(field.getName()));
+                cal.setTime( new Date((long) node.getLongValue( field.getName() ) * DATE_FACTOR));
             }
         }
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
-        buffer.append(Casting.toLong(cal.getTime()));
+        buffer.append(cal.getTime().getTime()/DATE_FACTOR);
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
 
@@ -111,23 +108,7 @@ public class DateHandler extends AbstractTypeHandler {
 
 
         String options = tag.getOptions();
-        boolean doDate = true;
-        boolean doTime = true;
-        if (options != null) {
-            boolean time = false;
-            if (options.indexOf("time") > -1) {
-                doTime = true;
-                time = true;
-                doDate = false;
-                
-            } 
-            if (options.indexOf("date") > -1) {
-                doDate = true;
-                doTime = time;
-            }
-        }
-
-        if (doDate) {
+        if (options == null || options.indexOf("date") > -1) {
             String dayName = prefix(field.getName() + "_day");
             String searchDay =  (String) container.find(tag.getPageContext(), dayName);
             int checkDay;
@@ -187,7 +168,7 @@ public class DateHandler extends AbstractTypeHandler {
             yearFieldValue(cal, buffer);
             buffer.append("\" />");
         }
-        if (doTime) {
+        if (options == null || options.indexOf("time") > -1) {
             String hourName = prefix(field.getName() + "_hour");
             String searchHour =  (String) container.find(tag.getPageContext(), hourName);
             int checkHour;
@@ -288,10 +269,10 @@ public class DateHandler extends AbstractTypeHandler {
             Integer minute = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute")));
             Integer second = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second")));
             cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
-            Date oldValue = node.getDateValue(field.getName());
-            Date newValue = cal.getTime();
-            if (!oldValue.equals(newValue)) {
-                node.setDateValue(fieldName, newValue);
+            long oldValue = node.getLongValue(field.getName());
+            long newValue = cal.getTime().getTime() / DATE_FACTOR;
+            if (oldValue != newValue) {
+                node.setLongValue(fieldName, newValue);
                 return true;
             }
         } catch (java.lang.NumberFormatException e) {
@@ -300,7 +281,8 @@ public class DateHandler extends AbstractTypeHandler {
         return false;
     }
 
-    protected Date getSpecifiedValue(Field field) throws JspTagException {
+
+    protected long getSpecifiedValue(Field field) throws JspTagException {
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
         String input_day    =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day"));
@@ -310,7 +292,7 @@ public class DateHandler extends AbstractTypeHandler {
         String input_minute =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute"));
         String input_second =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second"));
         if (input_day == null || input_hour == null) {
-            return NODATE;
+            return -1;
         }
         try {
             Integer day    = new Integer(input_day);
@@ -323,28 +305,21 @@ public class DateHandler extends AbstractTypeHandler {
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
         }
-        return cal.getTime();
+        return cal.getTime().getTime() / DATE_FACTOR;       
     }
 
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
-        String fieldName = field.getName();
+    public String whereHtmlInput(Field field) throws JspTagException {            
+     String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
             return null;
         }
-
-        Date timeValue = getSpecifiedValue(field);
-        if (timeValue == NODATE) return null;
-
-        String time;
-        if (field.getType() == Field.TYPE_DATETIME) {
-            time = dateFormat.format(timeValue);
-        } else {
-            time = "" + Casting.toLong(timeValue);
-        }
+  
+        long time = getSpecifiedValue(field);
+        if (time == -1) return null;
 
         if (operator.equals("greater")) {
             return "( [" + fieldName + "] >" + time + ")";
@@ -371,15 +346,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Object time = getSpecifiedValue(field);
-        if (field.getType() != Field.TYPE_DATETIME) {
-            time = new Long(Casting.toLong(time));
-        }
-
-        // expand fieldname with nodemanager name if needed
-        if (query.getSteps().size() > 1) {
-            fieldName = field.getNodeManager().getName()+"."+fieldName;
-        }
+        Long time = new Long(getSpecifiedValue(field));
 
         Constraint con;
         if (operator.equals("greater")) {
@@ -389,13 +356,7 @@ public class DateHandler extends AbstractTypeHandler {
         } else if (operator.equals("equal")) {
             String options = tag.getOptions();
             if (options != null && options.indexOf("date") > -1) {
-                Object nextTime;
-                if (field.getType() == Field.TYPE_DATETIME) {
-                    nextTime = new Date(((Date)time).getTime() + 24 * 60 * 60 * 1000);
-                } else {
-                    nextTime = new Long(((Long)time).longValue() + 24 * 60 * 60);
-                }
-                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, nextTime, false);
+                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, new Long(time.longValue() + 24 * 60 * 60), false);
             } else {
                 con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.EQUAL, time);
             }
@@ -432,4 +393,7 @@ public class DateHandler extends AbstractTypeHandler {
         handler.addParameter(prefix(fieldName + "_month"), month);
         handler.addParameter(prefix(fieldName + "_year"), year);
     }
+
+
+
 }

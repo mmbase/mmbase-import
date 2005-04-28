@@ -124,6 +124,90 @@
 </TR>
 </FORM>
 
+
+
+<TR>
+	<TD>
+	<BR>
+	</TD>
+</TR>
+<IF $MOD-CONFIG-CHECK-applications-$PARAM1^==Checked ok>
+	<FORM ACTION="config/configdetail.shtml?show+applications+$PARAM1" METHOD="POST" TARGET="_xml">
+<ELSE>
+	<FORM ACTION="config/configdetail.shtml?annotate+applications+$PARAM1" METHOD="POST" TARGET="_xml">
+</IF>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN=2>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Status</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>View</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			XML Check
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN=2>
+			$MOD-CONFIG-CHECK-applications-$PARAM1
+		</TD>
+		<TD BGCOLOR="#00425A">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMADMIN">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+</FORM>
+
+
+
+
+<TR>
+	<TD>
+	<BR>
+	</TD>
+</TR>
+	<FORM ACTION="applications_result.shtml" METHOD="POST">
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN=2>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Status</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>View</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			AppTool
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN=2>
+			Warning this will only work if you run mmbase on the same<BR>
+			machine as your display unit or have redirected it <BR>
+			If this is not the case use the AppTool as a application
+		</TD>
+		<TD BGCOLOR="#00425A">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMADMIN">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-APPTOOL" VALUE="$PARAM1">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+</FORM>
+
 </TABLE>
 </IF>
 </BODY>

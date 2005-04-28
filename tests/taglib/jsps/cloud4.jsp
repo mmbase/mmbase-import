@@ -8,8 +8,8 @@
     <h1>Cloud method='asis' attribute</h1>
     <p>
       Of course, 'asis' must port over pages.
-      <mm:cloud method="asis">
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="asis" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must not be anonymous, but 'foo')
       </mm:cloud>
     </p>

@@ -13,9 +13,8 @@ import org.mmbase.cache.Cache;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.ResourceWatcher;
-
+import org.mmbase.util.FileWatcher;
+import java.io.File;
 import java.util.Map;
 import java.util.Iterator;
 import javax.xml.transform.URIResolver;
@@ -33,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.13 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: TemplateCache.java,v 1.11 2003-07-17 17:01:17 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
 
-    private static final Logger log = Logging.getLoggerInstance(TemplateCache.class);
+    private static Logger log = Logging.getLoggerInstance(TemplateCache.class);
 
     private static int cacheSize = 50;
     private static TemplateCache cache;
@@ -47,8 +46,8 @@ public class TemplateCache extends Cache {
      * The Source-s which are based on a file, are added to this FileWatcher, which wil invalidate
      * the corresponding cache entry when the file changes.
      */
-    private static ResourceWatcher templateWatcher = new ResourceWatcher(ResourceLoader.getWebRoot()) {
-            public  void onChange(String file) {
+    private static FileWatcher templateWatcher = new FileWatcher (true) {
+            protected void onChange(File file) {
                 // invalidate cache.
                 if (log.isDebugEnabled()) log.debug("Removing " + file.toString() + " from cache");
                 synchronized(cache) {
@@ -101,8 +100,7 @@ public class TemplateCache extends Cache {
         private String  src;
         private URIResolver uri;
         Key(Source src, URIResolver uri) {
-            this.src = src.getSystemId(); 
-            this.uri = uri;
+            this.src = src.getSystemId(); this.uri = uri;
         }
         public boolean equals(Object o) {
             if (o instanceof Key) {
@@ -118,13 +116,16 @@ public class TemplateCache extends Cache {
         /** 
          * Returns File object or null
          */
-        String getURL() {
+        File getFile() {
             if (src == null) return null;
             try {
-                return src;
+                return new java.io.File(new java.net.URL(src).getFile());
             } catch (Exception e) {
                 return null;
             }
+        }
+        boolean isFile() {
+            return src != null && src.startsWith("file://");
         }
         public String toString() {
             return "" + src + "/" + uri;
@@ -133,23 +134,25 @@ public class TemplateCache extends Cache {
     }
     
     /**    
-     * Remove all entries associated wit a certain url (used by FileWatcher).
+     * Remove all entries associated wit a certain file (used by FileWatcher).
      *
      * @param  The file under concern
      * @return The number of cache entries removed
      */
 
-    private int remove(String file) {
+    private int remove(File file) {
         int removed = 0;        
-        Iterator i =  entrySet().iterator();
+        Iterator i =  getOrderedEntries().iterator();
         if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + file);
         while (i.hasNext()) {           
             Key mapKey = (Key) ((Map.Entry) i.next()).getKey();
-            if (mapKey.getURL().equals(file)) {
-                if(remove(mapKey) != null) {                 
-                    removed++;
-                } else {
-                    log.warn("Could not remove " + mapKey);
+            if (mapKey.isFile()) {
+                if (file.equals(mapKey.getFile())) {
+                    if(remove(mapKey) != null) {                 
+                        removed++;
+                    } else {
+                        log.warn("Could not remove " + mapKey);
+                    }
                 }
             }
         }
@@ -167,14 +170,19 @@ public class TemplateCache extends Cache {
     }
 
     /**
-     * When removing an entry (because of LRU e.g), then also the FileWatcher must be removed.
+     * When removing an entry (because of LRU e.g), then also the FileWatchter must be removed.
      */
 
     public synchronized Object remove(Object key) {
         if (log.isDebugEnabled()) log.debug("Removing " + key);
         Object result = super.remove(key);
-        remove((String) key);
-        templateWatcher.remove(((Key) key).getURL());
+        if (((Key)key).isFile()) { // this Source is a File, which might be watched. Remove the watch too.
+            templateWatcher.remove(((Key) key).getFile());
+            if (log.isDebugEnabled()) {
+                log.debug("removed watch on  " +   key);
+                log.trace("currently watching: " + templateWatcher);
+            }               
+        }
         return result;
     }
 
@@ -200,11 +208,13 @@ public class TemplateCache extends Cache {
         Key key = new Key(src, uri);
         Object res = super.put(key, value);        
         log.service("Put xslt in cache with key " + key);
-        templateWatcher.add(key.getURL());
-        if (log.isDebugEnabled()) {
-            log.debug("have set watch on  " + key.getURL());
-            log.trace("currently watching: " + templateWatcher);
-        }                
+        if (key.isFile()) { // this Source is a File, watch it, because if it changes, the cache entry must be invalidated.
+            templateWatcher.add(key.getFile());
+            if (log.isDebugEnabled()) {
+                log.debug("have set watch on  " + key.getFile().getAbsolutePath());
+                log.trace("currently watching: " + templateWatcher);
+            }                
+        }
         return res;
     }
 
@@ -215,7 +225,7 @@ public class TemplateCache extends Cache {
     public static void main(String[] argv) {
         log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         try {
-            java.io.File xslFile = java.io.File.createTempFile("templatecachetest", ".xsl");
+            File xslFile = File.createTempFile("templatecachetest", ".xsl");
             log.info("using file " + xslFile);
             java.io.FileWriter fw = new java.io.FileWriter(xslFile);
             fw.write("<xsl:stylesheet  version = \"1.1\" xmlns:xsl =\"http://www.w3.org/1999/XSL/Transform\"></xsl:stylesheet>");
@@ -225,7 +235,7 @@ public class TemplateCache extends Cache {
                 Source xsl = new StreamSource(xslFile);
                 org.mmbase.util.xml.URIResolver uri = new org.mmbase.util.xml.URIResolver(xslFile.getParentFile());
                 Templates cachedXslt = cache.getTemplates(xsl, uri);
-                log.info("template cache size " + cache.size() + " entries: " + cache.entrySet());
+                log.info("template cache size " + cache.size() + " entries: " + cache.getOrderedEntries());
                 if (cachedXslt == null) {
                     cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
                     cache.put(xsl, cachedXslt, uri);

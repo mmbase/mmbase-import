@@ -12,7 +12,9 @@ package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.module.core.*;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.builders.MediaFragments;
 import java.util.*;
+import java.net.*;
 
 
 /**

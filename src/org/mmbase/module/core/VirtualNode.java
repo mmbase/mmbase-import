@@ -11,6 +11,8 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * VirtualNode is a representation of a virtual objectnode.
  * Virtual Object nodes are nodes that are not stored in a databasetable.
@@ -19,9 +21,13 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.7 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: VirtualNode.java,v 1.6 2004-02-24 17:44:02 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
+    /**
+     * Logger routine
+     */
+    private static final Logger log = Logging.getLoggerInstance(VirtualNode.class);
 
     /**
      * Main contructor.

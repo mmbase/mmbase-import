@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
 
 
 /**
- * ClusterNode combines fields of different nodes in a single "virtual" node.
+ * ClusterNode combines fields of different nodes in a single "virtual" node.<br/>
  * This corresponds to the way that an SQL "join" select statement combines
  * fields of different tables in result rows.
  * <p>
@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.18 2005-03-29 14:54:01 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.14.2.1 2004-06-18 12:37:22 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -226,7 +226,7 @@ public class ClusterNode extends VirtualNode {
             String builderName = getBuilderName(fieldName);
             MMObjectNode n = getRealNode(builderName);
             if (n!=null) {
-                o = n.getValue(ClusterBuilder.getFieldNameFromField(fieldName));
+                o = n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldName));
             } else {
                 // fall back to builder if this node doesn't contain a number to fetch te original
                 MMObjectBuilder bul = parent.mmb.getMMObject(builderName);
@@ -251,7 +251,7 @@ public class ClusterNode extends VirtualNode {
         String tmp =  Casting.toString(getValue(fieldName));
 
         // check if the object is shorted
-        if (tmp.equals(MMObjectNode.VALUE_SHORTED)) {
+        if (tmp.indexOf("$SHORTED")==0) {
             log.debug("getStringValue(): node=" + this + " -- fieldName " + fieldName);
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for

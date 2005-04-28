@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: MulticastChangesReceiver.java,v 1.2 2005-03-16 19:21:39 michiel Exp $
+ * @version $Id: MulticastChangesReceiver.java,v 1.1.2.1 2004-10-09 10:51:43 nico Exp $
  */
 public class MulticastChangesReceiver implements Runnable {
 
     /** MMbase logging system */
-    private static final Logger log = Logging.getLoggerInstance(MulticastChangesReceiver.class);
+    private static Logger log = Logging.getLoggerInstance(MulticastChangesReceiver.class.getName());
 
     /** counter of incoming messages */
     private int incount = 0;

@@ -15,7 +15,10 @@ import org.mmbase.util.xml.URIResolver;
 import javax.xml.transform.TransformerFactory;
 
 import java.io.File;
-import java.net.URL;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * A cache for XSL Transformer Factories.  There is one needed for
@@ -23,9 +26,11 @@ import java.net.URL;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.7 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: FactoryCache.java,v 1.5 2003-07-17 17:01:17 michiel Exp $
  */
 public class FactoryCache extends Cache {
+
+    private static Logger log = Logging.getLoggerInstance(FactoryCache.class);
 
     private static int cacheSize = 50;
     private static FactoryCache cache;
@@ -79,24 +84,9 @@ public class FactoryCache extends Cache {
      * Gets a Factory from the cache. This cache is 'intelligent', you
      * can also get from it when it is not in the cache, in which case
      * a new Factory will be created (and put in the cache).
-     * @deprecated
      */
-    
-    public TransformerFactory getFactory(File cwd) {
-        try {
-            TransformerFactory tf =  (TransformerFactory) get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
-            if (tf == null) {
-                // try again, but now construct URIResolver first.
-                return getFactory(new URIResolver(new URL("file://" + cwd)));
-            } else {
-                return tf;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
-    public TransformerFactory getFactory(URL cwd) {
+    public TransformerFactory getFactory(File cwd) {
         TransformerFactory tf =  (TransformerFactory) get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
         if (tf == null) {
             // try again, but now construct URIResolver first.

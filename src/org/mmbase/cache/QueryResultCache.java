@@ -10,6 +10,7 @@ package org.mmbase.cache;
 
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
@@ -25,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.10 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: QueryResultCache.java,v 1.5.2.7 2004-12-21 18:21:30 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -98,6 +99,7 @@ abstract public class QueryResultCache extends Cache {
         
         List n =  (List) super.get(query);
         if (n == null) {
+            n = queryResult;
             addObservers(query);
         }
         return super.put(query, queryResult);        
@@ -126,7 +128,7 @@ abstract public class QueryResultCache extends Cache {
      * Adds observers on the entry
      */
     private synchronized void addObservers(SearchQuery query) {
-        MMBase.getMMBase();
+        MMBase mmb = MMBase.getMMBase();
 
         Iterator i = query.getSteps().iterator();
         while (i.hasNext()) {

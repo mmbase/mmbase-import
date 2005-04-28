@@ -15,7 +15,6 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.57 2004-09-14 17:59:38 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.53.2.3 2004-07-26 20:12:16 nico Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -129,9 +128,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
             default: node = getNode(referString);
             }
-            if (node != null) {
-                nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
-            }
 
             if(referString.equals(getId())) {
                 getContextProvider().getContextContainer().unRegister(referString);
@@ -140,7 +136,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
         }
 
-        if (node == null) { // still found no node
+        if (node == null) {
             String n = number.getString(this);
             if (log.isDebugEnabled()) {
                 log.debug("node is null, number attribute: '" + n + "'");
@@ -161,9 +157,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 } else {
                     node = c.getNode(n); // does not throw Exception
                 }
-                if (node != null) {
-                    nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
-                }
             } else {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = findNodeProvider(false);
@@ -183,10 +176,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                             throw new JspTagException("Could not find node element '" + element.getString(this) + "'");
                         }
                     }
-                    nodeHelper.setGeneratingQuery(nodeProvider.getGeneratingQuery());
                 } else {
                     node = nodeProvider.getNodeVar();
-                    nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
                 }
 
             }

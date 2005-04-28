@@ -10,55 +10,35 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.DataType;
 import java.util.*;
+import org.mmbase.util.Casting;
 
 /**
- * Each (function) argument is specified by a Parameter object.
- * A Parameter contains a name and type (it does <em>not</em> contain a value). An array of this is returned by
- * {@link Function#getParameterDefinition}, and this same array is used to create new empty {@link Parameters}
- * object (by {@link Function#createParameters}), which can contain actual values for each Parameter.
+ * Entry for Parameters. A (function) argument is specified by a name and type.
  *
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.14 2005-03-16 19:13:45 michiel Exp $
+ * @version $Id: Parameter.java,v 1.6.2.1 2004-09-08 15:24:54 michiel Exp $
  * @see Parameters
  */
 
-public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType {
+public class Parameter {
 
     /**
-     * Parameters which might be needed in lots of Parameter definition arrays.
+     * Parameter which might be needed in lots of Parameter definitions.
      */
     public static final Parameter LANGUAGE = new Parameter("language", String.class);
     public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
-    public static final Parameter USER     = new Parameter("user",     org.mmbase.security.UserContext.class);
+    public static final Parameter USER     = new Parameter("user",     org.mmbase.bridge.User.class);
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
 
-    public static final String STRINGS = "org.mmbase.util.functions.resources.parameters";
-
-    static {
-        try {
-            LANGUAGE.setBundle(STRINGS);
-            LOCALE.setBundle(STRINGS);
-            USER.setBundle(STRINGS);
-            REQUEST.setBundle(STRINGS);
-            RESPONSE.setBundle(STRINGS);
-            CLOUD.setBundle(STRINGS);
-        } catch (Exception e) {
-            // should not happen
-        }
-    }
-
-    /**
-     * An empty Parameter array.
-     */
-    public static final Parameter[] EMPTY  = new Parameter[0];
-
     // package for Parameters (direct access avoids function calls)
+    String key;
+    Class type;
+    String description  = "";
     Object defaultValue = null;
     boolean required  = false;
 
@@ -70,7 +50,8 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
      * @param type the class of the parameter's possible value
      */
     public Parameter(String name, Class type) {
-        super(name, type);
+        this.key = name;
+        this.type = type;
     }
 
     /**
@@ -80,7 +61,8 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
      * @param required whether the parameter requires a value (default is <code>false</code>)
      */
     public Parameter(String name, Class type, boolean required) {
-        super(name, type);
+        this.key = name;
+        this.type = type;
         this.required = required;
     }
 
@@ -91,7 +73,8 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
      * @param defaultValue the value to use if the parameter has no value set (default is <code>null</code>)
      */
     public Parameter(String name, Class type, Object defaultValue) {
-        super(name, type);
+        this.key = name;
+        this.type = type;
         this.defaultValue = defaultValue;
     }
 
@@ -99,11 +82,12 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     /**
      * Copy-constructor, just to copy it with different requiredness
      */
-    public Parameter(DataType p, boolean required) {
-        super(p.getName(), p.getTypeAsClass());
-        this.required = required;
+    public Parameter(Parameter p, boolean required) {
+        this.key = p.key;
+        this.type = p.type;
+        this.required = required; 
         if (! required) { // otherwise it makes no sense
-            this.defaultValue = p.getDefaultValue();
+            this.defaultValue = p.defaultValue;
         }
     }
 
@@ -111,10 +95,35 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     /**
      * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
      */
-    public Parameter(DataType p, Object defaultValue) {
-        super(p.getName(), p.getTypeAsClass());
+    public Parameter(Parameter p, Object defaultValue) {
+        this.key = p.key;
+        this.type = p.type;
         this.defaultValue = defaultValue;
         // not need to copy 'required', it should be 'false'.
+    }
+
+    /**
+     * Returns the name or 'key' of this parameter.
+     * @return the name as a String
+     */
+    public String getName () {
+        return key;
+    }
+
+    /**
+     * Returns the description of this parameter.
+     * @return the description as a String
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description of this parameter.
+     * @param description the description as a String
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -134,6 +143,14 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     }
 
     /**
+     * Returns the type of values that this parameter accepts.
+     * @return the type as a Class
+     */
+    public Class getType() {
+        return type;
+    }
+
+    /**
      * Returns whether the parameter requires a value.
      * @return <code>true</code> if a value is required
      */
@@ -142,17 +159,80 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     }
 
     /**
-     * A Parameter.Wrapper wraps one Parameter around a Parameter[] (then you can put it in a
-     * Parameter[]).  Parameters will recognize this. This can be used when you 'extend'
-     * functionality, and add more parameters. The Parameter array can contain such a
-     * Parameter.Wrapper object containing the original Parameter array.
+     * Checks if the passed object is of the correct class (compatible with the type of this Parameter),
+     * and throws an IllegalArgumentException if it doesn't.
+     * @param value teh value whose type (class) to check
+     * @throws IllegalArgumentException if the type is not compatible
+     */
+    public void checkType(Object value) {
+        if (type.isPrimitive()) {
+            // sigh
+            if (type.equals(Boolean.TYPE) && value instanceof Boolean) return;
+            if (type.equals(Byte.TYPE)   && value instanceof Byte) return;
+            if (type.equals(Character.TYPE) && value instanceof Character) return;
+            if (type.equals(Short.TYPE) && value instanceof Short) return;
+            if (type.equals(Integer.TYPE) && value instanceof Integer) return;
+            if (type.equals(Long.TYPE) && value instanceof Long) return;
+            if (type.equals(Float.TYPE) && value instanceof Float) return;
+            if (type.equals(Double.TYPE) && value instanceof Double) return;
+        }
+        if (! type.isInstance(value)) {
+            throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
+        }
+    }
+
+
+    /**
+     * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
+     * parameter is of type Integer, then the string can be parsed to Integer.
+     * @param value The value to be filled in in this Parameter.     
+     */
+    protected Object autoCast(Object value) {        
+        if (type.equals(Integer.class)) {
+            return Casting.toInteger(value);
+        } else if (type.equals(int.class)) {
+            return Casting.toInteger(value);
+        } else if (type.equals(String.class)) {
+            return Casting.toString(value);
+        } else if (type.equals(List.class)) {
+            return Casting.toList(value);
+        } else {
+            // don't know
+            return value;
+        }
+    }
+
+
+
+    /**
+     * Whether parameter equals to other parameter. Only key and type are consided. DefaultValue and
+     * required propererties are only 'utilities'.
+     * @return true if o is Parameter of which key and type equal to this' key and type.
+     */
+    public boolean equals(Object o) {
+        if (o instanceof Parameter) {
+            Parameter a = (Parameter) o;
+            return a.key.equals(key) && a.type.equals(type);
+        }
+        return false;
+    }
+
+    public String toString() {
+        return type.getName() + " " + key;
+    }
+
+    /**
+     * A Parameter.Wrapper wraps one Parameter around a Parameter[]
+     * (then you can put it in a Parameter[]).  Parameters will
+     * recognize this.
      */
     public static class Wrapper extends Parameter {
-        DataType[] arguments;
+        Parameter[] arguments;
 
-        public Wrapper(DataType[] arg) {
-            super("[ARRAYWRAPPER]",Parameter[].class);
+        public Wrapper(Parameter[] arg) {
+            key = "[ARRAYWRAPPER]";
             arguments = arg;
+            type = Parameter[].class; // should not remain null, (equals of Parameter depends on that)
         }
 
         public String toString() {

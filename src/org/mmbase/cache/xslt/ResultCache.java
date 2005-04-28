@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.9 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: ResultCache.java,v 1.8 2003-07-17 17:01:17 michiel Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {
@@ -100,9 +100,6 @@ public class ResultCache extends Cache {
         case Node.CDATA_SECTION_NODE:
         case Node.TEXT_NODE:
             buf.append(node.getNodeValue().hashCode());
-            break;
-        default:
-            log.debug("Unknown nodetype " + node.getNodeType());
             break;
         }
         

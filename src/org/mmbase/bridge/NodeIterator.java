@@ -15,20 +15,17 @@ import java.util.ListIterator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeIterator.java,v 1.7 2004-10-09 09:39:32 nico Exp $
+ * @version $Id: NodeIterator.java,v 1.5 2003-03-04 09:19:05 pierre Exp $
  */
 public interface NodeIterator extends ListIterator {
 
     /**
      * Returns the next element in the iterator as a Node
-     * @return next Node
      */
     public Node nextNode();
 
     /**
      * Returns the previous element in the iterator as a Node
-     * @return previous Node
-     * @since MMBase-1.7
      */
     public Node previousNode();
 

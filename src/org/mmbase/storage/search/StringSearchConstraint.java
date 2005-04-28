@@ -70,7 +70,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: StringSearchConstraint.java,v 1.4 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: StringSearchConstraint.java,v 1.3 2003-03-10 11:50:52 pierre Exp $
  * @since MMBase-1.7
  */
 public interface StringSearchConstraint extends FieldConstraint {
@@ -84,18 +84,6 @@ public interface StringSearchConstraint extends FieldConstraint {
     /** Search type for <em>proximity oriented</em> search. */
     public final static int SEARCH_TYPE_PROXIMITY_ORIENTED = 3;
 
-    /**
-     * Search type descriptions corresponding to the search type values:
-     * {@link #SEARCH_TYPE_WORD_ORIENTED}, {@link #SEARCH_TYPE_PHRASE_ORIENTED}, and
-     * {@link #SEARCH_TYPE_PROXIMITY_ORIENTED}
-     */
-     String[] SEARCH_TYPE_DESCRIPTIONS = new String[] {
-         null, // not specified
-         "word oriented",
-         "phrase oriented",
-         "proximity oriented"
-    };
-
     /** Match type for <em>literal</em> matching. */
     public final static int MATCH_TYPE_LITERAL = 1;
 
@@ -104,18 +92,6 @@ public interface StringSearchConstraint extends FieldConstraint {
 
     /** Match type for <em>synonym</em> matching. */
     public final static int MATCH_TYPE_SYNONYM = 3;
-
-    /**
-     * Match type descriptions corresponding to the match type values:
-     * {@link #MATCH_TYPE_LITERAL}, {@link #MATCH_TYPE_FUZZY}, and
-     * {@link #MATCH_TYPE_SYNONYM}
-     */
-    public final static String[] MATCH_TYPE_DESCRIPTIONS = new String[] {
-         null, // not specified
-         "literal",
-         "fuzzy",
-         "synonym"
-    };
 
     /** Name for parameter specifying <em>fuzziness</em> for fuzzy matching. */
     public final static String PARAM_FUZZINESS = "fuzziness";

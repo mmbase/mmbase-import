@@ -10,15 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Utility class for splitting delimited values.
- *
- * @deprecated better use String.split()
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.4 2005-01-03 21:58:45 michiel Exp $
+ * @version $Id: StringSplitter.java,v 1.2 2004-02-18 12:29:26 pierre Exp $
  */
 public class StringSplitter {
 
@@ -27,16 +26,15 @@ public class StringSplitter {
      * Similar to <code>String.split()</code>, but returns a List instead of an array, and trims the values.
      * @param string the string to split
      * @param delimiter
-     * @return a (modifiable) List containing the elements
+     * @return a List containing the elements
      */
     static public List split(String attribute, String delimiter) {
-        List result = new ArrayList();
-        if (attribute == null) return result;
+        if (attribute == null) return new ArrayList();
         String[] values = attribute.split(delimiter);
         for (int i = 0; i < values.length; i++) {
-            result.add(values[i].trim());
+            values[i] = values[i].trim();
         }
-        return result;
+        return Arrays.asList(values);
     }
 
     /**

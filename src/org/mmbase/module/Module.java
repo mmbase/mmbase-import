@@ -1,15 +1,16 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 package org.mmbase.module;
 
 import java.util.*;
+import java.io.*;
 import java.net.*;
 
 import javax.servlet.*;
@@ -17,7 +18,6 @@ import javax.servlet.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -34,64 +34,36 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.62 2005-03-16 19:16:28 michiel Exp $
+ * @version $Id: Module.java,v 1.52.2.1 2005-03-29 13:41:46 michiel Exp $
  */
-public abstract class Module extends FunctionProvider {
+public abstract class Module {
 
-    /**
-     * @javadoc
-     */
-    static Map modules;
-
-    // logger instance
     private static final Logger log = Logging.getLoggerInstance(Module.class);
-
-    /**
-     * This function returns the Module's version number as an Integer.
-     * It takes no parameters.
-     * This function can be called through the function framework.
-     * @since MMBase-1.8
-     */
-    protected Function getVersionFunction = new AbstractFunction("getVersion", Parameter.EMPTY, ReturnType.INTEGER) {
-        public Object getFunctionValue(Parameters arguments) {
-            return new Integer(getVersion());
-        }
-    };
-
-    /**
-     * This function returns the Module's maintainer as a String.
-     * It takes no parameters.
-     * This function can be called through the function framework.
-     * @since MMBase-1.8
-     */
-    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer", Parameter.EMPTY, ReturnType.STRING) {
-        public Object getFunctionValue(Parameters arguments) {
-            return getMaintainer();
-        }
-    };
-
+    
+    static Map modules;
+    static ModuleProbe mprobe;
+    
     String moduleName = null;
     Hashtable state = new Hashtable();
-    Hashtable properties; // would like this to be LinkedHashMap (predictable order)
+    Hashtable mimetypes;
+    Hashtable properties;
     String maintainer;
-    int version;
-
+    int    version;
+    
     // startup call.
     private boolean started = false;
-
+    
     public Module() {
-        addFunction(getVersionFunction);
-        addFunction(getMaintainerFunction);
         String startedAt = (new Date(System.currentTimeMillis())).toString();
-        state.put("Start Time", startedAt);
+        state.put("Start Time", startedAt);        
     }
-
+    
     public final void setName(String name) {
         if (moduleName == null) {
             moduleName = name;
         }
     }
-
+    
     /**
      * Starts the module.
      * This module calls the {@link #init()} of a module exactly once.
@@ -107,7 +79,7 @@ public abstract class Module extends FunctionProvider {
             started = true;
         }
     }
-
+    
     /**
      * Returns whether the module has started (has been initialized or is in
      * its initialization fase).
@@ -115,7 +87,7 @@ public abstract class Module extends FunctionProvider {
     public final boolean hasStarted() {
         return started;
     }
-
+    
     /**
      * Initializes the module.
      * Init must be overridden to read the environment variables it needs.
@@ -123,9 +95,8 @@ public abstract class Module extends FunctionProvider {
      * This method is called by {@link #startModule()}, which makes sure it is not called
      * more than once. You should not call init() directly, call startModule() instead.
      */
-    public void init() {
-    }
-
+    public abstract void init();
+    
     /**
      * prepares the module when loaded.
      * Onload must be overridden to execute methods that need to be performed when the module
@@ -134,9 +105,8 @@ public abstract class Module extends FunctionProvider {
      * This method is called by {@link #startModules()}. You should not call onload() directly.
      * @scope protected
      */
-    public void onload() {
-    }
-
+    public abstract void onload();
+    
     /**
      * Shuts down the module. This method is called by shutdownModules.
      *
@@ -145,7 +115,9 @@ public abstract class Module extends FunctionProvider {
     protected void shutdown() {
         // on default, nothing needs to be done.
     }
-
+    
+    
+    
     /**
      * state, returns the state hashtable that is/can be used to debug. Should
      * be overridden when live state should be done.
@@ -153,7 +125,7 @@ public abstract class Module extends FunctionProvider {
     public Hashtable state() {
         return state;
     }
-
+    
     /**
      * Sets an init-parameter key-value pair
      */
@@ -162,7 +134,7 @@ public abstract class Module extends FunctionProvider {
             properties.put(key,value);
         }
     }
-
+    
     /**
      * Gets an init-parameter  key-value pair
      */
@@ -179,7 +151,7 @@ public abstract class Module extends FunctionProvider {
         }
         return null;
     }
-
+    
     /**
      * Returns the properties to the subclass.
      */
@@ -189,21 +161,21 @@ public abstract class Module extends FunctionProvider {
         return null;
         //return Environment.getProperties(this,propertytable);
     }
-
+    
     /**
      * Returns one propertyvalue to the subclass.
      */
     protected String getProperty(String name, String var) {
         return "";
     }
-
+    
     /**
      * Gets own modules properties
      */
     public Hashtable getInitParameters() {
         return properties;
     }
-
+    
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
@@ -217,7 +189,7 @@ public abstract class Module extends FunctionProvider {
             return modules.values().iterator();
         }
     }
-
+    
     /**
      *  Returns the name of the module
      * @return the module name
@@ -225,20 +197,20 @@ public abstract class Module extends FunctionProvider {
     public final String getName() {
         return moduleName; // org.mmbase
     }
-
+    
     /**
      * provide some info on the module
      */
     public String getModuleInfo() {
         return "No module info provided";
     }
-
+    
     /**
      * maintainance call called by the admin module every x seconds.
      */
     public void maintainance() {
     }
-
+    
     /**
      * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * which is set when servscan is loaded.
@@ -250,7 +222,7 @@ public abstract class Module extends FunctionProvider {
     public String getMimeType(String ext) {
         return getMimeTypeFile("dummy."+ext);
     }
-
+    
     public String getMimeTypeFile(String fileName) {
         ServletContext sx = MMBaseContext.getServletContext();
         String mimeType = sx.getMimeType(fileName);
@@ -260,7 +232,7 @@ public abstract class Module extends FunctionProvider {
         }
         return mimeType;
     }
-
+    
     /**
      * Calls shutdown of all registered modules.
      *
@@ -268,7 +240,7 @@ public abstract class Module extends FunctionProvider {
      */
     public static synchronized final void shutdownModules() {
         Iterator i = getModules();
-        while (i.hasNext()) {
+        while (i != null && i.hasNext()) {
             Module m = (Module) i.next();
             log.service("Shutting down " + m.getName());
             m.shutdown();
@@ -276,7 +248,9 @@ public abstract class Module extends FunctionProvider {
         }
         modules = null;
     }
-
+    
+    
+    
     public static synchronized final void startModules() {
         // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
@@ -288,7 +262,8 @@ public abstract class Module extends FunctionProvider {
             try {
                 mod.onload();
             } catch (Exception f) {
-                log.warn("startModules(): modules(" + mod + ") not found to 'onload'!", f);
+                log.warn("startModules(): modules(" + mod + ") not found to 'onload'!");
+                f.printStackTrace();
             }
         }
         // so now really give em their init
@@ -309,7 +284,7 @@ public abstract class Module extends FunctionProvider {
             }
         }
     }
-
+    
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.
@@ -322,7 +297,6 @@ public abstract class Module extends FunctionProvider {
     public static Object getModule(String name) {
         return getModule(name, false);
     }
-
     /**
      * Retrieves a reference to a Module.
      * If you set the <code>startOnLoad</code> to <code>true</code>,
@@ -350,7 +324,7 @@ public abstract class Module extends FunctionProvider {
                     }
                     startModules();
                     // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-                    new ModuleProbe().start();
+                    mprobe = new ModuleProbe(modules);
                 }
             }
         }
@@ -359,10 +333,11 @@ public abstract class Module extends FunctionProvider {
         if (obj == null) { // try case sensitivily as well?
             obj = modules.get(name);
         }
+        
         if (obj != null) {
             // make sure the module is started, as this method could
             // have been called from the init() of another Module
-            if (startOnLoad) {
+            if (startOnLoad) { 
                 ((Module) obj).startModule();
             }
             return obj;
@@ -370,83 +345,84 @@ public abstract class Module extends FunctionProvider {
             return null;
         }
     }
-
+    
     public String getMaintainer() {
         return maintainer;
     }
-
+    
     public void setMaintainer(String m) {
         maintainer = m;
     }
-
+    
     public void setVersion(int v) {
         version = v;
     }
-
+    
     public int getVersion() {
         return version;
     }
 
     /**
-     * Loads all module-xml present in <mmbase-config-dir>/modules.
+     * Loads all module-xml present in <mmbase-config-dir>/modules. 
      * @return A HashTable with <module-name> --> Module-instance
      * @scope  private (only called from getModule)
      */
-    private static synchronized Hashtable loadModulesFromDisk() {
+    
+    public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
-        ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
-        Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
-        log.info("In " + rl + " the following module XML's were found " + modules);
-        Iterator i = modules.iterator();
-        while (i.hasNext()) {
-            String file = (String) i.next();
-            String fileName = ResourceLoader.getName(file);
-            XMLModuleReader parser;
-            org.xml.sax.InputSource is = null;
-            try {
-                is = rl.getInputSource(file);
-                parser = new XMLModuleReader(is);
-            } catch (Throwable t) {
-                log.error("Could not load module with xml '" + (is == null ? "NULL" : is.getSystemId()) + "': " + t.getMessage());
-                continue;
-            }
-
-            if (parser.getStatus().equals("active")) {
-                String className = parser.getClassFile();
-                // try starting the module and give it its properties
-                try {
-                    log.service("Loading module " + fileName + " with class " + className);
-                    Module mod;
-                    if (parser.getURLString() != null){
-                        log.service("loading module from jar " + parser.getURLString());
-                        URL url = new URL(parser.getURLString());
-                        URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
-                        Class newClass = c.loadClass(className);
-                        mod = (Module) newClass.newInstance();
-                    } else {
-                        Class newClass = Class.forName(className);
-                        mod = (Module) newClass.newInstance();
+        File dir = new File(MMBaseContext.getConfigPath(), "modules");
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File file = files[i];
+                String fileName = file.getName();
+                if (file.canRead() && file.isFile() && fileName.endsWith(".xml")) {
+                    fileName = fileName.substring(0, fileName.length() - 4);
+                    XMLModuleReader parser;
+                    try {
+                        parser = new XMLModuleReader(file.getAbsolutePath());
+                    } catch (Throwable t) {
+                        log.error("Could not load module with xml '" + file + "': " + t.getMessage());
+                        continue;
                     }
+                    if (parser.getStatus().equals("active")) {
+                        String className = parser.getClassFile();
+                        // try starting the module and give it its properties
+                        try {
+                            log.service("Loading module " + fileName + " with class " + className);
+                            Module mod;
+                            if (parser.getURLString() != null){
+                                log.service("loading module from jar " + parser.getURLString());
+                                URL url = new URL(parser.getURLString());
+                                URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
+                                Class newClass = c.loadClass(className);
+                                mod = (Module) newClass.newInstance();
+                            } else {
+                                Class newClass = Class.forName(className);
+                                mod = (Module) newClass.newInstance();
+                            }
+                         
+                            results.put(fileName, mod);
+                            
+                            mod.properties =  parser.getProperties();
 
-                    results.put(fileName, mod);
+                            // set the module name property using the module's filename
+                            // maybe we need a parser.getModuleName() function to improve on this
+                            mod.setName(fileName);
 
-                    mod.properties =  parser.getProperties();
-
-                    // set the module name property using the module's filename
-                    // maybe we need a parser.getModuleName() function to improve on this
-                    mod.setName(fileName);
-
-                    mod.setMaintainer(parser.getModuleMaintainer());
-                    mod.setVersion(parser.getModuleVersion());
-                } catch (ClassNotFoundException cnfe) {
-                    log.error("Could not load class with name '" + className + "', " +
-                              "which was specified in the module:'" + file + " '(" + cnfe + ")" );
-                } catch (Exception e) {
-                    log.error("Error while loading module class" + Logging.stackTrace(e));
+                            mod.setMaintainer(parser.getModuleMaintainer());
+                            mod.setVersion(parser.getModuleVersion());
+                        } catch (ClassNotFoundException cnfe) {
+                            log.error("Could not load class with name '" + className + "', " +
+                                      "which was specified in the module:'" + file + ".xml'(" + cnfe + ")" );
+                        } catch (Exception e) {
+                            log.error("Error while loading module class" + Logging.stackTrace(e));
+                        }
+                    }
                 }
             }
         }
         return results;
     }
-
+    
 }

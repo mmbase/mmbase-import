@@ -46,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.9 2004-10-09 09:37:31 nico Exp $
+ * @version $Id: NodeFunction.java,v 1.8 2003-12-16 21:25:00 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -55,11 +55,9 @@ public  class NodeFunction {
 
     /**
      * Supposes the default cloud 'mmbase'.
-     * @param  node  The number (or alias) of the Node
-     * @param  function The function (with arguments).
-     * @return The result of the function (as a String)
-     * @see #function(String, String, String)
+     * @see #function
      */
+
     public static String function(String node, String function) {
         if (log.isDebugEnabled()) {
             log.debug("calling with string '" + node + "' function: " + function);
@@ -85,10 +83,6 @@ public  class NodeFunction {
 
     /**
      * It can be handy to supply a whole node, it will search for the field 'number' itself.
-     * @param  node  The number (or alias) of the Node
-     * @param  function The function (with arguments).
-     * @return The result of the function (as a String)
-     * @throws javax.xml.transform.TransformerException if xpath fails
      */
     public static String function(org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
@@ -113,11 +107,6 @@ public  class NodeFunction {
 
     /**
      * It can be handy to supply a whole node, it will search for the field 'number' itself.
-     * @param cloud cloud to execute in
-     * @param  node  The number (or alias) of the Node
-     * @param  function The function (with arguments).
-     * @return The result of the function (as a String)
-     * @throws javax.xml.transform.TransformerException if xpath fails
      */
     public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");

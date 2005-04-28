@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.35 2005-03-22 09:33:53 pierre Exp $
+ * @version $Id: Users.java,v 1.27.2.2 2004-09-07 14:39:08 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -67,7 +67,7 @@ public class Users extends MMObjectBuilder {
 
     // javadoc inherited
     public boolean init() {
-        rankCache.putCache();
+        rankCache.putCache(); 
         userCache.putCache();
 
         // MM: I think this is should not be configured.
@@ -158,7 +158,7 @@ public class Users extends MMObjectBuilder {
                     log.warn("Cannot change username (unless account is blocked)");
                     return false; // hmm?
                     */
-                    log.debug("Changing account '" + originalValue + "' to '" + value + "'");
+                    log.info("Changing account '" + originalValue + "' to '" + value + "'");
                 }
             }
         }
@@ -242,7 +242,6 @@ public class Users extends MMObjectBuilder {
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
     public MMObjectNode getUser(String userName)  {
-        if (userName == null ) return null;
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
@@ -302,9 +301,12 @@ public class Users extends MMObjectBuilder {
         return res;
     }
 
+
+
     /**
      * @see org.mmbase.security.implementation.cloudcontext.User#getOwnerField
      */
+
     public String getDefaultContext(MMObjectNode node)  {
         return node.getNodeValue(FIELD_DEFAULTCONTEXT).getStringValue("name");
     }
@@ -330,14 +332,12 @@ public class Users extends MMObjectBuilder {
         boolean valid = true;
         long time = System.currentTimeMillis() / 1000;
         if (getField(FIELD_VALID_FROM) != null) {
-            long from = node.getLongValue(FIELD_VALID_FROM);
-            if (from > time) {
+            if (node.getLongValue(FIELD_VALID_FROM) > time) {
                 valid = false;
             }
         }
         if (getField(FIELD_VALID_TO) != null) {
-            long to = node.getLongValue(FIELD_VALID_TO);
-            if (to > 0 && to < time) {
+            if (node.getLongValue(FIELD_VALID_TO) < time) {
                 valid = false;
             }
         }
@@ -371,6 +371,12 @@ public class Users extends MMObjectBuilder {
         }
      }
 
+    public Parameter[] getParameterDefinition(String function) {
+        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Users.class, function);
+        if (params == null) return super.getParameterDefinition(function);
+        return params;
+    }
+
     /**
      * @javadoc
      */
@@ -398,7 +404,7 @@ public class Users extends MMObjectBuilder {
                     // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
-                    Parameters pars = Functions.buildParameters(GUI_PARAMETERS, args);
+                    Parameters pars = Parameters.get(GUI_PARAMETERS, args);
                     Locale locale = (Locale) pars.get(Parameter.LOCALE);
                     if (locale == null) {
                         String lang = (String) pars.get(Parameter.LANGUAGE);
@@ -467,24 +473,13 @@ public class Users extends MMObjectBuilder {
             }
         }
     }
-
+    
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
         if (ctype.equals("d")) {
             int nodeNumber = Integer.parseInt(number);
             invalidateCaches(nodeNumber);
-        } else if (ctype.equals("r")) {
-            MMObjectNode node = getNode(number);
-            Map ranks = new HashMap();
-            Iterator i = rankCache.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
-                if (cacheNode.getNumber() == node.getNumber()) {
-                    i.remove();
-                }
-            }
-        } else if (ctype.equals("c") || ctype.equals("r")) {
+        } else if (ctype.equals("c")) {            
             MMObjectNode node = getNode(number);
 
             Map ranks = new HashMap();
@@ -497,29 +492,27 @@ public class Users extends MMObjectBuilder {
                     i.remove();
                 }
             }
+            rankCache.putAll(ranks);
 
-            if (ctype.equals("c")) {
-                rankCache.putAll(ranks);
-                Map users = new HashMap();
-                i = userCache.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    Object value = entry.getValue();
-                    if (value == null) {
+            Map users = new HashMap();
+            i = userCache.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Object value = entry.getValue();
+                if (value == null) {
+                    i.remove();
+                } else {
+                    MMObjectNode cacheNode = (MMObjectNode) value;
+                    if (cacheNode.getNumber() == node.getNumber()) {
+                        users.put(entry.getKey(), node);
                         i.remove();
-                    } else {
-                        MMObjectNode cacheNode = (MMObjectNode) value;
-                        if (cacheNode.getNumber() == node.getNumber()) {
-                            users.put(entry.getKey(), node);
-                            i.remove();
-                        }
                     }
                 }
-                userCache.putAll(users);
-            }
+            }   
+            userCache.putAll(users);
         }
         return true;
-
+        
     }
 
 

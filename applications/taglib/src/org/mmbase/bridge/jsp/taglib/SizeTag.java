@@ -13,17 +13,21 @@ import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.containers.*;
-import org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.logging.*;
+
 
 /**
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.23 2005-03-14 19:02:35 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.21.2.1 2005-03-14 18:33:24 michiel Exp $ 
  */
+
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
+
+    private static final Logger log = Logging.getLoggerInstance(SizeTag.class);
 
     private Attribute container = Attribute.NULL;
 
@@ -64,18 +68,12 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
                 throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
             }
             QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
-            if (c instanceof TreeContainerTag) {
-                helper.setValue(new Integer(((TreeContainerTag)c).getTree().size()));
-            } else {
-                nodeListContainerSize(c);
-            }
+            nodeListContainerSize(c);            
         } else if (parentListId != Attribute.NULL) {
             listProviderSize(getList());            
         } else {
             QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
-            if (tag instanceof TreeContainerTag) {
-                helper.setValue(new Integer(((TreeContainerTag)tag).getTree().size()));
-            } else if (tag instanceof QueryContainer) {
+            if (tag instanceof QueryContainer) {
                 nodeListContainerSize((QueryContainer) tag);
             } else {
                 listProviderSize((ListProvider) tag);
@@ -96,7 +94,8 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
      *
      **/
     public int doEndTag() throws JspTagException {
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 
 }

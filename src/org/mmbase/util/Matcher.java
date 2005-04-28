@@ -16,11 +16,8 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Class for matching two strings and returning an indicator (threshold) on how these compare.
- * The returned value of {@link #match} is 0 when no match is found, 1 if it is a perfect match.
+ * The returned value of {@link #match} is 0 when no maytch is found, 1 if it is a perfect match.
  * Values in between indicate the level of partial matchings.
- * @deprecated-now: not used anywhere
- * @author vpro
- * @version $Id: Matcher.java,v 1.6 2005-01-30 16:46:35 nico Exp $
  */
 public class Matcher {
 
@@ -44,11 +41,11 @@ public class Matcher {
         int matchedWords=0;
 
         while (st1.hasMoreElements()) {
-            String wordFirstString = st1.nextToken();
+            String wordFirstString = (String)st1.nextToken();
             st2 = new StringTokenizer(secondString,"\".,:!? \n\t");
 
             while (st2.hasMoreTokens()) {
-                String wordSecondString = st2.nextToken();
+                String wordSecondString = (String)st2.nextToken();
                 //log.debug("matching "+wordFirstString+" ?= "+wordSecondString);
                 if (wordFirstString.equals(wordSecondString)) {
                     matchedWords++;
@@ -61,6 +58,6 @@ public class Matcher {
                     "secondString = "+secondString+"\n"+
                     "matchedWords = "+matchedWords);
         }
-        return matchedWords/(((float)numberOffWordsFirstString+(float)numberOffWordsSecondString)/2);
+        return (float)matchedWords/(((float)numberOffWordsFirstString+(float)numberOffWordsSecondString)/2);
     }
 }

@@ -18,16 +18,21 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Module;
 import org.mmbase.bridge.Node;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
  * This tag posts a message. The body of the tag is the message text.
  *
  * @author Pierre van Rooden
- * @version $Id: PostTag.java,v 1.13 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PostTag.java,v 1.10.2.2 2004-07-26 20:12:21 nico Exp $
  */
  
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {
+
+    private static Logger log = Logging.getLoggerInstance(PostTag.class.getName());
 
     private Module community=null;
     private String jspvar=null;
@@ -44,15 +49,11 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         return EVAL_BODY_BUFFERED;
     }
 
-    /**
-     * @see javax.servlet.jsp.tagext.BodyTag#doInitBody()
-     */
     public void doInitBody() throws JspTagException {
     }
 
     /**
      * store the given value
-     * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
      **/
     public int doAfterBody() throws JspTagException {
         Node node=getNodeVar();

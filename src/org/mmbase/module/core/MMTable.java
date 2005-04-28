@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.sql.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.storage.*;
-import org.mmbase.util.functions.FunctionProvider;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,9 +26,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.18 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMTable.java,v 1.12.2.1 2004-06-15 21:14:06 robmaris Exp $
  */
-public class MMTable extends FunctionProvider {
+public class MMTable {
 
     private static final Logger log = Logging.getLoggerInstance(MMTable.class);
 
@@ -63,7 +65,7 @@ public class MMTable extends FunctionProvider {
      * @since MMBase-1.7
      */
     public String getFullTableName() {
-        return mmb.baseName + "_" + tableName;
+        return mmb.baseName+"_"+tableName;
     }
 
     /**
@@ -71,11 +73,35 @@ public class MMTable extends FunctionProvider {
      * @return The number of entries in the table.
      */
     public int size() {
-        try {
-            return mmb.getStorageManager().size((MMObjectBuilder)this);
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            return -1;
+        StorageManagerFactory factory = mmb.getStorageManagerFactory();
+        if (factory!=null) {
+            try {
+                return factory.getStorageManager().size((MMObjectBuilder)this);
+            } catch (StorageException se) {
+                log.error(se.getMessage());
+                return -1;
+            }
+        } else {
+            try {
+                MultiConnection con=mmb.getConnection();
+                Statement stmt=con.createStatement();
+                String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
+                log.info(query);
+                ResultSet rs=stmt.executeQuery(query);
+                int i=-1;
+                try {
+                    while(rs.next()) {
+                        i=rs.getInt(1);
+                    }
+                } finally {
+                    rs.close();
+                }
+                stmt.close();
+                con.close();
+                return i;
+            } catch (Exception e) {
+                return -1;
+            }
         }
     }
 
@@ -86,11 +112,16 @@ public class MMTable extends FunctionProvider {
      * @return <code>true</code> if the table is accessible, <code>false</code> otherwise.
      */
     public boolean created() {
-        try {
-            return mmb.getStorageManager().exists((MMObjectBuilder)this);
-        } catch (StorageException se) {
-            log.error(se.getMessage() + Logging.stackTrace(se));
-            return false;
+        StorageManagerFactory factory = mmb.getStorageManagerFactory();
+        if (factory != null) {
+            try {
+                return factory.getStorageManager().exists((MMObjectBuilder)this);
+            } catch (StorageException se) {
+                log.error(se.getMessage() + Logging.stackTrace(se));
+                return false;
+            }
+        } else {
+           return mmb.getDatabase().created(getFullTableName());
         }
     }
 

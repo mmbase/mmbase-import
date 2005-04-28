@@ -10,11 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.util.Map;
-
-import org.mmbase.util.functions.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.security.SecurityException;
 
 /**
  *  This class is a abstract implementation of the Authentication.
@@ -23,26 +19,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.28 2005-03-16 16:05:33 michiel Exp $
+ * @version $Id: Authentication.java,v 1.22 2004-03-26 15:48:26 michiel Exp $
  */
-public abstract class Authentication extends Configurable implements AuthenticationData {
-    private static final Logger log = Logging.getLoggerInstance(Authentication.class);
-
-
-    static {
-        try {
-            PARAMETER_USERNAME.setBundle(STRINGS);
-            PARAMETER_PASSWORD.setBundle(STRINGS);
-            PARAMETER_USERNAMES.setBundle(STRINGS);
-            PARAMETER_RANK.setBundle(STRINGS);
-            PARAMETER_SESSIONNAME.setBundle(STRINGS);
-            PARAMETER_LOGOUT.setBundle(STRINGS);
-            PARAMETER_AUTHENTICATE.setBundle(STRINGS);
-        } catch (Exception e) {
-            log.error(e);
-        }
-    }
-
+public abstract class Authentication extends Configurable {
 
     /**
      *  This method will verify the login, and give a UserContext back if the login procedure was successful.
@@ -62,85 +41,10 @@ public abstract class Authentication extends Configurable implements Authenticat
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException;
 
     /**
-     * @since MMBase-1.8
+     *	The method returns wether the UserContext has become invalid for some reason (change in security config?)
+     *	@param userContext The UserContext of which we want to know the rights
+     *	@return <code>true</code> when valid, otherwise <code>false</code>
+     *	@exception SecurityException When something strang happend
      */
-    public int getMethod(String m) {
-        if (m == null || m.equals("")) {
-            return METHOD_UNSET;
-        }
-        m = m.toLowerCase();
-        if ("http".equals(m)) {
-            return METHOD_HTTP;
-        } else if ("asis".equals(m)) {
-            return METHOD_ASIS;
-        } else if ("anonymous".equals(m)) {
-            return METHOD_ANONYMOUS;
-        } else if ("logout".equals(m)) {
-            return METHOD_LOGOUT;
-        } else if ("loginpage".equals(m)) {
-            return METHOD_LOGINPAGE;
-        } else if ("delegate".equals(m)) {
-            return METHOD_DELEGATE;
-        } else if ("sessiondelegate".equals(m)) {
-            return METHOD_SESSIONDELEGATE;
-        } else if ("pagelogon".equals(m)) {
-            return METHOD_PAGELOGON;
-        } else if ("sessionlogon".equals(m)) {
-            return METHOD_SESSIONLOGON;
-        } else if ("default".equals(m)) {
-            return METHOD_DEFAULT;
-            //} else if ("given_or_anonymous".equals(m)) {
-            //    return METHOD_GIVEN_OR_ANONYMOUS;
-        } else {
-            throw new RuntimeException("Unknown value for 'method'  attribute (" + m + ")");
-        }
-    }
-
-    /**
-     * @inheritDoc
-     * @since MMBase-1.8
-     */
-    public int getDefaultMethod(String protocol) {
-        if (protocol == null || protocol.substring(0, 4).equalsIgnoreCase("HTTP")) {
-            return METHOD_HTTP;
-        } else {
-            return METHOD_DELEGATE; // leave it completely to the implementation. (using the 'class' application or the request object or so)
-        }
-    }
-
-    /**
-     * @inheritDoc
-     * @since MMBase-1.8
-     */
-    public String[] getTypes() {
-        return getTypes(METHOD_UNSET);
-    }
-    /**
-     * @inheritDoc
-     * @since MMBase-1.8
-     */
-    public String[] getTypes(int method) {
-        if (method == METHOD_ASIS) {
-            return new String[] {"anonymous", "name/password", "class"};
-        } else {
-            return new String[] {"name/password", "class"};
-        }
-    }
-
-    protected final Parameter[] PARAMETERS_USERS         = new Parameter[] { PARAMETER_USERNAMES, PARAMETER_RANK };
-    protected final Parameter[] PARAMETERS_ANONYMOUS     = new Parameter[] { PARAMETER_LOGOUT, PARAMETER_AUTHENTICATE};
-    protected final Parameter[] PARAMETERS_NAME_PASSWORD = new Parameter[] { PARAMETER_USERNAME, PARAMETER_PASSWORD, new Parameter.Wrapper(PARAMETERS_USERS) };
-
-    public Parameters createParameters(String application) {
-        application = application.toLowerCase();
-        if ("anonymous".equals(application)) {
-            return new ParametersImpl(PARAMETERS_ANONYMOUS);
-        } else if ("class".equals(application)) {
-            return Parameters.VOID;
-        } else if ("name/password".equals(application)) {
-            return new ParametersImpl(PARAMETERS_NAME_PASSWORD);
-        } else {
-            return new AutodefiningParameters();
-        }
-    }
+    public abstract boolean isValid(UserContext userContext) throws SecurityException;
 }

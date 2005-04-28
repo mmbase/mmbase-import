@@ -32,20 +32,22 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.68 2005-03-17 00:08:34 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.62.2.5 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
-    private static final Logger log                   = Logging.getLoggerInstance(UrlTag.class);
+    private static final Logger log = Logging.getLoggerInstance(UrlTag.class);
 
     private static final CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
-    private static  Boolean makeRelative      = null;
-    private   Attribute  referids             = Attribute.NULL;
-    protected List       extraParameters      = null;
-    protected Attribute  page                 = Attribute.NULL;
-    private   Attribute  escapeAmps           = Attribute.NULL;
+
+    private static  Boolean makeRelative = null;
+
+    private   Attribute  referids = Attribute.NULL;
+    protected List       extraParameters = null;
+    protected Attribute  page = Attribute.NULL;
+    private   Attribute  escapeAmps = Attribute.NULL;
 
 
     public void setReferids(String r) throws JspTagException {
@@ -72,7 +74,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
-        extraParameters = new ArrayList();        
+        extraParameters = new ArrayList();
+        
         helper.useEscaper(false);
         return EVAL_BODY_BUFFERED;
     }
@@ -95,10 +98,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {
                 log.debug("'absolute' url, not making relative");
-                if (addContext()) {
-                    show.deleteCharAt(0);
-                    show.insert(0, req.getContextPath());
-                }
+                show.deleteCharAt(0);
+                show.insert(0, req.getContextPath());
             } else {
                 log.debug("'absolute' url");
                 String thisDir = new java.io.File(req.getServletPath()).getParent();
@@ -124,10 +125,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return makeRelative.booleanValue();
     }
 
-    protected boolean addContext() {
-        return true;
-    }
-
     /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
@@ -147,11 +144,11 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         } else {
             show.append(getPage());
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-            if (show.toString().equals("")) {
-                
+            if (show.toString().equals("")) {                
                 String thisPage = null;
                 String requestURI = req.getRequestURI();
-                if (requestURI.endsWith("/")) {
+
+                if (requestURI.endsWith("/")) { // request looks like a directory
                     thisPage = ".";
                 } else {
                     thisPage = new File(requestURI).getName();
@@ -163,7 +160,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             if (doMakeRelative()) { 
                 makeRelative(show);
             } else {
-                if (addContext() && show.charAt(0) == '/') { // absolute on servletcontex
+                if (show.charAt(0) == '/') { // absolute on servletcontext
                     show.insert(0, req.getContextPath());
                 }
             }
@@ -191,7 +188,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             connector = amp;
         }
         if (encode) {
-            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) pageContext.getResponse();
             return response.encodeURL(show.toString());
         } else {
             return show.toString();
@@ -230,7 +227,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         doAfterBodySetValue();
         extraParameters = null;
         helper.doEndTag();
-        return super.doEndTag();
+        return super.doEndTag();        
     }
 
 

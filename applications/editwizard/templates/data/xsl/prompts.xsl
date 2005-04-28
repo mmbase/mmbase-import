@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.27 2005-04-13 11:37:33 michiel Exp $
+    @version $Id: prompts.xsl,v 1.20.2.3 2005-03-22 09:38:28 pierre Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -15,12 +15,18 @@
   <!-- prompts for starting a editwizard -->
   <xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
   <xsl:template name="prompt_edit_wizard">
+    <!--img src="{$mediadir}neworg.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt">
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img-->
     <xsl:choose>
-      <xsl:when test="prompt">
-        <xsl:call-template name="i18n">
-          <xsl:with-param name="nodes" select="prompt"/>
-        </xsl:call-template>
-      </xsl:when>
+      <xsl:when test="prompt"><xsl:call-template name="prompt"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -28,18 +34,12 @@
   <xsl:variable name="tooltip_add_wizard">New</xsl:variable>
   <xsl:template name="prompt_add_wizard">
     <xsl:if test="prompt">
-      <xsl:call-template name="i18n">
-        <xsl:with-param name="nodes" select="prompt"/>
-      </xsl:call-template>
+      <xsl:call-template name="prompt"/>
     </xsl:if>
     <img src="{$mediadir}new.gif" class="imgbutton">
       <xsl:choose>
         <xsl:when test="prompt">
-          <xsl:attribute name="alt">
-            <xsl:call-template name="i18n">
-              <xsl:with-param name="nodes" select="prompt"/>
-            </xsl:call-template>
-          </xsl:attribute>
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
         </xsl:when>
         <xsl:otherwise>
           <xsl:attribute name="alt"><xsl:value-of select="$tooltip_add_wizard" /></xsl:attribute>
@@ -91,10 +91,7 @@
   <!-- new button prompts and tooltips -->
   <xsl:variable name="tooltip_new">Add a new item to the list</xsl:variable>
   <xsl:template name="prompt_new">
-    <img src="{$mediadir}new.gif"
-         alt="{$tooltip_new}" 
-         title="{$tooltip_new}" 
-         class="imgbutton"/>
+    <img src="{$mediadir}new.gif" alt="{$tooltip_new}" class="imgbutton"/>
   </xsl:template>
 
   <!-- remove button prompts and tooltips (for relations) -->
@@ -201,10 +198,10 @@
   <xsl:variable name="tooltip_sort_up">up</xsl:variable>
   <xsl:variable name="tooltip_sort_down">down</xsl:variable>
   <xsl:template name="prompt_sort_up">
-    <img src="{$mediadir}sortup.png" alt="{$tooltip_up}" height="15" width="15" />
+    <img src="{$mediadir}sortup.gif" alt="{$tooltip_up}" height="15" width="15" />
   </xsl:template>
   <xsl:template name="prompt_sort_down">
-    <img src="{$mediadir}sortdown.png" alt="{$tooltip_up}" height="15" width="15" />
+    <img src="{$mediadir}sortdown.gif" alt="{$tooltip_up}" height="15" width="15" />
   </xsl:template>
 
   <!-- searchlist prompts/tooltips -->

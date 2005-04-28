@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.12 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.10.2.2 2004-07-26 20:12:18 nico Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {

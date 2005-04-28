@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.*;
 
 import org.mmbase.module.core.*;
@@ -20,12 +21,8 @@ import org.mmbase.util.logging.*;
  * This is used to export a full backup, by writing all nodes to XML.
  * Based on {@link org.mmbase.util.XMLContextDepthWriterII}.
  *
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename FullBackupWriter
- * @duplicate extend from org.mmbase.util.xml.DocumentWriter * @author Rob van Maris
+ * @author Rob van Maris
  * @see org.mmbase.util.XMLContextDepthWriterII
- * @since MMBase-1.7
  */
 public class XMLFullBackupWriter extends XMLContextDepthWriterII {
 
@@ -88,7 +85,7 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      * @param resultmsgs
      * @todo update javadoc
      */
-    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs) {
+    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs) throws SQLException {
 
         InsRel insrel = mmb.getInsRel();
 

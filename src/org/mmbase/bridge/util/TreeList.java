@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.13 2005-03-16 19:03:20 michiel Exp $
+ * @version $Id: TreeList.java,v 1.7.2.3 2004-07-29 17:19:43 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -56,7 +56,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         cloud = q.getCloud();
 
         queries.add(q);
-        results.add(null); // determine when needed
+        results.add(null); // determin when needed
 
         size = Queries.count(q);
         numberOfSteps = q.getSteps().size();
@@ -71,8 +71,6 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
 
     /**
-     * Checks if the size of the List needs to be (re)determined, and if not, does so. After growing
-     * a List the size needs recalculation.
      * @since MMBase-1.7.1
      */
     protected void sizeCheck() {
@@ -101,7 +99,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
      * relationStep longer than the longest one until now.
      * This new relationStep is returned, which can be used to create new constraints.
      *
-     * @return <code>null</code> if no relationstep is added because that would not increase the number of results.
+     * @return null if no relationstep is added because that would not increase the number of results.
      */
 
     public RelationStep grow(NodeManager nodeManager, String role, String searchDir) {
@@ -144,7 +142,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         }
 
         queries.add(newQuery);
-        results.add(null); // determine when needed
+        results.add(null); // determin when needed
         topQuery++;
 
         return step;
@@ -269,7 +267,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         protected final boolean prepare(int index) {
 
             for (int i = nodeIterators.size(); i <= index; i++) {
-                NodeList nl = TreeList.this.getList(i);
+                NodeList nl = (NodeList)TreeList.this.getList(i);
                 NodeIterator iterator = null;
                 if (nl != null) {
                     iterator = nl.nodeIterator();
@@ -456,12 +454,13 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
      */
 
     protected static NodeQuery getQuery(String[] args) {
+        String startNodes = "";
         if (args.length == 0) {
             System.err.println("Usage" + TreeList.class.getName() + " startnode");
             System.exit(1);
         }
 
-        String startNodes = args[0];
+        startNodes = args[0];
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
 
         NodeManager object = cloud.getNodeManager("object");

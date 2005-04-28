@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.25 2004-08-05 14:14:16 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.21.2.4 2004-08-05 14:16:49 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {

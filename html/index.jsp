@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=utf-8" session="false"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content type="text/html" language="en">
-
+%><mm:content type="text/html">
 <html>
   <head>
     <title>Welcome to MMBase</title>
@@ -14,7 +13,7 @@
 <body >
 <table>
   <tr>
-    <th class="main" colspan="3">Welcome to MMBase</th>
+    <th class="main" colspan="3">Welcome to MMBase</th> 
   </tr>
   <tr>
     <td colspan="3">
@@ -22,21 +21,20 @@
         You are running <a href="<mm:url page="/version" />"><%=org.mmbase.Version.get() %></a>
       </p>
       <p>
-        This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the 
-        <a href="http://www.opensource.org/">Open Source Initiative</a>.
+        This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
       </p>
       <p>
         MMBase has been build under the <a href="<mm:url page="mmbase/mpl-1.0.jsp" />">Mozilla Public License, Version 1.0</a>
       </p>
       <p>
-        <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a user name and password. <br />
+        <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a username and password. <br />
         Please use the following credentials: <br />
-        <b>User name:</b> <tt>admin</tt><br />
+        <b>Username:</b> <tt>admin</tt><br />
         <b>Password:</b> <tt>admin2k</tt><br />
         We strongly advise you to change this administrator password as soon as possible, read the documentation for more details.
       </p>  
       <p>
-        Concisely, for further upgrading this demo-installation of MMBase to a production environment we advice to do the following
+        Consicely, for further upgrading this demo-installation of MMBase to a producation environment we advice to do the following
       </p>
       <ul>
         <li>Evaluate all builder xmls from config/builders (and below). Remove all which you don't
@@ -54,7 +52,6 @@
     <th colspan="2">Description</th>
   </tr>  
   
-    <% if (pageContext.getServletContext().getResource("/mmexamples") != null) { %>  
   <tr>
     <td>MMBase Demos</td>
     <td>
@@ -67,9 +64,7 @@
       <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>
-  <% } %>
 
-    <% if (pageContext.getServletContext().getResource("/mmbase/admin") != null) { %>  
   <tr>
     <td>Manage your MMBase installation</td>
     <td>
@@ -83,8 +78,7 @@
       <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>  
-    <% } %>
-    <% if (pageContext.getServletContext().getResource("/mmdocs") != null) { %>  
+  
   <tr>
     <td>MMBase Documentation</td>
     <td>
@@ -94,27 +88,14 @@
       <a href="<mm:url page="mmdocs/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
-   <% } %>
   
   <tr>
     <td>www.mmbase.org</td>
     <td>
-      Link to the MMBase web-site.
+      Link to the MMBase website.
     </td>
     <td class="link" >
       <a href="http://www.mmbase.org"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
-    </td>
-  </tr> 
-  <tr>
-    <td>
-      www.mmbase.org/bug: Bugs and wishes
-    </td>
-    <td>
-      If you find bugs in this product, then please use our
-      bugtracker to inform use about that. You can also submit wishes.
-    </td>
-    <td class="link" >
-      <a href="http://www.mmbase.org/bug"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr> 
 </table>

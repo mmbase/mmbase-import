@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
+import java.io.InputStream;
 import java.util.*;
 import org.xml.sax.InputSource;
 
@@ -18,7 +19,6 @@ import org.mmbase.storage.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.transformers.Transformers;
 
@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.13 2005-03-16 10:47:38 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.7.2.2 2005-02-03 09:14:36 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -65,8 +65,8 @@ public abstract class StorageManagerFactory {
      */
     protected ChangeManager changeManager;
 
-    /**
-     * The map with disallowed fieldnames and (if given) alternates
+    /** The map with disallowed fieldnames and (if given) alternates
+     *
      */
     protected SortedMap disallowedFields;
 
@@ -88,12 +88,11 @@ public abstract class StorageManagerFactory {
      * @see #getSetSurrogator()
      */
     protected CharTransformer setSurrogator = null;
-    
+
     /**
      * @see #getGetSurrogator()
      */
     protected CharTransformer getSurrogator = null;
-
 
     /**
      * The default storage factory class.
@@ -150,14 +149,12 @@ public abstract class StorageManagerFactory {
      * @throws StorageError when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
     protected final void init(MMBase mmbase) throws StorageError {
-        log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         typeMappings = Collections.synchronizedList(new ArrayList());
         changeManager = new ChangeManager(mmbase);
         try {
-            log.service("loading Storage Manager factory " + this.getClass().getName());
             load();
         } catch (StorageException se) {
             // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
@@ -237,8 +234,7 @@ public abstract class StorageManagerFactory {
 
         // get attributes
         setAttributes(reader.getAttributes());
-
-
+        
         // get disallowed fields, and add these to the default list
         disallowedFields.putAll(reader.getDisallowedFields());
 
@@ -255,7 +251,7 @@ public abstract class StorageManagerFactory {
             }
         }
 
-        log.service("get type mappings");
+        // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
         Collections.sort(typeMappings);
 
@@ -268,7 +264,6 @@ public abstract class StorageManagerFactory {
         } else if (queryHandlerClasses.size() == 0) {
             throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
         }
-        log.service("Found queryhandlers " + queryHandlerClasses);
         // instantiate handler(s)
         Iterator iHandlers = reader.getSearchQueryHandlerClasses().iterator();
         Object handler = null;
@@ -282,7 +277,6 @@ public abstract class StorageManagerFactory {
         }
         // initialize query handler.
         queryHandler = instantiateQueryHandler(handler);
-
 
         {
             String surr = (String) getAttribute(Attributes.SET_SURROGATOR);
@@ -344,18 +338,16 @@ public abstract class StorageManagerFactory {
      */
     public StorageReader getDocumentReader() throws StorageException {
         // determine storage resource.
-        String storagePath = mmbase.getInitParameter("storage");
+        String storagepath = mmbase.getInitParameter("storage");
         // use the parameter set in mmbaseroot if it is given
-        if (storagePath != null) {
-            try {
-                InputSource resource = ResourceLoader.getConfigurationRoot().getInputSource(storagePath);
-                if (resource == null) {
-                    throw new StorageConfigurationException("Storage resource '" + storagePath + "' not found.");
-                }
-                return new StorageReader(this, resource);
-            } catch (java.io.IOException ioe) {
-                throw  new StorageConfigurationException(ioe);
+        if (storagepath != null) {
+            InputStream resource = this.getClass().getResourceAsStream(storagepath);
+            if (resource == null) {
+                throw new StorageConfigurationException("Storage resource '"+storagepath+"' not found.");
             }
+            InputSource in = new InputSource(resource);
+            in.setSystemId("resource://" + storagepath);
+            return new StorageReader(this, in);
         } else {
             // otherwise return null
             return null;
@@ -381,7 +373,6 @@ public abstract class StorageManagerFactory {
      */
     public void setAttributes(Map attributes) {
         this.attributes.putAll(attributes);
-        log.info("Database attributes " + this.attributes);
     }
 
     /**
@@ -403,7 +394,7 @@ public abstract class StorageManagerFactory {
      * @param value the value of the attribute
      */
     public void setAttribute(Object key, Object value) {
-        attributes.put(key,value);
+        attributes.put(key, value);
     }
 
     /**
@@ -468,7 +459,7 @@ public abstract class StorageManagerFactory {
      * @param value the value of the option (true or false)
      */
     public void setOption(Object key, boolean value) {
-        setAttribute(key, Boolean.valueOf(value));
+        setAttribute(key,new Boolean(value));
     }
 
     /**
@@ -596,8 +587,6 @@ public abstract class StorageManagerFactory {
      */
     abstract public boolean supportsTransactions();
 
-
-
     /**
      * Returns a filter which can be used to filter strings taken from storage or <code>null</code> if none defined.
      * @since MMBase-1.7.4
@@ -605,6 +594,7 @@ public abstract class StorageManagerFactory {
     public CharTransformer getGetSurrogator() {
         return getSurrogator;
     }
+
     /**
      * Returns a filter which can be used to filter strings which are to be set into storage or <code>null</code> if none defined.
      * @since MMBase-1.7.4
@@ -612,7 +602,5 @@ public abstract class StorageManagerFactory {
     public CharTransformer getSetSurrogator() {
         return setSurrogator;
     }
-    
-
 
 }

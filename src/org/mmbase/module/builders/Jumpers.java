@@ -38,10 +38,9 @@ import javax.servlet.http.HttpServletRequest;
  * be bound to the cloud context rather than a cloud.
  * This would mean that in a multi-cloud environment, this builder will be shared.
  *
- * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.30 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: Jumpers.java,v 1.24.2.5 2005-02-15 12:32:14 marcel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -79,6 +78,8 @@ public class Jumpers extends MMObjectBuilder {
      */
     public boolean init() {
         super.init();
+
+        String tmp;
         jumperNotFoundURL = getInitParameter("JumperNotFoundURL");
         return true;
     }
@@ -102,14 +103,14 @@ public class Jumpers extends MMObjectBuilder {
             } else {
                 String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 // request relative to host's root
-                if (url.startsWith(context + "/")) { // in this context!
+                if (url.startsWith(context + "/")) { // in this context! 
                     String u = url.substring(context.length() + 1);
                     link = res == null ? u : res.encodeURL(u);
                 } else { // in other context
                     link = url;
                 }
-            }
-            return "<a href=\"" + link + "\" target=\"extern\">" + url + "</a>";
+            }            
+            return("<a href=\"" + link + "\" target=\"extern\">" + url + "</a>");
         } else {
             if (field == null || field.equals("")) {
                 return super.getGUIIndicator(node);
@@ -148,16 +149,16 @@ public class Jumpers extends MMObjectBuilder {
         StepField field = query.getField(fieldDefs);
         FieldDefs numberFieldDefs = getField("number");
         StepField numberField = query.getField(numberFieldDefs);
-        query.addSortOrder(numberField); // use 'oldest' jumper
+        BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
         BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
         query.setConstraint(cons);
         query.setMaxNumber(1);
-
+        
         try {
             List resultList = getNodes(query);
             if (resultList.size() > 0) {
                 MMObjectNode node = (MMObjectNode) resultList.get(0);
-                return node.getStringValue("url");
+                return node.getStringValue("url");                 
             }
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage());
@@ -273,7 +274,7 @@ public class Jumpers extends MMObjectBuilder {
              if (arguments == null || arguments.size() == 0) {
                  rtn = getGUIIndicator(node);
              } else {
-                 rtn =  getGUIIndicator(node, Functions.buildParameters(GUI_PARAMETERS, arguments));
+                 rtn =  getGUIIndicator(node, Parameters.get(GUI_PARAMETERS, arguments));
              }
              if (rtn != null) return rtn;
          }

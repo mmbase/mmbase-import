@@ -24,10 +24,10 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.32 2005-03-16 16:50:33 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.21.2.4 2005-02-03 09:23:26 michiel Exp $
  **/
 
-public abstract class ContextContainer extends AbstractMap implements Map {
+public class ContextContainer extends HashMap {
     private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
@@ -38,7 +38,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     public static final int LOCATION_SESSION        = 30;
     public static final int LOCATION_COOKIE         = 40;
     public static final int LOCATION_ATTRIBUTES     = 50;
-    public static final int LOCATION_REQUEST        = 50;
+    public static final int LOCATION_REQUEST        = 50; 
     public static final int LOCATION_APPLICATION    = 55;
     public static final int LOCATION_THIS           = 60; // current value, if there is one
 
@@ -102,25 +102,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     }
 
 
-    /**
-     * Returns the Map which will is used for actually storing stuff.
-     *
-     * @since MMBase-1.8
-     */
-    protected abstract Map getBacking();
-
-    /**
-     * @since MMBase-1.8
-     */
-    public abstract void release();
-
-    public Set entrySet() {
-        return getBacking().entrySet();
-    }
-
-    private   final String id;
-    protected final ContextContainer parent;
-    protected final PageContext pageContext;
+    private String id;
+    protected ContextContainer parent;
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -128,13 +111,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * has an id.
      */
 
-    public ContextContainer(PageContext pc, String i, ContextContainer p) {        
+    public ContextContainer(String i, ContextContainer p) {
+        super();
         id = i;
         parent = p;
-        pageContext = pc;
     }
-
-
 
 
     public String getId() {
@@ -172,7 +153,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (key.indexOf('.') != -1) {
             throw new JspTagException("Key may not contain dots (" + key + ")");
         }
-        return getBacking().put(key, value);
+        return super.put(key, value);
     }
     public boolean containsKey(Object key) {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
@@ -218,8 +199,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Like containsKey but doesn't check for dots.
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
-        boolean result = getBacking().containsKey(key);
-        if (!result && checkParent && parent != null) {
+        boolean result = super.containsKey(key);
+        if (result == false && checkParent && parent != null) {
             result = parent.simpleContainsKey(key, true);
         }
         return result;
@@ -249,7 +230,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
     private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
-        Object result =  getBacking().get(key);
+        Object result =  super.get(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
         }
@@ -280,7 +261,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
 
     public Set keySet() {
-        HashSet result = new HashSet(getBacking().keySet());
+        HashSet result = new HashSet(super.keySet());
         if (parent != null) {
             result.addAll(parent.keySet());
         }
@@ -294,7 +275,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (checkParent) {
             return keySet();
         } else {
-            return getBacking().keySet();
+            return super.keySet();
         }
     }
 
@@ -313,20 +294,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return get(key);
     }
 
-    protected abstract boolean checkJspVar(String jspvar, String newId);
-
     /**
      * @since MMBase-1.7 (here)
      */
     public void register(String newId, Object n, boolean check) throws JspTagException {
         register(newId, n, check, true);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {        
-        register(newId, helper.getValue(), check && checkJspVar(helper.getJspvar(), newId), true);
     }
 
     /**
@@ -375,7 +347,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             
             log.debug("Valid");
             //pageContext.setAttribute(id, n);
-            if ((! newId.equals("_")) && check && isRegistered(newId)) {
+            if (check && isRegistered(newId)) {
                 JspTagException e = new JspTagException("Object with id " + newId + " was already registered in " + this);
                 if (log.isDebugEnabled()) {
                     log.debug(Logging.stackTrace(e));
@@ -463,17 +435,14 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         register(id, n);
     }
 
-    /**
+ /**
      * Java Servlet Specification Version 2.3 SRV.4.9
      * says that a servlet engine should read a request
      * as ISO-8859-1 if request.getCharacterEncoding()
      * returns null. We override this behaviour because
      * the browser propably sends the request in the
      * same encoding as the html was send to te browser
-     * And it is likely that the html was send to the
-     * browser in the same encoding as the MMBase
-     * encoding property.
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
     protected Object fixEncoding(Object value, String encoding) throws TaglibException {
         if(value instanceof String) {
@@ -492,7 +461,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
     }
     /**
-     * @since MMBase-1.8
+     * 
+     * @since MMBase-1.7.4
      */
     protected Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
@@ -506,9 +476,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
         if (enc.equalsIgnoreCase("ISO-8859-1")) {
             enc = "CP1252";                                
-        }                            
+        }
         return fixEncoding(value, enc);
     }
+   
+
    
     /**
      * @since MMBase-1.7
@@ -661,7 +633,14 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             log.debug("searching to register object " + externid + " in context " + getId() + " check: " + check);
         }
         if (check && isRegistered(newId)) {
-            throw new JspTagException("Object with id " + newId + " was already registered in " + toString());
+	    String mes;
+	    if(getId() == null) {
+		mes = "Object with id " + newId + " was already registered in the root context.";
+	    } else {
+		mes = "Object with id " + newId + " was already registered in Context '" + getId()  + "'.";
+	    }
+            log.debug(mes);
+            throw new JspTagException(mes);
         }
         // if (findAndRegister(LOCATION_PAGE, referId, id)) return true;
         Object result = find(pageContext, externid);
@@ -673,7 +652,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return findAndRegister(pageContext, id, id);
     }
     public String findAndRegisterString(PageContext pageContext, String id) throws JspTagException {
-        return findAndRegisterString(pageContext, id, true);
+        return (String) findAndRegisterString(pageContext, id, true);
     }
 
     public String findAndRegisterString(PageContext pageContext, String id, boolean check) throws JspTagException {
@@ -697,23 +676,20 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
     }
 
-
-
     static String getDefaultCharacterEncoding(PageContext pageContext) {
-       String charEnc = pageContext.getResponse().getCharacterEncoding();
-       if(charEnc != null) {
-           return charEnc;
-       }
-       log.error("page encoding not specified, using iso-8859-1");
-       return "iso-8859-1";
+        String charEnc = pageContext.getResponse().getCharacterEncoding();
+        if(charEnc!=null) {
+            return charEnc;
+        }
+        log.error("page encoding not specified, using iso-8859-1");
+        return "iso-8859-1";
     }
-
 
     public String toString() {
         if (id == null) {
-            return "the context without id (root?)" + getBacking().toString();
+            return "the context without id (root?)" + super.toString();
         } else {
-            return "context '" + id  + "'" + getBacking().toString();
+            return "context '" + id  + "'" + super.toString();
         }
     }
 

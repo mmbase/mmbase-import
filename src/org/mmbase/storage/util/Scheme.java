@@ -12,6 +12,7 @@ package org.mmbase.storage.util;
 import java.text.MessageFormat;
 
 import org.mmbase.storage.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This is a specialised version of the MessageFormat class, with some awareness of 
@@ -20,10 +21,12 @@ import org.mmbase.storage.*;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.4 2005-01-30 16:46:35 nico Exp $
- * @since MMBase-1.7
+ * @version $Id: Scheme.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
  */
 public final class Scheme extends MessageFormat {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(Scheme.class);
     
     /**
      * The factory this scheme belongs to.

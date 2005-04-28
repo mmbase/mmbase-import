@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
@@ -16,6 +15,7 @@ import org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * RelatedNodesTag, provides functionality for listing single related nodes in MMBase
@@ -24,9 +24,11 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.37 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.32.2.4 2004-07-26 20:12:15 nico Exp $
  */
+
 public class RelatedNodesTag extends AbstractNodeListTag {
+    private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
 
     protected Attribute type = Attribute.NULL;
     protected Attribute path = Attribute.NULL;
@@ -105,7 +107,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
-            query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
+            query.setAlias(step1, "root0");
             query.addNode(step1, parentNode);
 
 

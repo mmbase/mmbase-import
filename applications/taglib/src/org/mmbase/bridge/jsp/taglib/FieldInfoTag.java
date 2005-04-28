@@ -24,7 +24,7 @@ import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.module.core.MMObjectBuilder;
 
 
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.77 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.73.2.3 2005-03-14 18:33:24 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -202,7 +202,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
         Node          node = null;
         FieldProvider fieldProvider = findFieldProvider();
-        Field         field = fieldProvider.getFieldVar();
+        Field         field = ((FieldProvider) fieldProvider).getFieldVar();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
          * EXPERIMENTAL
@@ -243,13 +243,20 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         default:
         }
 
-        Locale locale = getLocale();;
+        Locale locale = null;
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        if (localeTag != null) {
+            locale = localeTag.getLocale();
+        } else {
+            locale = getCloudVar().getLocale();
+        }
 
         switch(infoType) {
         case TYPE_NAME:
             show = field.getName();
             break;
         case TYPE_GUINAME:
+
             show = field.getGUIName(locale);
             break;
         case TYPE_VALUE:
@@ -259,10 +266,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-            Parameters args = new ParametersImpl(MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    field.getName());
-            args.set("language",   locale.getLanguage());
-            args.set("locale",   locale);
+            args.set("language", locale.getLanguage());
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request", pageContext.getRequest());
@@ -314,11 +320,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_DESCRIPTION:
             show = field.getDescription(locale);
             break;
-        default:
-            log.debug("Unknown info type " + infoType);
-            break;
         }
-            
 
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);
@@ -384,7 +386,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
-        return super.doEndTag();
+        return super.doEndTag();        
     }
 
     public int doAfterBody() throws JspException {

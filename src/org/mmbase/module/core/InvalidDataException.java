@@ -9,12 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.lang.Exception;
 
 /**
  * This exception gets thrown when a node contains invalid data.
  *
  * @author Pierre van Rooden
- * @version $Id: InvalidDataException.java,v 1.7 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: InvalidDataException.java,v 1.5 2003-09-04 11:05:33 pierre Exp $
  */
 public class InvalidDataException extends Exception {
 
@@ -57,7 +58,6 @@ public class InvalidDataException extends Exception {
      *
      * @param Throwable the cause of the exception
      * @param fieldMame the name of the field that caused the exception
-     * @since MMBase-1.7
      */
     public InvalidDataException (Throwable cause, String fieldName) {
         super(cause);

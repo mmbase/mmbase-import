@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
@@ -18,20 +19,22 @@ import javax.servlet.jsp.tagext.*;
 import org.mmbase.bridge.*;
 import java.io.IOException;
 
+import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.13 2005-02-07 09:23:15 andre Exp $
+ * @version $Id: NodeListHelper.java,v 1.5.2.1 2004-07-05 17:19:59 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class NodeListHelper implements ListProvider {
 
     private static final Logger log = Logging.getLoggerInstance(NodeListHelper.class);
-
+        
     private ContextReferrerTag thisTag;
     private NodeProviderHelper nodeHelper;
 
@@ -40,6 +43,7 @@ public class NodeListHelper implements ListProvider {
         this.nodeHelper = nodeHelper;
     }
 
+
     public String getId() {
         try {
             return (String) thisTag.id.getValue(thisTag);
@@ -47,6 +51,8 @@ public class NodeListHelper implements ListProvider {
             throw new RuntimeException(j);
         }
     }
+
+
 
     /**
      * The maximum number of elements in a list.
@@ -60,7 +66,9 @@ public class NodeListHelper implements ListProvider {
      */
     protected Attribute offset = Attribute.NULL;
 
+
     protected Attribute comparator = Attribute.NULL;
+
 
     /**
      * Lists do implement ContextProvider
@@ -92,12 +100,11 @@ public class NodeListHelper implements ListProvider {
      */
     protected int timerHandle = -1;
 
-    private String previousValue = null;
+    private String previousValue = null; 
 
     public int getIndex() {
         return currentItemIndex;
     }
-
     public int getIndexOffset() {
         return 1;
     }
@@ -105,7 +112,6 @@ public class NodeListHelper implements ListProvider {
     public void remove() {
         nodeIterator.remove();
     }
-
     /**
      * Set the list maximum
      * @param m the max number of values returned
@@ -130,6 +136,7 @@ public class NodeListHelper implements ListProvider {
         return offset;
     }
 
+
     public void setComparator(String c) throws JspTagException {
         comparator = thisTag.getAttribute(c);
     }
@@ -144,13 +151,11 @@ public class NodeListHelper implements ListProvider {
 
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return thisTag.getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector;
-    }
-    public PageContext getPageContext() throws JspTagException {
-        return thisTag.getPageContext();
+        return collector.getContextContainer();
     }
 
     public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+        
         ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag.getPageContext());
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
@@ -187,15 +192,21 @@ public class NodeListHelper implements ListProvider {
         previousValue = null;
         changed = true;
 
+
+
         if (nodeIterator.hasNext()) {
             setNext(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
             return ContextReferrerTag.EVAL_BODY;
         } else {
-            return Tag.SKIP_BODY;
+            return BodyTagSupport.SKIP_BODY;
         }
+
+
     }
 
+
     public void doStartTagHelper() throws JspTagException {
+
         // make a (temporary) container
         collector = new ContextCollector(thisTag.getContextProvider());
 
@@ -216,7 +227,7 @@ public class NodeListHelper implements ListProvider {
     }
 
     public int doAfterBody() throws JspTagException {
-        log.debug("doafterbody");
+        log.debug("doafterbody");    
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().unRegister(getId());
         }
@@ -227,10 +238,10 @@ public class NodeListHelper implements ListProvider {
         }
         if (nodeIterator.hasNext()){
             setNext();
-            return IterationTag.EVAL_BODY_AGAIN;
+            return BodyTagSupport.EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
-            if (ContextReferrerTag.EVAL_BODY == BodyTag.EVAL_BODY_BUFFERED) {
+            if (ContextReferrerTag.EVAL_BODY == BodyTagSupport.EVAL_BODY_BUFFERED) {
                 BodyContent bodyContent = thisTag.getBodyContent();
                 if (bodyContent != null) {
                     try {
@@ -240,11 +251,13 @@ public class NodeListHelper implements ListProvider {
                     }
                 }
             }
-            return Tag.SKIP_BODY;
+            return BodyTagSupport.SKIP_BODY;
         }
+
     }
 
     public void doEndTag() throws JspTagException {
+
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
@@ -255,13 +268,11 @@ public class NodeListHelper implements ListProvider {
 
         // clean vars which will be reset in doStartTag (so it is possible with tag reuse). These
         // can be gc-ed then.
-        if (collector != null) {
-            collector.release();
-            collector = null;
-        }
+        collector = null;
         nodeIterator = null;
         returnList = null;
         previousValue = null;
+        
     }
 
     public void setNext() throws JspTagException {
@@ -274,8 +285,8 @@ public class NodeListHelper implements ListProvider {
             if (listOrder != null && ! "".equals(listOrder)) {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
-                String[] fa = listOrder.trim().split("\\s*,\\s*");
-                String value = "" + next.getValue(fa[0]); // cannot cast  to String, since it can also be e.g. Integer.
+                String f = (String) StringSplitter.split(listOrder).get(0);
+                String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue != null) {
                     if (value.equals(previousValue)) {
                         changed = false;
@@ -304,7 +315,11 @@ public class NodeListHelper implements ListProvider {
         return returnList.size();
     }
 
+
     public Object getCurrent() {
         return nodeHelper.getNodeVar();
     }
+
+
+
 }

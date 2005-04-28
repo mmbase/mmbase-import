@@ -30,7 +30,6 @@
       </mm:listnodes>
       
       <h1>Included pages</h1>
-      
       <p><em>With mm:include (utf-8 page):</em></p>
       <% try { %>
       <mm:include page="included.jsp?node=$node" />

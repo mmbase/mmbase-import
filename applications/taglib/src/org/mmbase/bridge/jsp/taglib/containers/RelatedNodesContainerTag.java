@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.10 2005-01-05 11:50:08 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.5.2.3 2004-07-26 20:12:19 nico Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -40,54 +40,43 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
 
     public int doStartTag() throws JspTagException {        
-        if (getReferid() != null) {
-            query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
-            if (nodeManager != Attribute.NULL || role != Attribute.NULL || searchDirs != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
-                throw new JspTagException("Cannot use 'nodemanager', 'role', 'searchdirs', 'path' or 'element' attributes together with 'referid'");
-            }
-        } else {
-            Node node = getNode();
-            Cloud cloud = getCloudVar();
-            query = cloud.createNodeQuery();
-            
-            Step step = query.addStep(node.getNodeManager());
-            query.setAlias(step, node.getNodeManager().getName() + "0");
-            query.addNode(step, node);
-            
-            if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
-                
-                String nodeManagerName;
-                if (nodeManager == Attribute.NULL) {
-                    nodeManagerName = "object";
-                } else {
-                    nodeManagerName = nodeManager.getString(this); 
-                }
-                RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
-                                                                  (String) role.getValue(this), (String) searchDirs.getValue(this));
-                query.setNodeStep(relationStep.getNext());
-                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
-                if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
+        Node node = getNode();
+        Cloud cloud = getCloudVar();
+        query = cloud.createNodeQuery();
+
+        Step step = query.addStep(node.getNodeManager());
+        query.setAlias(step, node.getNodeManager().getName() + "0");
+        query.addNode(step, node);
+
+        if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
+
+            String nodeManagerName;
+            if (nodeManager == Attribute.NULL) {
+                nodeManagerName = "object";
             } else {
-                if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
-                
-                List newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
-                
-                if (element != Attribute.NULL) {
-                    String alias = element.getString(this);
-                    Step nodeStep = Queries.searchStep(newSteps, alias);
-                    if (nodeStep == null) { 
-                        throw new JspTagException("Could not set element to '" + alias + "' (no such (new) step)");
-                    }
-                    query.setNodeStep(nodeStep);
-                } else {
-                    // default to third step (first two are the node and the relation)
-                    query.setNodeStep((Step) query.getSteps().get(2));
-                }
+                nodeManagerName = nodeManager.getString(this); 
             }
-        }
-        
-        if (getId() != null) { // write to context.
-            getContextProvider().getContextContainer().register(getId(), query);
+            RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
+                                                              (String) role.getValue(this), (String) searchDirs.getValue(this));
+            query.setNodeStep(relationStep.getNext());
+            if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
+            if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
+        } else {
+            if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
+
+            List newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+            
+            if (element != Attribute.NULL) {
+                String alias = element.getString(this);
+                Step nodeStep = Queries.searchStep(newSteps, alias);
+                if (nodeStep == null) { 
+                    throw new JspTagException("Could not set element to '" + alias + "' (no such (new) step)");
+                }
+                query.setNodeStep(nodeStep);
+            } else {
+                // default to third step (first two are the node and the relation)
+                query.setNodeStep((Step) query.getSteps().get(2));
+            }
         }
         return EVAL_BODY;
     }

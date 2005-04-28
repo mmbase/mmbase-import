@@ -12,29 +12,27 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 /**
- * @javadoc
- * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheWhenNode.java,v 1.4 2004-10-08 13:03:44 pierre Exp $
+ * @version $Id: VersionCacheWhenNode.java,v 1.3 2003-03-10 11:50:21 pierre Exp $
  */
 public class VersionCacheWhenNode extends Object {
 
-    private Vector types = new Vector();
-    private Vector nodes = new Vector();
+	private Vector types=new Vector();
+	private Vector nodes=new Vector();
 
-    public void addType(String type) {
-        types.addElement(type);
-    }
+	public void addType(String type) {
+		types.addElement(type);
+	}
 
-    public void addNode(String node) {
-        nodes.addElement(node);
-    }
+	public void addNode(String node) {
+		nodes.addElement(node);
+	}
 
-    public Vector getTypes() {
-        return types;
-    }
+	public Vector getTypes() {
+		return(types);
+	}
 
-    public Vector getNodes() {
-        return nodes;
-    }
+	public Vector getNodes() {
+		return(nodes);
+	}
 }

@@ -9,19 +9,7 @@ input {
   width: 100%;
 } 
 
-
-table {
-  background-color:#cccccc;
-  padding:2px 2px 2px 2px;
-}
-
-th {
- text-align: left;
-}
-
-td{
-  background-color:#eeeeee;
-  padding:2px 2px 2px 2px;
+td { 
   vertical-align: top;
 }
 

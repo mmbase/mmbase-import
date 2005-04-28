@@ -17,9 +17,9 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.18 2005-03-16 16:01:23 michiel Exp $
+ * @version $Id: Field.java,v 1.15 2003-11-26 17:58:27 michiel Exp $
  */
-public interface Field extends DataType {
+public interface Field {
 
     public final static int STATE_VIRTUAL    = 0;
     public final static int STATE_PERSISTENT = 2;
@@ -35,21 +35,6 @@ public interface Field extends DataType {
     public final static int TYPE_LONG    = 7;
     public final static int TYPE_XML     = 8;
     public final static int TYPE_NODE    = 9;
-    /**
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_DATETIME  = 10;   
-    /**
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_BOOLEAN   = 11;
-    /**
-     * // not yet working
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_LIST      = 12;
-
-
     public final static int TYPE_UNKNOWN = -1;
 
     /**
@@ -81,7 +66,7 @@ public interface Field extends DataType {
      */
     public String getGUIName();
 
-   /**
+    /**
      * Returns the GUI name for this field in a specified preferred language.
      *
      * @param locale the locale that determines the language for the GUI name
@@ -115,7 +100,7 @@ public interface Field extends DataType {
     public int getType();
 
     /**
-     * Returns this field's state identifier (virtual, persistent, system).
+     * Returns this field's state identifier.
      *
      * @return  an <code>int</code> which identifies the state of this field
      */

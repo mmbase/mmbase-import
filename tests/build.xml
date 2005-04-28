@@ -33,6 +33,7 @@
     <mkdir dir="${tests.work.dir}"/>
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci.jar" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci-server.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
@@ -78,7 +79,7 @@
   <target name="init.get">
     <!-- JUnit -->
     <property name="junit.version" value="junit3.8.1"/>
-    <property name="junit.url" value="http://prdownloads.sourceforge.net/junit/${junit.version}.zip"/>
+    <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
     <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
     <available property="junit.present" 
       file="${download.dir}/${junit.version}.zip"/>
@@ -107,47 +108,7 @@
     <echo message="copying" />
 
     <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
-      <fileset dir="${tests.source.dir}/dbsq" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/dbsq" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/convertimage" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/taglib" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/typerel" >
+      <fileset dir="${tests.source.dir}" >
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
@@ -173,7 +134,6 @@
       <src path="${tests.source.dir}/convertimage"/>
       <src path="${tests.source.dir}/dbsq"/>
       <src path="${tests.source.dir}/common"/>
-      <src path="${tests.source.dir}/util"/>
       <include name="**/*.java"/>
     </javac>
   </target>
@@ -282,16 +242,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.util" depends="jar,init">
-    <java 
-    	classname="${ui.class}"
-        fork="true"
-        classpathref="run.classpath">
-      <arg value="org.mmbase.util.UtilTests" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-    </java>
-  </target>
+
   <!-- ================================================================== -->
 
   <target name="standalone" depends="jar,init">
@@ -310,7 +261,7 @@ Build-compiler: ${build.compiler}
   <!-- Run the tests -->
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util">
+          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci">
 
   </target>
 

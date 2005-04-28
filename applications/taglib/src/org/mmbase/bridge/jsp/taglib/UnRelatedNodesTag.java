@@ -11,21 +11,19 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.NodeWrapper;
-
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
  * Like listnodes tag, but is is also a node-referrer, and substracts the related nodes of the referred node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnRelatedNodesTag.java,v 1.9 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: UnRelatedNodesTag.java,v 1.8 2003-12-04 18:25:44 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class UnRelatedNodesTag extends ListNodesTag {
-    private static final Logger log = Logging.getLoggerInstance(UnRelatedNodesTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(UnRelatedNodesTag.class);
 
     protected Attribute role        = Attribute.NULL;
     protected Attribute searchDir   = Attribute.NULL;
@@ -56,7 +54,6 @@ public class UnRelatedNodesTag extends ListNodesTag {
         }
         // obtain a reference to the node through a parent tag
         Node parentNode = getNode();
-
         if (parentNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
@@ -71,6 +68,7 @@ public class UnRelatedNodesTag extends ListNodesTag {
         if (excludeSelf.getBoolean(this, false)) {
             result.nodeList.remove(parentNode);
         }
+
         result.nodeList.removeAll(relatedNodes);       
 
         return setReturnValues(result.nodeList, result.needsTrim);

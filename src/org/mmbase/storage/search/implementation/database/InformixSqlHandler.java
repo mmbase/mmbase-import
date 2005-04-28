@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
-
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.util.*;
 
 /**
  * The Informix query handler, implements {@link
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.18 2005-04-12 14:11:18 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.8 2005-04-12 13:57:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -42,8 +43,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * Logger instance.
      */
-    private static Logger log
-            = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(InformixSqlHandler.class);
+
+    /**
+     * MMBase instance.
+     */
+    private MMBase mmbase = null;
 
     /**
      * Constructor.
@@ -51,8 +56,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *                         to allowed alternatives.
      */
-    public InformixSqlHandler() {
-        super();
+    public InformixSqlHandler(Map disallowedValues) {
+        super(disallowedValues);
+        mmbase = MMBase.getMMBase();
     }
 
     /**
@@ -575,7 +581,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     // If there are just two relation-constraint-elements, we don't need to combine
                     if (counter != counter2 && orElements.size() > 2) {
                         // also add the additinal constraints
-                        if (!skipCombination) {
+                        if (skipCombination==false ) {
                             combinedElements.add(orElements.get(counter) + " AND " + orElements.get(counter2) + unionConstraints);
                         }
                     } else {
@@ -684,15 +690,14 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         if (field.equals(orderByField.toString())) {
                             // match found
                             sb.append((i + 1) + " ");
-                            // prevent that the field is listed twice in this order-by
                             found = true;
+                            // prevent that the field is listed twice in this order-by
                             break;
                         }
                     }
-                      if (! found) {
-                          throw new RuntimeException("Could not find the field " + orderByField + " in " + query.getFields() + " !");
-                      }
-
+                    if (! found) {
+                        throw new RuntimeException("Could not find the field " + orderByField + " in " + query.getFields() + " !");
+                    }
 
                     // Sort direction.
                     switch (sortOrder.getDirection()) {

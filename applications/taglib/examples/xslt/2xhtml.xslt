@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.11 2005-04-05 20:04:16 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.10.2.1 2005-04-05 20:06:43 michiel Exp $
   @since  MMBase-1.6
   
 -->

@@ -19,6 +19,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.*;
 
 /**
  * Used to parse and retrieve data from a builder configuration file.
@@ -29,9 +30,11 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.11 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BuilderReader.java,v 1.9 2004-02-09 13:50:36 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
+
+    private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_BUILDER_1_0 = "-//MMBase//DTD builder config 1.0//EN";
@@ -428,8 +431,7 @@ public class BuilderReader extends XMLBasicReader {
         // DB
         Element db = getElementByPath(field,"field.db");
         def.setDBName(getElementValue(getElementByPath(db,"db.name")));
-        // def.setDBType(getDBType(getElementByPath(db,"db.type"),def));
-        getDBType(getElementByPath(db,"db.type"),def);
+        def.setDBType(getDBType(getElementByPath(db,"db.type"),def));
 
         decodeFieldDef(field,def);
 
@@ -612,7 +614,7 @@ public class BuilderReader extends XMLBasicReader {
                 getFieldDefs().equals(b.getFieldDefs()) &&
                 getBuilderMaintainer().equals(b.getBuilderMaintainer()) &&
                 getBuilderVersion() == b.getBuilderVersion() &&
-                getBuilderExtends().equals(b.getBuilderExtends()) &&
+                getBuilderExtends() == b.getBuilderExtends() &&
                 getSingularNames().equals(b.getSingularNames()) &&
                 getPluralNames().equals(b.getPluralNames()) &&
                 getDescriptions().equals(b.getDescriptions()) &&

@@ -15,18 +15,17 @@ import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
-
 /**
  * A very simple tag to check if a relation may be created. It needs two nodes.
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.8 2004-07-26 20:18:02 nico Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.5.2.3 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
-    private Attribute role = Attribute.NULL;
-    private Attribute source = Attribute.NULL;
+    private Attribute role    = Attribute.NULL;    
+    private Attribute source  = Attribute.NULL;
     private Attribute destination = Attribute.NULL;
 
     public void setRole(String r) throws JspTagException {
@@ -47,7 +46,7 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
         Node destinationNode = getNode(destination.getString(this));
 
         if (rm.mayCreateRelation(sourceNode, destinationNode) != getInverse()) {
-            return EVAL_BODY;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }

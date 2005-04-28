@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" 
-  xmlns:date="org.mmbase.bridge.util.xml.DateFormat" 
-  extension-element-prefixes="node date">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" xmlns:date="org.mmbase.bridge.util.xml.DateFormat" extension-element-prefixes="node date">
   <!--
     wizard.xsl
 
@@ -13,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.144 2005-04-11 14:24:45 michiel Exp $
+    @version $Id: wizard.xsl,v 1.125.2.14 2004-11-23 14:56:44 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -569,9 +566,6 @@
       <xsl:when test="@ftype=&apos;checkbox&apos;">
          <xsl:call-template name="ftype-checkbox"/>
       </xsl:when>
-      <xsl:when test="@ftype=&apos;boolean&apos;">
-         <xsl:call-template name="ftype-checkbox"/>
-      </xsl:when>
       <xsl:when test="@ftype=&apos;realposition&apos;">
         <xsl:call-template name="ftype-realposition"/>
       </xsl:when>
@@ -592,13 +586,11 @@
   </xsl:template>
 
   <xsl:template name="ftype-startwizard">
-    <xsl:if test="@objectnumber!=''">
-      <span class="imgbutton">
-        <a href="javascript:doStartWizard('{../../../@fid}','{../../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-          <xsl:call-template name="prompt_edit_wizard"/>
-        </a>
-      </span>
-    </xsl:if>
+    <span class="imgbutton">
+      <a href="javascript:doStartWizard('{../../../@fid}','{../../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+        <xsl:call-template name="prompt_edit_wizard"/>
+      </a>
+    </span>
   </xsl:template>
 
   <xsl:template name="ftype-function">
@@ -653,7 +645,7 @@
             </xsl:if>
             <xsl:apply-templates select="@*"/>
 
-            <xsl:value-of select="translate(value,'&#13;','')" />
+            <xsl:value-of select="value"/>
           </textarea>
         </span>
       </xsl:when>
@@ -676,7 +668,7 @@
             <xsl:when test="optionlist/option[@selected=&apos;true&apos;]"/>
             <xsl:when test="@dtrequired=&apos;true&apos;"/>
             <xsl:otherwise>
-              <option value="">
+              <option value="-">
                 <xsl:call-template name="prompt_select"/>
               </option>
             </xsl:otherwise>
@@ -684,7 +676,7 @@
           <xsl:for-each select="optionlist/option">
             <option value="{@id}">
               <xsl:if test="@selected=&apos;true&apos;">
-                <xsl:attribute name="selected">selected</xsl:attribute>
+                <xsl:attribute name="selected">true</xsl:attribute>
               </xsl:if>
               <xsl:choose>
                 <xsl:when test="prompt">
@@ -1090,11 +1082,8 @@
     <xsl:attribute name="{$attributeName}"><xsl:value-of select="."/></xsl:attribute>
   </xsl:template>
 
-  <!-- but not the name-attribute -->
+  <!-- but not the name-attribute? -->
   <xsl:template match="@name"/>
-
-  <!-- nor the type attribute -->
-  <xsl:template match="@type" />
 
   <!--
     What to do with 'lists'.

@@ -14,15 +14,16 @@ import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.33 2005-04-27 14:02:31 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.30 2004-01-16 14:48:11 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
-
+    private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
 
@@ -30,8 +31,7 @@ public class BasicNodeList extends BasicList implements NodeList {
         super();
     }
 
-    // public, for util.Casting
-    public BasicNodeList(Collection c, Cloud cloud) {
+    BasicNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud = cloud;
     }
@@ -45,7 +45,7 @@ public class BasicNodeList extends BasicList implements NodeList {
 
 
     /**
-     * @todo This code should probably use Casting.toNode() instead
+     *
      */
     protected Object convert(Object o, int index) {
         if (o instanceof Node || o == null) {
@@ -72,7 +72,7 @@ public class BasicNodeList extends BasicList implements NodeList {
                 } else {
                     node = new BasicRelation(coreNode, nodeManager);
                 }
-            } else if (coreBuilder instanceof VirtualBuilder) {
+            } else if (coreBuilder instanceof VirtualBuilder && nodeManager == null) {
                 node = new BasicNode(coreNode, new VirtualNodeManager(coreNode, (BasicCloud) cloud));
             } else {
                 // 'normal' node
@@ -80,13 +80,11 @@ public class BasicNodeList extends BasicList implements NodeList {
                     if (cloud == null) {
                         throw new BridgeException("Could not create a Node from object '" + o + "' because this List has no Cloud,");
                         // otherwise init of BasicNode throws NPE.
-
+                        
                     }
                     node = new BasicNode(coreNode, cloud);
                 } else {
-                   
-                    NodeManager specificNodeManager = nodeManager.getCloud().getNodeManager(coreNode.getBuilder().getTableName());
-                    node = new BasicNode(coreNode, specificNodeManager);
+                    node = new BasicNode(coreNode, nodeManager);
                 }
             }
         }

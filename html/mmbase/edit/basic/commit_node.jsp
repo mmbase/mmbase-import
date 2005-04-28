@@ -1,6 +1,5 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank">
-<mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
+%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <title><%=m.getString("commit_node.commit")%></title>
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />
@@ -36,7 +35,7 @@
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
     </mm:createnode>	
-    <mm:node id="new_node2" referid="new_node">
+    <mm:node id="new_node2" referid="new_node" jspvar="node">
       
       <mm:remove referid="redirectTo" /> 
 

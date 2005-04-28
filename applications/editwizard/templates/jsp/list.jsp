@@ -1,11 +1,12 @@
-<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
+<%@ page errorPage="exception.jsp"
+%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.55 2005-04-13 11:53:01 michiel Exp $
+     * @version  $Id: list.jsp,v 1.47.2.3 2005-03-22 09:38:28 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -96,7 +97,6 @@ boolean deletable = false;
 boolean creatable = false;
 String deletedescription = "";
 String deleteprompt = "";
-String createprompt = "";
 org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
 
@@ -107,7 +107,6 @@ if (listConfig.wizard != null) {
 
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null, cloud);
     deleteprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null, cloud);
-    createprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='create']/prompt", null, cloud);
     titles            = Utils.selectNodeList(wiz.getSchema(), "/wizard-schema/title");
 
 }
@@ -121,7 +120,7 @@ int len   = listConfig.pagelength;
 int resultsSize;
 
 //// do not list anything if search is forced and no searchvalue given
-if (listConfig.search == Config.ListConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
+if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();
     resultsSize = 0;
 } else if (listConfig.multilevel) {
@@ -225,12 +224,14 @@ for (int i=0; i < results.size(); i++) {
         }
         addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
     }
+
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
     }
     Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
     Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
+
 
 // place page information
 int pagecount = new Double(Math.floor(resultsSize / len)).intValue();
@@ -286,7 +287,6 @@ params.put("popupid",  popupId);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
-if (createprompt!=null) params.put("createprompt", createprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
 }
@@ -294,7 +294,7 @@ if (listConfig.title == null) {
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
-params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), "."));
+params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
 
 
 log.trace("Doing the transformation for " + listConfig.template);
@@ -324,4 +324,4 @@ private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String field
     el.appendChild(n);
     return n;
 }
-%></mm:log></mm:cloud></mm:content>
+%></mm:log></mm:cloud></mm:locale>

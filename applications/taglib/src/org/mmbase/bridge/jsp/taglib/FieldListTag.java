@@ -18,13 +18,19 @@ import javax.servlet.jsp.JspTagException;
 import java.util.*;
 import org.mmbase.bridge.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.StringSplitter;
+
 /**
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.47 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.40.2.5 2005-03-14 18:33:24 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
+
+    private static final Logger log = Logging.getLoggerInstance(FieldListTag.class);
 
     private FieldList     returnList;
     private FieldIterator fieldIterator;
@@ -160,7 +166,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             }
             Object o =  getObject(getReferid());
             if (! (o instanceof FieldList)) {
-                throw new JspTagException("Context variable " + getReferid() + " is not a FieldList, but  " + (o == null ? "NULL" : "a " + o.getClass().getName()));
+                throw new JspTagException("Context variable " + getReferid() + " is not a FieldList");
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
@@ -249,7 +255,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         returnList = null;
         fieldIterator = null;
         currentField = null;
-        super.doEndTag();
+        super.doEndTag();        
         return  EVAL_PAGE;
     }
 

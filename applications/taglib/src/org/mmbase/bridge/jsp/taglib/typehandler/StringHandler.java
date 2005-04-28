@@ -16,9 +16,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Encode;
+import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.Sql;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * A TypeHandler for strings, textareas and text-input.
@@ -27,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.38 2005-04-21 12:01:11 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.27.2.6 2004-08-18 10:45:30 rob Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
 
-private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
 
     /**
      * Constructor for StringHandler.
@@ -87,7 +86,7 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
                 }
             } else { // not 'owner'
 
-                if (guiType.equals("field") || guiType.equals("html") || field.getType() == Field.TYPE_XML) {
+                if (guiType.equals("field")) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
@@ -95,16 +94,9 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
                         buffer.append(" name=\"");
                         buffer.append(prefix(field.getName()));
                         buffer.append("\">");
-                        String value = "";
                         if (node != null) {
-                            value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
+                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
                         }
-                        if (value.equals("")) {
-                            if (tag.getOptions().indexOf("noempty") > -1) {
-                                value = " ";
-                            }
-                        }
-                        buffer.append(value);
                         buffer.append("</textarea>");
                     } else {
                         buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
@@ -112,45 +104,24 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
                         buffer.append(" name=\"");
                         buffer.append(prefix(field.getName()));
                         buffer.append("\">");
-                        String value = "";
                         if (node != null) {
-                            value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
+                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
                         }
-                        if (value.equals("")) {
-                            if (tag.getOptions().indexOf("noempty") > -1) {
-                                value = " ";
-                            }
-                        }
-                        buffer.append(value);
                         buffer.append("</textarea>");
                     } 
                 } else { // not 'field' perhaps it's 'string'.
-                    String value;
                     if (guiType.indexOf("password") > -1) {
-                        buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
-                        buffer.append("name=\"");
-                        if (guiType.indexOf("md5") > -1) {
-                            value = "";
-                        } else {
-                            value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
-                        }
+                        buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
                     } else {
                         buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
-                        if (guiType.indexOf("confirmpassword") > -1) {
-                            value = " ";
-                        } else {
-                            value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
-                        }
                     }
                     buffer.append(prefix(field.getName()));
                     buffer.append("\" ");
-                    String opt = tag.getOptions();
-                    if (opt != null && opt.indexOf("noautocomplete") > -1) { 
-                        buffer.append("autocomplete=\"off\" ");
-                    }                    
                     addExtraAttributes(buffer);
                     buffer.append(" value=\"");
-                    buffer.append(value);
+                    if (node != null) {
+                        buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
+                    }
                     buffer.append("\" />");
                 }
             }
@@ -168,8 +139,6 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
         String fieldName = field.getName();
         String guiType = field.getGUIType();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
-        log.info("Received " + fieldValue);
-
         if (fieldName.equals("owner")) {
             if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
                 node.setContext(fieldValue);
@@ -191,11 +160,10 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
         }
 
         fieldValue = tag.encode(fieldValue, field);
-        log.info("Received " + fieldValue);
-        if (fieldValue != null && ! fieldValue.equals("") && ! fieldValue.equals(node.getValue(fieldName))) {
+        if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
             if (guiType.indexOf("password") > -1) {
                 String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
-                if (confirmValue != null) {
+                if (confirmValue!=null) {
                     if (!confirmValue.equals(fieldValue)) {
                         throw new JspTagException("Confirmation password not equal to new password value.");
                     }

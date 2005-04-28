@@ -3,7 +3,7 @@
 %><%@include file="import.jsp"
 %><%@include file="settings.jsp"
 %><mm:content language="$language" postprocessor="reducespace">
-<mm:cloud loginpage="login.jsp" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <%@include file="index_users_body.jsp" %>
 </mm:cloud>
 </mm:content>

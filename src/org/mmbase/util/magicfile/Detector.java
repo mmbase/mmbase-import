@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * A Detector stores one entry from the magic.xml file, and contains
- * the functionality to determines if a certain byte[] satisfies it.
+ * the functionality to determins if a certain byte[] satisfies it.
  *
  * Implementation made on the basis of actual magic file and its manual.<br />
  *
@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Detector.java,v 1.7 2004-03-10 19:54:58 michiel Exp $
  */
 
 public class Detector {
@@ -289,9 +289,8 @@ public class Detector {
         case '<' :
             hasX = true;
             return n < 0;
-        default:
-            return false;
         }
+        return false;
     }
 
     /**
@@ -333,9 +332,8 @@ public class Detector {
             case '<' :
                 hasX = true;
                 return found < v;
-            default:
-                return false;
             }
+            return false;
         }
     }
 
@@ -395,9 +393,9 @@ public class Detector {
             case '<' :
                 hasX = true;
                 return found < v;
-            default:
-                return false;
             }
+            
+            return false;
         }
     }
     
@@ -434,7 +432,6 @@ public class Detector {
 
     /**
      * @return Original unprocessed input line
-     * @since MMBase-1.7
      */
     public String getRawInput() {
         return rawinput;

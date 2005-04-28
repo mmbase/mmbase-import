@@ -11,6 +11,8 @@ package org.mmbase.util.transformers;
 
 import java.io.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * You need only to implement transform(Reader, Writer) you have the simplest
  * kind of tranformer (which is 'streamable'). The name becoming your class name.
@@ -20,6 +22,8 @@ import java.io.*;
  */
 
 public abstract class ReaderTransformer implements CharTransformer {
+    private static final Logger log = Logging.getLoggerInstance(ReaderTransformer.class);
+
 
     // javadoc inherited
     public abstract Writer transform(Reader r, Writer w);

@@ -1,8 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><%@ include file="page_base_functionality.jsp"
 %><mm:import externid="userlogon" from="parameters" />
-<mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
-<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank">
+<mm:content language="$config.lang" type="text/html" expires="0">
+<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
 <mm:import externid="page" vartype="integer" from="parameters"><mm:write referid="config.indexoffset" /></mm:import>
@@ -70,7 +70,7 @@
 </mm:present>
 
 <%-- apply age-constraint always --%>
-<mm:ageconstraint minage="$[_search_form_minage_$node_type]" maxage="$[_search_form_maxage_$node_type]" />
+<mm:ageconstraint minage="${_search_form_minage_$node_type}" maxage="${_search_form_maxage_$node_type}" />
 
 
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
@@ -202,7 +202,9 @@
 
 <mm:listnodes id="node_number" directions="$directions"  orderby="$orderby" jspvar="sn">
   <tr>
-    <td <%@include file="node_title.jsp" %> class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
+    <td 
+     <%@include file="node_title.jsp" %>
+     class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
    <mm:fieldlist nodetype="$node_type" type="list">
      <td class="listdata"><mm:fieldinfo type="guivalue" /> &nbsp;</td>
    </mm:fieldlist>

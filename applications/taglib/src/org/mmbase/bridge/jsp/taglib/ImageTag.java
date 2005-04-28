@@ -16,12 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
 import org.mmbase.module.builders.AbstractServletBuilder;
 import org.mmbase.module.builders.Images;
 
 import org.mmbase.security.Rank;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Produces an url to the image servlet mapping. Using this tag makes
@@ -29,10 +32,12 @@ import org.mmbase.security.Rank;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.53 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.2 2004-07-26 20:12:16 nico Exp $
  */
 
 public class ImageTag extends FieldTag {
+
+    private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
 
     private static Boolean makeRelative = null;
     private Attribute template = Attribute.NULL;
@@ -54,6 +59,7 @@ public class ImageTag extends FieldTag {
 
         // some servlet implementation's 'init' cannot determin this theirselves, help them a little:
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+        String context = req.getContextPath();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
          */
@@ -63,7 +69,8 @@ public class ImageTag extends FieldTag {
             // the user is not anonymous!
             // Need to check if node is readable by anonymous.
             // in that case URLs can be simpler
-            CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            CloudTag ct = null;
+            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 CloudContext cc = ct.getDefaultCloudContext();
                 try {
@@ -86,25 +93,20 @@ public class ImageTag extends FieldTag {
             // the node/image itself
             number = node.getStringValue("number");
         } else {
-            if ("false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.url.convert"))) {
-                number = "" + node.getNumber() + "+" + t;
-            } else {
-                // the cached image
-                number = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
-            }
+            // the cached image
+            number = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
         }
 
         if (makeRelative == null) {            
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");            
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
 
-
         String servletPath;
         {
-            Parameters args = new ParametersImpl(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
+            Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
                 .set("session",  sessionName)
-                .set("context",  makeRelative.booleanValue() ?
+                .set("context",  makeRelative.booleanValue() ? 
                      UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") :
                      req.getContextPath()
                      )

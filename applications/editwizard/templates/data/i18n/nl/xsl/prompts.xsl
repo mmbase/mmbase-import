@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.15 2005-04-13 11:37:33 michiel Exp $
+  @version $Id: prompts.xsl,v 1.11.2.3 2005-03-22 09:38:28 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -49,7 +49,7 @@
 <xsl:template name="prompt_down"><img src="{$mediadir}down.gif" border="0" alt="Omlaag" title="{$tooltip_down}" /></xsl:template>
 
 <!-- new button prompts and tooltips -->
-<xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" title="Nieuw" alt="Nieuw"/></xsl:template>
+<xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" alt="Nieuw"/></xsl:template>
 <xsl:variable name="tooltip_new">Voeg een nieuw item toe aan de lijst</xsl:variable>
 <!-- remove button prompts and tooltips (for relations) -->
 <xsl:template name="prompt_remove"><img src="{$mediadir}remove.gif" border="0"  alt="Verwijder"/></xsl:template>
@@ -113,9 +113,16 @@
   <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
-<xsl:variable name="tooltip_sort_on">Sorteer op</xsl:variable>
-<xsl:variable name="tooltip_sort_up">omhoog</xsl:variable>
-<xsl:variable name="tooltip_sort_down">omlaag</xsl:variable>
+<xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
+<xsl:variable name="tooltip_sort_up">up</xsl:variable>
+<xsl:variable name="tooltip_sort_down">down</xsl:variable>
+<xsl:template name="prompt_sort_up">
+  <img src="{$mediadir}up.gif" alt="{$tooltip_up}" height="15" width="15" />
+</xsl:template>
+<xsl:template name="prompt_sort_down">
+  <img src="{$mediadir}down.gif" alt="{$tooltip_up}" height="15" width="15" />
+</xsl:template>
+
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Selecteer een of meer items uit de lijst</xsl:variable>
 <xsl:template name="prompt_no_results" >Geen items gevonden</xsl:template>

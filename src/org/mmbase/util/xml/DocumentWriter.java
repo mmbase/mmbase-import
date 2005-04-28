@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.6 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: DocumentWriter.java,v 1.4 2003-08-18 16:50:53 pierre Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -77,7 +77,6 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Constructs the document by reading it from a file.
      * @param path the path to the file from which to read the document
-     * @since MMBase-1.7
      */
     public DocumentWriter(String path) {
         super(path);
@@ -91,7 +90,6 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param path the path to the file from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
-     * @since MMBase-1.7
      */
     public DocumentWriter(String path, boolean validating, Class resolveBase) {
         super(path, validating, resolveBase);
@@ -101,7 +99,6 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Constructs the document by reading it from a source.
      * @param source the input source from which to read the document
-     * @since MMBase-1.7
      */
     public DocumentWriter(InputSource source) {
         super(source);
@@ -115,7 +112,6 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param source the input source from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
-     * @since MMBase-1.7
      */
     public DocumentWriter(InputSource source, boolean validating, Class resolveBase) {
         super(source, validating, resolveBase);
@@ -310,7 +306,7 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Generates the document and returns it as a string.
      */
-    public String writeToString() throws TransformerException {
+    public String writeToString() throws IOException, TransformerException {
         StringWriter strw=new StringWriter(500);
         write(new StreamResult(strw));
         return strw.toString();
@@ -328,7 +324,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * Generates the document and store it in the given stream.
      * @param out the output stream where the configuration is to be stored
      */
-    public void writeToStream(OutputStream out) throws TransformerException {
+    public void writeToStream(OutputStream out) throws IOException, TransformerException {
         write(new StreamResult(out));
     }
 
@@ -336,7 +332,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * Generates the document and writes it to the result object.
      * @param result the StreamResult object where to store the configuration'
      */
-    public void write(StreamResult result) throws TransformerException {
+    public void write(StreamResult result) throws IOException, TransformerException {
         Document doc=getDocument();
         TransformerFactory tfactory = TransformerFactory.newInstance();
         tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));

@@ -16,6 +16,8 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
+import java.util.Calendar;
+import java.util.Date;
 
 
 import org.mmbase.storage.search.*;
@@ -28,14 +30,14 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.4 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: DurationHandler.java,v 1.1.2.1 2004-09-17 07:23:04 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(DurationHandler.class);
 
     private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
-
+   
     /**
      * @param tag
      */
@@ -64,7 +66,7 @@ public class DurationHandler extends AbstractTypeHandler {
             currentHours   = help / 60;
         }
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();      
         buffer.append("<input type=\"hidden\"  name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
@@ -97,12 +99,13 @@ public class DurationHandler extends AbstractTypeHandler {
 
 
 
-
+        
         String hoursName = prefix(field.getName() + "_hours");
         String searchHours =  (String) container.find(tag.getPageContext(), hoursName);
         buffer.append("<input size=\"5\" type=\"text\" name=\"" + hoursName + "\" value=\"" + (searchHours == null ? "" + currentHours : searchHours) + "\" /> h :\n");
 
         String minutesName = prefix(field.getName() + "_minutes");
+        String searchMinutes =  (String) container.find(tag.getPageContext(), minutesName);
         buffer.append("<select name=\"");
         buffer.append(minutesName);
         buffer.append("\">\n");
@@ -116,6 +119,7 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("</select> min : ");
 
         String secondsName = prefix(field.getName() + "_seconds");
+        String searchSecond =  (String) container.find(tag.getPageContext(), secondsName);
         buffer.append("<select name=\"");
         buffer.append(secondsName);
         buffer.append("\">\n");
@@ -172,13 +176,13 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    public String whereHtmlInput(Field field) throws JspTagException {            
      String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
             return null;
         }
-
+  
         long time = getSpecifiedValue(field);
         if (time == -1) return null;
 
@@ -209,9 +213,6 @@ public class DurationHandler extends AbstractTypeHandler {
 
         Long time = new Long(getSpecifiedValue(field));
 
-        if (query.getSteps().size() > 1) {
-            fieldName = field.getNodeManager().getName()+"."+fieldName;
-        }
         Constraint con;
         if (operator.equals("greater")) {
             con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.GREATER, time);

@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.20 2005-04-11 07:30:39 pierre Exp $
+    @version $Id: searchlist.xsl,v 1.17.2.3 2005-04-11 07:32:20 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />

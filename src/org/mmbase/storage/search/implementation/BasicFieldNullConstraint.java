@@ -15,12 +15,12 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldNullConstraint.java,v 1.4 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicFieldNullConstraint.java,v 1.3 2003-03-10 11:50:55 pierre Exp $
  * @since MMBase-1.7
  */
-public class BasicFieldNullConstraint extends BasicFieldConstraint
+public class BasicFieldNullConstraint extends BasicFieldConstraint 
 implements FieldNullConstraint {
-
+    
     /**
      * Constructor.
      *
@@ -30,7 +30,7 @@ implements FieldNullConstraint {
     public BasicFieldNullConstraint(StepField field) {
         super(field);
     }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
@@ -45,7 +45,7 @@ implements FieldNullConstraint {
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode();
@@ -55,8 +55,10 @@ implements FieldNullConstraint {
     public String toString() {
         StringBuffer sb = new StringBuffer("FieldNullConstraint(inverse:").
         append(isInverse()).
-        append(", field:").append(getFieldName()).
-        append(", casesensitive:").append(isCaseSensitive()).
+        append(", field:").
+        append(getField().getAlias()).  // TODO RvM: handle null alias.
+        append(", casesensitive:").
+        append(isCaseSensitive()).
         append(")");
         return sb.toString();
     }

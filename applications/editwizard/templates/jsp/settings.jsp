@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.42 2005-03-16 22:15:39 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.39.2.1 2004-05-02 15:35:17 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -27,8 +27,20 @@ String sessionKey = "editwizard";
 %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
 
 log.trace("start of settings.jsp");
+// Add some header to make sure these pages are not cached anywhere.
+response.addHeader("Cache-Control","no-cache");
+response.addHeader("Pragma","no-cache");
+
 // Set session timeout
 session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
+
+// and make every page expired ASAP.
+long now = System.currentTimeMillis();
+response.setDateHeader("Expires",       now);
+response.setDateHeader("Last-Modified", now);
+
+//response.addHeader("Date",          now); // Jetty doesn't like if you set this.
+log.trace("done setting headers");
 
 // It is possible to specify an alternatvie 'sessionkey'
 // The sessionkey is used as a key for the session.
@@ -82,12 +94,13 @@ if (popup) {
     log.debug("this is not a popup");
 }
 
-%><mm:import externid="loginsessionname" from="parameters" ></mm:import><%
+
 
 String refer = ewconfig.backPage;
 if (log.isDebugEnabled()) log.trace("backpage in root-config is " + refer);
 
 if (request.getParameter("logout") != null) {
+    %><mm:cloud method="logout" /><%
     // what to do if 'logout' is requested?
     // return to the deeped backpage and clear the session.
     log.debug("logout parameter given, clearing session");
@@ -96,9 +109,7 @@ if (request.getParameter("logout") != null) {
     if (! refer.startsWith("http:")) {
         refer = response.encodeRedirectURL(request.getContextPath() + refer);
     }
-   %>
-   <mm:redirect referids="loginsessionname" page="logout.jsp"><mm:param name="refer" value="<%=refer%>" /></mm:redirect>
-  <%
+    response.sendRedirect(refer);
     return;
 }
 ewconfig.sessionKey = sessionKey;
@@ -196,4 +207,4 @@ if (!done) {
 %></mm:log><%
     if (done) return;
 %><mm:import externid="loginmethod" from="parameters">loginpage</mm:import>
-
+<mm:import externid="loginsessionname" from="parameters" ></mm:import>

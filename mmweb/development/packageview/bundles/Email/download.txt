@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://development.mmbase.org/development/download/releases/mmbase-1.7.0-email.zip"><img src="images/arrow-right.gif"></a></td>
-</tr>

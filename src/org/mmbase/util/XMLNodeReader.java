@@ -15,32 +15,27 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
-
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 
 /**
- * This class reads a node from an exported application.
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ContextDepthReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
- * @author Daniel Ockeloen
+ * This class reads a node from an exported application
+ * @version $Id: XMLNodeReader.java,v 1.26 2004-01-08 23:49:58 michiel Exp $
+ * @author ?
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.30 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
-    private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
-
-    
-    private ResourceLoader path;
+    private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
+    String applicationpath;
 
     /**
-     * @since MMBase-1.8
+     * Constructor
+     * @param filename from the file to read from
+     * @param applicationpath the path where this application was exported to
+     * @param mmbase
      */
-    public XMLNodeReader(InputSource is, ResourceLoader path) {
-        super(is, false);
-        this.path = path;
+    public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
+        super(filename, false);
+        this.applicationpath = applicationpath;
     }
 
     /**
@@ -140,13 +135,13 @@ public class XMLNodeReader extends XMLBasicReader {
                                     if (type != -1) {
                                         if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
                                             if (value == null) {
-                                                value = "";
+                                                value = ""; 
                                             }
                                             newnode.setValue(key, value);
                                             if (log.isDebugEnabled()) {
                                                 log.debug("After value " + Casting.toString(newnode.getValue(key)));
                                             }
-                                        } else if (type == FieldDefs.TYPE_NODE) {
+                                        } else if (type == FieldDefs.TYPE_NODE) {                                            
                                             // do not really set it, because we need syncnodes later for this.
                                             newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
                                             newnode.setValue(key, MMObjectNode.VALUE_NULL);
@@ -181,11 +176,7 @@ public class XMLNodeReader extends XMLBasicReader {
                                         } else if (type == FieldDefs.TYPE_BYTE) {
                                             NamedNodeMap nm2 = n5.getAttributes();
                                             Node n7 = nm2.getNamedItem("file");
-                                            try {
-                                                newnode.setValue(key, readBytesStream(n7.getNodeValue()));
-                                            } catch (IOException ioe) {
-                                                log.warn("Could not set field " + key + " " + ioe);
-                                            }
+                                            newnode.setValue(key, readBytesFile(applicationpath + n7.getNodeValue()));
                                         } else {
                                             log.error("FieldDefs not found for #" + type + " was not known for field with name: '"
                                                       + key + "' and with value: '" + value + "'");
@@ -207,14 +198,19 @@ public class XMLNodeReader extends XMLBasicReader {
         return nodes;
     }
 
-    private byte[] readBytesStream(String resourceName) throws IOException {
-        InputStream stream = path.getResourceAsStream(resourceName);
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int c = stream.read();
-        while (c != -1) {
-            buffer.write(c);
-            c = stream.read();
+    byte[] readBytesFile(String filename) {
+        File bfile = new File(filename);
+        int filesize = (int)bfile.length();
+        byte[] buffer = new byte[filesize];
+        try {
+            FileInputStream scan = new FileInputStream(bfile);
+            int len = scan.read(buffer, 0, filesize);
+            scan.close();
+        } catch (FileNotFoundException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+        } catch (IOException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
         }
-        return buffer.toByteArray();
+        return (buffer);
     }
 }

@@ -22,13 +22,11 @@ import org.mmbase.util.logging.Logging;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.6 2005-01-30 16:46:36 nico Exp $
- * @todo   Should implement java.util.Comparator. Perhaps should be named MMObjectNodeComparator. Btw, this class is not used.
- * 
+ * @version $Id: MMContainerCompare.java,v 1.4 2003-03-10 11:50:31 pierre Exp $
  */
 public class MMContainerCompare implements CompareInterface {
 
-    private static Logger log = Logging.getLoggerInstance(MMContainerCompare.class);
+    private static Logger log = Logging.getLoggerInstance(MMContainerCompare.class.getName());
 
     public final static boolean ASC=true;
     public final static boolean DESC=false;
@@ -44,10 +42,12 @@ public class MMContainerCompare implements CompareInterface {
     }
 
     public MMContainerCompare(Vector orderfields) {
+        String field;
+
         orderdirections=new Vector();
         this.orderfields=orderfields;
         for (Enumeration e=orderfields.elements();e.hasMoreElements();) {
-            e.nextElement();
+            field=(String)e.nextElement();
             orderdirections.addElement(new Boolean(ASC));
         }
     }

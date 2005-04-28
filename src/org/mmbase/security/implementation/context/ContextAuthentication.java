@@ -12,7 +12,9 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.FileInputStream;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
@@ -29,12 +31,12 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.18 2005-03-01 14:16:31 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.14 2003-08-27 19:37:12 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private Map  loginModules = new LinkedHashMap();
+    private HashMap  loginModules = new HashMap();
     private Document document;
     private long validKey;
 
@@ -60,25 +62,25 @@ public class ContextAuthentication extends Authentication {
 
     protected void load() {
         if (log.isDebugEnabled()) {
-            log.debug("using: '" + configResource + "' as config file for context-authentication");
+            log.debug("using: '" + configFile + "' as config file for context-authentication");
         }
 
         try {
-            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
+            InputSource in = new InputSource(new FileInputStream(configFile));
             document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
         } catch(org.xml.sax.SAXException se) {
-            log.error("error parsing file :"+configResource);
-            String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
+            log.error("error parsing file :"+configFile);
+            String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
             log.error(message);
             log.error(Logging.stackTrace(se));
             throw new SecurityException(message);
         } catch(java.io.IOException ioe) {
-            log.error("error parsing file :"+configResource);
+            log.error("error parsing file :"+configFile);
             log.error(Logging.stackTrace(ioe));
-            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" );
+            throw new SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
         }
         if (log.isDebugEnabled()) {
-            log.debug("loaded: '" +  configResource + "' as config file for authentication");
+            log.debug("loaded: '" +  configFile + "' as config file for authentication");
             log.debug("going to load the modules...");
         }
 
@@ -122,7 +124,9 @@ public class ContextAuthentication extends Authentication {
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
-            throw new UnknownAuthenticationMethodException("could not load module with name:" +  moduleName);
+            String msg = "could not load module with name:" +  moduleName;
+            log.error(msg);
+            throw new SecurityException(msg);
         }
         ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
         // and we do the login...
@@ -144,9 +148,5 @@ public class ContextAuthentication extends Authentication {
      */
     public boolean isValid(UserContext usercontext) throws SecurityException {
         return validKey == ((ContextUserContext)usercontext).getKey();
-    }
-
-    public String[] getTypes() {
-        return (String[]) loginModules.keySet().toArray(new String[] {});
     }
 }

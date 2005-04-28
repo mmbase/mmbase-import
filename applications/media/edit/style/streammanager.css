@@ -37,11 +37,11 @@ hr {
 
 
 h1, h2, h3  {
-  background-color: #fff;
-  font-weight: bold;
-  color: #1C5BA2;
-  margin-top: 20px;
-  text-align: left;
+	background-color: #fff;
+	font-weight: bold;
+	color: #1C5BA2;
+    margin-top: 20px;
+	text-align: left;
 }
 
 h1 { 
@@ -85,9 +85,6 @@ textarea {
   font-weight:normal;
   background-color : #F0F2F5;
   }
-input { 
-  width: auto;
-}
 
 input.small { 
   width: 100%;
@@ -159,66 +156,40 @@ button:hover {
 }
 
 a,button {
-  font-size : 10px;
-  color: #EE333E;
-  border:  none;
-  font-weight: bold;
-  text-decoration: none;
+	font-size : 10px;
+	color: #EE333E;
+ 	border:  none;
+ 	font-weight: bold;
+ 	text-decoration: none;
 }
 
 a:link {
-  font-size : 10px;
-  color: #EE333E;
-  border:  none;
-  font-weight: bold;
-  text-decoration: none;
+	font-size : 10px;
+	color: #EE333E;
+ 	border:  none;
+ 	font-weight: bold;
+ 	text-decoration: none;
 }
 a:active {
-  font-size : 10px;
-  color: #EE333E;
-  border:  none;
-  font-weight: bold;
-  text-decoration: none;
+	font-size : 10px;
+	color: #EE333E;
+	border:  none;
+ 	font-weight: bold;
+ 	text-decoration: none;
 }
 a:visited {
-  font-size : 10px;
-  color: #1C5BA2;
-  border:  none;
-  font-weight: bold;
-  text-decoration: none;
+	font-size : 10px;
+	color: #1C5BA2;
+ 	border:  none;
+ 	font-weight: bold;
+ 	text-decoration: none;
 }
 a:hover {
-  font-size : 10px;
-  color: #1C5BA2;
-  border:  none;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-
-img { 
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
-}
-
-a.groupclick:link, a.groupclick:active, a.groupclick:visited, a.groupclick:hover  { 
-  margin: 0 0 0 0;
-  margin-right: auto;
-  padding: 0 0 0 0;
-  border-width: 2px;
-  border-style: solid;
-  border-color:  #EE333E;
-  background-color: transparent;
-  display: block;
-  white-space: nowrap;
-  width: auto;
-}
-a.groupclick:visited, a.groupclick:hover  { 
-  border-color: #1C5BA2;
-}
-
-a.groupclick:link img, a.groupclick:active img, a.groupclick:visited img, a.groupclick:hover img { 
-  border: none;
+	font-size : 10px;
+	color: #EE333E;
+ 	border:  none;
+ 	font-weight: bold;
+ 	text-decoration: underline;
 }
 
 /* wizard */
@@ -364,4 +335,3 @@ tr.itemrow-hover td	{
 div#you {
    display: none;
 }
-

@@ -17,6 +17,9 @@ import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.Node;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
@@ -24,10 +27,12 @@ import org.mmbase.bridge.jsp.taglib.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: GetInfoTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: GetInfoTag.java,v 1.15 2003-11-19 17:05:14 michiel Exp $
  */
  
 public class GetInfoTag extends NodeReferrerTag implements Writer {
+
+    private static Logger log = Logging.getLoggerInstance(GetInfoTag.class);
 
     private Attribute key = Attribute.NULL;
     public void setKey(String k) throws JspTagException {

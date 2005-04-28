@@ -12,6 +12,9 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
  * This class is intended to facilitate practical creation of virtual
@@ -19,9 +22,12 @@ import org.mmbase.module.corebuilders.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.12 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: VirtualBuilder.java,v 1.9 2003-12-17 20:45:03 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
+
+    // logging variable
+    private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
 
     /**
      * Creates an instance of a Virtual builder.
@@ -150,15 +156,14 @@ public class VirtualBuilder extends MMObjectBuilder {
     }
 
     /**
-     * Performs some necessary postprocessing on nodes retrieved from a
+     * Performs some necessary postprocessing on nodes retrieved from a 
      * search query.
-     * Since virtual nodes are not real nodes, this method is empty,
-     * overriding the behaviour defined in
+     * Since virtual nodes are not real nodes, this method is empty, 
+     * overriding the behaviour defined in 
      * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)
      * MMObjectBuilder}.
-     *
+     * 
      * @param results The (virtual) nodes.
-     * @since MMBase-1.7
      */
     public void processSearchResults(List results) {
         // empty!

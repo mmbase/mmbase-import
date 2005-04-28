@@ -16,13 +16,12 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
 
-
 /**
  * Uses the XML functions from the bridge to construct a DOM document representing MMBase data structures.
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.25 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Generator.java,v 1.21 2004-03-05 10:41:25 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -31,18 +30,17 @@ public class Generator {
 
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
-
     private Document document = null;
     private Cloud cloud = null;
 
     /**
      * To create documents representing structures from the cloud, it
      * needs a documentBuilder, to contruct the DOM Document, and the
-     * cloud from which the data to be inserted will come from.
+     * cloud from which the data to be inserted will come from.    
      *
      * @param documentBuilder The DocumentBuilder which will be used to create the Document.
      * @param cloud           The cloud from which the data will be.
-     * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
+     * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder
      */
     public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, Cloud cloud) {
         DOMImplementation impl = documentBuilder.getDOMImplementation();
@@ -82,7 +80,7 @@ public class Generator {
      * @return the generated xml as a (formatted) string
      */
     public String toString(boolean ident) {
-        return XMLWriter.write(document, ident);
+        return XMLWriter.write(document, true);
     }
 
     private void addCloud() {
@@ -92,8 +90,8 @@ public class Generator {
     /**
      * Adds a field to the DOM Document. This means that there will
      * also be added a Node if this is necessary.
-     * @param node An MMbase bridge Node.
-     * @param fieldDefinition An MMBase bridge Field.
+     * @param An MMbase bridge Node.
+     * @param An MMBase bridge Field.
      */
     public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
         if (cloud == null) {
@@ -109,12 +107,12 @@ public class Generator {
             field = (Element)field.getNextSibling();
         }
         // when not found, we are in a strange situation..
-        if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));
+        if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));        
         // when it is filled (allready), we can return
         if (field.getTagName().equals("field"))
             return;
 
-        // was not filled, so fill it... first remove the unfilled
+        // was not filled, so fill it... first remove the unfilled 
         Element filledField = document.createElement("field");
 
         field.getParentNode().replaceChild(filledField, field);
@@ -123,7 +121,7 @@ public class Generator {
         field.setAttribute("name", fieldDefinition.getName());
         // now fill it with the new info...
         // format
-        field.setAttribute("format", getFieldFormat(fieldDefinition));
+        field.setAttribute("format", getFieldFormat(node, fieldDefinition));
         // the value
         switch (fieldDefinition.getType()) {
         case Field.TYPE_XML :
@@ -137,10 +135,6 @@ public class Generator {
         case Field.TYPE_BYTE :
             org.mmbase.util.transformers.Base64 transformer = new org.mmbase.util.transformers.Base64();
             field.appendChild(document.createTextNode(transformer.transform(node.getByteValue(fieldDefinition.getName()))));
-            break;
-        case Field.TYPE_DATETIME :
-            // shoudlw e use ISO_8601_LOOSE here or ISO_8601_UTC?
-            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
             break;
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
@@ -193,8 +187,6 @@ public class Generator {
     }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
-     * @param node MMbase node
-     * @return Element which represents a bridge.Node
      */
     private Element getNode(org.mmbase.bridge.Node node) {
         // MMBASE BUG...
@@ -202,13 +194,13 @@ public class Generator {
         node = cloud.getNode(node.getNumber());
 
         // if we are a relation,.. behave like one!
-        // why do we find it out now, and not before?
+        // why do we find it out now, and not before?       
 
         // TODO: reseach!!
         boolean getElementByIdWorks = false;
         Element object = null;
         if (getElementByIdWorks) {
-            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
+            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.            
             object = document.getElementById("" + node.getNumber());
         } else {
             // TODO: this code should be removed!! but other code doesnt work :(
@@ -242,7 +234,7 @@ public class Generator {
         // and the otype (type as number)
         object.setAttribute("otype", node.getStringValue("otype"));
 
-        // add the fields (empty)
+        // add the fields (empty) 
         // While still having 'unfilledField's
         // you know that the node is not yet presented completely.
 
@@ -285,7 +277,7 @@ public class Generator {
         return fieldContent;
     }
 
-    private String getFieldFormat(Field field) {
+    private String getFieldFormat(org.mmbase.bridge.Node node, Field field) {
         switch (field.getType()) {
         case Field.TYPE_XML :
             return "xml";
@@ -298,7 +290,7 @@ public class Generator {
             // was it a builder?
             String fieldName = field.getName();
             String guiType = field.getGUIType();
-
+            
             // I want a object database type!
             if (fieldName.equals("otype")
                 || fieldName.equals("number")
@@ -317,12 +309,6 @@ public class Generator {
             return "numeric";
         case Field.TYPE_BYTE :
             return "bytes";
-        case Field.TYPE_DATETIME:
-            return "datetime";
-        case Field.TYPE_BOOLEAN:
-            return "boolean";
-        case Field.TYPE_LIST:
-            return "list";
         default :
             throw new RuntimeException("could not find field-type for:" + field.getType() + " for field: " + field);
         }

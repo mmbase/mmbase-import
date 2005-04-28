@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
+import java.io.InputStream;
 import java.sql.*;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.naming.*;
@@ -21,7 +23,6 @@ import org.mmbase.storage.search.implementation.database.*;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.ResourceLoader;
 import org.xml.sax.InputSource;
 
 /**
@@ -37,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.20 2005-02-09 22:37:23 eduard Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.13.2.2 2004-07-29 19:44:42 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -227,13 +228,13 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         if (reader == null) {
             String databaseResourcePath;
             // First, determine the database name from the parameter set in mmbaseroot
-            String databaseName = mmbase.getInitParameter("database");
+            String databaseName =mmbase.getInitParameter("database");
             if (databaseName != null) {
                 // if databasename is specified, attempt to use the database resource of that name
-                if (databaseName.endsWith(".xml")) {
+                if (databaseName.startsWith("/")) {
                     databaseResourcePath = databaseName;
                 } else {
-                    databaseResourcePath = "storage/databases/" + databaseName + ".xml";
+                    databaseResourcePath = "/org/mmbase/storage/implementation/database/resources/"+databaseName+".xml";
                 }
             } else {
                 // otherwise, search for supported drivers using the lookup xml
@@ -241,12 +242,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 Connection con = null;
                 try {
                     con = dataSource.getConnection();
-                    DatabaseMetaData metadata = con.getMetaData();
-                    databaseResourcePath = lookup.getResourcePath(metadata);
-                    if(databaseResourcePath == null) {
-                        // TODO: ask the lookup for a string containing all information on which the lookup could verify and display this instead of the classname
-                        throw new StorageConfigurationException("No filter found in " + lookup.getFileName() + " for driver class:" + metadata.getConnection().getClass().getName() + "\n");
-                    }                    
+                    databaseResourcePath = lookup.getResourcePath(con.getMetaData());
                 } catch (SQLException sqle) {
                     throw new StorageInaccessibleException(sqle);
                 } finally {
@@ -257,14 +253,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 }
             }
             // get configuration
-            log.service("Use for storage configuration :" + databaseResourcePath);
-            try {
-                InputSource in = ResourceLoader.getConfigurationRoot().getInputSource(databaseResourcePath);
-                reader = new StorageReader(this, in);
-            } catch (java.io.IOException ioe) {
-                throw new StorageConfigurationException(ioe);
-            }
-
+            log.service("Use for storage configuration :"+databaseResourcePath);
+            InputStream stream = DatabaseStorageManagerFactory.class.getResourceAsStream(databaseResourcePath);
+            InputSource in = new InputSource(stream);
+            reader = new StorageReader(this, in);
         }
         return reader;
     }
@@ -291,8 +283,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     protected Object instantiateBasicHandler(Class handlerClass) {
         // first handler
         try {
-            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {});
-            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] {} );
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {Map.class});
+            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] { disallowedFields } );
             log.service("Instantiated SqlHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {
@@ -310,8 +302,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // Chained handlers
         try {
             java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
-            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(new Object[] { handler });
-            log.service("Instantiated chained SQLHandler of type " + handlerClass.getName());
+            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(new Object[] {handler});
+            log.service("Instantiated chained SearchQueryHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {
             throw new StorageConfigurationException(nsme);

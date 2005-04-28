@@ -5,29 +5,28 @@
 
   </head>
  
-    <h1>Cloud rank="administrator", no method, method must be request from bridge.</h1>
+    <h1>Cloud rank="administrator", no method, defaulting to "asis"</h1>
     <p>
-      <mm:cloud rank="administrator">
-        Your rank: <mm:cloudinfo type="user" />/<mm:cloudinfo type="rank" />
-        (must be administrator).
-        Should see this.
+      <mm:cloud rank="administrator" jspvar="cloud">
+        Your rank: <%=cloud.getUser().getIdentifier()%>/<%=cloud.getUser().getRank() %>
+        (must be administrator)
          <mm:import id="body" />
       </mm:cloud>
       <mm:notpresent referid="body">
-        Skipped body. Should not see this!
+          Skipped body
       </mm:notpresent>  
     </p>
     <mm:log>---------------------------------------------------------------------------------------</mm:log>
-    <h1>Cloud rank="administrator", method 'asis', but there is not cloud because  first logged out</h1>
+    <h1>Cloud rank="administrator", no method, first logging out</h1>
     <p>
       <mm:cloud method="logout" />
       <mm:cloud rank="administrator" jspvar="cloud" method="asis">
-        Your rank: <mm:cloudinfo type="user" />/<mm:cloudinfo type="rank" />
-        (must be administrator). Should not see this.
+        Your rank: <%=cloud.getUser().getIdentifier()%>/<%=cloud.getUser().getRank() %>
+        (must be administrator)
          <mm:import id="body2" />
       </mm:cloud>
       <mm:notpresent referid="body2">
-          Skipped body. Should see this.
+          Skipped body
       </mm:notpresent>  
     </p>
   <hr />

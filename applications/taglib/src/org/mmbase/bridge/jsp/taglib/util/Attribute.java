@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.27 2005-02-08 18:17:28 michiel Exp $
+ * @version $Id: Attribute.java,v 1.19.2.3 2005-02-08 18:16:43 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -142,7 +142,7 @@ public class Attribute {
      */
 
     public List getList(ContextReferrerTag tag) throws JspTagException {
-        return Arrays.asList( getString(tag).trim().split("\\s*,\\s*") );
+        return StringSplitter.split(getString(tag));
     }
 
     /**
@@ -210,7 +210,7 @@ public class Attribute {
                         throw new AttributeException("Unbalanced parentheses in '" + this + "'");
                     }
                     int posOpen  = attr.indexOf(c, pos);
-
+                    
                     if (posOpen > -1 && posOpen < posClose) { // another one was opened!
                         opened++;
                         pos = posOpen + 1;
@@ -371,11 +371,10 @@ public class Attribute {
  */
 
 class AttributeCache extends Cache {
-
+    private static final Logger log = Logging.getLoggerInstance(AttributeCache.class);
     AttributeCache() {
         super(1000);
     }
-
     public String getName()        { return "TagAttributeCache"; }
     public String getDescription() { return "Cache for parsed Tag Attributes"; }
     public final Attribute getAttribute(final Object att) throws JspTagException {

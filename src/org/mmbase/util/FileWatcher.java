@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.27 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: FileWatcher.java,v 1.21 2004-02-16 15:31:07 keesj Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -78,9 +78,7 @@ public abstract class FileWatcher {
      * #DEFAULT_DELAY}.
      */
     private long delay = DEFAULT_DELAY;
-
-    private Set files = new LinkedHashSet();
-    private Set fileSet = new FileSet(); // (automaticly) wraps 'files'.
+    private Set files = new HashSet();
     private Set removeFiles = new HashSet();
     private boolean stop = false;
     private boolean continueAfterChange = false;
@@ -100,7 +98,6 @@ public abstract class FileWatcher {
     }
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
-     * @scope public
      * @param file The file that was changed..
      */
     abstract protected void onChange(File file);
@@ -115,15 +112,14 @@ public abstract class FileWatcher {
     /**
      * Add's a file to be checked...
      * @param file The file which has to be monitored..
-     * @throws RuntimeException If file is null
+     * @throws RuntimeException If file is null or does not exist.
      */
     public void add(File file) {
         FileEntry fe = new FileEntry(file);
         synchronized (this) {
             files.add(fe);
-            if (removeFiles.remove(fe)) {
+            if (removeFiles.remove(fe))
                 log.service("Canceling removal from filewatcher " + fe);
-            }
         }
     }
 
@@ -146,25 +142,6 @@ public abstract class FileWatcher {
     }
 
     /**
-     * Returns a (modifiable) Set of all files (File object) of this FileWatcher. If you change it, you change the
-     * FileWatcher. The order of the Set is predictable (backed by a {@link java.util.LinkedHashSet}).
-     *
-     * @since MMBase-1.8.
-     */
-    public Set getFiles() {
-        return fileSet;
-    }
-
-    /**
-     * Removes all files, this watcher will end up watching nothing.
-     * @since MMBase-1.8
-     */
-    public void clear() {
-        fileSet.clear();
-    }
-
-    /**
-     * Stops watching.
      */
     public void exit() {
         synchronized (this) {
@@ -249,21 +226,10 @@ public abstract class FileWatcher {
     }
 
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
-        if (getClass().equals(o.getClass())) {
-            FileWatcher f = (FileWatcher)o;
-            return this.files.equals(f.files);
-        }
-        return false;
-    }
-    
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return files == null ? 0 : files.hashCode();
+        if (!(o instanceof FileWatcher))
+            return false;
+        FileWatcher f = (FileWatcher)o;
+        return this.getClass().equals(f.getClass()) && this.files.equals(f.files);
     }
 
     /**
@@ -299,26 +265,25 @@ public abstract class FileWatcher {
     }
 
     /**
-     * The one thread to handle all FileWatchers. In earlier impelmentation every FileWatcher had
-     * it's own thread, but that is avoied by this now.
+     * @javadoc
      */
     private static class FileWatcherRunner extends Thread {
 
         /**
-         * Set of file-watchers, which are currently active.
+         * Set of wachters
          */
         private Set watchers = new HashSet();
 
         /**
-         * Set of watchers to be added. This set is used because
-         * in the run method of the this thread the filewachter implementation might decide to
-         * add a new fileWachter (for example in in the onChange method)
+         * Set of wachters to be added. This set is used because
+         * in the run method of the this thread the filewachter implementation might decide to 
+         * add a new fileWachter (for example in in the onChange method) 
          */
         private Set watchersToAdd = new HashSet();
 
         FileWatcherRunner() {
             super("MMBase FileWatcher thread");
-            log.service("Starting the file-watcher thread");
+            log.info("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
         }
@@ -330,8 +295,8 @@ public abstract class FileWatcher {
         }
 
         /**
-         *  Main loop, will check every watched file every amount of time.
-         *  It will never stop, this thread is a daemon.
+         *  Main loop, will repeat every amount of time.
+         *	It will stop, when either a file has been changed, or exit() has been called
          */
         public void run() {
             do {
@@ -396,8 +361,7 @@ public abstract class FileWatcher {
     }
 
     /**
-     * Object used in file-lists of the FileWatcher. It wraps a File object, but adminstrates
-     * lastmodified an existence seperately (to compare with the actual values of the File).
+     * @javadoc
      */
     private class FileEntry {
         // static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
@@ -415,6 +379,7 @@ public abstract class FileWatcher {
             if (!exists) {
                 // file does not exist. A change will be triggered
                 // once the file comes into existence
+                log.info("file :" + file.getAbsolutePath() + " did not exist (yet)");
                 log.debug("file :" + file.getAbsolutePath() + " did not exist (yet)");
                 lastModified = -1;
             } else {
@@ -431,18 +396,18 @@ public abstract class FileWatcher {
         public boolean changed() {
             if (file.exists()) {
                 if (!exists) {
-                    log.info("File " + file.getAbsolutePath() + " added");
+                    log.info("file :" + file.getAbsolutePath() + " added");
                     return true;
                 } else {
                     boolean result = lastModified < file.lastModified();
                     if (result) {
-                        log.info("File " + file.getAbsolutePath() + " changed");
+                        log.info("file :" + file.getAbsolutePath() + " changed");
                     }
                     return result;
                 }
             } else {
                 if (exists) {
-                    log.info("File " + file.getAbsolutePath() + " removed");
+                    log.info("file :" + file.getAbsolutePath() + " removed");
                 }
                 return exists;
             }
@@ -473,54 +438,13 @@ public abstract class FileWatcher {
                 FileEntry fe = (FileEntry)o;
                 return file.equals(fe.file);
             } else if (o instanceof File) {
-                return file.equals(o);
+                return file.equals((File)o);
             }
             return false;
         }
 
         public int hashCode() {
             return file.hashCode();
-        }
-
-    }
-
-    /**
-     * This FileSet makes the 'files' object of the FileWatcher look like a Set of File rather then Set of FileEntry's.
-     * @since MMBase-1.8
-     */
-    private class FileSet extends AbstractSet {
-        public int size() {
-            return FileWatcher.this.files.size();
-        }
-        public  Iterator iterator() {
-            return new FileIterator();
-        }
-        public boolean add(Object o) {
-            int s = size();
-            FileWatcher.this.add((File) o);
-            return s != size();
-        }
-    }
-    /**
-     * The iterator belonging to FileSet.
-     * @since MMBase-1.8
-     */
-    private class FileIterator implements Iterator {
-        Iterator it;
-        File lastFile;
-        FileIterator() {
-            it = FileWatcher.this.files.iterator();
-        }
-        public boolean hasNext() {
-            return it.hasNext();
-        }
-        public Object next() {
-            FileEntry f = (FileEntry) it.next();
-            lastFile = f.getFile();
-            return  lastFile;
-        }
-        public void remove() {
-            FileWatcher.this.remove(lastFile);
         }
 
     }

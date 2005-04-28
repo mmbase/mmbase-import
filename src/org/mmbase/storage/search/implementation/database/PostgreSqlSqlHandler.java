@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.6 2003-12-11 13:05:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -47,8 +48,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *        to allowed alternatives.
      */
-    public PostgreSqlSqlHandler() {
-        super();
+    public PostgreSqlSqlHandler(Map disallowedValues) {
+        super(disallowedValues);
     }
 
     // javadoc is inherited
@@ -75,7 +76,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
 
     protected boolean useLower(FieldCompareConstraint constraint) {
-        if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
+        if (constraint.getOperator() == FieldValueConstraint.LIKE) {
             return false;
         } else {
             return true;
@@ -103,40 +104,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
     */
 
-    /**
-     * @javadoc
-     */
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
-        String datePartFunction = null;
-        switch (datePart) {
-            case FieldValueDateConstraint.CENTURY:
-                datePartFunction = "CENTURY";
-                break;
-            case FieldValueDateConstraint.QUARTER:
-                datePartFunction = "QUARTER";
-                break;
-            case FieldValueDateConstraint.WEEK:
-                datePartFunction = "WEEK";
-                break;
-            case FieldValueDateConstraint.DAY_OF_YEAR:
-                datePartFunction = "DAYOFYEAR";
-                break;
-            case FieldValueDateConstraint.DAY_OF_WEEK:
-                datePartFunction = "DAYOFWEEK";
-                break;
-            default:
-                log.debug("Unknown datePart " + datePart);
-        }
-        if (datePartFunction != null) {
-            sb.append("EXTRACT(");
-            sb.append(datePartFunction);
-            sb.append(" FROM ");
-            appendField(sb, step, fieldName, multipleSteps);
-            sb.append(")");
-        } else {
-            super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
-        }
-    }
 
 
     // javadoc is inherited

@@ -24,6 +24,7 @@ import org.mmbase.cache.Cache;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.cache.AggregatedResultCache;
 
@@ -35,7 +36,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.42 2005-03-01 14:29:48 michiel Exp $
+ * @version $Id: Contexts.java,v 1.36 2004-03-08 17:43:56 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -160,7 +161,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation.
-     * @see Verify#check(UserContext, int, int, int, Operation)
+     * @see Verify#check(user, nodeId, sourceNodeI, destinationNodeI, operation)
      */
 
     public boolean mayDo(User user, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) throws SecurityException {
@@ -178,7 +179,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(UserContext, int, Operation)
+     * @see Verify#check(user, nodeId, operation)
      */
     public boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
 
@@ -206,7 +207,7 @@ public class Contexts extends MMObjectBuilder {
                     List resultList = (List) cache.get(query);
                     if (resultList == null) {
                         ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
-                        resultList = mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
+                        resultList = mmb.getDatabase().getNodes(query, resultBuilder);
                         cache.put(query, resultList);
                     }
 
@@ -346,7 +347,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
-
+        
         Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
         if (checkOwnRights) {
@@ -430,7 +431,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(UserContext, Query, Operation)
+     * @see Verify#check(user, query, operation)
      */
 
     public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {
@@ -515,8 +516,9 @@ public class Contexts extends MMObjectBuilder {
                     Iterator i = steps.iterator();
                     while (i.hasNext()) {
                         Step step = (Step) i.next();
+                        Constraint newConstraint = null;
                         StepField field = query.createStepField(step, "owner");
-                        Constraint newConstraint = query.createConstraint(field, ac.contexts);
+                        newConstraint = query.createConstraint(field, ac.contexts);
                         if (ac.inverse) query.setInverse(newConstraint, true);
 
                         if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
@@ -559,24 +561,24 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
-     *
+     * 
      * @return A Collection of groups or users which are allowed for the given operation (not recursively)
      */
 
     protected Collection getGroupsOrUsers(MMObjectNode contextNode, Operation operation, MMObjectBuilder groupsOrUsers) {
         InsRel rights = RightsRel.getBuilder();
-
+        
         BasicSearchQuery query = new BasicSearchQuery();
         Step step = query.addStep(this);
         BasicStepField numberStepField = new BasicStepField(step, getField("number"));
         BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(contextNode.getNumber()));
-
+        
         BasicRelationStep relationStep = query.addRelationStep(rights, groupsOrUsers);
         relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-
+        
         BasicStepField  operationStepField = new BasicStepField(relationStep, rights.getField("operation"));
         BasicFieldValueConstraint operationConstraint =  new BasicFieldValueConstraint(operationStepField, operation.toString());
-
+        
         BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
         constraint.addChild(numberConstraint);
         constraint.addChild(operationConstraint);
@@ -586,7 +588,7 @@ public class Contexts extends MMObjectBuilder {
         query.addFields(relationStep.getNext());
 
         try {
-            List resultList = mmb.getSearchQueryHandler().getNodes(query, groupsOrUsers); // not cached, but no need
+            List resultList = mmb.getDatabase().getNodes(query, groupsOrUsers); // not cached, but no need
             groupsOrUsers.processSearchResults(resultList);
             return resultList;
         } catch (SearchQueryException sqe) {
@@ -594,7 +596,7 @@ public class Contexts extends MMObjectBuilder {
             return new ArrayList();
         }
 
-
+     
     }
 
     /**
@@ -861,6 +863,7 @@ public class Contexts extends MMObjectBuilder {
      */
 
     protected boolean revoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
+        Users users = Users.getBuilder();
         if (!allows(contextNode, groupOrUserNode, operation)) return true; // already disallowed
 
         if (mayRevoke(contextNode, groupOrUserNode, operation, user)) {
@@ -902,9 +905,9 @@ public class Contexts extends MMObjectBuilder {
     /**
      * util
      */
-    protected MMObjectNode getUserNode(UserContext user) {
+    protected MMObjectNode getUserNode(org.mmbase.bridge.User bridgeUser) {
         Users users = Users.getBuilder();
-        return users.getUser(user.getIdentifier());
+        return users.getUser(bridgeUser.getIdentifier());
     }
 
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
@@ -915,6 +918,15 @@ public class Contexts extends MMObjectBuilder {
         }
         return groupOrUser;
     }
+
+
+    public Parameter[] getParameterDefinition(String function) {
+        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Contexts.class, function);
+        if (params == null) return super.getParameterDefinition(function);
+        return params;
+
+    }
+
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
@@ -937,50 +949,50 @@ public class Contexts extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (function.equals("allows")) {
-            Parameters a = Functions.buildParameters(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
+            Parameters a = Parameters.get(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             if (allows(node, getNode(a.getString(PARAMETER_GROUPORUSER)), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
-            Parameters a = Functions.buildParameters(PARENTSALLOW_PARAMETERS, args);
+            Parameters a = Parameters.get(PARENTSALLOW_PARAMETERS, args);
             if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("grant")) {
-            Parameters a = Functions.buildParameters(GRANT_PARAMETERS, args);
-            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
+            Parameters a = Parameters.get(GRANT_PARAMETERS, args);
+            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("revoke")) {
-            Parameters a = Functions.buildParameters(REVOKE_PARAMETERS, args);
-            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
+            Parameters a = Parameters.get(REVOKE_PARAMETERS, args);
+            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("maygrant")) {
-            Parameters a = Functions.buildParameters(MAYGRANT_PARAMETERS, args);
-            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
+            Parameters a = Parameters.get(MAYGRANT_PARAMETERS, args);
+            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("mayrevoke")) {
-            Parameters a = Functions.buildParameters(MAYREVOKE_PARAMETERS, args);
-            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
+            Parameters a = Parameters.get(MAYREVOKE_PARAMETERS, args);
+            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("may")) {
-            Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);
-            MMObjectNode checkingUser = getUserNode((UserContext) a.get(Parameter.USER));
+            Parameters a = Parameters.get(MAY_PARAMETERS, args);
+            MMObjectNode checkingUser = getUserNode((org.mmbase.bridge.User) a.get(Parameter.USER));
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");
             }

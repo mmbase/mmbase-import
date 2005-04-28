@@ -108,7 +108,7 @@
 
      <!--
 <pre>
-      offset="$[+$page*$config.page_size]"  max="$config.page_size"
+      offset="${+$page*$config.page_size}"  max="$config.page_size"
  </pre>
   and in the body something like this:
   <pre>
@@ -123,12 +123,12 @@
  After the list the 'next' page and 'previous' page links can be made by something like this:
 <pre>
     &lt;mm:isgreaterthan referid="page" value="0.5"&gt;
-            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page" value="$[+$page-1]" /&gt;&lt;/mm:url&gt;' &gt;
+            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page" value="${+$page-1}" /&gt;&lt;/mm:url&gt;' &gt;
               previous page
       &lt;/a&gt;
     &lt;/mm:isgreaterthan&gt;
     &lt;mm:present referid="next_page"&gt;
-            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page"  value="$[+$page+1]" /&gt;&lt;/mm:url&gt;' &gt;
+            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page"  value="${+$page+1}" /&gt;&lt;/mm:url&gt;' &gt;
                next page
             &lt;/a&gt;
   </pre>
@@ -158,7 +158,7 @@
     you need it.
     </p>
     <p>
-     Another possibility is to use the '<a href="<mm:url page="$taglibdoc/reference/include.jsp" />">mm:include</a>' tag. The included page must be a stand alone
+     Another possibility is to use the '<a href="../../mmdocs/reference/taglib/include.jsp">mm:include</a>' tag. The included page must be a stand alone
      taglib page (with its own &lt;@taglib directive and so on), and the result is simply included
      in your page. You can feed the mm:include-d page with the mm:param tag.
     </p>
@@ -169,7 +169,7 @@
       The difference is that 'listnodes' and 'relatednodes' return real nodes, and the fields you
       can refer to simply by their name.  'list' and 'related' return 'cluster' nodes, which are
       nodes combined of several types. Fields must be prefixed by their element in the 'path'. See
-      documentation of <a href="<mm:url page="$taglibdoc/reference/list.jsp" />">mm:list</a>.
+      documentation of <a href="../../mmdocs/reference/taglib/list.jsp">mm:list</a>.
     </p>
     <p>
       It is possible to get the 'real' nodes from the 'cluster' nodes of the 'list' and 'related'

@@ -12,7 +12,7 @@ package org.mmbase.storage.search.implementation.database;
 import org.mmbase.storage.search.*;
 
 /**
- * Baseclass for <em>chained sql handlers</em>, these are
+ * Baseclass for <em>chained sql handlers</em>, these are 
  * {@link org.mmbase.storage.search.implementation.database.SqlHandler SqlHandler}
  * implementations that wrap <code>SqlHandler</code> objects to create a chain
  * of handlers, following the <em>Chain Of Responsibility</em> design pattern.
@@ -22,16 +22,16 @@ import org.mmbase.storage.search.*;
  * its <em>successor</em>, i.e. the next handler in the chain.
  *
  * @author  Rob van Maris
- * @version $Id: ChainedSqlHandler.java,v 1.5 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: ChainedSqlHandler.java,v 1.4 2003-03-10 11:50:59 pierre Exp $
  * @since MMBase-1.7
- * @see org.mmbase.storage.search.implementation.database.SqlHandler
+ * @see org.mmbase.storage.search.implementation.database.SqlHandler 
  */
 public class ChainedSqlHandler implements SqlHandler {
-
+    
     /** Successor in chain or responsibility. */
     private SqlHandler successor = null;
-
-    /**
+    
+    /** 
      * Creates a new instance of ChainedSqlHandler.
      *
      * @param successor Successor in chain of responsibility.
@@ -39,45 +39,45 @@ public class ChainedSqlHandler implements SqlHandler {
     public ChainedSqlHandler(SqlHandler successor) {
         this.successor = successor;
     }
-
+    
     // javadoc is inherited
-    public String toSql(SearchQuery query, SqlHandler firstInChain)
+    public String toSql(SearchQuery query, SqlHandler firstInChain) 
     throws SearchQueryException {
         return successor.toSql(query, firstInChain);
     }
-
+    
     // javadoc is inherited
     public void appendQueryBodyToSql(
-    StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
+    StringBuffer sb, SearchQuery query, SqlHandler firstInChain) 
     throws SearchQueryException {
         successor.appendQueryBodyToSql(sb, query, firstInChain);
     }
-
+    
     // javadoc is inherited
-    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
-    SearchQuery query, boolean inverse, boolean inComposite)
+    public void appendConstraintToSql(StringBuffer sb, Constraint constraint, 
+    SearchQuery query, boolean inverse, boolean inComposite) 
     throws SearchQueryException {
-        successor.appendConstraintToSql(sb, constraint, query,
+        successor.appendConstraintToSql(sb, constraint, query, 
         inverse, inComposite);
     }
-
+    
     // javadoc is inherited
-    public int getSupportLevel(int feature, SearchQuery query)
+    public int getSupportLevel(int feature, SearchQuery query) 
     throws SearchQueryException {
         return successor.getSupportLevel(feature, query);
     }
-
+    
     // javadoc is inherited
-    public int getSupportLevel(Constraint constraint, SearchQuery query)
+    public int getSupportLevel(Constraint constraint, SearchQuery query) 
     throws SearchQueryException {
         return successor.getSupportLevel(constraint, query);
     }
-
+    
     // javadoc is inherited
     public String getAllowedValue(String value) {
         return successor.getAllowedValue(value);
     }
-
+    
     /**
      * Accessor to successor in chain of responsibility.
      *
@@ -86,5 +86,5 @@ public class ChainedSqlHandler implements SqlHandler {
     protected SqlHandler getSuccessor() {
         return successor;
     }
-
+    
 }

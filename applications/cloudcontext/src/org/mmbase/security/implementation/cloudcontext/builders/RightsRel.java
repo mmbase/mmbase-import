@@ -9,9 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
+import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
+import java.util.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The rightsrel relation, connects a 'context' with a 'group'. The
@@ -21,7 +26,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.13 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RightsRel.java,v 1.11 2004-03-08 17:43:56 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -37,6 +42,8 @@ public class RightsRel extends InsRel {
      * The field of this relations which present the operation.
      */
     public static String OPERATION_FIELD = "operation";
+
+    private static final Logger log = Logging.getLoggerInstance(RightsRel.class);
 
     /**
      * Util method to get this Builder.

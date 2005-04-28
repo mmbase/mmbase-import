@@ -39,8 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.6 2005-01-30 16:46:36 nico Exp $
- * @since MMBase-1.7
+ * @version $Id: DocumentReader.java,v 1.1 2003-08-18 16:50:52 pierre Exp $
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
@@ -85,30 +84,28 @@ public class DocumentReader  {
      * Creates an input source for a document, based on a filepath
      * If the file cannot be opened, the method returns an inputsource of an error document describing the condition 
      * under which this failed.
-     * @param  path the path to the file containing the document
+     * @param path the path to the file containing the doxument
      * @return the input source to the document.
-     * @deprecated
      */
     private static InputSource getInputSource(String path) {
-        InputSource is;
         try {
             // remove file protocol if present to avoid errors in accessing file
             if (path.startsWith("file://")) path= path.substring(7);
-            is = new InputSource(new FileInputStream(path));
+            InputSource is = new InputSource(new FileInputStream(path));
             is.setSystemId("file://" + path);
             return is;
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
             // try to handle more or less gracefully
-            is = new InputSource();
+            InputSource is = new InputSource();
             is.setSystemId(FILENOTFOUND + path);
             is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
                                                    "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
                                                    " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
-                                                   "<error>" + path + " not found</error>"));
-         } 
-        return is;
+                                                   "<error>" + e.toString() + "</error>"));
+            return is;
+        }
     }
 
     /**
@@ -158,28 +155,25 @@ public class DocumentReader  {
             xmlFilePath = source.getSystemId();
             XMLEntityResolver resolver = null;
             if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
-            DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
+            DocumentBuilder dbuilder = DocumentReader.getDocumentBuilder(validating, null, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
         } catch(org.xml.sax.SAXException se) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
         } catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe, ioe);
+            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
 
-
-    private static boolean warnedJAXP12 = false;
     /**
      * Creates a DocumentBuilder using SAX.
      * @param validating if true, the documentbuilder will validate documents read
-     * @param xsd     Whether to use XSD for validating
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use a default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use a default resolver
      * @return a DocumentBuilder instance, or null if none could be created
      */
-    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         DocumentBuilder db;
         if (handler == null) handler = new XMLErrorHandler();
         if (resolver == null) resolver = new XMLEntityResolver(validating);
@@ -188,16 +182,6 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
-            if (validating && xsd) {
-                try {
-                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
-                } catch (IllegalArgumentException iae) {
-                    if (! warnedJAXP12) {
-                        log.warn("The XML parser does not support JAXP 1.2, XSD validation will not work.", iae);
-                        warnedJAXP12 = true;
-                    }
-                } 
-            }
             dfactory.setNamespaceAware(true);
 
             db = dfactory.newDocumentBuilder();
@@ -225,34 +209,24 @@ public class DocumentReader  {
     }
 
     /**
-     * @see {#getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
-     */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
-        return getDocumentBuilder(validating, false, handler, resolver);
-    }
-
-    /**
      * Creates a DocumentBuilder.
      * DocumentBuilders that use the default error handler or entity resolver are cached (one for validating, 
      * one for non-validating document buidlers).
-     * @param validating if true, the documentbuilder will validate documents read 
-     * @param xsd        if true, validating will be done by an XML schema definiton.
+     * @param validating if true, the documentbuilder will validate documents read
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use the default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use the default resolver
      * @return a DocumentBuilder instance, or null if none could be created
-     * @since MMBase-1.8.
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         if (handler == null && resolver == null) {
-            String key = "" + validating + xsd;
-            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
+            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(new Boolean(validating));
             if (db == null) {
-                db = createDocumentBuilder(validating, xsd, null, null);
-                documentBuilders.put(key, db);
+                db = createDocumentBuilder(validating, null, null);
+                documentBuilders.put(new Boolean(validating), db);
             }
             return db;
         } else {
-            return createDocumentBuilder(validating, xsd, handler, resolver);
+            return createDocumentBuilder(validating, handler, resolver);
         }
     }
 

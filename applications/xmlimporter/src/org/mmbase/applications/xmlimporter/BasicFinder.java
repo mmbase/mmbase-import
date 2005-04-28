@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A basic implementation of SimilarObjectFinder.
  * @since MMBase-1.5
- * @version $Id: BasicFinder.java,v 1.4 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: BasicFinder.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public abstract class BasicFinder implements SimilarObjectFinder {
 
@@ -38,7 +38,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
     protected static List findPersistentObjects(
     MMObjectBuilder builder, String criterium) {
 
-        Enumeration en = builder.search("WHERE " + criterium);
+        Enumeration en = builder.searchWithWhere(criterium);
         List result = new ArrayList();
         while (en.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode) en.nextElement();

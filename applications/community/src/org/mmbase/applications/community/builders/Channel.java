@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.26 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Channel.java,v 1.22 2004-01-19 17:27:09 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -330,7 +330,7 @@ public class Channel extends MMObjectBuilder {
         Integer highseqObj = (Integer)openChannels.get(channelnr);
         if (highseqObj != null) {
             // The highest sequence is kept track of in the openChannels table.
-            newHighseq = highseqObj.intValue() + 1;
+            newHighseq = ((Integer)highseqObj).intValue() + 1;
             openChannels.put(channelnr, new Integer(newHighseq));
             return newHighseq;
         }
@@ -683,7 +683,7 @@ public class Channel extends MMObjectBuilder {
         // When openChannels is removed from init this can be removed
         if (communityBuilder != null) {
             int oType = communityBuilder.oType;
-            if (oType == 0) oType = mmb.getTypeDef().getIntValue("community");
+            if (oType == 0) oType = mmb.TypeDef.getIntValue("community");
             Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
             if (relatedCommunity.hasMoreElements()) {
                 return (MMObjectNode)relatedCommunity.nextElement();
@@ -768,11 +768,11 @@ public class Channel extends MMObjectBuilder {
      * <li>channelnumber-STILLACTIVE-usernumber - resets the time-out before the user is
      *      automatically disconnected from the channel. </li>
      * </ul>
-     * @param sp  the current PageInfo context
+     * @param sp  the current scanpage context
      * @param tok the tokenized command
      * @return the result of the command as a String
      */
-    public String replace(PageInfo sp, StringTokenizer tok) {
+    public String replace(scanpage sp, StringTokenizer tok) {
         // The first thing we expect is a channel number.
         if (!tok.hasMoreElements()) {
             log.error("replace(): channel number expected after $MOD-BUILDER-channel-.");

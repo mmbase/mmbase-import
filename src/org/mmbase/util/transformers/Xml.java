@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.14 2005-04-25 14:08:17 michiel Exp $
+ * @version $Id: Xml.java,v 1.11 2004-01-05 17:40:52 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -27,14 +27,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
     public final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
-
-
-    public Xml() {
-        super();
-    }
-    public Xml(int c) {
-        super(c);
-    }
 
     //public final static int BODYTAG = 20;
 
@@ -60,7 +52,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * Attributes of XML tags cannot contain quotes.
      */
     public static String XMLAttributeEscape(String att, char quot) {
-        if (att == null) return "";
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
@@ -80,7 +71,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         return sb.toString();
     }
     public static String XMLAttributeEscape(String att) {
-        if (att == null) return "";
         StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
@@ -110,7 +100,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * </UL>
      **/
     public static String XMLEscape(String xml){
-        if (xml == null) return "";
         StringBuffer sb = new StringBuffer();
         char[] data = xml.toCharArray();
         char c;
@@ -153,7 +142,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * @return the decoded xml data
      **/
     public static String XMLUnescape(String data){
-        if (data == null) return "";
         StringBuffer sb = new StringBuffer();
         int i;
         for (i =0; i < data.length();i++){

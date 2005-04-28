@@ -23,13 +23,13 @@ import org.mmbase.util.logging.*;
  * The module that provides you access to the loaded JDBC interfaces.
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.41 2004-10-25 08:08:39 pierre Exp $
+ * @version $Id: JDBC.java,v 1.37 2004-03-25 09:47:38 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
-    private static final Logger log = Logging.getLoggerInstance(JDBC.class);
+    private static Logger log = Logging.getLoggerInstance(JDBC.class.getName());
+    private String classname = getClass().getName();
 
     private Class  classdriver;
     private Driver driver;
@@ -46,14 +46,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private JDBCProbe probe = null;
     private String defaultname;
     private String defaultpassword;
-    private long probeTime;
-    private long maxLifeTime = 120000;
+    private int probeTime;
 
     public void onload() {
         getProps();
         getDriver();
         loadSupport();
-        poolHandler = new MultiPoolHandler(databasesupport,maxConnections,maxQueries);
+        poolHandler=new MultiPoolHandler(databasesupport,maxConnections,maxQueries);
     }
 
     /*
@@ -64,11 +63,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         // getProps();
         probe = new JDBCProbe(this, probeTime);
         log.info("Module JDBC started (" + this + ")");
-
     }
 
     /**
-     * {@inheritDoc}
      * Reload the properties and driver
      */
     public void reload() {
@@ -149,31 +146,20 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     private void getProps() {
 
-        jdbcDriver = getInitParameter("driver");
-        jdbcURL    = getInitParameter("url");
-        jdbcHost   = getInitParameter("host");
+        jdbcDriver=getInitParameter("driver");
+        jdbcURL=getInitParameter("url");
+        jdbcHost=getInitParameter("host");
         defaultname=getInitParameter("user");
         defaultpassword=getInitParameter("password");
         databasesupportclass=getInitParameter("supportclass");
-        probeTime = 30000;
+
+        probeTime = 30;
         String tmp = getInitParameter("probetime");
         if (tmp != null) {
             try {
-                probeTime = (new Float(tmp)).longValue() * 1000;
-                log.info("Set jdbc-probeTime to " + probeTime + " ms");
+                probeTime = Integer.parseInt(tmp);
             } catch (NumberFormatException e) {
-                log.warn("Specified probetime is not a invalid float :" + e + "(using default " + (probeTime / 1000) + " s)");
-            }
-        }
-
-
-        tmp = getInitParameter("maxlifetime");
-        if (tmp != null) {
-            try {
-                maxLifeTime = (new Float(tmp)).longValue() * 1000;
-                log.info("Set jdbc max life time to " + maxLifeTime + " ms");
-            } catch (NumberFormatException e) {
-                log.warn("Specified max life time is not a invalid float :" + e + "(using default " + (maxLifeTime / 1000) + " s)");
+                log.warn("Specified probetime is not a invalid integer :" + e + "(using default " + probeTime  + " s)");
             }
         }
 
@@ -292,7 +278,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-        return poolHandler.getConnection(url, name, password);
+        return poolHandler.getConnection(url,name,password);
     }
 
     /**
@@ -322,10 +308,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public synchronized void checkTime() {
         try {
-            if (poolHandler != null) poolHandler.checkTime();
+            if (poolHandler!=null) poolHandler.checkTime();
         } catch(Exception e) {
             log.error("could not check the time: " + e);
-            log.error(Logging.stackTrace(e));
+            // Logging.stackTrace(e)
             //e.printStackTrace();
         }
     }
@@ -334,11 +320,11 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * User interface stuff
      * @javadoc
      */
-    public Vector getList(PageInfo sp, StringTagger tagger, String value) {
+    public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
-            String cmd = tok.nextToken();
+            String cmd=tok.nextToken();
             if (cmd.equals("POOLS")) return listPools(tagger);
             if (cmd.equals("CONNECTIONS")) return listConnections(tagger);
         }

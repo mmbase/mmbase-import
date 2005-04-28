@@ -15,16 +15,19 @@ import java.util.*;
 import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.20 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: StringListTag.java,v 1.15.2.2 2004-07-05 17:20:00 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { // need to extend NodeRefferer becasue of AliasListTag, no MI in java.
+
+    private static final Logger log = Logging.getLoggerInstance(StringListTag.class);
 
     protected  List    returnList;
     protected Iterator iterator;
@@ -78,7 +81,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
     // ContextProvider implementation
     public ContextContainer getContextContainer() {
-        return collector;
+        return collector.getContextContainer();
     }
 
 
@@ -171,10 +174,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         // dereference for gc
         returnList = null;
         iterator   = null;
-        if (collector != null) {
-            collector.release();
-            collector  = null;
-        }
+        collector  = null;
         return  super.doEndTag();
     }
 

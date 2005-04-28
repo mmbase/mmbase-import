@@ -4,7 +4,8 @@
 %>
 <mm:content language="$language">
 <mm:import externid="user" required="true" />
-<mm:cloud loginpage="login.jsp" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+
 
 <%  
   try {
@@ -19,13 +20,12 @@
 <mm:import id="current">users</mm:import>
 <%@include file="navigate.div.jsp" %>
 <%@include file="you.div.jsp" %>
-<mm:context id="blabla">
+<mm:context>
   <mm:fieldlist type="edit" fields="owner">
     <mm:fieldinfo type="useinput" />
   </mm:fieldlist>
-  <mm:cloudinfo type="user" write="false" id="clouduser" />
   <mm:field name="username">
-    <mm:compare referid2="clouduser" inverse="true">
+    <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
       <mm:import externid="_groups" vartype="list" jspvar="groups" /> 
       <mm:listrelations type="mmbasegroups" role="contains">
         <mm:relatednode jspvar="group">
@@ -60,9 +60,7 @@
   
   <%@include file="commitGroupOrUserRights.jsp" %>
 </mm:context>
-
-
-<h1><mm:function name="gui" /> (<%=getPrompt(m, "commited")%>)</h1>
+<h1><mm:field name="gui()" /> (<%=getPrompt(m, "commited")%>)</h1>
 <%@include file="edit_user.form.jsp" %>
 </mm:node>
 

@@ -13,6 +13,7 @@ import org.mmbase.bridge.Query;
 import org.mmbase.cache.Cache;
 import org.mmbase.storage.search.*;
 import java.util.*;
+import java.io.FileInputStream;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.37 2005-03-16 16:05:33 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.33 2004-03-08 17:42:31 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -57,9 +58,9 @@ public class ContextAuthorization extends Authorization {
     private SortedSet       allContexts;
 
     protected void load() {
-        log.debug("using: '" + configResource + "' as config file for authentication");
+        log.debug("using: '" + configFile + "' as config file for authentication");
         try {
-            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
+            InputSource in = new InputSource(new FileInputStream(configFile));
             // clear the cache of unfound contexts
             replaceNotFound.clear();
             allowingContextsCache.clear();
@@ -70,34 +71,34 @@ public class ContextAuthorization extends Authorization {
             getGlobalAllowedOperations();
             setAllContexts();
         } catch(org.xml.sax.SAXException se) {
-            log.error("error parsing file :"+configResource);
-            String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
+            log.error("error parsing file :"+configFile);
+            String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
             log.error(message);
             log.error(Logging.stackTrace(se));
             throw new SecurityException(message);
         } catch(java.io.IOException ioe) {
-            log.error("error parsing file :"+configResource);
+            log.error("error parsing file :"+configFile);
             log.error(Logging.stackTrace(ioe));
-            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" );
+            throw new SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
         }
-        log.debug("loaded: '" +  configResource + "' as config file for authorization");
+        log.debug("loaded: '" +  configFile + "' as config file for authorization");
     }
 
     public String getDefaultContext(UserContext user) throws SecurityException {
         String defaultContext = (String)userDefaultContexts.get(user);
-        if (defaultContext == null) {
+        if (defaultContext==null) {
             String xpath = "/contextconfig/accounts/user[@name='"+user.getIdentifier()+"']";
             Node found;
             try {
-                log.debug("going to execute the query:" + xpath + " on file : " + configResource);
+                log.debug("going to execute the query:" + xpath + " on file : " + configFile);
                 found = XPathAPI.selectSingleNode(document, xpath);
             } catch(javax.xml.transform.TransformerException te) {
-                log.error("error executing query: '"+xpath+"' on file: '"+configResource+"'" );
+                log.error("error executing query: '"+xpath+"' on file: '"+configFile+"'" );
                 log.error( Logging.stackTrace(te));
-                throw new SecurityException("error executing query: '"+xpath+"' on file: '"+configResource+"'");
+                throw new SecurityException("error executing query: '"+xpath+"' on file: '"+configFile+"'");
             }
             if (found == null) {
-                throw new SecurityException("Could not find user " + user.getIdentifier() + " in context security config file (" + configResource + ")") ;
+                throw new SecurityException("Could not find user " + user.getIdentifier() + " in context security config file (" + configFile + ")") ;
             }
 
             NamedNodeMap nnm = found.getAttributes();
@@ -292,19 +293,19 @@ public class ContextAuthorization extends Authorization {
             found = XPathAPI.selectSingleNode(document, xpath);
 
             if (found == null) { // fall back to default
-                log.warn("context with name :'" + context + "' was not found in the configuration " + configResource );
+                log.warn("context with name :'" + context + "' was not found in the configuration " + configFile );
 
                 // retrieve the default context...
                 xpath = "/contextconfig/contexts/context[@name = ancestor::contexts/@default]";
 
                 if (log.isDebugEnabled()) {
-                    log.debug("going to execute the query:" + xpath + " on file : " + configResource);
+                    log.debug("going to execute the query:" + xpath + " on file : " + configFile);
                 }
 
                 found  = XPathAPI.selectSingleNode(document, xpath);
 
                 if (found == null) {
-                    throw new SecurityException("Configuration error: Context " + context + " not found and no default context found either (change " + configResource + ")");
+                    throw new SecurityException("Configuration error: Context " + context + " not found and no default context found either (change " + configFile + ")");
                 }
 
                 // put it in the cache
@@ -321,7 +322,7 @@ public class ContextAuthorization extends Authorization {
             // now get the requested operation
 
             // now do the same query with the default context...
-            xpath = "operation[@type='" + operation + "']/grant";
+            xpath = "operation[@type='" + operation.toString() + "']/grant";
             if (log.isDebugEnabled()) {
                 log.debug("going to execute the query:" + xpath + " On " + found.toString());
             }
@@ -588,7 +589,7 @@ public class ContextAuthorization extends Authorization {
                     if (ac.inverse) {
                         return COMPLETE_CHECK;
                     } else {
-                        // may read nothing 
+                        // may read nothing
                         Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
                     }

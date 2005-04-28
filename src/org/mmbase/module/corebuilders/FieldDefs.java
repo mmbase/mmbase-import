@@ -13,7 +13,7 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
-import org.mmbase.util.HashCodeUtil;
+import org.mmbase.util.logging.*;
 
 /**
  * One of the core objects. It is not itself a builder, but is used by builders. Defines one field
@@ -22,7 +22,7 @@ import org.mmbase.util.HashCodeUtil;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.43 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: FieldDefs.java,v 1.40 2004-01-06 12:22:39 michiel Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -42,35 +42,22 @@ public class FieldDefs implements Comparable, Storable {
     public final static int TYPE_LONG      = 7;
     public final static int TYPE_XML       = 8;
     public final static int TYPE_NODE      = 9;
-    /**
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_DATETIME  = 10;
-    /**
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_BOOLEAN   = 11;
-    /**
-     *
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_LIST      = 12;
-
-    public final static int TYPE_MAXVALUE  = 12;
+    public final static int TYPE_MAXVALUE  = 9;
     public final static int TYPE_UNKNOWN   = -1;
 
-    public final static int ORDER_NONE   = -1;
     public final static int ORDER_CREATE = 0;
     public final static int ORDER_EDIT   = 1;
     public final static int ORDER_LIST   = 2;
     public final static int ORDER_SEARCH = 3;
+
+    private static final Logger log = Logging.getLoggerInstance(FieldDefs.class);
 
     private final static String[] DBSTATES = {
         "unknown", "virtual", "unknown", "persistent", "system"
     };
 
     private final static String[] DBTYPES = {
-        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST"
+        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE"
     };
 
     /**
@@ -85,7 +72,6 @@ public class FieldDefs implements Comparable, Storable {
 
     private String  name;
     private int     type    = TYPE_UNKNOWN;
-    private String  typeString;
     private int     state   = DBSTATE_UNKNOWN;
     private boolean notNull = false;
     private String  docType = null; // arch
@@ -148,7 +134,6 @@ public class FieldDefs implements Comparable, Storable {
        if (type < TYPE_MINVALUE || type > TYPE_MAXVALUE) {
             return DBTYPES[0];
        }
-
        return DBTYPES[type - TYPE_MINVALUE + 1];
     }
 
@@ -183,9 +168,6 @@ public class FieldDefs implements Comparable, Storable {
         if (type.equals("DOUBLE"))  return TYPE_DOUBLE;
         if (type.equals("LONG"))    return TYPE_LONG;
         if (type.equals("NODE"))    return TYPE_NODE;
-        if (type.equals("DATETIME"))return TYPE_DATETIME;
-        if (type.equals("BOOLEAN")) return TYPE_BOOLEAN;
-        if (type.startsWith("LIST"))    return TYPE_LIST;
         return TYPE_UNKNOWN;
     }
 
@@ -208,8 +190,7 @@ public class FieldDefs implements Comparable, Storable {
      * @return the description of the type.
      */
     public String getDBTypeDescription() {
-        return typeString;
-        //return FieldDefs.getDBTypeDescription(type);
+        return FieldDefs.getDBTypeDescription(type);
     }
 
     /**
@@ -472,7 +453,6 @@ public class FieldDefs implements Comparable, Storable {
      */
     public void setDBType(int value) {
         type = value;
-        typeString = getDBTypeDescription(type);
     }
 
     /**
@@ -480,12 +460,7 @@ public class FieldDefs implements Comparable, Storable {
      * @param value the name of the type
      */
     public void setDBType(String value) {
-        type       = getDBTypeId(value);
-        if (type != TYPE_UNKNOWN) {
-            typeString = value.toUpperCase();
-        } else {
-            typeString = null;
-        }
+        type = getDBTypeId(value);
     }
 
     /**
@@ -566,15 +541,15 @@ public class FieldDefs implements Comparable, Storable {
     }
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * {@inheritDoc}
      * @since MMBase-1.7
      */
     public boolean equals(Object o) {
         if (o instanceof FieldDefs) {
             FieldDefs f = (FieldDefs) o;
-            return
-                storageEquals(f)
-                && descriptions.equals(f.descriptions)
+            return 
+                storageEquals(f) 
+                && descriptions.equals(f.descriptions) 
                 && guiNames.equals(f.guiNames)
                 && guiType.equals(f.guiType)
                 && guiSearch == f.guiSearch
@@ -587,40 +562,23 @@ public class FieldDefs implements Comparable, Storable {
         }
     }
 
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int result = 0;
-        result = HashCodeUtil.hashCode(result, name);
-        result = HashCodeUtil.hashCode(result, type);
-        result = HashCodeUtil.hashCode(result, state);
-        result = HashCodeUtil.hashCode(result, notNull);
-        result = HashCodeUtil.hashCode(result, isKey);
-        result = HashCodeUtil.hashCode(result, parent);
-        result = HashCodeUtil.hashCode(result, storageType);
-        result = HashCodeUtil.hashCode(result, pos);
-        return result;
-    }
-    
     /**
      * Whether this FieldDefs object is equal to another for storage purposes (so, ignoring gui and documentation fields)
      * @since MMBase-1.7
      */
     public boolean storageEquals(FieldDefs f) {
-        return
+        return 
             name.equals(f.name)
             && type == f.type
-            && state == f.state
+            && state == f.state 
             && notNull == f.notNull
-            && isKey  == f.isKey
-            && size == f.size
+            && isKey  == f.isKey 
+            && size == f.size 
             && (parent == null ? f.parent == null : parent.equals(f.parent))
-            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier))
-            && storageType == f.storageType
+            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier)) 
+            && storageType == f.storageType 
             && pos == f.pos
-            ;
+            ; 
     }
 
     // Storable interfaces
@@ -697,7 +655,7 @@ public class FieldDefs implements Comparable, Storable {
     }
 
     /**
-     * Comparator to sort Fielddefs by creation order, or by position
+     * Comparator to sort Fielddefs bij creation order, or bij position
      * specified in one of the GUIPos fields.
      */
     private static class FieldDefsComparator implements Comparator {
@@ -747,6 +705,13 @@ public class FieldDefs implements Comparable, Storable {
             } else {
                 return 0;
             }
+        }
+
+        /**
+         * Tests whether two Comparators are the same
+         */
+        public boolean equals(Object o) {
+            return (o == this);
         }
     }
 

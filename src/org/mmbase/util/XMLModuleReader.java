@@ -10,20 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import org.mmbase.util.logging.*;
 
-/**
- * @javadoc
- * @move org.mmbase.util.xml
- * @rename ModuleReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
- * @author Daniel Ockeloen
- * @author Pierre van Rooden
- * @version $Id: XMLModuleReader.java,v 1.14 2005-01-30 16:46:35 nico Exp $
- */
 public class XMLModuleReader extends XMLBasicReader {
+    // logger
+    private static final Logger log = Logging.getLoggerInstance(XMLModuleReader.class);
 
     /** Public ID of the Module DTD version 1.0 */
     public static final String PUBLIC_ID_MODULE_1_0 = "-//MMBase//DTD module config 1.0//EN";
@@ -40,7 +33,6 @@ public class XMLModuleReader extends XMLBasicReader {
     /**
      * Register the Public Ids for DTDs used by XMLModuleReader
      * This method is called by XMLEntityResolver.
-     * @since MMBase-1.7
      */
     public static void registerPublicIDs() {
         // various builder dtd versions
@@ -53,10 +45,6 @@ public class XMLModuleReader extends XMLBasicReader {
 
     public XMLModuleReader(String filename) {
         super(filename, XMLModuleReader.class);
-    }
-
-    public XMLModuleReader(InputSource is) {
-        super(is, XMLModuleReader.class);
     }
 
     /**
@@ -111,7 +99,6 @@ public class XMLModuleReader extends XMLBasicReader {
     /**
      * get the optional resource url for the module
      * @return the url of the resource or null if no url was defined
-     * @since MMBase-1.7
      **/
     public String getURLString(){
         Element e = getElementByPath("module.url");

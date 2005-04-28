@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Map;
-import org.mmbase.security.AuthenticationData;
 
 /**
  * The collection of clouds and modules within a Java Virtual Machine.
@@ -18,10 +17,9 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.23 2005-03-18 12:41:04 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.20 2003-11-10 16:47:14 michiel Exp $
  */
 public interface CloudContext {
-
 
     /**
      * Returns all modules available in this context.
@@ -48,12 +46,11 @@ public interface CloudContext {
     public boolean hasModule(String name);
 
     /**
-
      * Returns the cloud with the specified name.
      *
-     * @param name                The name of the cloud to be returned, this is always "mmbase".
-     * @return                    The requested cloud
-     * @throws NotFoundException  if the specified cloud could not be found
+     * @param name                     the name of the cloud to be returned
+     * @return                         the requested cloud
+     * @throws CloudNotFoundException  if the specified cloud could not be found
      * @throws SecurityException       if no anonymous user can be created
      */
     public Cloud getCloud(String name);
@@ -61,23 +58,14 @@ public interface CloudContext {
     /**
      * Returns the cloud with the specified name, with authentication
      *
-     * @param name                The name of the cloud to be returned, always "mmbase".
-     * @param authenticationType  The type of authentication, which should be
+     * @param name                the name of the cloud to be returned
+     * @param authenticationType  the type of authentication, which should be
      *                            used by the authentication implementation.
      * @param loginInfo           the user related login information.
      * @return                    the requested cloud
      * @throws NotFoundException  if the specified cloud could not be found
      */
     public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
-
-    /**
-     * Returns the cloud with the specified name, based on an existing User object (e.g. of another {@link cloud#getUser}
-     * @param name                The name of the cloud to be returned, always "mmbase".
-     * @param user                The user object for which this cloud object must be created.
-     * @return                    the requested cloud
-     * @since MMBase-1.8
-     */
-    public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
 
     /**
      * Returns the names of all the clouds known to the system
@@ -160,12 +148,4 @@ public interface CloudContext {
      */
     public StringList createStringList();
     
-
-    /**
-     * Acquired information about the currently configuration Authentication implementation.
-     * @since MMBase-1.8
-     */
-    public AuthenticationData getAuthentication();
-
-
  }

@@ -5,7 +5,7 @@
 <mm:content language="$language">
 <mm:import externid="context" required="true" />
 
-<mm:cloud  loginpage="login.jsp" jspvar="cloud" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
 <mm:compare referid="context" value="new">
   <mm:remove referid="context" />

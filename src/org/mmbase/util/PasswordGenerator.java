@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
+
 import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,10 +33,9 @@ import org.mmbase.util.logging.Logging;
  * 9 : is replaced by a random digit (0-9)<br />
  * <br />
  *
- * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PasswordGenerator.java,v 1.6 2003-03-10 11:51:09 pierre Exp $
  */
 
 public class PasswordGenerator extends Module implements PasswordGeneratorInterface {
@@ -218,7 +218,7 @@ public class PasswordGenerator extends Module implements PasswordGeneratorInterf
         } else if (tmplChar == 'S') {        //random syllable
             if (consonantNext) {
                 charsOut = consonants[mod(ranPool.value(), consonants.length)];
-                if (!"qu".equals(charsOut)) consonantNext = false;
+                if (charsOut != "qu") consonantNext = false;
             } else {
                 charsOut = vowels[mod(ranPool.value(), vowels.length)];
                 consonantNext = true;

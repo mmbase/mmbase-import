@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.49 2005-03-16 14:52:20 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.42.2.3 2005-03-14 18:33:24 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -97,14 +97,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
 
-    /**
-     * @todo  EXPERIMENTAL
-     * @since MMBase-1.8
-     */
-    protected void handleEditTag() {
-        // Andre is busy with this.
-    }
-
     public int doStartTag() throws JspTagException {
         node = null;
         fieldName = (String) name.getValue(this);
@@ -136,17 +128,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 f.getGenerator().add(node, field); // add the field
                 value = "";
             } else { // do the rest as well.
-
-                // if a value is really null, should it be past as null or cast?
-                // I am leaning to the latter but it would break backward compatibility.
-                // currently implemented this behavior for DateTime values (new fieldtype)
-                // Maybe better is an attribute on fieldtag that determines this?
-                // I.e. ifempty = "skip|asis|default"
-                // where:
-                //   skip: skips the field tag
-                //   asis: returns null as a value
-                //   default: returns a default value
-
                 switch(helper.getVartype()) {
                 case WriterHelper.TYPE_NODE:
                     value = node.getNodeValue(fieldName);
@@ -157,7 +138,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 case WriterHelper.TYPE_FIELD:
                     value = node.getFieldValue(fieldName).getField();
                     break;
-                default:
+                default: 
                     switch(field.getType()) {
                     case Field.TYPE_BYTE:
                         value = node.getByteValue(fieldName);
@@ -175,18 +156,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                     case Field.TYPE_FLOAT:
                         value = new Float(node.getFloatValue(fieldName));
                         break;
-                    case Field.TYPE_DATETIME:
-                        value = node.getValue(fieldName);
-                        if (value != null) {
-                            value = node.getDateValue(fieldName);
-                        }
-                        break;
-                    case Field.TYPE_BOOLEAN:
-                        value = new Boolean(node.getBooleanValue(fieldName));
-                        break;
-                    case Field.TYPE_LIST:
-                        value = node.getListValue(fieldName);
-                        break;
                     default:
                         value = convert(node.getStringValue(fieldName));
                     }
@@ -194,10 +163,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
-
-
-        handleEditTag();
-
+        
         helper.setValue(value);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
@@ -210,7 +176,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
-
+       
     /**
      * write the value of the field.
      **/

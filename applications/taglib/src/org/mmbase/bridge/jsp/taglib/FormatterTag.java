@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.*;
@@ -23,9 +24,11 @@ import javax.xml.transform.TransformerFactory;
 
 import org.mmbase.bridge.util.xml.Generator;
 
-import java.net.URL;
+import java.io.File;
 import java.util.*;
 import javax.servlet.jsp.PageContext;
+
+
 
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
@@ -39,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.50 2005-04-15 14:40:11 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.37.2.4 2005-03-14 18:33:24 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -53,8 +56,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     protected Source   xsltSource = null;
 
-    private static javax.xml.parsers.DocumentBuilder documentBuilder;
-    private URL cwd;
+    private static javax.xml.parsers.DocumentBuilder        documentBuilder;
+    private File cwd;
 
     private static final class Counter {
         private int i = 0;
@@ -63,7 +66,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             return "" + i;
         }
     }
-    private Counter  counter; // times that formatter was called in this page, can be useful for some transformations to know.
+    private Counter  counter; // times that formatter was called in this page, can be usefull for some transformations to know.
+
 
     // formats that needs XML input, when setting these 'wantXML' will be true, and a DOM Document will be created.
 
@@ -85,7 +89,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private static final int FORMAT_DATE            = 1002;
     private static final int FORMAT_LOWERCASE       = 1003;
     private static final int FORMAT_UPPERCASE       = 1004;
-    private static final int FORMAT_NONE            = 2000; // can be useful for only the escape= functionality.
 
 
     private static final int FORMAT_UNSET           = -1;
@@ -138,12 +141,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     }
 
     protected int getFormat() throws JspTagException {
+        if (format == Attribute.NULL) return FORMAT_UNSET;
         String fs = format.getString(this).toLowerCase();
-        if ("".equals(fs)) {
-            return FORMAT_UNSET;
-        } else if ("none".equals(fs)) {
-            return FORMAT_NONE;
-        } else if ("xhtml".equals(fs)) {
+        if ("xhtml".equals(fs)) {
             return FORMAT_XHTML;
         } else if ("presentxml".equals(fs)) {
             return  FORMAT_PRESENTXML;
@@ -216,10 +216,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-        try {
-            cwd  = pageContext.getServletContext().getResource(org.mmbase.util.ResourceLoader.getDirectory(request.getServletPath()) + "/");
-        } catch (Exception e) {
-        }
+        cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile();        
     }
 
 
@@ -286,10 +283,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
-                    javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
-                                                pageContext.getServletContext().getResource(request.getServletPath()).toString()
-                                                );
+                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)));
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + body, e);
                 }
@@ -316,7 +310,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         // useXsl is the pathless name.
         // First it is searced for in <current directory>/xslt
         // if it cannot be found there, then the default in mmbase.config/xslt will be used.
-        //        File useXslt;
+        File useXslt;
 
         if (format != Attribute.NULL) {
             if (xslt != Attribute.NULL) {
@@ -326,10 +320,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 throw new JspTagException("Cannot use  'xslt' subtag and the 'format' attribute");
             }
             switch(getFormat()) {
-            case FORMAT_NONE:
-                helper.useEscaper(true); 
-                helper.setValue(body);
-                break;
             case FORMAT_XHTML:
                 helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(xslTransform(doc, "xslt/2xhtml.xslt"));
@@ -372,9 +362,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 Date datum = new Date((new Long(body)).longValue() * 1000);
                 helper.setValue(dateFormat.format(datum));
                 break;
-            default:
-                log.debug("Unknown format "+getFormat());
-                break;
             }
         } else {
 
@@ -406,6 +393,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         if (timerHandle != -1) {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
+
         xsltSource = null;
         helper.doEndTag();
         return super.doEndTag();
@@ -431,7 +419,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * @return The result ot the transformation.
      */
     private String xslTransform(Document doc, Source xsl) throws JspTagException {
-        log.info("transforming in " + cwd);
+        log.debug("transforming");
 
         TemplateCache cache= TemplateCache.getCache();
         Templates cachedXslt = cache.getTemplates(xsl);
@@ -473,8 +461,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             Iterator i = options.getList(this).iterator();
             while (i.hasNext()) {
                 String option = (String) i.next();
-                // List   o = StringSplitter.split(option, "=");
-                List o = Arrays.asList( option.trim().split("\\s*=\\s*") );
+                List   o = StringSplitter.split(option, "=");
                 if (o.size() != 2) {
                     throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
                     
@@ -494,11 +481,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      */
     private String xslTransform(Document doc, String xsl) throws JspTagException {
         try {
-            Source source = getFactory().getURIResolver().resolve(xsl, null);
-            if (source == null) {
-                throw new TaglibException("Could not find XSL for " + xsl + " with uri-resolver " + getFactory().getURIResolver());
-            }
-            return xslTransform(doc, source);
+            return xslTransform(doc, getFactory().getURIResolver().resolve(xsl, null));
          } catch (javax.xml.transform.TransformerException e) {
              throw new TaglibException(e); // probably the file could not be found.
          }

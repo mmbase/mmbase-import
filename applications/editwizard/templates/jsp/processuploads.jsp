@@ -2,7 +2,6 @@
 %><%@ page import="org.apache.commons.fileupload.*"
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%@ page import="org.mmbase.applications.editwizard.Config" %>
-<mm:content type="text/html" expires="0" language="<%=ewconfig.language%>">
 <html>
 <body bgcolor="white">
 <h1>Upload</h1>
@@ -13,7 +12,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.18 2004-09-30 09:13:48 michiel Exp $
+     * @version  $Id: processuploads.jsp,v 1.16.2.1 2004-09-30 08:45:41 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -127,4 +126,3 @@ if (! ewconfig.subObjects.empty()) {
 </mm:log>
 </body>
 </html>
-</mm:content>

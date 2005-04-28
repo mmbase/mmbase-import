@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.23 2004-07-26 20:17:58 nico Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.21.2.2 2004-07-26 20:12:16 nico Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -70,6 +70,20 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
         return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
+    /**
+     * Find the CloudProvider and return its cloud variable in one
+     * step. And the result of findCloudProvider is stored, so
+     * invoking this function more often is better then invoking
+     * findCloudProvider every time.
+     *
+     * @return a Cloud
+     * @throws JspTagException
+     * 
+     * @deprecated (2004-05-08) use getCloudWeblogic, because this breaks the bean specs
+     */
+    public Cloud getCloud() throws JspTagException {
+    	return getCloudVar();
+    }
     
     /**
      * Find the CloudProvider and return its cloud variable in one

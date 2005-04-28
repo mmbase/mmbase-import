@@ -23,23 +23,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
-/**
- * This class reads a relation node from an exported application.
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ContextDepthReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
- * @author Daniel Ockeloen
- * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.23 2005-01-30 16:46:35 nico Exp $
- */
 public class XMLRelationNodeReader extends XMLBasicReader {
 
    /**
-    * Logger routine
-    */
+   * Logger routine
+   */
    private static Logger log =
       Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
 
@@ -56,17 +45,9 @@ public class XMLRelationNodeReader extends XMLBasicReader {
         this.applicationpath = applicationpath;
     }
 
-    /**
-     * @since MMBase-1.8
-     */
-    public XMLRelationNodeReader(InputSource is, String applicationpath) {
-        super(is, false);
-        this.applicationpath = applicationpath;
-    }
-
    /**
-    * get the name of this application
-    */
+   * get the name of this application
+   */
    public String getExportSource() {
       Node n1 = document.getFirstChild();
 
@@ -80,7 +61,7 @@ public class XMLRelationNodeReader extends XMLBasicReader {
             return (n2.getNodeValue());
          }
       }
-      return null;
+      return (null);
    }
 
    /**
@@ -106,6 +87,7 @@ public class XMLRelationNodeReader extends XMLBasicReader {
             catch (java.text.ParseException e) {
                return -1;
             }
+
          }
       }
       return -1;
@@ -271,13 +253,13 @@ public class XMLRelationNodeReader extends XMLBasicReader {
         byte[] buffer = new byte[filesize];
         try {
             FileInputStream scan = new FileInputStream(bfile);
-            scan.read(buffer, 0, filesize);
+            int len = scan.read(buffer, 0, filesize);
             scan.close();
         } catch (FileNotFoundException e) {
             log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
         } catch (IOException e) {
             log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
         }
-        return buffer;
+        return (buffer);
     }
 }

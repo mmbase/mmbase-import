@@ -21,7 +21,6 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,12 +29,10 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.124 2005-03-01 14:21:55 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.112.2.3 2004-10-29 15:01:21 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
-
-    private Map properties = new HashMap();
 
     // lastRequestId
     // used to generate a temporary ID number
@@ -44,7 +41,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     private static int lastRequestId = -2;
 
     // link to cloud context
-    private CloudContext cloudContext = null;
+    private BasicCloudContext cloudContext = null;
 
     // link to typedef object for retrieving type info (builders, etc)
     private TypeDef typedef = null;
@@ -71,9 +68,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud = null;
 
+    // MMBaseCop
     MMBaseCop mmbaseCop = null;
 
-    protected UserContext userContext = null;
+    // User context
+    protected BasicUser userContext = null;
 
     private MultilevelCache multilevelCache; // should be static?
 
@@ -88,8 +87,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
-     * @param cloudName name of cloud
-     * @param cloud parent cloud
      */
     BasicCloud(String cloudName, BasicCloud cloud) {
         cloudContext = cloud.cloudContext;
@@ -108,72 +105,20 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     /**
-     * @param name name of cloud
-     * @param authenticationType authentication type
-     * @param loginInfo Map with login credentials
-     * @param cloudContext cloudContext of cloud
-     * @throws NotFoundException If MMBase not yet started, or shutting down.
-     * @throws BridgeException   No security could be obtained.
-     * @throws SecurityException  Could not perform login
      */
     BasicCloud(String name, String authenticationType, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
-        this.cloudContext = (BasicCloudContext) cloudContext;
-        init();
-        userContext = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
-        if (userContext == null) {
-            log.debug("Login failed");
-            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
-        }        
-        // end authentication...
-
-        if (userContext.getAuthenticationType() == null) {
-            log.warn("Security implementation did not set 'authentication type' in the user object.");
-        }
-
-        // normally, we want the cloud to read it's context from an xml file.
-        // the current system does not support multiple clouds yet,
-        // so as a temporary hack we set default values
-        this.name = name;
-        description = name;
-    }
-
-    /**
-     * @param name name of cloud
-     * @param authenticationType authentication type
-     * @param loginInfo Map with login credentials
-     * @param cloudContext cloudContext of cloud
-     * @throws NotFoundException If MMBase not yet started, or shutting down.
-     * @throws BridgeException   No security could be obtained.
-     * @throws SecurityException  Could not perform login
-     */
-    BasicCloud(String name, UserContext user, CloudContext cloudContext) {
-        // get the cloudcontext and mmbase root...
-        this.cloudContext = cloudContext;
-        init();
-        userContext = user;
-        if (userContext == null) {
-            throw new java.lang.SecurityException("Login invalid: did not supply user object");
-        }        
-
-        if (userContext.getAuthenticationType() == null) {
-            log.warn("Security implementation did not set 'authentication type' in the user object.");
-        }
-
-        this.name = name;
-        description = name;
-
-    }
-
-    private final void init() {
+        this.cloudContext = (BasicCloudContext)cloudContext;
         MMBase mmb = BasicCloudContext.mmb;
 
+        log.debug("Creating a cloud");
+
         if (! mmb.getState()) {
-            throw new NotFoundException("MMBase not yet, or not successfully initialized (check mmbase log)");
+            throw new BridgeException("MMBase not yet, or not successfully initialized (check mmbase log)");
         }
 
         if (mmb.isShutdown()) {
-            throw new NotFoundException("MMBase is shutting down.");
+            throw new BridgeException("MMBase is shutting down.");
         }
 
         log.debug("Doing authentication");
@@ -184,18 +129,30 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             log.error(message);
             throw new BridgeException(message);
         }
+        org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
+        if (uc == null) {
+            log.debug("Login failed");
+            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
+        }
+        userContext = new BasicUser(mmbaseCop, uc, authenticationType);
+        // end authentication...
+
         log.debug("Setting up cloud object");
         // other settings of the cloud...
         typedef = mmb.getTypeDef();
         locale = new Locale(mmb.getLanguage(), "");
+
+        // normally, we want the cloud to read it's context from an xml file.
+        // the current system does not support multiple clouds yet,
+        // so as a temporary hack we set default values
+        this.name = name;
+        description = name;
 
         // generate an unique id for this instance...
         account = "U" + uniqueId();
 
         // start multilevel cache
         multilevelCache = MultilevelCache.getCache();
-
-
     }
 
     // Makes a node or Relation object based on an MMObjectNode
@@ -292,7 +249,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public NodeManagerList getNodeManagers() {
-        List nodeManagers = new ArrayList();
+        Vector nodeManagers = new Vector();
         for (Enumeration builders = BasicCloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul = (MMObjectBuilder)builders.nextElement();
             if (!bul.isVirtual() && check(Operation.READ, bul.oType)) {
@@ -331,7 +288,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * Retrieves a node manager
      * @param nodeManagerId ID of the NodeManager to retrieve
      * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
-     * @throws NotFoundException node manager not found
      */
     public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException {
         return getNodeManager(typedef.getValue(nodeManagerId));
@@ -340,9 +296,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     /**
      * Retrieves a RelationManager.
      * Note that you can retrieve a manager with source and destination reversed.
-     * @param sourceManagerId number of the NodeManager of the source node
-     * @param destinationManagerId number of the NodeManager of the destination node
-     * @param roleId number of the role
+     * @param sourceManagerID number of the NodeManager of the source node
+     * @param destinationManagerID number of the NodeManager of the destination node
+     * @param roleID number of the role
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
@@ -404,7 +360,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         } else {
             return rm;
         }
-
+        
     }
 
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
@@ -541,7 +497,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return description;
     }
 
-    public UserContext getUser() {
+    public User getUser() {
         return userContext;
     }
 
@@ -560,7 +516,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return mmbaseCop.getAuthorization().check(userContext, nodeID, operation);
+        return mmbaseCop.getAuthorization().check(userContext.getUserContext(), nodeID, operation);
     }
 
     /**
@@ -569,7 +525,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @param nodeID the node on which to check the operation
     */
     void verify(Operation operation, int nodeID) {
-        mmbaseCop.getAuthorization().verify(userContext, nodeID, operation);
+        mmbaseCop.getAuthorization().verify(userContext.getUserContext(), nodeID, operation);
     }
 
     /**
@@ -581,7 +537,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        return mmbaseCop.getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        return mmbaseCop.getAuthorization().check(userContext.getUserContext(), nodeID, srcNodeID, dstNodeID, operation);
     }
 
     /**
@@ -592,7 +548,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @param dstNodeID the destination node for this relation
     */
     void verify(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        mmbaseCop.getAuthorization().verify(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        mmbaseCop.getAuthorization().verify(userContext.getUserContext(), nodeID, srcNodeID, dstNodeID, operation);
     }
 
     // javadoc inherited
@@ -614,24 +570,33 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      * Aggregating query result.
-     * @param query query to execute
-     * @return list of nodes
      * @since MMBase-1.7
      */
     protected NodeList getResultNodeList(Query query) {
         try {
-
-            boolean checked = setSecurityConstraint(query);
-
+            Authorization auth = mmbaseCop.getAuthorization();
+            boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+            
+            if (query instanceof BasicQuery) {
+                BasicQuery bquery = (BasicQuery) query;
+                if (bquery.isSecure()) {
+                    checked = true;
+                } else {
+                    Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                    bquery.setSecurityConstraint(check);
+                    checked = bquery.isSecure();
+                }
+            }
+        
             if (! checked) {
-                log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
+                log.warn("Query could not be completely modified by security: Aggregated result might be wrong");
             }
             AggregatedResultCache cache = AggregatedResultCache.getCache();
 
             List resultList = (List) cache.get(query);
-            if (resultList == null) {
+            if (resultList == null) {            
                 ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
-                resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
+                resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
                 cache.put(query, resultList);
             }
             query.markUsed();
@@ -653,16 +618,15 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * Result with all Cluster - MMObjectNodes, with cache. Security is not considered here (the
      * query is executed thoughtlessly). The security check is done in getSecureNodes, which calls
      * this one.
-     * @param query query to execute
-     * @return list of cluster nodes
      * @since MMBase-1.7
      */
-    protected List    getClusterNodes(Query query) {
 
+    protected List    getClusterNodes(Query query) {
+        
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
         // check multilevel cache if needed
         List resultList = (List)multilevelCache.get(query);
-
+        
         // if unavailable, obtain from database
         if (resultList == null) {
             log.debug("result list is null, getting from database");
@@ -673,43 +637,81 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
             multilevelCache.put(query, resultList);
         }
-
+    
         query.markUsed();
 
         return resultList;
     }
 
     /**
-     * @param query add security constaint to this query
-     * @return is query secure
+     * Based on NodeSearchQuery. Executes the query and collects the result. Security constraints
+     * are added to the query first, and if those dont' suffice, every node of the result list is checked
+     * afterwards.
+     *
      * @since MMBase-1.7
      */
-    boolean setSecurityConstraint(Query query) {
+    /*
+    protected NodeList getSecureNodes(NodeQuery query) {
+
+        Authorization auth = mmbaseCop.getAuthorization();
+        boolean checked = false; 
+
+
+        BasicNodeQuery bquery = (BasicNodeQuery) query;
+        if (bquery.isSecure()) {
+            checked = true;
+        } else {
+            Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+            bquery.setSecurityConstraint(check);
+            checked = bquery.isSecure();
+        }
+
+        List resultList;
+        try {
+            resultList = ((BasicNodeManager) bquery.getNodeManager()).builder.getNodes((NodeSearchQuery)bquery.getQuery()); // result with all MMObjectNodes (without security)
+            // cached in MMObjectBuilder.
+
+        } catch (SearchQueryException sqe) {
+            throw new BridgeException(sqe);
+        }
+        query.markUsed();
+
+        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
+        if (! checked) {
+            log.debug("checking read rights");
+            list.autoConvert = false;
+
+            ListIterator i = list.listIterator();
+            while (i.hasNext()) {
+                if (!check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
+                    i.remove();
+                }
+            }
+        }
+        list.setProperty("query", query);
+        list.autoConvert = true;
+        return list;
+
+    }
+    */
+
+    /**
+     * @since MMBase-1.7
+     */
+    boolean setSecurityConstraint(Query query) {   
         Authorization auth = mmbaseCop.getAuthorization();
         if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             BasicQuery bquery = (BasicQuery) query;
-            if (bquery.isSecure()) { // already set, and secure
+            if (bquery.isSecure()) {
                 return true;
             } else {
-                if (bquery.queryCheck == null) { // not set already, do it now.
-                    Authorization.QueryCheck check = auth.check(userContext, query, Operation.READ);
-                    if (log.isDebugEnabled()) {
-                        log.debug("FOUND security check " + check + " FOR " + query);
-                    }
-                    bquery.setSecurityConstraint(check);
-                }
+                Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                bquery.setSecurityConstraint(check);
                 return bquery.isSecure();
-            }
-        } else {
-            // should not happen
-            if (query != null) {
-                log.warn("Don't know how to set a security constraint on a " + query.getClass().getName());
-            } else {
-                log.warn("Don't know how to set a security constraint on NULL");
             }
         }
         return false;
-    }
+    } 
 
     void   checkNodes(BasicNodeList resultNodeList, Query query) {
         Authorization auth = mmbaseCop.getAuthorization();
@@ -722,9 +724,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         log.debug("Starting read-check");
         // resultNodeList is now a BasicNodeList; read restriction should only be applied now
         // assumed it though, that it contain _only_ MMObjectNodes..
-
+        
         // get authorization for this call only
-
+        
+        UserContext user = userContext.getUserContext();
         List steps = query.getSteps();
         Step nodeStep = null;
         if (query instanceof NodeQuery) {
@@ -750,10 +753,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                     if (pref == null) {
                         pref = step.getTableName();
                     }
-                    nodenr = node.getIntValue(pref + ".number");
-                }
+                    nodenr = node.getIntValue(pref + ".number");                 
+                } 
                 if (nodenr != -1) {
-                    mayRead = auth.check(userContext, nodenr, Operation.READ);
+                    mayRead = auth.check(user, nodenr, Operation.READ);            
                 }
             }
 
@@ -762,19 +765,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
         }
         resultNodeList.autoConvert = true;
-
-
+        
+        
     }
 
 
     /**
      * Result with Cluster Nodes (checked security)
-     * @param query query to execute
-     * @return lisr of cluster nodes
      * @since MMBase-1.7
      */
     protected NodeList getSecureList(Query query) {
-
+     
         boolean checked = setSecurityConstraint(query);
 
         List resultList = getClusterNodes(query);
@@ -794,8 +795,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             tempNodeManager = new VirtualNodeManager(this);
         }
         resultNodeList = new BasicNodeList(resultList, tempNodeManager);
-
-        resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
+        
+        resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);       
 
         if (! checked) {
             checkNodes(resultNodeList, query);
@@ -815,7 +816,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         String searchDir,
         boolean distinct) {
 
-        if ((nodePath==null) || nodePath.equals("")) throw new BridgeException("Node path cannot be empty - list at least one nodemanager.");
         Query query = Queries.createQuery(this, startNodes, nodePath, fields, constraints, orderby, directions, searchDir, distinct);
         return getList(query);
     }
@@ -881,10 +881,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * 'last' NodeManager and the relation should be queried.  If fields are present already, but
      * not like this, an exception is thrown. If not fields are present, the rights fields are added
      * first (if the query is still unused, otherwise trhows Exception).
-     * @param query query to execute
-     * @return list of normal nodes
      *
-     * @throws BridgeException If wrong fields in query or could not be added.
+     * @throws BridgException If wrong fields in query or could not be added.
      *
      * @since MMBase-1.7
      */
@@ -900,7 +898,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @todo There is no specific order in which clouds are ordered at this moment.
      *       Currently, all clouds within one CloudContext are treated as being equal.
      * @param o the object to compare it with
-     * @return compare number
      */
     public int compareTo(Object o) {
         int h1 = ((Cloud)o).getCloudContext().hashCode();
@@ -922,49 +919,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @todo Add checks for multiple clouds in the same cloudcontext
      *       Currently, all clouds within one CloudContext are treated as being equal.
      * @param o the object to compare it with
-     * @return is equal
      */
     public boolean equals(Object o) {
         // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
         // are treated as the 'same' cloud. This may change in future implementations
         return (o instanceof Cloud) && cloudContext.equals(((Cloud)o).getCloudContext());
-    }
-
-    public Object getProperty(Object key) {
-        return properties.get(key);
-    }
-
-    public void setProperty(Object key, Object value) {
-        properties.put(key,value);
-    }
-
-    public Set getFunctions(String setName) {
-        FunctionSet set = FunctionSets.getFunctionSet(setName);
-        if (set == null) {
-            throw new NotFoundException("Functionset with name " + setName + "does not exist.");
-        }
-        // get functions
-        Map functionMap = set.getFunctions();
-        // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functionMap.values().iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this,fun));
-        }
-        return functionSet;
-    }
-
-    public Function getFunction(String setName, String functionName) {
-        FunctionSet set = FunctionSets.getFunctionSet(setName);
-        if (set == null) {
-            throw new NotFoundException("Functionset with name " + setName + "does not exist.");
-        }
-        Function fun = set.getFunction(functionName);
-        if (fun == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist in function set with name "+ setName + ".");
-        }
-        // wrap function
-        return new BasicFunction(this, fun);
     }
 
 }

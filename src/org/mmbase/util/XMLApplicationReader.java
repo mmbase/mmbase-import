@@ -13,18 +13,19 @@ import java.util.*;
 
 import org.w3c.dom.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
- * @javadoc
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ApplicationReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.23 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.19 2003-04-10 13:51:37 pierre Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XMLApplicationReader.class.getName());
 
     /** Public ID of the Application DTD version 1.0 */
     public static final String PUBLIC_ID_APPLICATION_1_0 = "-//MMBase//DTD application config 1.0//EN";
@@ -44,8 +45,7 @@ public class XMLApplicationReader extends XMLBasicReader {
 
     /**
      * Register the Public Ids for DTDs used by XMLApplicationReader
-     * This method is called by XMLEntityResolve
-     * @since MMBase-1.7
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
         // various builder dtd versions
@@ -60,10 +60,6 @@ public class XMLApplicationReader extends XMLBasicReader {
 
     public XMLApplicationReader(String filename) {
         super(filename, XMLApplicationReader.class);
-        root=getElementByPath("application");
-    }
-    public XMLApplicationReader(org.xml.sax.InputSource is) {
-        super(is, XMLApplicationReader.class);
         root=getElementByPath("application");
     }
 
@@ -106,7 +102,6 @@ public class XMLApplicationReader extends XMLBasicReader {
 
     /**
      * Get the applicationlist required by this application
-     * @since MMBase-1.7
      */
     public List getRequirements() {
         List results=new Vector();

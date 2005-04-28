@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Queries a Tree from MMBase. A Tree is presented as a List of MultiLevel results (ClusterNodes),
@@ -22,11 +23,12 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.9 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: GrowingTreeList.java,v 1.2.2.3 2004-07-29 17:19:42 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public  class GrowingTreeList extends TreeList {
+    private static final Logger log = Logging.getLoggerInstance(GrowingTreeList.class);
 
     protected Constraint cleanConstraint;
     protected NodeQuery  pathElementTemplate;
@@ -36,15 +38,15 @@ public  class GrowingTreeList extends TreeList {
      * @param q              The 'base' query defining the minimal depth of the tree elements
      * @param maxDepth       You must supply a maximal depth of the nodes, because MMBase is basicly a network rather then a tree, so
      *                        tree representations could be infinitely deep.
-     * @param nodeManager    Destination Nodemanager in the tree
-     * @param role           Role of the relations in the tree
-     * @param searchDir      Direction of the relations in the tree
+     * @param NodeManager
+     * @param role
+     * @param searchDir
      * @since MMBase-1.7.1
      */
+
     public GrowingTreeList(NodeQuery q, int maxDepth, NodeManager nodeManager, String role, String searchDir) {
         super(q);
 
-        if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         pathElementTemplate = cloud.createNodeQuery();
         Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
         pathElementTemplate.setAlias(step, "object0");
@@ -64,7 +66,6 @@ public  class GrowingTreeList extends TreeList {
 
     /**
      * As long as the tree is not 'started' yet, max depth can still be changed.
-     * @param maxDepth max number of Steps
      * @since MMBase-1.7.1
      */
 
@@ -78,10 +79,9 @@ public  class GrowingTreeList extends TreeList {
     }
 
     /**
-     * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before
+     * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before 
      * the tree is 'started'.
      * All but the first step of this query are added. This query itself is never used.
-     * @return Query which is used as a template
      * @since MMBase-1.7.1
      */
 
@@ -89,7 +89,7 @@ public  class GrowingTreeList extends TreeList {
         return pathElementTemplate;
     }
 
-
+   
 
     public int size() {
         while (! foundEnd) {
@@ -106,7 +106,7 @@ public  class GrowingTreeList extends TreeList {
     }
 
     /**
-     *
+     * 
      */
     protected void addPathElement() {
         if (! pathElementTemplate.isUsed()) {
@@ -133,9 +133,9 @@ public  class GrowingTreeList extends TreeList {
                     }
                 }
 
-                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()),
+                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()), 
                                             role,
-                                            RelationStep.DIRECTIONALITY_DESCRIPTIONS[relationStepTemplate.getDirectionality()]);
+                                            RelationStep.DIRECTIONALITY_NAMES[relationStepTemplate.getDirectionality()]);
                 if (newStep == null) {
                     foundEnd = true;
                     break;
@@ -152,7 +152,7 @@ public  class GrowingTreeList extends TreeList {
                     Queries.addConstraint(newQuery, newStepConstraint);
                     Queries.addConstraint(newQuery, newRelationStepConstraint);
                 }
-
+                
 
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), stepTemplate, newQuery, nextStep);
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), relationStepTemplate, newQuery, newStep);

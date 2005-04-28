@@ -10,12 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.cloudcontext;
 
 import java.util.*;
-
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBaseObserver;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Implementation of UserContext (the security presentation of a User).
@@ -24,18 +25,18 @@ import org.mmbase.security.SecurityException;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.16 2005-03-16 23:46:17 michiel Exp $
+ * @version $Id: User.java,v 1.11 2004-01-19 17:27:24 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends BasicUser implements MMBaseObserver {
+public class User extends UserContext implements MMBaseObserver {
+    private static final Logger log = Logging.getLoggerInstance(User.class);
     protected MMObjectNode node;
     private long key;
 
     /**
      * @javadoc
      */
-    protected User(MMObjectNode n, long l, String app) {
-        super(app);
+    User(MMObjectNode n, long l) {
         node = n;
         key = l;
         Users.getBuilder().addLocalObserver(this);
@@ -73,14 +74,14 @@ public class User extends BasicUser implements MMBaseObserver {
     /**
      * @javadoc
      */
-    protected long getKey() {
+    long getKey() {
         return key;
     }
 
     /**
      * @javadoc
      */
-    public boolean isValidNode() {
+    boolean isValid() {
         return (node == null) || Users.getBuilder().isValid(node);
     }
 
@@ -99,19 +100,20 @@ public class User extends BasicUser implements MMBaseObserver {
         return node;
     }
 
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(number, ctype);
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        return nodeChanged(number,ctype);
     }
 
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(number, ctype);
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        return nodeChanged(number,ctype);
     }
 
-    private boolean nodeChanged(String number, String ctype) {
-        if ((node != null) && (node.getNumber() == Integer.parseInt(number))) {
+    private boolean nodeChanged(String number,String ctype) {
+        if ((node!=null) && (node.getNumber()==Integer.parseInt(number))) {
             if (ctype.equals("d")) {
                 node = null; // invalidate
-            } else if (ctype.equals("c")) {
+            }
+            if (ctype.equals("c")) {
                 node = Users.getBuilder().getNode(number);
             }
         }

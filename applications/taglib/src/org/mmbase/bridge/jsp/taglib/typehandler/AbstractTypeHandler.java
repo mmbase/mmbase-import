@@ -8,15 +8,12 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.typehandler;
-
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
@@ -24,11 +21,10 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.29 2005-04-21 12:01:11 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.25.2.1 2004-04-23 13:38:07 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
-    private static final Logger log = Logging.getLoggerInstance(AbstractTypeHandler.class);
 
     protected FieldInfoTag tag;
 
@@ -43,11 +39,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
 
     protected StringBuffer addExtraAttributes(StringBuffer buf) throws JspTagException {
         String options = tag.getOptions();
-        if (options != null) {
-            int i = options.indexOf("extra:");
-            if (i > -1) {
-                buf.append(" " + options.substring(i + 6) + " ");
-            }
+        if (options != null && options.startsWith("extra:")) {
+            buf.append(" " + options.substring(6) + " ");
         }
         return buf;
     }
@@ -77,13 +70,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String fieldName = field.getName();
         String fieldValue = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
-
+            
         } else {
-            if (! fieldValue.equals(node.getStringValue(fieldName))) {
-                //log.info("Field " + field + " " + node.getValue(fieldName) + " --> " + fieldValue);
+            if (! fieldValue.equals(node.getValue(fieldName))) {
                 node.setValue(fieldName,  fieldValue);
                 return true;
-            }
+            } 
         }
         return false;
     }
@@ -140,11 +132,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String value = findString(field);
         if (value != null) {
-            String fieldName = field.getName();
-            if (query.getSteps().size() > 1) {
-                fieldName = field.getNodeManager().getName()+"."+fieldName;
-            }
-            Constraint con = Queries.createConstraint(query, fieldName, getOperator(), getSearchValue(value));
+            Constraint con = Queries.createConstraint(query, field.getName(), getOperator(), getSearchValue(findString(field)));
             Queries.addConstraint(query, con);
             return con;
         } else {
