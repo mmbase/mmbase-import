@@ -44,9 +44,9 @@
                {
                   rightAlign = true;
                }
-               
+
                %>
-                  <table cellspacing="0" cellpadding="0" style="width:1%;"
+                  <table border="0" cellspacing="0" cellpadding="0" style="width:1%;"
                <%
                if(image_position != 8)
                {
@@ -77,7 +77,7 @@
                            %><a href="#" onClick="javascript:launchCenter('../includes/slideshow.jsp?p=$page&i=<mm:field name="images.number" />', 'center', 610, 550);setTimeout('newwin.focus();',250);"><%
                         }
                         %>
-                           <img src="<%@include file="/education/paragraph/imagessource.jsp" %>" alt="" border="0">
+                           <img src="<%@include file="imagessource.jsp" %>" alt="" border="0">
                         <%
                         if(showPopup.equals("1"))
                         {
