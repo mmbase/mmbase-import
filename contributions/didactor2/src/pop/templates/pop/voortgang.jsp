@@ -55,7 +55,6 @@
           <td class="listItem">
               <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$referids,currentfolder">
-                      <mm:param name="education"><mm:field name="educations.number"/></mm:param>
                       <mm:param name="command">detail</mm:param>
                     </mm:treefile>">
 <img src="/didactor/pop/gfx/1.gif" width=4 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 alt="" border="0" /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/4.gif" width=<%= 100-progress.doubleValue() %> height=13 alt="" border="0" /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 alt="" border="0" /></a><mm:write referid="progress"/>%</td>
@@ -64,13 +63,11 @@
               <mm:compare referid="startflag" value="1">
                 <mm:compare referid="finished" value="0">
                   <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
-                      <mm:param name="education"><mm:field name="educations.number" /></mm:param>
                     </mm:treefile>'" value="verder" title="Ga verder met deze cursus">
                 </mm:compare>
               </mm:compare>
               <mm:compare referid="startflag" value="0">
                   <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
-                      <mm:param name="education"><mm:field name="educations.number" /></mm:param>
                     </mm:treefile>'" value="start"
                     title="Begin met deze cursus">
               </mm:compare>
@@ -78,7 +75,6 @@
             <mm:compare referid="intake" value="0">
                   <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$referids,currentfolder">
-                      <mm:param name="intakes"><%= notpassedIntakes %></mm:param>
                       <mm:param name="command">intake</mm:param>
                     </mm:treefile>'" value="intake" 
                     title="Doe de intake voor deze cursus">

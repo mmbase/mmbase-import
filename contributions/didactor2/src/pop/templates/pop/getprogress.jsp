@@ -83,24 +83,36 @@
 
 </mm:node>
 
-<mm:import id="intake" reset="true">1</mm:import>
+<mm:import id="intake" reset="true">0</mm:import>
+<mm:import id="gatekeeper" reset="true">1</mm:import>
 
 <%	String neededCompetencies = "";
 	intakeCompetencies = ""; 
 	notpassedIntakes = ""; 
 %>
 <mm:node number="$education">
-  <mm:relatednodescontainer type="learnobjects" role="posrel">
-    <mm:sortorder field="posrel.pos" direction="up"/>
-    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
-      <mm:related path="needcomp,competencies">
-        <mm:field name="competencies.number" jspvar="thisCompetencie" vartype="String">
-          <% neededCompetencies += thisCompetencie + ","; %>
-        </mm:field>
-      </mm:related>
-    </mm:tree> 
-  </mm:relatednodescontainer> 
+  <mm:relatednodes type="tests" role="related">
+    <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
+    <%@include file="teststatus.jsp"%>
+    <mm:compare referid="teststatus" value="failed">
+       <mm:import id="gatekeeper" reset="true">0</mm:import>
+    </mm:compare>
+  </mm:relatednodes>
+  <mm:compare referid="gatekeeper" value="1">
+    <mm:import id="intake" reset="true">1</mm:import>
+    <mm:relatednodescontainer type="learnobjects" role="posrel">
+      <mm:sortorder field="posrel.pos" direction="up"/>
+      <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+        <mm:related path="needcomp,competencies">
+          <mm:field name="competencies.number" jspvar="thisCompetencie" vartype="String">
+            <% neededCompetencies += thisCompetencie + ","; %>
+          </mm:field>
+        </mm:related>
+      </mm:tree> 
+    </mm:relatednodescontainer> 
+  </mm:compare>
 </mm:node>
+<mm:compare referid="gatekeeper" value="1">
 <% if (neededCompetencies.length() != 0) { %>
   <mm:list nodes="<%= neededCompetencies %>" path="competencies">
     <% boolean needIntake = true;
@@ -119,7 +131,7 @@
         <mm:compare referid="teststatus" value="passed" inverse="true">
           <mm:import id="intake" reset="true">0</mm:import>
           <% passed = false; %>
-          <% notpassedIntakes += thisIntake + ","; %>
+          <% if (notpassedIntakes.equals("")) { notpassedIntakes = thisIntake; } else { notpassedIntakes += thisIntake + ","; } %>
           <mm:compare referid="teststatus" value="failed">
           </mm:compare>
         </mm:compare>
@@ -127,5 +139,6 @@
     </mm:node>
   </mm:list>
 <% } %>
+</mm:compare>
 </mm:node>
 
