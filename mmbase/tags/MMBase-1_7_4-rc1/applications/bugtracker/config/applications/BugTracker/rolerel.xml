@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rolerel exportsource="mmbase://127.0.0.1/mmbase/install" timestamp="20030731153742">
+	<node number="215" owner="admin" snumber="213" dnumber="125" rtype="rolerel" dir="bidirectional">
+		<role>submitter</role>
+	</node>
+
+</rolerel>

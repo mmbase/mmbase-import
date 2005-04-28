@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="vwmtasks" maintainer="mmbase.org" version="0" extends="object">
+
+<!-- <status>
+		what is the status of this builder options : active or inactive
+-->
+<status>active</status>
+
+<!-- <classfile>
+		This is a optional tag, it names the classfile that allows you to add
+		support routines or changes them on a per builder base. For example
+		images has routines to image support etc etc.
+
+		possible values : Dummy or disabled tag makes mmbase use the default setup
+
+				short name : Urls will start class : org.mmbase.module.builders.Urls.class
+
+				long name : nl.vpro.mmbase.module.builders.Urls will start that class
+-->
+<classfile>Vwmtasks</classfile>
+
+<searchage>0</searchage>
+
+<!-- <names>
+		names defines the different names used in user visible parts, singular for
+		for talking about 1 object (Url,Person) and plurar for talking about multiple
+		<Urls, people).
+>-->
+<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="en">Vwm Task</singular>
+		<singular xml:lang="nl">Vwm Opdracht</singular>
+		<!-- multiple per language as defined by ISO 639 -->
+		<plural xml:lang="en">Vwm Tasks</plural>
+		<plural xml:lang="nl">Vwm Opdrachten</plural>
+</names>
+
+<!-- <descriptions>
+		small description of the builder for human reading
+-->
+<descriptions>
+<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Scheduled tasks, an event system to control vwms</description>
+		<description xml:lang="nl">Geplande taken voor het aansturen van een vwm</description>
+</descriptions>
+
+<!-- <fieldlist>
+		 defines the different fields in this object, be carefull the order is important
+		once defined keep them in the same order.
+		If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+<fieldlist>
+		<!-- POS 3 : <field> 'wantedcpu'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">TODO</description>
+					<description xml:lang="nl">TODO</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+		<guiname xml:lang="en">The server that creates the task</guiname>
+		<guiname xml:lang="nl">De server die de taak heeft aangemaakt</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>1</input>
+								<!-- position in list area of the editor -->
+								<list>1</list>
+								<!-- position in search area of the editor -->
+								<search>1</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>wantedcpu</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 4 : <field> 'vwm'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">The name of the VWM that is going to handle the task</description>
+		<description xml:lang="nl">De naam van de VWM die de taak gaat uitvoeren.</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">VWM</guiname>
+						<guiname xml:lang="nl">VWM</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>1</input>
+								<!-- position in list area of the editor -->
+								<list>1</list>
+								<!-- position in search area of the editor -->
+								<search>1</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>vwm</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 5 : <field> 'status'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">The state of the task</description>
+		<description xml:lang="nl">De status van de taak</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">State</guiname>
+						<guiname xml:lang="nl">Status</guiname>
+						<guitype>integer</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>2</input>
+								<!-- position in list area of the editor -->
+								<list>2</list>
+								<!-- position in search area of the editor -->
+								<search>2</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>status</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" notnull="false" key="false">INTEGER</type>
+				</db>
+		</field>
+
+		<!-- POS 6 : <field> 'claimedcpu'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">The sever that handled the request</description>
+		<description xml:lang="nl">De server die de opdracht heeft afgehandeld</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Processor</guiname>
+						<guiname xml:lang="nl">Verwerker</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>3</input>
+								<!-- position in list area of the editor -->
+								<list>3</list>
+								<!-- position in search area of the editor -->
+								<search>3</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>claimedcpu</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 7 : <field> 'wantedtime'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">The time the task was created</description>
+		<description xml:lang="nl">De creatietijd van de taak</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Start Time</guiname>
+						<guiname xml:lang="nl">Starttijd</guiname>
+						<guitype>eventtime</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>4</input>
+								<!-- position in list area of the editor -->
+								<list>4</list>
+								<!-- position in search area of the editor -->
+								<search>4</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>wantedtime</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" notnull="false" key="false">INTEGER</type>
+				</db>
+		</field>
+
+		<!-- POS 8 : <field> 'changedtime'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Describes when the task is mutated for the last time</description>
+		<description xml:lang="nl">Beschrijft wanneer de taak voor het laatst is aangepast</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Last Changed on</guiname>
+						<guiname xml:lang="nl">Laatst Gewijzig op</guiname>
+						<guitype>eventtime</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>3</input>
+								<!-- position in list area of the editor -->
+								<list>3</list>
+								<!-- position in search area of the editor -->
+								<search>3</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>changedtime</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" notnull="false" key="false">INTEGER</type>
+				</db>
+		</field>
+
+		<!-- POS 9 : <field> 'expiretime'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Describes the expiration time of the task</description>
+		<description xml:lang="nl">Beschrijft wanneer de taak verlopen is.</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Expiration Time</guiname>
+						<guiname xml:lang="nl">Verlooptijd</guiname>
+						<guitype>eventtime</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>5</input>
+								<!-- position in list area of the editor -->
+								<list>5</list>
+								<!-- position in search area of the editor -->
+								<search>5</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>expiretime</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" notnull="false" key="false">INTEGER</type>
+				</db>
+		</field>
+
+		<!-- POS 10 : <field> 'task'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">The name of the task</description>
+					<description xml:lang="nl">De naam van de opdracht</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Task</guiname>
+						<guiname xml:lang="nl">Opdracht</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>6</input>
+								<!-- position in list area of the editor -->
+								<list>6</list>
+								<!-- position in search area of the editor -->
+								<search>6</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>task</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 11 : <field> 'id'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">TODO</description>
+					<description xml:lang="nl">TODO</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">ID</guiname>
+						<guiname xml:lang="nl">ID</guiname>
+						<guitype>integer</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>7</input>
+								<!-- position in list area of the editor -->
+								<list>7</list>
+								<!-- position in search area of the editor -->
+								<search>7</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>id</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" notnull="false" key="false">INTEGER</type>
+				</db>
+		</field>
+
+		<!-- POS 12 : <field> 'data'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Additional information for handling the task</description>
+					<description xml:lang="nl">Extra informatie voor de taak</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Data</guiname>
+						<guiname xml:lang="nl">Gegevens</guiname>
+						<guitype>field</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>8</input>
+								<!-- position in list area of the editor -->
+								<list>-1</list>
+								<!-- position in search area of the editor -->
+								<search>8</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>data</name>
+						<!-- MMBase datatype and demands on it -->
+						<type state="persistent" size="255" notnull="false" key="false">STRING</type>
+				</db>
+		</field>
+
+</fieldlist>
+
+</builder>

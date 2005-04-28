@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mimemapping SYSTEM "http://www.mmbase.org/dtd/mimemapping_1_0.dtd">
+<!-- 
+This will arrange the mimetype mapping according to the format/codec. 
+You can use wildcards, the most strict mapping will have priority. 
+i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
+ -->
+<mimemapping>
+	<map format="ra"  codec="*">audio/x-pn-realaudio</map>
+	<map format="rm"  codec="*">application/x-pn-realmedia</map>
+	<map format="ram" codec="*">audio/x-pn-realaudio</map>
+	<map format="ogg" codec="vorbis">audio/x-vorbis</map>
+	<map format="ogg" codec="*">application/x-ogg</map>
+	<map format="*"   codec="*">audio/x-pn-realaudio</map>    
+	<map format="asf" codec="*">video/x-ms-asf</map>    
+	<map format="avi" codec="*">video/x-msvideo</map>    
+	<map format="wmp" codec="*">video/x-ms-wmp</map>    
+</mimemapping>
