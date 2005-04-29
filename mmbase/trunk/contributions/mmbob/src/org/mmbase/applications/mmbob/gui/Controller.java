@@ -1151,8 +1151,15 @@ public class Controller {
             PostArea a = f.getPostArea(postareaid);
 	    Poster p=f.getPoster(poster);
             if (a != null && (p==null || !p.isBlocked())) {
-                int postthreadid = a.newPost(subject, poster, body,mood);
-                virtual.setValue("postthreadid", postthreadid);
+		if (subject.equals("")) {
+                	virtual.setValue("error", "no_subject");
+		} else if (body.equals("")) {
+                	virtual.setValue("error", "no_body");
+		} else {
+                	int postthreadid = a.newPost(subject, poster, body,mood);
+                	virtual.setValue("postthreadid", postthreadid);
+                	virtual.setValue("error", "none");
+		}
             }
         }
         return virtual;
