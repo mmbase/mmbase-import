@@ -263,7 +263,7 @@
                   </tr>
                </table>
 
-      
+
       </div>
 </mm:compare>
 
@@ -687,112 +687,108 @@
       </di:hasrole>
 
       <mm:node number="$user">
-         <mm:related path="classrel,classes">
-            <mm:node element="classes">
-               <mm:related path="related,educations" constraints="<%=sEducationConstraints%>">
-                  <% //Show current education from here %>
-                  <mm:node element="educations">
+         <mm:related path="classrel,classes,related,educations" constraints="<%=sEducationConstraints%>" max="1">
+            <% //Show current education from here %>
+            <mm:node element="educations">
+               <%@include file="whichimage.jsp"%>
+               <table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                     <td>
+                        <a href='javascript:clickNode("education_0")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_education_0"/></a>
+                     </td>
+                     <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
+                     <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /><mm:present referid="pdfurl"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a></nobr></td>
+                  </tr>
+               </table>
+
+               <% // We have to count all learnblocks %>
+               <mm:remove referid="number_of_learnblocks"/>
+               <mm:import id="number_of_learnblocks">0</mm:import>
+               <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
+                  <mm:remove referid="number_of_learnblocks"/>
+                  <mm:import id="number_of_learnblocks"><mm:size /></mm:import>
+               </mm:related>
+
+
+               <div id="education_0" style='display: none'>
+                  <%// create new learnblock item %>
+                  <table border="0" cellpadding="0" cellspacing="0">
+                     <tr>
+                        <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+                        <mm:isgreaterthan referid="number_of_learnblocks" value="0">
+                           <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                        </mm:isgreaterthan>
+                        <mm:islessthan    referid="number_of_learnblocks" value="1">
+                           <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                        </mm:islessthan>
+                        <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
+                        <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<fmt:message key="createNewLearnblockDescription"/>" target="text"><fmt:message key="createNewLearnblock"/></a></nobr></td>
+                     </tr>
+                  </table>
+
+                  <% //All learnblocks for current education %>
+                  <%
+                     int iLearnblockCounter = 0;
+                  %>
+                  <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
+                     <mm:node element="learnobjects">
                         <%@include file="whichimage.jsp"%>
-                        <table border="0" cellpadding="0" cellspacing="0">
-                           <tr>
-                              <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                              <td>
-                                 <a href='javascript:clickNode("education_0")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_education_0"/></a>
-                              </td>
-                              <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
-                              <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /><mm:present referid="pdfurl"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a></nobr></td>
-                           </tr>
-                        </table>
+                        <mm:nodeinfo type="type" id="this_node_type">
+                           <mm:import id="mark_error" reset="true"></mm:import>
+                           <mm:compare referid="this_node_type" value="tests">
+                              <mm:field name="questionamount" id="questionamount">
+                                 <mm:isgreaterthan value="0">
+                                    <mm:countrelations type="questions">
+                                       <mm:islessthan value="$questionamount">
+                                          <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
+                                       </mm:islessthan>
+                                    </mm:countrelations>
+                                 </mm:isgreaterthan>
 
-                        <% // We have to count all learnblocks %>
-                        <mm:remove referid="number_of_learnblocks"/>
-                        <mm:import id="number_of_learnblocks">0</mm:import>
-                        <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
-                           <mm:remove referid="number_of_learnblocks"/>
-                           <mm:import id="number_of_learnblocks"><mm:size /></mm:import>
-                        </mm:related>
+                                 <mm:field name="requiredscore" id="requiredscore">
+                                    <mm:countrelations type="questions">
+                                       <mm:islessthan value="$requiredscore">
+                                          <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
+                                       </mm:islessthan>
+                                    </mm:countrelations>
+                                    <mm:isgreaterthan referid="questionamount" value="0">
+                                       <mm:islessthan referid="questionamount" value="$requiredscore">
+                                          <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
+                                       </mm:islessthan>
+                                    </mm:isgreaterthan>
+                                 </mm:field>
+                              </mm:field>
+                           </mm:compare>
 
-
-                        <div id="education_0" style='display: none'>
-                           <%// create new learnblock item %>
                            <table border="0" cellpadding="0" cellspacing="0">
                               <tr>
                                  <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
-                                 <mm:isgreaterthan referid="number_of_learnblocks" value="0">
-                                    <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
-                                 </mm:isgreaterthan>
-                                 <mm:islessthan    referid="number_of_learnblocks" value="1">
-                                    <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
-                                 </mm:islessthan>
-                                 <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                                 <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<fmt:message key="createNewLearnblockDescription"/>" target="text"><fmt:message key="createNewLearnblock"/></a></nobr></td>
+                                 <td><mm:last inverse="true"><a href='javascript:clickNode("node_0_0_<%= iLearnblockCounter %>")'><img src="gfx/tree_plus.gif" border="0" align="center" valign="middle" id="img_node_0_0_<%= iLearnblockCounter %>"/></a></mm:last><mm:last><a href='javascript:clickNode("node_0_0_<%= iLearnblockCounter %>")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_node_0_0_<%= iLearnblockCounter %>"/></a></mm:last></td>
+                                 <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_node_0_0_<%= iLearnblockCounter %>'/></td>
+                                 <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />" target="text"><mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a></nobr></td>
                               </tr>
                            </table>
+                        </mm:nodeinfo>
 
-                        <% //All learnblocks for current education %>
-                        <%
-                           int iLearnblockCounter = 0;
-                        %>
-                        <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
-                           <mm:node element="learnobjects">
-                              <%@include file="whichimage.jsp"%>
-                              <mm:nodeinfo type="type" id="this_node_type">
-                                 <mm:import id="mark_error" reset="true"></mm:import>
-                                 <mm:compare referid="this_node_type" value="tests">
-                                    <mm:field name="questionamount" id="questionamount">
-                                       <mm:isgreaterthan value="0">
-                                          <mm:countrelations type="questions">
-                                             <mm:islessthan value="$questionamount">
-                                                <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
-                                             </mm:islessthan>
-                                          </mm:countrelations>
-                                       </mm:isgreaterthan>
-
-                                       <mm:field name="requiredscore" id="requiredscore">
-                                          <mm:countrelations type="questions">
-                                             <mm:islessthan value="$requiredscore">
-                                                <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
-                                             </mm:islessthan>
-                                          </mm:countrelations>
-                                          <mm:isgreaterthan referid="questionamount" value="0">
-                                             <mm:islessthan referid="questionamount" value="$requiredscore">
-                                                <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
-                                             </mm:islessthan>
-                                          </mm:isgreaterthan>
-                                       </mm:field>
-                                    </mm:field>
-                                 </mm:compare>
-
-                                 <table border="0" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                       <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
-                                       <td><mm:last inverse="true"><a href='javascript:clickNode("node_0_0_<%= iLearnblockCounter %>")'><img src="gfx/tree_plus.gif" border="0" align="center" valign="middle" id="img_node_0_0_<%= iLearnblockCounter %>"/></a></mm:last><mm:last><a href='javascript:clickNode("node_0_0_<%= iLearnblockCounter %>")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_node_0_0_<%= iLearnblockCounter %>"/></a></mm:last></td>
-                                       <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_node_0_0_<%= iLearnblockCounter %>'/></td>
-                                       <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />" target="text"><mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a></nobr></td>
-                                    </tr>
-                                 </table>
-                              </mm:nodeinfo>
-
-                              <div id="node_0_0_<%= iLearnblockCounter %>" style="display:none">
-                                 <mm:treeinclude write="true" page="/education/wizards/learnobject.jsp" objectlist="$includePath" referids="wizardjsp">
-                                    <mm:param name="startnode"><mm:field name="number" /></mm:param>
-                                    <mm:param name="depth">10</mm:param>
-                                    <mm:last>
-                                       <mm:param name="the_last_parent">true</mm:param>
-                                    </mm:last>
-                                    <mm:last inverse="true">
-                                       <mm:param name="the_last_parent">false</mm:param>
-                                    </mm:last>
-                                 </mm:treeinclude>
-                              </div>
-                           </mm:node>
-                           <%
-                              iLearnblockCounter++;
-                           %>
-                        </mm:related>
+                        <div id="node_0_0_<%= iLearnblockCounter %>" style="display:none">
+                           <mm:treeinclude write="true" page="/education/wizards/learnobject.jsp" objectlist="$includePath" referids="wizardjsp">
+                              <mm:param name="startnode"><mm:field name="number" /></mm:param>
+                              <mm:param name="depth">10</mm:param>
+                              <mm:last>
+                                 <mm:param name="the_last_parent">true</mm:param>
+                              </mm:last>
+                              <mm:last inverse="true">
+                                 <mm:param name="the_last_parent">false</mm:param>
+                              </mm:last>
+                           </mm:treeinclude>
                         </div>
-                  </mm:node>
-               </mm:related>
+                     </mm:node>
+                     <%
+                        iLearnblockCounter++;
+                     %>
+                  </mm:related>
+               </div>
             </mm:node>
          </mm:related>
       </mm:node>
