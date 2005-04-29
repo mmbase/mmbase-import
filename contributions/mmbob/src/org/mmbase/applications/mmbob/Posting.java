@@ -121,10 +121,10 @@ public class Posting {
         //node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
         //node.setStringValue("body", postingBody.transform(body));
 	Node node = ForumManager.getCloud().getNode(id);
-        node.setStringValue("body", body);
-        String parsed = node.getStringValue("body");
-        parsed = translateBody(node.getStringValue("body"),imagecontext);
-        node.setStringValue("c_body", parsed);
+        node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
+        c_body = translateBody(node.getStringValue("body"),imagecontext);
+	body="";
+	node.setValue("c_body",c_body);
 	node.commit();
     }
 
