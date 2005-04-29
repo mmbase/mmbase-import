@@ -326,27 +326,14 @@
         <br/>
 
     <% if (level.intValue() < 20) { %>
-        <mm:compare referid="node_type" value="educations">
-           <mm:related path="posrel,learnobjects" fields="learnobjects.number" orderby="posrel.pos" searchdir="destination">
-               <mm:field name="learnobjects.number" jspvar="partnumber">
-                   <mm:include page="pdfpart.jsp">
-                       <mm:param name="partnumber"><%= partnumber %></mm:param>
-                       <mm:param name="level"><%= (level.intValue()+1) %></mm:param>
-                   </mm:include>
-               </mm:field>
-           </mm:related>
-        </mm:compare>
-
-        <mm:compare referid="node_type" value="educations" inverse="true">
-           <mm:related path="posrel,learnobjects" fields="learnobjects.number" orderby="posrel.pos" searchdir="destination">
-               <mm:field name="learnobjects.number" jspvar="partnumber">
-                   <mm:include page="pdfpart.jsp">
-                       <mm:param name="partnumber"><%= partnumber %></mm:param>
-                       <mm:param name="level"><%= (level.intValue()+1) %></mm:param>
-                   </mm:include>
-               </mm:field>
-           </mm:related>
-        </mm:compare>
+        <mm:related path="posrel,learnobjects" fields="learnobjects.number" orderby="posrel.pos" searchdir="destination">
+            <mm:field name="learnobjects.number" jspvar="partnumber">
+                <mm:include page="pdfpart.jsp">
+                    <mm:param name="partnumber"><%= partnumber %></mm:param>
+                    <mm:param name="level"><%= (level.intValue()+1) %></mm:param>
+                </mm:include>
+            </mm:field>
+        </mm:related>
     <% } %>
 
 </mm:present>
