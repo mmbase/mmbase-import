@@ -1,4 +1,4 @@
-<%@ page import = "java.util.ArrayList" %>
+<%@ page import = "java.util.HashSet" %>
 <%@ page import = "java.util.Iterator" %>
 
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
@@ -43,7 +43,7 @@
 
    <mm:import id="education_top_menu"><%= session.getAttribute("education_topmenu_mode") %></mm:import>
    <%
-      ArrayList arliEducations = new ArrayList();
+      HashSet hsetEducations = new HashSet();
    %>
    <mm:node number="$user">
       <% //We go throw all educations for CURRENT USER%>
@@ -54,7 +54,7 @@
                   <mm:node element="educations">
                        <mm:field name="number" jspvar="sID" vartype="String" write="false">
                           <%
-                             arliEducations.add(sID);
+                             hsetEducations.add(sID);
                           %>
                        </mm:field>
                   </mm:node>
@@ -80,7 +80,7 @@
                   <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="tests">           class="education_top_menu_selected" </mm:compare>><a href="?mode=tests"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuTests"/></a></td>
                   <td style="padding:1px;padding-left:6px;"   <mm:compare referid="education_top_menu" value="educations">      class="education_top_menu_selected" </mm:compare>>
                      <%
-                        if(arliEducations.size() < 2)
+                        if(hsetEducations.size() < 2)
                         {
                            %>
                               <a href="?mode=educations"     style="font-weight:bold;"><fmt:message key="educationMenuEducations"/></a>
@@ -97,7 +97,7 @@
                                     <td>
                                          <select name="course" class="titlefield2">
                                              <%
-                                                for(Iterator it = arliEducations.iterator(); it.hasNext();)
+                                                for(Iterator it = hsetEducations.iterator(); it.hasNext();)
                                                 {
                                                    String sEducationID = (String) it.next();
                                                    %>
