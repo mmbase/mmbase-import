@@ -228,9 +228,7 @@ public class Controller {
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
-		    log.info("PAGE="+page);
 		    if (page==-1) page=t.getPageCount(pagesize);
-		    log.info("PAGE2="+page);
                     Iterator e = t.getPostings(page, pagesize);
                     int pos = ((page - 1) * pagesize) + 1;
 
@@ -355,6 +353,23 @@ public class Controller {
         //log.info("getPosting "+(end-start)+"ms");
 
         return virtual;
+    }
+
+
+    public String getPostingPageNumber(String forumid, String postareaid, String postthreadid, String postingid,int pagesize) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            PostArea a = f.getPostArea(postareaid);
+            if (a != null) {
+                PostThread t = a.getPostThread(postthreadid);
+                if (t != null) {
+                    Posting p = t.getPosting(Integer.parseInt(postingid));
+		    int pagenumber = (p.getThreadPos()/pagesize)+1;
+		    return ""+pagenumber;
+                }
+            }
+        }
+        return "-1";
     }
 
 

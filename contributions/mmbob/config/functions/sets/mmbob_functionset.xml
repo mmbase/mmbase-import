@@ -31,6 +31,21 @@
 		</return> 
 	</function>
 
+
+	<function name="getPostingPageNumber">
+		<description>Get one specific posting</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getPostingPageNumber</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
+		<param name="postthreadid" type="String" description="MMBase node number of the postthread" />
+		<param name="postingid" type="String" description="MMBase node number of the posting" />
+		<param name="pagesize" type="int" description="MMBase node number of the posting" />
+		<return type="String"> 
+		</return> 
+	</function>
+
 	<function name="getPostings">
 		<description>List the postings within a postthread</description>
 		<type>class</type>
