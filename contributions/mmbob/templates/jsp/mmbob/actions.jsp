@@ -52,16 +52,6 @@
 	</mm:booleanfunction>
 </mm:compare>
 
-<mm:compare value="newpost" referid="action">
-	<mm:import externid="postareaid" />
-	<mm:import externid="poster" />
-	<mm:import externid="subject" />
-	<mm:import externid="body" />
-	<mm:import externid="mood">happy</mm:import>
-	<mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body,mood">
-	</mm:nodefunction>
-</mm:compare>
-
 
 <mm:compare value="newfolder" referid="action">
 	<mm:import externid="newfolder" />
