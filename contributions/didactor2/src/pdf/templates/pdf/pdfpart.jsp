@@ -57,6 +57,15 @@
    <mm:import jspvar="text" reset="true">
       <%= sIntro %><%= sText %>
 
+      <%
+         String baseUrl = getServletContext().getInitParameter("internalUrl");
+         if (baseUrl == null)
+         {
+            throw new ServletException("Please set 'internalUrl' in the web.xml!");
+         }
+      %>
+
+
       <%// Here we are makeing PDF version for conversion %>
       <mm:field name="showtitle">
          <mm:compare value="1">
@@ -107,7 +116,7 @@
 
                                  if (image_position == 7)
                                  {
-                                    %><img src="http://localhost:8080/didactor/img.db?<mm:field name="number"/>" border="0" width="50" height="50" align="right"/><%
+                                    %><img src="<%= baseUrl %>/img.db?<mm:field name="number"/>" border="0"/><%
                                  }
                                  else
                                  {
@@ -129,11 +138,6 @@
                                     %>
                                        <mm:import jspvar="imageUrl" reset="true"><mm:image template="<%= sImageTemplate %>"/></mm:import>
                                     <%
-                                    String baseUrl = getServletContext().getInitParameter("internalUrl");
-                                    if (baseUrl == null)
-                                    {
-                                       throw new ServletException("Please set 'internalUrl' in the web.xml!");
-                                    }
                                     imageUrl = baseUrl + imageUrl.substring(imageUrl.indexOf("/img.db"));
                                     %><img src="<%= imageUrl %>" border="0" <%= sAlign %> /><%
                                  }
@@ -173,7 +177,7 @@
                                           {
                                              link = url;
                                              %>
-                                                <td><img src="http://localhost:8080/didactor/education/gfx/http_url.gif" align="right" alt=""/></td>
+                                                <td><img src="<%= baseUrl %>/education/gfx/http_url.gif" align="right" alt=""/></td>
                                                 <td width="60%">&nbsp;websites:</td>
                                                 <td width="100%"><%= url %></td>
                                              <%
@@ -189,7 +193,7 @@
                                                    %>
                                                    </mm:isnotempty>
                                                 </mm:field>
-                                                <td><img src="http://localhost:8080/didactor/education/gfx/email_url.gif" align="right" alt=""/></td>
+                                                <td><img src="<%= baseUrl %>/education/gfx/email_url.gif" align="right" alt=""/></td>
                                                 <td width="60%">&nbsp;email:</td>
                                                 <td width="100%"><%= url %></td>
                                              <%
@@ -205,7 +209,7 @@
                            <mm:related path="posrel,attachments" orderby="posrel.pos">
                               <tr>
                                  <td></td>
-                                 <td><img src="http://localhost:8080/didactor/education/gfx/http_url.gif" align="right" alt=""/></td>
+                                 <td><img src="<%= baseUrl %>/education/gfx/http_url.gif" align="right" alt=""/></td>
                                  <td width="60%">&nbsp;download:</td>
                                  <td width="100%">
                                     <mm:node element="attachments">
