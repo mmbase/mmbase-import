@@ -15,6 +15,7 @@
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
 <mm:import externid="page">1</mm:import>
+<mm:import externid="postingid" />
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -27,6 +28,10 @@
 <mm:notpresent referid="pagesize">
 <mm:import id="pagesize">20</mm:import>
 </mm:notpresent>
+
+<mm:present referid="postingid">
+	<mm:import id="page" reset="true"><mm:function set="mmbob" name="getPostingPageNumber" referids="forumid,postareaid,postthreadid,postingid,pagesize" /></mm:import>
+</mm:present>
 
 
 <!-- action check -->
@@ -95,6 +100,7 @@
 		  </mm:first>
 			<tr>
 			<td class="<mm:field name="tdvar" />" align="left">
+			<a name="p<mm:field name="id" />" />
 			<mm:field name="posttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
 			</td>
 			<td class="<mm:field name="tdvar" />" align="right">
