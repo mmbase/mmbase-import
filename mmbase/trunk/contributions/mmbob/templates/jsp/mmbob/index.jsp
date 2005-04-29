@@ -13,7 +13,7 @@
 <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
 
 <mm:compare referid="forumid" value="unknown">
-	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" >
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
 		<tr><th>MMBob system error</th></tr>
 		<tr><td height="40"><b>ERROR: </b> No forum id is provided, if this is a new install try <a href="forums.jsp">forums.jsp</a> instead to create a new forum.</td></tr>
 	</table>
@@ -37,7 +37,6 @@
 <div class="header">
     <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=headerpath%>"/>
-
 </div>
 
 <div class="bodypart">
@@ -215,14 +214,15 @@
 	</tr>
 	</table>
   </mm:compare>
-</mm:locale>
-</mm:compare>
 
 </div>                                                                                                                           
 <div class="footer">
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
 </div> 
+
+</mm:locale>
+</mm:compare>
 
 </body>
 </html>
