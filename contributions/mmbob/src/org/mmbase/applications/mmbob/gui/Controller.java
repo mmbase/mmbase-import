@@ -1136,7 +1136,15 @@ public class Controller {
                     // nobody may post in closed thread, unless you're a moderator
 		    Poster p=f.getPoster(poster);
                     if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
-                        t.postReply(subject, poster, body);
+			if (body.equals("")) {
+                	//virtual.setValue("error", "no_body");
+			} else if (p.checkDuplicatePost("",body)) {
+                	//virtual.setValue("error", "duplicate_post");
+			} else {
+                       	        t.postReply(subject, poster, body);
+                		//virtual.setValue("error", "none");
+				p.setLastBody(body);
+			}
                     } else {
                         return false;
                     }
@@ -1170,10 +1178,14 @@ public class Controller {
                 	virtual.setValue("error", "no_subject");
 		} else if (body.equals("")) {
                 	virtual.setValue("error", "no_body");
+		} else if (p.checkDuplicatePost(subject,body)) {
+                	virtual.setValue("error", "duplicate_post");
 		} else {
                 	int postthreadid = a.newPost(subject, poster, body,mood);
                 	virtual.setValue("postthreadid", postthreadid);
                 	virtual.setValue("error", "none");
+			p.setLastSubject(subject);
+			p.setLastBody(body);
 		}
             }
         }

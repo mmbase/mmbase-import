@@ -135,6 +135,9 @@
 	<mm:compare referid="postresult" value="no_body">
 	<font color="red">*** problem missing text,please enter a text ***</font>
 	</mm:compare>
+	<mm:compare referid="postresult" value="duplicate_post">
+	<font color="red">*** this was already posted to the forum ***</font>
+	</mm:compare>
   </th></tr>
   <form action="<mm:url page="newpost.jsp">
 	<mm:param name="forumid" value="$forumid" />
