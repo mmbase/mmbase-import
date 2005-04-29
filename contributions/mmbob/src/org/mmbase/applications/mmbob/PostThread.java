@@ -266,7 +266,7 @@ public class PostThread {
 
                 // This must be it, please do not change the line below. If somebody's having problems
                 // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
-                pnode.setStringValue("body","<poster>" + postingBody.transform(nbody) + "</poster>");
+                pnode.setStringValue("body","<posting>" + postingBody.transform(nbody) + "</posting>");
 
 	        pnode.setStringValue("c_body",""); 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
