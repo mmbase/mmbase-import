@@ -118,10 +118,8 @@ public class Posting {
      * @param imagecontext The context where to find the images (eg smilies)
      */
     public void setBody(String body,String imagecontext) {
-        //node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
-        //node.setStringValue("body", postingBody.transform(body));
 	Node node = ForumManager.getCloud().getNode(id);
-        node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
+        node.setStringValue("body", "<posting>" + postingBody.transform(body) + "</posting>");
         c_body = translateBody(node.getStringValue("body"),imagecontext);
 	body="";
 	node.setValue("c_body",c_body);
