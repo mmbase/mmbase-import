@@ -327,23 +327,19 @@
 
     <% if (level.intValue() < 20) { %>
         <mm:compare referid="node_type" value="educations">
-           <mm:list nodes="$number" path="educations,posrel,learnobjects" orderby="posrel.pos" fields="learnobjects.number" searchdir="destination" distinct="true">
-               <mm:remove referid="number"/>
-               <mm:remove referid="level"/>
+           <mm:related path="posrel,learnobjects" fields="learnobjects.number" orderby="posrel.pos" searchdir="destination">
                <mm:field name="learnobjects.number" jspvar="partnumber">
                    <mm:include page="pdfpart.jsp">
                        <mm:param name="partnumber"><%= partnumber %></mm:param>
                        <mm:param name="level"><%= (level.intValue()+1) %></mm:param>
                    </mm:include>
                </mm:field>
-           </mm:list>
+           </mm:related>
         </mm:compare>
 
         <mm:compare referid="node_type" value="educations" inverse="true">
-           <mm:related path="posrel,learnobjects" orderby="posrel.pos"  searchdir="destination">
-               <mm:remove referid="number"/>
-               <mm:remove referid="level"/>
-               <mm:field name="learnobjects2.number" jspvar="partnumber">
+           <mm:related path="posrel,learnobjects" fields="learnobjects.number" orderby="posrel.pos" searchdir="destination">
+               <mm:field name="learnobjects.number" jspvar="partnumber">
                    <mm:include page="pdfpart.jsp">
                        <mm:param name="partnumber"><%= partnumber %></mm:param>
                        <mm:param name="level"><%= (level.intValue()+1) %></mm:param>
@@ -364,7 +360,7 @@
 <%!
    private String doCleaning(String text)
    {
-
+      if(text==null) { text =  ""; }
       //System.err.println("Cleaning up '"+text+"'");
         //
         // remove some of the annoying html that messes up the PDFs
