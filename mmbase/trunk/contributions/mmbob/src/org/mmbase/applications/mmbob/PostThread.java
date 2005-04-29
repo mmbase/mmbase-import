@@ -254,9 +254,9 @@ public class PostThread {
         if (nm!=null) {
                 Node pnode=nm.createNode();
 		if (subject!=null && !subject.equals("")) {
-			pnode.setStringValue("subject",nsubject);
-		} else {
 			pnode.setStringValue("subject",subject);
+		} else {
+			pnode.setStringValue("subject",nsubject);
 		}
 		pnode.setStringValue("c_poster",nposter);
 		Poster p=parent.getParent().getPoster(nposter);
@@ -264,20 +264,9 @@ public class PostThread {
 			pnode.setIntValue("posternumber",p.getId());
 		}
 
-		// snap er niets van hoe moet dit nu Gerard ?
-		//if (body.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
-	    //	pnode.setStringValue("body","<poster>"+nbody+"</poster>");
-		//} else {
-	    //	pnode.setStringValue("body",nbody);
-		//}
-
-                //pnode.setStringValue("body","<poster>" + postingBody.transform(nbody) + "</poster>");
-		// gerard this is wrong again ?
-		if (nbody.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
-                	pnode.setStringValue("body","<poster>"+nbody+"</poster>");
-		} else {
-                	pnode.setStringValue("body",nbody);
-		}
+                // This must be it, please do not change the line below. If somebody's having problems
+                // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
+                pnode.setStringValue("body","<poster>" + postingBody.transform(nbody) + "</poster>");
 
 	        pnode.setStringValue("c_body",""); 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
