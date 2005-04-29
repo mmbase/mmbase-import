@@ -34,6 +34,8 @@ public class Poster {
     private int id, postcount, sessionstart, lastsessionend, state;
     private int quotanumber,quotaused;
     private int avatar = 0;
+    private String lastsubject;
+    private String lastbody;
     private int lastseen = 0;
     private int firstlogin = -1;
     private String account,firstname, lastname, email, level, location, gender, password;
@@ -627,6 +629,23 @@ public class Poster {
                 Mailbox m = (Mailbox)i.next();
                 quotaused +=m.getMessageCount();
        }
+  }
+
+  public void setLastSubject(String lastsubject) {
+	this.lastsubject = lastsubject;
+  }
+
+  public void setLastBody(String lastbody) {
+	this.lastbody = lastbody;
+  }
+
+  public boolean checkDuplicatePost(String subject, String body) {
+	if (lastsubject!=null && lastsubject.equals(subject)) {
+		return true;
+	} else if (lastbody!=null && lastbody.equals(body)) {
+		return true;
+        }
+	return false;
   }
    	
 
