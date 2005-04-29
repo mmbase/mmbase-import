@@ -340,7 +340,7 @@ public class PostThread {
             	Step step1 = query.addStep(postthreadsmanager);
             	RelationStep step2 = query.addRelationStep(postingsmanager);
             	StepField f1 = query.addField(step1, postthreadsmanager.getField("number"));
-            	query.addField(step2.getNext(), postingsmanager.getField("number"));
+            	StepField f3 = query.addField(step2.getNext(), postingsmanager.getField("number"));
             	query.addField(step2.getNext(), postingsmanager.getField("c_body"));
             	query.addField(step2.getNext(), postingsmanager.getField("body"));
             	query.addField(step2.getNext(), postingsmanager.getField("c_poster"));
@@ -348,6 +348,7 @@ public class PostThread {
             	query.addField(step2.getNext(), postingsmanager.getField("createtime"));
             	query.addField(step2.getNext(), postingsmanager.getField("edittime"));
             	query.setConstraint(query.createConstraint(f1, new Integer(getId())));
+                query.addSortOrder(f3, SortOrder.ORDER_ASCENDING);
 
 	        NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
         	long end=System.currentTimeMillis();
