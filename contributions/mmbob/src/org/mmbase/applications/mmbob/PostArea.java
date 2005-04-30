@@ -43,6 +43,7 @@ public class PostArea {
     private Hashtable namecache = new Hashtable();
     private boolean firstcachecall = true;
     private PostAreaConfig config;
+    private HashMap filterwords;
 
     private int viewcount;
     private int postcount;
@@ -861,4 +862,13 @@ public class PostArea {
 	}
         return parent.getGuestWriteModeType();
    }
+
+   public String filterContent(String body) {
+	if (filterwords!=null) {
+		return parent.filterContent(filterwords,body);
+	} else {
+		return parent.filterContent(body);
+	}		
+   }
+
 }

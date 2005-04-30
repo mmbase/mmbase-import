@@ -4,7 +4,7 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
+<!ELEMENT forums (generatedata*,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
@@ -62,6 +62,12 @@
 
 <!ELEMENT email (#PCDATA)>
 <!ATTLIST email from CDATA #IMPLIED>
+
+<!ELEMENT filters (filter*)>
+<!ELEMENT filter (#PCDATA)>
+<!ATTLIST filter type CDATA #IMPLIED>
+<!ATTLIST filter replace CDATA #IMPLIED>
+<!ATTLIST filter with CDATA #IMPLIED>
 
 <!ELEMENT layout (header*,footer*)>
 <!ELEMENT header EMPTY>

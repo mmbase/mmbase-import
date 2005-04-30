@@ -56,6 +56,7 @@ public class ForumsConfig {
     private String htmlHeaderPath = "header.jsp";
     private String htmlFooterPath = "footer.jsp";
 
+   private static HashMap filterwords;
    private int quotamax = 100;
    private int quotasoftwarning = 60;
    private int quotawarning = 80;
@@ -213,7 +214,35 @@ public class ForumsConfig {
                                 htmlHeaderPath = headerNode.getAttribute("path");
                             }
                         }
-
+                        for (Enumeration ns2=reader.getChildElements(n,"filters");ns2.hasMoreElements(); ) {
+                            Element n2=(Element)ns2.nextElement();
+			    org.w3c.dom.Node n4 = n2.getFirstChild();
+			    while (n4!=null) {
+                            nm=n4.getAttributes();
+                            if (nm!=null) {
+				String type=null;
+				String replace=null;
+				String with=null;
+                               	n3=nm.getNamedItem("type");
+                                if (n3!=null) {
+                          		type=n3.getNodeValue();
+				}
+                               	n3=nm.getNamedItem("replace");
+                                if (n3!=null) {
+                          		replace=n3.getNodeValue();
+				}
+                               	n3=nm.getNamedItem("with");
+                                if (n3!=null) {
+                          		with=n3.getNodeValue();
+				}
+				if (type.equals("content")) {
+					if (filterwords==null) filterwords = new HashMap();
+					filterwords.put(replace,with);	
+				}			
+			     }
+			     n4=n4.getNextSibling();				
+			   }
+			}
                         for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
                                    	Element n2=(Element)ns2.nextElement();
                                         	nm=n2.getAttributes();
@@ -560,7 +589,6 @@ public class ForumsConfig {
     }
 
     private void checkCloudModel() {
-	log.info("checking mmbob cloud model");
         checkRelDef("related", "related", 1, "Related", "Relared", "insrel");
         checkRelDef("posrel", "posrel", 1, "Posrel", "Posrel", "posrel");
         checkRelDef("rolerel", "rolerel", 1, "RoleRel", "RoleRel", "rolerel");
@@ -696,5 +724,9 @@ public class ForumsConfig {
             return false;
         }
         return true;
+    }
+
+    public HashMap getFilterWords() {
+	return filterwords;
     }
 }
