@@ -138,6 +138,9 @@
 	<mm:compare referid="postresult" value="duplicate_post">
 	<font color="red">*** this was already posted to the forum ***</font>
 	</mm:compare>
+	<mm:compare referid="postresult" value="illegal_html">
+	<font color="red">*** this posting contains illegal html codes ***</font>
+	</mm:compare>
   </th></tr>
   <form action="<mm:url page="newpost.jsp">
 	<mm:param name="forumid" value="$forumid" />
