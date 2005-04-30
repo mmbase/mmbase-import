@@ -1143,6 +1143,7 @@ public class Controller {
 			} else if (checkIllegalHtml(body)) {
                 		//virtual.setValue("error", "illegal_html");
 			} else {
+				body = a.filterContent(body);
                        	        t.postReply(subject, poster, body);
                 		//virtual.setValue("error", "none");
 				p.setLastBody(body);
@@ -1187,6 +1188,7 @@ public class Controller {
 		} else if (p.checkDuplicatePost(subject,body)) {
                 	virtual.setValue("error", "duplicate_post");
 		} else {
+			body = a.filterContent(body);
                 	int postthreadid = a.newPost(subject, poster, body,mood);
                 	virtual.setValue("postthreadid", postthreadid);
                 	virtual.setValue("error", "none");

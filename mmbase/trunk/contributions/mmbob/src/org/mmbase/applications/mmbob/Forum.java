@@ -54,6 +54,7 @@ public class Forum {
     private Hashtable administrators = new Hashtable();
 
     private Hashtable postareas = new Hashtable();
+    private HashMap filterwords;
 
     private Hashtable posters = new Hashtable();
     private Hashtable posternames = new Hashtable();
@@ -1275,5 +1276,18 @@ public class Forum {
 		return size;
 	}
     }
+
+   public String filterContent(String body) {
+        if (filterwords!=null) {
+                return ForumManager.filterContent(filterwords,body);
+        } else {
+                return ForumManager.filterContent(body);
+        }
+   }
+
+
+   public String filterContent(HashMap filterwords, String body) {
+       return ForumManager.filterContent(filterwords,body);
+   }
 
 }

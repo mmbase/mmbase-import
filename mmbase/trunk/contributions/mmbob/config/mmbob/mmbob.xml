@@ -12,7 +12,7 @@
     <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" " />
 
     <preloadchangedthreads days="1" />
-    <swapoutunusedthreads minutes="45" />
+    <swapoutunusedthreads hours="12" />
 
     <accountcreation type="open" />
     <accountremoval type="open" />
@@ -33,6 +33,11 @@
       <header path="header.jsp"/>
       <footer path="footer.jsp"/>
     </layout>
+
+    <filters>
+	<filter type="content" replace="microsoft" with="micro$oft" />
+	<filter type="content" replace="mmbase" with="MMBase" />
+    </filters>
 
     <xslts>
       <postings odd="xslt/posting2xhtmlDark.xslt" even="xslt/posting2xhtmlLight.xslt" />
