@@ -526,4 +526,30 @@ public class ForumManager {
         }
         return count;
     }
+
+   public static String filterContent(String body) {
+        if (config.getFilterWords()!=null) {
+		return filterContent(config.getFilterWords(),body);
+        } else {
+		return body;
+	}
+   }
+
+
+   public static String filterContent(HashMap words,String body) {
+        if (words!=null) {
+            	StringObject obj=new StringObject(body);
+        	Iterator i = words.keySet().iterator();
+        	while (i.hasNext()) {
+            		String key = (String)i.next();
+            		String value = (String)words.get(key);
+                	obj.replace(key, value);
+		}
+                return obj.toString();
+        } else {
+		return body;
+	}
+   }
+
+
 }
