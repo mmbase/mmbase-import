@@ -1137,9 +1137,11 @@ public class Controller {
 		    Poster p=f.getPoster(poster);
                     if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
 			if (body.equals("")) {
-                	//virtual.setValue("error", "no_body");
+                		//virtual.setValue("error", "no_body");
 			} else if (p.checkDuplicatePost("",body)) {
-                	//virtual.setValue("error", "duplicate_post");
+                		//virtual.setValue("error", "duplicate_post");
+			} else if (checkIllegalHtml(body)) {
+                		//virtual.setValue("error", "illegal_html");
 			} else {
                        	        t.postReply(subject, poster, body);
                 		//virtual.setValue("error", "none");
@@ -1178,6 +1180,10 @@ public class Controller {
                 	virtual.setValue("error", "no_subject");
 		} else if (body.equals("")) {
                 	virtual.setValue("error", "no_body");
+		} else if (checkIllegalHtml(subject)) {
+                	virtual.setValue("error", "illegal_html");
+		} else if (checkIllegalHtml(body)) {
+                	virtual.setValue("error", "illegal_html");
 		} else if (p.checkDuplicatePost(subject,body)) {
                 	virtual.setValue("error", "duplicate_post");
 		} else {
@@ -1682,6 +1688,18 @@ public class Controller {
 
 	public String getDefaultAccount() {
 		return ForumManager.getDefaultAccount();
+	}
+
+        private boolean checkIllegalHtml(String input) {
+		input = input.toLowerCase();
+		if (input.indexOf("<script")!=-1) {
+			return true;
+		} else if (input.indexOf("<javascript")!=-1) {
+			return true;
+		} else if (input.indexOf("<input")!=-1) {
+			return true;
+		}
+		return false;
 	}
 
 	
