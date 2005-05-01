@@ -5,12 +5,21 @@
 <%@include file="/includes/header.jsp" %>
 <mm:import id="template">/development/projects/project.jsp</mm:import>
 <td class="white" colspan="2" valign="top">
-  <mm:listnodes type="project" orderby="status,number" directions="up,down" id="projectlist">
-    <mm:changed>
-      [<a href="#<mm:field name="number" />"><mm:field name="status" /></a>]&nbsp;
-    </mm:changed>
-  </mm:listnodes>
-
+  <mm:listnodescontainer type="project">
+    <mm:sortorder field="status" direction="up" />
+    <mm:sortorder field="number" direction="down" />
+    <mm:composite operator="AND">
+      <mm:constraint field="status" value="application" inverse="true" />
+      <mm:constraint field="status" value="contribuation" inverse="true" />
+    </mm:composite>
+ 
+    <mm:listnodes id="projectlist">      
+      <mm:changed>
+	[<a href="#<mm:field name="number" />"><mm:field name="status" /></a>]&nbsp;
+      </mm:changed>
+    </mm:listnodes>
+  </mm:listnodescontainer>
+    
   <mm:listnodes id="project" referid="projectlist">
     <mm:changed>
       <h1><a name="<mm:field name="number" />"><mm:field name="status"/></a></h1>
