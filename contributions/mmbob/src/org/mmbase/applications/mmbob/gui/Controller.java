@@ -1142,11 +1142,14 @@ public class Controller {
                 		//virtual.setValue("error", "duplicate_post");
 			} else if (checkIllegalHtml(body)) {
                 		//virtual.setValue("error", "illegal_html");
+			} else if (checkSpeedPosting(a,p)) {
+                		//virtual.setValue("error", "speed_posting");
 			} else {
 				body = a.filterContent(body);
                        	        t.postReply(subject, poster, body);
                 		//virtual.setValue("error", "none");
 				p.setLastBody(body);
+				p.setLastPostTime((int)(System.currentTimeMillis()/1000));
 			}
                     } else {
                         return false;
@@ -1187,6 +1190,9 @@ public class Controller {
                 	virtual.setValue("error", "illegal_html");
 		} else if (p.checkDuplicatePost(subject,body)) {
                 	virtual.setValue("error", "duplicate_post");
+		} else if (checkSpeedPosting(a,p)) {
+                	virtual.setValue("error", "speed_posting");
+                	virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
 		} else {
 			body = a.filterContent(body);
                 	int postthreadid = a.newPost(subject, poster, body,mood);
@@ -1194,6 +1200,7 @@ public class Controller {
                 	virtual.setValue("error", "none");
 			p.setLastSubject(subject);
 			p.setLastBody(body);
+			p.setLastPostTime((int)(System.currentTimeMillis()/1000));
 		}
             }
         }
@@ -1703,6 +1710,15 @@ public class Controller {
 		}
 		return false;
 	}
+
+        private boolean checkSpeedPosting(PostArea a,Poster p) {
+		if (p.getLastPostTime()!=-1) {
+			if ((System.currentTimeMillis()/1000)-a.getSpeedPostTime()<p.getLastPostTime()) {
+				return true;
+			}
+		}
+		return false;
+        }
 
 	
 }

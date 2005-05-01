@@ -27,6 +27,7 @@
 	<mm:import externid="mood">happy</mm:import>
 	<mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body,mood">
 		<mm:import id="postresult"><mm:field name="error" /></mm:import>	
+		<mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>	
 	</mm:nodefunction>
 </mm:compare>
 </mm:present>
@@ -140,6 +141,9 @@
 	</mm:compare>
 	<mm:compare referid="postresult" value="illegal_html">
 	<font color="red">*** this posting contains illegal html codes ***</font>
+	</mm:compare>
+	<mm:compare referid="postresult" value="speed_posting">
+	<font color="red">*** You are not allowed to post more than 1 every <mm:write referid="speedposttime" /> seconds ***</font>
 	</mm:compare>
   </th></tr>
   <form action="<mm:url page="newpost.jsp">

@@ -41,6 +41,7 @@ public class ForumsConfig {
    private String guestwritemodetype="open";
    private int preloadchangedthreadstime = 0;
    private int swapoutunusedthreadstime = 0;
+   private int speedposttime=60;
 
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
@@ -197,6 +198,11 @@ public class ForumsConfig {
                         String inttemp = getAttributeValue(reader,n,"postingsperpage","value");
                         if (inttemp != null) {
                             postingsPerPage = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        inttemp = getAttributeValue(reader,n,"speedposttime","value");
+                        if (inttemp != null) {
+                            speedposttime = (Integer.valueOf(inttemp)).intValue();
                         }
 
                         fromEmailAddress = getAttributeValue(reader,n,"email","from");
@@ -728,5 +734,9 @@ public class ForumsConfig {
 
     public HashMap getFilterWords() {
 	return filterwords;
+    }
+ 
+    public int getSpeedPostTime() {
+	return speedposttime;
     }
 }
