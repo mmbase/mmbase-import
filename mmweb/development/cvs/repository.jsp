@@ -17,7 +17,7 @@
   <h2>View CVS</h2>
   <p>The source of MMBase can be browsed 
   <a href="<mm:url page="http://cvs.mmbase.org/viewcvs/" />">on-line</a>.</p>
-  <p>The most recente changes can be followed by reading
+  <p>The most recent changes can be followed by reading
   <a href="<mm:url page="index.jsp"><mm:param name="page" value="page_cvsmail" /></mm:url>">cvs mail</a>.
   </p>
 
