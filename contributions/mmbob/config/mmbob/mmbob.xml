@@ -47,6 +47,7 @@
     <smileys enable="true"/>
     <privatemessages enable="true"/>
     <postingsperpage value="15"/>
+    <speedposttime value="90"/>
 
   </forums>
 </mmbobconfig>

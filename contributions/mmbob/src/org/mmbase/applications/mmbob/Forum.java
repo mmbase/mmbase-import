@@ -1290,4 +1290,8 @@ public class Forum {
        return ForumManager.filterContent(filterwords,body);
    }
 
+   public int getSpeedPostTime() {
+	return ForumManager.getSpeedPostTime();
+   }
+
 }

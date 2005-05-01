@@ -871,4 +871,8 @@ public class PostArea {
 	}		
    }
 
+   public int getSpeedPostTime() {
+	return parent.getSpeedPostTime();
+   }
+
 }

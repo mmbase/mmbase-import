@@ -36,6 +36,7 @@ public class Poster {
     private int avatar = 0;
     private String lastsubject;
     private String lastbody;
+    private int lastposttime;
     private int lastseen = 0;
     private int firstlogin = -1;
     private String account,firstname, lastname, email, level, location, gender, password;
@@ -646,6 +647,14 @@ public class Poster {
 		return true;
         }
 	return false;
+  }
+
+  public int getLastPostTime() {
+	return lastposttime;
+  }
+
+  public void setLastPostTime(int lastposttime) {
+	this.lastposttime = lastposttime;
   }
    	
 
