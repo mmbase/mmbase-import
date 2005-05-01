@@ -4,7 +4,7 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
+<!ELEMENT forums (generatedata*,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,speedposttime?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
@@ -91,6 +91,9 @@
 
 <!ELEMENT postingsperpage EMPTY>
 <!ATTLIST postingsperpage value CDATA #IMPLIED>
+
+<!ELEMENT speedposttime EMPTY>
+<!ATTLIST speedposttime value CDATA #IMPLIED>
 
 <!ELEMENT gallery EMPTY>
 <!ATTLIST gallery enable (false|true) #IMPLIED>

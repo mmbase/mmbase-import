@@ -551,5 +551,9 @@ public class ForumManager {
 	}
    }
 
+   public static int getSpeedPostTime() {
+	return config.getSpeedPostTime();
+   }
+
 
 }
