@@ -9,31 +9,34 @@
 
 <mm:node number="$page">
   <mm:related path="posrel,articles" orderby="posrel.pos" directions="UP" searchdir="destination">
-	<mm:node element="articles"><%@include file="/includes/article.jsp"%></mm:node>
+    <mm:node element="articles"><%@include file="/includes/article.jsp"%></mm:node>
   </mm:related>
 </mm:node>
-
 <div id="textcontent">
-<%-- LAST RELEASE --%>
- <mm:list path="pages2,releases,mmevents"
- 	fields="releases.number,mmevents.start" 
- 	orderby="mmevents.start" directions="DOWN" max="1">
-	<mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
-    <mm:node element="releases">
-		<h3><mm:field name="name" /> <mm:field name="version"/></h3>
-		<mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale>
-		<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write/></p></mm:isnotempty></mm:field>
-		<mm:field name="body" escape="p"><mm:isnotempty><mm:write/></mm:isnotempty></mm:field>
-        <mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
-        <mm:first><ul></mm:first>
-        <li>
-		<mm:node element="urls">
-		<mm:field name="url"><a href="<mm:url page="$_"/>"><mm:field name="description"/></a></mm:field>
-		</mm:node>
-        </li>
-		<mm:last></ul></mm:last>
-        </mm:related>
-    </mm:node>
+<%-- LATEST RELEASE --%>
+<h2>Latest releases</h2>
+<p>
+  All releases and released packages can be found on <a href="<mm:url page="/download/releases" />">/download/releases</a>.
+</p>
+<mm:list path="pages2,releases,mmevents"
+	 fields="releases.number,mmevents.start" 
+	 orderby="mmevents.start" directions="DOWN" max="4">
+  <mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
+  <mm:node element="releases">
+    <h3><mm:field name="name" /> <mm:field name="version"/></h3>
+    <mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale>
+    <mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write/></p></mm:isnotempty></mm:field>
+    <mm:field name="body" escape="p"><mm:isnotempty><mm:write/></mm:isnotempty></mm:field>
+    <mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
+      <mm:first><ul></mm:first>
+      <li>
+	<mm:node element="urls">
+	  <mm:field name="url"><a href="<mm:url page="$_"/>"><mm:field name="description"/></a></mm:field>
+	</mm:node>
+      </li>
+      <mm:last></ul></mm:last>
+    </mm:related>
+  </mm:node>
 </mm:list>
 
 <h2>Latest builds from the stable branch (MMBase-1_7)</h2>
@@ -54,16 +57,20 @@
 <% } %>
 </ul>
 
-<h2>Occasional builds</h2> 
+<%--
+<h2>Latest occasional builds</h2> 
 <% Iterator i = getOccasionalBuilds(5).iterator() ;%>
 <ul>
 <% while (i.hasNext()) {
- BuildInfo info = (BuildInfo) i.next(); %>
+BuildInfo info = (BuildInfo) i.next(); %>
   <li>	<%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a>  </li>
 <% } %>
 </ul>
+--%>
 
 
-</div></div>
+</div>
+</div>
 <%@ include file="/includes/alterfooter.jsp" %>
+
 </mm:cloud>
