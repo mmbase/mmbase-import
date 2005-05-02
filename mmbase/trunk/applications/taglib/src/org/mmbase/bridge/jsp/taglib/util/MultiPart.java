@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.11 2005-02-03 18:03:17 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.12 2005-05-02 11:45:32 michiel Exp $
  **/
 
 public class MultiPart {
@@ -106,10 +106,23 @@ public class MultiPart {
          */
         public byte[] getBytes(String param) throws JspTagException {
             log.debug("Getting bytes for " + param);
-            Object value = (FileItem)parametersMap.get(param);
+            Object value = parametersMap.get(param);
             if (value instanceof FileItem) {
                 try {
                     return ((FileItem)value).get();
+                } catch (Exception e) {
+                    throw new TaglibException(e);
+                }
+            } else {
+                return null;
+            }
+        }
+        public FileItem getFileItem(String param) throws JspTagException {
+            log.debug("Getting outputstream for " + param);
+            Object value = parametersMap.get(param);
+            if (value instanceof FileItem) {
+                try {
+                    return (FileItem)value;
                 } catch (Exception e) {
                     throw new TaglibException(e);
                 }
