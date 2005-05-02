@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.28 2005-03-16 16:05:33 michiel Exp $
+ * @version $Id: Authentication.java,v 1.29 2005-05-02 09:43:13 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -127,9 +127,9 @@ public abstract class Authentication extends Configurable implements Authenticat
         }
     }
 
-    protected final Parameter[] PARAMETERS_USERS         = new Parameter[] { PARAMETER_USERNAMES, PARAMETER_RANK };
-    protected final Parameter[] PARAMETERS_ANONYMOUS     = new Parameter[] { PARAMETER_LOGOUT, PARAMETER_AUTHENTICATE};
-    protected final Parameter[] PARAMETERS_NAME_PASSWORD = new Parameter[] { PARAMETER_USERNAME, PARAMETER_PASSWORD, new Parameter.Wrapper(PARAMETERS_USERS) };
+    protected static final Parameter[] PARAMETERS_USERS         = new Parameter[] { PARAMETER_USERNAMES, PARAMETER_RANK };
+    protected static final Parameter[] PARAMETERS_ANONYMOUS     = new Parameter[] { PARAMETER_LOGOUT, PARAMETER_AUTHENTICATE};
+    protected static final Parameter[] PARAMETERS_NAME_PASSWORD = new Parameter[] { PARAMETER_USERNAME, PARAMETER_PASSWORD, new Parameter.Wrapper(PARAMETERS_USERS) };
 
     public Parameters createParameters(String application) {
         application = application.toLowerCase();
