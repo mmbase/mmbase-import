@@ -11,6 +11,7 @@ package org.mmbase.storage;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
+import java.io.InputStream;
 
 /**
  * The StorageManager interface defines how to access a storage device.
@@ -19,7 +20,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.3 2004-02-05 12:18:49 michiel Exp $
+ * @version $Id: StorageManager.java,v 1.4 2005-05-02 12:58:48 michiel Exp $
  */
 public interface StorageManager {
 
@@ -90,6 +91,12 @@ public interface StorageManager {
      * @throws StorageException if an error occurred while retrieving the binary value
      */
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException;
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    public InputStream getInputStreamValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
      * This method creates a new object in the storage, and registers the change.
