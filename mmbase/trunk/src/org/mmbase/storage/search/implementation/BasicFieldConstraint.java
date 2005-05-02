@@ -16,9 +16,11 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldConstraint.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicFieldConstraint.java,v 1.7 2005-05-02 13:03:30 michiel Exp $
  * @since MMBase-1.7
  */
+
+// this class would logically be abstract, but test-cases are instantiating it.
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
 
     /** The associated field. */
@@ -34,16 +36,14 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
      * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    protected BasicFieldConstraint(StepField field) {
-
+    protected BasicFieldConstraint(StepField field) {        
         // Test for non-null value.
         if (field == null) {
-            throw new IllegalArgumentException(
-            "Invalid field value: " + field);
+            throw new IllegalArgumentException("Invalid field value: " + field);
         }
         this.field = field;
     }
-
+    
     /**
      * Sets caseSensitive property.
      * This has only effect when the associated field is of string type.

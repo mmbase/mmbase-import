@@ -11,16 +11,17 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.7 2005-05-02 13:02:09 michiel Exp $
  * @since MMBase-1.7
  */
-public class BasicCompositeConstraint extends BasicConstraint
-implements CompositeConstraint {
+public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
+    private static final Logger log = Logging.getLoggerInstance(BasicCompositeConstraint.class);
 
     /** The child constraints. */
     private List childs = new ArrayList();
@@ -69,7 +70,7 @@ implements CompositeConstraint {
 
     public BasicCompositeConstraint removeChild(Constraint child) {
         if (! childs.remove(child)) {
-            // log.debug("Tried to remove non existing child");
+            log.info("Tried to remove non existing child");
         }
         return this;
     }

@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicAggregatedField.java,v 1.5 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicAggregatedField.java,v 1.6 2005-05-02 13:02:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicAggregatedField extends BasicStepField
@@ -34,8 +34,7 @@ implements AggregatedField {
      * @param aggregationType The aggregation type.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicAggregatedField(Step step, FieldDefs fieldDefs,
-    int aggregationType) {
+    public BasicAggregatedField(Step step, FieldDefs fieldDefs, int aggregationType) {
         super(step, fieldDefs);
         setAggregationType(aggregationType);
     }
