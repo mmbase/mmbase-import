@@ -23,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.1 2005-03-22 15:02:05 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.2 2005-05-02 11:57:10 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap {
@@ -71,7 +71,7 @@ public  class PageContextBacking extends AbstractMap {
                                             if (value == null) {
                                                 nulls.add(name);
                                             }
-                                                        return was;
+                                            return was;
                                         }
                                     };
                             }
