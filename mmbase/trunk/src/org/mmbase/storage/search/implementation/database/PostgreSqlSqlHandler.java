@@ -33,12 +33,11 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.10 2005-05-02 13:06:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
-
-    /** Logger instance. */
+    
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
     /**
