@@ -14,8 +14,7 @@ import javax.servlet.jsp.JspTagException;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.16 2005-04-21 12:01:11 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.17 2005-05-02 22:24:15 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -65,15 +64,14 @@ public class ByteHandler extends AbstractTypeHandler {
         String fieldName = field.getName();
         ContextTag ct = tag.getContextTag();
         ContextContainer cc = tag.getContextProvider().getContextContainer();
-        byte [] bytes  = ct.getBytes(prefix(fieldName));
+        org.apache.commons.fileupload.FileItem bytes = ct.getFileItem(prefix(fieldName));
         String fileName = null;
-
         String fileType = null;
 
         if (bytes == null){
             throw new BridgeException("getBytes(" + prefix(fieldName) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
-        if (bytes.length > 0) {
+        if (bytes.getSize() > 0) {
             Object fileNameO = cc.find(tag.getPageContext(), prefix(fieldName + "_name"));
             if (fileNameO != null) {
                 if (fileNameO instanceof List) {
@@ -101,7 +99,11 @@ public class ByteHandler extends AbstractTypeHandler {
                 }
 
             }
-            node.setByteValue(fieldName, bytes);
+            try {
+                node.setInputStreamValue(fieldName, bytes.getInputStream(), bytes.getSize());
+            } catch (java.io.IOException ioe) {
+                throw new TaglibException(ioe);
+            }
             NodeManager nm = node.getNodeManager();
             if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals("")) &&
                 cc.find(tag.getPageContext(), prefix("mimetype")) == null
@@ -116,12 +118,12 @@ public class ByteHandler extends AbstractTypeHandler {
             if (nm.hasField("size") && 
                 cc.find(tag.getPageContext(), prefix("size")) == null
                 ) {
-                node.setIntValue("size", bytes.length);
+                node.setLongValue("size", bytes.getSize());
             }
             if (nm.hasField("filesize") && 
                 cc.find(tag.getPageContext(), prefix("filesize")) == null
                 ) {
-                node.setIntValue("filesize", bytes.length);
+                node.setLongValue("filesize", bytes.getSize());
             }
         }
 
