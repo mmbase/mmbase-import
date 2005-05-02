@@ -18,23 +18,20 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicStep.java,v 1.7 2005-05-02 13:05:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
 
     /** Associated builder. */
-    private MMObjectBuilder builder = null;
-
+    protected MMObjectBuilder builder = null;
     /** Alias property. */
-    private String alias = null;
-
+    protected String alias = null;
     /**
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
-    private SortedSet nodes = new TreeSet();
-
+    protected SortedSet nodes = new TreeSet();
     /**
      * Constructor.
      *
@@ -44,8 +41,7 @@ public class BasicStep implements Step {
     // package visibility!
     BasicStep(MMObjectBuilder builder) {
         if (builder == null) {
-            throw new IllegalArgumentException(
-            "Invalid builder value: " + builder);
+            throw new IllegalArgumentException("Invalid builder value: " + builder);
         }
         this.builder = builder;
     }
@@ -75,8 +71,7 @@ public class BasicStep implements Step {
      */
     public BasicStep addNode(int nodeNumber) {
         if (nodeNumber < 0) {
-            throw new IllegalArgumentException(
-            "Invalid nodeNumber value: " + nodeNumber);
+            throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
         }
         nodes.add(new Integer(nodeNumber));
         return this;

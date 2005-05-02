@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSortOrder.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicSortOrder.java,v 1.7 2005-05-02 13:05:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
@@ -36,8 +36,7 @@ public class BasicSortOrder implements SortOrder {
      */
     public BasicSortOrder(StepField field) {
         if (field == null) {
-            throw new IllegalArgumentException(
-            "Invalid field value: " + field);
+            throw new IllegalArgumentException("Invalid field value: " + field);
         }
         this.field = field;
     }
