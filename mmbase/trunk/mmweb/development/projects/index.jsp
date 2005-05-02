@@ -10,7 +10,7 @@
     <mm:sortorder field="number" direction="down" />
     <mm:composite operator="AND">
       <mm:constraint field="status" value="application" inverse="true" />
-      <mm:constraint field="status" value="contribuation" inverse="true" />
+      <mm:constraint field="status" value="contribution" inverse="true" />
     </mm:composite>
  
     <mm:listnodes id="projectlist">      
