@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.35 2005-03-22 09:33:53 pierre Exp $
+ * @version $Id: Users.java,v 1.36 2005-05-02 12:32:43 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -51,7 +51,8 @@ public class Users extends MMObjectBuilder {
 
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
-    public final static Parameter[] RANK_PARAMETERS = {
+    public final static Parameter[] ENCODE_PARAMETERS = {
+        new Parameter("password", String.class) 
     };
 
 
@@ -70,7 +71,6 @@ public class Users extends MMObjectBuilder {
         rankCache.putCache();
         userCache.putCache();
 
-        // MM: I think this is should not be configured.
         String s = (String)getInitParameters().get("encoding");
         if (s == null) {
             log.debug("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
@@ -180,6 +180,12 @@ public class Users extends MMObjectBuilder {
      * @throws SecurityException
      */
     public MMObjectNode getUser(String userName, String password)  {
+        return getUser(userName, password, true);
+    }
+
+    public MMObjectNode getUser(String userName, String password, boolean encode) {
+
+
         if (log.isDebugEnabled()) {
             log.debug("username: '" + userName + "' password: '" + password + "'");
         }
@@ -197,8 +203,9 @@ public class Users extends MMObjectBuilder {
             log.debug("username: '" + userName + "' --> USERNAME NOT CORRECT");
             return null;
         }
-
-        if (encode(password).equals(user.getStringValue(FIELD_PASSWORD))) {
+        String encodedPassword = encode ? encode(password) : password;
+        
+        if (encodedPassword.equals(user.getStringValue(FIELD_PASSWORD))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
@@ -236,7 +243,6 @@ public class Users extends MMObjectBuilder {
             }
             return null;
         }
-
     }
     /**
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
@@ -319,7 +325,7 @@ public class Users extends MMObjectBuilder {
     /**
      * Encodes a password for storage (to avoid plain text passwords).
      */
-    protected String encode(String s)  {
+    public String encode(String s)  {
         return encoder.encode(s);
     }
 
@@ -383,6 +389,7 @@ public class Users extends MMObjectBuilder {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("gui", "(status..) Gui representation of this object.");
+            info.put("encode",        "" + ENCODE_PARAMETERS + " Encodes password");
             if (args == null || args.size() == 0) {
                 return info;
             } else {
@@ -390,6 +397,9 @@ public class Users extends MMObjectBuilder {
             }
         }  else if (function.equals("rank")) {
             return getRank(node);
+        } else if (function.equals("encode")) {
+            Parameters a = Functions.buildParameters(ENCODE_PARAMETERS, args); 
+            return encode((String)a.get(0));
         } else if (args != null && args.size() > 0) {
             if (function.equals("gui")) {
                 String field = (String) args.get(0);
