@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.*;
+import java.io.InputStream;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.mmbase.util.functions.Function;
@@ -20,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.53 2005-01-07 09:53:12 michiel Exp $
+ * @version $Id: Node.java,v 1.54 2005-05-02 08:27:40 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -180,6 +181,11 @@ public interface Node extends Comparable {
     public void setByteValue(String fieldName, byte[] value);
 
     /**
+     * Sets the value of the specified field using a <code>java.io.OutputStream</code>.
+     */
+    public void setInputStreamValue(String fieldName, InputStream value, long size);
+
+    /**
      * Sets the value of the specified field using a <code>long</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
@@ -222,6 +228,13 @@ public interface Node extends Comparable {
      * @since MMBase-1.8
      */
     public void setListValue(String fieldName, List value);
+
+    /**
+     * Whether the value fo the speficied field is <code>null</code>. This avoids acquiring the
+     * complete value if you only want to check if for emptyness.
+     * @since MMBase-1.8
+     */
+    public boolean isNull(String fieldName);
 
     /**
      * Returns the value of the specified field as an object. For example a
@@ -353,6 +366,15 @@ public interface Node extends Comparable {
      * @return           the value of the specified field
      */
     public byte[] getByteValue(String fieldName);
+    
+
+    /**
+     * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
+     * especially usefull for large byte-array fields. By this you can avoid them to be completely
+     * stored in memory.
+     */        
+    public InputStream getInputStreamValue(String fieldName);
+
 
     /**
      * Returns the value of the specified field as a <code>String</code>.
@@ -424,9 +446,10 @@ public interface Node extends Comparable {
     public void delete();
 
     /**
+     * Whether this Node is new (not yet commited).
      * @since MMBase-1.8
      */    
-    //public boolean isNew();
+    public boolean isNew();
 
     /**
      * Removes the Node.
@@ -446,7 +469,6 @@ public interface Node extends Comparable {
      * Returns the value of the specified field as a <code>dom.Document</code>
      * If the node value is not itself a Document, the method attempts to
      * attempts to convert the String value into an XML.
-     * For strings that do not form an xml, the string value is converted to an mmxf document.
      * This included the empty string, but not the 'null' value.
      * If the value is null, this method returns <code>null</code>
      *
