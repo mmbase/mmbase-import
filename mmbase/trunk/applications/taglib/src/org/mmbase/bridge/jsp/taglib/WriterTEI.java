@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.9 2004-06-03 17:08:51 michiel Exp $ 
+ * @version $Id: WriterTEI.java,v 1.10 2005-05-02 22:23:35 michiel Exp $ 
  */
 
 public class WriterTEI extends TagExtraInfo {
@@ -28,7 +28,7 @@ public class WriterTEI extends TagExtraInfo {
         return VariableInfo.NESTED;
     }
     protected String defaultType() {
-        return "Object";
+        return "object";
     }
 
     /**
@@ -41,6 +41,8 @@ public class WriterTEI extends TagExtraInfo {
             type = Object.class.getName(); break;
         case WriterHelper.TYPE_STRING:
             type = String.class.getName(); break;
+        case WriterHelper.TYPE_CHARSEQUENCE:
+            type = CharSequence.class.getName(); break;
         case WriterHelper.TYPE_NODE:
             type = org.mmbase.bridge.Node.class.getName(); break;
         case WriterHelper.TYPE_CLOUD:
