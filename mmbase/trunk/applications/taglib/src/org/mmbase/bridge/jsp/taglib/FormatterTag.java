@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.50 2005-04-15 14:40:11 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.51 2005-05-02 22:29:31 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -431,7 +431,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * @return The result ot the transformation.
      */
     private String xslTransform(Document doc, Source xsl) throws JspTagException {
-        log.info("transforming in " + cwd);
+        if (log.isDebugEnabled()) {
+            log.debug("transforming in " + cwd + " with " + xsl.getSystemId());
+        }
 
         TemplateCache cache= TemplateCache.getCache();
         Templates cachedXslt = cache.getTemplates(xsl);
@@ -498,6 +500,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             if (source == null) {
                 throw new TaglibException("Could not find XSL for " + xsl + " with uri-resolver " + getFactory().getURIResolver());
             }
+
             return xslTransform(doc, source);
          } catch (javax.xml.transform.TransformerException e) {
              throw new TaglibException(e); // probably the file could not be found.
