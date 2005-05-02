@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.293 2005-05-02 11:50:50 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.294 2005-05-02 22:19:57 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5289,7 +5289,7 @@ The 0 is just counter, which starts at 0 on every page.
   <tag>
     <name>functioncontainer</name>
     <see tag="function" />
-    <see tag="functiontag" />
+    <extends>functiontag</extends>
     <extends>container</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.FunctionContainerTag</tagclass>
     <info>
