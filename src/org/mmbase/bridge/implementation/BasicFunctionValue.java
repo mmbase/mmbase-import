@@ -21,7 +21,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.11 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.12 2005-05-02 17:21:16 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -73,6 +73,10 @@ public class BasicFunctionValue implements FieldValue {
         return false;
     }
 
+    public boolean isNull() {
+        return value == null;
+    }
+
     public Object get() {
         return value;
     }
@@ -121,7 +125,7 @@ public class BasicFunctionValue implements FieldValue {
     }
 
     public Document toXML() throws IllegalArgumentException {
-        return Casting.toXML(value, null, null);
+        return Casting.toXML(value);
     }
 
     public Element toXML(Document tree) throws IllegalArgumentException {
