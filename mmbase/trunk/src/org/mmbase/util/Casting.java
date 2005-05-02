@@ -17,12 +17,14 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.41 2005-04-25 13:32:34 pierre Exp $
+ * @version $Id: Casting.java,v 1.42 2005-05-02 11:39:33 michiel Exp $
  */
 
 import java.util.*;
 import java.text.*;
 import java.io.Writer;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
@@ -130,7 +132,7 @@ public class Casting {
             } else if (type.equals(MMObjectNode.class)) {
                 return toNode(value, MMBase.getMMBase().getTypeDef());
             } else if (type.equals(Document.class)) {
-                return toXML(value, null, null);
+                return toXML(value);
             } else if (type.equals(List.class)) {
                 return toList(value);
             } else {
@@ -244,8 +246,8 @@ public class Casting {
                 return o;
             }
         } else {
-            if (o instanceof String) {
-                return escape(escaper, (String) o);
+            if (o instanceof String && escaper != null) {
+                return new StringWrapper((String) o, escaper);
             } else {
                 return o;
             }
@@ -269,6 +271,8 @@ public class Casting {
             return ((NodeWrapper)o).getNode();
         } else if (o instanceof ListWrapper) {
             return ((ListWrapper)o).getList();
+        } else if (o instanceof StringWrapper) {
+            return ((StringWrapper)o).getString();
         } else {
             return o;
         }
@@ -278,7 +282,7 @@ public class Casting {
      * Convert an object to a List.
      * A String is split up (as if it was a comma-separated String).
      * Individual objects are wrapped and returned as Lists with one item.
-     * <code>null</code> is returned as an empty list.
+     * <code>null</code> and the empty string are  returned as an empty list.
      * @param o the object to convert
      * @return the converted value as a <code>List</code>
      * @since MMBase-1.7
@@ -288,7 +292,7 @@ public class Casting {
             return (List)o;
         } else if (o instanceof Collection) {
             return new ArrayList((Collection) o);
-        } else if (o instanceof String) {
+        } else if (o instanceof String) {            
             return StringSplitter.split((String)o);
         } else {
             List l = new ArrayList();
@@ -312,7 +316,7 @@ public class Casting {
      * @throws  IllegalArgumentException if the value could not be converted
      * @since MMBase-1.6
      */
-    static public Document toXML(Object o, String documentType, String conversion) {
+    static public Document toXML(Object o) {
         if (o == null || o == MMObjectNode.VALUE_NULL) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
@@ -325,7 +329,7 @@ public class Casting {
                     msg = msg.substring(0, 20);
                 log.service("Object " + msg + "... is not a Document, but a " + o.getClass().getName());
             }
-            return convertStringToXML(xmltext, documentType, conversion);
+            return convertStringToXML(xmltext);
         }
         return (Document)o;
     }
@@ -343,6 +347,14 @@ public class Casting {
             return new byte[] {};
         } else {
             return toString(obj).getBytes();
+        }
+    }
+
+    static public InputStream toInputStream(Object obj) {
+        if (obj instanceof InputStream) {
+            return (InputStream) obj;
+        } else {
+            return new ByteArrayInputStream(toByte(obj));                    
         }
     }
 
@@ -524,14 +536,12 @@ public class Casting {
             res = ((Number)i).longValue();
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
-            if (res!=-1) res = res / 1000;
+            if (res!=-1) res /= 1000;
         } else if (i instanceof MMObjectNode) {
             res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
         } else if (i != null && i != MMObjectNode.VALUE_NULL) {
-            //keesj:
-            //TODO:add Node and MMObjectNode
             try {
                 res = Long.parseLong("" + i);
             } catch (NumberFormatException e) {
@@ -687,79 +697,21 @@ public class Casting {
     /**
      * Convert a String value to a Document
      * @param value The current value (can be null)
-     * @param documentType the xml document type
-     * @param conversion encoder conversion type
      * @return  the value as a DOM Element or <code>null</code>
      * @throws  IllegalArgumentException if the value could not be converted
      */
-    static private Document convertStringToXML(String value, String documentType, String conversion) {
-        if (value == null || value == MMObjectNode.VALUE_NULL)
+    static private Document convertStringToXML(String value) {
+        if (value == null || value == MMObjectNode.VALUE_NULL || value.equals("")) {
             return null;
-        if (value.startsWith("<")) { // _is_ already XML, only presented as a string.
-            // removing doc-headers if nessecary
-
-            // remove all the <?xml stuff from beginning if there....
-            //  <?xml version="1.0" encoding="utf-8"?>
-            if (value.startsWith("<?xml")) {
-                // strip till next ?>
-                int stop = value.indexOf("?>");
-                if (stop > 0) {
-                    value = value.substring(stop + 2).trim();
-                    log.debug("removed <?xml part");
-                } else {
-                    throw new IllegalArgumentException("no ending ?> found in xml:\n" + value);
-                }
-            } else {
-                log.debug("no <?xml header found");
-            }
-
-            // remove all the <!DOCTYPE stuff from beginning if there....
-            // <!DOCTYPE builder PUBLIC "-//MMBase/builder config 1.0 //EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-            if (value.startsWith("<!DOCTYPE")) {
-                // strip till next >
-                int stop = value.indexOf(">");
-                if (stop > 0) {
-                    value = value.substring(stop + 1).trim();
-                    log.debug("removed <!DOCTYPE part");
-                } else {
-                    throw new IllegalArgumentException("no ending > found in xml:\n" + value);
-                }
-            } else {
-                log.debug("no <!DOCTYPE header found");
-            }
-        } else {
-            // not XML, make it XML, when conversion specified, use it...
-            if (conversion == null) {
-                conversion = "MMXF_POOR";
-                documentType = XmlField.XML_DOCTYPE;
-                log.debug("Using default for XML conversion: '" + conversion + "'.");
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("converting the string to something else using conversion: " + conversion);
-            }
-            value = org.mmbase.util.Encode.decode(conversion, value);
         }
-
         if (log.isDebugEnabled()) {
             log.trace("using xml string:\n" + value);
         }
-        // add the header stuff...
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-        if (documentType != null) {
-            xmlHeader += "\n" + documentType;
-        }
-        value = xmlHeader + "\n" + value;
 
         try {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-            if (documentType != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("validating with doctype: " + documentType);
-                }
-                dfactory.setValidating(true);
-            }
+            dfactory.setValidating(false);
             DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-
             // dont log errors, and try to process as much as possible...
             XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
             documentBuilder.setErrorHandler(errorHandler);
@@ -775,13 +727,10 @@ public class Casting {
             }
             return doc;
         } catch (ParserConfigurationException pce) {
-            String msg = "[sax parser] not well formed xml: " + pce.toString() + "\n" + Logging.stackTrace(pce);
-            log.error(msg);
-            throw new IllegalArgumentException(msg);
+            throw new IllegalArgumentException("[sax parser] not well formed xml: " + pce.toString() + "\n" + Logging.stackTrace(pce));
         } catch (org.xml.sax.SAXException se) {
-            String msg = "[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se);
-            log.error(msg);
-            throw new IllegalArgumentException(msg);
+            log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
+            return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
         } catch (java.io.IOException ioe) {
             String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
             log.error(msg);
@@ -846,7 +795,10 @@ public class Casting {
         }
     }
 
-
+    /*
+     * Wraps a List with an 'Escaper'.
+     * @since MMBase-1.8
+     */
     public static class ListWrapper extends AbstractList{
         private final List list;
         private final CharTransformer escaper;
@@ -882,4 +834,43 @@ public class Casting {
             return list;
         }
     }
+
+    /**
+     * Wraps a String with an 'Escaper'.
+     * @since MMBase-1.8
+     */
+    public static class StringWrapper implements CharSequence {
+        private final CharTransformer escaper;
+        private final String string;
+        private  String escaped = null;
+        StringWrapper(String s, CharTransformer e) {
+            escaper = e;
+            string  = s;
+            
+        }
+       
+        public char charAt(int index) {
+            toString();
+            return escaped.charAt(index);
+        }
+        public int length() {
+            toString();
+            return escaped.length();
+        }
+        
+        public CharSequence subSequence(int start, int end) {
+            toString();
+            return escaped.subSequence(start, end);
+        }
+
+        public String toString() {
+            if (escaped == null) escaped = escape(escaper, string);
+            return escaped;
+        }
+        public String getString() {
+            return string;
+        }
+    }
 }
+
+
