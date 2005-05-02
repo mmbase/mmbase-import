@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.26 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicRelationManager.java,v 1.27 2005-05-02 17:22:13 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -147,8 +147,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         if (destinationNode.getCloud() != cloud) {
             throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds.");
         }
-        if (!(cloud instanceof Transaction)  &&
-                (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
+        if (!(cloud instanceof Transaction)  && (sourceNode.isNew() || destinationNode.isNew())) {
             throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
         }
 
