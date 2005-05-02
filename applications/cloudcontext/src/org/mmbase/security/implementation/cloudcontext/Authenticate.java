@@ -30,7 +30,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.12 2005-05-02 12:32:42 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.13 2005-05-02 12:40:42 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -40,7 +40,7 @@ public class Authenticate extends Authentication {
     private long uniqueNumber;
     private long extraAdminsUniqueNumber;
 
-    private boolean allowEncodedPassword = true;
+    private boolean allowEncodedPassword = false;
 
     private static Properties extraAdmins = new Properties();      // Admins to store outside database.
     protected static Map      loggedInExtraAdmins = new HashMap();
@@ -108,6 +108,7 @@ public class Authenticate extends Authentication {
             log.fatal(msg);
             throw new SecurityException(msg);
         }
+        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getInitParameter("allowencodedpassword"));
         if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
         } else if ("name/password".equals(s)) {
