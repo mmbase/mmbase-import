@@ -28,7 +28,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.9 2005-04-21 12:01:11 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.10 2005-05-02 11:40:56 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -98,7 +98,8 @@ public class XmlHandler extends StringHandler {
                     throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
                 }
             } else {
-                if (tag.getOptions().indexOf("noempty") > -1) {
+                String opt = tag.getOptions();
+                if (opt != null && opt.indexOf("noempty") > -1) {
                     buffer.append(" ");
                 }
             }
