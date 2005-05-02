@@ -17,13 +17,14 @@ import javax.servlet.jsp.*;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.4 2004-12-13 18:29:19 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.5 2005-05-02 11:50:09 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag {
     
-    private Attribute name  = Attribute.NULL;
-    private Attribute value = Attribute.NULL;
+    private Attribute name    = Attribute.NULL;
+    private Attribute value   = Attribute.NULL;
+    private Attribute referid = Attribute.NULL;
     private ParamHandler paramHandler;
     private boolean handled;
            
@@ -33,6 +34,12 @@ public class ParamTag extends ContextReferrerTag {
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
     }
+    /**
+     * @since MMBase-1.8
+     */
+    public void setReferid(String r) throws JspTagException {
+        referid = getAttribute(r);
+    }
 
     public int doStartTag() throws JspException {
         paramHandler = (ParamHandler) findParentTag(ParamHandler.class, null);
@@ -41,7 +48,7 @@ public class ParamTag extends ContextReferrerTag {
     }
 
     public int doAfterBody() throws JspException {
-        if (value == Attribute.NULL) {
+        if (value == Attribute.NULL && referid == Attribute.NULL) {
             if (bodyContent != null) {
                 // the value is the body context.      
                 helper.setValue(bodyContent.getString()); // to deal with 'vartype' casting
@@ -54,10 +61,16 @@ public class ParamTag extends ContextReferrerTag {
     }
 
     public int doEndTag() throws JspTagException {
-        if (! handled && value != Attribute.NULL) {
-            helper.setValue(value.getString(this)); // to deal with 'vartype' casting
-            paramHandler.addParameter(name.getString(this), helper.getValue());
-            helper.doAfterBody();
+        if (! handled) {
+            if (value != Attribute.NULL) {
+                if (referid != Attribute.NULL) throw new JspTagException("Must specify either 'value' or 'referid', not both");
+                helper.setValue(value.getString(this)); // to deal with 'vartype' casting
+                paramHandler.addParameter(name.getString(this), helper.getValue());
+                helper.doAfterBody();
+
+            } else if (referid != Attribute.NULL) {
+                paramHandler.addParameter(name.getString(this), getObject(referid.getString(this)));
+            }
         }
         paramHandler = null;
         return super.doEndTag();
