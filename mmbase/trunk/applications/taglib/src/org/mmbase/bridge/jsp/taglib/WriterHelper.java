@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.66 2005-03-24 13:50:59 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.67 2005-05-02 22:21:57 michiel Exp $
  */
 
 public class WriterHelper {
@@ -58,6 +58,7 @@ public class WriterHelper {
     static final int TYPE_FIELD         = 23;
     static final int TYPE_FIELDVALUE    = 24;
     static final int TYPE_BOOLEAN       = 25;
+    static final int TYPE_CHARSEQUENCE  = 26;
 
 
     static final int stringToType(String tt) {
@@ -96,6 +97,8 @@ public class WriterHelper {
             return TYPE_FIELDVALUE;
         } else if ("boolean".equals(t)) {
             return TYPE_BOOLEAN;
+        } else if ("charsequence".equals(t)) {
+            return TYPE_CHARSEQUENCE;
         } else {
             return TYPE_UNKNOWN;
         }
@@ -334,6 +337,11 @@ public class WriterHelper {
                     break;
                 case TYPE_STRING:
                     if (! (v instanceof String)) {
+                        v = Casting.toString(v);
+                    }
+                    break;
+                case TYPE_CHARSEQUENCE:
+                    if (! (v instanceof CharSequence)) {
                         v = Casting.toString(v);
                     }
                     break;
