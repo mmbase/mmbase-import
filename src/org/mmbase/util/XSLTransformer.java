@@ -18,6 +18,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
 
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.xml.Generator;
+
+
 import org.mmbase.cache.xslt.*;
 
 import org.mmbase.util.xml.URIResolver;
@@ -31,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.26 2005-03-16 10:44:55 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.27 2005-05-02 21:39:51 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -49,7 +53,7 @@ public class XSLTransformer {
      * @return String with converted XML document
      */
     public static String transform(String xmlPath, String xslPath) {
-        return transform(xmlPath,xslPath,false);
+        return transform(xmlPath, xslPath, false);
     }
 
     /**
@@ -109,9 +113,15 @@ public class XSLTransformer {
      */
     public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
 
+        if (xml instanceof DOMSource) {
+            log.info("transforming xlm with name-space " + ((DOMSource) xml).getNode().getNamespaceURI());
+        }
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
-        //xsl.setSystemId(xslFile.toURL().toString());
+        try {
+            xsl.setSystemId(xslFile.toURL().toString());
+        } catch (Exception e) {
+        }
         URIResolver uri;
         if (considerDir) {
             uri = new URIResolver(xslFile.getParentFile());
@@ -122,7 +132,7 @@ public class XSLTransformer {
         if (log.isDebugEnabled()) {
             // log.debug("Size of cached XSLT " + SizeOf.getByteSize(cachedXslt) + " bytes");
             log.debug("Size of URIResolver " + SizeOf.getByteSize(uri) + " bytes");
-            log.debug("template cache size " + cache.size() + " entries");
+            log.debug("template cache sze " + cache.size() + " entries");
         }
         if (cachedXslt == null) {
             TransformerFactory tf = FactoryCache.getCache().getFactory(uri);
@@ -132,8 +142,8 @@ public class XSLTransformer {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
         }
         Transformer transformer = cachedXslt.newTransformer();
-
-
+        //Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        log.info("" + transformer.getClass());
         if (log.isDebugEnabled()) {
             log.debug("Size of transformer " + SizeOf.getByteSize(transformer) + " bytes");
         }
@@ -253,13 +263,24 @@ public class XSLTransformer {
         }
     }
 
+
+    public static Result getResult(String[] argv) throws Exception {
+        if (argv.length > 2) {
+            FileOutputStream stream = new FileOutputStream(argv[2]);
+            Writer f = new OutputStreamWriter(stream,"utf-8");
+            return new StreamResult(f);
+        } else {
+            return new StreamResult(new OutputStreamWriter(System.out, "utf-8"));
+        }
+    }
+
     /**
      * Invocation of the class from the commandline for testing/building
      */
     public static void main(String[] argv) {
         // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
-            log.info("Use with two arguments: xslt-file xml-inputfile [xml-outputfile]");
+            log.info("Use with two arguments: xslt-file <xml-inputfile|node-number> [xml-outputfile]");
             log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir [key=value options]");
             log.info("special options can be:");
             log.info("   usecache=true:     Use the Template cache or not (to speed up)");
@@ -268,9 +289,8 @@ public class XSLTransformer {
             log.info("Other options are passed to XSL-stylesheet as parameters.");
 
         } else {
-            HashMap params=null;
+            Map params = new HashMap();
             if (argv.length > 3) {
-                params= new HashMap();
                 for (int i = 3; i<argv.length; i++) {
                     String key = argv[i];
                     String value = "";
@@ -292,32 +312,39 @@ public class XSLTransformer {
                     }
                 }
             }
-
-            File in = new File(argv[1]);
-            if (in.isDirectory()) {
-                log.info("Transforming directory " + in);
-                long start = System.currentTimeMillis();
-                try {
-                    transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
-                } catch (Exception e) {
-                    log.error("Error: " + e.toString());
-                }
-                log.info("Transforming took " + (System.currentTimeMillis() - start) / 1000.0 + " seconds");
-            } else {
-                log.info("Transforming file " + argv[1]);
-                if (argv.length > 2) {
-                    try {
-                        FileOutputStream stream = new FileOutputStream(argv[2]);
-                        Writer f = new OutputStreamWriter(stream,"utf-8");
-                        transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
-                        f.close();
-                    } catch (Exception e) {
-                        log.error("Error: " + e.toString());
+            try {
+                File in = new File(argv[1]);
+                if (in.exists()) {
+                    if (in.isDirectory()) {
+                        log.info("Transforming directory " + in);
+                        long start = System.currentTimeMillis();
+                        try {
+                            transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
+                        } catch (Exception e) {
+                            log.error("Error: " + e.toString());
+                        }
+                        log.info("Transforming took " + (System.currentTimeMillis() - start) / 1000.0 + " seconds");
+                    } else {
+                        log.info("Transforming file " + argv[1]);
+                        transform(new File(argv[1]), new File(argv[0]), getResult(argv), params, true);
                     }
                 } else {
-                    String s= transform(argv[1], argv[0], false);
-                    log.info(s);
+                    log.debug("" + in + " does not exist, interpreting it as a node, connecting using RMMCI");
+                    Cloud cloud = ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext").getCloud("mmbase", "anonymous", null);
+                    params.put("cloud", cloud);
+                    String nodeNumber = argv[1];
+                    Node node = cloud.getNode(nodeNumber);
+                    DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
+                    Generator generator = new Generator(documentBuilder, cloud);
+                    generator.setNamespaceAware(true);
+                    generator.add(node);
+                    generator.add(node.getRelations());
+                    NodeList relatedNodes = node.getRelatedNodes();
+                    generator.add(node.getRelatedNodes());
+                    transform(new DOMSource(generator.getDocument().getDocumentElement()),  new File(argv[0]), getResult(argv), params, true);
                 }
+            } catch (Exception io) {
+                log.error(io.getMessage(), io);
             }
         }
     }
