@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.11 2005-02-09 08:38:16 pierre Exp $
+  @version $Id: caches.xml,v 1.12 2005-05-02 12:54:05 michiel Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -100,7 +100,7 @@
   </cache>
 
   <!-- ================================================================================
-  Caches related to images/icaches
+  Caches related to images/icaches/attachments
   ================================================================================  -->
 
   <!-- Quick search of the icache node number (by template/ckey) -->
@@ -109,11 +109,13 @@
     <size>500</size>
   </cache>
 
-  <!-- Small image handles are caches as well -->
-  <cache name="ImageHandles">
+  <!-- Small blobs are cached as well -->
+  <cache name="Blob Cache">
     <status>active</status>
     <size>128</size>
+    <maxEntrySize>100000</maxEntrySize>
   </cache>
+
 
   <!-- ================================================================================
   Jumpers cache
