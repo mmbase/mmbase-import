@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.21 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.22 2005-05-02 13:04:16 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -205,16 +205,13 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             }
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
-        }
-
-
-
+        }               
     }
 
     /**
      * Creates a new StepField like f for query q.
      */
-    protected StepField createNewStepField(SearchQuery q, StepField f) {
+    protected static StepField createNewStepField(SearchQuery q, StepField f) {
         Step fstep = f.getStep();
         // find existing step.
         List steps = q.getSteps();
@@ -227,7 +224,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /**
      * Used by copy-constructor. Constraints have to be done recursively.
      */
-    protected Constraint copyConstraint(SearchQuery q, Constraint c) {
+    protected static Constraint copyConstraint(SearchQuery q, Constraint c) {        
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
             BasicCompositeConstraint newConstraint = new BasicCompositeConstraint(constraint.getLogicalOperator());
@@ -398,13 +395,18 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     }
 
+    // MM
+    /**
+     * Add all fields of given step
+     */
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != FieldDefs.TYPE_BYTE && field.inStorage()) {
+            if (field.getDBType() != FieldDefs.TYPE_BYTE 
+                && field.inStorage()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
             }
