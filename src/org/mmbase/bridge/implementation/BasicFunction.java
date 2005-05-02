@@ -13,10 +13,12 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
 
 /**
- * @javadoc
+ * This wraps the function to return 'FunctionValue' objects - rather then the more basic types of
+ * the function itself - as required by bridge.
+ *
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: BasicFunction.java,v 1.3 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicFunction.java,v 1.4 2005-05-02 17:20:36 michiel Exp $
  */
 public class BasicFunction extends WrappedFunction {
 
@@ -61,5 +63,9 @@ public class BasicFunction extends WrappedFunction {
             }
             return new BasicFunctionValue(cloud, super.getFunctionValue(parameters));
         }
+    }
+
+    public String toString() {
+        return "BASICFUNCTION " + wrappedFunction;
     }
 }
