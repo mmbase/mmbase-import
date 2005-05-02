@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Id: BasicLegacyConstraint.java,v 1.6 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicLegacyConstraint.java,v 1.7 2005-05-02 13:03:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicLegacyConstraint extends BasicConstraint
@@ -74,8 +74,7 @@ implements LegacyConstraint {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
             BasicLegacyConstraint lc = (BasicLegacyConstraint) obj;
-            return isInverse() == lc.isInverse()
-                && constraint.equals(lc.getConstraint());
+            return isInverse() == lc.isInverse() && constraint.equals(lc.getConstraint());
         } else {
             return false;
         }
