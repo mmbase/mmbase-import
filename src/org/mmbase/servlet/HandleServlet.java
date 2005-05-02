@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.18 2005-03-16 10:30:00 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.19 2005-05-02 13:35:46 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -158,12 +158,21 @@ public class HandleServlet extends BridgeServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         QueryParts query = readQuery(req, res);
-        Node node = getServedNode(query, getNode(query));
-        if (node == null) {
-            log.debug("No node found, returning");
+        Node queryNode = getNode(query);
+        if (queryNode == null) {
             return;
         }
-        if (!node.getNodeManager().hasField("handle")) {
+
+        res.setHeader("X-MMBase-Version", org.mmbase.Version.get());
+        Node node = getServedNode(query, getNode(query));
+
+        log.info("Start serving");
+        if (node == null) {
+            return;
+        }
+
+        NodeManager manager = node.getNodeManager();
+        if (! manager.hasField("handle")) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
             return;
         }
@@ -174,23 +183,25 @@ public class HandleServlet extends BridgeServlet {
         String mimeType = getMimeType(node);
         res.setContentType(mimeType);
 
-        byte[] bytes = node.getByteValue("handle");
-
-        if (bytes == null) {
+        if (node.isNull("handle")) {
             return;
         }
-        /*
-         *  remove additional information left by PhotoShop 7 in jpegs
-         * , this information may crash Internet Exploder. that's why you need to remove it.
-         * With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files, 
-         * using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles". 
-         * In theory, these files are valid according to the JPEG specifications. 
-         * However they break many applications, including Quark and, significantly, 
-         * various versions of Internet Explorer on various platforms. 
-         */
+        InputStream bytes = node.getInputStreamValue("handle");
+
+        
+        //remove additional information left by PhotoShop 7 in jpegs
+        //this information may crash Internet Exploder. that's why you need to remove it.
+        //With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files, 
+        //using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles". 
+        //In theory, these files are valid according to the JPEG specifications. 
+        //However they break many applications, including Quark and, significantly, 
+        //various versions of Internet Explorer on various platforms.         
+
+        boolean canSendLength = true;
         if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
-            bytes = IECompatibleJpegInputStream.process(bytes);
-            // res.setHeader("X-MMBase-2", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+            bytes = new IECompatibleJpegInputStream(bytes);
+            canSendLength = false;
+            //res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
         }
 
         if (!setContent(query, node, mimeType)) {
@@ -198,11 +209,30 @@ public class HandleServlet extends BridgeServlet {
         }
         setExpires(res, node);
         setCacheControl(res, node);
+
+        if (canSendLength) {
+            log.info("Finding size");
+            int size = -1;
+            if (manager.hasField("size")) {
+                size = node.getIntValue("size");
+            } else if (manager.hasField("filesize")) {
+                size = node.getIntValue("filesize");
+            }
+            log.info("Size " + size);
+            if (size >= 0) {
+                res.setContentLength(size);
+            }
+            log.debug("Serving node " + node.getNumber() + " with bytes " + size);
+        } else {
+            log.debug("Serving node " + node.getNumber() + " with unknown size, because IE sucks");
+        }
         sendBytes(res, bytes);
     }
 
+
     /**
      * Utility function to send bytes at the end of doGet implementation.
+     * @deprecated
      */
     final protected void sendBytes(HttpServletResponse res, byte[] bytes) throws IOException {
         int fileSize = bytes.length;
@@ -216,7 +246,25 @@ public class HandleServlet extends BridgeServlet {
         }
         out.write(bytes, 0, fileSize);
         out.flush();
-        out.close();
+    }
+    final protected void sendBytes(HttpServletResponse res, InputStream bytes) throws IOException {
+        log.debug("Sending by " + bytes.getClass());
+        BufferedOutputStream out = null;
+        try {
+            out = new BufferedOutputStream(res.getOutputStream());
+        } catch (java.io.IOException e) {
+            log.error(Logging.stackTrace(e));
+        }
+        int count = 0;
+        int b = bytes.read();
+        while (b != -1) {
+            out.write(b);
+            count++;
+            b = bytes.read();
+        }        
+        log.debug("ready wrote " + count + " bytes");
+        out.flush();
+        bytes.close();
     }
 
 }
