@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.90 2005-03-29 14:49:16 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.91 2005-05-02 12:58:48 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -41,10 +41,14 @@ public class DatabaseStorageManager implements StorageManager {
     // maximum size of the key buffer
     protected static Integer bufferSize = null;
 
+    private static final Blob BLOB_SHORTED = new InputStreamBlob(null, -1);
+
     /**
      * Whether the warning about blob on legacy location was given.
      */
     private static boolean legacyWarned = false;
+
+    
 
     /**
      * The factory that created this manager
@@ -309,7 +313,7 @@ public class DatabaseStorageManager implements StorageManager {
             ResultSet result = s.executeQuery(query);
             try {
                 if ((result != null) && result.next()) {
-                    String rvalue = getStringValue(result, 1, field);
+                    String rvalue = (String) getStringValue(result, 1, field, false);
                     result.close();
                     s.close();
                     return rvalue;
@@ -340,12 +344,15 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
-    protected String getStringValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
+    protected Object getStringValue(ResultSet result, int index, FieldDefs field, boolean mayShorten) throws StorageException, SQLException {
         String untrimmedResult = null;
         if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             InputStream inStream = result.getBinaryStream(index);
             if (result.wasNull()) {
                 return null;
+            }
+            if (mayShorten && shorten(field)) {
+                return MMObjectNode.VALUE_SHORTED;
             }
             try {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -405,8 +412,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
-     protected String getXMLValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
-         return getStringValue(result, index, field);
+     protected Object getXMLValue(ResultSet result, int index, FieldDefs field, boolean mayShorten) throws StorageException, SQLException {
+         return getStringValue(result, index, field, mayShorten);
      }
 
     /**
@@ -421,7 +428,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected java.util.Date getDateTimeValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
         Timestamp ts = result.getTimestamp(index);
-        if (ts==null) {
+        if (ts == null) {
             return null;
         } else {
             return new java.util.Date(ts.getTime());
@@ -460,7 +467,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
-    protected boolean shorten(FieldDefs field) throws StorageException, SQLException {
+    protected boolean shorten(FieldDefs field) {
         return field.getDBType() == FieldDefs.TYPE_BYTE;
     }
 
@@ -468,9 +475,9 @@ public class DatabaseStorageManager implements StorageManager {
      * Read a binary (blob) from a field in the database
      * @param node the node the binary data belongs to
      * @param field the binary field
-     * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
+     * @return An InputStream representing the binary data, <code>null</code> if no binary data was stored, or VALUE_SHORTED, if mayShorten
      */
-    protected byte[] readBinaryFromDatabase(MMObjectNode node, FieldDefs field) {
+    protected Blob getBlobFromDatabase(MMObjectNode node, FieldDefs field, boolean mayShorten) {
         try {
             MMObjectBuilder builder = node.getBuilder();
             Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
@@ -480,10 +487,9 @@ public class DatabaseStorageManager implements StorageManager {
             ResultSet result = s.executeQuery(query);
             try {
                 if ((result != null) && result.next()) {
-                    byte[] retval = getBinaryValue(result, 1, field);
-                    result.close();
-                    s.close();
-                    return retval;
+                    Blob blob = getBlobValue(result, 1, field, mayShorten);
+                    node.setSize(field.getDBName(), blob.length());
+                    return blob;
                 } else {
                     if (result != null) result.close();
                     s.close();
@@ -501,11 +507,30 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException {
-        if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-            return readBinaryFromFile(node, field);
-        } else
-            return readBinaryFromDatabase(node, field);
+        try {
+            Blob b = getBlobValue(node, field);;
+            return b.getBytes(0, (int) b.length());
+        } catch (SQLException sqe) {
+            throw new StorageException(sqe);
+        }
     }
+    // javadoc is inherited
+    public InputStream getInputStreamValue(MMObjectNode node, FieldDefs field) throws StorageException {
+        try {
+            return getBlobValue(node, field).getBinaryStream();
+        } catch (SQLException sqe) {
+            throw new StorageException(sqe);
+        }
+    }
+
+    protected Blob getBlobValue(MMObjectNode node, FieldDefs field) throws StorageException {
+        if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+            return getBlobFromFile(node, field, false);
+        } else {
+            return getBlobFromDatabase(node, field, false);
+        }
+    }
+
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
@@ -513,33 +538,38 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to optimize retrieving large objects,
      * i.e by using clobs or streams.
      * @param result the resultset to retrieve the text from
-     * @param index the index of the text in the resultset
+     * @param index the index of the text in the resultset, or -1 to retireiv from file (blobs).
      * @param field the (MMBase) fieldtype. This value can be null
      * @return the retrieved data, <code>null</code> if no binary data was stored
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
-    protected byte[] getBinaryValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
+    protected Blob getBlobValue(ResultSet result, int index, FieldDefs field, boolean mayShorten) throws StorageException, SQLException {
+        log.info("Getting binary value");
         if (factory.hasOption(Attributes.SUPPORTS_BLOB)) {
             Blob blob = result.getBlob(index);
+            log.info("Get blob" + blob);
             if (result.wasNull()) {
+                log.info("returning null");
                 return null;
             }
-            return blob.getBytes(1, (int)blob.length());
+            if (mayShorten && shorten(field)) {
+                return BLOB_SHORTED;
+            }
+
+            return blob;
         } else {
             try {
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 InputStream inStream = result.getBinaryStream(index);
                 if (result.wasNull()) {
+                    inStream.close();
                     return null;
                 }
-                int c = inStream.read();
-                while (c != -1) {
-                    bytes.write(c);
-                    c = inStream.read();
+                if (mayShorten && shorten(field)) {
+                    inStream.close();
+                    return BLOB_SHORTED;
                 }
-                inStream.close(); // this also closes the underlying stream
-                return bytes.toByteArray();
+                return new InputStreamBlob(inStream);
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
@@ -611,17 +641,30 @@ public class DatabaseStorageManager implements StorageManager {
             String fieldName = field.getDBName();
             File binaryFile = getBinaryFile(node, fieldName);
             binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
-            Object value = node.getValue(fieldName);
-            if (value == null && field.getDBNotNull()) {
-                value = new byte[] {};
-                node.storeValue(field.getDBName(), value);
+            if (node.isNull(fieldName)) {
+                if (field.getDBNotNull()) {
+                    node.storeValue(field.getDBName(), new ByteArrayInputStream(new byte[0]));
+                } else {
+                    if (binaryFile.exists()) {
+                        binaryFile.delete();                        
+                    }
+                    return;
+                }
             }
-            if (value instanceof byte[]) {
-                FileOutputStream byteStream = new FileOutputStream(binaryFile);
-                byteStream.write((byte[])value);
-                byteStream.flush();
-                byteStream.close();
+            InputStream in = node.getInputStreamValue(fieldName);
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
+            long size = 0;
+            int c = in.read();
+            while (c > -1) {
+                out.write(c);
+                c = in.read();
+                size ++;
             }
+            out.close();
+            in.close();
+            // unload the input-stream, it is of no use any more.
+            node.setSize(fieldName, size);
+            node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED);
         } catch (IOException ie) {
             throw new StorageException(ie);
         }
@@ -642,7 +685,7 @@ public class DatabaseStorageManager implements StorageManager {
                 File legacy = getLegacyBinaryFile(node, fieldName);
                 if (legacy == null) {
                     if (!binaryFile.getParentFile().exists()) {
-                        log.warn("The file '" + binaryFile + "' does not exist, " + desc);
+                        log.warn("The file '" + binaryFile + "' does not exist, " + desc, new Exception());
                         log.info(
                             "If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
                                 + factory.getBinaryFileBasePath()
@@ -674,25 +717,21 @@ public class DatabaseStorageManager implements StorageManager {
      * @param field the binary field
      * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
      */
-    protected byte[] readBinaryFromFile(MMObjectNode node, FieldDefs field) throws StorageException {
-        try {
-            String fieldName = field.getDBName();
-            File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
-            if (binaryFile == null) {
-                return null;
-            }
-            int fileSize = (int)binaryFile.length();
-            byte[] buffer = new byte[fileSize];
-            if (fileSize > 0) {
-                FileInputStream byteStream = new FileInputStream(binaryFile);
-                byteStream.read(buffer, 0, fileSize);
-                byteStream.close();
-            }
-            return buffer;
-        } catch (IOException ie) {
-            throw new StorageException(ie);
+    public Blob getBlobFromFile(MMObjectNode node, FieldDefs field, boolean mayShorten) throws StorageException {
+        String fieldName = field.getDBName();
+        File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
+        if (binaryFile == null) {
+            return null;
         }
-        //TODO: find you why is this code only here and not in other methods/
+        try {
+            node.setSize(field.getDBName(), binaryFile.length());
+            if (mayShorten && shorten(field)) {
+                return BLOB_SHORTED;
+            }
+            return new InputStreamBlob(new FileInputStream(binaryFile), binaryFile.length());
+        } catch (FileNotFoundException fnfe) {
+            throw new StorageException(fnfe);
+        }
     }
 
     // javadoc is inherited
@@ -709,6 +748,7 @@ public class DatabaseStorageManager implements StorageManager {
         builder.preCommit(node);
         create(node, builder);
         commitChange(node, "n");
+        unloadShortedFields(node, builder);
 //        refresh(node);
         return nodeNumber;
     }
@@ -761,6 +801,18 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException(se);
             } finally {
                 releaseActiveConnection();
+            }
+        }
+    }
+
+    protected void unloadShortedFields(MMObjectNode node, MMObjectBuilder builder) {
+        for (Iterator f = builder.getFields().iterator(); f.hasNext();) {
+            FieldDefs field = (FieldDefs)f.next();
+            if (field.inStorage() && shorten(field)) {
+                String fieldName = field.getDBName();
+                if (! node.isNull(fieldName)) {
+                    node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED);
+                }
             }
         }
     }
@@ -835,6 +887,7 @@ public class DatabaseStorageManager implements StorageManager {
         builder.preCommit(node);
         change(node, builder);
         commitChange(node, "c");
+        unloadShortedFields(node, builder);
 //        refresh(node);
     }
 
@@ -877,7 +930,9 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
         }
-        log.debug("change field values " + node);
+        if (log.isDebugEnabled()) {
+            log.debug("change field values " + node);
+        }
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
@@ -1003,32 +1058,32 @@ public class DatabaseStorageManager implements StorageManager {
         // Store integers, floats, doubles and longs
         if (!setNullValue(statement, index, value, field, field.getDBType())) {
             switch (field.getDBType()) { // it does this switch part twice now?
-                case FieldDefs.TYPE_INTEGER : {
-                    int storeValue = Casting.toInt(value);
-                    statement.setInt(index, storeValue);
-                    node.storeValue(field.getDBName(),new Integer(storeValue));
+            case FieldDefs.TYPE_INTEGER : {
+                int storeValue = Casting.toInt(value);
+                statement.setInt(index, storeValue);
+                node.storeValue(field.getDBName(), new Integer(storeValue));
+                break;
+            }
+            case FieldDefs.TYPE_FLOAT : {
+                float storeValue = Casting.toFloat(value);
+                statement.setFloat(index, storeValue);
+                node.storeValue(field.getDBName(), new Float(storeValue));
+                break;
+            }
+            case FieldDefs.TYPE_DOUBLE : {
+                double storeValue = Casting.toDouble(value);
+                statement.setDouble(index, storeValue);
+                node.storeValue(field.getDBName(), new Double(storeValue));
+                break;
+            }
+            case FieldDefs.TYPE_LONG : {
+                long storeValue = Casting.toLong(value);
+                statement.setLong(index, storeValue);
+                node.storeValue(field.getDBName(), new Long(storeValue));
                     break;
-                }
-                case FieldDefs.TYPE_FLOAT : {
-                    float storeValue = Casting.toFloat(value);
-                    statement.setFloat(index, storeValue);
-                    node.storeValue(field.getDBName(),new Float(storeValue));
-                    break;
-                }
-                case FieldDefs.TYPE_DOUBLE : {
-                    double storeValue = Casting.toDouble(value);
-                    statement.setDouble(index, storeValue);
-                    node.storeValue(field.getDBName(),new Double(storeValue));
-                    break;
-                }
-                case FieldDefs.TYPE_LONG : {
-                    long storeValue = Casting.toLong(value);
-                    statement.setLong(index, storeValue);
-                    node.storeValue(field.getDBName(),new Long(storeValue));
-                    break;
-                }
-                default:
-                    break;
+            }
+            default:
+                break;
             }
         }
     }
@@ -1145,16 +1200,17 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) {
-            byte[] value = Casting.toByte(objectValue);
+            InputStream stream = Casting.toInputStream(objectValue);
+            long size = node.getSize(field.getDBName());
+            log.info("Setting inputstream bytes into field " + field);
             try {
-                InputStream stream = new ByteArrayInputStream(value);
-                statement.setBinaryStream(index, stream, value.length);
+                statement.setBinaryStream(index, stream, (int) size);
                 stream.close();
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
             if (node != null) {
-                node.storeValue(field.getDBName(),value);
+                node.storeValue(field.getDBName(), MMObjectNode.VALUE_SHORTED);
             }
         }
     }
@@ -1249,8 +1305,8 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
         if (objectValue == null && field.getDBNotNull()) objectValue = "";
-        objectValue = Casting.toXML(objectValue, null, null);
-        node.storeValue(field.getDBName(),objectValue);
+        objectValue = Casting.toXML(objectValue);
+        node.storeValue(field.getDBName(), objectValue);
         setStringValue(statement, index, objectValue, field, node);
     }
 
@@ -1319,7 +1375,10 @@ public class DatabaseStorageManager implements StorageManager {
             StringBuffer fieldNames = null;
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 FieldDefs field = (FieldDefs)f.next();
-                if (field.inStorage() && !shorten(field)) {
+                if (field.inStorage()) {
+                    if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
+                        continue;
+                    }
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
@@ -1364,7 +1423,7 @@ public class DatabaseStorageManager implements StorageManager {
             StringBuffer fieldNames = null;
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 FieldDefs field = (FieldDefs)f.next();
-                if (field.inStorage() && !shorten(field)) {
+                if (field.inStorage()) {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
@@ -1412,13 +1471,18 @@ public class DatabaseStorageManager implements StorageManager {
                 for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext();) {
                     FieldDefs field = (FieldDefs)i.next();
                     if (field.inStorage()) {
-                        if (shorten(field)) {
-                            node.setValue(field.getDBName(), MMObjectNode.VALUE_SHORTED);
-                        } else if (field.getDBType() == FieldDefs.TYPE_BYTE && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-                            node.setValue(field.getDBName(), readBinaryFromFile(node, field));
+                        Object value;
+                        if (field.getDBType() == FieldDefs.TYPE_BYTE && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+                            value =  getBlobFromFile(node, field, true);
+                            if (value == BLOB_SHORTED) value = MMObjectNode.VALUE_SHORTED;
                         } else {
                             String id = (String)factory.getStorageIdentifier(field);
-                            node.setValue(field.getDBName(), getValue(result, result.findColumn(id), field));
+                            value = getValue(result, result.findColumn(id), field, true);
+                        }
+                        if (value == null) {
+                            node.storeValue(field.getDBName(), MMObjectNode.VALUE_NULL);
+                        } else {
+                            node.storeValue(field.getDBName(), value);
                         }
                     }
                 }
@@ -1444,7 +1508,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @return the value
      * @throws StorageException if the value cannot be retrieved from the resultset
      */
-    public Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
+
+    public Object getValue(ResultSet result, int index, FieldDefs field, boolean mayShorten) throws StorageException {
         try {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
             if (field != null) {
@@ -1455,24 +1520,20 @@ public class DatabaseStorageManager implements StorageManager {
             
             switch (dbtype) {
                 // string-type fields
-                case FieldDefs.TYPE_XML : {
-                    return getXMLValue(result, index, field);
-                }
-                case FieldDefs.TYPE_STRING : {
-                    return getStringValue(result, index, field);
-                }
-                case FieldDefs.TYPE_BYTE : {
-                    return getBinaryValue(result, index, field);
-                }
-                case FieldDefs.TYPE_DATETIME : {
-                    return getDateTimeValue(result, index, field);
-                }
-                case FieldDefs.TYPE_BOOLEAN : {
-                    return getBooleanValue(result, index, field);
-                }
-                default : {
-                    return result.getObject(index);
-                }
+            case FieldDefs.TYPE_XML : 
+                return getXMLValue(result, index, field, mayShorten);
+            case FieldDefs.TYPE_STRING : 
+                return getStringValue(result, index, field, mayShorten);
+            case FieldDefs.TYPE_BYTE :
+                Blob b =  getBlobValue(result, index, field, mayShorten);
+                if (b == BLOB_SHORTED) return MMObjectNode.VALUE_SHORTED;
+                return b.getBytes(0L, (int) b.length());
+            case FieldDefs.TYPE_DATETIME :
+                return getDateTimeValue(result, index, field);
+            case FieldDefs.TYPE_BOOLEAN :
+                return getBooleanValue(result, index, field);
+            default :
+                return result.getObject(index);
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1659,7 +1720,7 @@ public class DatabaseStorageManager implements StorageManager {
                     (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
                     field.getDBType() == FieldDefs.TYPE_NODE &&
                     ! field.getDBName().equals("number")) {
-                    query = createIndex.format(new Object[] { this, builder, field.getDBName()});
+                    query = createIndex.format(new Object[] { this, builder, factory.getStorageIdentifier(field)});
                     try {
                         getActiveConnection();
                         Statement s = activeConnection.createStatement();
@@ -2342,7 +2403,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @return Number of converted fields. Or -1 if not storing binaries as files
      */
 
-    public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException {
+    public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException, SQLException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
             synchronized(factory) { // there is only on factory. This makes sure that there is only one conversion running
                 int result = 0;
@@ -2399,10 +2460,13 @@ public class DatabaseStorageManager implements StorageManager {
                                         }
                                     } else {
                                         if (foundColumn) {
-                                            byte[] bytes = readBinaryFromDatabase(node, field);
+                                            
+                                            Blob b = getBlobFromDatabase(node, field, false);
+                                            byte[] bytes = (byte[]) b.getBytes(0L, (int) b.length());
                                             node.setValue(fieldName, bytes);
                                             storeBinaryAsFile(node, field);
-                                            node.setValue(fieldName, null); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                            
+                                            node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
                                             // node.commit(); no need, because we only changed blob (so no database updates are done)
                                             result++;
                                             fromDatabase++;
@@ -2428,6 +2492,92 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             // not configured to store blobs as file
             return -1;
+        }
+    }
+
+    protected static class InputStreamBlob implements Blob {
+        private InputStream inputStream;
+        private byte[] bytes = null;
+        private long size;
+        public InputStreamBlob(InputStream is, long s) {
+            inputStream = is;
+            size = s;
+        }
+        public InputStreamBlob(InputStream is) {
+            inputStream = is;
+            size = -1;
+        }
+        
+        public InputStream getBinaryStream() {
+            if (bytes != null) {
+                return new ByteArrayInputStream(bytes);
+            } else {
+                return inputStream;
+            }
+        }
+        public byte[] getBytes(long pos, int length) {
+            if (pos == 1 && size == length && bytes != null) return bytes;
+
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            long p = 1;
+            int c;
+            InputStream stream = getBinaryStream();
+            try {
+                while((c = stream.read()) > -1) {
+                    if (p >= pos) {
+                        b.write(c);
+                    }
+                    p++;
+                    if (p > pos + length) break;
+                }
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+            return b.toByteArray();
+        }
+
+        protected void getBytes() {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            int c;
+            try {
+                while((c = inputStream.read()) > -1) {
+                    b.write(c);
+                }
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+            bytes = b.toByteArray();
+            size = bytes.length;
+            
+        }
+
+        public long length() {
+            if (size < 0 && inputStream != null) {
+                getBytes();
+            }
+            return size;
+        }
+        
+        public long position(Blob pattern, long start) {
+            throw new UnsupportedOperationException("");
+        }
+        
+        public long  position(byte[] pattern, long start) {
+            throw new UnsupportedOperationException("");
+        }
+        
+        public OutputStream setBinaryStream(long pos) {
+            throw new UnsupportedOperationException("");
+        }
+        public int setBytes(long pos, byte[] bytes) {
+            throw new UnsupportedOperationException("");
+        }
+        public int setBytes(long pos, byte[] bytes, int offset, int len) {
+            throw new UnsupportedOperationException("");
+        }
+        
+        public void truncate(long len) {
+            throw new UnsupportedOperationException("");
         }
     }
 }
