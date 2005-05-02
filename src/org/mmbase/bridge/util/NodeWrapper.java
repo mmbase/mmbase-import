@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.2 2005-01-06 20:18:22 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.3 2005-05-02 12:31:16 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -48,10 +48,12 @@ public abstract class NodeWrapper implements Node, Comparable {
     public void setFloatValue(String fieldName, float value) { node.setFloatValue(fieldName, value); }
     public void setDoubleValue(String fieldName, double value) { node.setDoubleValue(fieldName, value); }
     public void setByteValue(String fieldName, byte[] value) { node.setByteValue(fieldName, value); }
+    public void setInputStreamValue(String fieldName, java.io.InputStream value, long size) { node.setInputStreamValue(fieldName, value, size); }
     public void setLongValue(String fieldName, long value) { node.setLongValue(fieldName, value); }
     public void setStringValue(String fieldName, String value) { node.setStringValue(fieldName, value); }
     public void setDateValue(String fieldName, Date value) { node.setDateValue(fieldName, value); }
     public void setListValue(String fieldName, List value) { node.setListValue(fieldName, value); }
+    public boolean isNull(String fieldName) { return node.isNull(fieldName); }
     public Object getValue(String fieldName) { return node.getValue(fieldName); }
     public Object getObjectValue(String fieldName) { return node.getObjectValue(fieldName); }
     public boolean getBooleanValue(String fieldName) { return node.getBooleanValue(fieldName); }
@@ -61,6 +63,7 @@ public abstract class NodeWrapper implements Node, Comparable {
     public long getLongValue(String fieldName)  { return node.getLongValue(fieldName); }
     public double getDoubleValue(String fieldName) { return node.getDoubleValue(fieldName); }
     public byte[] getByteValue(String fieldName) { return node.getByteValue(fieldName); }
+    public java.io.InputStream getInputStreamValue(String fieldName) { return node.getInputStreamValue(fieldName); }
     public String getStringValue(String fieldName) { return node.getStringValue(fieldName); }
     public Date getDateValue(String fieldName) { return node.getDateValue(fieldName); }
     public List getListValue(String fieldName) { return node.getListValue(fieldName); }
@@ -70,7 +73,7 @@ public abstract class NodeWrapper implements Node, Comparable {
     public FieldValue getFieldValue(Field field) { return node.getFieldValue(field); }
     public void commit() { node.commit(); }
     public void cancel() { node.cancel(); }
-    //public boolean isNew() {  return node.isNew(); }
+    public boolean isNew() {  return node.isNew(); }
     public void delete() { node.delete(); }
     public void delete(boolean deleteRelations) { node.delete(deleteRelations); }
     public String toString() { return node.toString(); }
