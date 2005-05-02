@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
+import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.*;
@@ -22,18 +23,22 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.25 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Generator.java,v 1.26 2005-05-02 21:38:20 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
 
     private static final Logger log = Logging.getLoggerInstance(Generator.class);
 
+    private final static String NAMESPACE =  "http://www.mmbase.org/objects";
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
 
     private Document document = null;
+    private DocumentBuilder documentBuilder = null;
     private Cloud cloud = null;
+
+    private boolean namespaceAware = false;
 
     /**
      * To create documents representing structures from the cloud, it
@@ -44,19 +49,13 @@ public class Generator {
      * @param cloud           The cloud from which the data will be.
      * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
      */
-    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, Cloud cloud) {
-        DOMImplementation impl = documentBuilder.getDOMImplementation();
-        this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM));
+    public Generator(DocumentBuilder documentBuilder, Cloud cloud) {
+        this.documentBuilder = documentBuilder;        
         this.cloud = cloud;
-        if (cloud != null) {
-            addCloud();
-        }
-        this.document.getDocumentElement().setAttribute("xmlns", "http://www.mmbase.org/objects");
-        //Element rootElement = document.createElement("objects");
-        //document.appendChild(rootElement);
+
     }
 
-    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder) {
+    public Generator(DocumentBuilder documentBuilder) {
         this(documentBuilder, null);
     }
 
@@ -64,8 +63,48 @@ public class Generator {
      * Returns the working DOM document.
      * @return The document, build with the operations done on the generator class
      */
-    public Document getDocument() {
+    public  Document getDocument() {
+        if (document == null) {
+            DOMImplementation impl = documentBuilder.getDOMImplementation();
+            document = impl.createDocument(namespaceAware ? NAMESPACE : null, 
+                                           "objects", 
+                                           impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM));
+            this.cloud = cloud;
+            if (cloud != null) {
+                addCloud();
+            }
+        }
         return document;
+    }
+
+    /**
+     * If namespace aware, element are created with the namespace http://www.mmbase.org/objects,
+     * otherwise, without namespace.
+     * @since MMBase-1.8
+     */
+    public void setNamespaceAware(boolean n) {
+        if (document != null) throw new IllegalStateException("Already started constructing");
+        namespaceAware = n;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public boolean isNamespaceAware() {
+        return namespaceAware;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Element createElement(String name) {
+        getDocument();
+        if (namespaceAware) {
+            return document.createElementNS(NAMESPACE, name);
+        } else {
+            return document.createElement(name);
+        }
+                
     }
 
     /**
@@ -96,6 +135,7 @@ public class Generator {
      * @param fieldDefinition An MMBase bridge Field.
      */
     public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
+        getDocument();
         if (cloud == null) {
             cloud = node.getCloud();
             addCloud();
@@ -115,7 +155,7 @@ public class Generator {
             return;
 
         // was not filled, so fill it... first remove the unfilled
-        Element filledField = document.createElement("field");
+        Element filledField = createElement("field");
 
         field.getParentNode().replaceChild(filledField, field);
         field = filledField;
@@ -197,30 +237,22 @@ public class Generator {
      * @return Element which represents a bridge.Node
      */
     private Element getNode(org.mmbase.bridge.Node node) {
-        // MMBASE BUG...
-        // we dont know if we have the correct typee...
-        node = cloud.getNode(node.getNumber());
 
         // if we are a relation,.. behave like one!
         // why do we find it out now, and not before?
-
-        // TODO: reseach!!
         boolean getElementByIdWorks = false;
         Element object = null;
         if (getElementByIdWorks) {
             // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
-            object = document.getElementById("" + node.getNumber());
+            object = getDocument().getElementById("" + node.getNumber());
         } else {
             // TODO: this code should be removed!! but other code doesnt work :(
             // this cant be fast in performance...
             String xpath = "//*[@id='" + node.getNumber() + "']";
             try {
-                object = (Element)org.apache.xpath.XPathAPI.selectSingleNode(document.getDocumentElement(), xpath);
+                object = (Element)org.apache.xpath.XPathAPI.selectSingleNode(getDocument().getDocumentElement(), xpath);
             } catch (javax.xml.transform.TransformerException te) {
-                String msg = "error executing query: '" + xpath + "'";
-                log.error(msg);
-                log.error(Logging.stackTrace(te));
-                throw new BridgeException(msg);
+                throw new BridgeException("error executing query: '" + xpath + "'", te);
             }
         }
 
@@ -236,7 +268,8 @@ public class Generator {
         }
 
         // node didnt exist, so we need to create it...
-        object = document.createElement("object");
+        object = createElement("object");
+
         object.setAttribute("id", "" + node.getNumber());
         object.setAttribute("type", node.getNodeManager().getName());
         // and the otype (type as number)
@@ -249,7 +282,8 @@ public class Generator {
         FieldIterator i = node.getNodeManager().getFields().fieldIterator();
         while (i.hasNext()) {
             Field fieldDefinition = i.nextField();
-            Element field = document.createElement("unfilledField");
+            Element field = createElement("unfilledField");
+
             // the name
             field.setAttribute("name", fieldDefinition.getName());
             // add it to the object
@@ -329,7 +363,7 @@ public class Generator {
     }
 
     private Element createRelationEntry(Relation relation, org.mmbase.bridge.Node relatedNode) {
-        Element fieldElement = document.createElement("relation");
+        Element fieldElement = createElement("relation");
         // we have to know what the relation type was...
         org.mmbase.bridge.Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
 
