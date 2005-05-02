@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.75 2005-04-01 14:11:55 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.76 2005-05-02 11:44:51 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -288,6 +288,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     public byte[] getBytes(String key) throws JspTagException {
         return MultiPart.getMultipartRequest(pageContext).getBytes(key);
+
+    }
+
+    public  org.apache.commons.fileupload.FileItem getFileItem(String key) throws JspTagException {
+        return MultiPart.getMultipartRequest(pageContext).getFileItem(key);
 
     }
 
