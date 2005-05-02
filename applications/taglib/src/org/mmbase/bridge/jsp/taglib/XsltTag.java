@@ -22,7 +22,7 @@ import javax.xml.transform.stream.StreamSource;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.17 2005-03-29 13:12:22 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.18 2005-05-02 22:26:43 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -75,7 +75,6 @@ public class XsltTag extends ContextReferrerTag  {
                 throw new JspTagException("Cannot use body when using 'referid' attribute'.");
             }
         }
-        if (log.isDebugEnabled()) log.debug("Found xslt: " + xsltString);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), xsltString);
         }
@@ -85,16 +84,18 @@ public class XsltTag extends ContextReferrerTag  {
                 totalString = xsltString;
             } else {
                 totalString =
-                    "<xsl:stylesheet xmlns:xsl = \"http://www.w3.org/1999/XSL/Transform\" version = \"1.0\"" + 
-                    " xmlns:mm=\"" + Functions.class.getName() + "\"" + 
-                    " xmlns:taglib=\"" + Functions.class.getName() + "\"" + 
-                    " extension-element-prefixes=\"mm taglib\" >\n" +
+                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"" + 
+                    " xmlns:taglib=\"" +  Functions.class.getName() + "\"" + 
+                    " xmlns:mm=\"" +  Functions.class.getName() + "\"" + 
+                    " extension-element-prefixes=\"mm taglib\" " +
+                    " >\n" +
                     xsltString +
                     "\n</xsl:stylesheet>";
             }
             StreamSource src = new StreamSource(new java.io.StringReader(totalString));
-            String publicId = ((HttpServletRequest)pageContext.getRequest()).getRequestURL().append('/').append(((long) xsltString.hashCode() & 0xffff)).toString();
-            src.setPublicId(publicId);
+            String systemId = ((HttpServletRequest)pageContext.getRequest()).getRequestURL().append('/').append(((long) xsltString.hashCode() & 0xffff)).toString();
+            src.setSystemId(systemId);
+            if (log.isDebugEnabled()) log.debug("Found xslt " + systemId + ": " + totalString);
             formatter.setXsltSource(src);
         }
         formatter = null;
