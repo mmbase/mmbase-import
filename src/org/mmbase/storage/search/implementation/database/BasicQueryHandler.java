@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.35 2005-04-12 14:16:24 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.36 2005-05-02 13:00:01 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -216,7 +216,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             alias = step.getTableName();
                         }
                         FieldDefs field = builder.getField(alias +  '.' + fieldName);
-                        Object value = storageManager.getValue(rs, i + 1, field);
+                        Object value = storageManager.getValue(rs, i + 1, field, false);
                         node.setValue(alias +  '.' + fieldName, value);
                     }
                     node.clearChanged();
@@ -253,7 +253,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             fieldName = fields[i].getFieldName();
                         }
                         FieldDefs field = builder.getField(fieldName);
-                        Object value = storageManager.getValue(rs, i + 1, field);
+                        Object value = storageManager.getValue(rs, i + 1, field, false);
                         node.setValue(fieldName, value);
                     }
                     node.clearChanged();
@@ -286,7 +286,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 String fieldName =  fields[i].getFieldName();
                 FieldDefs field = builder.getField(fieldName);
                 if (field != null) {
-                    fieldIndices.put(field, new Integer(i+1));
+                    fieldIndices.put(field, new Integer(i + 1));
                 }
             }
         }
@@ -299,23 +299,33 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     node.start();
                     for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext(); ) {
                         FieldDefs field = (FieldDefs)i.next();
-                        Integer index = (Integer)fieldIndices.get(field);
+                        if (! field.inStorage()) continue;
+                        Integer index = (Integer) fieldIndices.get(field);
+                        Object value;
                         String fieldName = field.getDBName();
-                        if (index == null) {
-                            if (field.getDBType() == FieldDefs.TYPE_BYTE) {
-                                node.setValue(fieldName, "$SHORTED");
+                        if (index != null) {
+                            value = storageManager.getValue(rs, index.intValue(), field, true);
+                        } else {
+                            java.sql.Blob b = storageManager.getBlobFromFile(node, field, true);
+                            if (b == null) { 
+                                value = MMObjectNode.VALUE_NULL;
+                            } else {   
+                                if (b.length() == -1) { 
+                                    value = MMObjectNode.VALUE_SHORTED;
+                                } else {
+                                    value = b.getBytes(0L, (int) b.length());
+                                }
                             }
-                        } else  {
-                            Object value = storageManager.getValue(rs, index.intValue(), field);
-                            node.setValue(fieldName, value);
+                            
                         }
+                        node.setValue(fieldName, value);
                     }
                     node.clearChanged();
                     node.finish();
                     results.add(node);
                 } catch (Exception e) {
                     // log error, but continue with other nodes
-                    log.error(e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (SQLException sqe) {
