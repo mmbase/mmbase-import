@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * This is the basic implementation of the Field Value interface.
  *
  * @author   Pierre van Rooden
- * @version $Id: BasicFieldValue.java,v 1.7 2005-01-03 12:11:23 michiel Exp $
+ * @version $Id: BasicFieldValue.java,v 1.8 2005-05-02 17:19:56 michiel Exp $
  * @since    MMBase-1.6
  */
 public class BasicFieldValue implements FieldValue {
@@ -37,6 +37,10 @@ public class BasicFieldValue implements FieldValue {
                "snumber".equals(field.getName()) ||
                "dnumber".equals(field.getName()) ||
                "rnumber".equals(field.getName());
+    }
+
+    public boolean isNull() {
+        return node.isNull(field.getName());
     }
 
     public Object get() {
