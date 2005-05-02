@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+import java.io.InputStream;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -32,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.140 2005-03-01 14:24:40 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.141 2005-05-02 12:30:23 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -257,7 +258,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Returns whether this is a new (not yet committed) node.
      * @return is a new node
      */
-    boolean isNew() {
+    public boolean isNew() {
         return isnew;
     }
 
@@ -337,18 +338,21 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             setValueWithoutProcess(fieldName, value);
         } else {
             switch(type) {
-                case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-                case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-                case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
-                case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-                case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-                case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-                case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
-                case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
-                case Field.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
-                case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-                case Field.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
-                default:                 setValueWithoutProcess(fieldName, value);
+            case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+            case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+            case Field.TYPE_BYTE:    {
+                long length = getNode().getSize(fieldName);
+                setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
+            }
+            case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+            case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+            case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+            case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value)); break;
+            case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+            case Field.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
+            case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
+            case Field.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
+            default:                 setValueWithoutProcess(fieldName, value);
             }
         }
     }
@@ -397,77 +401,82 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
 
-    public void setBooleanValue(String fieldName, boolean value) {
-        Boolean bool = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), Boolean.valueOf(value));
+    public void setBooleanValue(String fieldName,final  boolean value) {
+        Object bool = ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), Boolean.valueOf(value));
         setValueWithoutProcess(fieldName, bool);
     }
 
-    public void setDateValue(String fieldName, Date value) {
-        value = (Date) ValueIntercepter.processSet(Field.TYPE_DATETIME, this, nodeManager.getField(fieldName), value);
-        setValueWithoutProcess(fieldName, value);
+    public void setDateValue(String fieldName, final Date value) {
+        Object v = ValueIntercepter.processSet(Field.TYPE_DATETIME, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setListValue(String fieldName, List value) {
-        value = (List) ValueIntercepter.processSet(Field.TYPE_LIST, this, nodeManager.getField(fieldName), value);
-        setValueWithoutProcess(fieldName, value);
+    public void setListValue(String fieldName, final List value) {
+        Object v =  ValueIntercepter.processSet(Field.TYPE_LIST, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setNodeValue(String fieldName, Node value) {
-        value = (Node) ValueIntercepter.processSet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), value);
-        if (value == null) {
+    public void setNodeValue(String fieldName, final Node value) {
+        Object v = ValueIntercepter.processSet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), value);
+        if (v == null) {
             setValueWithoutProcess(fieldName, null);
-        } else if (value instanceof BasicNode) {
-            setValueWithoutProcess(fieldName, ((BasicNode)value).getNode());
+        } else if (v instanceof BasicNode) {
+            setValueWithoutProcess(fieldName, ((BasicNode)v).getNode());
+        } else if (v instanceof Node) {
+            setValueWithoutProcess(fieldName, new Integer(((Node) value).getNumber()));
         } else {
-            setValueWithoutProcess(fieldName, new Integer(value.getNumber()));
+            setValueWithoutProcess(fieldName, v);
         }
     }
 
-    public void setIntValue(String fieldName, int value) {
+    public void setIntValue(String fieldName, final int value) {
         Integer intValue = new Integer(value);
-        intValue = (Integer) ValueIntercepter.processSet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), intValue);
-        setValueWithoutProcess(fieldName, intValue);
+        Object v = ValueIntercepter.processSet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), intValue);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setFloatValue(String fieldName, float value) {
+    public void setFloatValue(String fieldName, final float value) {
         Float floatValue = new Float(value);
-        floatValue = (Float) ValueIntercepter.processSet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), floatValue);
-        setValueWithoutProcess(fieldName, floatValue);
+        Object v = ValueIntercepter.processSet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), floatValue);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setDoubleValue(String fieldName, double value) {
+    public void setDoubleValue(String fieldName, final double value) {
         Double doubleValue = new Double(value);
-        doubleValue = (Double) ValueIntercepter.processSet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), doubleValue);
-        setValueWithoutProcess(fieldName, doubleValue);
+        Object v = ValueIntercepter.processSet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), doubleValue);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setByteValue(String fieldName, byte[] value) {
-        value = (byte[]) ValueIntercepter.processSet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), value);
-        setValueWithoutProcess(fieldName, value);
+    public void setByteValue(String fieldName, final byte[] value) {
+        Object v = ValueIntercepter.processSet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setLongValue(String fieldName, long value) {
+    public void setInputStreamValue(String fieldName, final InputStream value, long size) {
+        getNode().setSize(fieldName, size);
+        Object v = ValueIntercepter.processSet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, v);
+    }
+
+    public void setLongValue(String fieldName, final long value) {
         Long longValue = new Long(value);
-        longValue = (Long) ValueIntercepter.processSet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), longValue);
-        setValueWithoutProcess(fieldName, longValue);
+        Object v =  ValueIntercepter.processSet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), longValue);
+        setValueWithoutProcess(fieldName, v);
     }
 
-    public void setStringValue(String fieldName, String value) {
-        value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
-        setValueWithoutProcess(fieldName, value);
+    public void setStringValue(String fieldName, final String value) {
+        Object v = ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, v);
     }
 
 
-    public void setXMLValue(String fieldName, Document value) {
-        value = (Document) ValueIntercepter.processSet(Field.TYPE_XML, this, nodeManager.getField(fieldName), value);
-
-        // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        //DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
-
-        //setValueWithoutProcess(fieldName, dc.convert(value, cloud));
-        setValueWithoutProcess(fieldName, value);
+    public void setXMLValue(String fieldName, final Document value) {
+        Object v = ValueIntercepter.processSet(Field.TYPE_XML, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, v);
     }
-
+    public boolean isNull(String fieldName) {
+        return noderef.isNull(fieldName);
+    }
 
     public Object getValue(String fieldName) {
         Object value = noderef.getValue(fieldName);
@@ -499,6 +508,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public Object getObjectValue(String fieldName) {
         Object result = noderef.getValue(fieldName);
+        if (result == MMObjectNode.VALUE_NULL) result = null;
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
         }
@@ -580,11 +590,26 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         return result;
     }
+    public java.io.InputStream getInputStreamValue(String fieldName) {
+        java.io.InputStream result = getNode().getInputStreamValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (java.io.InputStream) ValueIntercepter.processGet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
+    }
 
     public String getStringValue(String fieldName) {
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (String) ValueIntercepter.processGet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
+    }
+
+    public Document getXMLValue(String fieldName) {
+        Document result = getNode().getXMLValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Document) ValueIntercepter.processGet(Field.TYPE_XML, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
@@ -597,9 +622,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return new BasicFieldValue(this, field);
     }
 
-    public Document getXMLValue(String fieldName) {
-        return getNode().getXMLValue(fieldName);
-    }
+
 
     public Element getXMLValue(String fieldName, Document tree) {
         Document doc = getXMLValue(fieldName);
