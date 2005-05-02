@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.3 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.4 2005-05-02 11:54:31 michiel Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -35,6 +35,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     protected Attribute name       = Attribute.NULL;
 
     protected Attribute inverse    = Attribute.NULL;
+    protected Attribute descendants  = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -53,18 +54,25 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
         inverse = getAttribute(i);
     }
 
-
-    protected Integer getOType(String name) throws JspTagException {
-        Cloud cloud = getCloudVar();
-        Node node = cloud.getNodeManager(name);
-        return new Integer(node.getNumber());
+    public void setDescendants(String d) throws JspTagException {
+        descendants = getAttribute(d);
     }
 
+
     protected SortedSet getOTypes(List names) throws JspTagException {
+        Cloud cloud = getCloudVar();
         SortedSet set = new TreeSet();
         Iterator i = names.iterator();
+        boolean desc = descendants.getBoolean(this, true);
         while (i.hasNext()) {
-            set.add(getOType((String) i.next()));
+            NodeManager nm = cloud.getNodeManager((String) i.next());
+            set.add(new Integer(nm.getNumber()));
+            if (desc) {
+                NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
+                while (j.hasNext()) {
+                    set.add(new Integer(j.nextNodeManager().getNumber()));
+                }                
+            }
         }
         return set;
     }
