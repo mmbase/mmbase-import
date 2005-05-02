@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.292 2005-04-12 17:49:13 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.293 2005-05-02 11:50:50 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3881,7 +3881,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <name>value</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value', `valueset' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value', `valueset', `referid2' or 'regexp' must be present.</requirednote>
       <info>
         The value to which you want to compare, this is always a String.
       </info>
@@ -3890,7 +3890,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <name>valueset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value', `valueset' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value', `valueset', `referid2' or 'regexp' must be present.</requirednote>
       <info>
           List of values. Compare is done with each, and total result is true if one of them evaluates true.
       </info>
@@ -3908,6 +3908,18 @@ like the parameter list or the session (where ever it is available) --&gt;
         into account.
       </info>
     </attribute>
+    <attribute>
+      <name>regexp</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <requirednote>Either `value', `valueset', `referid2' or 'regexp' must be present.</requirednote>
+      <info>
+        Matches value to a regular expression. See <a
+        href="http://java.sun.com/j2se/1.4/docs/api/java/util/regex/Pattern.html">javadoc of
+        java.util.regex.Pattern</a>
+      </info>
+      <since>MMBase-1.8</since>
+    </attribute>
     <example>
     &lt;mm:import id="carry_out"&gt;yes&lt;/mm:import&gt;
     &lt;mm:compare referid="carry_out" value="yes"&gt;
@@ -3916,6 +3928,13 @@ like the parameter list or the session (where ever it is available) --&gt;
     &lt;mm:compare referid="carry_out" value="no"&gt;
         Body should not be carried out!
     &lt;/mm:compare&gt;
+    </example>
+    <example>
+<![CDATA[
+      <mm:compare referid="zipcode" regexp="(?i)[0-9]{4}\s?[a-z]{2}">
+         zip-code correct.
+      </mm:compare>
+]]>
     </example>
   </tag>
   <tag>
@@ -4628,7 +4647,16 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
+        The value of the parameter. Is this attribute, and 'referid', is missing, then the body of the param tag is used.
+      </info>
+    </attribute>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The value of the parameter, as referred from the variable context.
       </info>
     </attribute>
     <attribute>
@@ -5871,6 +5899,15 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         A list of nodemanager names.
+      </info>
+    </attribute>
+    <attribute>
+      <name>descendants</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Whether nodes of descendant types of the given node-managers must be included too. Defaults
+        to true.
       </info>
     </attribute>
     <attribute>
