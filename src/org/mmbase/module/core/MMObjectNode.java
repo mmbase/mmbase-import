@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.cache.*;
 import org.mmbase.module.corebuilders.FieldDefs;
@@ -32,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.137 2005-03-29 14:48:15 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.138 2005-05-02 12:56:53 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -50,6 +51,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
      * It can be set back into the field with {@link #storeValue}, to unload the field again.
+     * @since MMBase-1.7.4
      */
     public final static String VALUE_SHORTED = "$SHORTED";
 
@@ -95,6 +97,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public Hashtable values = new Hashtable();
     // private Map values = Collections.synchronizedMap(new HashMap());
+
+    private Map sizes = Collections.synchronizedMap(new HashMap());
 
 
     /**
@@ -425,8 +429,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @todo This should become a synchronized method, once values becomes a private HashMap instead of a
      * public Hashtable.
      *
-     * @param fieldName the name of the field to change
-     * @param fieldValue the value to assign
+     *@param fieldName the name of the field to change
+     *@param fieldValue the value to assign
      */
     public void storeValue(String fieldName, Object fieldValue) {
         if (fieldValue == null) {
@@ -462,7 +466,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
 
     protected Document toXML(Object value, String fieldName) {
-        return Casting.toXML(value, parent.getField(fieldName).getDBDocType(), parent.getInitParameter(fieldName + ".xmlconversion"));
+        return Casting.toXML(value);
     }
 
     /**
@@ -478,6 +482,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // check the value also when the parent thing is null
         Object originalValue = values.get(fieldName);
         if (fieldValue == null) fieldValue = VALUE_NULL;
+
+        if (fieldValue != VALUE_SHORTED) {
+            // make sure this value remains not in the blob-cache.
+            BlobCache blobs = parent.getBlobCache(fieldName);
+            blobs.remove(blobs.getKey(getNumber(), fieldName));
+        }
 
         // if we have an XML-dbtype field, we always have to store it inside an Element.
         // note that if the value is null we store it as a null value
@@ -525,6 +535,30 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         setUpdate(fieldName);
         return true;
     }
+    
+    /**
+     * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
+     * fill using an InputStream.
+     * @see #getSize(String)
+     * @since MMBase-1.8
+     */
+    public void setSize(String fieldName, long size) {
+        sizes.put(fieldName, new Long(size));
+    }
+    /**
+     * Returns the size (in byte) of the given field. This is mainly targeted at fields of the type
+     * byte array. For other fields this method will return something reasonable, but it is as yet
+     * not well defined what...
+     *
+     * @since MMBase-1.8
+     */
+    public long getSize(String fieldName) {
+        Long l = (Long) sizes.get(fieldName);
+        if (l != null)  return l.intValue();
+        Object value = values.get(fieldName);
+        if (value == null) return -1;
+        return (long) Casting.toString(value).getBytes().length;
+    }
 
     /**
      * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
@@ -548,7 +582,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldName,int fieldValue) {
+    public boolean setValue(String fieldName, int fieldValue) {
         return setValue(fieldName, new Integer(fieldValue));
     }
 
@@ -561,7 +595,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldName,long fieldValue) {
+    public boolean setValue(String fieldName, long fieldValue) {
         return setValue(fieldName, new Long(fieldValue));
     }
 
@@ -574,7 +608,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldName,double fieldValue) {
+    public boolean setValue(String fieldName, double fieldValue) {
         return setValue(fieldName, new Double(fieldValue));
     }
 
@@ -683,6 +717,16 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return getIntValue("otype");
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    public boolean isNull(String fieldName) {
+        // get the value from the values table
+        Object value = values.get(fieldName);
+        return value == null || value.equals(VALUE_NULL);
+    }
+
     /**
      * Get a value of a certain field.
      * @performance do not store byte values directly in node (?)
@@ -690,27 +734,39 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
-
         // get the value from the values table
-        Object o = retrieveValue(fieldName);
+        Object value = values.get(fieldName);
 
         // explicitly load byte values if they are 'shortened'
-        // should probably be made more generic for other values
-        if (VALUE_SHORTED.equals(o) &&  // could use == if we are sure that everybody uses the constant
-            getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
-            o = parent.getShortedByte(fieldName, this);
-            // should we do this? May give memory issues
-            storeValue(fieldName, o);
+        if (VALUE_SHORTED.equals(value)) {   // could use == if we are sure that everybody uses the constant
+
+            BlobCache blobs = parent.getBlobCache(fieldName);
+            String key = blobs.getKey(getNumber(), fieldName);
+            value = blobs.get(key);
+            if (value == null) {
+                int type = getDBType(fieldName);
+                switch (type) {
+                case FieldDefs.TYPE_BYTE: 
+                    value = parent.getShortedByte(fieldName, this); 
+                    break;
+                case FieldDefs.TYPE_STRING:
+                    value = parent.getShortedText(fieldName, this); 
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Found shorted value for type " + type);
+                }
+                blobs.put(key, value);
+            }
         }
 
         // routine to check for indirect values
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-        if (o == null) return parent.getValue(this, fieldName);
+        if (value == null) return parent.getValue(this, fieldName);
 
         // return the found object
-        return o;
+        return value;
     }
 
 
@@ -722,53 +778,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as a <code>String</code>
      */
     public String getStringValue(String fieldName) {
-        String tmp =  Casting.toString(getValue(fieldName));
-
-        // check if the object is shorted, shorted means that
-        // because the value can be a large text/blob object its
-        // not loaded into each object when its first obtained
-        // from the database but that we instead out a text $SHORTED
-        // in the field. Only when the field is really used does this
-        // get mapped into a real value. this saves speed and memory
-        // because every blob/text mapping is a extra request to the
-        // database
-        if (VALUE_SHORTED.equals(tmp)) {
-            // obtain the database type so we can check if what
-            // kind of object it is. this have be changed for
-            // multiple database support.
-            int type=getDBType(fieldName);
-            if (log.isDebugEnabled()) {
-                log.debug("getStringValue(): node="+this+" -- fieldName "+fieldName);
-                log.debug("getStringValue(): fieldName "+fieldName+" has type "+type);
-            }
-            // check if for known mapped types
-            if (type == FieldDefs.TYPE_STRING) {
-                MMObjectBuilder bul;
-
-                int number=getNumber();
-                bul = parent;
-
-                // call our builder with the convert request this will probably
-                // map it to the database we are running.
-                String tmp2 = bul.getShortedText(fieldName,  this);
-
-                // did we get a result then store it in the values for next use
-                // and return it.
-                // we could in the future also leave it unmapped in the values
-                // or make this programmable per builder ?
-                if (tmp2 != null) {
-                    // store the unmapped value (replacing the $SHORTED text)
-                    storeValue(fieldName, tmp2);
-                    // return the found and now unmapped value
-                    return tmp2;
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        // return the found value
-        return tmp;
+        return Casting.toString(getValue(fieldName));
     }
 
     /**
@@ -829,52 +839,80 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
     public byte[] getByteValue(String fieldName) {
-        // try to get the value from the values table
-        // it might be using a prefix to allow multilevel
-        // nodes to work (if not duplicate can not be stored)
 
-        // call below also allows for byte[] type of
-        // formatting functons.
         Object obj = getValue(fieldName);
-
-        // well same as with strings we only unmap byte values when
-        // we really use them since they mean a extra request to the
-        // database most of the time.
-
-        // we signal with an empty byte[] that its not obtained yet.
         if (obj == null) {
             return new byte[0];
         } else if (obj instanceof byte[]) {
             // was already unmapped so return the value
             return (byte[]) obj;
+        } else if (obj instanceof InputStream) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            int c;
+            try {
+                while ((c = ((InputStream)obj).read()) > -1) {
+                    bos.write(c);
+                }
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+            byte[] b = bos.toByteArray();
+            values.put(fieldName, b);
+            return b;
         } else {
             byte[] b;
-            if (getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
-                // We should't get here... already gets handled by getValue()!
-                b = parent.getShortedByte(fieldName, getNumber());
-                // should we do this? May give memory issues
-                storeValue(fieldName, b);
-                if (b == null) {
-                    b = new byte[0];
+            if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
+                String s = getStringValue(fieldName);
+                try {
+                    b = s.getBytes(parent.getMMBase().getEncoding());
+                } catch (UnsupportedEncodingException uee) {
+                    log.error(uee.getMessage());
+                    b = s.getBytes();
                 }
             } else {
-                if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
-                    String s = getStringValue(fieldName);
-                    try {
-                        b = s.getBytes(parent.getMMBase().getEncoding());
-                    } catch (java.io.UnsupportedEncodingException uee) {
-                        log.error(uee.getMessage());
-                        b = s.getBytes();
-                    }
-                } else {
-                    b = new byte[0];
-                }
+                b = new byte[0];
             }
-            // return the unmapped value
             return b;
         }
     }
 
+
+    public InputStream getInputStreamValue(String fieldName) {
+        Object value = values.get(fieldName);
+        if (value == null) {
+            log.debug("NULLLL on " + fieldName + " " + this, new Exception());
+            return new ByteArrayInputStream(new byte[0]);
+        }
+        if (VALUE_NULL.equals(value)) {
+            return new ByteArrayInputStream(new byte[0]);
+        }
+        if (value instanceof InputStream) {
+            return (InputStream) value;
+        }
+
+        if (VALUE_SHORTED.equals(value)) {
+            BlobCache blobs = parent.getBlobCache(fieldName);
+            String key = blobs.getKey(getNumber(), fieldName);
+            byte[] v = (byte[]) blobs.get(key);
+            if (v == null) {
+                if (getSize(fieldName) < blobs.getMaxEntrySize()) {
+                    v = parent.mmb.getStorageManager().getBinaryValue(this, parent.getField(fieldName));
+                    blobs.put(key, v);
+                } else {
+                    return parent.mmb.getStorageManager().getInputStreamValue(this, parent.getField(fieldName));
+                }                
+            }
+            return new ByteArrayInputStream(v);
+        } else {
+            if (value instanceof byte[]) {
+                return new ByteArrayInputStream((byte[]) value);
+            } else {
+                // probably not a byte-array field, do something.
+                // this behavior is undefined!, don't depend on it.
+                return new ByteArrayInputStream(("" + value).getBytes());
+            }
+        }
+    }
 
 
     /**
@@ -1082,14 +1120,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public Hashtable getProperties() {
         synchronized(properties_sync) {
-            if (properties==null) {
-                properties=new Hashtable();
-                MMObjectBuilder bul=parent.mmb.getMMObject("properties");
-                Enumeration e=bul.search("parent=="+getNumber());
+            if (properties == null) {
+                properties = new Hashtable();
+                MMObjectBuilder bul = parent.mmb.getMMObject("properties");
+                Enumeration e = bul.search("parent=="+getNumber());
                 while (e.hasMoreElements()) {
-                    MMObjectNode pnode=(MMObjectNode)e.nextElement();
-                    String key=pnode.getStringValue("key");
-                    properties.put(key,pnode);
+                    MMObjectNode pnode = (MMObjectNode)e.nextElement();
+                    String key = pnode.getStringValue("key");
+                    properties.put(key, pnode);
                 }
             }
         }
@@ -1105,7 +1143,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public MMObjectNode getProperty(String key) {
         MMObjectNode n;
         synchronized(properties_sync) {
-            if (properties==null) {
+            if (properties == null) {
                 getProperties();
             }
             n=(MMObjectNode)properties.get(key);
