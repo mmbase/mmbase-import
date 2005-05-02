@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.38 2005-04-21 12:01:11 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.39 2005-05-02 22:24:51 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -100,7 +100,8 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
                             value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
                         }
                         if (value.equals("")) {
-                            if (tag.getOptions().indexOf("noempty") > -1) {
+                            String opt = tag.getOptions();
+                            if (opt != null && opt.indexOf("noempty") > -1) {
                                 value = " ";
                             }
                         }
@@ -117,7 +118,8 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
                             value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
                         }
                         if (value.equals("")) {
-                            if (tag.getOptions().indexOf("noempty") > -1) {
+                            String opt = tag.getOptions();
+                            if (opt != null && opt.indexOf("noempty") > -1) {
                                 value = " ";
                             }
                         }
