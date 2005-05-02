@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.10 2005-01-03 12:11:23 michiel Exp $
+ * @version $Id: FieldValue.java,v 1.11 2005-05-02 17:23:06 michiel Exp $
  */
 public interface FieldValue {
 
@@ -27,6 +27,9 @@ public interface FieldValue {
      * @return  <code>true</code> if the value can be changed
      */
     public boolean canModify();
+
+
+    public boolean isNull();
 
     /**
      * Returns the value as an Object.
