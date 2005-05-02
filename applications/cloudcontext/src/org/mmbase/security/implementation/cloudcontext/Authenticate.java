@@ -17,6 +17,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.ResourceWatcher;
 
 /**
@@ -29,7 +30,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.11 2005-03-16 23:46:17 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.12 2005-05-02 12:32:42 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -38,6 +39,8 @@ public class Authenticate extends Authentication {
 
     private long uniqueNumber;
     private long extraAdminsUniqueNumber;
+
+    private boolean allowEncodedPassword = true;
 
     private static Properties extraAdmins = new Properties();      // Admins to store outside database.
     protected static Map      loggedInExtraAdmins = new HashMap();
@@ -116,12 +119,30 @@ public class Authenticate extends Authentication {
             if (extraAdmins.containsKey(userName)) {
                 if(extraAdmins.get(userName).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName);
+                    User user = new LocalAdmin(userName, s);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
             }
             node = users.getUser(userName, password);
+            if (node != null && ! users.isValid(node)) {
+                throw new SecurityException("Logged in an invalid user");
+            }
+        } else if (allowEncodedPassword && "name/encodedpassword".equals(s)) {
+            String userName = (String)map.get("username");
+            String password = (String)map.get("encodedpassword");
+            if(userName == null || password == null) {
+                throw new SecurityException("Expected the property 'username' and 'password' with login. But received " + map);
+            }
+            if (extraAdmins.containsKey(userName)) {
+                if(users.encode((String) extraAdmins.get(userName)).equals(password)) {
+                    log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
+                    User user = new LocalAdmin(userName, s);
+                    loggedInExtraAdmins.put(userName, user);
+                    return user;
+                }
+            }
+            node = users.getUser(userName, password, false);
             if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
@@ -133,7 +154,7 @@ public class Authenticate extends Authentication {
             String userName = (String) li.getMap().get("username");
             if (extraAdmins.containsKey(userName)) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                User user = new LocalAdmin(userName);
+                User user = new LocalAdmin(userName, s);
                 loggedInExtraAdmins.put(userName, user);
                 return user;
             } else {
@@ -168,11 +189,50 @@ public class Authenticate extends Authentication {
         return flag;
     }
 
+
+    public String[] getTypes(int method) {
+        if (allowEncodedPassword) {
+            if (method == METHOD_ASIS) {
+                return new String[] {"anonymous", "name/password", "name/encodedpassword", "class"};
+            } else {
+                return new String[] {"name/password", "name/encodedpassword", "class"};
+            }
+        } else {
+            if (method == METHOD_ASIS) {
+                return new String[] {"anonymous", "name/password", "class"};
+            } else {
+                return new String[] {"name/password", "class"};
+            }
+        }
+
+    }
+
+    private static final Parameter PARAMETER_ENCODEDPASSWORD = new Parameter("encodedpassword", String.class, true);
+    private static final Parameter[] PARAMETERS_NAME_ENCODEDPASSWORD = 
+        new Parameter[] { 
+            PARAMETER_USERNAME, 
+            PARAMETER_ENCODEDPASSWORD,
+            new Parameter.Wrapper(PARAMETERS_USERS) };
+    public Parameters createParameters(String application) {
+        application = application.toLowerCase();
+        if ("anonymous".equals(application)) {
+            return new ParametersImpl(PARAMETERS_ANONYMOUS);
+        } else if ("class".equals(application)) {
+            return Parameters.VOID;
+        } else if ("name/password".equals(application)) {
+            return new ParametersImpl(PARAMETERS_NAME_PASSWORD);
+        } else if ("name/encodedpassword".equals(application)) {
+            return new ParametersImpl(PARAMETERS_NAME_ENCODEDPASSWORD);
+        } else {
+            return new AutodefiningParameters();
+        }
+    }
+
     protected class LocalAdmin extends User {
         private String userName;
         private long   l;
-        LocalAdmin(String user) {
-            super(null, uniqueNumber, "name/password");
+        LocalAdmin(String user, String app) {
+            super(null, uniqueNumber, app);
             node = new AdminVirtualNode();
             l = extraAdminsUniqueNumber;
             userName = user;
