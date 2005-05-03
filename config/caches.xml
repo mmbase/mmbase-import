@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.12 2005-05-02 12:54:05 michiel Exp $
+  @version $Id: caches.xml,v 1.13 2005-05-03 07:08:14 michiel Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -110,9 +110,9 @@
   </cache>
 
   <!-- Small blobs are cached as well -->
-  <cache name="Blob Cache">
+  <cache name="BlobCache">
     <status>active</status>
-    <size>128</size>
+    <size>200</size>
     <maxEntrySize>100000</maxEntrySize>
   </cache>
 
