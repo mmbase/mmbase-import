@@ -88,6 +88,32 @@ demonstrate it here based on 'BeanFunction' based on an inner bean of the JSP.
   <td width="50%"><%@include file="codesamples/functionreferids.jsp" %></td>
 </tr>
 
+<tr><td colspan="2">
+  A function an a node-manager. (To the 'news' builder of MyNews the ExampleBuilder for functions was assigned).
+</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functionnodemanager.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/functionnodemanager.jsp" %></td>
+</tr>
+
+
+<tr><td colspan="2">
+  Another function on a node, this time with a list argument. View ExampleBuilder for implementaiton.
+</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functionnode2.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/functionnode2.jsp" %></td>
+</tr>
+
+
+<tr><td colspan="2">
+  You can ask wich functions are available.
+</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functionnodeavailable.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/functionnodeavailable.jsp" %></td>
+</tr>
+
 
 </table>
 </mm:cloud>
