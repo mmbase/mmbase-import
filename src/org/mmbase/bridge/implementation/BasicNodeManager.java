@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.88 2005-03-01 14:25:03 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.89 2005-05-03 16:48:53 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -438,8 +438,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            Vector v=builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),params,tokens);
-            if (v==null) { v=new Vector(); }
+            List v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp), params, tokens);
+            if (v == null) { 
+                v = new ArrayList(); 
+            }
             int items=1;
             try {
                 items=Integer.parseInt(params.Value("ITEMS"));
@@ -514,7 +516,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             function = builder.getFunction(functionName);
         }
         if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+            throw new NotFoundException("Function with name " + functionName + " does not exist.");
         }
         return new BasicFunction(this, function);
     }
