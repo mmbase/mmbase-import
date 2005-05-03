@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.42 2005-05-02 11:39:33 michiel Exp $
+ * @version $Id: Casting.java,v 1.43 2005-05-03 17:53:02 michiel Exp $
  */
 
 import java.util.*;
@@ -121,6 +121,18 @@ public class Casting {
                 return new Float(toFloat(value));
             } else if (type.equals(Double.TYPE) || type.equals(Double.class)) {
                 return new Double(toDouble(value));
+            } else if (type.equals(Number.class)) {
+                Number res;
+                try {
+                    res = new Long("" + value);
+                } catch (NumberFormatException nfe) {
+                    try {
+                        res = new Double("" + value);
+                    } catch (NumberFormatException nfe1) {
+                        res = new Integer(-1);
+                    }
+                }
+                return res;
             } else if (type.equals(byte[].class)) {
                 return toByte(value);
             } else if (type.equals(String.class)) {
@@ -871,6 +883,7 @@ public class Casting {
             return string;
         }
     }
+
 }
 
 
