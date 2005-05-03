@@ -4,7 +4,6 @@
 </p>
 <p>
   MMBase EL: <mm:write value="$[+ 6 + $abc]" />, <mm:write value="$[+ 6 +$abc]" vartype="integer" />
-  
 </p>
 
 <mm:import id="varname">cba</mm:import>
