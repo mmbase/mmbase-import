@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.43 2005-05-03 17:53:02 michiel Exp $
+ * @version $Id: Casting.java,v 1.44 2005-05-03 19:24:07 michiel Exp $
  */
 
 import java.util.*;
@@ -306,6 +306,27 @@ public class Casting {
             return new ArrayList((Collection) o);
         } else if (o instanceof String) {            
             return StringSplitter.split((String)o);
+        } else if (o instanceof Map) {            
+            return new ArrayList(((Map)o).entrySet());
+        } else {
+            List l = new ArrayList();
+            if (o != null && o != MMObjectNode.VALUE_NULL) {
+                l.add(o);
+            }
+            return l;
+        }
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static Collection toCollection(Object o) {
+        if (o instanceof Collection) {
+            return (Collection)o;
+        } else if (o instanceof Map) {
+            return ((Map)o).entrySet();
+        } else if (o instanceof String) {            
+            return StringSplitter.split((String)o);      
         } else {
             List l = new ArrayList();
             if (o != null && o != MMObjectNode.VALUE_NULL) {
