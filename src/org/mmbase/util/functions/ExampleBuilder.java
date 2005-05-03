@@ -25,9 +25,11 @@ import org.mmbase.util.logging.*;
  * &lt;/mm:listnodes&gt;
  * </pre>
  * </code>
+ * 
+ * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.5 2005-05-03 20:03:51 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.6 2005-05-03 21:08:56 michiel Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
