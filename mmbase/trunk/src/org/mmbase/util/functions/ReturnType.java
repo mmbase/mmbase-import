@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.8 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.9 2005-05-03 19:57:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataType {
@@ -58,6 +58,17 @@ public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataTyp
      * The return type of a function that returns a List.
      */
     public static final ReturnType LIST = new ReturnType(List.class, "List");
+
+
+    /**
+     * The return type of a function that returns a NodeList.
+     */
+    public static final ReturnType NODELIST = new ReturnType(org.mmbase.bridge.NodeList.class, "NodeList");
+
+    /**
+     * The return type of a function that returns a Node.
+     */
+    public static final ReturnType NODE = new ReturnType(org.mmbase.bridge.Node.class, "Node");
 
     /**
      * The return type of a function that returns a Set.
