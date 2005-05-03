@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.296 2005-05-03 07:07:07 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.297 2005-05-03 19:55:30 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -89,7 +89,7 @@ public class MMObjectBuilder extends MMTable {
         new Parameter("session",  String.class),
         Parameter.RESPONSE,
         Parameter.REQUEST,
-        Parameter.LOCALE,
+        Parameter.LOCALE
         //new Parameter("length",   Integer.class),
         //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
@@ -100,6 +100,10 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.7
      */
     public final static Parameter[] AGE_PARAMETERS = {};
+
+    public final static Parameter[] INFO_PARAMETERS = {
+        new Parameter("function", String.class)
+    };
 
     /**
      * The cache that contains the last X types of all requested objects
@@ -238,13 +242,12 @@ public class MMObjectBuilder extends MMTable {
     String xmlPath = "";
 
     /**
-     * Parameters constants for {@link #wrapFunction}.
+     * Parameters constants for the NodeFunction {@link #wrapFunction}.
      * @since MMBase-1.8
      */
     protected final static Parameter[] WRAP_PARAMETERS = {
         new Parameter("field", String.class),
-        new Parameter("length", Number.class),
-        new Parameter("node", Object.class)
+        new Parameter("length", Number.class)
     };
 
     /**
@@ -254,12 +257,15 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.8
      */
     protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.INTEGER) {
-        public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-            String val  = node.getStringValue(parameters.getString("field"));
-            int wrappos = Casting.toInt(parameters.get("length"));
-            return wrap(val, wrappos);
-        }
-    };
+            {
+                setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be availabe as an 'escaper', and this version shouild now be considered an example.");
+            }
+            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                String val  = node.getStringValue(parameters.getString("field"));
+                Number wrappos = (Number) parameters.get("length");
+                return wrap(val, wrappos.intValue());
+            }
+        };
 
     // contains the builder's field definitions
     protected Hashtable fields;
@@ -2166,7 +2172,7 @@ public class MMObjectBuilder extends MMTable {
      * though this only applies to the text functions 'short', 'html', and 'wap'.
      * Functions can be nested, i.e. 'html(shorted(body))'.
      * Derived builders should override this method only if they want to provide virtual fieldnames. To provide addiitonal functions,
-     * override {@link #executeFunction} instead.
+     * call {@link #addFunction} instead. See also the source code for {@link org.mmbase.util.function.ExampleBuilder}.
      * @param node the node whos efields are queries
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
@@ -2263,7 +2269,7 @@ public class MMObjectBuilder extends MMTable {
      * The function 'info' should exist, and this will return a Map
      * with descriptions of the possible functions.
      *
-     * Override executeFunction in your extension if you want to add functions.
+     * Call {@link #addFunction} in your extension if you want to add functions.
      *
      * @param node The node on which the function must be executed
      * @param functionName The string identifying the funcion
@@ -2294,7 +2300,10 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * @javadoc
+     * Instantiates a Function object for a certain function on a certain node of this type.
+     * @param node The Node for on which the function must work
+     * @param functioName Name of the request function.
+     * @return a Function object or <code>null</code> if no such function.
      * @since MMBase-1.8
      */
     protected Function getFunction(MMObjectNode node, String functionName) {
@@ -2307,11 +2316,11 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * @javadoc
+     * Returns all Functions which are available (or at least known to be availabe) on a Node.
      * @since MMBase-1.8
      */
     protected Set getFunctions(MMObjectNode node) {
-        Set builderFunctions = getFunctions();
+        Set builderFunctions = super.getFunctions();
         Set nodeFunctions = new HashSet();
         for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
             Object function = i.next();
@@ -2323,11 +2332,16 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * @javadoc
+     * 
+     * @inheritDoc
      * @since MMBase-1.8
      */
     protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
-        return new NodeFunction(name, parameters, returnType);
+        return new NodeFunction(name, parameters, returnType) {
+                public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                    return MMObjectBuilder.this.executeFunction(node, name, parameters);
+                }
+            };
     }
 
     /**
@@ -2347,6 +2361,12 @@ public class MMObjectBuilder extends MMTable {
 
         if (function.equals("info")) {
             Map info = new HashMap();
+            Iterator i = getFunctions(node).iterator();
+            while (i.hasNext()) {
+                Function f = (Function) i.next();
+                info.put(f.getName(), f.getDescription());
+            }
+            /*
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
             info.put("gui",  "" + Arrays.asList(GUI_PARAMETERS) + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
             // language is only implemented in TypeDef now, session in AbstractServletBuilder
@@ -2375,8 +2395,10 @@ public class MMObjectBuilder extends MMTable {
             info.put("urlencode", "");
             info.put("wrap_<lengh>", "deprecated");
             info.put("currency_euro", "");
+            */
             info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
-            if (arguments == null || arguments.size() == 0) {
+            if (arguments == null || arguments.size() == 0 || arguments.get(0) == null) {
+                log.info("returing " + info);
                 return info;
             } else {
                 return info.get(arguments.get(0));
@@ -2529,7 +2551,6 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Executes a function on the field of a node, and returns the result.
      * This method is called by the builder's {@link #getValue} method.
-     * Derived builders should override this method to provide additional functions.
      *
      * current functions are:<br />
      * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
@@ -2540,7 +2561,7 @@ public class MMObjectBuilder extends MMTable {
      * @param node the node whose fields are queries
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
-     * @deprecated use executeFunction(MMObjectNode, String, List)
+     * @deprecated use {@link #getFunction(MMObjectNode)}
      */
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if (log.isDebugEnabled()) {
@@ -3427,6 +3448,7 @@ public class MMObjectBuilder extends MMTable {
      *
      * @param body text to convert
      * @return the convert text
+     * @deprecated
      */
 
     protected String getHTML(String body) {
@@ -3826,41 +3848,33 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * @javadoc
+     * A NodeFunction represents a function on a node instances of this builder. This means
+     * that it always has one implicit node argument.
      */
-    public class NodeFunction extends ProviderFunction {
+    public abstract class NodeFunction extends ProviderFunction {
 
         public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
-            super(name, def, returnType, MMObjectBuilder.this);
+            super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType, MMObjectBuilder.this);
         }
 
         /**
-         * @javadoc
+         * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
          */
-        public Function newInstance(MMObjectNode node) {
+        final Function newInstance(MMObjectNode node) {
             return new NodeInstanceFunction(node);
         }
 
         /**
-         * @javadoc
+         * Implements the function on a certain node.
          */
-        public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-            return MMObjectBuilder.this.executeFunction(node, name, parameters);
-        }
+        protected abstract Object getFunctionValue(MMObjectNode node, Parameters parameters);
 
-        public final Object getFunctionValueWithList(MMObjectNode node, List parameters) {
-            if (parameters instanceof Parameters) {
-                return getFunctionValue(node, (Parameters)parameters);
-            } else {
-                return getFunctionValue(node, new ParametersImpl(getParameterDefinition(), parameters));
-            }
-        }
 
         /**
-         * @javadoc
+         * To implement a NodeFunciton, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}
          */
-        public Object getFunctionValue(Parameters parameters) {
-            MMObjectNode node = Casting.toNode(parameters.get("node"), MMObjectBuilder.this);
+        final public Object getFunctionValue(Parameters parameters) {
+            MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
             if (node == null) {
                 throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
             }
@@ -3872,7 +3886,7 @@ public class MMObjectBuilder extends MMTable {
         }
 
         /**
-         * @javadoc
+         * This represents the function on one specific Node. This is instantiated 
          */
         private class NodeInstanceFunction extends WrappedFunction {
 
