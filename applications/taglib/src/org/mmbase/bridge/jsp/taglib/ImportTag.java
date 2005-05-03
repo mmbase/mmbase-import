@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.50 2005-03-15 20:48:20 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.51 2005-05-03 09:52:19 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -141,7 +141,18 @@ public class ImportTag extends ContextReferrerTag {
         if (found) {
             setValue(value, WriterHelper.NOIMPLICITLIST);
             if (useId != null) {
-                getContextProvider().getContextContainer().reregister(useId, helper.getValue());
+                ContextContainer cc = getContextProvider().getContextContainer();
+                if (cc instanceof PageContextContainer) {
+                    if (helper.getJspvar() != null) {
+                        // helper.getVartype() == WriterHelper.TYPE_STRING) { 
+                        log.debug("in this case it is set because of jspvar, and it is of type String, of which the 'wrapping' cannot be String..(I hate java).");
+                        // so, not wrapping if PageContextContainer and jspvar used.
+                    } else {
+                        cc.reregister(useId, helper.getValue());
+                    }
+                } else {
+                    cc.reregister(useId, helper.getValue());
+                }                
             }
             return SKIP_BODY;
         } else {
