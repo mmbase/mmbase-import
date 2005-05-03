@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.297 2005-05-03 19:55:30 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.298 2005-05-03 21:03:01 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -101,9 +101,6 @@ public class MMObjectBuilder extends MMTable {
      */
     public final static Parameter[] AGE_PARAMETERS = {};
 
-    public final static Parameter[] INFO_PARAMETERS = {
-        new Parameter("function", String.class)
-    };
 
     /**
      * The cache that contains the last X types of all requested objects
@@ -258,7 +255,7 @@ public class MMObjectBuilder extends MMTable {
      */
     protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.INTEGER) {
             {
-                setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be availabe as an 'escaper', and this version shouild now be considered an example.");
+                setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be availabe as an 'escaper', and this version should now be considered an example.");
             }
             public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
                 String val  = node.getStringValue(parameters.getString("field"));
@@ -267,6 +264,44 @@ public class MMObjectBuilder extends MMTable {
             }
         };
 
+    /**
+     * The info-function is a node-function and a builder-function. Therefore it is defined as a node-function, but also overidesd getFunctionValue(Parameters).
+     * @since MMBase-1.8
+     */
+    protected Function infoFunction = new NodeFunction("info", new Parameter[] { new Parameter("function", String.class) }, ReturnType.UNKNOWN) {
+            {
+                setDescription("Returns information about availabe functions");
+            }
+            protected Object getFunctionValue(Set functions, Parameters parameters) {
+                Map info = new HashMap();
+                Iterator i = functions.iterator();
+                while (i.hasNext()) {
+                    Function f = (Function) i.next();
+                    info.put(f.getName(), f.getDescription());
+                }
+                String function = (String) parameters.get("function");
+                if (function == null) {
+                    return info;
+                } else {
+                    return info.get(function);
+                }
+            }
+            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                return getFunctionValue(MMObjectBuilder.this.getFunctions(node), parameters);
+            }
+            public Object getFunctionValue(Parameters parameters) {
+                MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
+                if (node == null) {
+                    return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
+                } else {
+                    return getFunctionValue(MMObjectBuilder.this.getFunctions(node), parameters);
+                }
+            }
+        };
+    {
+        addFunction(infoFunction);
+    }
+    
     // contains the builder's field definitions
     protected Hashtable fields;
 
@@ -2320,7 +2355,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.8
      */
     protected Set getFunctions(MMObjectNode node) {
-        Set builderFunctions = super.getFunctions();
+        Set builderFunctions = getFunctions();
         Set nodeFunctions = new HashSet();
         for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
             Object function = i.next();
@@ -3871,9 +3906,10 @@ public class MMObjectBuilder extends MMTable {
 
 
         /**
-         * To implement a NodeFunciton, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}
+         * To implement a NodeFunction, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}. 
+         * This one can be overriden if the same function must <em>also</em> be a builder function.
          */
-        final public Object getFunctionValue(Parameters parameters) {
+        public Object getFunctionValue(Parameters parameters) {
             MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
             if (node == null) {
                 throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
