@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * <pre>
  * &lt;mm:listnodes type="pools" max="1"&gt;
  *  &lt; mm:import id="max"&gt;100&lt;/mm:import&gt;
- *   &lt;mm:nodelistfunction referids="max" name="function1"&gt;
+ *   &lt;mm:nodelistfunction referids="max" name="latest"&gt;
  *    -- &lt;mm:field name="number" /&gt;&lt;br /&gt;
  *   &lt/mm:nodelistfunction&gt;
  * &lt;/mm:listnodes&gt;
@@ -27,56 +27,74 @@ import org.mmbase.util.logging.*;
  * </code>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ExampleBuilder.java,v 1.5 2005-05-03 20:03:51 michiel Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
     private static final Logger log = Logging.getLoggerInstance(ExampleBuilder.class);
 
-    public final static Parameter[] FUNCTION1_PARAMETERS = {
+
+    /**
+     * Parameter constant for use bij the 'latest' function. This constant must be protected,
+     * otherwise it is pickup up by the automatich function detection.
+     */
+    protected final static Parameter[] LISTLATEST_PARAMETERS = {
         new Parameter("max", Integer.class, new Integer(10)), /* name, type, default value */
         new Parameter(Parameter.CLOUD, true)                  /* true: required! */
     };
 
+    protected final static Parameter[] SUMFIELDS_PARAMETERS = {
+        new Parameter("fields", List.class, new ArrayList()), /* name, type, default value */
+        Parameter.NODE                                        /* true: required! */
+    };
+
+
     /**
-     * A 'function' implementation which ignores the 'node' and does something with a 'Cloud' object.
-     * @todo this might be interpreted as a function on the builder, somehow!
+     * Implementation of 'builder function', which can be compared with a static method in java.
      */
-    private NodeList function1Implementation(MMObjectNode node, Parameters p) {
-        Integer max = (Integer) p.get("max");
-        Cloud cloud = (Cloud) p.get(Parameter.CLOUD);
-        // Node n = cloud.getNode(node.getNumber());
-        NodeManager thisManager = cloud.getNodeManager(getTableName());
-        NodeQuery q = thisManager.createQuery();
-        q.setMaxNumber(max.intValue());
-        q.addSortOrder(q.getStepField(thisManager.getField("number")), SortOrder.ORDER_DESCENDING);
-        return thisManager.getList(q);
-
-    }
-
-    // overridden from MMObjectBuilder
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
-        if (log.isDebugEnabled()) {
-            log.trace("executefunction of example builder " + function + " " + args);
-        }
-        if (function.equals("info")) {
-            List empty = new ArrayList();
-            Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("function1",     "" + FUNCTION1_PARAMETERS + " Example function returning a node-list (bridge implementation) (newest 'max' nodes, ignoring the node)");
-            if (args == null || args.size() == 0) {
-                return info;
-            } else {
-                return info.get(args.get(0));
+    protected final Function listLatestFunction = new AbstractFunction("latest", LISTLATEST_PARAMETERS, ReturnType.NODELIST) {
+            {
+                setDescription("This (rather silly) function returns the latest instances of this builder.");
             }
-        } else if (function.equals("function1")) {
-            Parameters p = Functions.buildParameters(FUNCTION1_PARAMETERS, args);
-            return function1Implementation(node, p);
-
-            // more examples should be implemented here.
-        } else {
-            return super.executeFunction(node, function, args);
-        }
+            public Object getFunctionValue(Parameters parameters) {
+                Integer max = (Integer) parameters.get("max");
+                Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                NodeManager thisManager = cloud.getNodeManager(getTableName());
+                NodeQuery q = thisManager.createQuery();
+                q.setMaxNumber(max.intValue());
+                q.addSortOrder(q.getStepField(thisManager.getField("number")), SortOrder.ORDER_DESCENDING);
+                return thisManager.getList(q);
+            }
+    };
+    {
+        // functions must be registered.
+        addFunction(listLatestFunction);
     }
+
+
+
+    /**
+     * Implementation of 'node function', which can be compared with a instance method in java.
+     */
+    protected final Function sumFieldsFunction = new NodeFunction("sumfields", SUMFIELDS_PARAMETERS, ReturnType.INTEGER) {
+            {
+                setDescription("This (rather silly) function returns the sum of the given fields of a certain node");
+            }
+            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                List fields = (List) parameters.get("fields");
+                int result = 0;
+                Iterator i = fields.iterator();
+                while (i.hasNext()) {
+                    result += node.getIntValue((String)i.next());
+                }
+                return new Integer(result);
+            }
+    };
+    {
+        // node-function are registered in the same way.
+        addFunction(sumFieldsFunction);
+    }
+
 
 
 }
