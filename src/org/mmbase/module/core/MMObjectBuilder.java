@@ -15,10 +15,8 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import org.mmbase.cache.Cache;
-import org.mmbase.cache.NodeListCache;
-import org.mmbase.cache.AggregatedResultCache;
-import org.mmbase.cache.QueryResultCache;
+import org.mmbase.cache.*;
+
 
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.FieldDefs;
@@ -55,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.295 2005-03-29 14:52:17 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.296 2005-05-03 07:07:07 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -115,12 +113,21 @@ public class MMObjectBuilder extends MMTable {
      */
     protected static NodeListCache listCache = NodeListCache.getCache();
 
+    /**
+     * The cache for all blobs.	
+     * @since 1.8.0
+     */
+    protected static BlobCache genericBlobCache = new BlobCache(200) {
+            public String getName()        { return "BlobCache"; }
+        };
+
     static {
         typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
             public String getName()        { return "TypeCache"; }
             public String getDescription() { return "Cache for node types";}
         };
         typeCache.putCache();
+        genericBlobCache.putCache();
     }
 
     /**
@@ -575,7 +582,7 @@ public class MMObjectBuilder extends MMTable {
 
      */
     protected List  getAncestors() {
-        return ancestors;
+        return Collections.unmodifiableList(ancestors);
     }
 
     /**
@@ -707,6 +714,8 @@ public class MMObjectBuilder extends MMTable {
         }
 
         removeSyncNodes(node);
+
+        clearBlobCache(node.getNumber());
 
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
@@ -1087,7 +1096,7 @@ public class MMObjectBuilder extends MMTable {
             log.debug("Returning " + node);
             return node;
         } catch(StorageException se) {
-            log.error(se.getMessage());
+            log.error(se.getMessage(), se);
             return null;
         }
     }
@@ -2127,6 +2136,27 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Returns
+     * @since MMBase-1.7.4
+     */
+    protected BlobCache getBlobCache(String fieldName) {
+        return genericBlobCache;
+    }
+
+    public int clearBlobCache(int nodeNumber) {
+        Iterator i = getFields().iterator();
+        int result = 0;
+        while (i.hasNext()) {
+            FieldDefs fieldDef = (FieldDefs) i.next();
+            String field = fieldDef.getDBName();
+            BlobCache cache = getBlobCache(field);
+            String key = cache.getKey(nodeNumber,field);
+            if (cache.remove(key) != null) result++;
+        }
+        return result;
+    }
+
+    /**
      * Provides additional functionality when obtaining field values.
      * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
      * (generally when a fieldname is supplied that doesn't exist).
@@ -2657,15 +2687,16 @@ public class MMObjectBuilder extends MMTable {
         // are kept in sync is other servers add/change/delete them.
         if (ctype.equals("c") || ctype.equals("d")) {
             try {
-                Integer i=new Integer(number);
+                Integer i = new Integer(number);
                 nodeCache.remove(i);
+                clearBlobCache(i.intValue());
             } catch (Exception e) {
                 log.error("Not a number");
                 log.error(Logging.stackTrace(e));
             }
         } else if (ctype.equals("r")) {
             try {
-                Integer i=new Integer(number);
+                Integer i = new Integer(number);
                 MMObjectNode node=(MMObjectNode)nodeCache.get(i);
                 if (node!=null) {
                     node.delRelationsCache();
@@ -2712,6 +2743,7 @@ public class MMObjectBuilder extends MMTable {
             try {
                 Integer i = new Integer(number);
                 nodeCache.remove(i);
+                clearBlobCache(i.intValue());
             } catch (Exception e) {
                 log.error("Not a number");
                 log.error(Logging.stackTrace(e));
@@ -3830,7 +3862,7 @@ public class MMObjectBuilder extends MMTable {
         public Object getFunctionValue(Parameters parameters) {
             MMObjectNode node = Casting.toNode(parameters.get("node"), MMObjectBuilder.this);
             if (node == null) {
-                throw new IllegalArgumentException("The function " + getName() + " requires a node argument");
+                throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
             }
             Object o = getFunctionValue(node, parameters);
             if (log.isDebugEnabled()) {
