@@ -16,23 +16,28 @@ import java.util.*;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.4 2005-05-03 19:59:27 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.5 2005-05-03 21:18:01 michiel Exp $
  */
 public class FunctionProvider {
 
     /**
-     * @javadoc
+     * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
     protected Function getFunctions = new AbstractFunction("getFunctions", Parameter.EMPTY, ReturnType.SET) {
-        public Object getFunctionValue(Parameters arguments) {
-            return getFunctions();
-        }
-    };
+            {
+                setDescription("The 'getFunctions' returns the collections of al Function object which are available on this FunctionProvider");
+            }
+            public Object getFunctionValue(Parameters arguments) {
+                return getFunctions();
+            }
+        };
 
     protected Map functions = Collections.synchronizedMap(new HashMap());
 
     /**
-     * @javadoc
+     * The constructor of an FunctionProvider two things. It adds the 'getFunction' function, and it
+     * guesses other function using reflection.
+     * @todo Should this last thing not only be done on MMObjectBuilders?
      */
     public FunctionProvider() {
         // determine parameters through reflection
@@ -54,14 +59,16 @@ public class FunctionProvider {
     }
 
     /**
-     * @javadoc
+     * Adds a function to the FunctionProvider. So, you can implement any function and add it to the
+     * provider, to make it provide this function too.
      */
     public void addFunction(Function function) {
         functions.put(function.getName(), function);
     }
 
     /**
-     * @javadoc
+     * Creates a new empty Parameters object for given function.
+     * @return A new empty Parameters object, or <code>null<code> if no such function.
      */
     public Parameters createParameters(String functionName) {
         Function function = getFunction(functionName);
@@ -73,7 +80,8 @@ public class FunctionProvider {
     }
 
     /**
-     * @javadoc
+     * Executes a function, and returns the function value.
+     * @return The function value or <code>null</code> if no such function.
      */
     public Object getFunctionValue(String functionName, List parameters) {
         Function function = getFunction(functionName);
@@ -85,6 +93,7 @@ public class FunctionProvider {
     }
 
     /**
+     * What's this??
      * @javadoc
      */
     protected Object executeFunction(String functionName, Parameters parameters) {
@@ -92,18 +101,20 @@ public class FunctionProvider {
     }
 
     /**
-     * @javadoc
+     * Returns the Function object with given name.
+     * @return Function object or <code>null</code> if no such function is provided.
      */
     public Function getFunction(String functionName) {
         return (Function)functions.get(functionName);
     }
 
     /**
-     * @javadoc
+     * Return a Set of all functions currently provided by the FunctionProvider.
      */
     public Set getFunctions() {
+        // return new UnmodifiableSet(functions.values());
         Set set = new HashSet(functions.values());
-        set.remove(null); // remove null values
+        set.remove(null); // remove null values --> WHY?
         return set;
     }
 }
