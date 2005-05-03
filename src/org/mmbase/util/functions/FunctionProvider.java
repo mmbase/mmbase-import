@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.4 2005-05-03 19:59:27 michiel Exp $
  */
 public class FunctionProvider {
 
@@ -39,7 +39,9 @@ public class FunctionProvider {
         Map parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap());
         for (Iterator i = parameterDefinitions.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();
-            addFunction(newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN));
+            Function fun = newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN);
+            fun.setDescription("Function automaticly found by reflection on public Parameter[] members");
+            addFunction(fun);
         }
         addFunction(getFunctions);
     }
