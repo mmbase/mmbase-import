@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.89 2005-05-03 16:48:53 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.90 2005-05-03 21:01:17 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -509,11 +509,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Function getFunction(String functionName) {
-        // first try to get the 'node' function.
-        Function function = getNode().getFunction(functionName);
-        // then try to get the 'builder' function.
+        // first try the 'builder' function:       
+        Function function = builder.getFunction(functionName);        
+
+        // then try to get the 'node' function (of typedef)
         if (function == null) {
-            function = builder.getFunction(functionName);
+            getNode().getFunction(functionName);
         }
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist.");
