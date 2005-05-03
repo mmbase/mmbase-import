@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.16 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.17 2005-05-03 17:56:28 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -138,28 +138,32 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
 
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
-
+            
+            log.debug("Node-referrer?");
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
+                log.debug("explicitely not");
                 FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
                 if (functionContainer != null) {
                     function = functionContainer.getFunction(functionName);
                     return function;
                 } else {
-                    // ingore.
+                    // ignore.
                 }
             }
             // it is possible that a 'closer' node provider is meant
             FunctionContainerOrNodeProvider functionOrNode;
-
+            log.debug("Checking for 'closer' node provider");
             if (parentNodeId != Attribute.NULL) {
+                log.debug("explicitely specified node");
                 functionOrNode = findNodeProvider();
             } else {
                 functionOrNode = (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
             }
-
+            log.debug("Found functionOrNode " + functionOrNode);
             if (functionOrNode != null) {
-                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
-                    return FunctionFactory.getFunction(getNode(), functionName); // NodeFunction.getFunction(getNode(),functionName)
+                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use                    
+                    log.debug("using node-function!");
+                    return FunctionFactory.getFunction(((NodeProvider) functionOrNode).getNodeVar(), functionName); // NodeFunction.getFunction(getNode(),functionName)
                 } else { // just use the functioncontainer
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
@@ -186,6 +190,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         return getFunctionValue(true);
     }
 
+
     protected final Object getFunctionValue(boolean register) throws JspTagException {
         String functionName = name.getString(this);
         Object value;
@@ -202,6 +207,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if ("".equals(functionName)) {  // no name given, certainly must use container.
                 function = functionContainer.getFunction(functionContainer.getName());
             } else {
+                log.debug("Trying self for function " + functionName);
                 // name given, try self:
                 function = getFunction(functionName);
             }
@@ -209,6 +215,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (function == null) {
                 throw new JspTagException("Could not determine the name of the function to be executed");
             }
+            log.debug("Function to use " + function);
             Parameters params;
             try {
                 params = function.createParameters();
@@ -222,7 +229,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 Iterator i = functionContainer.getParameters().iterator();
                 while (i.hasNext()) {
                     FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
-                    params.set(entry.getKey(), entry.getValue());
+                    params.setIfDefined(entry.getKey(), entry.getValue());
                 }
             }
             if (referids != Attribute.NULL) {
