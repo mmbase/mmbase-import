@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.util.Map;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * Interface for transformations. The 'configurable' version can be configured with an integer, so
@@ -26,23 +27,23 @@ public interface ConfigurableTransformer extends Transformer {
      * If a transformer can handle more then one destination
      * format, it can be configured with this.
      *
-     * There must be a default, since to can be null.
+     * There must be a default, since <code>to</code> can be null.
      */
 
-    public void configure(int to);
+    void configure(int to);
 
     /**
      * Returns which transformations can be done by an object of this class.
      *
      * @return A Map with String Integer/Class pairs.
      */
-    public Map transformers();
+    Map transformers();
 
     /**
      * Returns the encoding that is currently active
      *
      * @return An String representing the coding that is currently used.
      */
-    public String getEncoding();
+    String getEncoding();
 
 }
