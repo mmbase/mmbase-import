@@ -42,6 +42,8 @@ public class ForumsConfig {
    private int preloadchangedthreadstime = 0;
    private int swapoutunusedthreadstime = 0;
    private int speedposttime=60;
+   private int postingsoverflowpostarea=4;
+   private int postingsoverflowthreadpage=15;
 
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
@@ -203,6 +205,16 @@ public class ForumsConfig {
                         inttemp = getAttributeValue(reader,n,"speedposttime","value");
                         if (inttemp != null) {
                             speedposttime = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        inttemp = getAttributeValue(reader,n,"postingsoverflowpostarea","value");
+                        if (inttemp != null) {
+                            postingsoverflowpostarea = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        inttemp = getAttributeValue(reader,n,"postingsoverflowthreadpage","value");
+                        if (inttemp != null) {
+                            postingsoverflowthreadpage = (Integer.valueOf(inttemp)).intValue();
                         }
 
                         fromEmailAddress = getAttributeValue(reader,n,"email","from");
@@ -739,4 +751,12 @@ public class ForumsConfig {
     public int getSpeedPostTime() {
 	return speedposttime;
     }
+
+   public int getPostingsOverflowPostarea() {
+	return postingsoverflowpostarea;
+   }
+
+   public int getPostingsOverflowThreadpage() {
+	return postingsoverflowthreadpage;
+   }
 }
