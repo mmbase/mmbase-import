@@ -182,15 +182,7 @@ Create a build.xml with a DOCTYPE like this:
     </copy>
   </target>
 
-
-  <target name="jar" description="Create the MMBase project jar file"
-    depends="jar.check,jar.config" unless="jar.uptodate" if="src.available">
-
-    <antcall target="compile" />
-
-    <mkdir dir="${project.metainf.dir}" />
-
-
+  <target name="project.manifest" depends="jar.check" unless="jar.uptodate" if="src.available">
     <manifest file="${project.build.dir}/manifest.mf">
       <attribute name="Main-Class" value="${project.main.class}" />
       <section name="${project.package}">
@@ -204,10 +196,17 @@ Create a build.xml with a DOCTYPE like this:
         <attribute name="Build-compile" value="${build.compiler}" />
       </section>
     </manifest>
+  </target>
 
-    <echo message="creating jar" />
 
-    
+  <target name="jar" description="Create the MMBase project jar file"
+    depends="jar.check,project.manifest,jar.config" unless="jar.uptodate" if="src.available">
+
+    <antcall target="compile" />
+
+    <mkdir dir="${project.metainf.dir}" /><!-- make sure his exists -->
+
+    <echo message="creating jar" />    
     <jar jarfile="${project.jar}"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}" includes="**" />
