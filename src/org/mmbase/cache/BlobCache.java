@@ -11,15 +11,19 @@ package org.mmbase.cache;
 import org.mmbase.module.core.MMObjectBuilder;
 import java.util.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * The 'blob cache' is used in MMObjectNode to cache small byte-array field values. it is a
  * replacement for the 'handle cache' which was present in MMBase <1.8.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BlobCache.java,v 1.1 2005-05-02 12:51:42 michiel Exp $
+ * @version $Id: BlobCache.java,v 1.2 2005-05-04 18:21:04 michiel Exp $
  * @since MMBase 1.8
  */
 public abstract class BlobCache extends Cache {
+
+    private static final Logger log = Logging.getLoggerInstance(BlobCache.class);
 
     public BlobCache(int size) {
         super(size);
@@ -31,7 +35,7 @@ public abstract class BlobCache extends Cache {
     }
 
     public String getName() {
-        return "Blob Cache";
+        return "A Blob Cache";
     }
 
     public String getDescription() {
@@ -47,6 +51,7 @@ public abstract class BlobCache extends Cache {
         if (value instanceof byte[]) {
             int max = getMaxEntrySize();
             byte[] b = (byte[]) value;
+            log.trace(" max " + max + " " + b.length);
             if (max > 0 && b.length > max) return null;
         } else if (value instanceof String) {
             int max = getMaxEntrySize();
