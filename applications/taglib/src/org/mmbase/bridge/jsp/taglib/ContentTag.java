@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.36 2005-03-24 13:41:30 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.37 2005-05-04 11:03:12 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -211,6 +211,7 @@ public class ContentTag extends LocaleTag  {
     private Attribute escaper        = Attribute.NULL;
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
+    private Attribute clear          = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -244,6 +245,7 @@ public class ContentTag extends LocaleTag  {
             return ct;
         }
     }
+
 
 
     /*
