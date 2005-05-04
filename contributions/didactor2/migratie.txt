@@ -1,5 +1,28 @@
 Migratie issues
 
+2005-05-04
+    People builder has got some new and some changed fields.
+
+    ALTER TABLE `mmb_people`   MODIFY `email` BLOB DEFAULT NULL;
+    ALTER TABLE `mmb_contacts` MODIFY  email` BLOB DEFAULT NULL;
+    ALTER TABLE `mmb_people`   MODIFY 'firstname` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` MODIFY `firstname` VARCHAR(255);
+    ALTER TABLE `mmb_people`   MODIFY `lastname` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` MODIFY `lastname` VARCHAR(255);
+    ALTER TABLE `mmb_people`   ADD `suffix` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` ADD `suffix` VARCHAR(255);
+    ALTER TABLE `mmb_people`   ADD `externid` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` ADD `externid` VARCHAR(255);
+    ALTER TABLE `mmb_people`   ADD `mobile` VARCHAR(32);
+    ALTER TABLE `mmb_contacts` ADD `mobile` VARCHAR(32);
+    ALTER TABLE `mmb_people`   ADD `website` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` ADD `website` VARCHAR(255);
+    ALTER TABLE `mmb_people`   ADD `country` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` ADD `country` VARCHAR(255);
+    ALTER TABLE `mmb_people`   ADD `dayofbirth` INT(11);
+    ALTER TABLE `mmb_contacts` ADD `dayofbirth` INT(11);
+
+
 2005-04-22
 
     Urls, attachments etc. are now ordered on a page.
@@ -20,15 +43,15 @@ update the database.
 2005-03-31
 
 The email domain (for mail sent from the didactor instance) is now configurable
-via the web.xml (see the "emailsenderdomain" entry). 
+via the web.xml (see the "emailsenderdomain" entry).
 
-    Developers: you can generate the correct entry by filling in the 
+    Developers: you can generate the correct entry by filling in the
     "emailsenderdomain" property in your configure.properties file.
     see the configure.properties.zeeland for an example.
 
 2005-03-11
 
-An extra field "showtitle" is added for a number of builders. The metadata builder has changed (field value is changed from virtual to persistent). 
+An extra field "showtitle" is added for a number of builders. The metadata builder has changed (field value is changed from virtual to persistent).
 
 ALTER TABLE mmb_educations ADD showtitle TINYINT(1);
 ALTER TABLE mmb_pages ADD showtitle TINYINT(1);
@@ -93,8 +116,8 @@ ALTER TABLE mmb_metadefinition ADD required INT(1);
                de meegenomen moeten worden in de webapp (default: leeg;
                dwz geen extra templates)
 
- extra propertyfiles: 
- 
+ extra propertyfiles:
+
     er zijn een aantal extra propertyfiles toegevoegd zodat het
     makkelijker is om wars voor asp4all te maken:
 
@@ -103,7 +126,7 @@ ALTER TABLE mmb_metadefinition ADD required INT(1);
     configure.properties.baronie    - baronie college
     configure.properties.bouwradius - bouwradius & bam
     configure.properties.zeeland    - roc's excl. baronie
-    
+
     zie script makeallwars.sh voor extra shortcut
 
 
@@ -112,7 +135,7 @@ ALTER TABLE mmb_metadefinition ADD required INT(1);
  alter table mmb_attachments modify column title varchar(255);
  alter table mmb_people modify column email varchar(255);
  alter table mmb_contacts modify column email varchar(255);
- alter table mmb_images modify column description blob; 
+ alter table mmb_images modify column description blob;
 
 
 2004-12-01
@@ -143,12 +166,12 @@ standaard per gebruiker 3 typen portfolio's aangemaakt.
   opgelost.
 
   Cleanup code:
-  
+
   de volgende code verwijderd de nieuwste "dubbele" usernames als er meer dan 1 is.
   bij deze accounts moeten dan nieuwe usernames aangemaakt worden:
 
     update mmb_people join mmb_people as mmb_people2 on mmb_people2.username =
-    mmb_people.username set mmb_people.username="" where mmb_people.username != "" 
+    mmb_people.username set mmb_people.username="" where mmb_people.username != ""
     and mmb_people2.number < mmb_people.number;
 
   Dit is NIET op te lossen dmv van de editors: de people builder verbiedt het
@@ -160,7 +183,7 @@ standaard per gebruiker 3 typen portfolio's aangemaakt.
 in de web.xml moet voor sites die de PDF functionaliteit gebruiken de parameter
 internalUrl gezet worden:
 
-   <!-- 
+   <!--
         please set this to the interal url of the web application
         if that is different from the "outside" url.
 
@@ -192,20 +215,20 @@ stop de applicatie en draai de volgende SQL:
 
 2004-11-03
 
-De directory education/files in de root van de web applicatie is nu bestemd voor uploads. 
-Deze moet dus niet geleegd worden bij deployment van een nieuwe war en moet schrijfbaar 
+De directory education/files in de root van de web applicatie is nu bestemd voor uploads.
+Deze moet dus niet geleegd worden bij deployment van een nieuwe war en moet schrijfbaar
 zijn voor de web applicatie.
 
- ** 
- 
+ **
+
     2004-11-10 Dit is nu aanpasbaar via de web.xml:
-    
+
     <param-name>filemanagementBaseUrl</param-name>
-    
+
     geeft de url van de upload directory (zodat de bestanden weer te downloaden zijn)
 
     <param-name>filemanagementBaseDirectory</param-name>
-    
+
     geeft het directory pad waar de bestanden naartoe worden ge-upload.
     deze moet schrijfbaar zijn voor de web applicatie en niet worden geleegd tijdens
     updates.
@@ -221,8 +244,8 @@ zijn voor de web applicatie.
 
     filemanagement.data.directory=/home/joost/lib/tomcat/webapps/didactor/education/files
     filemanagement.data.url=/education/files
-    
- ** 
+
+ **
 
 Er is een maximum upload van 50 Mb in de upload pagina. Waarschijnlijk moet ook de
 configuratie van de webserver aangepast worden om dat soort grote uploads toe te staan.
