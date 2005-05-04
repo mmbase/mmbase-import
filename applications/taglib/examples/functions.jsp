@@ -115,6 +115,15 @@ demonstrate it here based on 'BeanFunction' based on an inner bean of the JSP.
 </tr>
 
 
+<tr><td colspan="2">
+  How to create parameters of more complicated types.
+</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functioncomplexparams.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/functioncomplexparams.jsp" %></td>
+</tr>
+
+
 </table>
 </mm:cloud>
 </body>
