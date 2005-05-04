@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.299 2005-05-04 17:40:33 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.300 2005-05-04 18:34:58 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -119,7 +119,7 @@ public class MMObjectBuilder extends MMTable {
      * @since 1.8.0
      */
     protected static BlobCache genericBlobCache = new BlobCache(200) {
-            public String getName()        { return "BlobCache"; }
+            public String getName()        { return "GenericBlobCache"; }
         };
 
     static {
