@@ -409,7 +409,7 @@ public class PostThread {
    * I hate how this is done but don't see a way to get this fast enough
    * any other way.
    */
-   public String getNavigationLine(String baseurl, int page,int pagesize,String cssclass) {
+   public String getNavigationLine(String baseurl, int page,int pagesize,int overflowpage,String cssclass) {
 	int f=parent.getParent().getId();
 	int a=parent.getId();
 	int p=getId();
@@ -421,7 +421,7 @@ public class PostThread {
 	// weird way must be a better way for pagecount
 	int pagecount=postcount/pagesize;
 	if ((pagecount*pagesize)!=postcount) pagecount++;
-	
+
 
 	int c=page-1;
 	if (c<1) c=1;
@@ -431,10 +431,16 @@ public class PostThread {
 	String result = "<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+c+"\""+cssclass+">&lt</a>";
 	for (int i=1;i<=pagecount;i++) {
 	  result+=" <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">";
-	  if (i==page) {
-		result+="["+i+"]";
+	  if (i<overflowpage || i==pagecount) {
+	  	if (i==page) {
+			result+="["+i+"]";
+	  	} else {
+			result+=""+i;
+	  	}
 	  } else {
-		result+=""+i;
+		if (i==overflowpage) {
+			result+="...";
+		}
 	  }
 	  result+="</a>";
         } 
@@ -443,7 +449,7 @@ public class PostThread {
    }
 
 
-   public String getNavigationLine(String baseurl, int pagesize,String cssclass) {
+   public String getNavigationLine(String baseurl, int pagesize,int overflowpage,String cssclass) {
 	int f=parent.getParent().getId();
 	int a=parent.getId();
 	int p=getId();
@@ -462,7 +468,13 @@ public class PostThread {
 	String result = "(";
 	for (int i=1;i<=pagecount;i++) {
 	  if (i!=1) result+=" ";
-	  result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">"+i+"</a>";
+	  if (i<overflowpage || i==pagecount) {
+	  	result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">"+i+"</a>";
+	  } else {
+		if (i==overflowpage) {
+			result+="...";
+		}
+	  }
         } 
 	result += ")";
 	return result;
