@@ -18,6 +18,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 
 /**
  * A function tag for functions returning a collection.
@@ -26,10 +27,11 @@ import org.mmbase.util.Casting;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.7 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: ListFunctionTag.java,v 1.8 2005-05-04 11:03:12 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
+    private static final Logger log = Logging.getLoggerInstance(ListFunctionTag.class);
     // implementation of ListProvider
 
     protected Collection    returnCollection;
@@ -71,7 +73,10 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         if (value instanceof Collection && comparator.equals(Attribute.NULL)) {
             returnCollection = (Collection) value;
         } else {
-            returnCollection = Casting.toList(value);
+            returnCollection = Casting.toCollection(value);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Using " + returnCollection);
         }
 
         collector = new ContextCollector(getContextProvider());

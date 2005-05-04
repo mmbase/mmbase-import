@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import java.io.File;
+import java.util.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.images.*;
 import org.mmbase.util.UriParser;
 import org.mmbase.module.builders.AbstractServletBuilder;
 import org.mmbase.module.builders.Images;
@@ -29,20 +31,45 @@ import org.mmbase.security.Rank;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.53 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ImageTag.java,v 1.54 2005-05-04 11:03:12 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
 
+    private static final int MODE_URL = 0;
+    private static final int MODE_HTML_ATTRIBUTES = 1;
+    private static final int MODE_HTML_IMG = 2;
+        
+
     private static Boolean makeRelative = null;
     private Attribute template = Attribute.NULL;
+    private Attribute mode     = Attribute.NULL;
+
+
+    private Object prevDimension;
 
     /**
      * The transformation template
      */
-
     public void setTemplate(String t) throws JspTagException {
         template = getAttribute(t);
+    }
+
+    public void setMode(String m) throws JspTagException {
+        mode = getAttribute(m);
+    }
+
+    private int getMode() throws JspTagException {
+        String m = mode.getString(this).toLowerCase();
+        if (m.equals("") || m.equals("url")) {
+            return MODE_URL;
+        } else if (m.equals("attributes")) {
+            return MODE_HTML_ATTRIBUTES;
+        } else if (m.equals("img")) {
+            return MODE_HTML_IMG;
+        } else {
+            throw new JspTagException("Value '" + m + "' not know for 'mode' attribute");
+        }
     }
 
     public int doStartTag() throws JspTagException {
@@ -80,17 +107,17 @@ public class ImageTag extends FieldTag {
             }
         }
 
-        String number;
+        String servletArgument;
         String t = template.getString(this);
         if ("".equals(t)) {
             // the node/image itself
-            number = node.getStringValue("number");
+            servletArgument = node.getStringValue("number");
         } else {
-            if ("false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.url.convert"))) {
-                number = "" + node.getNumber() + "+" + t;
+            if ("false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"))) {
+                servletArgument = "" + node.getNumber() + "+" + t;
             } else {
                 // the cached image
-                number = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
+                servletArgument = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
             }
         }
 
@@ -105,20 +132,68 @@ public class ImageTag extends FieldTag {
             Parameters args = new ParametersImpl(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
                 .set("session",  sessionName)
                 .set("context",  makeRelative.booleanValue() ?
-                     UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") :
-                     req.getContextPath()
+                     UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath()
                      )
-                .set("argument", number)
+                .set("argument", servletArgument)
                 ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
         }
 
         helper.useEscaper(false);
-        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
+        prevDimension = pageContext.getAttribute("dimension");
+        switch(getMode()) {
+        case MODE_URL: 
+            helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
+            pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), template.getString(this)));
+            break;
+        case MODE_HTML_ATTRIBUTES: {
+            List a = new ArrayList();
+            a.add(template.getString(this));
+            Dimension dim = (Dimension) getNodeVar().getFunctionValue("dimension", a).get();
+            String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
+            pageContext.setAttribute("dimension", dim);
+            break;
+        }
+        case MODE_HTML_IMG: {
+            List a = new ArrayList();
+            a.add(template.getString(this));
+            Node node = getNodeVar();
+            Dimension dim = (Dimension) node.getFunctionValue("dimension", a).get();
+            String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            String alt;
+            if (node.getNodeManager().hasField("title")) {
+                alt = node.getStringValue("title"); // escaper?
+            } else if (node.getNodeManager().hasField("name")) {
+                alt = node.getStringValue("name"); // escaper?
+            } else {
+                alt = null;
+            }
+            helper.setValue("<img src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\" " +
+                            (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
+                            );
+            pageContext.setAttribute("dimension", dim);
+        }
+        }
+        
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
+
+
+        
         return EVAL_BODY_BUFFERED;
+    }
+
+    public int doEndTag() throws JspTagException {
+        if (prevDimension == null) {
+            pageContext.removeAttribute("dimension");
+        } else {
+            pageContext.setAttribute("dimension", prevDimension);
+        }
+        helper.doEndTag();
+        return super.doEndTag();
+        
     }
 }
 

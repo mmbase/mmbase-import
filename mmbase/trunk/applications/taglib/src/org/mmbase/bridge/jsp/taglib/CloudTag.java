@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.117 2005-04-19 20:20:56 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.118 2005-05-04 11:03:12 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -517,11 +517,22 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private final boolean checkReuse() throws JspTagException {
         if (getReferid() != null) {
-            if (getMethod() != AuthenticationData.METHOD_UNSET || logonatt != Attribute.NULL) { // probably add some more
-                throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
+            int method = getMethod();
+            if ((method != AuthenticationData.METHOD_UNSET &&
+                 method != AuthenticationData.METHOD_PAGELOGON &&
+                 method != AuthenticationData.METHOD_SESSIONLOGON) || 
+                logonatt != Attribute.NULL) { // probably add some more
+                throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method'  or 'logon' attributes");
             }
             log.debug("found cloud with referid");
             cloud = (Cloud) getContextProvider().getContextContainer().getObject(getReferid());
+            if (method == AuthenticationData.METHOD_SESSIONLOGON) {
+                session = pageContext.getSession();
+                if (session == null) {
+                    throw new JspTagException("No session, cannot store cloud in session");
+                }
+                session.setAttribute(getSessionName(), cloud);
+            }
             return true;
         }
         return false;
@@ -1214,6 +1225,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             logon = s.equals("") ? null : StringSplitter.split(s);
         }
 
+        getDefaultCloudContext();
         if (checkReuse()) { // referid
             return evalBody();
         }
