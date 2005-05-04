@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.298 2005-05-03 21:03:01 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.299 2005-05-04 17:40:33 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2374,7 +2374,9 @@ public class MMObjectBuilder extends MMTable {
     protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         return new NodeFunction(name, parameters, returnType) {
                 public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                    return MMObjectBuilder.this.executeFunction(node, name, parameters);
+                    return MMObjectBuilder.this.executeFunction(node, name, 
+                                                                parameters.subList(0, parameters.size() - 1) // removes the node-argument, some legacy impl. get confused
+                                                                );
                 }
             };
     }
