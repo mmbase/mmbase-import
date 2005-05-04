@@ -15,6 +15,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
 
+
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -26,14 +27,16 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.23 2004-07-26 20:17:58 nico Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.24 2005-05-04 13:50:04 michiel Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
 	
-    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
+    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class); 
+
 
     private static CloudContext cloudContext;
+
 
     private Attribute cloudId = Attribute.NULL; 
     // the id of the cloud to which we refer
