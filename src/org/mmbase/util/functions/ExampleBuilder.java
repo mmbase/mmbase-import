@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.6 2005-05-03 21:08:56 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.7 2005-05-04 23:33:08 michiel Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
@@ -46,8 +46,14 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     };
 
     protected final static Parameter[] SUMFIELDS_PARAMETERS = {
-        new Parameter("fields", List.class, new ArrayList()), /* name, type, default value */
-        Parameter.NODE                                        /* true: required! */
+        new Parameter("fields", List.class, new ArrayList()) /* name, type, default value */
+    };
+
+    protected final static Parameter[] SHOWPARAMETER_PARAMETERS = {
+        new Parameter("collectionparam", Collection.class),
+        new Parameter("mapparam", Map.class),
+        new Parameter("integerparam", Integer.class),
+        new Parameter("numberparam", Number.class)
     };
 
 
@@ -95,6 +101,28 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     {
         // node-function are registered in the same way.
         addFunction(sumFieldsFunction);
+    }
+
+
+    {
+
+        // you can of course even implement it anonymously.
+        addFunction(new AbstractFunction("showparameter", SHOWPARAMETER_PARAMETERS, ReturnType.LIST) {
+                {
+                    setDescription("With this function one can demonstrate how to create parameters of several types, and in what excactly that results");
+                }
+                public Object getFunctionValue(Parameters parameters) {
+                    List result = new ArrayList();
+                    DataType[] def = parameters.getDefinition();
+                    for (int i = 0 ; i < def.length; i++) {
+                        Object value = parameters.get(i);
+                        if(value != null) {
+                            result.add(def[i].toString() + " ->" + value.getClass().getName() + " " + value);
+                        }
+                    }
+                    return result;
+                }
+            });    
     }
 
 
