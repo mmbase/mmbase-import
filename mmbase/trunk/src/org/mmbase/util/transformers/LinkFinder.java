@@ -11,6 +11,7 @@ package org.mmbase.util.transformers;
 
 import java.util.*;
 import java.util.regex.*;
+import org.mmbase.util.Entry;
 
 /**
  * Finds links in the Character String, and makes them 'clickable' for HTML (using a-tags). This
@@ -24,7 +25,7 @@ import java.util.regex.*;
 
 public class LinkFinder extends RegexpReplacer {
 
-    protected static Map urlPatterns = new LinkedHashMap();
+    protected static Collection urlPatterns = new ArrayList();
     
     static {        
         new LinkFinder().readPatterns(urlPatterns);   
@@ -34,18 +35,18 @@ public class LinkFinder extends RegexpReplacer {
         return "linkfinder.xml";
     }
 
-    protected Map getPatterns() {        
+    protected Collection getPatterns() {        
         return urlPatterns;
     }
 
 
-    protected void readDefaultPatterns(Map patterns) {
+    protected void readDefaultPatterns(Collection patterns) {
 
-        patterns.put(Pattern.compile(".+@.+"),      "<a href=\"mailto:$0\">$0</a>");
-        patterns.put(Pattern.compile("http://.+"),  "<a href=\"$0\">$0</a>"); 
-        patterns.put(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>"); 
-        patterns.put(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>"); 
-        patterns.put(Pattern.compile("www\\..+"),   "<a href=\"http://$0\">$0</a>");
+        patterns.add(new Entry(Pattern.compile(".+@.+"),      "<a href=\"mailto:$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("http://.+"),  "<a href=\"$0\">$0</a>")); 
+        patterns.add(new Entry(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>")); 
+        patterns.add(new Entry(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>")); 
+        patterns.add(new Entry(Pattern.compile("www\\..+"),   "<a href=\"http://$0\">$0</a>"));
         return;
     }
 

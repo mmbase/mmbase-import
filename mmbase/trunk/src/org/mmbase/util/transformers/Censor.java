@@ -11,6 +11,7 @@ package org.mmbase.util.transformers;
 
 import java.util.regex.*;
 import java.util.*;
+import org.mmbase.util.Entry;
 
 /**
  * Replaces certain 'forbidden' words by something more decent. Of course, censoring is evil, but
@@ -18,18 +19,18 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Censor.java,v 1.5 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: Censor.java,v 1.6 2005-05-04 22:23:31 michiel Exp $
  */
 
 public class Censor extends RegexpReplacer {
 
-    protected static Map forbidden = new LinkedHashMap();
+    protected static Collection forbidden = new ArrayList();
     
     static {        
         new Censor().readPatterns(forbidden);   
     }
 
-    protected Map getPatterns() {        
+    protected Collection getPatterns() {        
         return forbidden;
     }
 
@@ -39,10 +40,10 @@ public class Censor extends RegexpReplacer {
 
 
 
-    protected void readDefaultPatterns(Map patterns) {
-        patterns.put(Pattern.compile("(?i)mmbase"),      "MMBase");
-        patterns.put(Pattern.compile("(?i)microsoft"),   "Micro$soft");
-        patterns.put(Pattern.compile("(?i)fuck"),        "****");
+    protected void readDefaultPatterns(Collection patterns) {
+        patterns.add(new Entry(Pattern.compile("(?i)mmbase"),      "MMBase"));
+        patterns.add(new Entry(Pattern.compile("(?i)microsoft"),   "Micro$soft"));
+        patterns.add(new Entry(Pattern.compile("(?i)fuck"),        "****"));
     }
     
 

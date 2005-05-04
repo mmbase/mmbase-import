@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.regex.*;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.Entry;
 
 import org.mmbase.util.logging.*;
 
@@ -32,11 +33,11 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
 
     private static final Map utilReaders = new HashMap();     // class -> utilreader
 
-    protected static final Map regexps = new LinkedHashMap();
+    protected static final Collection regexps = new ArrayList();
 
     protected static abstract class PatternWatcher extends ResourceWatcher {
-        protected Map patterns;
-        PatternWatcher(Map p) {
+        protected Collection patterns;
+        PatternWatcher(Collection p) {
             patterns = p;
         }
     }
@@ -48,7 +49,7 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
     /**
      * This needs overriding, (must give the static map for the extension).
      */
-    protected Map getPatterns() {
+    public Collection getPatterns() {
         return regexps;
     }
 
@@ -58,11 +59,16 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
     protected String getConfigFile() {
         return "regexps.xml";
     }
-
-    protected void readDefaultPatterns(Map patterns) {
+    /**
+     * Reads defaults translation patterns into patterns.
+     */
+    protected void readDefaultPatterns(Collection patterns) {
     }
 
-    protected void readPatterns(Map patterns) {
+    /**
+     * Reads patterns from config-file into given Collection
+     */
+    protected void readPatterns(Collection patterns) {
         UtilReader utilReader = (UtilReader) utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
             utilReader = new UtilReader(getConfigFile(), 
@@ -76,20 +82,25 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
 
         patterns.clear();
         
-        Map regs = (Map) utilReader.getProperties().get("regexps");
+        Collection regs = (Collection) utilReader.getProperties().get("regexps");
         if (regs != null) {
-            Iterator i = regs.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                Pattern p       = Pattern.compile((String) entry.getKey());
-                String  result  = (String) entry.getValue();
-                patterns.put(p, result);
-            }            
+            addPatterns(regs, patterns);
         } else {
             readDefaultPatterns(patterns);
         }
     }
 
+    protected void addPatterns(Collection list, Collection patterns) {
+        if (list != null) {
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                Map.Entry entry  = (Map.Entry) i.next();
+                Pattern p        = Pattern.compile((String) entry.getKey());
+                String  result   = (String) entry.getValue();
+                patterns.add(new Entry(p, result));
+            }            
+        }
+    }
     
     /**
      * Takes one word (as a StringBuffer), checks if it can be made clickable, and if so, does it.
@@ -137,10 +148,10 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
 
         // ready to make the anchor now.
 
-        Iterator i  = getPatterns().entrySet().iterator();
+        Iterator i  = getPatterns().iterator();
 
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Entry entry = (Entry) i.next();
             Pattern p = (Pattern) entry.getKey();
             Matcher m = p.matcher(w);
             if (m.matches()) {
