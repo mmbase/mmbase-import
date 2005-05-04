@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.6 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.7 2005-05-04 22:53:13 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag implements ParamHandler {
@@ -49,7 +49,9 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
     public void addParameter(String key, Object value) throws JspTagException {
         if (entries == null) entries = new ArrayList();
         entries.add(new Entry(key, value));
-        log.info("entries " + entries);
+        if (log.isDebugEnabled()) {
+            log.debug("entries " + entries);
+        }
     }
 
     public int doStartTag() throws JspException {
