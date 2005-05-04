@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.138 2005-05-02 12:56:53 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.139 2005-05-04 18:29:31 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -880,7 +880,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public InputStream getInputStreamValue(String fieldName) {
         Object value = values.get(fieldName);
         if (value == null) {
-            log.debug("NULLLL on " + fieldName + " " + this, new Exception());
+            log.debug("NUL on " + fieldName + " " + this, new Exception());
             return new ByteArrayInputStream(new byte[0]);
         }
         if (VALUE_NULL.equals(value)) {
@@ -897,10 +897,16 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             if (v == null) {
                 if (getSize(fieldName) < blobs.getMaxEntrySize()) {
                     v = parent.mmb.getStorageManager().getBinaryValue(this, parent.getField(fieldName));
+                    if (log.isDebugEnabled()) {
+                        log.debug("Putting in blob cache " + key);
+                    }
                     blobs.put(key, v);
                 } else {
+                    log.debug("Too big for cache, requesting InputStream directly from storage");
                     return parent.mmb.getStorageManager().getInputStreamValue(this, parent.getField(fieldName));
                 }                
+            } else {
+                log.debug("Found in blob cache " + fieldName);
             }
             return new ByteArrayInputStream(v);
         } else {
