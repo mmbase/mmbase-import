@@ -19,6 +19,7 @@ import org.mmbase.bridge.FieldValue;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.Entry;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.17 2005-05-03 17:56:28 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.18 2005-05-04 22:24:51 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -228,8 +229,8 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (functionContainer != null) {
                 Iterator i = functionContainer.getParameters().iterator();
                 while (i.hasNext()) {
-                    FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
-                    params.setIfDefined(entry.getKey(), entry.getValue());
+                    Entry entry = (Entry) i.next();
+                    params.setIfDefined((String) entry.getKey(), entry.getValue());
                 }
             }
             if (referids != Attribute.NULL) {

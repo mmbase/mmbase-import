@@ -10,17 +10,22 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.Entry;
 import javax.servlet.jsp.*;
-
+import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.5 2005-05-02 11:50:09 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.6 2005-05-04 22:24:51 michiel Exp $
  */
 
-public class ParamTag extends ContextReferrerTag {
+public class ParamTag extends ContextReferrerTag implements ParamHandler {
+    private static final Logger log = Logging.getLoggerInstance(ParamTag.class);
+
+    protected List       entries      = null;
     
     private Attribute name    = Attribute.NULL;
     private Attribute value   = Attribute.NULL;
@@ -41,6 +46,12 @@ public class ParamTag extends ContextReferrerTag {
         referid = getAttribute(r);
     }
 
+    public void addParameter(String key, Object value) throws JspTagException {
+        if (entries == null) entries = new ArrayList();
+        entries.add(new Entry(key, value));
+        log.info("entries " + entries);
+    }
+
     public int doStartTag() throws JspException {
         paramHandler = (ParamHandler) findParentTag(ParamHandler.class, null);
         handled = false;
@@ -48,7 +59,7 @@ public class ParamTag extends ContextReferrerTag {
     }
 
     public int doAfterBody() throws JspException {
-        if (value == Attribute.NULL && referid == Attribute.NULL) {
+        if (value == Attribute.NULL && referid == Attribute.NULL && entries == null) {
             if (bodyContent != null) {
                 // the value is the body context.      
                 helper.setValue(bodyContent.getString()); // to deal with 'vartype' casting
@@ -63,13 +74,17 @@ public class ParamTag extends ContextReferrerTag {
     public int doEndTag() throws JspTagException {
         if (! handled) {
             if (value != Attribute.NULL) {
-                if (referid != Attribute.NULL) throw new JspTagException("Must specify either 'value' or 'referid', not both");
+                if (referid != Attribute.NULL || entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
                 helper.setValue(value.getString(this)); // to deal with 'vartype' casting
                 paramHandler.addParameter(name.getString(this), helper.getValue());
                 helper.doAfterBody();
 
             } else if (referid != Attribute.NULL) {
+                if (entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
                 paramHandler.addParameter(name.getString(this), getObject(referid.getString(this)));
+            } else if (entries != null) {
+                paramHandler.addParameter(name.getString(this), entries);
+                entries = null;
             }
         }
         paramHandler = null;

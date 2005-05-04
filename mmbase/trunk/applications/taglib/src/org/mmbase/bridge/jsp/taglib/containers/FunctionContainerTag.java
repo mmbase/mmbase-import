@@ -13,6 +13,7 @@ import java.util.*;
 
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.util.Entry;
 import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
 
 /**
@@ -20,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.12 2004-06-30 17:51:54 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.13 2005-05-04 22:24:51 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
@@ -29,7 +30,7 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
 
     // javadoc inherited (from ParamHandler)
     public void addParameter(String key, Object value) throws JspTagException {
-        parameters.add(new ParameterEntry(key, value));
+        parameters.add(new Entry(key, value));
     }
 
     // javadoc inherited (from FunctionContainer)
@@ -64,12 +65,5 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
         return super.doEndTag();
     }
 
-    public class ParameterEntry implements FunctionContainer.Entry {
-        String key;
-        Object value;
-        ParameterEntry(String k, Object o) { key = k; value = o; }
-        public String getKey() { return key; }
-        public Object getValue() { return value; }
-    }
 
 }
