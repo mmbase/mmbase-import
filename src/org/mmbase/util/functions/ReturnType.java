@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.9 2005-05-03 19:57:07 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.10 2005-05-04 23:34:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataType {
@@ -33,6 +33,8 @@ public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataTyp
      * The return type of a function that returns a String.
      */
     public static final ReturnType STRING = new ReturnType(String.class, "String");
+
+    public static final ReturnType CHARSEQUENCE = new ReturnType(CharSequence.class, "CharSequence");
 
     /**
      * The return type of a function that returns a Integer.
