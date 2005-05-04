@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.13 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: UtilReader.java,v 1.14 2005-05-04 22:21:37 michiel Exp $
  */
 public class UtilReader {
 
@@ -143,7 +143,7 @@ public class UtilReader {
                     String type = reader.getElementAttributeValue(p, "type");
                     if (type.equals("map")) {
                         Enumeration entries = reader.getChildElements(p, "entry");
-                        Map map = new LinkedHashMap();
+                        Collection entryList = new ArrayList();
                         while(entries.hasMoreElements()) {
                             Element entry = (Element) entries.nextElement();
                             Enumeration en = reader.getChildElements(entry, "*");
@@ -158,10 +158,10 @@ public class UtilReader {
                                 }
                             }
                             if (key != null && value != null) {
-                                map.put(key, value);                            
+                                entryList.add(new Entry(key, value));
                             }
                         }
-                        properties.put(name, map);
+                        properties.put(name, entryList);
                     } else {
                         String value = reader.getElementValue(p);
                         properties.put(name, value);
