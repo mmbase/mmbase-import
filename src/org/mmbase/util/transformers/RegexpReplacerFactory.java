@@ -40,7 +40,9 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
      */
     public Transformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
-        log.info("Creating transformer, with " + parameters);
+        if (log.isDebugEnabled()) {
+            log.debug("Creating transformer, with " + parameters);
+        }
         RegexpReplacer trans = new RegexpReplacer() {                
                 private Collection patterns = new ArrayList();
                 {
