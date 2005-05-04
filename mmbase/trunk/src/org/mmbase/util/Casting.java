@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.44 2005-05-03 19:24:07 michiel Exp $
+ * @version $Id: Casting.java,v 1.45 2005-05-04 22:19:14 michiel Exp $
  */
 
 import java.util.*;
@@ -147,6 +147,8 @@ public class Casting {
                 return toXML(value);
             } else if (type.equals(List.class)) {
                 return toList(value);
+            } else if (type.equals(Map.class)) {
+                return toMap(value);
             } else {
                 // don't know
                 return value;
@@ -314,6 +316,37 @@ public class Casting {
                 l.add(o);
             }
             return l;
+        }
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static Map toMap(Object o) {
+        if (o instanceof Map) {
+            return (Map) o;
+        } else if (o instanceof org.mmbase.util.functions.Parameters) {
+            return ((org.mmbase.util.functions.Parameters) o).toMap();
+        } else if (o instanceof Collection) {
+            Map result = new HashMap();
+            Iterator i = ((Collection)o).iterator();
+            while (i.hasNext()) {
+                Object n = i.next();
+                if (n instanceof Map.Entry) {
+                    Map.Entry entry = (Map.Entry) n;
+                    result.put(entry.getKey(), entry.getValue());
+                } else {
+                    result.put(n, n);
+                }
+            }
+            return result;
+        } else if (o instanceof Node) {
+            return new MapNode((Node)o);
+        } else {
+            Map m = new HashMap();
+            m.put(o, o);
+            return m;
         }
     }
 
