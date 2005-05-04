@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.91 2005-05-02 12:58:48 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.92 2005-05-04 18:22:46 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -509,7 +509,7 @@ public class DatabaseStorageManager implements StorageManager {
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
             Blob b = getBlobValue(node, field);;
-            return b.getBytes(0, (int) b.length());
+            return b.getBytes(1, (int) b.length());
         } catch (SQLException sqe) {
             throw new StorageException(sqe);
         }
@@ -545,12 +545,9 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected Blob getBlobValue(ResultSet result, int index, FieldDefs field, boolean mayShorten) throws StorageException, SQLException {
-        log.info("Getting binary value");
         if (factory.hasOption(Attributes.SUPPORTS_BLOB)) {
             Blob blob = result.getBlob(index);
-            log.info("Get blob" + blob);
             if (result.wasNull()) {
-                log.info("returning null");
                 return null;
             }
             if (mayShorten && shorten(field)) {
@@ -1490,7 +1487,7 @@ public class DatabaseStorageManager implements StorageManager {
                 node.clearChanged();
                 return;
             } else {
-                throw new StorageException("Node not found");
+                throw new StorageException("Node " + node.getNumber() + " not found in storage. ResultSet: " + result);
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1527,6 +1524,7 @@ public class DatabaseStorageManager implements StorageManager {
             case FieldDefs.TYPE_BYTE :
                 Blob b =  getBlobValue(result, index, field, mayShorten);
                 if (b == BLOB_SHORTED) return MMObjectNode.VALUE_SHORTED;
+                if (b == null) return null;
                 return b.getBytes(0L, (int) b.length());
             case FieldDefs.TYPE_DATETIME :
                 return getDateTimeValue(result, index, field);
