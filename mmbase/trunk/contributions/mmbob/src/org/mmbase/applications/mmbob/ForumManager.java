@@ -555,5 +555,12 @@ public class ForumManager {
 	return config.getSpeedPostTime();
    }
 
+   public static int getPostingsOverflowPostarea() {
+	return config.getPostingsOverflowPostarea();
+   }
+
+   public static int getPostingsOverflowThreadpage() {
+	return config.getPostingsOverflowThreadpage();
+   }
 
 }

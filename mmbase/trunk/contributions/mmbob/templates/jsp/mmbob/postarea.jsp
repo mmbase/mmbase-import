@@ -105,6 +105,9 @@
         </mm:compare>
         <mm:compare value="-1" ><mm:field name="lastposter" /></mm:compare>
       </mm:field>
+      <a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />&page=<mm:field name="pagecount" />">></a></td>
+
+
     </td>
     <mm:compare referid="ismoderator" value="true">
     <td>

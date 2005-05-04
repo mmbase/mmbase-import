@@ -187,13 +187,17 @@ public class Controller {
                 virtual.setValue("type", thread.getType());
                 virtual.setValue("creator", thread.getCreator());
                 virtual.setValue("postcount", thread.getPostCount());
+                virtual.setValue("pagecount", thread.getPageCount(pagesize));
                 virtual.setValue("replycount", thread.getPostCount() - 1);
                 virtual.setValue("viewcount", thread.getViewCount());
                 virtual.setValue("lastposter", thread.getLastPoster());
                 virtual.setValue("lastposttime", thread.getLastPostTime());
                 virtual.setValue("lastsubject", thread.getLastSubject());
                 //newnode.setStringValue("threadnav",thread.getLastSubject());
-                virtual.setValue("navline", thread.getNavigationLine(baseurl, pagesize, cssclass));
+
+		// temp until sure if we also want to be able to set this from html
+		int overflowpage = ForumManager.getPostingsOverflowPostarea();
+                virtual.setValue("navline", thread.getNavigationLine(baseurl, pagesize,overflowpage, cssclass));
                 virtual.setValue("lastposternumber",thread.getLastPosterNumber());
                 virtual.setValue("lastpostnumber",thread.getLastPostNumber());
                 list.add(virtual);
@@ -1101,7 +1105,8 @@ public class Controller {
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
-                    virtual.setValue("navline", t.getNavigationLine(baseurl, page, pagesize, cssclass));
+		    int overflowpage = ForumManager.getPostingsOverflowThreadpage();
+                    virtual.setValue("navline", t.getNavigationLine(baseurl, page, pagesize,overflowpage, cssclass));
                     virtual.setValue("lastpage", "" + t.isLastPage(page, pagesize));
                     virtual.setValue("pagecount", t.getPageCount(pagesize));
                 }
