@@ -1,4 +1,4 @@
-<!ELEMENT taglibcontent (content*, escaper*, postprocessor*) >
+<!ELEMENT taglibcontent (content*, escaper*, parameterizedescaper*, postprocessor*) >
 <!ATTLIST taglibcontent  defaulttype   CDATA  #REQUIRED > 
 
 <!ELEMENT content  EMPTY >
@@ -10,7 +10,9 @@
 
 <!ELEMENT escaper  (class*, info?) >
 <!ATTLIST escaper  id    CDATA  #REQUIRED > 
-<!ATTLIST escaper  type  CDATA  #IMPLIED > <!-- type equals id if not speficied -->
+
+<!ELEMENT parameterizedescaper  (class, info?) >
+<!ATTLIST parameterizedescaper  id    CDATA  #REQUIRED > 
 
 <!ELEMENT postprocessor  (class*, info?) >
 <!ATTLIST postprocessor  id    CDATA  #REQUIRED > 

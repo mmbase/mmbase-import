@@ -23,6 +23,7 @@ import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 
 import org.mmbase.util.Casting;
+import org.mmbase.util.Entry;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.68 2005-03-17 00:08:34 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.69 2005-05-04 22:24:51 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -65,7 +66,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
-        extraParameters.add(new Param(key, value));
+        extraParameters.add(new Entry(key, value));
     }
 
 
@@ -184,10 +185,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         }
         Iterator i = extraParameters.iterator();
         while (i.hasNext()) {
-            Param param  = (Param) i.next();
-            if (param.value == null) continue;
-            show.append(connector).append(param.key).append('=');
-            paramEscaper.transform(new StringReader(param.value.toString()), w);
+            Entry param  = (Entry) i.next();
+            if (param.getValue() == null) continue;
+            show.append(connector).append(param.getKey()).append('=');
+            paramEscaper.transform(new StringReader(param.getValue().toString()), w);
             connector = amp;
         }
         if (encode) {
@@ -233,17 +234,5 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return super.doEndTag();
     }
 
-
-    protected static class Param {
-        String key;
-        Object value;
-        Param(String k, Object v) {
-            key = k ; value = v;
-        }
-        public String getKey() { return key; }
-        public Object  getValue() { return value; }
-
-        public String toString() { return key + "=" + value; }
-    }
 
 }

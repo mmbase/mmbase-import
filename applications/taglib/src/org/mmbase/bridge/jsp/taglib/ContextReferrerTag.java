@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
+import java.io.*;
+
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
@@ -26,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.68 2005-03-16 16:49:13 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.69 2005-05-04 22:24:51 michiel Exp $
  * @see ContextTag
  */
 
@@ -48,6 +50,25 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     private static final Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
 
     private static final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
+
+
+
+    protected static String getTaglibVersion() {
+        try {
+            ClassLoader cl = ContextReferrerTag.class.getClassLoader();
+            InputStream is = cl.getResourceAsStream("org/mmbase/taglib/version");
+            if (is == null) {
+                return "1.1";
+            }
+            BufferedReader r = new BufferedReader(new InputStreamReader(is));
+            return r.readLine();
+        } catch (IOException io) {
+            // should not happen
+            return "1.0";
+        }
+    }
+
+
 
     protected ContextTag pageContextTag = null;
 

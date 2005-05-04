@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.294 2005-05-02 22:19:57 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.295 2005-05-04 22:24:51 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4625,12 +4625,14 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ParamTag</tagclass>
     <info>
-      Adds a parameter to the parent parameterprovider Tag.
+      Adds a parameter to the parent parameterprovider Tag. Param-tags can be nested; like that it
+      is possible to create map-like parameter values.
     </info>
     <see tag="url" />
     <see tag="include" />
     <see tag="functioncontainer" />
     <see tag="url" attribute="referids" />
+    <see tag="escaper" />
     <see tag="functioncontainer" attribute="referids"/>
     <attribute>
       <name>name</name>
@@ -5285,6 +5287,55 @@ The 0 is just counter, which starts at 0 on every page.
       <see tag="writer" attribute="escape" />
       <see tag="function" />
     </attribute>
+  </tag>
+  <tag>
+    <name>escaper</name>
+    <see tag="content" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.EscaperTag</tagclass>
+    <info>
+      You can defined 'parameterized' escapers by this.
+    </info>
+    <since>MMBase-1.8</since>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        By the id the escaper is available.
+      </info>
+    </attribute>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        Reuses the escaper identified by this. 
+      </info>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        What kind of escaper.
+        <document file="resources/taglibcontent.xml" mode="parameterizedescapers" />
+      </info>
+    </attribute>
+    <example><![CDATA[
+<mm:escaper id="vervang"><!-- define a new 'escaper' which is a combination of 2 other escaper -->
+  <mm:escaper type="regexps">
+    <mm:param name="patterns"><!-- the regexps type escapers need a parameter named 'patterns' -->
+      <!-- this parameter must be a list of name-value's. We can simply use sub-param-tags for that -->
+      <mm:param name="aaa" value="bbb" />
+      <mm:param name="ccc" value="ddd" />
+    </mm:param>
+  </mm:escaper>
+  <mm:escaper referid="uppercase" /> <!-- simply reuse an existing one here -->
+</mm:escaper>
+<p>
+  <mm:write value="aba aaa b ccc " escape="vervang" />
+</p>
+]]></example>
   </tag>
   <tag>
     <name>functioncontainer</name>

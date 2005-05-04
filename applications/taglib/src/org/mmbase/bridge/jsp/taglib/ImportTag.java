@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.51 2005-05-03 09:52:19 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.52 2005-05-04 22:24:51 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -167,8 +167,14 @@ public class ImportTag extends ContextReferrerTag {
      * @since MMBase-1.7.2
      */
     protected void setValue(Object value, boolean noImplicitList) throws JspTagException {
-        if (helper.getEscape() != null) {
-            CharTransformer escaper  = ContentTag.getCharTransformer(helper.getEscape());
+        Object escape = helper.getEscape();
+        if (escape != null) {                      
+            CharTransformer escaper;
+            if (escape instanceof CharTransformer) { 
+                escaper = (CharTransformer) escape;
+            } else {
+                escaper = ContentTag.getCharTransformer((String) escape, getContextProvider().getContextContainer());
+            }
             if (escaper != null && value != null) {
                 value = escaper.transform((String) value);
             }
