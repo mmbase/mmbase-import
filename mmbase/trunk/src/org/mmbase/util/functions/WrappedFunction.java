@@ -16,7 +16,7 @@ import java.util.List;
  * @javadoc
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.4 2005-05-04 23:34:18 michiel Exp $
  */
 public class WrappedFunction implements Function {
 
@@ -76,7 +76,7 @@ public class WrappedFunction implements Function {
     }
 
     public String toString() {
-        return "WRAPPED " + wrappedFunction.toString();
+        return "WRAPPED " + wrappedFunction;
     }
 
 }
