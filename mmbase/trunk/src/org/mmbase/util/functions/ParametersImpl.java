@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.4 2005-05-04 17:38:52 michiel Exp $
+ * @version $Id: ParametersImpl.java,v 1.5 2005-05-04 23:32:43 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -144,7 +144,11 @@ public class ParametersImpl extends AbstractList implements Parameters {
     }
 
     public DataType[] getDefinition() {
-        return definition;
+        if (fromIndex > 0 || toIndex != definition.length) {
+            return (DataType[]) Arrays.asList(definition).subList(fromIndex, toIndex).toArray(definition);
+        } else {
+            return definition;
+        }
     }
 
     /**
