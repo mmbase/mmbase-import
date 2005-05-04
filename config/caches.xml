@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.13 2005-05-03 07:08:14 michiel Exp $
+  @version $Id: caches.xml,v 1.14 2005-05-04 18:34:09 michiel Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -109,8 +109,16 @@
     <size>500</size>
   </cache>
 
-  <!-- Small blobs are cached as well -->
-  <cache name="BlobCache">
+  <!-- The 'handle' field of small images (and icaches) objects are cached in a dedicated cache -->
+  <cache name="ImageHandles">
+    <status>active</status>
+    <size>200</size>
+    <maxEntrySize>100000</maxEntrySize>
+  </cache>
+
+
+  <!-- All other blobs -->
+  <cache name="GenericBlobCache">
     <status>active</status>
     <size>200</size>
     <maxEntrySize>100000</maxEntrySize>
