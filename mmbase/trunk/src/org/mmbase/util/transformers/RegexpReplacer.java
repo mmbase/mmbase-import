@@ -49,7 +49,7 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
     /**
      * This needs overriding, (must give the static map for the extension).
      */
-    public Collection getPatterns() {
+    protected Collection getPatterns() {
         return regexps;
     }
 

@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.30 2005-05-04 22:24:51 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.31 2005-05-04 22:46:23 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -243,6 +243,16 @@
     </info>
     <param id="regexps">
       A list of entries describing regular expresions replacements. Replacements happens per word.
+    </param>
+  </parameterizedescaper>
+  <parameterizedescaper id="substring">
+    <class>org.mmbase.util.transformers.SubstringFactory</class>    
+    <info>
+      Take substring
+    </info>
+    <param id="from">
+    </param>
+    <param id="to">
     </param>
   </parameterizedescaper>
 
