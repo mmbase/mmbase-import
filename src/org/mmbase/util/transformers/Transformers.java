@@ -88,4 +88,34 @@ public class Transformers {
         return ct;
     }
 
+
+
+    /**
+     * @since MMBase-1.8
+     */
+
+    public static ParameterizedTransformerFactory getTransformerFactory(String name, String errorId, boolean back) {
+        Class clazz;
+        try {
+            clazz = Class.forName(name);
+        } catch (ClassNotFoundException ex) {
+            log.error("Class " + name + " specified for " + errorId + " could not be found");
+            return null;
+        }
+        if (! ParameterizedTransformerFactory.class.isAssignableFrom(clazz)) {
+            log.error("The class " + clazz + " specified for "  + errorId + " is not a ParamerizedTransformerFactory");
+            return null;
+        }
+        ParameterizedTransformerFactory fact;
+        try {
+            fact = (ParameterizedTransformerFactory) clazz.newInstance();
+        } catch (Exception ex) {
+            log.error("Error instantiating a " + clazz + ": " + ex.toString());
+            return null;
+        }        
+        fact.setInverse(back);
+
+        return fact;
+    }
+
 }
