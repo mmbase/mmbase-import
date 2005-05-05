@@ -148,6 +148,9 @@ strong
 	/* background-color: #FC9; */
 }
 
+#relatedcontent .relationcontainer th { font-size: 0.85em; }
+#relatedcontent .relationcontainer td { font-size: 0.85em; }
+
 #relatedcontent ul {
 	font-size: 0.85em;
 }
