@@ -30,11 +30,12 @@
 	border-style: none none solid none;
 }
 
+/* portal navigation (the tabs) */
 #portalnav
 {
 	position: absolute;
 	top: 3px;
-	right: 0;
+	left: 76%;
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -42,7 +43,7 @@
 	display: inline;
 	overflow: hidden;
 	width: 230px;
-	float: right;
+	/*float: right;*/
 }
 
 #portalnav li
@@ -60,11 +61,11 @@
 	overflow: hidden;
 	height: 0px !important;
 	/**/
-	/* for IE5/Win */
+	/* for IE5/Win only */
 }
 
-#portalnav a:hover { background-position: 0 0px; }
-#portalnav a:active, #portalnav a.selected { background-position: 0 -36px; }
+#portalnav a:hover, #portalnav a:active { background-position: 0 0px; }
+#portalnav a.selected { background-position: 0 -36px; }
 
 #butmmbase a
 {
@@ -86,6 +87,7 @@
 	background: url(../media/p_found.gif) top left no-repeat;
 	background-position: 0 -18px;
 }
+/* end of portal navigation (the tabs) */
 
 .tdheader
 {
