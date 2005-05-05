@@ -60,7 +60,7 @@ ul
 {
 	text-align: left;
 	margin: 0;
-	padding: 0 0 1em 1.1em;
+	padding: 0 0 1em 1.5em;
 }
 
 ul li { list-style: circle default; }
@@ -129,20 +129,27 @@ strong
 }
 
 /* ###### pagedivision ###### */
-#pagecontent { margin: 0 0 20px 150px; }
-
+#pagecontent { margin: 0 0 2em 150px; }
 #textcontent
 {
-	margin: 0 33% 0 150px;
+	margin: 0 33% 2em 150px;
+}
+
+#textcontent ul {
+	font-size: 0.85em;
 }
 
 #relatedcontent
 {
+	margin: 0 4px 2em 4px;
+	padding: 0 1em 1em 1em;
 	float: right;
 	width: 27%;
-	padding: 0 1em 1em 1em;
 	/* background-color: #FC9; */
-	margin: 0 4px 4px 4px;
+}
+
+#relatedcontent ul {
+	font-size: 0.85em;
 }
 
 #footer
