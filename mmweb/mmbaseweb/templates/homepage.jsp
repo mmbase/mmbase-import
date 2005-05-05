@@ -36,7 +36,7 @@
 	  path="portals,category,news,mmevents" searchdir="destination"
 	  fields="category.number,category.title,news.number,news.title,mmevents.start" 
 	  orderby="mmevents.start" directions="DOWN"
-	  max="3">
+	  max="4">
 	  <mm:first>
 		<h2>News</h2>		<!-- category : <mm:field name="category.title" /> -->
 		<mm:field name="category.number" id="cat" write="false" />
