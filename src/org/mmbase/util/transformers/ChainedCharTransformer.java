@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import edu.emory.mathcs.backport.java.util.concurrent.*;
+//import edu.emory.mathcs.backport.java.util.concurrent.*;
 import java.io.*;
 import java.util.*;
 
@@ -44,14 +44,15 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.21 2005-05-04 22:23:31 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.22 2005-05-05 08:19:11 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
 
     
-    static final Executor executor = Executors.newCachedThreadPool();
+    //static final Executor executor = Executors.newCachedThreadPool();
+    static final MMExecutor executor = new MMExecutor();
 
     private List charTransformers = new ArrayList();
 
