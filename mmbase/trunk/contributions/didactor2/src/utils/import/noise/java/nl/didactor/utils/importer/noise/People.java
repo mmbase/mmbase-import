@@ -1,40 +1,35 @@
 package nl.didactor.utils.importer.noise;
 
+
 public class People
 {
-   private String sInitials;
-   private String sFirstname;
-   private String sLastname;
-   private String sEmail;
-   private String sPassword;
-   private String sUsername;
-   private String sAddress;
-   private String sZipcode;
-   private String sCity;
-   private String sTelephone;
-   private String sDescription;
-   private String sGroup;
-   private String sClass;
+   private String sInitials = "";
+   private String sFirstname = "";
+   private String sLastname = "";
+   private String sEmail = "";
+   private String sPassword = "";
+   private String sUsername = "";
+   private String sAddress = "";
+   private String sZipcode = "";
+   private String sCity = "";
+   private String sTelephone = "";
+   private String sDescription = "";
+   private String sGroup = "";
+   private String sClass = "";
+
+   private String sSuffix = "";
+   private String sCountry = "";
+   private String sMobile = "";
+   private String sWebsite = "";
+   private String sDayOfBirth = "";
+   private String sExternid = "";
 
    public People()
    {
-      sInitials = "";
-      sFirstname = "";
-      sLastname = "";
-      sEmail = "";
-      sPassword = "";
-      sUsername = "";
-      sAddress = "";
-      sZipcode = "";
-      sCity = "";
-      sTelephone = "";
-      sDescription = "";
-      sGroup = "";
-      sClass = "";
    }
 
 
-   public People(String sInitials, String sFirstname, String sLastname, String sEmail, String sPassword, String sUsername, String sAddress, String sZipcode, String sCity, String sTelephone, String sDescription, String sGroup, String sClass)
+   public People(String sInitials, String sFirstname, String sLastname, String sEmail, String sPassword, String sUsername, String sAddress, String sZipcode, String sCity, String sTelephone, String sDescription, String sGroup, String sClass, String sSuffix, String sCountry, String sMobile, String sWebsite, String sDayOfBirth, String sExternid)
    {
       this.sInitials = sInitials;
       this.sFirstname = sFirstname;
@@ -49,6 +44,13 @@ public class People
       this.sDescription = sDescription;
       this.sGroup = sGroup;
       this.sClass = sClass;
+
+      this.sSuffix = sSuffix;
+      this.sCountry = sCountry;
+      this.sMobile = sMobile;
+      this.sWebsite = sWebsite;
+      this.sDayOfBirth = sDayOfBirth;
+      this.sExternid = sExternid;
    }
 
 
@@ -72,7 +74,7 @@ public class People
       this.sEmail = sEmail;
    }
 
-   public void setPassword(String sPasssword)
+   public void setPassword(String sPassword)
    {
       this.sPassword = sPassword;
    }
@@ -115,6 +117,38 @@ public class People
    {
       this.sClass = sClass;
    }
+
+   public void setSuffix(String sSuffix)
+   {
+      this.sSuffix = sSuffix;
+   }
+
+   public void sCountry(String sCountry)
+   {
+      this.sCountry = sCountry;
+   }
+
+   public void setMobile(String sMobile)
+   {
+      this.sMobile = sMobile;
+   }
+
+   public void setWebsite(String sWebsite)
+   {
+      this.sWebsite = sWebsite;
+   }
+
+   public void setDayOfBirth(String sDayOfBirth)
+   {
+      this.sDayOfBirth = sDayOfBirth;
+   }
+
+   public void setExternid(String sExternid)
+   {
+      this.sExternid = sExternid;
+   }
+
+
 
 
 
@@ -181,6 +215,36 @@ public class People
    public String getClasses()
    {
       return this.sClass;
+   }
+
+   public String getSuffix()
+   {
+      return this.sSuffix;
+   }
+
+   public String getCountry()
+   {
+      return this.sCountry;
+   }
+
+   public String getMobile()
+   {
+      return this.sMobile;
+   }
+
+   public String getWebsite()
+   {
+      return this.sWebsite;
+   }
+
+   public String getDayOfBirth()
+   {
+      return this.sDayOfBirth;
+   }
+
+   public String getExternid()
+   {
+      return this.sExternid;
    }
 
 }

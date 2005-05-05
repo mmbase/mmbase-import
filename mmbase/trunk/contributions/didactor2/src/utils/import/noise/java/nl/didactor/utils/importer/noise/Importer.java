@@ -1,15 +1,21 @@
 package nl.didactor.utils.importer.noise;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 import nl.didactor.utils.importer.noise.People;
 import nl.didactor.utils.importer.noise.INIFile;
 import nl.didactor.utils.importer.noise.IFileConstants;
+
 
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
@@ -25,8 +31,8 @@ public class Importer
       iniFile.loadFile(sLocalPath + IFileConstants.PATH_SEPARATOR + "config.ini");
       //Access to the cloud
       HashMap user = new HashMap();
-      user.put("username",iniFile.getProperty("Options", "username", null));
-      user.put("password",iniFile.getProperty("Options", "password", null));
+      user.put("username","admin");
+      user.put("password","admin2k");
 
       CloudContext cloudContext = null;
       Cloud cloud = null;
@@ -37,8 +43,7 @@ public class Importer
       }
       catch(Exception ex)
       {
-         System.out.println("Failed to connect to the cloud: " + iniFile.getProperty("Options", "rmi", null) 
-            + " with (" + iniFile.getProperty("Options", "username", null) + "," + iniFile.getProperty("Options", "password", null) + ")");
+         System.out.println("Failed to connect to the cloud: " + iniFile.getProperty("Options", "rmi", null));
          System.out.println(ex.toString());
          System.exit(1);
       }
@@ -57,6 +62,29 @@ public class Importer
       nodPeople.setValue("firstname", "333333");
       nodPeople.commit();
 */
+/*
+      JFrame Main_Frame = new JFrame("Import script     rev 0.002");
+      Main_Frame.setSize(320,200);
+      Main_Frame.setBackground(new Color (0, 0, 0));
+      JPanel View = new JPanel();
+      JProgressBar test = new JProgressBar();
+      test.setString("test");
+      test.setForeground(new Color(255, 255, 255));
+      View.setBackground(new Color (0, 0, 0));
+      View.setForeground(new Color (255, 255, 255));
+      View.add(test);
+      Main_Frame.getContentPane().add(View);
+
+      Main_Frame.show();
+      Main_Frame.addWindowListener(new WindowAdapter()
+      {
+         public void windowClosing(WindowEvent e)
+         {
+            System.exit(0);
+         }
+      });
+*/
+
 
       for(int f = 0; f < 1000; f++)
       {//Main cycle for reading [File_xxx] groups
@@ -67,6 +95,69 @@ public class Importer
          if((sPath == null) || (sType == null)) break;
 
          System.out.println("Task " + f + " started!");
+
+         if(sType.equals("2"))
+         {//ROC Zeeland koppelingDidactor
+            boolean bFirstLine = true;
+            RandomAccessFile rfileInput = new RandomAccessFile(sLocalPath + IFileConstants.PATH_SEPARATOR + sPath, "r");
+
+            System.out.println("Collecting groups from file. Please wait.");
+            HashSet hsGroups = collectGroupsTypeC(rfileInput);
+
+            System.out.println("Store groups in MMBase.");
+            HashMap hmGroups = storeGroupsInMMBase(cloud, hsGroups);
+
+            rfileInput.seek(0);
+            System.out.println("Collecting classes from file. Please wait.");
+            HashSet hsClasses = collectClassesTypeC(rfileInput);
+            System.out.println("Store classes in MMBase.");
+            HashMap hmClases = storeClassesInMMBase(cloud, hsClasses);
+
+
+
+            System.out.println("Reading people from file.");
+            //Rewind file to 0
+            rfileInput.seek(0);
+            ArrayList arliPeople = new ArrayList();
+            long lPrev = 0;
+            while (rfileInput.getFilePointer() < rfileInput.length())
+            {
+               if(lPrev != rfileInput.getFilePointer() * 100 / rfileInput.length())
+               {
+                  lPrev = rfileInput.getFilePointer() * 100 / rfileInput.length();
+                  System.out.println(lPrev + "%");
+               }
+
+               String sFullDataString = new String(rfileInput.readLine().getBytes("cp1252"));
+               if(bFirstLine)
+               {
+                  bFirstLine = false;
+                  continue;
+               }
+               People people = new People();
+               String[] arrstrFullDataString = getSectionForC(sFullDataString);
+               people.setClasses(arrstrFullDataString[3]);
+               people.setFirstname(arrstrFullDataString[5]);
+               people.setSuffix(arrstrFullDataString[6]);
+               people.setLastname(arrstrFullDataString[7]);
+               people.setPassword(arrstrFullDataString[17]);
+               people.setUsername(arrstrFullDataString[16]);
+               people.setAddress(arrstrFullDataString[10] + " " +  arrstrFullDataString[11] + " " + arrstrFullDataString[12]);
+               people.setZipcode(arrstrFullDataString[13]);
+               people.setCity(arrstrFullDataString[14]);
+               people.setTelephone(arrstrFullDataString[15]);
+               people.setExternid(arrstrFullDataString[4]);
+               people.setDescription("Imported from \"" + sPath +  "\" on " + new Date());
+               people.setGroup(arrstrFullDataString[8]);
+
+               arliPeople.add(people);
+            }
+            System.out.println("Store people in MMbase.");
+            storePeopleInMMBase(cloud, arliPeople, hmGroups, hmClases);
+         }
+
+
+
 
          if(sType.equals("1"))
          {//ROC Zeeland
@@ -100,6 +191,11 @@ public class Importer
             }
             storePeopleInMMBase(cloud, arliPeople, hmGroups, hmClases);
          }
+
+
+
+
+
          if(sType.equals("0"))
          {//BC
             boolean bFirstLine = true;
@@ -150,9 +246,13 @@ public class Importer
             storePeopleInMMBase(cloud, arliPeople, hmGroups, hmClases);
          }
       }
-      System.out.println("");
-      System.out.println("Done");
+      System.out.println("----------------------------");
+      System.out.println("Done.");
+      System.out.println("All task have been finished.");
    }
+
+
+
 
    private static HashSet collectGroupsTypeA(RandomAccessFile rfInput) throws Exception
    {//Collect goups for ROC Zeeland
@@ -169,8 +269,12 @@ public class Importer
          }
          hsGroups.add(getSectionForA(sFullDataString, 8));
       }
+
       return hsGroups;
    }
+
+
+
 
    private static HashSet collectGroupsTypeB(RandomAccessFile rfInput) throws Exception
    {//Collect goups for ROC Zeeland
@@ -190,6 +294,35 @@ public class Importer
       return hsGroups;
    }
 
+
+
+
+   private static HashSet collectGroupsTypeC(RandomAccessFile rfInput) throws Exception
+   {//Collect goups for koppelingDidactor
+      boolean bFirstLine = true;
+      HashSet hsGroups = new HashSet();
+      long lPrev = -1;
+
+      while (rfInput.getFilePointer() < rfInput.length())
+      {
+         if(lPrev != rfInput.getFilePointer() * 100 / rfInput.length())
+         {
+            lPrev = rfInput.getFilePointer() * 100 / rfInput.length();
+            System.out.println(lPrev + "%");
+         }
+
+         String sFullDataString = new String(rfInput.readLine().getBytes("cp1252"));
+
+         if(bFirstLine)
+         {
+            bFirstLine = false;
+            continue;
+         }
+         hsGroups.add(getSectionForC(sFullDataString)[8]);
+      }
+
+      return hsGroups;
+   }
 
 
    private static HashSet collectClassesTypeA(RandomAccessFile rfInput) throws Exception
@@ -232,13 +365,51 @@ public class Importer
    }
 
 
+   private static HashSet collectClassesTypeC(RandomAccessFile rfInput) throws Exception
+   {//Collect classes for koppelingDidactor
+      boolean bFirstLine = true;
+      HashSet hsClasses = new HashSet();
+      long lPrev = -1;
+
+      while (rfInput.getFilePointer() < rfInput.length())
+      {
+         if(lPrev != rfInput.getFilePointer() * 100 / rfInput.length())
+         {
+            lPrev = rfInput.getFilePointer() * 100 / rfInput.length();
+            System.out.println(lPrev + "%");
+         }
+
+         String sFullDataString = new String(rfInput.readLine().getBytes("cp1252"));
+         if(bFirstLine)
+         {
+            bFirstLine = false;
+            continue;
+         }
+         hsClasses.add(getSectionForC(sFullDataString)[3]);
+      }
+
+      return hsClasses;
+   }
+
+
    private static HashMap storeGroupsInMMBase(Cloud cloud, HashSet hsGroups)
    {
       HashMap hmGroups = new HashMap();
       NodeManager nmWorkgroup = cloud.getNodeManager("workgroups");
+      int iCounter = 0;
+      int iPrev = -1;
+
       for(Iterator it = hsGroups.iterator(); it.hasNext(); )
       {
+         if( iCounter * 100 / hsGroups.size() != iPrev)
+         {
+            iPrev = iCounter * 100 / hsGroups.size();
+            System.out.println(iPrev + "%");
+         }
+         iCounter++;
+
          String sGroupName = (String) it.next();
+         sGroupName = sGroupName.replaceAll("\\\'", "`");
          NodeList nlWorkgroup = nmWorkgroup.getList("name='" + sGroupName + "'", null, null);
          if(nlWorkgroup.size() == 0)
          {//There aren't such group yet
@@ -260,8 +431,18 @@ public class Importer
    {
       HashMap hmClasses = new HashMap();
       NodeManager nmClass = cloud.getNodeManager("classes");
+      int iCounter = 0;
+      int iPrev = -1;
+
       for(Iterator it = hsClasses.iterator(); it.hasNext(); )
       {
+         if( iCounter * 100 / hsClasses.size() != iPrev)
+         {
+            iPrev = iCounter * 100 / hsClasses.size();
+            System.out.println(iPrev + "%");
+         }
+         iCounter++;
+
          String sClassName = (String) it.next();
          sClassName = sClassName.replaceAll("\\\'", "`");
          NodeList nlClass = nmClass.getList("name='" + sClassName + "'", null, null);
@@ -320,13 +501,74 @@ public class Importer
    }
 
 
+
+
+
+
+
+   private static String[] getSectionForC(String sWholeString)
+   {
+      boolean bInsideQuotes = false;
+      int iBeginOfString = 0;
+      int iCurrentSection = 0;
+      String arrstrResult[] = new String[18];
+      for(int f = 0; f < sWholeString.length(); f++)
+      {
+         if(sWholeString.charAt(f) == '\"')
+         {
+            if(bInsideQuotes)
+            {
+               bInsideQuotes = false;
+            }
+            else bInsideQuotes = true;
+         }
+         if(sWholeString.charAt(f) == ',')
+         {
+            if(!bInsideQuotes)
+            {
+               arrstrResult[iCurrentSection] = sWholeString.substring(iBeginOfString, f);
+               if(sWholeString.charAt(iBeginOfString) == '"')
+               {
+                  arrstrResult[iCurrentSection] = sWholeString.substring(iBeginOfString + 1, f - 1);
+               }
+               else
+               {
+                  arrstrResult[iCurrentSection] = sWholeString.substring(iBeginOfString, f);
+               }
+               iCurrentSection++;
+               iBeginOfString = f + 1;
+            }
+         }
+      }
+      arrstrResult[17] = sWholeString.substring(iBeginOfString, sWholeString.length());
+      return arrstrResult;
+   }
+
+
+
+
+
+
+
+
+
    private static void storePeopleInMMBase(Cloud cloud, ArrayList arliPeople, HashMap hmGroups, HashMap hmClasses)
    {
       NodeManager nmWorkgroup = cloud.getNodeManager("workgroups");
       NodeManager nmClass = cloud.getNodeManager("classes");
       NodeManager nmPeople = cloud.getNodeManager("people");
+      int iPrev = -1;
+      int iCounter = 0;
+
       for(Iterator it = arliPeople.iterator(); it.hasNext(); )
       {
+         if(iPrev != iCounter / arliPeople.size())
+         {
+            iPrev = iCounter / arliPeople.size();
+            System.out.println(iPrev + "%");
+         }
+         iCounter++;
+
          People people = (People) it.next();
 /*
          NodeList nlWorkgroup = nmWorkgroup.getList("name='" + people.getGroup() + "'", null, null);
@@ -347,6 +589,13 @@ public class Importer
          nodPeople.setValue("telephone", people.getTelephone());
          nodPeople.setValue("description", people.getDescription());
          nodPeople.setValue("initials", people.getInitials());
+
+         nodPeople.setValue("suffix", people.getSuffix());
+         nodPeople.setValue("country", people.getCountry());
+         nodPeople.setValue("mobile", people.getMobile());
+         nodPeople.setValue("website", people.getWebsite());
+         nodPeople.setValue("dayofbirth", people.getDayOfBirth());
+         nodPeople.setValue("externid", people.getExternid());
          nodPeople.commit();
 
          if(hmGroups.get(people.getGroup()) != null)
