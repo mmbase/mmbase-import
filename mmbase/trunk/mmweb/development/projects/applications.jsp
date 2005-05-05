@@ -1,10 +1,13 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page language="java" contentType="text/html; charset=iso8859-1" %>
-<mm:cloud>
-<%@include file="/includes/getids.jsp" %>
-<%@include file="/includes/header.jsp" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
+%><mm:cloud><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp"
+%>
 <mm:import id="template">/development/projects/project.jsp</mm:import>
-<td class="white" colspan="2" valign="top">
+<div id="relatedcontent">
+</div>
+<div id="textcontent">
+  
   <mm:listnodescontainer type="project">
 
     <mm:composite operator="OR">
@@ -20,7 +23,7 @@
       </p>
     </mm:listnodes>
   </mm:listnodescontainer>
-</td>
 
-<%@include file="/includes/footer.jsp" %>
+</div>
+<%@ include file="/includes/alterfooter.jsp"%>
 </mm:cloud>
