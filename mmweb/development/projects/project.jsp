@@ -1,36 +1,22 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page language="java" contentType="text/html; charset=iso8859-1" %>
-<mm:content type="text/html">
-<mm:cloud>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
+%><mm:cloud><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp"
+%>
 <mm:import externid="project" required="true" />
-<%@include file="/includes/getids.jsp" %>
-<%@include file="/includes/header.jsp" %>
-<td class="white" colspan="2" valign="top">
 <mm:node referid="project">
+<div id="relatedcontent"><br />
+  <%@ include file="/includes/persons.jsp" %>
+  <mm:import id="backtemplate">/development/projects/project.jsp</mm:import>
+  <%@ include file="/includes/attachment.jsp" %>
+  <%@ include file="/includes/urls.jsp" %>
+  <%@ include file="/includes/documentation.jsp" %>
+</div>
+<div id="textcontent">
   <h1><mm:field name="title" /></h1>
-  <table width="100%">
-    <tr>
-      <td rowspan=2 width="60%" class="projectIntro">
-        <mm:field name="body" escape="p" />
-        <p>
-        
-      </td>
-      <td class="projectMembers">
-	  <%@include file="/includes/persons.jsp" %>
-      </td>
-    </tr>
-    <tr>
-      <td class="projectDownloads">
-          <mm:import id="backtemplate">/development/projects/project.jsp</mm:import>
-	  <%@include file="/includes/attachment.jsp" %>
-	  <%@include file="/includes/urls.jsp" %>
-	  <%@include file="/includes/documentation.jsp" %>
-      </td>
-    </tr>
-  </table>
+  <mm:field name="body" escape="p" />
 </mm:node>
-</td>
 
-<%@include file="/includes/footer.jsp" %>
+</div>
+<%@ include file="/includes/alterfooter.jsp"%>
 </mm:cloud>
-</mm:content>

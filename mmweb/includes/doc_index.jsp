@@ -1,11 +1,15 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content type="text/html" escaper="inline">
-<mm:cloud>
-<%@include file="/includes/getids.jsp" %>
-<%@include file="/includes/header.jsp" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
+%><mm:cloud><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp"
+%>
+<mm:import id="template">/development/projects/project.jsp</mm:import>
+<div id="relatedcontent">
+</div>
+<div id="textcontent">
+
 <mm:import externid="docnr"/>
 <mm:import externid="project"/>
-<td>
 
 <mm:notpresent referid="docnr">
   <mm:node number="$page">
@@ -31,7 +35,6 @@
    </mm:node>
 </mm:present>
 
-</td>
-<%@include file="/includes/footer.jsp" %>
+</div>
+<%@ include file="/includes/alterfooter.jsp"%>
 </mm:cloud>
-</mm:content>
