@@ -156,6 +156,7 @@
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field><br />
 		<a href="<mm:url page="index.jsp" referids="portal">
 		  <mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present>
+		  <mm:notpresent referid="event_page"><mm:param name="page">page_agenda</mm:param></mm:notpresent>
 		  <mm:param name="item"><mm:field name="event.number" /></mm:param>
 		</mm:url>"><mm:field name="event.title" /></a>
 		<mm:last inverse="true"><br /></mm:last>
