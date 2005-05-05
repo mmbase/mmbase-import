@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.45 2005-05-04 22:19:14 michiel Exp $
+ * @version $Id: Casting.java,v 1.46 2005-05-05 08:37:18 michiel Exp $
  */
 
 import java.util.*;
@@ -149,6 +149,8 @@ public class Casting {
                 return toList(value);
             } else if (type.equals(Map.class)) {
                 return toMap(value);
+            } else if (type.equals(Collection.class)) {
+                return toCollection(value);
             } else {
                 // don't know
                 return value;
