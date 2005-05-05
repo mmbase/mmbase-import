@@ -4,8 +4,8 @@ Migratie issues
     People builder has got some new and some changed fields.
 
     ALTER TABLE `mmb_people`   MODIFY `email` BLOB DEFAULT NULL;
-    ALTER TABLE `mmb_contacts` MODIFY  email` BLOB DEFAULT NULL;
-    ALTER TABLE `mmb_people`   MODIFY 'firstname` VARCHAR(255);
+    ALTER TABLE `mmb_contacts` MODIFY `email` BLOB DEFAULT NULL;
+    ALTER TABLE `mmb_people`   MODIFY `firstname` VARCHAR(255);
     ALTER TABLE `mmb_contacts` MODIFY `firstname` VARCHAR(255);
     ALTER TABLE `mmb_people`   MODIFY `lastname` VARCHAR(255);
     ALTER TABLE `mmb_contacts` MODIFY `lastname` VARCHAR(255);
