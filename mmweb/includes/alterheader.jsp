@@ -37,9 +37,9 @@ while( bc != null && bc.hasParent() ) {
 } %><%= sb.toString() %></span>
 <mm:node number="$portal"><mm:field name="name" id="portalname" write="false" />
 <ul id="portalnav">
-  <li id="butmmbase"><a <mm:compare referid="portalname" value="MMBase">class="selected" </mm:compare>href="<mm:url page="index.jsp"><mm:param name="portal" value="portal_mmbase" /></mm:url>">MMBase</a></li>
-  <li id="butdev"><a <mm:compare referid="portalname" value="Developers">class="selected" </mm:compare>href="<mm:url page="index.jsp"><mm:param name="portal" value="portal_developers" /></mm:url>">Developers</a></li>
-  <li id="butfound"><a <mm:compare referid="portalname" value="Foundation">class="selected" </mm:compare>href="<mm:url page="index.jsp"><mm:param name="portal" value="portal_foundation" /></mm:url>">Foundation</a></li>
+  <li id="butmmbase"><a <mm:compare referid="portalname" value="MMBase">class="selected" </mm:compare>href="<mm:url page="/index.jsp"><mm:param name="portal" value="portal_mmbase" /></mm:url>">MMBase</a></li>
+  <li id="butdev"><a <mm:compare referid="portalname" value="Developers">class="selected" </mm:compare>href="<mm:url page="/index.jsp"><mm:param name="portal" value="portal_developers" /></mm:url>">Developers</a></li>
+  <li id="butfound"><a <mm:compare referid="portalname" value="Foundation">class="selected" </mm:compare>href="<mm:url page="/index.jsp"><mm:param name="portal" value="portal_foundation" /></mm:url>">Foundation</a></li>
 </ul>
 </mm:node>
 </div>
