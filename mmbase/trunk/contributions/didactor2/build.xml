@@ -17,7 +17,7 @@
     <mkdir dir="${build.dir}/webapp/WEB-INF/config" />
     <mkdir dir="${build.dir}/webapp/WEB-INF/lib" />
   </target>
-  
+
   <target name="build">
     <echo message="Building components: ${components}" />
     <delete file="${build.dir}/webapp/WEB-INF/taglib.tld" />
@@ -96,13 +96,14 @@
              <include name="components/**"/>
              <include name="css/**"/>
              <include name="editwizards/**"/>
-             <include name="gfx/**"/>    
+             <include name="gfx/**"/>
              <include name="help/**"/>
              <include name="mmeditors/**"/>
              <include name="shared/**"/>
              <include name="users/**"/>
-             <include name="metadata/**"/>            
+             <include name="metadata/**"/>
              <include name="${component}/**"/>
+             <include name="classes/**"/>
              <exclude name="**/CVS"/>
              <exclude name="templates/**"/>
             </fileset>
@@ -116,7 +117,7 @@
              <exclude name="**/CVS"/>
              <exclude name="templates/**"/>
             </fileset>
-           </copy>       
+           </copy>
          </else>
         </if>
        </then>
@@ -208,7 +209,7 @@
 
         <copy todir="${build.dir}/classes/${component}">
           <fileset dir="src/${component}/java">
-	        <include name="**/*.properties" />
+           <include name="**/*.properties" />
             <exclude name="**/*.java"/>
           </fileset>
         </copy>
@@ -242,36 +243,36 @@
       <group title="Components" packages="nl.didactor.component.*" />
     </javadoc>
   </target>
-  
+
   <!-- Begin van Antlets gedeelte -->
-  
+
   <taskdef resource="org/krysalis/antworks/importer/antlib.xml"
          classpath="${user.home}/.antworks/lib/antworks-importer.jar"/>
 
 
-    <property name="importer.repository" 
+    <property name="importer.repository"
       value="http://www.kolov.net/antworks/"/>
 
-    
+
     <importer name="init-0.1" href="${importer.repository}"/>
     <importer name="tomcat5-0.1" href="${importer.repository}"/>
     <importer name="webapp-0.1" href="${importer.repository}"/>
-    
+
     <property name="tomcat5-antlet.deploy.archive" value= "${build.dir}/didactor.war"/>
-	<target name="war" depends="webapp"> 
-	  <jar destfile="${build.dir}/${war.name}.war" 
-	       basedir="${build.dir}/webapp"
-	  />
-	</target>
-	
-	<target name="_deploy" depends="war, tomcat5.deploy"/>
-	<target name="_redeploy" depends="war, tomcat5.redeploy"/>	
-  
+   <target name="war" depends="webapp">
+     <jar destfile="${build.dir}/${war.name}.war"
+          basedir="${build.dir}/webapp"
+     />
+   </target>
+
+   <target name="_deploy" depends="war, tomcat5.deploy"/>
+   <target name="_redeploy" depends="war, tomcat5.redeploy"/>
+
    <!-- copy all (MMBase) builders
-	from: "./WEB-INF/config/applications/**/builders/*.xml"
-	to:   "./WEB-INF/config/builders/" 
-	-->
-	<target name="copy_builders">
+   from: "./WEB-INF/config/applications/**/builders/*.xml"
+   to:   "./WEB-INF/config/builders/"
+   -->
+   <target name="copy_builders">
        <if>
          <available file="${build.dir}/webapp/WEB-INF/config/applications" type="dir" />
          <then>
@@ -282,6 +283,6 @@
            </copy>
          </then>
        </if>
-	</target>
+   </target>
 
 </project>
