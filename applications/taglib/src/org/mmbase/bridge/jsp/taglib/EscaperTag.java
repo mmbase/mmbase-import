@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.3 2005-05-04 22:53:13 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.4 2005-05-07 14:35:00 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -65,6 +65,7 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
                 factory = ContentTag.getTransformerFactory(type.getString(this));
                 parameters = factory.createParameters();
                 parameters.setAutoCasting(true);
+                fillStandardParameters(parameters);
             } else {
                 transformer = new ChainedCharTransformer();
             }

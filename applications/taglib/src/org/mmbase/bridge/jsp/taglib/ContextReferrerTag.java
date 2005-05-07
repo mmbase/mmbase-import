@@ -18,6 +18,8 @@ import java.io.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 
 import java.util.Locale;
 
@@ -28,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.69 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.70 2005-05-07 14:35:00 michiel Exp $
  * @see ContextTag
  */
 
@@ -511,6 +513,21 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
     }
+
+
+    /**
+     *
+     */
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
+        log.debug("Filling standard parameters");
+        p.setIfDefined(Parameter.RESPONSE, pageContext.getResponse());
+        p.setIfDefined(Parameter.REQUEST, pageContext.getRequest());
+        // locale parameters
+        java.util.Locale locale = getLocale();
+        p.setIfDefined(Parameter.LANGUAGE, locale.getLanguage());
+        p.setIfDefined(Parameter.LOCALE, locale);
+    }
+
 
 
     // Writer Implmentation
