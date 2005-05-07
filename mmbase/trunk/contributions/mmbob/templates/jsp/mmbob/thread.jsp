@@ -200,7 +200,14 @@
            
             <mm:field name="body" />
 
-			<br /><br /><br /><br /><br />
+		<br />
+		<mm:field name="signature">
+		<mm:compare value="" inverse="true">
+		_______<br />
+		<mm:field name="signature" escape="p" />
+		</mm:compare>
+		</mm:field>
+		<br />
 			</td>
 			</tr>
 		  </mm:nodelistfunction>

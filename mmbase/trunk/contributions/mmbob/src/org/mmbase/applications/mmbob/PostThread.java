@@ -243,11 +243,8 @@ public class PostThread {
         return true;
    }
 
-   public boolean postReply(String subject,Poster poster,String body) {
-	return(postReply(subject,poster.getAccount(),body));
-   }
 
-   public boolean postReply(String nsubject,String nposter,String nbody) {
+   public boolean postReply(String nsubject,Poster poster,String nbody) {
 	if (postings==null) readPostings();
 	
         NodeManager nm=ForumManager.getCloud().getNodeManager("postings");
@@ -258,11 +255,8 @@ public class PostThread {
 		} else {
 			pnode.setStringValue("subject",nsubject);
 		}
-		pnode.setStringValue("c_poster",nposter);
-		Poster p=parent.getParent().getPoster(nposter);
-		if (p!=null) {
-			pnode.setIntValue("posternumber",p.getId());
-		}
+		pnode.setStringValue("c_poster",poster.getAccount());
+		pnode.setIntValue("posternumber",poster.getId());
 
                 // This must be it, please do not change the line below. If somebody's having problems
                 // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
@@ -282,8 +276,7 @@ public class PostThread {
 		        postings.add(posting);
 
 			// update stats and signal parent of change
-			//Poster p=parent.getParent().getPoster(poster);
-			if (p!=null) p.addPostCount();
+			poster.addPostCount();
 			addWriter(posting);
 
 			// update the counters

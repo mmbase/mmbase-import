@@ -44,6 +44,7 @@ public class Poster {
     private Forum parent;
     private HashMap mailboxes;
     private HashMap seenthreads = new HashMap();
+    private ArrayList signatures;
 
     private static final int STATE_ACTIVE = 0;
     private static final int STATE_DISABLED = 1;
@@ -656,6 +657,73 @@ public class Poster {
   public void setLastPostTime(int lastposttime) {
 	this.lastposttime = lastposttime;
   }
-   	
 
+
+    public String getSignature() {
+	if (signatures!=null) {
+       		Iterator i=signatures.iterator();
+	        while (i.hasNext()) {
+                	Signature sig = (Signature)i.next();
+			if (sig.getMode().equals("active")) {
+				return sig.getBody();
+			}
+		}
+	}
+	return "";
+    }
+
+
+    public Signature getSignature(int sigid) {
+	if (signatures!=null) {
+       		Iterator i=signatures.iterator();
+	        while (i.hasNext()) {
+                	Signature sig = (Signature)i.next();
+			if (sig.getId()==sigid) {
+				return sig;
+			}
+		}
+	}
+	return null;
+    }
+
+    public void addSignature(String body,String mode,String encoding) {
+	if (signatures==null) signatures =  new ArrayList();
+        NodeManager man = ForumManager.getCloud().getNodeManager("signatures");
+        org.mmbase.bridge.Node node = man.createNode();
+        node.setStringValue("body", body);
+        node.setStringValue("mode", "active");
+        node.setStringValue("encoding", encoding);
+	node.commit();
+
+        RelationManager rm = ForumManager.getCloud().getRelationManager("posters", "signatures", "related");
+        if (rm != null) {
+	      org.mmbase.bridge.Node fnode = ForumManager.getCloud().getNode(getId());
+              Node rel = rm.createRelation(fnode, node);
+              rel.commit();
+	}
+
+	Signature sig =  new Signature(this,node.getNumber(),body,"active",encoding);
+	signatures.add(sig);
+    }
+
+
+    public void addSignature(Signature sig) {
+	if (signatures==null) signatures =  new ArrayList();
+	if (getSignature(sig.getId())==null) {
+		signatures.add(sig);
+	}
+    }
+
+    public void deleteSignature(Signature sig) {
+	if (signatures!=null) {
+		signatures.remove(sig);
+	}
+    }
+
+    public Iterator getSignatures() {
+	if (signatures!=null) {
+		return signatures.iterator();
+	}
+	return null;
+    }
 }

@@ -60,6 +60,22 @@
 </mm:compare>
 
 
+<mm:compare value="changesignature" referid="action">
+	<mm:import externid="sigid" />
+	<mm:import externid="newbody" />
+	<mm:import externid="newmode" />
+	<mm:import externid="newencoding">plain</mm:import>
+	<mm:function set="mmbob" name="changeSignature" referids="forumid,posterid,sigid,newbody,newmode,newencoding" />
+</mm:compare>
+
+<mm:compare value="addsignature" referid="action">
+	<mm:import externid="newbody" />
+	<mm:import externid="newmode" />
+	<mm:import externid="newencoding">plain</mm:import>
+	<mm:function set="mmbob" name="addSignature" referids="forumid,posterid,newbody,newmode,newencoding" />
+</mm:compare>
+
+
 <mm:compare value="removefolder" referid="action">
 	<mm:import externid="foldername" />
 	<mm:booleanfunction set="mmbob" name="removeFolder" referids="forumid,posterid,foldername">
