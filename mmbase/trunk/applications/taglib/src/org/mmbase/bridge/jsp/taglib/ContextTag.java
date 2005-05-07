@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.76 2005-05-02 11:44:51 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.77 2005-05-07 14:36:04 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -140,6 +140,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     if (id == null) throw new JspTagException("Must use id or referid attributes when using 'scope' attibute of context tag");
                 }
                 o = pageContext.getAttribute(id, s);
+                log.info("Found in " + s + " " + o);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
                 createContainer(getContextProvider().getContextContainer());
@@ -151,6 +152,13 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             }
         } else {
             createContainer(getContextProvider().getContextContainer());
+        }
+        if (s != PageContext.PAGE_SCOPE) {
+            String id = getId();
+            if (id == null) {
+                id = referid.getString(this);
+            }
+            pageContext.setAttribute(id, container, s);            
         }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
@@ -296,20 +304,12 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     }
 
-    // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
     public int doAfterBody() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        int s = getScope();
-        if (s != PageContext.PAGE_SCOPE) {
-            String id = getId();
-            if (id == null) {
-                id = referid.getString(this);
-            }
-            pageContext.setAttribute(id, container, s);            
-        }
         container.release(); // remove the vars from 'page-context' again if necessary.
+        // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {
