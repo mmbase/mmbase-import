@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.2 - Upgrade Notes
+                     MMBase 1.7.4 - Upgrade Notes
 ===================================================================
 
 ============
@@ -26,6 +26,8 @@ important files (webapp, database) before upgrading.
       <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
       <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
     </taglib>
+  - The mmbase-rmmci.jar needs not be present in WEB-INF/lib. This will break the complete
+    web-application in Tomcat 5.5. It used to be shipped there in MMBase <= 1.7.3.
 
 -  Replace and/or install all shipped jsps too.
    - generic editors are now shipped under /mmbase/edit/basic. You can
