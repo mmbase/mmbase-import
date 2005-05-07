@@ -15,6 +15,9 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
 
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+
 
 import javax.servlet.jsp.JspTagException;
 
@@ -27,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.24 2005-05-04 13:50:04 michiel Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.25 2005-05-07 14:35:00 michiel Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -121,5 +124,11 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
         }
     }
 
+
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
+        super.fillStandardParameters(p);
+        p.setIfDefined(Parameter.CLOUD, getCloudVar());
+        p.setIfDefined(Parameter.USER, getCloudVar().getUser());
+    }
 
 }

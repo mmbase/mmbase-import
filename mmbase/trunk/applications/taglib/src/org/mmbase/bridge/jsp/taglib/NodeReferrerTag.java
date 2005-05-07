@@ -11,6 +11,8 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 
 import org.mmbase.bridge.Node;
 
@@ -21,7 +23,7 @@ import org.mmbase.bridge.Node;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.17 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.18 2005-05-07 14:35:00 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
@@ -63,4 +65,10 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     protected Node getNode() throws JspTagException {
         return findNodeProvider().getNodeVar();
     }
+
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
+        super.fillStandardParameters(p);
+        p.setIfDefined(Parameter.NODE, getNode());
+    }
+
 }
