@@ -1151,7 +1151,7 @@ public class Controller {
                 		//virtual.setValue("error", "speed_posting");
 			} else {
 				body = a.filterContent(body);
-                       	        t.postReply(subject, poster, body);
+                       	        t.postReply(subject, p, body);
                 		//virtual.setValue("error", "none");
 				p.setLastBody(body);
 				p.setLastPostTime((int)(System.currentTimeMillis()/1000));
@@ -1200,7 +1200,7 @@ public class Controller {
                 	virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
 		} else {
 			body = a.filterContent(body);
-                	int postthreadid = a.newPost(subject, poster, body,mood);
+                	int postthreadid = a.newPost(subject, p, body,mood);
                 	virtual.setValue("postthreadid", postthreadid);
                 	virtual.setValue("error", "none");
 			p.setLastSubject(subject);
@@ -1639,6 +1639,7 @@ public class Controller {
         node.setValue("accountpostcount", p.getPostCount());
         node.setValue("firstlogin", p.getFirstLogin());
         node.setValue("lastseen", p.getLastSeen());
+        node.setValue("signature", p.getSignature());
     }
 
 
@@ -1667,7 +1668,7 @@ public class Controller {
     * get login information for this poster
     */
     public MMObjectNode forumLogin(String forumid,String account,String password) {
-        log.info("going to login with account: " + account + " and password " + password);
+        //log.info("going to login with account: " + account + " and password " + password);
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
                 MMObjectNode virtual = builder.getNewNode("admin");
 		Forum f=ForumManager.getForum(forumid);
@@ -1724,6 +1725,75 @@ public class Controller {
 		}
 		return false;
         }
+
+        public List getSignatures(String forumid,String sactiveid) {
+       		List list = new ArrayList();
+  		VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        	try {
+            		int activeid = Integer.parseInt(sactiveid);
+
+            		Forum f = ForumManager.getForum(forumid);
+            		if (f != null) {
+                       	    Poster poster = f.getPoster(activeid);
+		            Iterator e = poster.getSignatures();
+			    if (e!=null)  {
+            		    	while (e.hasNext()) {
+                           	 	Signature sig = (Signature) e.next();
+                    			MMObjectNode virtual = builder.getNewNode("admin");
+                    			virtual.setValue("id", sig.getId());
+                    			virtual.setValue("body", sig.getBody());
+                    			virtual.setValue("mode", sig.getMode());
+                    			virtual.setValue("encodings", sig.getMode());
+					list.add(virtual);
+				    }
+			    }
+			}
+        	} catch (Exception e) {
+            	e.printStackTrace();
+        	}
+		return list;
+	}
+
+
+        public String changeSignature(String forumid,String sactiveid,int sigid,String body,String mode,String encoding) {
+        	try {
+            		int activeid = Integer.parseInt(sactiveid);
+
+            		Forum f = ForumManager.getForum(forumid);
+            		if (f != null) {
+                       	    Poster poster = f.getPoster(activeid);
+			    if (poster != null) {
+				Signature sig = poster.getSignature(sigid);
+				if (sig!=null) {
+					sig.setBody(body);
+					sig.setEncoding(encoding);
+					sig.setMode(mode);
+				}
+			    }
+			}
+        	} catch (Exception e) {
+	            	e.printStackTrace();
+        	}
+		return "";
+	}
+
+
+        public String addSignature(String forumid,String sactiveid,String body,String mode,String encoding) {
+        	try {
+            		int activeid = Integer.parseInt(sactiveid);
+
+            		Forum f = ForumManager.getForum(forumid);
+            		if (f != null) {
+                       	    Poster poster = f.getPoster(activeid);
+			    if (poster != null) {
+				poster.addSignature(body,mode,encoding);
+			    }
+			}
+        	} catch (Exception e) {
+	            	e.printStackTrace();
+        	}
+		return "";
+	}
 
 	
 }

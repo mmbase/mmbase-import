@@ -94,6 +94,24 @@
         </mm:compare>
         </mm:field>
         </mm:nodefunction>
+        <mm:compare value="signatures" referid="profile">
+        <li class="selected">
+        </mm:compare>
+        <mm:compare value="signatures" referid="profile" inverse="true">
+        <li>
+        </mm:compare>
+
+        <a href="<mm:url page="profile.jsp">
+        <mm:param name="forumid" value="$forumid" />
+        <mm:present referid="postareaid">
+        <mm:param name="postareaid" value="$postareaid" />
+        </mm:present>
+        <mm:param name="posterid" value="$profileid" />
+        <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
+        <mm:param name="profile" value="signatures" />
+        </mm:url>">signatures</a>
+        </li>
+
         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
         <mm:field name="avatarsdisabled">
           <mm:compare value="false">
@@ -104,7 +122,6 @@
         <mm:compare value="avatar" referid="profile" inverse="true">
         <li>
         </mm:compare>
-
  
         <a href="<mm:url page="profile.jsp">
         <mm:param name="forumid" value="$forumid" />
@@ -259,6 +276,46 @@
     <mm:compare value="contact" referid="profile">
         <mm:write referid="mlg.Not_implemented"/>  
     </mm:compare>
+    <mm:compare value="signatures" referid="profile">
+	Signatures <br />
+		<table>
+                <mm:nodelistfunction set="mmbob" name="getSignatures" referids="forumid,posterid">
+		<form action="<mm:url page="profile.jsp" referids="forumid,posterid,profile" />" method="post">
+		<input type="hidden" name="action" value="changesignature" />
+		<input type="hidden" name="sigid" value="<mm:field name="id" />" />
+		<tr>
+		<td align="middle">
+		<select name="newmode">
+			<mm:field name="mode">
+			<option value="active" <mm:compare value="active">selected</mm:compare>>Active
+			<option value="inactive" <mm:compare value="inactive">selected</mm:compare>>Inactive
+			<option value="delete">Delete
+			</mm:field>
+		</select><br /><br />
+		<input type="submit" value="save" />
+		</td>
+		<td>
+			<textarea name="newbody" rows="5" cols="50"><mm:field name="body" /></textarea>
+		</td>
+		</tr>
+		</form>
+		</mm:nodelistfunction>
+		<form action="<mm:url page="profile.jsp" referids="forumid,posterid,profile" />" method="post">
+		<input type="hidden" name="action" value="addsignature" />
+		<tr>
+		<td align="middle">
+		<select name="newmode">
+			<option value="create">Create
+		</select><br /><br />
+		<input type="submit" value="save" />
+		</td>
+		<td>
+			<textarea name="newbody" rows="5" cols="50"></textarea>
+		</td>
+		</tr>
+		</form>
+		</table>
+    </mm:compare>
 </mm:compare>
 </mm:field>
 </mm:nodefunction>
@@ -384,6 +441,7 @@
 </mm:compare>
 </mm:field>
 </mm:nodefunction>
+
     <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
       <mm:field name="avatarsdisabled">
         <mm:compare value="false">
@@ -404,6 +462,7 @@
         <mm:param name="profile" value="avatar" />
         </mm:url>"><mm:write referid="mlg.avatar"/></a>
         </li></mm:compare></mm:field></mm:nodefunction>
+
       </ul>
     </div>
     

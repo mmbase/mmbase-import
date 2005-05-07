@@ -625,6 +625,7 @@ public class ForumsConfig {
     	checkTypeRel("forums", "posters", "rolerel",-1);
     	checkTypeRel("forums", "postareas", "forarearel",-1);
     	checkTypeRel("postareas", "postthreads", "areathreadrel",-1);
+    	checkTypeRel("posters", "signatures", "related",-1);
     }
 
 

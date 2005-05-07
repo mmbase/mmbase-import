@@ -819,5 +819,45 @@
                 </return>
         </function>
 
+	<function name="getSignatures">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getSignatures</method>
+		<param name="forumid" type="String" description="list mode" />
+		<param name="posterid" type="String" description="list mode" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+	<function name="changeSignature">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeSignature</method>
+		<param name="forumid" type="String" description="list mode" />
+		<param name="posterid" type="String" description="list mode" />
+		<param name="sigid" type="int" description="list mode" />
+		<param name="newbody" type="String" description="list mode" />
+		<param name="newmode" type="String" description="list mode" />
+		<param name="newencoding" type="String" description="list mode" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
+	<function name="addSignature">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>addSignature</method>
+		<param name="forumid" type="String" description="list mode" />
+		<param name="posterid" type="String" description="list mode" />
+		<param name="newbody" type="String" description="list mode" />
+		<param name="newmode" type="String" description="list mode" />
+		<param name="newencoding" type="String" description="list mode" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
 
 </functionset>

@@ -563,16 +563,6 @@ public class PostArea {
         numberofpinned--;
     }
 
-    /**
-     * create a new postthread in the postarea
-     * @param subject subject of the new postthread
-     * @param poster poster that posts the new postthread
-     * @param body body of the new postthread
-     * @return MMbase objectnumber of the newly created postthread or -1 if the postthread-nodemanager could not be found
-     */
-    public int newPost(String subject, Poster poster, String body,String mood) {
-        return (newPost(subject, poster.getAccount(), body,mood));
-    }
 
     /**
      * create a new postthread in the postarea
@@ -581,13 +571,13 @@ public class PostArea {
      * @param body body of the new postthread
      * @return MMbase objectnumber of the newly created postthread or -1 if the postthread-nodemanager could not be found
      */
-    public int newPost(String subject, String poster, String body,String mood) {
+    public int newPost(String subject, Poster poster, String body,String mood) {
         if (postthreads == null) readPostThreads();
         NodeManager nm = ForumManager.getCloud().getNodeManager("postthreads");
         if (nm != null) {
             Node ptnode = nm.createNode();
             ptnode.setStringValue("subject", subject);
-            ptnode.setStringValue("creator", poster);
+            ptnode.setStringValue("creator", poster.getAccount());
             ptnode.setStringValue("state", "normal");
             ptnode.setStringValue("mood", mood);
             ptnode.setStringValue("ttype", "post");

@@ -93,6 +93,7 @@ public class Forum {
         // read postareas
         preCachePosters();
         readAreas();
+        readSignatures();
         readRoles();
     }
 
@@ -753,6 +754,41 @@ public class Forum {
         cache.clear();
         cache = NodeListCache.getCache();
         cache.clear();
+    }
+
+
+    private void readSignatures() {
+        if (node != null) {
+            NodeManager forumsmanager = ForumManager.getCloud().getNodeManager("forums");
+            NodeManager postersmanager = ForumManager.getCloud().getNodeManager("posters");
+            NodeManager signaturesmanager = ForumManager.getCloud().getNodeManager("signatures");
+            Query query = ForumManager.getCloud().createQuery();
+            Step step1 = query.addStep(forumsmanager);
+            RelationStep step2 = query.addRelationStep(postersmanager);
+            RelationStep step3 = query.addRelationStep(signaturesmanager);
+
+            StepField f1 = query.addField(step1, forumsmanager.getField("number"));
+            query.addField(step2.getNext(), postersmanager.getField("account"));
+            query.addField(step3.getNext(), signaturesmanager.getField("number"));
+            query.addField(step3.getNext(), signaturesmanager.getField("body"));
+            query.addField(step3.getNext(), signaturesmanager.getField("mode"));
+            query.addField(step3.getNext(), signaturesmanager.getField("encoding"));
+
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
+
+            NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
+            while (i.hasNext()) {
+                Node node = i.nextNode();
+		Poster poster = getPoster(node.getStringValue("posters.account"));
+		if (poster!=null) {
+			Signature sig = new Signature(poster,node.getIntValue("signatures.number"),node.getStringValue("signatures.body"),node.getStringValue("signatures.mode"),node.getStringValue("signatures.encoding"));
+			log.info("ADD A SIG="+sig);
+			poster.addSignature(sig);
+		} else {
+			log.error("Got a signature of a missing poster !"+node.getStringValue("posters.account"));
+		}
+            }
+        }
     }
 
     /**
