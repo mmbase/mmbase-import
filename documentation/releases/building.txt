@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.0 - Building
+                     MMBase 1.7.4 - Building
 ===================================================================  
   
 This is the source distribution of the MMBase project. It includes the
