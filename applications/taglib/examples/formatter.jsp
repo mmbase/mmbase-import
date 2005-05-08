@@ -32,7 +32,7 @@
 
 </p>
 <mm:timer name="formatter performance">
-<cache:cache time="30">
+<caache:cache time="30">
 <form>
 <table>
 <%--
@@ -115,7 +115,7 @@
 --%>
 </table>
 </form>
-</cache:cache>
+</caache:cache>
 </mm:timer>
 </mm:node>
 </mm:present>

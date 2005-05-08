@@ -25,7 +25,7 @@
 }
  div.toc span {
    margin-left: 3ex;
-}
+   }
   </style>
 </head>
 <body>
@@ -399,7 +399,7 @@ response.setDateHeader("Last-Modified", ct);
           <ul>
             <li>Tree-tag (experimental)</li>
             <li>More query-container-referrers like mm:ageconstraint, mm:previousbatches etc.</li>            
-            <li>mmbase-taglib.jar</li>
+	    <li>mmbase-taglib.jar</li>
             <li>....</li>
           </ul>
           <p>
