@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.300 2005-05-04 18:34:58 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.301 2005-05-08 13:25:12 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -68,7 +68,7 @@ public class MMObjectBuilder extends MMTable {
 
     /** Default (system) owner name for the owner field. */
     public static final String SYSTEM_OWNER   = "system";
-
+    
     /** Max size of the object type cache */
     public final static int OBJ2TYPE_MAX_SIZE = 20000;
 
@@ -2323,7 +2323,7 @@ public class MMObjectBuilder extends MMTable {
             if (result != null) {
                 return result;
             }
-            parameters = getFunctionParameters(arg);
+            parameters = StringSplitter.splitFunctions(arg);
         }
         Function function = getFunction(node, functionName);
         if (function != null) {
@@ -3912,9 +3912,12 @@ public class MMObjectBuilder extends MMTable {
          * This one can be overriden if the same function must <em>also</em> be a builder function.
          */
         public Object getFunctionValue(Parameters parameters) {
+            if (! parameters.containsParameter(Parameter.NODE)) {
+                throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
+            }
             MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
             if (node == null) {
-                throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
+                throw new IllegalArgumentException("The node argument of  " + MMObjectBuilder.this.getTableName() + " " + getClass() + " " + toString() + " must not be null "); 
             }
             Object o = getFunctionValue(node, parameters);
             if (log.isDebugEnabled()) {
@@ -3941,6 +3944,10 @@ public class MMObjectBuilder extends MMTable {
             public final Object getFunctionValue(Parameters parameters) {
                 return NodeFunction.this.getFunctionValue(node, parameters);
 
+            }
+
+            public String toString() {
+                return NodeFunction.this.toString() + " for node " + node.getNumber();
             }
         }
 
