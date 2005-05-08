@@ -166,6 +166,17 @@
 </mm:compare>
 
 
+<mm:compare value="changerules" referid="action">
+	<mm:import externid="rulesid" />
+	<mm:import externid="title" />
+	<mm:import externid="body" />
+	<mm:node referid="rulesid">
+		<mm:setfield name="title"><mm:write referid="title" /></mm:setfield>
+		<mm:setfield name="body"><mm:write referid="body" /></mm:setfield>
+	</mm:node>
+</mm:compare>
+
+
 <mm:compare value="changeconfig" referid="action">
 	<mm:import externid="loginmodetype" />
 	<mm:import externid="logoutmodetype" />
