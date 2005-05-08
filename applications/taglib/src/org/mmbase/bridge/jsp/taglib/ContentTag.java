@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.functions.Parameters;
 
 import org.mmbase.util.*;
 import org.mmbase.security.UserContext;
@@ -35,14 +36,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.38 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.39 2005-05-08 13:26:55 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
     private static  Logger log;
 
 
-    private static final CharTransformer COPY = new CopyCharTransformer();
+    private static final CharTransformer COPY = CopyCharTransformer.INSTANCE;
 
     private static final long DEFAULT_EXPIRE_TIME = 60; // one minute
 
@@ -310,36 +311,65 @@ public class ContentTag extends LocaleTag  {
     }
 
     /**
+     * Gets a CharTransformer identified by <code>id<code>, withouth trying to create chains of
+     * them.
+     */
+    protected static CharTransformer getSimpleCharTransformer(String id, Map more) throws JspTagException {
+        CharTransformer c = (CharTransformer) charTransformers.get(id);
+        if (c == null && more != null) c = (CharTransformer) more.get(id);
+        if (c == null) {
+            int paramsPos = id.indexOf('(');
+            if (paramsPos > 0 && id.charAt(id.length() - 1) == ')') { // inline parameterized
+                                                                           // like substring(2,3)
+                String parameterized = id.substring(0, paramsPos);
+                ParameterizedTransformerFactory factory = getTransformerFactory(parameterized);                
+                Parameters parameters = factory.createParameters();
+                parameters.setAutoCasting(true);
+                parameters.setAll(StringSplitter.split(id.substring(paramsPos + 1, id.length() - 1)));
+                c = (CharTransformer) factory.createTransformer(parameters);                    
+            }
+        }
+        if (c == null) throw new JspTagException("The chartransformer " + id + " is unknown");
+        return c;
+    }
+
+    /**
+     * Gets a CharTransformer identified by <code>id</code>, which possibly can also be list of id's
+     * in which case a chain of chartransformers will be returned.
      * @return A CharTransformer
      * @throws JspTagException if not transformer with given id was configured
      */
 
     public static CharTransformer getCharTransformer(String id, Map more) throws JspTagException {
 
-        if (id.indexOf(',') > 0) {
+        List transs = org.mmbase.util.StringSplitter.splitFunctions(id);
+        
+        if (transs.size() > 1) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
-            Iterator ids = Arrays.asList( id.trim().split("\\s*,\\s*") ).iterator();
+            Iterator ids = transs.iterator();
             while (ids.hasNext()) {
                 String i = (String) ids.next();
-                CharTransformer c = (CharTransformer) charTransformers.get(i);
-                if (c == null && more != null) c = (CharTransformer) more.get(i);
-                if (c == null) throw new JspTagException("The chartransformer " + i + " is unknown");
-                ct.add(c);                
+                CharTransformer c = getSimpleCharTransformer(i, more);
+                if (ct != COPY) {
+                    ct.add(c);
+                }
             }
             return ct;
         } else {
-            CharTransformer c = (CharTransformer) charTransformers.get(id);
-            if (c == null && more != null) c = (CharTransformer) more.get(id);
-            if (c == null) throw new JspTagException("The chartransformer " + id + " is unknown");
-            if (c == COPY) return null; // to avoid copying of nothing
-            return c;
+            CharTransformer ct =  getSimpleCharTransformer(id, more);
+            if (ct != COPY) {
+                return ct;
+            } else {
+                return null;
+            }
+
         }
     }
 
     public static ParameterizedTransformerFactory getTransformerFactory(String id) throws JspTagException {
         ParameterizedTransformerFactory fact = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.get(id);
-            if (fact == null) throw new JspTagException("The chartransformer factory" + id + " is unknown");
+            if (fact == null) throw new JspTagException("The chartransformerfactory " + id + " is unknown");
             return fact;
     }
     
