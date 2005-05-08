@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="typerel" maintainer="mmbase.org" version="0" extends="object">
+<builder extends="object" maintainer="mmbase.org" name="typerel" version="0">
   <classfile>org.mmbase.module.corebuilders.TypeRel</classfile>
 
   <searchage>14</searchage>
@@ -54,7 +54,7 @@
       </editor>
       <db>
         <name>snumber</name>
-        <type state="persistent" notnull="false" key="false">NODE</type>
+        <type key="false" notnull="false" state="persistent">NODE</type>
       </db>
     </field>
 
@@ -77,7 +77,7 @@
       </editor>
       <db>
         <name>dnumber</name>
-        <type state="persistent" notnull="false" key="false">NODE</type>
+        <type key="false" notnull="false" state="persistent">NODE</type>
       </db>
     </field>
 
@@ -100,7 +100,7 @@
       </editor>
       <db>
         <name>rnumber</name>
-        <type state="persistent" notnull="false" key="false">NODE</type>
+        <type key="false" notnull="false" state="persistent">NODE</type>
       </db>
     </field>
 
@@ -118,12 +118,14 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input><list>-1</list><search>-1</search>
+          <input>-1</input>
+	  <list>-1</list>
+	  <search>-1</search>
         </positions>
       </editor>
       <db>
         <name>max</name>
-        <type state="persistent" notnull="false" key="false">INTEGER</type>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
 
