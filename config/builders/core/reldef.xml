@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="reldef" maintainer="mmbase.org" version="0" extends="object">
+<builder extends="object" maintainer="mmbase.org" name="reldef" version="0">
   <classfile>org.mmbase.module.corebuilders.RelDef</classfile>  
   <searchage>14</searchage>
   <names>
@@ -41,7 +41,7 @@
       </editor>
       <db>
         <name>sname</name>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
+        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
     
@@ -64,7 +64,7 @@
       </editor>
       <db>
         <name>dname</name>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
+        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -88,7 +88,7 @@
       </editor>
       <db>
         <name>dir</name>
-        <type state="persistent" notnull="false" key="false">INTEGER</type>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -114,7 +114,7 @@
       </editor>
       <db>
         <name>sguiname</name>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
+        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -140,7 +140,7 @@
       </editor>
       <db>
         <name>dguiname</name>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
+        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
     
@@ -161,12 +161,14 @@
       </gui>
       <editor>
         <positions>
-          <input>2</input><list>2</list><search>2</search>
+          <input>2</input>
+<list>2</list>
+<search>2</search>
         </positions>
       </editor>
       <db>
         <name>builder</name>
-        <type state="persistent" notnull="true" key="false">NODE</type>
+        <type key="false" notnull="true" state="persistent">NODE</type>
       </db>
 		</field>
   </fieldlist>

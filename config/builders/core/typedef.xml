@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="typedef" extends="object" maintainer="mmbase.org" version="0">
-	<classfile>org.mmbase.module.corebuilders.TypeDef</classfile>
-
-	<searchage>1000</searchage>
-
-	<names>
+<builder extends="object" maintainer="mmbase.org" name="typedef" version="0">
+  <classfile>org.mmbase.module.corebuilders.TypeDef</classfile>
+  
+  <searchage>1000</searchage>
+  
+  <names>
     <singular xml:lang="en">Object Type</singular>
     <singular xml:lang="nl">Objekttype</singular>
     <singular xml:lang="eo">Objekttipo</singular>
@@ -17,17 +17,17 @@
     <plural xml:lang="eo">Objekttipoj</plural>
     <plural xml:lang="fy">Object Tiepes</plural>
     <plural xml:lang="it">Oggetto Tipi</plural>
-	</names>
+  </names>
   
-	<descriptions>
+  <descriptions>
     <description xml:lang="en">Defines object types</description>
     <description xml:lang="nl">Definitie van objekt types</description>
     <description xml:lang="eo">Difinoj de objekttipoj</description>
     <description xml:lang="fy">Definitsie fan de object tiepes</description>
     <description xml:lang="it">Definisci i tipi per gli oggetti</description>
-	</descriptions>
+  </descriptions>
 
-	<fieldlist>
+  <fieldlist>
     <!-- POS 3 : <field> 'name'  -->
     <field>
       <descriptions>
@@ -94,8 +94,8 @@
       </gui>
       <db>
         <name>config</name>
-        <type doctype="&lt;!DOCTYPE builder PUBLIC &quot;-//MMBase//DTD builder config 1.1//EN&quot; &quot;http://www.mmbase.org/dtd/builder_1_1.dtd&quot;&gt;" key="false" notnull="true" state="virtual">XML</type>
+        <type  key="false" notnull="true" state="virtual">XML</type>
       </db>
     </field>
-	</fieldlist>
+  </fieldlist>
 </builder>
