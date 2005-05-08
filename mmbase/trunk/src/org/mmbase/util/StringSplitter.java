@@ -15,10 +15,9 @@ import java.util.List;
 /**
  * Utility class for splitting delimited values.
  *
- * @deprecated better use String.split()
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.4 2005-01-03 21:58:45 michiel Exp $
+ * @version $Id: StringSplitter.java,v 1.5 2005-05-08 13:23:49 michiel Exp $
  */
 public class StringSplitter {
 
@@ -39,6 +38,7 @@ public class StringSplitter {
         return result;
     }
 
+
     /**
      * Simple util method to split comma separated values.
      * @see #split(String, String)
@@ -49,5 +49,35 @@ public class StringSplitter {
     static public List split(String string) {
         return split(string, ",");
     }
+
+    /**
+     * Splits up a String, (using comma delimiter), but takes into account brackets. So
+     * a(b,c,d),e,f(g) will be split up in a(b,c,d) and e and f(g).
+     * @since MMBase-1.8
+     */
+    static public List splitFunctions(CharSequence attribute) {
+        int commaPos =  0;
+        int nested   =  0;
+        List  result = new ArrayList();
+        int i;
+        for(i = 0; i < attribute.length(); i++) {
+            char c = attribute.charAt(i);
+            if ((c == ',') || (c == ';')){
+                if(nested == 0) {
+                    result.add(attribute.subSequence(commaPos, i).toString().trim());
+                    commaPos = i + 1;
+                }
+            } else if (c == '(') {
+                nested++;
+            } else if (c == ')') {
+                nested--;
+            }
+        }
+        if (i > 0) {
+            result.add(attribute.toString().substring(commaPos).trim());
+        }
+        return result;
+    }
+    
 
 }
