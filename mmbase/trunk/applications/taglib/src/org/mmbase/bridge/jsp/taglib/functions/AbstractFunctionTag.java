@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.18 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.19 2005-05-08 13:26:56 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -175,18 +175,6 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     }
 
-    protected final void fillStandardParameters(Parameters p) throws JspTagException {
-        log.debug("Filling standard parameters");
-        p.setIfDefined(Parameter.RESPONSE, pageContext.getResponse());
-        p.setIfDefined(Parameter.REQUEST, pageContext.getRequest());
-        // locale parameters
-        java.util.Locale locale = getLocale();
-        p.setIfDefined(Parameter.LANGUAGE, locale.getLanguage());
-        p.setIfDefined(Parameter.LOCALE, locale);
-        p.setIfDefined(Parameter.CLOUD, getCloudVar());
-        p.setIfDefined(Parameter.USER, getCloudVar().getUser());
-    }
-
     protected final Object getFunctionValue() throws JspTagException {
         return getFunctionValue(true);
     }
@@ -230,7 +218,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 Iterator i = functionContainer.getParameters().iterator();
                 while (i.hasNext()) {
                     Entry entry = (Entry) i.next();
-                    params.setIfDefined((String) entry.getKey(), entry.getValue());
+                    params.set((String) entry.getKey(), entry.getValue());
                 }
             }
             if (referids != Attribute.NULL) {
@@ -240,7 +228,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             fillStandardParameters(params);
 
             if (log.isDebugEnabled()) {
-                log.debug("using parameters " + params);
+                log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
             }
 
             params.checkRequiredParameters();
