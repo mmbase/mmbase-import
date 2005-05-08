@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.5 2005-05-04 23:32:43 michiel Exp $
+ * @version $Id: ParametersImpl.java,v 1.6 2005-05-08 13:31:42 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -32,6 +32,7 @@ import org.mmbase.util.logging.*;
 public class ParametersImpl extends AbstractList implements Parameters {
     private static final Logger log = Logging.getLoggerInstance(ParametersImpl.class);
 
+    private static final DataType[] EMPTY = new DataType[0];
     /**
      * The contents of this List are stored in this HashMap.
      */
@@ -70,8 +71,11 @@ public class ParametersImpl extends AbstractList implements Parameters {
      * </pre>
      */
     public ParametersImpl(DataType[] def) {
-        definition = (DataType[]) Functions.define(def, new ArrayList()).toArray(new Parameter[0]);
+        definition = (DataType[]) Functions.define(def, new ArrayList()).toArray(EMPTY);
         toIndex = definition.length;
+        if (log.isDebugEnabled()) {
+            log.debug("Found definition " + Arrays.asList(definition));
+        }
         backing = new HashMap();
         // fill with default values, and check for non-unique keys.
         for (int i = fromIndex; i < toIndex; i++) {
@@ -86,21 +90,13 @@ public class ParametersImpl extends AbstractList implements Parameters {
     /**
      * If you happen to have a List of parameters, then you can wrap it into an Parameters with this constructor.
      *
+     * @param values Collection with values. This Collection should have a predictable iteration order.
      * @throws NullPointerException if definition is null
      * @see #Parameters(Parameter[])
      */
-    public ParametersImpl(DataType[] def, List values) {
+    public ParametersImpl(DataType[] def, Collection values) {
         this(def);
-        if (values != null) {
-            if (log.isDebugEnabled()) {
-                if (values.size() > definition.length) {
-                    log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
-                }
-            }
-            for (int i = 0; i < values.size(); i++) {
-                set(i, values.get(i));
-            }
-        }
+        setAll(values);
     }
 
     /**
@@ -244,6 +240,21 @@ public class ParametersImpl extends AbstractList implements Parameters {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             set((String) entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+    public Parameters setAll(Collection values) {
+        if (values != null) {
+            if (log.isDebugEnabled()) {
+                if (values.size() > definition.length) {
+                    log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
+                }
+            }
+            Iterator valueIterator = values.iterator();
+            int i = 0;
+            while (valueIterator.hasNext()) {
+                set(i++, valueIterator.next());
+            }
         }
         return this;
     }
