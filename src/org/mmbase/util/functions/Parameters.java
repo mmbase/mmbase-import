@@ -11,8 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.bridge.DataType;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
+
 
 /**
  * Parameters for functions, a way to make variable arguments in Java.
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: Parameters.java,v 1.15 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: Parameters.java,v 1.16 2005-05-08 13:31:42 michiel Exp $
  */
 
 public interface Parameters extends List {
@@ -104,9 +104,13 @@ public interface Parameters extends List {
     public Parameters set(String parameterName, Object value);
 
     /**
-     * @javadoc
+     * Copies all values of a map to the corresponding values of this Parameters Object.
      */
     public Parameters setAll(Map map);
+    /**
+     * Copies all values of a collection to the corresponding values of this Parameters Object.
+     */
+    public Parameters setAll(Collection list);
 
     /**
      * Sets the value of an argument, if the argument is defined, otherwise do nothing.
