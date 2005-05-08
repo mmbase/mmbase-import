@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.30 2005-05-04 22:46:01 michiel Exp $
+ * @version $Id: XmlField.java,v 1.31 2005-05-08 13:22:05 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -54,12 +54,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     // for validation only.
     private final static String XML_HEADER = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n" + XML_DOCTYPE;
-    private final static String XML_TAGSTART = "<mmxf>";
+    private final static String XML_TAGSTART = "<mmxf xmlns='http://www.mmbase.org/mmxf'>";
     private final static String XML_TAGEND   = "</mmxf>";
 
-    public final static boolean isXmlEncoded(String s) {
-        return s.startsWith(XML_TAGSTART) && s.endsWith(XML_TAGEND);
-    }
 
 
     /**

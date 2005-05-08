@@ -18,7 +18,7 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.1 2005-05-04 22:46:01 michiel Exp $
+ * @version $Id: SubstringFactory.java,v 1.2 2005-05-08 13:22:05 michiel Exp $
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory {
@@ -34,6 +34,9 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
     }
     public Parameters createParameters() {
         return new ParametersImpl(PARAMS);
+    }
+    public Parameters createParameters(java.util.List values) {
+        return new ParametersImpl(PARAMS, values);
     }
 
     public void setInverse(boolean inverse) {
@@ -61,8 +64,8 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
                     if (current >= from) {
                         w.write(c);
                     }
-                    if (to > -1 && current > to) break;
                     current++;
+                    if (to > -1 && current >= to) break;
                 }
             } catch (java.io.IOException e) {
                 throw new RuntimeException(e);
