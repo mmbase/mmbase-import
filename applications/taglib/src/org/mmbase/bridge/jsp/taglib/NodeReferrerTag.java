@@ -23,7 +23,7 @@ import org.mmbase.bridge.Node;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.18 2005-05-07 14:35:00 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.19 2005-05-08 13:26:55 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
@@ -68,7 +68,10 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
 
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
-        p.setIfDefined(Parameter.NODE, getNode());
+        NodeProvider np = findNodeProvider(false);
+        if (np != null) {
+            p.setIfDefined(Parameter.NODE, np.getNodeVar());
+        }
     }
 
 }
