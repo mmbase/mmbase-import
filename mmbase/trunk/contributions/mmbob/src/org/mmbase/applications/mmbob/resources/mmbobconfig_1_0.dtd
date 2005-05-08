@@ -95,6 +95,12 @@
 <!ELEMENT speedposttime EMPTY>
 <!ATTLIST speedposttime value CDATA #IMPLIED>
 
+<!ELEMENT postingsoverflowpostarea EMPTY>
+<!ATTLIST postingsoverflowpostarea value CDATA #IMPLIED>
+
+<!ELEMENT postingsoverflowthreadpage EMPTY>
+<!ATTLIST postingsoverflowthreadpage value CDATA #IMPLIED>
+
 <!ELEMENT gallery EMPTY>
 <!ATTLIST gallery enable (false|true) #IMPLIED>
 

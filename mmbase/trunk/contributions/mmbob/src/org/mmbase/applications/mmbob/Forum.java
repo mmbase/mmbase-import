@@ -782,7 +782,6 @@ public class Forum {
 		Poster poster = getPoster(node.getStringValue("posters.account"));
 		if (poster!=null) {
 			Signature sig = new Signature(poster,node.getIntValue("signatures.number"),node.getStringValue("signatures.body"),node.getStringValue("signatures.mode"),node.getStringValue("signatures.encoding"));
-			log.info("ADD A SIG="+sig);
 			poster.addSignature(sig);
 		} else {
 			log.error("Got a signature of a missing poster !"+node.getStringValue("posters.account"));
