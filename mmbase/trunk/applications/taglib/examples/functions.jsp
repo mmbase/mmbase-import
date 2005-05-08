@@ -1,11 +1,17 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page errorPage="error.jsp" session="false"  %><mm:content type="text/html">
+%><%@ page errorPage="error.jsp" session="false" 
+ %><mm:escaper id="mygoogle" type="google">
+  <mm:param name="host" value="" />
+</mm:escaper>	   
+<mm:write referid="mygoogle" />
+<mm:content type="text/html" postprocessor="mygoogle,reducespace">
 <html>
 <head>
   <title>Functions</title>
   <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
+
 <%@ include file="menu.jsp"%>
 
 <h1>Function tags</h1>

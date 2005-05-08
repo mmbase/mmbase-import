@@ -50,6 +50,10 @@
   The value of a is now: <mm:write value="$a" />.
 </p>
 <p>
+  <mm:import id="a" reset="true">[<mm:write referid="a" />, <mm:isnotempty referid="a"><mm:write referid="a" /></mm:isnotempty>]</mm:import>
+  The value of a is now: <mm:write value="$a" />.
+</p>
+<p>
   To write the value of a variable to the page, we did use the `write'
   tag. If the value of the variable must be used in some attribute than
   you have to use the {}-notation. For example like this: 

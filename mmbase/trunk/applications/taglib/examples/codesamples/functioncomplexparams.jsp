@@ -33,3 +33,13 @@
 <p>
   <mm:write value="aba aaa b ccc " escape="vervang" />
 </p>
+<p>
+  <!-- its also possible to define the parameters directly -->
+  <mm:write value="abcdefghijklm" escape="substring(2, 3), uppercase" />
+</p>
+<p>
+  <mm:link>
+    <mm:param name="q" value="information+about" />
+    <a href="<mm:write />">Simulate google link</a>
+  </mm:link>
+</p>
