@@ -27,12 +27,17 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public class RegexpReplacer extends ReaderTransformer implements CharTransformer {
+public class RegexpReplacer extends ConfigurableReaderTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacer.class);
 
-
+    /**
+     * Every extension of regexp-replacer can make use of this.
+     */
     private static final Map utilReaders = new HashMap();     // class -> utilreader
 
+    /**
+     * The regexps for the unextended RegexpReplacer
+     */
     protected static final Collection regexps = new ArrayList();
 
     protected static abstract class PatternWatcher extends ResourceWatcher {
@@ -42,25 +47,41 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
         }
     }
 
+    public final static int WORDS     = 1;
+    public final static int LINES     = 2; // not yet supported
+    public final static int ENTIRE    = 3; // not yet supported
+
+
+
     static {
         new RegexpReplacer().readPatterns(regexps);
     }
 
+    public RegexpReplacer(int i) {
+        super(i);
+    }
+
+    public RegexpReplacer() {
+        super(WORDS);
+    }
     /**
-     * This needs overriding, (must give the static map for the extension).
+     * This on default gives the regexps configured for the base-class (a static member). You can
+     * override this method to return another Collection.
      */
     protected Collection getPatterns() {
         return regexps;
     }
 
     /**
-     * This needs overriding, (must give the configuration file for the extension).
+     * This can be overridden if the implementation must use its own configuration file.
      */
     protected String getConfigFile() {
         return "regexps.xml";
     }
+
     /**
-     * Reads defaults translation patterns into patterns.
+     * Reads defaults translation patterns into the given collection patterns. Override this for
+     * other default patterns.
      */
     protected void readDefaultPatterns(Collection patterns) {
     }
@@ -68,7 +89,7 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
     /**
      * Reads patterns from config-file into given Collection
      */
-    protected void readPatterns(Collection patterns) {
+    protected final void readPatterns(Collection patterns) {
         UtilReader utilReader = (UtilReader) utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
             utilReader = new UtilReader(getConfigFile(), 
@@ -90,7 +111,15 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
         }
     }
 
-    protected void addPatterns(Collection list, Collection patterns) {
+    /**
+     * Utility function to create a bunch of patterns.
+     * @param list A Collection of Map.Entry (like {@link java.util.Map#entryList}), containing
+     *        pairs of Strings
+     * @param patterns This the Collection of Entries. The key of every entry is a compiled regular
+     *        expression. The value is still a String. New entries will be added to this collection
+     *        by this function.
+     */
+    protected static void addPatterns(Collection list, Collection patterns) {
         if (list != null) {
             Iterator i = list.iterator();
             while (i.hasNext()) {
@@ -211,6 +240,32 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
         }
         return w;
     }
+
+    public String getEncoding() {
+        switch (to) {
+        case WORDS:
+            return "REGEXPS_WORDS";
+        case LINES:
+            return "REGEXPS_LINES";
+        case ENTIRE:
+            return "REGEXPS_ENTIRE";
+        default :
+            throw new UnknownCodingException(getClass(), to);
+        }
+    }
+    
+
+    public Map transformers() {
+        Map h = new HashMap();
+        h.put("REGEXPS_WORDS",  new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));
+        h.put("REGEXPS_ENTIRE",  new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps"));
+        return h;
+    }
+
+    public String toString() {
+        return getEncoding() + " " + getPatterns();
+    }
+
 
 
 }
