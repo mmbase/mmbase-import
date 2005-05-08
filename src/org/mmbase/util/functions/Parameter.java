@@ -22,7 +22,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.15 2005-05-03 19:56:34 michiel Exp $
+ * @version $Id: Parameter.java,v 1.16 2005-05-08 13:31:42 michiel Exp $
  * @see Parameters
  */
 
@@ -153,12 +153,20 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
         DataType[] arguments;
 
         public Wrapper(DataType[] arg) {
-            super("[ARRAYWRAPPER]",Parameter[].class);
+            super("[ARRAYWRAPPER]", Parameter[].class);
             arguments = arg;
         }
-
+        
+        // this toString makes the wrapping invisible in the toString of a wrapping Parameter[]
         public String toString() {
-            return "WRAPPED" + Arrays.asList(arguments).toString();
+            StringBuffer buf = new StringBuffer();
+            for (int i = 0 ; i < arguments.length; i++) {
+                if (i > 0) buf.append(", ");
+                buf.append(arguments[i].toString());
+
+            }
+            return buf.toString();
+
         }
     }
 
