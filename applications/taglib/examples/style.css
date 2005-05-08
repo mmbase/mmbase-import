@@ -37,3 +37,7 @@ table.search input.small {
 table.search input { 
   width: 10ex;
 }
+
+span.google {
+  background-color: yellow;
+}
