@@ -69,7 +69,6 @@
 	</td>
 	</tr>
 </table>
-</div>
 
 <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%">
@@ -98,6 +97,7 @@
 		<option>open 
 		</mm:compare>
 		</mm:field>
+		</select>
 		</td>
  	</tr>
 	<tr><th>LogoutMode</th>
@@ -119,6 +119,7 @@
 		<option>open 
 		</mm:compare>
 		</mm:field>
+		</select>
 		</td>
  	</tr>
 	<tr><th>GuestReadMode</th>
@@ -140,6 +141,7 @@
 		<option>open 
 		</mm:compare>
 		</mm:field>
+		</select>
 		</td>
  	</tr>
 	<tr><th>GuestWriteMode</th>
@@ -161,6 +163,7 @@
 		<option>open 
 		</mm:compare>
 		</mm:field>
+		</select>
 		</td>
  	</tr>
 	<tr><th>AvatarUpload</th>
@@ -182,6 +185,7 @@
 		<option value="true">on
 		</mm:compare>
 		</mm:field>
+		</select>
 		</td>
  	</tr>
 	<tr><th>AvatarGallery</th>
@@ -203,6 +207,7 @@
 		<option value="true">on
 		</mm:compare>
 		</mm:field>
+		</select>
 		</td>
  	</tr>
   <th>&nbsp;</th>
@@ -222,6 +227,44 @@
   </tr>
 </table>
 </mm:nodefunction>
+
+
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+  <tr><th colspan="3">Change forum rules</th></tr>
+
+  <mm:node number="$forumid">
+  <form action="<mm:url page="index.jsp">
+        <mm:param name="forumid" value="$forumid" />
+				</mm:url>" method="post">
+	<mm:relatednodes type="forumrules">
+		<mm:import id="rulesid"><mm:field name="number" /></mm:import>
+	<tr><th>Title</th><td colspan="2"><input name="title" value="<mm:field name="title" />" size="70" style="width: 100%"></td></tr>
+	<tr><th>Rules</th><td colspan="2">
+	<textarea name="body" rows="15" cols="70"><mm:field name="body" /></textarea>
+	</td></tr>
+	<input type="hidden" name="rulesid" value="<mm:write referid="rulesid"/>" />
+	<input type="hidden" name="action" value="changerules" />
+	<tr><th>&nbsp;</th>
+<td align="middle" >
+	</mm:relatednodes>
+        <input type="hidden" name="admincheck" value="true">
+	<input type="submit" value="<mm:write referid="mlg.Save"/>">
+  	</form>
+	</td>
+	</mm:node>
+	<td>
+  	<form action="<mm:url page="index.jsp">
+        <mm:param name="forumid" value="$forumid" />
+	</mm:url>"
+ 	method="post">
+	<p />
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
+  	</form>
+	</td>
+	</tr>
+</table>
+
+</div>
 
 <div class="footer">
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
