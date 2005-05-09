@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * <p>
  * The constructor creates the query with all persistent fields belonging to 
  * the specified nodetype excluding byte[] type fields. 
- * Use {@link #getField(FieldDefs) getField()} to retrieve each of these fields. 
+ * Use {@link #getField(CoreField) getField()} to retrieve each of these fields. 
  * <p>
  * Once an instance is constructed, it is not possible to add more fields/steps.
  * Consequently calling one of these methods always results in an 
@@ -28,11 +28,11 @@ import org.mmbase.storage.search.*;
  * <ul>
  * <li>{@link #addStep(MMObjectBuilder) addStep()}
  * <li>{@link #addRelationStep(InsRel,MMObjectBuilder) addRelationStep()}
- * <li>{@link #addField(Step,FieldDefs) addField()}
- * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
+ * <li>{@link #addField(Step,CoreField) addField()}
+ * <li>{@link #addAggregatedField(Step,CoreField,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.9 2003-08-27 21:41:33 michiel Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.10 2005-05-09 21:50:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -91,7 +91,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      * @throws IllegalArgumentException When the field is not a
      *         persistent field of the associated nodetype.
      */
-    public BasicStepField getField(FieldDefs field) {
+    public BasicStepField getField(CoreField field) {
         BasicStepField stepField = (BasicStepField) stepFields.get(field);
         if (stepField == null) {
             // Not found.
@@ -123,7 +123,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     }
     
     // javadoc is inherited
-    public BasicStepField addField(Step step, FieldDefs fieldDefs) {
+    public BasicStepField addField(Step step, CoreField fieldDefs) {
         if (builder != null) { // this means: inited already.
             throw new UnsupportedOperationException("Adding more fields to NodeSearchQuery not supported.");
         } else {
@@ -131,15 +131,13 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
         }
     }
     // MM
-    protected void mapField(FieldDefs field, StepField stepField) {
+    protected void mapField(CoreField field, StepField stepField) {
         stepFields.put(field, stepField);
     }
     
     // javadoc is inherited
-    public BasicAggregatedField addAggregatedField(Step step, FieldDefs fielDefs,
-            int aggregationType) {
-        throw new UnsupportedOperationException(
-        "Adding more fields to NodeSearchQuery not supported.");
+    public BasicAggregatedField addAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
+        throw new UnsupportedOperationException("Adding more fields to NodeSearchQuery not supported.");
     }
     
 }
