@@ -46,6 +46,8 @@
 <mm:import id="imageid" reset="true">logo</mm:import>
 <mm:import id="image_logo"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
 
+<mm:import id="imageid" reset="true">reportmsg</mm:import>
+<mm:import id="image_reportmsg"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
 <mm:import id="imageid" reset="true">privatemsg</mm:import>
 <mm:import id="image_privatemsg"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
 <mm:import id="imageid" reset="true">quotemsg</mm:import>

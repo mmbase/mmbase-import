@@ -1284,8 +1284,16 @@ public class Controller {
         MMObjectNode virtual = builder.getNewNode("admin");
         Forum f = ForumManager.getForum(forumid);
         if (f != null && !f.getPoster(poster).isBlocked()) {
-            int privatemessageid = f.newPrivateMessage(poster, to, subject, body);
-            virtual.setValue("privatemessageid", privatemessageid);
+	    if (to.indexOf(",")==-1) {
+            	int privatemessageid = f.newPrivateMessage(poster, to, subject, body);
+            	virtual.setValue("privatemessageid", privatemessageid);
+	    } else {
+		StringTokenizer tok=new StringTokenizer(to,",\n\r");
+		while (tok.hasMoreTokens()) {
+			String pto = tok.nextToken();
+            		f.newPrivateMessage(poster, pto, subject, body);
+		}
+	    }
         }
         return virtual;
     }
