@@ -22,10 +22,11 @@ import org.mmbase.util.HashCodeUtil;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.43 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: FieldDefs.java,v 1.44 2005-05-09 21:41:02 michiel Exp $
  * @see    org.mmbase.bridge.Field
+ * @deprecated use {@link CoreField}
  */
-public class FieldDefs implements Comparable, Storable {
+public class FieldDefs extends CoreField implements Comparable {
     public final static int DBSTATE_MINVALUE    = 0;
     public final static int DBSTATE_VIRTUAL     = 0;
     public final static int DBSTATE_PERSISTENT  = 2;
@@ -33,31 +34,9 @@ public class FieldDefs implements Comparable, Storable {
     public final static int DBSTATE_MAXVALUE    = 3;
     public final static int DBSTATE_UNKNOWN     = -1;
 
-    public final static int TYPE_MINVALUE  = 1;
-    public final static int TYPE_STRING    = 1;
-    public final static int TYPE_INTEGER   = 2;
-    public final static int TYPE_BYTE      = 4;
-    public final static int TYPE_FLOAT     = 5;
-    public final static int TYPE_DOUBLE    = 6;
-    public final static int TYPE_LONG      = 7;
-    public final static int TYPE_XML       = 8;
-    public final static int TYPE_NODE      = 9;
-    /**
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_DATETIME  = 10;
-    /**
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_BOOLEAN   = 11;
-    /**
-     *
-     * @since MMBase-1.8
-     */
-    public final static int TYPE_LIST      = 12;
+    public final static int TYPE_MINVALUE    = 1;
+    public final static int TYPE_MAXVALUE    = 12;
 
-    public final static int TYPE_MAXVALUE  = 12;
-    public final static int TYPE_UNKNOWN   = -1;
 
     public final static int ORDER_NONE   = -1;
     public final static int ORDER_CREATE = 0;
@@ -72,30 +51,6 @@ public class FieldDefs implements Comparable, Storable {
     private final static String[] DBTYPES = {
         "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST"
     };
-
-    /**
-     */
-    private Map descriptions = new Hashtable();
-
-    private Map    guiNames  = new Hashtable();
-    private String guiType;
-    private int    guiSearch = -1;
-    private int    guiList   = -1;
-    private int    guiPos    = -1;
-
-    private String  name;
-    private int     type    = TYPE_UNKNOWN;
-    private String  typeString;
-    private int     state   = DBSTATE_UNKNOWN;
-    private boolean notNull = false;
-    private String  docType = null; // arch
-    private boolean isKey   = false;
-    private int     pos     = -1;
-    private int     size    = -1;
-
-    private MMObjectBuilder parent = null;
-    private Object storageIdentifier = null;
-    private int     storageType = TYPE_UNKNOWN;
 
     /**
      * Constructor for default FieldDefs.
@@ -113,7 +68,7 @@ public class FieldDefs implements Comparable, Storable {
      * @param type the basic MMBase type of the field
      */
     public FieldDefs(String guiName, String guiType, int search, int list, String name, int type) {
-        this(guiName, guiType, search, list, name, type, 2, DBSTATE_PERSISTENT);
+        super(guiName, guiType, search, list, name, type);
     }
 
     /**
@@ -128,14 +83,7 @@ public class FieldDefs implements Comparable, Storable {
      * @param state the state of the field (persistent, virtual, etc.)
      */
     public FieldDefs(String guiName, String guiType, int guiSearch, int guiList, String name, int type, int guiPos, int state) {
-        setDBName(name);
-        setDBState(state);
-        setDBType(type);
-        setGUIType(guiType);
-        setGUIName("en", guiName);
-        setGUISearch(guiSearch);
-        setGUIList(guiList);
-        setGUIPos(guiPos);
+        super(guiName, guiType, guiSearch, guiList, name, type, guiPos, state);
     }
 
     /**
@@ -171,7 +119,7 @@ public class FieldDefs implements Comparable, Storable {
      * @return the id of the type.
      */
     public static int getDBTypeId(String type) {
-        if (type == null) return DBSTATE_UNKNOWN;
+        if (type == null) return STATE_UNKNOWN;
         // XXX: deprecated VARCHAR
         type = type.toUpperCase();
         if (type.equals("VARCHAR")) return TYPE_STRING;
@@ -195,241 +143,206 @@ public class FieldDefs implements Comparable, Storable {
      * @return the id of the state.
      */
     public static int getDBStateId(String state) {
-        if (state == null) return DBSTATE_UNKNOWN;
+        if (state == null) return STATE_UNKNOWN;
         state = state.toLowerCase();
-        if (state.equals("persistent"))  return DBSTATE_PERSISTENT;
-        if (state.equals("virtual"))     return DBSTATE_VIRTUAL;
-        if (state.equals("system"))      return DBSTATE_SYSTEM;
-        return DBSTATE_UNKNOWN;
+        if (state.equals("persistent"))  return STATE_PERSISTENT;
+        if (state.equals("virtual"))     return STATE_VIRTUAL;
+        if (state.equals("system"))      return STATE_SYSTEM;
+        return STATE_UNKNOWN;
     }
 
-    /**
-     * Provide a description for the current type.
-     * @return the description of the type.
-     */
-    public String getDBTypeDescription() {
-        return typeString;
-        //return FieldDefs.getDBTypeDescription(type);
-    }
-
-    /**
-     * Provide a description for the current state.
-     * @return the description of the state.
-     */
-    public String getDBStateDescription() {
-        return FieldDefs.getDBStateDescription(state);
-    }
-
-    /**
-     * Retrieve the GUI name of the field depending on specified langauge.
-     * If the language is not available, the "en" value is returned instead.
-     * If that one is unavailable the internal fieldname is returned.
-     * @param lang the language to return the name in
-     * @return the GUI Name
-     */
-    public String getGUIName(String lang) {
-        String tmp = (String)guiNames.get(lang);
-        if (tmp != null) {
-            return tmp;
-        } else {
-            return getGUIName();
-        }
-    }
-
-    /**
-     * Retrieve the GUI name of the field.
-     * If possible, the "en" value is returned.
-     * If that one is unavailable the internal fieldname is returned.
-     * @return the GUI Name
-     */
-    public String getGUIName() {
-        String value = (String) guiNames.get("en");
-        if (value != null) {
-            return value;
-        } else {
-            return name;
-        }
-    }
-
-    /**
-     * Retrieve the description of the field depending on specified langauge.
-     * If the language is not available, the "en" value is returned instead.
-     * @param lang the language to return the name in
-     * @return the description
-     */
-    public String getDescription(String lang) {
-        String tmp = (String) descriptions.get(lang);
-        if (tmp != null) {
-            return tmp;
-        } else {
-            return getDescription();
-        }
-    }
-
-    /**
-     * Retrieve the GUI name of the field.
-     * If possible, the "en" value is returned.
-     * @return the Description
-     */
-    public String getDescription() {
-        String value = (String)descriptions.get("en");
-        if (value != null) {
-            return value;
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * Retrieve a Map with all GUI names for this field,
-     * accessible by language.
-     */
-    public Map getGUINames() {
-        return guiNames;
-    }
-
-    /**
-     * Retrieve a Map with all descriptions for this field,
-     * accessible by language.
-     */
-    public Map getDescriptions() {
-        return descriptions;
-    }
-
-    /**
-     * Retrieve the GUI type of the field.
-     */
-    public String getGUIType() {
-        return guiType;
-    }
 
     /**
      * Retrieve the database name of the field.
-     */
+     * @deprecated use {@link #getName}
+     */   
     public String getDBName() {
-        return name;
+        return getName();
     }
 
     /**
      * Retrieves the basic MMBase type of the field.
      *
      * @return The type, this is one of the values defined in this class.
+     * @deprecated use {@link #getType}
      */
     public int getDBType() {
-        return type;
+        return getType();
     }
 
     /**
      * Retrieve size of the field.
      * This may not be specified for some field types.
+     * @deprecated Use {@link #getMaxLength}
      */
     public int getDBSize() {
-        return size;
+        return getMaxLength();
     }
 
     /**
      * Retrieve whether the field can be left blank.
+     * @deprecated use {@link #isRequired}
      */
     public boolean getDBNotNull() {
-        return notNull;
-    }
-
-    /**
-     * Retrieve the doctype
-     * MM: I think this is odd that this is on a field-type because, this can only be defined for XML fields.
-     * deprecated?
-     * @since MMBase-1.6
-     */
-    public String getDBDocType() {
-        return docType;
-    }
-
-    /**
-     * Retrieve the state of the field (persistent, system, or virtual).
-     */
-    public int getDBState() {
-        return state;
+        return isRequired();
     }
 
     /**
      * Retrieve whether the field is a key and thus need be unique.
+     * @deprecated use {@link #isUnique}
      */
     public boolean isKey() {
-        return isKey;
+        return isUnique();
     }
-
     /**
-     * Retrieve the position of the field when searching.
-     * A value of -1 indicates teh field is unavailable during search.
+     * Temporary implementation for backwards-compatibility.
+     * I18n stuff in FieldDefs used to use String->String maps. We now have Locale->String maps
+     * available.
+     * This maps new situation to old situation.
      */
-    public int getGUISearch() {
-        return guiSearch;
+    protected class LocaleToStringMap extends AbstractMap {
+        private final Map map;
+        public LocaleToStringMap(Map m) {
+            map = m;
+        }
+        public Set entrySet() {
+            return new AbstractSet() {
+                    public Iterator iterator() {
+                        return new Iterator() {
+                                private final Iterator i = map.entrySet().iterator();
+                                public boolean hasNext() {
+                                    return i.hasNext();
+                                }
+                                public void remove() {
+                                    throw new UnsupportedOperationException("");
+                                }
+                                public Object next() {
+                                    final Map.Entry entry = (Map.Entry) i.next();
+                                    return new Map.Entry() {
+                                            public Object getKey() {
+                                                return ((Locale) entry.getKey()).getLanguage();
+                                            }
+                                            public Object getValue() {
+                                                return entry.getValue();
+                                            }
+                                            public Object setValue(Object o) {
+                                                return entry.setValue(o);
+                                            }
+                                        };
+                                    
+                                }
+                            };
+                    }
+                    public int size() {
+                        return map.size();
+                    }
+                };
+        }
     }
 
     /**
-     * Retrieve the position of the field when listing.
-     * A value of -1 indicates the field is unavailable in a list.
+     * @deprecated
      */
-    public int getGUIList() {
-        return guiList;
+    public String getGUIName(String lang) {
+        return getGUIName(new Locale(lang, ""));
     }
-
     /**
-     * Retrieve the position of the field when editing.
-     * A value of -1 indicates the field cannot be edited.
+     * @deprecated
      */
-    public int getGUIPos() {
-        return guiPos;
+    public Map getGUINames() {
+        return new LocaleToStringMap(guiName.asMap());
     }
-
+    public Map getDescriptions() {
+        return new LocaleToStringMap(description.asMap());
+    }
     /**
-     * Retrieve the position of the field in the database table.
+     * @deprecated
      */
-    public int getDBPos() {
-        return pos;
+    public String getDescription(String lang) {
+        return getDescription(new Locale(lang, ""));
+    }
+    /**
+     * @deprecated
+     */
+    public int getDBState() {
+        return getState();
+    }
+    public void setDBName(String name) {
+        key = name;
+        description = new org.mmbase.util.LocalizedString(key);
+        guiName = new org.mmbase.util.LocalizedString(key);
+    }
+
+    public void setGUIType(String g) {
+        guiType = g;
     }
 
     /**
-     * Set the GUI name of the field for a specified langauge.
+     * SetUI the GUI name of the field for a specified langauge.
      * @param lang the language to set the name for
      * @param value the value to set
      */
     public void setGUIName(String lang, String value) {
-        if ((value == null) || value.equals("")) {
-            guiNames.remove(lang);
-        } else {
-            guiNames.put(lang,value);
-        }
+        guiName.set(value, new Locale(lang, ""));
     }
 
     /**
      * Set the description of the field for a specified langauge.
      * @param lang the language to set the description for
      * @param value the value to set
+     * @deprecated use {@link #setDescription(Locale, value)}
      */
     public void setDescription(String lang, String value) {
-        if ((value == null) || value.equals("")) {
-            descriptions.remove(lang);
+        description.set(value, new Locale(lang, ""));
+    }
+
+    /**
+     * Set size of the field.
+     * @param value the value to set
+     */
+    public void setDBSize(int value) {
+        maxLength = value;
+    }
+
+    /**
+     * Set the basic MMBase type of the field.
+     * @param value the id of the type
+     */
+    public void setDBType(int value) {
+        typeInt = value;
+        typeString = getDBTypeDescription(typeInt);
+    }
+
+    /**
+     * Set the basic MMBase type of the field, using the type description
+     * @param value the name of the type
+     */
+    public void setDBType(String value) {
+        typeInt       = getDBTypeId(value);
+        if (typeInt != TYPE_UNKNOWN) {
+            typeString = value.toUpperCase();
         } else {
-            descriptions.put(lang,value);
+            typeString = null;
         }
     }
 
     /**
-     * Set the GUI type of the field.
+     * Set the position of the field in the database table.
      * @param value the value to set
      */
-    public void setGUIType(String value) {
-        guiType = value;
+    public void setDBPos(int value) {
+        pos = value;
     }
 
+
     /**
-     * Set the database name of the field.
-     * @param value the value to set
+     * Set the parent builder for this field
+     * @param parent the fielddefs parent
      */
-    public void setDBName(String value) {
-        name = value;
+    public void setParent(MMObjectBuilder parent) {
+        this.parent = parent;
     }
+
 
     /**
      * Set the position of the field when listing.
@@ -458,51 +371,7 @@ public class FieldDefs implements Comparable, Storable {
         guiSearch = value;
     }
 
-    /**
-     * Set size of the field.
-     * @param value the value to set
-     */
-    public void setDBSize(int value) {
-        size = value;
-    }
 
-    /**
-     * Set the basic MMBase type of the field.
-     * @param value the id of the type
-     */
-    public void setDBType(int value) {
-        type = value;
-        typeString = getDBTypeDescription(type);
-    }
-
-    /**
-     * Set the basic MMBase type of the field, using the type description
-     * @param value the name of the type
-     */
-    public void setDBType(String value) {
-        type       = getDBTypeId(value);
-        if (type != TYPE_UNKNOWN) {
-            typeString = value.toUpperCase();
-        } else {
-            typeString = null;
-        }
-    }
-
-    /**
-     * Set the position of the field in the database table.
-     * @param value the value to set
-     */
-    public void setDBPos(int value) {
-        pos = value;
-    }
-
-    /**
-     * Set the state of the field (persistent, system, or virtual).
-     * @param value the value to set
-     */
-    public void setDBState(int value) {
-        state = value;
-    }
 
     /**
      * Set the basic MMBase state of the field, using the state description
@@ -511,173 +380,36 @@ public class FieldDefs implements Comparable, Storable {
     public void setDBState(String value) {
         setDBState(getDBStateId(value));
     }
+    public void setDBState(int i) {
+        state = i;
+    }
+
+
+    public void setUnique(boolean u) {
+        unique = u;
+    }
+
 
     /**
      * Set whether the field is a key and thus need be unique.
      * @param value the value to set
      */
     public void setDBKey(boolean value) {
-        isKey = value;
+        setUnique(value);
+    }
+
+    public void setRequired(boolean r) {
+        required = r;
     }
 
     /**
      * Set whether the field can be left blank.
-     * @param value the value to set
+     * @param value the value to set     
      */
     public void setDBNotNull(boolean value) {
-        notNull = value;
+        setRequired(value);
     }
 
-    /**
-     * Set whether the field has an doctype to validate
-     * @param doctype the doctype, which has to be used for the field
-     * @since MMBase-1.6
-     */
-    public void setDBDocType(String dt) {
-        docType = dt;
-    }
-
-    /**
-     * Retrieves the parent builder for this field
-     */
-    public MMObjectBuilder getParent() {
-        return parent;
-    }
-
-    /**
-     * Set the parent builder for this field
-     * @param parent the fielddefs parent
-     */
-    public void setParent(MMObjectBuilder parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * Returns a description for this field.
-     */
-    public String toString() {
-        return "DEF GUIName=" + getGUIName() + " GUIType=" + guiType +
-               " Input=" + guiPos + " Search=" + guiSearch + " List=" + guiList +
-               " DBname=" + name +
-               " DBType=" + getDBTypeDescription()+
-               " DBSTATE=" + getDBStateDescription() +
-               " DBNOTNULL=" + notNull + " DBPos=" + pos + " DBSIZE=" + size +
-               " isKey=" + isKey + " DBDocType=" + docType;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     * @since MMBase-1.7
-     */
-    public boolean equals(Object o) {
-        if (o instanceof FieldDefs) {
-            FieldDefs f = (FieldDefs) o;
-            return
-                storageEquals(f)
-                && descriptions.equals(f.descriptions)
-                && guiNames.equals(f.guiNames)
-                && guiType.equals(f.guiType)
-                && guiSearch == f.guiSearch
-                && guiList  ==  f.guiList
-                && guiPos   == f.guiPos
-                && (docType == null ? f.docType == null : docType.equals(f.docType))
-                ;
-        } else {
-            return false;
-        }
-    }
-
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int result = 0;
-        result = HashCodeUtil.hashCode(result, name);
-        result = HashCodeUtil.hashCode(result, type);
-        result = HashCodeUtil.hashCode(result, state);
-        result = HashCodeUtil.hashCode(result, notNull);
-        result = HashCodeUtil.hashCode(result, isKey);
-        result = HashCodeUtil.hashCode(result, parent);
-        result = HashCodeUtil.hashCode(result, storageType);
-        result = HashCodeUtil.hashCode(result, pos);
-        return result;
-    }
-    
-    /**
-     * Whether this FieldDefs object is equal to another for storage purposes (so, ignoring gui and documentation fields)
-     * @since MMBase-1.7
-     */
-    public boolean storageEquals(FieldDefs f) {
-        return
-            name.equals(f.name)
-            && type == f.type
-            && state == f.state
-            && notNull == f.notNull
-            && isKey  == f.isKey
-            && size == f.size
-            && (parent == null ? f.parent == null : parent.equals(f.parent))
-            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier))
-            && storageType == f.storageType
-            && pos == f.pos
-            ;
-    }
-
-    // Storable interfaces
-
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public Object getStorageIdentifier() throws StorageException {
-        // determine the storage identifier from the name
-        if (storageIdentifier == null) {
-            storageIdentifier = parent.getMMBase().getStorageManagerFactory().getStorageIdentifier(this);
-        }
-        return storageIdentifier;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public boolean inStorage() {
-        return (state == DBSTATE_PERSISTENT || state == DBSTATE_SYSTEM);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public int getStorageType() {
-        return storageType;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public void setStorageType(int value) {
-        storageType = value;
-    }
-
-    /**
-     * Compare this object to the supplied one (should be a FieldDefs)
-     * @param the object to compare to
-     * @return -1,1, or 0 according to wether this object is smaller, greater, or equals
-     *         to the supplied one.
-     */
-    public int compareTo(Object o) {
-        int pos1 = getDBPos();
-        int pos2 = ((FieldDefs)o).getDBPos();
-        if (pos1 < pos2) {
-            return -1;
-        } else if (pos1 > pos2) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 
     /**
      * Sorts a list with FieldDefs objects, using the default order (ORDER_CREATE)
