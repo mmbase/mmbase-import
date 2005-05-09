@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.302 2005-05-09 08:44:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.303 2005-05-09 16:34:11 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2207,7 +2207,7 @@ public class MMObjectBuilder extends MMTable {
      * though this only applies to the text functions 'short', 'html', and 'wap'.
      * Functions can be nested, i.e. 'html(shorted(body))'.
      * Derived builders should override this method only if they want to provide virtual fieldnames. To provide addiitonal functions,
-     * call {@link #addFunction} instead. See also the source code for {@link org.mmbase.util.function.ExampleBuilder}.
+     * call {@link #addFunction} instead. See also the source code for {@link org.mmbase.util.functions.ExampleBuilder}.
      * @param node the node whos efields are queries
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
