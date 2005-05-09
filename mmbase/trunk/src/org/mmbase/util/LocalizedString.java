@@ -18,7 +18,7 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.3 2005-03-21 13:03:35 pierre Exp $
+ * @version $Id: LocalizedString.java,v 1.4 2005-05-09 21:53:11 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  {
@@ -70,7 +70,7 @@ public class LocalizedString  {
             if (locale.equals(org.mmbase.module.core.MMBase.getMMBase().getLocale())) {
                 result = (String) values.get(null);
                 if (result != null) {
-                    values.put(locale,result);
+                    values.put(locale, result);
                     return result;
                 }
             }
@@ -123,6 +123,14 @@ public class LocalizedString  {
                 }
             }
         }
+    }
+
+    /**
+     * Locale -> description
+     */
+    public Map asMap() {
+        if (values == null) return new HashMap();
+        return Collections.unmodifiableMap(values);
     }
 
     /**
