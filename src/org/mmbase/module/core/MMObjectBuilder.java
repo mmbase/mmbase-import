@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.301 2005-05-08 13:25:12 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.302 2005-05-09 08:44:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -255,7 +255,7 @@ public class MMObjectBuilder extends MMTable {
      */
     protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.INTEGER) {
             {
-                setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be availabe as an 'escaper', and this version should now be considered an example.");
+                setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be available as an 'escaper', and this version should now be considered an example.");
             }
             public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
                 String val  = node.getStringValue(parameters.getString("field"));
@@ -270,7 +270,7 @@ public class MMObjectBuilder extends MMTable {
      */
     protected Function infoFunction = new NodeFunction("info", new Parameter[] { new Parameter("function", String.class) }, ReturnType.UNKNOWN) {
             {
-                setDescription("Returns information about availabe functions");
+                setDescription("Returns information about available functions");
             }
             protected Object getFunctionValue(Set functions, Parameters parameters) {
                 Map info = new HashMap();
@@ -2351,7 +2351,7 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Returns all Functions which are available (or at least known to be availabe) on a Node.
+     * Returns all Functions which are available (or at least known to be available) on a Node.
      * @since MMBase-1.8
      */
     protected Set getFunctions(MMObjectNode node) {
