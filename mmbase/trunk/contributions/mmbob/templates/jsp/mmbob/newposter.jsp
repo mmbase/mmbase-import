@@ -80,8 +80,7 @@
 <mm:notpresent referid="rulesid">
 <mm:compare referid="feedback" value="none">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
- 	<form action="<mm:url page="newposter.jsp">
-        <mm:param name="forumid" value="$forumid" />
+ 	<form action="<mm:url page="newposter.jsp" referids="forumid,rulesaccepted">
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         </mm:url>" method="post">
 			<tr><th width="150" ><mm:write referid="mlg.Account"/></th><td>
@@ -107,6 +106,7 @@
 				</td></tr>
 			<tr><th><mm:write referid="mlg.Gender"/></th><td>
 				<select name="newgender">
+				<option value="unknown">Unknown
 				<option value="male"><mm:write referid="mlg.Male"/>
 				<option value="female"><mm:write referid="mlg.Female"/>
 				</select>
@@ -120,38 +120,58 @@
 </mm:compare>
 </mm:notpresent>
 
-<mm:compare referid="feedback" value="inuse">
+<mm:compare referid="feedback" value="none" inverse="true">
+<mm:compare referid="feedback" value="ok" inverse="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-	<tr><th colspan="2"><mm:write referid="mlg.Account_allready_in_use"/></th></tr>
- 	<form action="<mm:url page="newposter.jsp">
-        <mm:param name="forumid" value="$forumid" />
+	<tr><th colspan="2">
+		<font color="red"> ***
+		<mm:compare referid="feedback" value="inuse"><mm:write referid="mlg.Account_allready_in_use"/></mm:compare>
+		<mm:compare referid="feedback" value="passwordnotequal"><mm:write referid="mlg.Password_notequal"/></mm:compare>
+		<mm:compare referid="feedback" value="firstnameerror">Firstname invalid</mm:compare>
+		<mm:compare referid="feedback" value="lastnameerror">Surname invalid</mm:compare>
+		<mm:compare referid="feedback" value="emailerror">Email invalid</mm:compare>
+		***
+		</font>
+	</th></tr>
+ 	<form action="<mm:url page="newposter.jsp" referids="forumid,rulesaccepted">
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         </mm:url>" method="post">
 			<tr><th width="150" ><mm:write referid="mlg.Account"/></th><td>
-				<input name="newaccount" value="" style="width: 100%" />
+				<mm:import externid="newaccount" />
+				<input name="newaccount" value="<mm:write referid="newaccount" />" style="width: 100%" />
 			</td></tr>
 			<tr><th width="150" ><mm:write referid="mlg.Password"/></th><td>
-				<input name="newpassword" style="width: 100%" type="password"/>
+				<mm:import externid="newpassword" />
+				<input name="newpassword" value="<mm:write referid="newpassword" />" style="width: 100%" type="password"/>
 			</td></tr>
 			<tr><th width="150" ><mm:write referid="mlg.ConfirmPassword"/></th><td>
-				<input name="newconfirmpassword" style="width: 100%" type="password"/>
+				<mm:import externid="newconfirmpassword" />
+				<input name="newconfirmpassword" value="<mm:write referid="newconfirmpassword" />" style="width: 100%" type="password"/>
 			</td></tr>
 			<tr><th><mm:write referid="mlg.Firstname"/></th><td>
-				<input name="newfirstname" value="" style="width: 100%" />
+				<mm:import externid="newfirstname" />
+				<input name="newfirstname" value="<mm:write referid="newfirstname" />" style="width: 100%" />
 				</td></tr>
 			<tr><th><mm:write referid="mlg.Lastname"/></th><td>
-				<input name="newlastname" value="" style="width: 100%" />
+				<mm:import externid="newlastname" />
+				<input name="newlastname" value="<mm:write referid="newlastname" />" style="width: 100%" />
 				</td></tr>
 			<tr><th><mm:write referid="mlg.Email"/></th><td>
-				<input name="newemail" value="" style="width: 100%" />
+				<mm:import externid="newemail" />
+				<input name="newemail" value="<mm:write referid="newemail" />" style="width: 100%" />
 				</td></tr>
 			<tr><th><mm:write referid="mlg.Location"/></th><td>
-				<input name="newlocation" value="" style="width: 100%" />
+				<mm:import externid="newlocation" />
+				<input name="newlocation" value="<mm:write referid="newlocation" />" style="width: 100%" />
 				</td></tr>
 			<tr><th><mm:write referid="mlg.Gender"/></th><td>
 				<select name="newgender">
-				<option value="male"><mm:write referid="mlg.Male"/>
-				<option value="female"><mm:write referid="mlg.Female"/>
+				<mm:import externid="newgender" />
+				<mm:write referid="newgender">
+				<option value="unknown" <mm:compare value="unknown">selected</mm:compare>>Unknown
+				<option value="male" <mm:compare value="male">selected</mm:compare>><mm:write referid="mlg.Male"/>
+				<option value="female" <mm:compare value="female">selected</mm:compare>><mm:write referid="mlg.Female"/>
+				</mm:write>
 				</select>
 			</td></tr>
 	<tr><th colspan="2">
@@ -161,50 +181,7 @@
 	</th></tr>
 </table>
 </mm:compare>
-
-<mm:compare referid="feedback" value="passwordnotequal">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-	<tr><th colspan="2"><mm:write referid="mlg.Password_notequal"/></th></tr>
- 	<form action="<mm:url page="newposter.jsp">
-        <mm:param name="forumid" value="$forumid" />
-        <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-        </mm:url>" method="post">
-			<tr><th width="150" ><mm:write referid="mlg.Account"/></th><td>
-				<input name="newaccount" value="" style="width: 100%" />
-			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg.Password"/></th><td>
-				<input name="newpassword" style="width: 100%" type="password"/>
-			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg.ConfirmPassword"/></th><td>
-				<input name="newconfirmpassword" style="width: 100%" type="password"/>
-			</td></tr>
-			<tr><th><mm:write referid="mlg.Firstname"/></th><td>
-				<input name="newfirstname" value="" style="width: 100%" />
-				</td></tr>
-			<tr><th><mm:write referid="mlg.Lastname"/></th><td>
-				<input name="newlastname" value="" style="width: 100%" />
-				</td></tr>
-			<tr><th><mm:write referid="mlg.Email"/></th><td>
-				<input name="newemail" value="" style="width: 100%" />
-				</td></tr>
-			<tr><th><mm:write referid="mlg.Location"/></th><td>
-				<input name="newlocation" value="" style="width: 100%" />
-				</td></tr>
-			<tr><th><mm:write referid="mlg.Gender"/></th><td>
-				<select name="newgender">
-				<option value="male"><mm:write referid="mlg.Male"/>
-				<option value="female"><mm:write referid="mlg.Female"/>
-				</select>
-			</td></tr>
-	<tr><th colspan="2">
-        <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg.Save"/>"></center>
-	</form>
-	</th></tr>
-</table>
 </mm:compare>
-
-
 
 <mm:compare referid="feedback" value="ok">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="60%">

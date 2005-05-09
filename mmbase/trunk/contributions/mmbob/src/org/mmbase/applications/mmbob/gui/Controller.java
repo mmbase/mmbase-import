@@ -967,10 +967,13 @@ public class Controller {
             if (f != null) {
                 Poster p = f.getPoster(account);
                 if (p == null) {
+		    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
+		    if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
+		    if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
                     p = f.createPoster(account, password);
                     if (p != null) {
-                        p.setFirstName(firstname);
-                        p.setLastName(lastname);
+                       	p.setFirstName(firstname); 
+                       	p.setLastName(lastname);
                         p.setEmail(email);
                         p.setGender(gender);
                         p.setLocation(location);
