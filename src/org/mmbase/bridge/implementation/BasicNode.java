@@ -19,8 +19,7 @@ import org.mmbase.bridge.util.fields.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.functions.Function;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 
@@ -33,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.141 2005-05-02 12:30:23 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.142 2005-05-09 13:07:14 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1281,11 +1280,18 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public Parameters createParameters(String functionName) {
-        return getFunction(functionName).createParameters();
+        Parameters params =  getFunction(functionName).createParameters();
+        params.setIfDefined(Parameter.NODE, getNode());
+        return params;
     }
 
     public FieldValue getFunctionValue(String functionName, List parameters) {
-        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
+        Function function = getNode().getFunction(functionName);
+        Parameters params = function.createParameters();
+        params.setIfDefined(Parameter.NODE, getNode());
+        params.setAll(parameters);
+        Function basicFunction =  new BasicFunction(this, function);
+        return (FieldValue) basicFunction.getFunctionValue(params);
     }
 
 }
