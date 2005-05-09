@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.12 2005-05-09 15:58:36 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.13 2005-05-09 21:54:54 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -283,7 +283,6 @@ public class BuilderReader extends XMLBasicReader {
                     newfield.setDBNotNull(f.getDBNotNull());
                     newfield.setDBKey(f.isKey());
                     newfield.setDBSize(f.getDBSize());
-                    newfield.setDBDocType(f.getDBDocType());
                     newfield.setDBPos(pos++);
                     // also inherit the gui names
                     Iterator guinames = f.getGUINames().entrySet().iterator();
@@ -461,12 +460,6 @@ public class BuilderReader extends XMLBasicReader {
         def.setDBKey(key != null && key.equalsIgnoreCase("true"));
         String state = getElementAttributeValue(dbtype,"state");
         def.setDBState(state);
-        String doctype = null;
-        Attr doctypeattr= dbtype.getAttributeNode("doctype");
-        if (doctypeattr!=null) {
-            doctype = doctypeattr.getValue();
-        }
-        def.setDBDocType(doctype);
         return def.getDBType();
     }
 
