@@ -16,7 +16,7 @@ import java.util.List;
  * @javadoc
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.4 2005-05-04 23:34:18 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.5 2005-05-09 14:14:17 michiel Exp $
  */
 public class WrappedFunction implements Function {
 
@@ -43,7 +43,8 @@ public class WrappedFunction implements Function {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
-             return getFunctionValue(new ParametersImpl(wrappedFunction.getParameterDefinition(), parameters));
+             Parameters params = wrappedFunction.createParameters().setAll(parameters);
+             return getFunctionValue(params);
          }
     }
 
