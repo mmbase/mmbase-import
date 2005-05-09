@@ -195,10 +195,24 @@
 	</mm:booleanfunction>
 </mm:compare>
 
+
+<mm:compare value="newadministrator" referid="action">
+	<mm:import externid="newadministrator" />
+	<mm:booleanfunction set="mmbob" name="newAdministrator" referids="forumid,posterid,newadministrator">
+	</mm:booleanfunction>
+</mm:compare>
+
 <mm:compare value="removemoderator" referid="action">
 	<mm:import externid="remmoderator" />
 	<mm:import externid="postareaid" />
 	<mm:booleanfunction set="mmbob" name="removeModerator" referids="forumid,postareaid,posterid,remmoderator">
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="removeadministrator" referid="action">
+	<mm:import externid="remadministrator" />
+	<mm:booleanfunction set="mmbob" name="removeAdministrator" referids="forumid,posterid,remadministrator">
 	</mm:booleanfunction>
 </mm:compare>
 

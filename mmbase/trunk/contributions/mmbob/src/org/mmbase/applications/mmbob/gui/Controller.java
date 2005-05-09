@@ -418,6 +418,34 @@ public class Controller {
 
 
     /**
+     * Get the administrators of this forum
+     *
+     * @param forumid MMBase node number of the forum
+     * @return List of (virtual) MMObjectNodes representing the administrators of this forum 
+     *         contains id, account, firstname, lastname of the administrator
+     */
+    public List getAdministrators(String forumid) {
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            Enumeration e = f.getAdministrators();
+            while (e.hasMoreElements()) {
+               Poster p = (Poster) e.nextElement();
+               MMObjectNode virtual = builder.getNewNode("admin");
+               virtual.setValue("id", p.getId());
+               virtual.setValue("account", p.getAccount());
+               virtual.setValue("firstname", p.getFirstName());
+               virtual.setValue("lastname", p.getLastName());
+               list.add(virtual);
+            }
+        }
+        return list;
+    }
+
+
+    /**
      * Get the posters that are now online in this forum
      * @param forumid MMBase node number of the forum
      * @return  List of (virtual) MMObjectNodes representing the online posters for the given forum
@@ -499,7 +527,7 @@ public class Controller {
      * @param postareaid MMBase node number of the new postarea
      * @return List of (virtual) MMObjectNodes representing all posters of the given postarea which are no moderators
      */
-    public List getNonModerators(String forumid, String postareaid) {
+    public List getNonModerators(String forumid, String postareaid,String searchkey) {
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
@@ -507,7 +535,7 @@ public class Controller {
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
             if (a != null) {
-                Enumeration e = a.getNonModerators();
+                Enumeration e = a.getNonModerators(searchkey);
                 while (e.hasMoreElements()) {
                     Poster p = (Poster) e.nextElement();
                     MMObjectNode virtual = builder.getNewNode("admin");
@@ -517,6 +545,34 @@ public class Controller {
                     virtual.setValue("lastname", p.getLastName());
                     list.add(virtual);
                 }
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * List all the posters not allready a administrator for this forum
+     *
+     * @param forumid MMBase node number of the forum
+     * @param postareaid MMBase node number of the new postarea
+     * @return List of (virtual) MMObjectNodes representing all posters of the given postarea which are no moderators
+     */
+    public List getNonAdministrators(String forumid,String searchkey) {
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+           Enumeration e = f.getNonAdministrators(searchkey);
+           while (e.hasMoreElements()) {
+               Poster p = (Poster) e.nextElement();
+               MMObjectNode virtual = builder.getNewNode("admin");
+               virtual.setValue("id", p.getId());
+               virtual.setValue("account", p.getAccount());
+               virtual.setValue("firstname", p.getFirstName());
+               virtual.setValue("lastname", p.getLastName());
+               list.add(virtual);
             }
         }
         return list;
@@ -1300,6 +1356,34 @@ public class Controller {
         return true;
     }
 
+
+    /**
+     * Add a moderator to a postarea within a forum
+     *
+     * @param forumid MMBase node number of the forum
+     * @param postareaid MMBase node number of the postarea
+     * @param sactiveid MMBase node number of current Poster (on the page)
+     * @param smoderatorid MMBase node number of moderator you want to add
+     * @return Feedback regarding the success of this action
+     */
+    public boolean newAdministrator(String forumid, String sactiveid, String sadministratorid) {
+        try {
+	    log.info("ADD ADMIN="+sadministratorid);
+            int activeid = Integer.parseInt(sactiveid);
+            int moderatorid = Integer.parseInt(sadministratorid);
+            Forum f = ForumManager.getForum(forumid);
+            if (f != null) {
+                    Poster ap = f.getPoster(activeid);
+                    Poster mp = f.getPoster(moderatorid);
+                    if (ap != null && f.isAdministrator(ap.getAccount())) {
+                        f.addAdministrator(mp);
+                    }
+            }
+        } catch (Exception e) {
+        }
+        return true;
+    }
+
     /**
      * Remove a moderator from a postarea (poster is not removed just status moderator is revoked)
      *
@@ -1319,6 +1403,28 @@ public class Controller {
                 if (ap != null && f.isAdministrator(ap.getAccount())) {
                     a.removeModerator(mp);
                 }
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Remove a moderator from a postarea (poster is not removed just status moderator is revoked)
+     *
+     * @param forumid  MMBase node number of the forum
+     * @param postareaid MMBase node number of the postarea
+     * @param activeid MMBase node number of current Poster (on the page)
+     * @param moderatorid MMBase node number of moderator you want to remove
+     * @return Feedback regarding the success of this action
+     */
+    public boolean removeAdministrator(String forumid, int activeid, int administratorid) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            Poster ap = f.getPoster(activeid);
+            Poster mp = f.getPoster(administratorid);
+            if (ap!=mp && f.isAdministrator(ap.getAccount())) {
+                f.removeAdministrator(mp);
             }
         }
         return true;
