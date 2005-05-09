@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.52 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.53 2005-05-09 10:54:36 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -173,7 +173,7 @@ public class ImportTag extends ContextReferrerTag {
             if (escape instanceof CharTransformer) { 
                 escaper = (CharTransformer) escape;
             } else {
-                escaper = ContentTag.getCharTransformer((String) escape, getContextProvider().getContextContainer());
+                escaper = ContentTag.getCharTransformer((String) escape, getContextProvider().getContextContainer(), this);
             }
             if (escaper != null && value != null) {
                 value = escaper.transform((String) value);
