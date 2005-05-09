@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.142 2005-05-09 13:07:14 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.143 2005-05-09 15:02:42 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -366,8 +366,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     protected void setValueWithoutProcess(String fieldName, Object value) {
         edit(ACTION_EDIT);
-        if ("number".equals(fieldName) || "otype".equals(fieldName) || "owner".equals(fieldName)) {
-            throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
+        if ("number".equals(fieldName) || "otype".equals(fieldName) || "owner".equals(fieldName)) {            
+            throw new BridgeException("Not allowed to change field '" + fieldName + "'." + ("owner".equals(fieldName) ? " Perhaps you want to use setContext() in stead. " : ""));
         }
         if (this instanceof Relation) {
             if ("rnumber".equals(fieldName)) {
