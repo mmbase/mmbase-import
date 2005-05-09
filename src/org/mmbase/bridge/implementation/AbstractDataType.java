@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.2 2005-05-09 10:57:27 michiel Exp $
+ * @version $Id: AbstractDataType.java,v 1.3 2005-05-09 21:42:39 michiel Exp $
  */
 
 abstract public class AbstractDataType implements DataType, Comparable {
@@ -31,10 +31,9 @@ abstract public class AbstractDataType implements DataType, Comparable {
     private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
     
 
-    // package for Parameters (direct access avoids function calls)
-    private String key;
-    private LocalizedString description;
-    private Class type;
+    protected String key;
+    protected LocalizedString description;
+    protected Class type;
 
 
     protected AbstractDataType() {}
