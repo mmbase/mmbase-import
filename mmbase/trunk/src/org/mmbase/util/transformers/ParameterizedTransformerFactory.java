@@ -13,6 +13,11 @@ import java.util.*;
 import org.mmbase.util.functions.Parameters;
 
 /**
+ * ParameterizedTransformerFactories, can create {@link Transformer} instances, but can do that
+ * 'parameterized'. Implementations of this define 'createParameters' which returns an empty {@link
+ * org.mmbase.util.functions.Parameters} object which defines which parameters are accepted.
+ * 
+ * The user can then fill this Parameters object and feed it to {@link createTransformer}.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
@@ -29,7 +34,5 @@ public interface ParameterizedTransformerFactory  {
      * Create  empty <code>Parameters</code> object for use with {@link #createTransformer}.
      */
     Parameters createParameters();
-
-    void setInverse(boolean inverse);
 
 }

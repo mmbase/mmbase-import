@@ -16,7 +16,9 @@ import org.mmbase.util.functions.*;
 
 
 /**
-
+ * Factories new instances of extensions of {@link RegexpReplacer}, for which the replace patterns
+ * are parameterized (using the 'patterns' parameter).
+ *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
  */
@@ -24,9 +26,6 @@ import org.mmbase.util.functions.*;
 public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacerFactory.class);
 
-    public void setInverse(boolean inverse) {
-        if (inverse) throw new IllegalArgumentException("Regexp-replacers cannot be inverted");
-    }
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter("patterns", Collection.class, true)

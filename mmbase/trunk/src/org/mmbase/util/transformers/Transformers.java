@@ -94,7 +94,7 @@ public class Transformers {
      * @since MMBase-1.8
      */
 
-    public static ParameterizedTransformerFactory getTransformerFactory(String name, String errorId, boolean back) {
+    public static ParameterizedTransformerFactory getTransformerFactory(String name, String errorId) {
         Class clazz;
         try {
             clazz = Class.forName(name);
@@ -113,7 +113,6 @@ public class Transformers {
             log.error("Error instantiating a " + clazz + ": " + ex.toString());
             return null;
         }        
-        fact.setInverse(back);
 
         return fact;
     }
