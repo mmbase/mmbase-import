@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.22 2005-05-02 13:04:16 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.23 2005-05-09 21:50:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -380,7 +380,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @throws UnsupportedOperationException when called
      *         on an aggregating query.
      */
-    public BasicStepField addField(Step step, FieldDefs fieldDefs) {
+    public BasicStepField addField(Step step, CoreField fieldDefs) {
         if (aggregating) {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
@@ -391,7 +391,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
 
     // only sensible for NodeSearchQuery
-    protected void mapField(FieldDefs field, StepField stepField) {
+    protected void mapField(CoreField field, StepField stepField) {
 
     }
 
@@ -404,8 +404,8 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
-            FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != FieldDefs.TYPE_BYTE 
+            CoreField field = (CoreField) iFields.next();
+            if (field.getType() != FieldDefs.TYPE_BYTE 
                 && field.inStorage()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
@@ -429,8 +429,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @throws UnsupportedOperationException when called
      *         on an non-aggregating query.
      */
-    public BasicAggregatedField addAggregatedField(Step step, FieldDefs fielDefs,
-    int aggregationType) {
+    public BasicAggregatedField addAggregatedField(Step step, CoreField fielDefs, int aggregationType) {
         if (!aggregating) {
             throw new UnsupportedOperationException(
             "Adding aggregated field to non-aggregating query.");
