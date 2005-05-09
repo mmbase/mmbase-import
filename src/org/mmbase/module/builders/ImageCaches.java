@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.images.*;
 import org.mmbase.util.UriParser;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -25,21 +26,30 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.41 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ImageCaches.java,v 1.42 2005-05-09 10:02:18 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
     private static final Logger log = Logging.getLoggerInstance(ImageCaches.class);
 
-    static final String GUI_IMAGETEMPLATE = "s(100x60)";
+    public static final String FIELD_ID       = "id";
 
-    private CKeyCache handleCache = new CKeyCache(128) {  // a few images are in memory cache.
-            public String getName()        { return "ImageHandles"; }
-            public String getDescription() { return "Handles of Images (ckey -> handle)"; }
-        };
+    public final static Parameter[] WAIT_PARAMETERS      =  Parameter.EMPTY;
+
+    static final String GUI_IMAGETEMPLATE = "s(100x60)"; 
+
+    private boolean checkLegacyCkey = true;
+
 
     public ImageCaches() {
-        handleCache.putCache();
+    }
+
+    public boolean init() {
+        if (oType != -1) return true; // inited already
+        if (!super.init()) return false;
+
+        checkLegacyCkey = ! "false".equals(getInitParameter("LegacyCKey"));
+        return true;
     }
 
     /**
@@ -48,7 +58,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     private MMObjectNode originalImage(MMObjectNode node) {
-        return getNode(node.getIntValue("id"));
+        return getNode(node.getIntValue(FIELD_ID));
     }
 
     /**
@@ -57,7 +67,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
 
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters a) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters a) {
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) a.get(Parameter.REQUEST);
         if (req != null) {
@@ -84,9 +94,22 @@ public class ImageCaches extends AbstractImages {
         } else {
             imageThumb = "";
         }
+        String title;
+        String field = (String) a.get("field");
+        if (field == null || "".equals(field)) {
+            // gui for the node itself.
+            title = ""; 
+        } else {
+            if (storesDimension()) {
+                title = " title=\"" + getMimeType(node) + " " + getDimension(node) + "\"";
+            } else {
+                title = " title=\"" + getMimeType(node) + "\"";
+            }
+        }
+
         String image      = servlet.toString() + node.getNumber();
         if (res != null) image = res.encodeURL(image);
-        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" + title + "\" /></a>";
+        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" + alt + "\"" + title + " /></a>";
     }
 
     // javadoc inherited
@@ -95,110 +118,113 @@ public class ImageCaches extends AbstractImages {
         return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
     }
 
+    /**
+     * If a icache node is created with empty 'handle' field, then the handle field can be filled
+     * automaticly. Sadly, getValue of MMObjectNode cannot be overriden, so it cannot be done
+     * completely automaticly, but that may be more transparent anyway.  Call this method (perhaps
+     * with node.getFunctionValue("wait", null)) before requesting the handle field. This will
+     * method will block until the field is filled.
+     * @param node A icache node.
+     */
+    public void waitForConversion(MMObjectNode node) {
+        log.debug("Wating for conversion?");
+        if (node.isNull(Imaging.FIELD_HANDLE)) {
+            log.service("Waiting for conversion");
+            // handle field not yet filled, but this is not a new node
+            String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
+            String template = Imaging.parseCKey(ckey).template;
+            List params     = Imaging.parseTemplate(template);
+            MMObjectNode image = originalImage(node);
+            // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
+            image.parent.clearBlobCache(image.getNumber());
+            byte[] bytes = image.getByteValue(Imaging.FIELD_HANDLE);
+            // This triggers conversion, or waits for it to be ready.
+            ImageConversionRequest req = Factory.getImageConversionRequest(params, bytes, node);
+            req.waitForConversion();
+            
+        } else {
+            log.debug("no");
+        }
+    }
+
 
     /**
-     * Given a certain ckey, return the cached image node number, if there is one, otherwise return -1.
-     * This functions always does a query. The caching must be done somewhere else.
-     * This is done because caching on ckey is not necesarry when caching templates.
-     * @since MMBase-1.6
+     * Finds a icache node in the icaches table
+     * @param imageNumber The node number of the image for which it must be searched
+     * @param template     The image conversion template
+     * @return The icache node or <code>null</code> if it did not exist yet.
      **/
-    protected MMObjectNode getCachedNode(String ckey) {
-        log.debug("Getting cached noded for " + ckey);
+    protected MMObjectNode getCachedNode(int imageNumber, String template) {
+        log.debug("Getting cached noded for " + template);
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(2); // to make sure this is a cheap query.
-            StepField ckeyField = query.getField(getField("ckey"));
-            query.setConstraint(new BasicFieldValueConstraint(ckeyField, ckey));
+            StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
+            Object ckey = Factory.getCKey(imageNumber, template);
+            BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey.toString());
+            bfvc.setCaseSensitive(true);
+            query.setConstraint(bfvc);
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
             log.error(e.toString());
             return null;
         }
 
-        if (nodes.size() == 0) {
-            log.debug("Did not find cached images with key ("+ ckey +")");
-            return null;
-        }
+
         if (nodes.size() > 1) {
-            log.warn("found more then one cached image with key ("+ ckey +")");
+            log.warn("Found more then one cached image with key ("+ template +")");
         }
-        return (MMObjectNode) nodes.get(0);
-    }
 
-    /**
-     * Returns the bytes of a cached image. It accepts a list, just
-     * because it is also like this in Images.java. But of course a
-     * cached image only uses the first element (number of the node).
-     * It also works if the the node is a real image in stead of a
-     * cached image, in which case simple the unconverted image is
-     * returned.
-     *
-     * If the node does not exists, it returns empty byte array
-     */
-    public byte[] getImageBytes(List params) {
-        MMObjectNode node = getNode("" + params.get(0));
-        if (node == null) {
-            return null;
+        if (nodes.size() == 0) {
+            log.debug("Did not find cached images with key ("+ template +")");
+            if (checkLegacyCkey) {
+                return getLegacyCachedNode(imageNumber, template);
+            } else {
+                return null;
+            }
+     
         } else {
-            return node.getByteValue("handle");
+            return (MMObjectNode) nodes.get(0);
         }
     }
-
     /**
-     * Return a @link{ ByteFieldContainer} containing the bytes and object number
-     * for the cached image with a certain ckey, or null, if not cached.
-     * @param ckey the ckey to search for
-     * @return null, or a @link{ByteFieldContainer} object
-     * @since MMBase-1.7
-     */
-    public ByteFieldContainer getCkeyNode(String ckey) {
-        log.debug("getting ckey node with " + ckey);
-        if(handleCache.contains(ckey)) {
-            // found the node in the cache..
-            log.debug("Found in handleCache!");
-            ByteFieldContainer result = (ByteFieldContainer) handleCache.get(ckey);
-            log.debug("Found number " + result.number);
-        }
-        log.debug("not found in handle cache, getting it from database.");
-        MMObjectNode node = getCachedNode(ckey);
-        if (node == null) {
-            // we dont have a cachednode yet, return null
-            log.debug("cached node not found for key (" + ckey + "), returning null");
+     * Finds a icache node in the icache table, supposing 'legacy' ckeys (where all +'s are removed).
+     * @param imageNumber The node number of the image for which it must be searched
+     * @param template     The image conversion template
+     * @return The icache node or <code>null</code> if it did not exist.
+     **/
+    protected MMObjectNode getLegacyCachedNode(int imageNumber, String template) {
+        List params = Imaging.parseTemplate(template);
+        String legacyCKey = "" + imageNumber + getLegacyCKey(params);
+        log.info("Trying legacy " + legacyCKey);
+        List legacyNodes;
+        try {
+            NodeSearchQuery query = new NodeSearchQuery(this);
+            query.setMaxNumber(2); // to make sure this is a cheap query.
+            StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
+            query.setConstraint(new BasicFieldValueConstraint(ckeyField, legacyCKey));
+            legacyNodes = getNodes(query);
+            if (legacyNodes.size() == 0) {
+                log.debug("Did not find cached images with key (" +  legacyCKey + ")");
+            }
+            if (legacyNodes.size() > 1) {
+                log.warn("Found more then one cached image with key (" + legacyCKey + ")");
+            }
+            MMObjectNode legacyNode = null;
+            Iterator i = legacyNodes.iterator();
+            // now fix the ckey to new value
+            String ckey = Factory.getCKey(imageNumber, template).toString();
+            while (i.hasNext()) {
+                legacyNode = (MMObjectNode) i.next();
+                legacyNode.setValue(Imaging.FIELD_CKEY, ckey); // fix to new format
+                legacyNode.commit();
+            }
+            return legacyNode;
+        } catch (SearchQueryException e) {
+            log.error(e.toString());
             return null;
         }
-        // find binary data
-        byte data[] = node.getByteValue("handle");
-        if (data == null) {
-            // if it didn't work, also cache this result, to avoid concluding that again..
-            // should this trow an exception every time? I think so, otherwise we would generate an
-            // image every time it is requested, which also net very handy...
-            String msg = "The node(#"+node.getNumber()+") which should contain the cached result for ckey:" + ckey + " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
-            log.error(msg);
-            throw new RuntimeException(msg);
-        }
-
-        ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
-        // is this not configurable?
-        // only cache small images.
-        if (data.length< (100 * 1024))  {
-            handleCache.put(ckey, result);
-        }
-        return result;
-    }
-
-    /**
-     * It is unknown where this is good for.
-     * @javadoc
-     */
-    private String toHexString(String str) {
-        StringBuffer b=new StringBuffer();
-        char[] chb;
-        chb=str.toCharArray();
-        for (int i=0;i<chb.length;i++) {
-            b.append(Integer.toString((int)chb[i],16)+",");
-        }
-        return b.toString();
     }
 
     /**
@@ -217,13 +243,14 @@ public class ImageCaches extends AbstractImages {
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
-            StepField idField = query.getField(getField("id"));
+            StepField idField = query.getField(getField(FIELD_ID));
             query.setConstraint(new BasicFieldValueConstraint(idField, new Integer(imageNode.getNumber())));
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
             log.error(e.toString());
             nodes = new java.util.ArrayList(); // do nothing
         }
+
         Iterator i = nodes.iterator();
         while(i.hasNext()) {
             // delete the icache node
@@ -233,7 +260,9 @@ public class ImageCaches extends AbstractImages {
                 log.debug("deleted node with number#" + invalidNode.getNumber());
             }
         }
-        handleCache.remove(imageNode.getNumber());
+
+
+
     }
 
     /**
@@ -243,56 +272,171 @@ public class ImageCaches extends AbstractImages {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-        String ckey = node.getStringValue("ckey");
+        String ckey = node.getStringValue(Imaging.FIELD_CKEY);
         log.service("Icaches: removing node " + node.getNumber() + " " + ckey);
-        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getIntValue("id"));
+        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getIntValue(FIELD_ID));
         // also delete from LRU Cache
-        handleCache.remove(ckey);
         super.removeNode(node);
 
     }
 
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) {
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
-        }
-        if (ctype.equals("d")) {
-            handleCache.removeCacheNumber(Integer.parseInt(number));
-        }
-        return super.nodeLocalChanged(machine, number, builder, ctype);
-    }
-
-
-
     /**
      * Returns the image format.
-     *
-     * @since MMBase-1.6
      */
     protected String getImageFormat(MMObjectNode node) {
-        String format = "jpg";
-        if (node != null) {
-            String ckey    = node.getStringValue("ckey");
-            // stupid method, I think the format must be a field of iaches table.
+        if (storesImageType()) {
+            return super.getImageFormat(node);
+        } else {
+            // stupid method, for if the format is not a field of the icaches table.
+            String ckey    = node.getStringValue(Imaging.FIELD_CKEY);
             int fi = ckey.indexOf("f(");
             if (fi > -1) {
                 int fi2 = ckey.indexOf(")", fi);
-                format = ckey.substring(fi + 2, fi2);
+                return ckey.substring(fi + 2, fi2);
+            } else {
+                return "jpg";
             }
         }
-        return format;
     }
 
-    public String getImageMimeType(List params) {
-        return getImageMimeType(getNode("" + params.get(0)));
+    public String getMimeType(List params) {
+        return getMimeType(getNode("" + params.get(0)));
     }
 
     public int insert(String owner, MMObjectNode node) {
         int res = super.insert(owner, node);
         // make sure there is no such thing with this ckey cached
-        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getStringValue("ckey"));
+        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getStringValue(Imaging.FIELD_CKEY));
         return res;
     }
+
+    
+    /**
+     * Every image of course has a format and a mimetype. Two extra functions to get them.
+     *
+     */
+
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        if (function.equals("wait")) {
+            waitForConversion(node);
+            return node;
+        } else {
+            return super.executeFunction(node, function, args);
+        }
+    }
+
+    /**
+     * This function will flatten the parameters to the legacy unique key, so that an image can be found in the cache.
+     *
+     * This function used to be called 'flattenParameters'.
+     *
+     * @param params a <code>List</code> of <code>String</code>s, with a size greater then 0 and not null
+     * @return a string containing the key for this List, or <code>null</code>,....
+     */
+    private String getLegacyCKey(List params) {
+        if (params == null || params.size() == 0) {
+            log.debug("no parameters");
+            return null;
+        }
+        // flatten parameters as a 'hashed' key;
+        StringBuffer sckey = new StringBuffer("");
+        Iterator enumeration=params.iterator();
+        while(enumeration.hasNext()) {
+            sckey.append(enumeration.next().toString());
+        }
+        // skip spaces at beginning and ending, URL param escape to avoid everything strange in it.
+        String ckey = "";
+        try {
+            ckey = new String(sckey.toString().trim().getBytes("US-ASCII")).replace('"', 'X').replace('\'', 'X');
+        } catch (java.io.UnsupportedEncodingException e) {
+            log.error(e.toString());
+        }
+        // of course it is not a very good idea to convert to US-ASCII, but
+        // in ImageCaches this string is used in a select statement, without using
+        // a database layer. So we must have something which works always.
+        // Some texts, however will lead to the same ckey now.
+
+        if(log.isDebugEnabled()) log.debug("using ckey " + ckey);
+        if(ckey.length() > 0) {
+            return ckey;
+        } else {
+            log.debug("empty parameters");
+            return null;
+        }
+    }
+
+
+    /**
+     * @deprecated-now
+     */    
+    public String getImageMimeType(List params) {
+        return getMimeType(getNode("" + params.get(0)));
+    }
+
+
+
+    /**
+     * Return a {@link ByteFieldContainer} containing the bytes and object number
+     * for the cached image with a certain ckey, or null, if not cached.
+     * @param ckey the ckey to search for. But not a real ckey, because it contains +'s.
+     * @return null, or a {@link ByteFieldContainer} object
+     * @since MMBase-1.7
+     * @deprecated-now
+     */
+    public ByteFieldContainer getCkeyNode(String ckey) {
+        log.debug("getting ckey node with " + ckey);
+
+        int pos = 0;
+        while (Character.isDigit(ckey.charAt(pos))) pos ++;
+        int nodeNumber = Integer.parseInt(ckey.substring(0, pos));
+        String template   = ckey.substring(pos); 
+        if (template.charAt(0) == '=') template = template.substring(1);
+        MMObjectNode node = getCachedNode(nodeNumber, template);
+        if (node == null) {
+            // we dont have a cachednode yet, return null
+            log.debug("cached node not found for key (" + ckey + "), returning null");
+            return null;
+        }
+        // find binary data
+        byte data[] = node.getByteValue(Imaging.FIELD_HANDLE);
+        if (data == null) {
+            // if it didn't work, also cache this result, to avoid concluding that again..
+            // should this trow an exception every time? I think so, otherwise we would generate an
+            // image every time it is requested, which also net very handy...
+
+            String msg = 
+                "The node(#" + node.getNumber() + ") which should contain the cached result for ckey:" + ckey + 
+                " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
+            log.error(msg);
+            throw new RuntimeException(msg);
+        }
+
+        ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
+        return result;
+    }
+
+     /**
+     * Returns the bytes of a cached image. It accepts a list, just
+     * because it is also like this in Images.java. But of course a
+     * cached image only uses the first element (number of the node).
+     * It also works if the the node is a real image in stead of a
+     * cached image, in which case simple the unconverted image is
+     * returned.
+     *
+     * If the node does not exists, it returns empty byte array
+     * @deprecated-now
+     */    
+    public byte[] getImageBytes(List params) {
+        MMObjectNode node = getNode("" + params.get(0));
+        if (node == null) {
+            return null;
+        } else {
+            return node.getByteValue("handle");
+        }
+    }
+
+
+
 
 
 
