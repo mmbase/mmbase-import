@@ -111,7 +111,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">The image itself (binary data)</description>
-        <description xml:lang="nl">De afbeelding zelf (binarie data)</description>
+        <description xml:lang="nl">De afbeelding zelf (binaire data)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Image</guiname>
@@ -156,6 +156,68 @@
       <db>
         <name>itype</name>
         <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+
+     <field>
+       <descriptions>
+         <description xml:lang="en">Filesize of the image</description>
+         <description xml:lang="nl">Filegrootte van het plaatje</description>
+       </descriptions>
+        <gui>
+          <guiname xml:lang="en">Size</guiname>
+          <guiname xml:lang="nl">Grootte</guiname>
+          <guiname xml:lang="fr">Taille</guiname>
+          <guiname xml:lang="eo">Grando</guiname>
+          <guiname xml:lang="it">Dimensione</guiname>
+          <guitype>integer</guitype>
+        </gui>
+        <editor>
+          <positions>
+             <input>5</input><list>5</list><search>5</search>
+          </positions>
+        </editor>
+        <db>
+          <name>filesize</name>
+          <type state="persistent" notnull="false">INTEGER</type>
+        </db>
+     </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Width of the image in pixels</description>
+        <description xml:lang="nl">Breedte van het plaatje in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+        <guitype>string</guitype>
+      </gui>
+
+      <editor>
+        <positions><input>-1</input><list>-1</list><search>-1</search></positions>
+      </editor>
+      <db>
+        <name>width</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Height of the image in pixels</description>
+        <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+        <guitype>string</guitype>
+      </gui>
+
+      <editor>
+        <positions><input>-1</input><list>-1</list><search>-1</search></positions>
+      </editor>
+      <db>
+        <name>height</name>
+        <type state="persistent" notnull="false">INTEGER</type>
       </db>
     </field>
 
