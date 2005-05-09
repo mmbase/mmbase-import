@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.12 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: VirtualBuilder.java,v 1.13 2005-05-09 14:21:07 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -132,7 +132,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param number number of the object in the table
      * @return <code>null</code>
      */
-    public String getShortedText(String fieldname,int number) {
+    protected String getShortedText(String fieldname, MMObjectNode node) {
         return null;
     }
 
@@ -145,7 +145,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param number number of the object in the table
      * @return <code>null</code>
      */
-    public byte[] getShortedByte(String fieldname,int number) {
+    protected byte[] getShortedByte(String fieldname, MMObjectNode node) {
         return null;
     }
 
