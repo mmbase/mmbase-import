@@ -20,7 +20,7 @@ import org.mmbase.util.xml.DocumentReader;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.7 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: StorageReader.java,v 1.8 2005-05-09 16:28:49 michiel Exp $
  * @since MMBase-1.7
  */
 public class StorageReader extends DocumentReader  {
@@ -54,7 +54,7 @@ public class StorageReader extends DocumentReader  {
      * Constructor.
      *
      * @param factory the factory for which to read the storage configuration
-     * @param Inputsource to the xml document.
+     * @param source to the xml document.
      * @since MMBase-1.7
      */
     public StorageReader(StorageManagerFactory factory, InputSource source) {
