@@ -414,6 +414,19 @@
 		</return> 
 	</function>
 
+
+	<function name="removeAdministrator">
+		<description>Remove a administrator from a forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>removeAdministrator</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<param name="remadministrator" type="int" description="MMBase node number of moderator you want to remove" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="getPostThreadNavigation">
 		<description>Generate a navigation line (html) for a postthread</description>
 		<type>class</type>
@@ -483,6 +496,21 @@
 	</function>
 
 
+	<function name="getAdministrators">
+		<description>Get the administrators of a forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getAdministrators</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<return type="NodeList"> 
+			<field name="id" type="int" description="MMBase node number of a moderator (poster)" />
+			<field name="account" type="String" description="Account name of this moderator" />
+			<field name="firstname" type="String" description="Firstname of this moderator" />
+			<field name="lastname" type="String" description="Last name of this moderator" />
+		</return> 
+	</function>
+
+
 	<function name="getPostersOnline">
 		<description>Get the posters now online in this forum</description>
 		<type>class</type>
@@ -524,6 +552,18 @@
 		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
 		<param name="posterid" type="String" description="MMBase node number of current Poster (on the page)" />
 		<param name="newmoderator" type="String" description="MMBase node number of moderator you want to add" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+	<function name="newAdministrator">
+		<description>Add a administrator within a forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>newAdministrator</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="String" description="MMBase node number of current Poster (on the page)" />
+		<param name="newadministrator" type="String" description="MMBase node number of moderator you want to add" />
 		<return type="Node"> 
 		</return> 
 	</function>
@@ -609,6 +649,23 @@
 		<method>getNonModerators</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="postareaid" type="String" description="MMBase node number of the new postarea" />
+		<param name="searchkey" type="String" description="MMBase node number of the new postarea" />
+		<return type="NodeList"> 
+			<field name="id" type="int" description="MMBase node number of the poster" />
+			<field name="account" type="String" description="Account name of this poster" />
+			<field name="firstname" type="String" description="Firstname of this poster" />
+			<field name="lastname" type="String" description="Lastname of this poster" />
+		</return> 
+	</function>
+
+
+	<function name="getNonAdministrators">
+		<description>List all the posters not allready a administrator</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getNonAdministrators</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="searchkey" type="String" description="MMBase node number of the forum" />
 		<return type="NodeList"> 
 			<field name="id" type="int" description="MMBase node number of the poster" />
 			<field name="account" type="String" description="Account name of this poster" />

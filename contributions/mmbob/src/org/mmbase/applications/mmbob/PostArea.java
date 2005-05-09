@@ -373,15 +373,23 @@ public class PostArea {
      * get all posters that are no moderator of the postarea
      * @return non-moderators
      */
-    public Enumeration getNonModerators() {
-        Vector result = new Vector();
+    public Enumeration getNonModerators(String searchkey) {
+	Vector result =  new Vector();
         Enumeration e = parent.getPosters();
         while (e.hasMoreElements()) {
-            Poster p = (Poster) e.nextElement();
-            if (!isModerator(p.getAccount())) {
-                result.add(p);
-            }
-        }
+              Poster p = (Poster) e.nextElement();
+	      if (!isModerator(p.getAccount())) {
+                 String account =  p.getAccount().toLowerCase();
+              	 String firstname = p.getFirstName().toLowerCase();
+                 String lastname = p.getLastName().toLowerCase();
+                 if (searchkey.equals("*") || account.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1) {
+			result.add(p);	
+			if (result.size()>49) {
+				return result.elements();
+			}
+	         }
+	      }
+	}
         return result.elements();
     }
 

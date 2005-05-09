@@ -290,6 +290,26 @@ public class Forum {
         return administrators.elements();
     }
 
+    public Enumeration getNonAdministrators(String searchkey) {
+	Vector result =  new Vector();
+        Enumeration e = getPosters();
+        while (e.hasMoreElements()) {
+              Poster p = (Poster) e.nextElement();
+	      if (!isAdministrator(p.getAccount())) {
+                 String account =  p.getAccount().toLowerCase();
+              	 String firstname = p.getFirstName().toLowerCase();
+                 String lastname = p.getLastName().toLowerCase();
+                 if (searchkey.equals("*") || account.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1) {
+			result.add(p);	
+			if (result.size()>49) {
+				return result.elements();
+			}
+	         }
+	      }
+	}
+        return result.elements();
+    }
+
     /**
      * get the posters of the forum
      *
@@ -860,6 +880,32 @@ public class Forum {
         return false;
     }
 
+
+    public boolean removeAdministrator(Poster mp) {
+        if (isAdministrator(mp.getAccount())) {
+            Node node = ForumManager.getCloud().getNode(id);
+            RelationIterator i = node.getRelations("rolerel", "posters").relationIterator();
+            while (i.hasNext()) {
+                Relation rel = i.nextRelation();
+                String role = rel.getStringValue("role");
+                if (role.substring(0, 12).equals("administrato")) {
+                    Node p = null;
+                    if (rel.getSource().getNumber() == node.getNumber()) {
+                        p = rel.getDestination();
+                    } else {
+                        p = rel.getSource();
+                    }
+                    if (p != null && p.getNumber() == mp.getId()) {
+                        rel.delete();
+                        administrators.remove(mp.getAccount());
+                        administratorsline = null;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * remove a poster from the posters
      *
@@ -1182,8 +1228,7 @@ public class Forum {
     public String getFromEmailAddress() {
         if (config != null) {
             String tmp = config.getFromEmailAddress();
-            if (tmp != null) {
-                log.debug("config.getFromEmailAddress() on "+getId()+ ": " + tmp);
+            if (tmp != null && !tmp.equals("")) {
                 return tmp;
             }
         }
