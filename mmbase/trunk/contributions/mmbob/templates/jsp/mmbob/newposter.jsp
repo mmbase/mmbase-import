@@ -49,7 +49,35 @@
                                                                                               
 <div class="bodypart">
 
+<mm:import externid="rulesaccepted">no</mm:import>
+
+<mm:compare referid="rulesaccepted" value="no">
+<mm:node referid="forumid">
+	<mm:relatednodes type="forumrules">
+		<mm:import id="rulesid"><mm:field name="number" /></mm:import>
+	</mm:relatednodes>
+</mm:node>
+</mm:compare>
+
 <mm:include page="path.jsp?type=$pathtype" />
+
+<mm:present referid="rulesid">
+<mm:node referid="rulesid">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="80%">
+        <tr><th colspan="2"><mm:field name="title" /></th></tr>        <tr><td colspan="2"><br /><br /><mm:field name="body" escape="p" /><br /><br /></td></tr>
+	<tr>
+	<form action="<mm:url page="newposter.jsp" referids="forumid" />" method="post">
+	<td align="middle" width="50%"><center><input type="submit" value="I ACCEPT THESE RULES" /><input type="hidden" name="rulesaccepted" value="yes" /></center></td>
+	</form>
+	<form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
+	<td><center><input type="submit" value="REFUSE" /></center></td>
+	</form>
+	</tr>
+</table>
+
+</mm:node>
+</mm:present>
+<mm:notpresent referid="rulesid">
 <mm:compare referid="feedback" value="none">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
  	<form action="<mm:url page="newposter.jsp">
@@ -90,6 +118,7 @@
 	</th></tr>
 </table>
 </mm:compare>
+</mm:notpresent>
 
 <mm:compare referid="feedback" value="inuse">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
