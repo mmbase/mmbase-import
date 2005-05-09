@@ -3,7 +3,6 @@
  %><mm:escaper id="mygoogle" type="google">
   <mm:param name="host" value="" />
 </mm:escaper>	   
-<mm:write referid="mygoogle" />
 <mm:content type="text/html" postprocessor="mygoogle,reducespace">
 <html>
 <head>
