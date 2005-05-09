@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,13 +17,13 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.15 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicStepField.java,v 1.16 2005-05-09 21:50:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
 
     /** Associated field definition. */
-    private FieldDefs fieldDefs = null;
+    private CoreField fieldDefs = null;
 
     /** Associated step. */
     private Step step = null;
@@ -121,7 +121,7 @@ public class BasicStepField implements StepField {
      * @param fieldDefs The associated fieldDefs.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStepField(Step step, FieldDefs fieldDefs) {
+    public BasicStepField(Step step, CoreField fieldDefs) {
         if (step == null) {
             throw new IllegalArgumentException(
             "Invalid step value: " + step);
@@ -163,13 +163,19 @@ public class BasicStepField implements StepField {
      *
      * @return The fieldDefs.
      */
-    public FieldDefs getFieldDefs() {
+    public CoreField getField() {
         return fieldDefs;
+    }
+    /**
+     * @deprecated
+     */
+    public FieldDefs getFieldDefs() {
+        return (FieldDefs) fieldDefs;
     }
 
     // javadoc is inherited
     public String getFieldName() {
-        return fieldDefs.getDBName();
+        return fieldDefs.getName();
     }
 
     // javadoc is inherited
@@ -184,7 +190,7 @@ public class BasicStepField implements StepField {
 
     // javadoc in inherited
     public int getType() {
-        return fieldDefs.getDBType();
+        return fieldDefs.getType();
     }
 
     // javadoc is inherited

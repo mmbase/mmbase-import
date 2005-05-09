@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.CoreField;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,11 +17,10 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicAggregatedField.java,v 1.6 2005-05-02 13:02:09 michiel Exp $
+ * @version $Id: BasicAggregatedField.java,v 1.7 2005-05-09 21:50:40 michiel Exp $
  * @since MMBase-1.7
  */
-public class BasicAggregatedField extends BasicStepField
-implements AggregatedField {
+public class BasicAggregatedField extends BasicStepField implements AggregatedField {
 
     /** he aggregation type. */
     private int aggregationType = 0;
@@ -34,7 +33,7 @@ implements AggregatedField {
      * @param aggregationType The aggregation type.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicAggregatedField(Step step, FieldDefs fieldDefs, int aggregationType) {
+    public BasicAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
         super(step, fieldDefs);
         setAggregationType(aggregationType);
     }
