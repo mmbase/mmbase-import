@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.9 2004-09-30 17:19:49 pierre Exp $
+ * @version $Id: SizeOf.java,v 1.10 2005-05-09 14:15:05 michiel Exp $
  */
 public class SizeOf {
     private static Logger log = Logging.getLoggerInstance(SizeOf.class.getName());
@@ -78,7 +78,9 @@ public class SizeOf {
             log.debug("an array");
             return size_arr(obj, c);
         } else {
-            log.debug("an object " + obj);
+            if (log.isDebugEnabled()) {
+                log.debug("an object " + obj);
+            }
             try {
                 if (SizeMeasurable.class.isAssignableFrom(c)) return sizeof((SizeMeasurable) obj);
                 if (javax.servlet.http.HttpSession.class.isAssignableFrom(c))   return sizeof((javax.servlet.http.HttpSession) obj);
