@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.1 2005-03-16 16:01:23 michiel Exp $
+ * @version $Id: AbstractDataType.java,v 1.2 2005-05-09 10:57:27 michiel Exp $
  */
 
 abstract public class AbstractDataType implements DataType, Comparable {
@@ -123,7 +123,7 @@ abstract public class AbstractDataType implements DataType, Comparable {
      */
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
-            throw new IllegalArgumentException("DataType of '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
+            throw new IllegalArgumentException("DataType of '" + value + "' for '" + getName() + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
 
