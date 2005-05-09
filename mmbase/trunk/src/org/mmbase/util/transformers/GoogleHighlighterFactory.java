@@ -22,7 +22,11 @@ import org.mmbase.util.logging.*;
  * An example for parameterized transformers. The Google highlighter transformers have a REQUEST
  * parameter, which are used to explore the 'Referer' HTTP header and highlight the google search
  * words.
- * This can be used in taglib e.g. by &lt;mm:content postprocessor="google" /&gt;
+ * This can be used in taglib e.g. by &lt;mm:content postprocessor="google" expires="0" /&gt;
+ *
+ * Because you need expires=0, you need be reluctant to use this, because this means that you page
+ * cannot be cached in front-proxies. Perhap;s it is better to find some client-side solution.
+
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
  */
@@ -31,9 +35,9 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
     private static final Logger log = Logging.getLoggerInstance(GoogleHighlighterFactory.class);
 
     private static final Parameter[] PARAM = new Parameter[] {
-        Parameter.REQUEST,
         new Parameter("format", String.class, "<span class=\"google\">$1</span>"),
-        new Parameter("host",   String.class, "google")
+        new Parameter("host",   String.class, "google"),
+        Parameter.REQUEST,
     };
 
     public Transformer createTransformer(final Parameters parameters) {
@@ -48,16 +52,16 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             log.warn(mfue);
             return CopyCharTransformer.INSTANCE;
         }
-        log.info("Using referrer " + referrer);
+        log.debug("Using referrer " + referrer);
         if (referrer.getHost().indexOf((String) parameters.get("host")) == -1) { // did not refer
                                                                                  // from google
-            log.info("Wrong host, returning COPY");
+            log.debug("Wrong host, returning COPY");
             return CopyCharTransformer.INSTANCE;
         }
         String queryString = referrer.getQuery();
         if (queryString == null) {
             // odd
-            log.info("No query, returning COPY");
+            log.debug("No query, returning COPY");
             return CopyCharTransformer.INSTANCE;
         }
         String[] query = queryString.split("&");
@@ -72,11 +76,11 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         }
         if (s == null) {
             // odd
-            log.info("No search, returning COPY");
+            log.debug("No search, returning COPY");
             return CopyCharTransformer.INSTANCE;
         } 
         final String search = s;
-        log.info("Using search " + search);
+        log.debug("Using search " + search);
         
         RegexpReplacer trans = new RegexpReplacer() {                
                 private Collection patterns = new ArrayList();
@@ -88,7 +92,9 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
                     return patterns;
                 }
             };
-        log.info("Using google transformer " + trans);
+        if (log.isDebugEnabled()) {
+            log.debug("Using google transformer " + trans);
+        }
         return trans;
 
     }
@@ -96,6 +102,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         return new ParametersImpl(PARAM);
     }
     public void setInverse(boolean inverse) {
+        if (inverse) throw new UnssupportedOperatoriontException("Removing of google highlighting is not implemented");
     }
 
 }
