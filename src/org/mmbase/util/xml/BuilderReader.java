@@ -19,6 +19,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.*;
 
 /**
  * Used to parse and retrieve data from a builder configuration file.
@@ -29,9 +30,10 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.11 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BuilderReader.java,v 1.12 2005-05-09 15:58:36 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
+    private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_BUILDER_1_0 = "-//MMBase//DTD builder config 1.0//EN";
@@ -236,7 +238,7 @@ public class BuilderReader extends XMLBasicReader {
      * @return the classname to use.
      */
     public String getClassFile() {
-        String val=getElementValue("builder.classfile");
+        String val = getElementValue("builder.classfile");
         if (val.equals("")) {
             if (parentBuilder!=null) {
                 return parentBuilder.getClass().getName();
@@ -248,6 +250,10 @@ public class BuilderReader extends XMLBasicReader {
         int pos = val.indexOf('.');
         if (pos==-1) {
             val = "org.mmbase.module.builders."+val;
+        }
+        if ("org.mmbase.module.corebuilders.ObjectTypes".equals(val)) {
+            log.warn("Specified the removed builder 'ObjectTypes', fall back to TypeDef. You can remove all core-builders from your configuration directory (the ones present in mmbase.jar are ok)");
+            val = "org.mmbase.module.corebuilders.TypeDef";
         }
         return val;
     }
