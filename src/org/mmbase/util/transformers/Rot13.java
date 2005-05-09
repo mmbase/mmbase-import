@@ -15,6 +15,8 @@ import java.io.Writer;
 import org.mmbase.util.logging.*;
 
 /**
+ * Rot13 implementation. Letter a-m are shifted 13 positions forward, n-z 13 backwards and other characters are untouched, which results in
+ * scrambled - but easily decoded - strings.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
@@ -22,7 +24,7 @@ import org.mmbase.util.logging.*;
 
 public class Rot13 extends ReaderTransformer implements CharTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(Rot13.class);
+    private static final Logger log = Logging.getLoggerInstance(Rot13.class);
 
     protected Writer rot13(Reader r, Writer w) {
         try {
@@ -49,6 +51,9 @@ public class Rot13 extends ReaderTransformer implements CharTransformer {
         return rot13(r, w);
     }
 
+    /**
+     * For Rot13, transformBack does the same as {@link #transform}
+     **/
     public Writer transformBack(Reader r, Writer w) {
         return rot13(r, w);
     }

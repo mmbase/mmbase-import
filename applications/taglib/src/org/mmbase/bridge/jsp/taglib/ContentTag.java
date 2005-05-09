@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.40 2005-05-09 10:54:36 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.41 2005-05-09 22:11:15 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -116,8 +116,7 @@ public class ContentTag extends LocaleTag  {
         Enumeration e = reader.getChildElements(parentElement, "class");
         Element element = (Element) e.nextElement();
         String claz = reader.getElementValue(element);        
-        boolean back = "true".equalsIgnoreCase(element.getAttribute("back"));        
-        return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id, back);
+        return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
     }
     /**
      * Initialize the write-escapers for MMBase taglib.
