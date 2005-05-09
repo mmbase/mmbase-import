@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.1 2005-03-16 19:02:52 michiel Exp $
+ * @version $Id: DataType.java,v 1.2 2005-05-09 21:42:39 michiel Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -50,7 +50,8 @@ public interface DataType {
     void setDescription(String description, Locale locale);
 
     /**
-     * Associates a resource-bundle with the description of this DataType.
+     * Associates a resource-bundle with the description of this DataType. The description can be
+     * looked up using this resource-bundle if no description for a Locale was specified explicitely.
      */
     void setBundle(String bundle);
 

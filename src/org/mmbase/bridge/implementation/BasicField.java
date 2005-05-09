@@ -13,22 +13,22 @@ package org.mmbase.bridge.implementation;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.mmbase.bridge.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.CoreField;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.17 2005-04-25 14:17:50 michiel Exp $
+ * @version $Id: BasicField.java,v 1.18 2005-05-09 21:42:39 michiel Exp $
  */
 public class BasicField implements Field, Comparable {
 
-    NodeManager nodeManager=null;
-    FieldDefs field=null;
+    NodeManager nodeManager = null;
+    CoreField field = null;
 
-    BasicField(FieldDefs field, NodeManager nodeManager) {
-        this.nodeManager=nodeManager;
-        this.field=field;
+    BasicField(CoreField field, NodeManager nodeManager) {
+        this.nodeManager = nodeManager;
+        this.field = field;
     }
 
     public NodeManager getNodeManager() {
@@ -36,7 +36,7 @@ public class BasicField implements Field, Comparable {
     }
 
     public String getName() {
-        return field.getDBName();
+        return field.getName();
     }
 
     public String getGUIType() {
@@ -48,8 +48,7 @@ public class BasicField implements Field, Comparable {
     }
 
     public String getGUIName(Locale locale) {
-        if (locale==null) locale = ((BasicCloud)nodeManager.getCloud()).getLocale();
-        return field.getGUIName(locale.getLanguage());
+        return field.getGUIName(locale);
     }
 
     public String getDescription() {
@@ -57,32 +56,31 @@ public class BasicField implements Field, Comparable {
     }
 
     public String getDescription(Locale locale) {
-        if (locale==null) locale = ((BasicCloud)nodeManager.getCloud()).getLocale();
-        return field.getDescription(locale.getLanguage());
+        return field.getDescription(locale);
     }
 
     public int getType() {
-        return field.getDBType();
+        return field.getType();
     }
 
     public int getState() {
-        return field.getDBState();
+        return field.getState();
     }
 
     public int getMaxLength() {
-        return field.getDBSize();
+        return field.getMaxLength();
     }
 
     public boolean isRequired() {
-        return field.getDBNotNull();
+        return field.isRequired();
     }
 
     public boolean isUnique() {
-        return field.isKey();
+        return field.isUnique();
     }
 
     public boolean hasIndex() {
-        return (field.getDBType() == FieldDefs.TYPE_NODE) || field.getDBName().equals("number");
+        return field.hasIndex();
     }
 
     /**
