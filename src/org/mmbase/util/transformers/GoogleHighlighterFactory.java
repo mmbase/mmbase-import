@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * This can be used in taglib e.g. by &lt;mm:content postprocessor="google" expires="0" /&gt;
  *
  * Because you need expires=0, you need be reluctant to use this, because this means that you page
- * cannot be cached in front-proxies. Perhap;s it is better to find some client-side solution.
+ * cannot be cached in front-proxies. Perhap's it is better to find some client-side solution.
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
@@ -102,7 +102,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         return new ParametersImpl(PARAM);
     }
     public void setInverse(boolean inverse) {
-        if (inverse) throw new UnssupportedOperatoriontException("Removing of google highlighting is not implemented");
+        if (inverse) throw new UnsupportedOperationException("Removing of google highlighting is not implemented");
     }
 
 }
