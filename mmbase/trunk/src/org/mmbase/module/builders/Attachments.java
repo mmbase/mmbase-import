@@ -25,13 +25,12 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.35 2004-11-11 17:13:47 michiel Exp $
+ * @version $Id: Attachments.java,v 1.36 2005-05-09 10:02:18 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
 
-    private static final String MIMETYPE_FIELD = "mimetype";
-
+    public static final String FIELD_SIZE       = "size";
 
     protected String getAssociation() {
         return "attachments";
@@ -85,8 +84,17 @@ public class Attachments extends AbstractServletBuilder {
                 }
                 return "<a href=\"" + url + "\" target=\"extern\">" + title + "</a>";
             }
+        } else if (field.equals(FIELD_SIZE)) {
+            return getFileSizeGUI(node.getIntValue(FIELD_SIZE));
+            
         }
         return super.getSuperGUIIndicator(field, node);
+    }
+
+    protected final Set ATTACHMENTS_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {FIELD_MIMETYPE, FIELD_SIZE})));
+    // javadoc inherited
+    protected Set getHandleFields() {
+        return ATTACHMENTS_HANDLE_FIELDS;
     }
 
     /**
@@ -94,56 +102,12 @@ public class Attachments extends AbstractServletBuilder {
      * can try to do smart things.
      */
     protected void checkHandle(MMObjectNode node) {
-        String mimetype = node.getStringValue(MIMETYPE_FIELD);
-        if (mimetype == null || mimetype.equals("")) {
-            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determine it automaticly.");
-            Object h = node.getValue("handle");
-            if (h != null && (h instanceof byte[])) { // if unfilled h can be $SHORTED, sigh, sigh (at least when using editwizard)
-
-                // if (! (h instanceof byte[])) throw new RuntimeException("Handle field was not a byte[] but a '" + h.getClass().getName() + "'" + " with value " + h);
-                byte[] handle = (byte[]) h;
-                node.setValue("size", handle.length); // also the size, why not.
-                log.debug("Attachment size of file = " + handle.length);
-            
-                String filename = node.getStringValue("filename");
-                String extension = null;
-                int dotIndex = filename.lastIndexOf("."); 
-                if (dotIndex > -1) {
-                    extension = filename.substring(dotIndex + 1);
-                }
-
-                MagicFile magic = MagicFile.getInstance();
-                try {
-                    String mime = null;
-                    if (extension == null) {
-                        mime = magic.getMimeType(handle);
-                    } else {
-                        mime = magic.getMimeType(handle, extension);
-                    }
-                    log.service("Found mime-type: " + mime);
-                    node.setValue(MIMETYPE_FIELD, mime);
-                } catch (Throwable e) {
-                    log.warn("Exception in MagicFile  for " + node);
-                    node.setValue(MIMETYPE_FIELD, "application/octet-stream");                    
-                }            
+        super.checkHandle(node);
+        if (getField(FIELD_SIZE) != null) {
+            if (node.getIntValue(FIELD_SIZE) == -1) {
+                node.setValue(FIELD_SIZE, node.getByteValue(FIELD_HANDLE).length);
             }
         }
-    }
-
-    public int insert(String owner, MMObjectNode node) {
-        checkHandle(node);
-        return super.insert(owner, node);
-    }
-    public boolean commit(MMObjectNode node) {
-        Collection changed = node.getChanged();
-        if (changed.contains("handle")) {
-            node.setValue(MIMETYPE_FIELD, "");
-            checkHandle(node);
-        }
-        if (changed.contains(MIMETYPE_FIELD) && "".equals(node.getStringValue(MIMETYPE_FIELD))) {
-            checkHandle(node);
-        }
-        return super.commit(node);
     }
 
 
@@ -155,9 +119,9 @@ public class Attachments extends AbstractServletBuilder {
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executeFunction of attachments builder");
         if ("mimetype".equals(function)) {
-            return node.getStringValue(MIMETYPE_FIELD);
+            return node.getStringValue(FIELD_MIMETYPE);
         } else if (function.equals("format")) {
-            String mimeType = node.getStringValue(MIMETYPE_FIELD);
+            String mimeType = node.getStringValue(FIELD_MIMETYPE);
             if (mimeType.length() > 0) {
                 MagicFile mf = MagicFile.getInstance();
                 String ext = mf.mimeTypeToExtension(mimeType);

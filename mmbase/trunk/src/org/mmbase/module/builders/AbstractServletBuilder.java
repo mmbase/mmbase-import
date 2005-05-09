@@ -18,7 +18,6 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 
-
 /**
  * Some builders are associated with a servlet. Think of images and attachments.
  *
@@ -26,12 +25,16 @@ import org.mmbase.util.functions.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.22 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.23 2005-05-09 10:02:18 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractServletBuilder.class);
+
+    public static final String FIELD_MIMETYPE   = "mimetype";
+    public static final String FIELD_FILENAME   = "filename";
+    public static final String FIELD_HANDLE     = "handle";
 
     /**
      * Can be used to construct a List for executeFunction argument
@@ -58,6 +61,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * In this string the path to the servlet is stored.
      */
     private String servletPath = null;
+    /**
+     * Whether {@link #servletPath} represents an absolute URL (starting with http:)
+     * @since MMBase-1.8.0
+     */
+    private boolean servletPathAbsolute;
 
     /**
      * If this builder is association with a bridge servlet. If not, it should not put the
@@ -93,6 +101,15 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      */
 
     private String getServletPathWithAssociation(String association, String root) {
+        if (MMBaseContext.isInitialized()) {
+            javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
+            if (sx != null) {
+                String res = sx.getInitParameter("mmbase.servlet." + association + ".url");
+                if (res != null && ! res.equals("")) {
+                    return res;
+                }
+            }
+        }
         String result;
         List ls = MMBaseServlet.getServletMappingsByAssociation(association);
         if (ls.size()>0) {
@@ -124,7 +141,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
 
-   /**
+    /**
      * Get a servlet path. Takes away the ? and the * which possibly
      * are present in the servlet-mappings. You can put the argument(s)
      * directly after this string.
@@ -138,21 +155,134 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (log.isServiceEnabled()) {
                 log.service(getAssociation() + " are served on: " + servletPath + "  root: " + root);
             }
+            servletPathAbsolute = servletPath.startsWith("http:") || servletPath.startsWith("https");                
         }
+
         String result;
-        if (root.endsWith("/") && servletPath.startsWith("/")) {
+        if (servletPathAbsolute) {
+            result = servletPath;
+        } else if (root.endsWith("/") && servletPath.startsWith("/")) {
             result = root + servletPath.substring(1);
         } else {
             result = root + servletPath;
         }
 
+        if (! MMBaseContext.isInitialized()) { servletPath = null; }
         // add '?' if it wasn't already there (only needed if not terminated with /)
-        if (! result.endsWith("/")) result = result + "?";
+        if (! result.endsWith("/")) result += "?";
         return result;
     }
 
     protected String getServletPath() {
         return getServletPath(MMBaseContext.getHtmlRootUrlPath());
+    }
+
+
+    /**
+     * Returns the Mime-type associated with this node
+     */
+    protected String getMimeType(MMObjectNode node) {
+        String mimeType = node.getStringValue(FIELD_MIMETYPE);
+        if (mimeType == null || mimeType.equals("")) {
+            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determine it automaticly.");
+            byte[] handle = node.getByteValue(FIELD_HANDLE);
+
+            String extension = null;                
+            if (getField(FIELD_FILENAME) != null) {
+                String filename = node.getStringValue(FIELD_FILENAME);
+                int dotIndex = filename.lastIndexOf("."); 
+                if (dotIndex > -1) {
+                    extension = filename.substring(dotIndex + 1);
+                }
+            }
+            
+            MagicFile magic = MagicFile.getInstance();
+            try {
+                if (extension == null) {
+                    mimeType = magic.getMimeType(handle);
+                } else {
+                    mimeType = magic.getMimeType(handle, extension);
+                }
+                log.service("Found mime-type: " + mimeType);
+                node.setValue(FIELD_MIMETYPE, mimeType);
+            } catch (Throwable e) {
+                log.warn("Exception in MagicFile  for " + node);
+                mimeType = "application/octet-stream";
+                node.setValue(FIELD_MIMETYPE, mimeType);
+            }            
+
+        }
+        return mimeType;
+    }
+
+    /**
+     * Tries to fill all fields which are dependend on the 'handle' field.
+     * They will be filled automaticly if not still null.
+     */
+    protected void checkHandle(MMObjectNode node) {
+        if (getField(FIELD_MIMETYPE) != null) {
+            getMimeType(node);
+        }
+        
+    }
+
+    /** 
+     * Returns the fields which tell something about the 'handle' field, and can be calculated from it.
+     */
+
+    abstract protected Set getHandleFields();
+
+    public int insert(String owner, MMObjectNode node) {
+        if (log.isDebugEnabled()) {
+            log.debug("Inserting node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node));
+        }
+        checkHandle(node);
+        int result = super.insert(owner, node);
+        if (log.isDebugEnabled()) {
+            log.debug("After handle unload, memory: " + SizeOf.getByteSize(node));
+        }
+        return result;
+    }
+    public boolean commit(MMObjectNode node) {
+        Collection changed = node.getChanged();
+        if (log.isDebugEnabled()) {
+            log.debug("Committing node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node) + " fields " + changed);
+        }
+        
+        Object h;
+        if (changed.contains(FIELD_HANDLE)) {
+            // set those fields to null, which are not changed too:
+            Collection cp = new ArrayList();
+            cp.addAll(getHandleFields());
+            cp.removeAll(changed);
+            Iterator i = cp.iterator();
+            while (i.hasNext()) {
+                String f = (String) i.next();
+                if (node.parent.getField(f) != null) {
+                    node.setValue(f, null);
+                }
+            }
+        }
+        checkHandle(node);
+        boolean result = super.commit(node);
+        if (log.isDebugEnabled()) {
+            log.debug("After commit node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node));
+        }
+        return result;
+    }
+
+
+
+    protected String getFileSizeGUI(int size) {
+        if (size < 1000) {
+            return "" + size + " byte";
+        } else if (size < 1000000) {
+            return "" + size / 1000 + " kbyte";
+        } else if (size < 10000000) {
+            return "" + size / 1000000 + " Mbyte";
+        } else {
+            return "" + size / 1000000 + " Mbyte";
+        }
     }
 
     /**

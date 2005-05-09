@@ -10,8 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.io.*;
+import org.mmbase.cache.BlobCache;
+import org.mmbase.util.MagicFile;
+import org.mmbase.util.images.*;
 import org.mmbase.module.core.*;
-//import org.mmbase.util.ImageInfo;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
@@ -20,20 +23,30 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.31 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: AbstractImages.java,v 1.32 2005-05-09 10:02:18 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
-    /*
-    static final ImageInfo imageInfo = new ImageInfo();
+    public final static Parameter[] HEIGHT_PARAMETERS = Parameter.EMPTY;
+    public final static Parameter[] WIDTH_PARAMETERS  = Parameter.EMPTY;
+    public final static Parameter[] DIMENSION_PARAMETERS  = Parameter.EMPTY;
 
-    public final static Parameter[] WIDTH_PARAMETERS    = {};
-    public final static Parameter[] HEIGHT_PARAMETERS   = {};
-    */
 
+    public static final String FIELD_ITYPE       = "itype";
+    public static final String FIELD_FILESIZE    = "filesize";
+    public static final String FIELD_HEIGHT      = "height";
+    public static final String FIELD_WIDTH       = "width";
+
+    protected static BlobCache handleCache = new BlobCache(300) {  // a few images are in memory cache.
+            public String getName()        { return "ImageHandles"; }
+            public String getDescription() { return "Handles of Images (number -> handle)"; }
+        };
+    static {
+        handleCache.putCache();
+    }
     /**
      * Cache with 'ckey' keys.
      * @since MMBase-1.6.2
@@ -94,6 +107,14 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         }
     }
 
+    protected BlobCache getBlobCache(String fieldName) {
+        if (fieldName.equals(Imaging.FIELD_HANDLE)) {
+            return handleCache;
+        } else {
+            return super.getBlobCache(fieldName);
+        }
+    }
+
     protected String getAssociation() {
         return "images";
     }
@@ -120,79 +141,167 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      */
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
-        if (field.equals("handle") || field.equals("")) {
+        if (field.equals(Imaging.FIELD_HANDLE) || field.equals("")) {
             return getSGUIIndicatorForNode(node, a);
+        } else if (field.equals(FIELD_FILESIZE)) {
+            return getFileSizeGUI(node.getIntValue(FIELD_FILESIZE));  
         }
         // other fields can be handled by the orignal gui function...
         return getSuperGUIIndicator(field, node);
     }
 
-    /**
-     * Returns the format of the image. Like 'jpg' or 'gif'.
-     */
-    abstract protected String getImageFormat(MMObjectNode node);
 
-    /**
-     * Determine the MIME type of this image node, baseImagd on the image format.
-     */
-    public String getImageMimeType(MMObjectNode node) {
-        return mmb.getMimeType(getImageFormat(node));
+    protected final Set IMAGE_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {FIELD_FILESIZE, FIELD_ITYPE, FIELD_HEIGHT, FIELD_WIDTH})));
+    // javadoc inherited
+    protected Set getHandleFields() {
+        return IMAGE_HANDLE_FIELDS;
     }
 
     /**
-     * Returns an image which belongs to the given parameter set.  The
-     * parameters exist of a list of string values, starting with the
-     * orginal image object alias or number, followed by operations
-     * (format and transformation instructions)
-     *
-     * This function is not used by ImageServlet. Perhaps it should be deprecated.
-     *
-     * @param params A list of parameters, containign at least the id of the image, possibly followed by operations
-     * @return the image as a <a>byte[]</code>, or <code>null</code> if something went wrong
+     * Determine the MIME type of this image node, based on the image format.
      */
-    abstract public byte[] getImageBytes(List params);
+    public String getMimeType(MMObjectNode node) {
+        String ext = getImageFormat(node);
+        log.debug("Getting mimetype for node " + node.getNumber() + " " + ext);
+        return Imaging.getMimeTypeByExtension(ext);
+    }
+
+    /**
+     * Whether this builders has width and height fields
+     */
+    protected boolean storesDimension() {
+        return getField(FIELD_WIDTH) != null && getField(FIELD_HEIGHT) != null;
+    }
+    /**
+     * Whether this builders has a filesize field.
+     */
+    protected boolean storesFileSize() {
+        return getField(FIELD_FILESIZE) != null;
+    }
+    /**
+     * Whether this builders has a filesize field.
+     */
+    protected boolean storesImageType() {
+        return getField(FIELD_ITYPE) != null;
+    }
 
 
     /**
+     * Gets the dimension of given node. Also when the fields are missing, it will result a warning then.
      */
-    /*
-    protected int getHeight(MMObjectNode node) {
-        byte[] data = node.getByteValue("handle");
-        imageInfo.setInput(new ByteArrayInputStream(data));
-
-        if (log.isServiceEnabled()) {
-            if (!imageInfo.check()) {
-                log.service("ImageBuilder: Error parsing image");
+    protected Dimension getDimension(MMObjectNode node) {
+        if (storesDimension()) {
+            int width  = node.getIntValue(FIELD_WIDTH);
+            int height = node.getIntValue(FIELD_HEIGHT);
+            if (width >= 0 && height > 0 ) {
+                return new Dimension(width, height);
             }
         }
-        int height = imageInfo.getHeight();
-        if (log.isDebugEnabled()) {
-            log.debug("ImageBuilder: height being returned = " + height);
+        byte[] data = node.getByteValue(Imaging.FIELD_HANDLE);
+        if (data == null || data.length == 0) {
+            log.warn("Cannot get dimension of Node with not 'handle' " + node.getNumber());
+            return new Dimension(-1, -1);
         }
-        return height;
+        ImageInformer ii = Factory.getImageInformer();
+        Dimension dim;
+        try {
+            dim = ii.getDimension(data);
+            log.debug("Found dimension " + dim);
+        } catch (Exception ioe) {
+            log.error(ioe);
+            dim = new Dimension(-1, -1);
+            return dim;
+        }
+        if (storesDimension()) {
+            node.setValue(FIELD_WIDTH,  dim.getWidth());
+            node.setValue(FIELD_HEIGHT, dim.getHeight());
+        } else {
+            log.warn("Requested dimension on image object without height / width fields, this may be heavy on resources!");
+        }
+
+        return dim;        
     }
-    */
+
+
+    protected  int getFileSize(MMObjectNode node) {
+        if (storesFileSize()) {
+            int size = node.getIntValue(FIELD_FILESIZE);
+            if (size >= 0) {
+                return size;
+            }
+        }
+        byte[] data = node.getByteValue(Imaging.FIELD_HANDLE);
+        if (data == null) return -1;
+        if (storesFileSize()) {
+            node.setValue(FIELD_FILESIZE, data.length);
+        } else {
+            log.warn("Requested filesize on image object without filesize fields, this may be heavy on resources!");
+        }
+        return data.length;
+    }
+
+
+    protected String getDefaultImageType() {
+        return "jpg";
+    }
+
     /**
+     * Determines the image type of an object and stores the content in the itype field.
+     * @param node The object to use.
      */
-    /*
-    protected int getWidth(MMObjectNode node) {
+    protected String getImageFormat(MMObjectNode node) {
+        String itype = null;
+        if (storesImageType()) {
+            itype = node.getStringValue(FIELD_ITYPE);            
+        }
 
-       byte[] data = node.getByteValue("handle");
-       imageInfo.setInput(new ByteArrayInputStream(data));
-
-       if (log.isServiceEnabled()) {
-           if (!imageInfo.check()) {
-               log.service("ImageBuilder: Error parsing image");
-           }
-       }
-       int width = imageInfo.getWidth();
-       if (log.isDebugEnabled()) {
-           log.debug("ImageBuilder: width being returned = " + width);
-       }
-       return width;
+        if ((itype == null || itype.equals("")) &&  // itype unset
+            ! node.isNull(Imaging.FIELD_HANDLE)        // handle present
+            ) {
+            itype = "";
+            try {
+                MagicFile magicFile = MagicFile.getInstance();
+                String mimeType = magicFile.getMimeType(node.getByteValue(Imaging.FIELD_HANDLE));
+                if (!mimeType.equals(MagicFile.FAILED)) {
+                    // determine itype
+                    if (mimeType.startsWith("image/")) {
+                        itype = mimeType.substring(6);
+                        log.debug("set itype to " + itype);
+                    } else {                        
+                        log.warn("Mimetype " + mimeType + " is not an image type");
+                        int pos = mimeType.indexOf('/');
+                        itype = mimeType.substring(pos + 1);
+                    }
+                } else {
+                    log.warn(MagicFile.FAILED);
+                    itype = getDefaultImageType();
+                }
+            } catch (Exception e) {
+                log.warn("Error while determining image mimetype : " + Logging.stackTrace(e));
+            }
+            if (storesImageType()) {
+                node.setValue(FIELD_ITYPE, itype);
+            }
+        }
+        return itype;
     }
-    */
 
+    //javadoc inherited
+    protected void checkHandle(MMObjectNode node) {
+        super.checkHandle(node);
+        if (storesFileSize()) {
+            getFileSize(node);
+        }
+        if (storesDimension()) {
+            getDimension(node);
+        }
+        if (storesImageType()) {
+            getImageFormat(node);
+        }        
+    }
+
+
+    
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.
      *
@@ -200,15 +309,15 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (function.equals("mimetype")) {
-            return getImageMimeType(node);
+            return getMimeType(node);
         } else if (function.equals("format")) {
             return getImageFormat(node);
-            /*
         } else if ("width".equals(function)) {
-            return new Integer(getWidth(node));
+            return new Integer(getDimension(node).getWidth());
         } else if ("height".equals(function)) {
-            return new Integer(getHeight(node));
-            */
+            return new Integer(getDimension(node).getHeight());
+        } else if ("dimension".equals(function)) {
+            return getDimension(node);
         } else {
             return super.executeFunction(node, function, args);
         }
