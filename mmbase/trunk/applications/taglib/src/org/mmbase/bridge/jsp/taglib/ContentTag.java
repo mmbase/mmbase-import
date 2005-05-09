@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.39 2005-05-08 13:26:55 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.40 2005-05-09 10:54:36 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -179,6 +179,14 @@ public class ContentTag extends LocaleTag  {
                 log.service("Found an pescaper '" + id + "' : " + fact);
             }
             parameterizedCharTransformerFactories.put(id, fact);
+            try {
+                CharTransformer ct = (CharTransformer) fact.createTransformer(fact.createParameters());
+                log.service("Could be instantiated with default parameters too");
+                charTransformers.put(id, ct);
+            } catch (Exception ex) {
+                log.service("Could not be instantiated with default parameters only: " + ex.getMessage());
+            }
+
         }
         log.service("Reading content tag post-processors");
         e = reader.getChildElements(root, "postprocessor");
@@ -284,12 +292,12 @@ public class ContentTag extends LocaleTag  {
      */
     protected CharTransformer getPostProcessor() throws JspTagException {
         if (! postprocessor.getString(this).equals("")) {
-            return getCharTransformer(postprocessor.getString(this), getContextProvider().getContextContainer());
+            return getCharTransformer(postprocessor.getString(this), getContextProvider().getContextContainer(), this);
         } else {
             if (type != Attribute.NULL) {
                 String defaultPostProcessor = (String) defaultPostProcessors.get(type.getString(this));
                 if (defaultPostProcessor != null) {
-                    return getCharTransformer(defaultPostProcessor,  getContextProvider().getContextContainer());
+                    return getCharTransformer(defaultPostProcessor,  getContextProvider().getContextContainer(), this);
                 }
             }
             return null;
@@ -314,7 +322,7 @@ public class ContentTag extends LocaleTag  {
      * Gets a CharTransformer identified by <code>id<code>, withouth trying to create chains of
      * them.
      */
-    protected static CharTransformer getSimpleCharTransformer(String id, Map more) throws JspTagException {
+    protected static CharTransformer getSimpleCharTransformer(String id, Map more, ContextReferrerTag tag) throws JspTagException {
         CharTransformer c = (CharTransformer) charTransformers.get(id);
         if (c == null && more != null) c = (CharTransformer) more.get(id);
         if (c == null) {
@@ -325,8 +333,23 @@ public class ContentTag extends LocaleTag  {
                 ParameterizedTransformerFactory factory = getTransformerFactory(parameterized);                
                 Parameters parameters = factory.createParameters();
                 parameters.setAutoCasting(true);
+                if (tag != null) {
+                    tag.fillStandardParameters(parameters);
+                }
                 parameters.setAll(StringSplitter.split(id.substring(paramsPos + 1, id.length() - 1)));
-                c = (CharTransformer) factory.createTransformer(parameters);                    
+                c = (CharTransformer) factory.createTransformer(parameters);
+            } else {
+                // try if there is a factory with this name, which would work with only 'standard' parameters.
+                ParameterizedTransformerFactory factory = getTransformerFactory(id); 
+                log.info("Found factory for " + id + " " + factory);
+                if (factory != null) {
+                    Parameters parameters = factory.createParameters();
+                    parameters.setAutoCasting(true);
+                    if (tag != null) {
+                        tag.fillStandardParameters(parameters);
+                    }
+                    c = (CharTransformer) factory.createTransformer(parameters);                
+                }
             }
         }
         if (c == null) throw new JspTagException("The chartransformer " + id + " is unknown");
@@ -340,7 +363,7 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException if not transformer with given id was configured
      */
 
-    public static CharTransformer getCharTransformer(String id, Map more) throws JspTagException {
+    public static CharTransformer getCharTransformer(String id, Map more, ContextReferrerTag tag) throws JspTagException {
 
         List transs = org.mmbase.util.StringSplitter.splitFunctions(id);
         
@@ -350,14 +373,14 @@ public class ContentTag extends LocaleTag  {
             Iterator ids = transs.iterator();
             while (ids.hasNext()) {
                 String i = (String) ids.next();
-                CharTransformer c = getSimpleCharTransformer(i, more);
+                CharTransformer c = getSimpleCharTransformer(i, more, tag);
                 if (ct != COPY) {
                     ct.add(c);
                 }
             }
             return ct;
         } else {
-            CharTransformer ct =  getSimpleCharTransformer(id, more);
+            CharTransformer ct =  getSimpleCharTransformer(id, more, tag);
             if (ct != COPY) {
                 return ct;
             } else {
@@ -387,11 +410,11 @@ public class ContentTag extends LocaleTag  {
         prevEscaper = getWriteEscaper();
         CharTransformer esc;
         if (! escaper.getString(this).equals("")) { 
-            esc =  getCharTransformer(escaper.getString(this), getContextProvider().getContextContainer());
+            esc =  getCharTransformer(escaper.getString(this), getContextProvider().getContextContainer(), this);
         }  else {
             String defaultEscaper = (String) defaultEscapers.get(getType());
             if (defaultEscaper != null) {                
-                esc = getCharTransformer(defaultEscaper, getContextProvider().getContextContainer());
+                esc = getCharTransformer(defaultEscaper, getContextProvider().getContextContainer(), this);
             } else {
                 esc = COPY;
             }
