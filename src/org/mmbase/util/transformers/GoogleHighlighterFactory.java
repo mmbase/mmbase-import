@@ -26,7 +26,9 @@ import org.mmbase.util.logging.*;
  *
  * Because you need expires=0, you need be reluctant to use this, because this means that you page
  * cannot be cached in front-proxies. Perhap's it is better to find some client-side solution.
-
+ *
+ * It produces instances of extensions of {@link RegexpReplacer}
+ *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
  */
@@ -100,9 +102,6 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
     }
     public Parameters createParameters() {
         return new ParametersImpl(PARAM);
-    }
-    public void setInverse(boolean inverse) {
-        if (inverse) throw new UnsupportedOperationException("Removing of google highlighting is not implemented");
     }
 
 }

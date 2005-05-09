@@ -15,10 +15,12 @@ import java.io.Writer;
 
 
 /**
+ * Factories {@link CharTransformer}'s which mirror the input, but only between 'from' and 'to'
+ * parameters. So, those transformers work like {@link java.lang.String#substring}.
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.2 2005-05-08 13:22:05 michiel Exp $
+ * @version $Id: SubstringFactory.java,v 1.3 2005-05-09 22:07:56 michiel Exp $
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory {
@@ -37,10 +39,6 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
     }
     public Parameters createParameters(java.util.List values) {
         return new ParametersImpl(PARAMS, values);
-    }
-
-    public void setInverse(boolean inverse) {
-        if (inverse) throw new IllegalArgumentException("Regexp-replacers cannot be inverted");
     }
 
 
