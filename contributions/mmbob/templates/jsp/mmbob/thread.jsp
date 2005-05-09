@@ -112,6 +112,7 @@
                            <mm:compare referid="guestwritemodetype" value="open"> 
                                 <mm:compare referid="privatemessagesenabled" value="true">
                                <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
+                               <a href="<mm:url page="newreportmessage.jsp" referids="forumid,postareaid,postthreadid,postingid" />"><img src="<mm:write referid="image_reportmsg" />"  border="0" /></a>
 			 	</mm:compare>
                                <mm:compare referid="threadstate" value="closed" inverse="true">
                                     <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,pagesize,page,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
