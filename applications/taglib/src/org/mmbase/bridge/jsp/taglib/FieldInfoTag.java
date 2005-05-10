@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.77 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.78 2005-05-10 22:51:03 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -168,7 +168,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     private static void initializeTypeHandlers() {
         log.service("Reading taglib field-handlers");
-        handlers = new Class[org.mmbase.module.corebuilders.FieldDefs.TYPE_MAXVALUE + 1];
+        handlers = new Class[org.mmbase.core.util.Fields.TYPE_MAXVALUE + 1];
 
         Class thisClass = FieldInfoTag.class;
         InputSource fieldtypes = new InputSource(thisClass.getResourceAsStream("resources/fieldtypes.xml"));
@@ -178,7 +178,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String typeString = element.getAttribute("id");
-            int fieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(typeString);
+            int fieldType =  org.mmbase.core.util.Fields.getType(typeString);
             String claz = reader.getElementValue(reader.getElementByPath(element, "fieldtype.class"));
             try {
                 log.debug("Adding field handler " + claz + " for type " + fieldType);
