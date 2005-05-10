@@ -64,8 +64,9 @@
             throw new ServletException("Please set 'internalUrl' in the web.xml!");
          }
       %>
-
-
+      <%-- the <hr> will be translated into a pagebreak in the PDF --%>
+      <hr/>
+      
       <%// Here we are makeing PDF version for conversion %>
       <mm:field name="showtitle">
          <mm:compare value="1">
@@ -374,13 +375,13 @@
         text = text.replaceAll("<p\\s*>\\s*</p>\\s*","");
         text = text.replaceFirst("\\A\\s*","");
         text = text.replaceFirst("\\s*\\z","");
-        if (!text.startsWith("<p>")) {
+/*        if (!text.startsWith("<p>")) {
             text = "<p>"+text;
         }
         if (!text.endsWith("</p>"))
         {
             text = text+"</p>";
-        }
+        } */
 
         text = text.replaceAll("<p>\\s*<table","<table");
         text = text.replaceAll("</table>\\s*</p>","</table>");
