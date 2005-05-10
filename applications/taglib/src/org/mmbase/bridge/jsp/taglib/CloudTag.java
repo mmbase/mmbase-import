@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.118 2005-05-04 11:03:12 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.119 2005-05-10 15:54:38 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -220,7 +220,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     /**
-     * @returns The login-method, or METHOD_LOGINPAGE if loginpage was specified, or the default method of the authentication implemnetation if also that was not specified.
+     * @return The login-method, or METHOD_LOGINPAGE if loginpage was specified, or the default method of the authentication implemnetation if also that was not specified.
      * @since MMBase-1.8
      */
     protected int getMethodOrDefault() throws JspTagException {
@@ -791,12 +791,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
 
         }
-        if (meth != AuthenticationData.METHOD_UNSET && meth != AuthenticationData.METHOD_ASIS && cloud != null && (!cloud.getUser().getAuthenticationType().equals(getAuthenticate()))) {
-            log.debug(
-                "Cloud was logged on with different authentication type ('"
-                    + cloud.getUser().getAuthenticationType()
-                    + "' in stead of the requested '" + getAuthenticate()
-                    + "'. Should do procedure again.");
+        if (meth != AuthenticationData.METHOD_UNSET && 
+            meth != AuthenticationData.METHOD_ASIS && 
+            cloud != null &&
+            authenticate != Attribute.NULL && 
+            (!cloud.getUser().getAuthenticationType().equals(getAuthenticate()))) {
+            log.debug("Cloud was logged on with different authentication type ('" + cloud.getUser().getAuthenticationType()
+                      + "' in stead of the requested '" + getAuthenticate() + "'. Should do procedure again.");
             removeCloud();
             return;
         } else {
