@@ -164,6 +164,7 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
   <tr>
    <td align="right">
+        <mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="profile.jsp" referids="forumid,posterid" />"> Profile settings |</mm:compare>
 	<mm:node referid="forumid"><mm:relatednodes type="forumrules"><a href="<mm:url page="rules.jsp" referids="forumid"><mm:param name="rulesid"><mm:field name="number" /></mm:param></mm:url>">Forum rules | </a></mm:relatednodes></mm:node><a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg.The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg.Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg.All_members" /></a> | <a href="<mm:url page="search.jsp" referids="forumid" />">Search</a>
    </td>
   </tr>
