@@ -264,6 +264,19 @@
 		</return> 
 	</function>
 
+
+	<function name="setRemoteAddress">
+		<description>get/check login of a user</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>setRemoteAddress</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="posterid" />
+		<param name="host" type="String" description="password" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
 	<function name="newPost">
 		<description>add a new post (postthread+1 posting) in a postarea, use postReply for all following postings in the postthread</description>
 		<type>class</type>
@@ -881,6 +894,17 @@
 		<type>class</type>
 		<class>org.mmbase.applications.mmbob.gui.Controller</class>
 		<method>getSignatures</method>
+		<param name="forumid" type="String" description="list mode" />
+		<param name="posterid" type="String" description="list mode" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+	<function name="getRemoteHosts">
+		<description>List known hosts of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getRemoteHosts</method>
 		<param name="forumid" type="String" description="list mode" />
 		<param name="posterid" type="String" description="list mode" />
 		<return type="NodeList"> 

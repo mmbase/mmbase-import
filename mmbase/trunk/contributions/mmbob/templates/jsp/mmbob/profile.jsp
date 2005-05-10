@@ -5,7 +5,6 @@
 
 <mm:cloud sessionname="forum">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
-<mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">poster_index</mm:import>
 <mm:import externid="postareaid" />
@@ -27,7 +26,9 @@
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
-
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+      <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
+</mm:nodefunction>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBob</title>
@@ -274,7 +275,12 @@
         <mm:field name="contactinfoenabled">
           <mm:compare value="true">
     <mm:compare value="contact" referid="profile">
-        <mm:write referid="mlg.Not_implemented"/>  
+        <mm:write referid="mlg.Not_implemented"/>  <br />
+        <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
+		<mm:compare referid="adminmode" value="true">
+		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
+		</mm:compare>
+	</mm:nodelistfunction>
     </mm:compare>
     <mm:compare value="signatures" referid="profile">
 	Signatures <br />
@@ -528,7 +534,11 @@
         <mm:field name="contactinfoenabled">
           <mm:compare value="true">
     <mm:compare value="contact" referid="profile">
-    boe
+        <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
+		<mm:compare referid="adminmode" value="true">
+		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
+		</mm:compare>
+	</mm:nodelistfunction>
     </mm:compare>
 </mm:compare>
 </mm:field>

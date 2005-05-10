@@ -1780,6 +1780,16 @@ public class Controller {
         node.setValue("active_postcount", p.getPostCount());
     }
 
+    public boolean setRemoteAddress(String forumid,int posterid,String host) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+		Poster p=f.getPoster(posterid);
+		if (p!=null) {
+			p.checkRemoteHost(host);
+		}
+	}
+	return true;
+    } 
 
     /**
     * get login information for this poster
@@ -1861,6 +1871,34 @@ public class Controller {
                     			virtual.setValue("body", sig.getBody());
                     			virtual.setValue("mode", sig.getMode());
                     			virtual.setValue("encodings", sig.getMode());
+					list.add(virtual);
+				    }
+			    }
+			}
+        	} catch (Exception e) {
+            	e.printStackTrace();
+        	}
+		return list;
+	}
+
+        public List getRemoteHosts(String forumid,String sactiveid) {
+       		List list = new ArrayList();
+  		VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        	try {
+            		int activeid = Integer.parseInt(sactiveid);
+
+            		Forum f = ForumManager.getForum(forumid);
+            		if (f != null) {
+                       	    Poster poster = f.getPoster(activeid);
+		            Iterator e = poster.getRemoteHosts();
+			    if (e!=null)  {
+            		    	while (e.hasNext()) {
+                           	 	RemoteHost rm = (RemoteHost) e.next();
+                    			MMObjectNode virtual = builder.getNewNode("admin");
+                    			virtual.setValue("id", ""+rm.getId());
+                    			virtual.setValue("host",rm.getHost());
+                    			virtual.setValue("lastupdatetime", ""+rm.getLastUpdateTime());
+                    			virtual.setValue("updatecount", ""+rm.getUpdateCount());
 					list.add(virtual);
 				    }
 			    }
