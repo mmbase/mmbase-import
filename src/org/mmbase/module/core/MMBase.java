@@ -34,7 +34,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.128 2005-05-10 11:37:13 michiel Exp $
+ * @version $Id: MMBase.java,v 1.129 2005-05-10 22:47:24 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1131,7 +1131,7 @@ public class MMBase extends ProcessorModule {
                 bul.setMaintainer(parser.getBuilderMaintainer());
                 bul.setSearchAge("" + parser.getSearchAge());
                 bul.setInitParameters(parser.getProperties());
-                bul.setFields(parser.getFieldDefs()); // temp  ?
+                bul.setFields(parser.getFields()); // temp  ?
 
 
                 // oke set the huge hack for insert layout
