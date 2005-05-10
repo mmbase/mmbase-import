@@ -39,12 +39,14 @@ public class Poster {
     private int lastposttime;
     private int lastseen = 0;
     private int firstlogin = -1;
+    private String lasthost = "unknown";
     private String account,firstname, lastname, email, level, location, gender, password;
     //private Node node;
     private Forum parent;
     private HashMap mailboxes;
     private HashMap seenthreads = new HashMap();
     private ArrayList signatures;
+    private ArrayList remotehosts;
 
     private static final int STATE_ACTIVE = 0;
     private static final int STATE_DISABLED = 1;
@@ -725,5 +727,68 @@ public class Poster {
 		return signatures.iterator();
 	}
 	return null;
+    }
+
+    public Iterator getRemoteHosts() {
+	if (remotehosts!=null) {
+		return remotehosts.iterator();
+	}
+	return null;
+    }
+
+    public void checkRemoteHost(String host) {
+	if (!lasthost.equals(host)) {
+		if (remotehosts==null) readRemoteHosts();
+		RemoteHost rm=getRemoteHost(host);		
+		if (rm!=null) {
+			RemoteHost rml = getLastRemoteHost();
+			if (rm!=rml) {
+				// change changed host update
+				rm.setLastUpdateTime((int)(System.currentTimeMillis()/1000));
+				rm.setUpdateCount(rm.getUpdateCount()+1);
+				rm.save();
+			}
+		} else {
+	      		rm = new RemoteHost(this,host,(int)(System.currentTimeMillis()/1000),0);
+			rm.save();
+			remotehosts.add(rm);
+		}
+		lasthost=host;
+	}
+    }
+
+    public RemoteHost getLastRemoteHost() {
+	 int time = 0;
+	 RemoteHost lrm = null;
+         Iterator i=remotehosts.iterator();
+         while (i.hasNext()) {
+               RemoteHost rm= (RemoteHost)i.next();
+	       if (rm.getLastUpdateTime()>time) {
+			time = rm.getLastUpdateTime();
+			lrm = rm;
+	       }
+         }
+	 return lrm;
+    }
+
+
+    public RemoteHost getRemoteHost(String host) {
+         Iterator i=remotehosts.iterator();
+         while (i.hasNext()) {
+               RemoteHost rm= (RemoteHost)i.next();
+	       if (rm.getHost().equals(host)) return rm;
+         }
+	 return null;
+    }
+
+    public void readRemoteHosts() {
+	remotehosts = new ArrayList();
+	Node node = getNode();
+        NodeIterator i = node.getRelatedNodes("remotehosts").nodeIterator();	
+        while (i.hasNext()) {
+              Node rnode=i.nextNode();
+	      RemoteHost rm = new RemoteHost(this,rnode.getStringValue("host"),rnode.getIntValue("lastupdatetime"),rnode.getIntValue("updatecount"));
+	      remotehosts.add(rm);
+	}
     }
 }
