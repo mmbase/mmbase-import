@@ -7,11 +7,13 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.corebuilders;
+package org.mmbase.core.implementation;
 
 import java.util.*;
 
-import org.mmbase.module.core.*;
+import org.mmbase.core.*;
+import org.mmbase.core.util.Fields;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
 
@@ -38,48 +40,58 @@ import org.mmbase.util.*;
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: CoreField.java,v 1.2 2005-05-10 11:35:47 michiel Exp $
+ * @version $Id: BasicCoreField.java,v 1.1 2005-05-10 22:44:59 michiel Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
  */
-public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType implements org.mmbase.bridge.Field, Storable {
+public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDataType implements org.mmbase.core.CoreField, Storable, Comparable {
 
     protected LocalizedString guiName     = null;
-    protected String guiType;
-    protected int    guiSearch = -1;
-    protected int    guiList   = -1;
-    protected int    guiPos    = -1;
-    protected int     pos     = -1;
-    protected int     maxLength    = -1;
 
-    protected int     typeInt  = TYPE_UNKNOWN;
-    protected String  typeString;
-    protected int     state   = STATE_UNKNOWN;
 
-    protected boolean required = false;
-    protected boolean unique   = false;
+    private static final int NO_POSITION = -1;
+    private String guiType;
+    private int    searchPosition   = NO_POSITION;
+    private int    listPosition     = NO_POSITION;
+    private int    editPosition     = NO_POSITION;
+    private int    maxLength        = NO_POSITION;
 
-    protected MMObjectBuilder parent = null;
-    protected Object storageIdentifier = null;
-    protected int     storageType = TYPE_UNKNOWN;
+    private int     typeInt  = TYPE_UNKNOWN;
+    private int     state   = STATE_UNKNOWN;
+
+    private boolean required = false;
+    private boolean unique   = false;
+
+    private MMObjectBuilder parent = null;
+    private int    storagePosition  = -1;
+    private Object  storageIdentifier = null;
+    private int     storageType = TYPE_UNKNOWN;
+
+    private Object defaultValue = null;
+
+    protected BasicCoreField() {
+    }
 
     /**
      * Constructor for default FieldDefs.
      */
-    public CoreField() {
+    public BasicCoreField(String name) {
+        key = name;
+        this.guiName     = new LocalizedString(key);
+        this.description = new LocalizedString(key);
     }
 
     /**
      * Constructor for FieldDefs with partially initialized fields.
      * @param guiName the default GUIName for a field
      * @param guiType  the GUI type (i.e. "integer' or 'field')
-     * @param guiSearch position in the editor for this field when searching
-     * @param guiList position in the editor for this field when listing
+     * @param searchPosition position in the editor for this field when searching
+     * @param listPosition position in the editor for this field when listing
      * @param name the actual name of the field in the database
      * @param type the basic MMBase type of the field
      */
-    public CoreField(String guiName, String guiType, int search, int list, String name, int type) {
+    public BasicCoreField(String guiName, String guiType, int search, int list, String name, int type) {
         this(guiName, guiType, search, list, name, type, 2, STATE_PERSISTENT);
     }
 
@@ -87,44 +99,24 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
      * Constructor for FieldDefs with partially initialized fields.
      * @param guiName the default GUIName for a field
      * @param guiType  the GUI type (i.e. "integer' or 'field')
-     * @param guiSearch position in the editor for this field when searching
-     * @param guiList position in the editor for this field when listing
+     * @param searchPosition position in the editor for this field when searching
+     * @param listPosition position in the editor for this field when listing
      * @param name the actual name of the field in the database
      * @param type the basic MMBase type of the field
-     * @param guiPos position in the editor for this field when editing
+     * @param editPosition position in the editor for this field when editing
      * @param state the state of the field (persistent, virtual, etc.)
      */
-    public CoreField(String guiName, String guiType, int guiSearch, int guiList, String name, int type, int guiPos, int state) {
+    public BasicCoreField(String guiName, String guiType, int searchPosition, int listPosition, String name, int type, int editPosition, int state) {
         this.key = name;
         this.state = state;
         this.typeInt = type;
-        this.typeString = FieldDefs.getDBTypeDescription(type);
         this.guiType = guiType;
-        this.guiName     = new LocalizedString(guiName);
-        this.description = new LocalizedString(guiName);
-        this.guiSearch = guiSearch;
-        this.guiList = guiList;
-        this.guiPos  = guiPos;
+        this.guiName     = new LocalizedString(key);
+        this.description = new LocalizedString(key);
+        this.searchPosition = searchPosition;
+        this.listPosition = listPosition;
+        this.editPosition  = editPosition;
     }
-
-    /**
-     * Provide a description for the current type.
-     * @return the description of the type.
-     */
-    public String getDBTypeDescription() {
-        return typeString;
-        //return FieldDefs.getDBTypeDescription(type);
-    }
-
-    /**
-     * Provide a description for the current state.
-     * @return the description of the state.
-     */
-    public String getDBStateDescription() {
-        return FieldDefs.getDBStateDescription(state);
-    }
-
-
 
 
     /**
@@ -135,6 +127,12 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
      */
     public String getGUIName(Locale locale) {
         return guiName.get(locale);
+    }
+    public void setGUIName(String g, Locale locale) {
+        guiName.set(g, locale);
+    }
+    public LocalizedString getLocalizedGUIName() {
+        return guiName;
     }
 
     /**
@@ -155,6 +153,10 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
         return guiType;
     }
 
+    public void setGUIType(String g) {
+        guiType = g;
+    }
+
     /**
      * Retrieves the basic MMBase type of the field.
      *
@@ -164,11 +166,17 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
         return typeInt;
     }
 
+    public void setType(int i) {
+        typeInt = i;
+    }
     /**
      * Retrieve whether the field can be left blank.
      */
     public boolean isRequired() {
         return required;
+    }
+    public void setRequired(boolean b) {
+        required = b;
     }
 
     /**
@@ -177,46 +185,65 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
     public boolean isUnique() {
         return unique;
     }
+    public void setUnique(boolean b) {
+        unique = b;
+    }
 
     /**
      * Retrieve the position of the field when searching.
      * A value of -1 indicates the field is unavailable during search.
      */
-    public int getGUISearch() {
-        return guiSearch;
+    public int getSearchPosition() {
+        return searchPosition;
+    }
+    public void setSearchPosition(int i) {
+        searchPosition = i;
     }
 
     /**
      * Retrieve the position of the field when listing.
      * A value of -1 indicates the field is unavailable in a list.
      */
-    public int getGUIList() {
-        return guiList;
+    public int getListPosition() {
+        return listPosition;
+    }
+    public void setListPosition(int i) {
+        listPosition = i;
     }
 
     /**
      * Retrieve the position of the field when editing.
      * A value of -1 indicates the field cannot be edited.
      */
-    public int getGUIPos() {
-        return guiPos;
+    public int getEditPosition() {
+        return editPosition;
+    }
+    public void setEditPosition(int i) {
+        editPosition = i;
     }
 
     /**
      * Retrieve the position of the field in the database table.
      */
-    public int getDBPos() {
-        return pos;
+    public int getStoragePosition() {
+        return storagePosition;
+    }
+    public void setStoragePosition(int i) {
+        storagePosition = i;
     }
 
     public void setDefaultValue(Object def) {
+        defaultValue = def;
     }
     public Object getDefaultValue() {
-        return null;
+        return defaultValue;
     }
 
     public String getDescription() {
         return getDescription(null);
+    }
+    public LocalizedString getLocalizedDescription() {
+        return description;
     }
     /**
     /**
@@ -234,16 +261,11 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
     }
 
 
-    public org.mmbase.bridge.NodeManager getNodeManager() {
-        throw new UnsupportedOperationException("Cannot get NodeManager from CoreField. You can use getParent to obtain the MMObjectBuilder");
-    }
-
-
     /**
      * Returns a description for this field.
      */
     public String toString() {
-        return getDBTypeDescription() + "/" + guiType + " " + key;
+        return Fields.getTypeDescription(typeInt) + "/" + guiType + " " + key;
     }
 
     /**
@@ -251,16 +273,16 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
      * @since MMBase-1.7
      */
     public boolean equals(Object o) {
-        if (o instanceof CoreField) {
-            CoreField f = (CoreField) o;
+        if (o instanceof BasicCoreField) {
+            BasicCoreField f = (BasicCoreField) o;
             return
                 storageEquals(f)
                 && description.equals(f.description)
                 && guiName.equals(f.guiName)
                 && guiType.equals(f.guiType)
-                && guiSearch == f.guiSearch
-                && guiList  ==  f.guiList
-                && guiPos   == f.guiPos
+                && searchPosition == f.searchPosition
+                && listPosition  ==  f.listPosition
+                && editPosition   == f.editPosition
                 ;
         } else {
             return false;
@@ -271,12 +293,20 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
         return maxLength;
     }
 
+    public void setMaxLength(int i) {
+        maxLength = i;
+    }
+
+
     public boolean hasIndex() {
         return (typeInt == TYPE_NODE) || key.equals("number");
     }
 
     public int getState() {
         return state;
+    }
+    public void setState(int i) {
+        state = i;
     }
 
 
@@ -293,7 +323,7 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
         result = HashCodeUtil.hashCode(result, unique);
         result = HashCodeUtil.hashCode(result, parent);
         result = HashCodeUtil.hashCode(result, storageType);
-        result = HashCodeUtil.hashCode(result, pos);
+        result = HashCodeUtil.hashCode(result, storagePosition);
         return result;
     }
     
@@ -303,17 +333,16 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
      */
     public boolean storageEquals(CoreField f) {
         return
-            key.equals(f.key)
-            && typeInt == f.typeInt
-            && state == f.state
-            && required == f.required
-            && unique  == f.unique
-            && maxLength == f.maxLength
-            && (parent == null ? f.parent == null : parent.equals(f.parent))
-            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier))
-            && storageType == f.storageType
-            && pos == f.pos
-            ;
+            key.equals(f.getName())
+            && typeInt == f.getType()
+            && state == f.getState()
+            && required == f.isRequired()
+            && unique  == f.isUnique()
+            && maxLength == f.getMaxLength()
+            && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
+            && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
+            && storageType == f.getStorageType()
+            && storagePosition == f.getStoragePosition();
     }
 
     // Storable interfaces
@@ -363,8 +392,8 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
      *         to the supplied one.
      */
     public int compareTo(Object o) {
-        int pos1 = getDBPos();
-        int pos2 = ((FieldDefs)o).getDBPos();
+        int pos1 = getStoragePosition();
+        int pos2 = ((CoreField)o).getStoragePosition();
         if (pos1 < pos2) {
             return -1;
         } else if (pos1 > pos2) {
