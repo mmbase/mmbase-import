@@ -11,7 +11,6 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Image;
-import com.lowagie.text.html.HtmlParser;
 import java.io.*;
 import java.net.URL;
 import org.w3c.tidy.Tidy;
@@ -100,7 +99,7 @@ public class PDFConverter {
         }
                 
         public void run() {
-            parser.parse(pdf,pipein);
+            parser.go(pdf,pipein);
             pdf.close();
         }
     }
