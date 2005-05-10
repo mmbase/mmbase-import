@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.*;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.VirtualBuilder;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.storage.search.*;
 
 /**
@@ -32,7 +34,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,CoreField,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.10 2005-05-09 21:50:40 michiel Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.11 2005-05-10 22:58:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -116,10 +118,8 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     }
     
     // javadoc is inherited
-    public BasicRelationStep addRelationStep(
-            InsRel builder, MMObjectBuilder nextBuilder) {
-        throw new UnsupportedOperationException(
-        "Adding more steps to NodeSearchQuery not supported.");
+    public BasicRelationStep addRelationStep(InsRel builder, MMObjectBuilder nextBuilder) {
+        throw new UnsupportedOperationException("Adding more steps to NodeSearchQuery not supported.");
     }
     
     // javadoc is inherited

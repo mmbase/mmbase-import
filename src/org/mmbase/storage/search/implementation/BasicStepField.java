@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.16 2005-05-09 21:50:40 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.17 2005-05-10 22:58:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -44,36 +45,36 @@ public class BasicStepField implements StepField {
 
         // Test for null value.
         if (value == null) {
-            throw new IllegalArgumentException("Invalid value for " + FieldDefs.getDBTypeDescription(type) + " field: " + value);
+            throw new IllegalArgumentException("Invalid value for " + org.mmbase.core.util.Fields.getTypeDescription(type) + " field: " + value);
         }
 
         // Test for compatible type.
         boolean ok;
         switch (type) {
-        case FieldDefs.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
+        case CoreField.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
             //I'm not shure a byte array is numerical
 
             // Numerical types.
-        case FieldDefs.TYPE_INTEGER:
-        case FieldDefs.TYPE_FLOAT:
-        case FieldDefs.TYPE_DOUBLE:
-        case FieldDefs.TYPE_LONG:
-        case FieldDefs.TYPE_NODE:
+        case CoreField.TYPE_INTEGER:
+        case CoreField.TYPE_FLOAT:
+        case CoreField.TYPE_DOUBLE:
+        case CoreField.TYPE_LONG:
+        case CoreField.TYPE_NODE:
             ok = value instanceof Number;
             break;
 
             // String types.
-        case FieldDefs.TYPE_STRING:
-        case FieldDefs.TYPE_XML:
+        case CoreField.TYPE_STRING:
+        case CoreField.TYPE_XML:
             ok = value instanceof String;
             break;
-        case FieldDefs.TYPE_BOOLEAN:
+        case CoreField.TYPE_BOOLEAN:
             ok = value instanceof Boolean;
             break;
-        case FieldDefs.TYPE_DATETIME:
+        case CoreField.TYPE_DATETIME:
             ok = value instanceof java.util.Date || value instanceof Number;
             break;
-        case FieldDefs.TYPE_LIST:
+        case CoreField.TYPE_LIST:
             ok = value instanceof java.util.List;
             break;
 
@@ -83,7 +84,7 @@ public class BasicStepField implements StepField {
         }
 
         if (!ok) {
-            throw new IllegalArgumentException("Invalid value for " + FieldDefs.getDBTypeDescription(type) + " field: "
+            throw new IllegalArgumentException("Invalid value for " + org.mmbase.core.util.Fields.getTypeDescription(type) + " field: "
                                                + value + ", of type " + value.getClass().getName());
         }
     }

@@ -13,6 +13,7 @@ import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.23 2005-05-09 21:50:40 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.24 2005-05-10 22:58:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {

@@ -16,7 +16,7 @@ import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.core.CoreField;
 
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.transformers.CharTransformer;
@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.13 2005-03-16 10:47:38 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.14 2005-05-10 22:58:27 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -513,7 +513,7 @@ public abstract class StorageManagerFactory {
      *  <li>For MMBase: the String '[basename]_object</li>
      *  <li>For MMObjectBuilder: the String '[basename]_[builder name]'</li>
      *  <li>For MMObjectNode: the object number as a Integer</li>
-     *  <li>For FieldDefs or String: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
+     *  <li>For CoreField or String: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
      * </ul>
      * Note that 'basename' is a property from the mmbase module, set in mmbaseroot.xml.<br />
      * You can override this method if you intend to use different ids.
@@ -533,9 +533,9 @@ public abstract class StorageManagerFactory {
             id = mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
         } else if (mmobject instanceof MMObjectNode) {
             return ((MMObjectNode)mmobject).getIntegerValue("number");
-        } else if (mmobject instanceof String || mmobject instanceof FieldDefs) {
-            if (mmobject instanceof FieldDefs) {
-                id = ((FieldDefs)mmobject).getDBName();
+        } else if (mmobject instanceof String || mmobject instanceof CoreField) {
+            if (mmobject instanceof CoreField) {
+                id = ((CoreField)mmobject).getName();
             } else {
                 id = (String)mmobject;
             }
@@ -547,7 +547,7 @@ public abstract class StorageManagerFactory {
                 String newid = (String)disallowedFields.get(key);
                 if (newid == null) {
                     if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
-                        throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
+                        throw new StorageException("The name of the field '"+((CoreField)mmobject).getName()+"' is disallowed, and no alternate value is available.");
                     }
                 } else {
                     id = newid;
