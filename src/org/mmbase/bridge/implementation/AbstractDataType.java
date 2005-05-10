@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.3 2005-05-09 21:42:39 michiel Exp $
+ * @version $Id: AbstractDataType.java,v 1.4 2005-05-10 22:57:11 michiel Exp $
  */
 
 abstract public class AbstractDataType implements DataType, Comparable {
@@ -71,10 +71,12 @@ abstract public class AbstractDataType implements DataType, Comparable {
      * @param description the description as a String
      */
     public void setDescription(String desc, Locale locale) {
+        if (description == null) description = new LocalizedString(key);
         description.set(desc, locale);
     }
 
     public void setBundle(String b) {
+        if (description == null) description = new LocalizedString(key);
         description.setBundle(b);
     }
 
