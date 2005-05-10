@@ -13,13 +13,13 @@ package org.mmbase.bridge.implementation;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.mmbase.bridge.*;
-import org.mmbase.module.corebuilders.CoreField;
+import org.mmbase.core.CoreField;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.18 2005-05-09 21:42:39 michiel Exp $
+ * @version $Id: BasicField.java,v 1.19 2005-05-10 22:57:11 michiel Exp $
  */
 public class BasicField implements Field, Comparable {
 
