@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.core.CoreField;
 import java.io.InputStream;
 
 /**
@@ -20,7 +20,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.4 2005-05-02 12:58:48 michiel Exp $
+ * @version $Id: StorageManager.java,v 1.5 2005-05-10 22:58:27 michiel Exp $
  */
 public interface StorageManager {
 
@@ -76,11 +76,11 @@ public interface StorageManager {
      * Retrieve a large text for a specified object field.
      * Implement this method to allow for optimization of storing and retrieving large texts.
      * @param node the node to retrieve the text from
-     * @param field the FieldDefs of the field to retrieve
+     * @param field the Type of the field to retrieve
      * @return the retrieved text
      * @throws StorageException if an error occurred while retrieving the text value
      */
-    public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException;
+    public String getStringValue(MMObjectNode node, CoreField field) throws StorageException;
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
@@ -90,13 +90,13 @@ public interface StorageManager {
      * @return the retrieved byte array
      * @throws StorageException if an error occurred while retrieving the binary value
      */
-    public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException;
+    public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException;
 
 
     /**
      * @since MMBase-1.8
      */
-    public InputStream getInputStreamValue(MMObjectNode node, FieldDefs field) throws StorageException;
+    public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException;
 
     /**
      * This method creates a new object in the storage, and registers the change.
@@ -200,19 +200,19 @@ public interface StorageManager {
      * Creates a field and adds it to the storage of this builder.
      * @param field the FieldDefs of the field to add
      */
-    public void create(FieldDefs field) throws StorageException;
+    public void create(CoreField field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
      * @param field the FieldDefs of the field to change
      */
-    public void change(FieldDefs field) throws StorageException;
+    public void change(CoreField field) throws StorageException;
 
     /**
      * Deletes a field from the storage of this builder.
      * @param field the FieldDefs of the field to delete
      */
-    public void delete(FieldDefs field) throws StorageException;
+    public void delete(CoreField field) throws StorageException;
 
 }
 

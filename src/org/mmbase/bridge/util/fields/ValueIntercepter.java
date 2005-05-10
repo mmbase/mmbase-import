@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.16 2005-04-19 19:01:41 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.17 2005-05-10 22:59:47 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -174,7 +174,7 @@ public class ValueIntercepter {
 
     protected static int getType(final String s) {
         if (s.equals("object")) return 0;
-        return org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(s);
+        return org.mmbase.core.util.Fields.getType(s);
     }
 
     private static Object createProcessor(XMLBasicReader reader, Element processorElement) {
