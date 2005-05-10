@@ -34,7 +34,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.127 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMBase.java,v 1.128 2005-05-10 11:37:13 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -600,27 +600,27 @@ public class MMBase extends ProcessorModule {
             rootBuilder = new MMObjectBuilder();
             rootBuilder.setMMBase(this);
             rootBuilder.setTableName("object");
-            Vector xmlfields = new Vector();
+            List fields = new ArrayList();
             // number field  (note: state = 'system')
             FieldDefs def = new FieldDefs("Object", "integer", 10, 10, "number", FieldDefs.TYPE_INTEGER, 1, FieldDefs.DBSTATE_SYSTEM);
             def.setDBPos(1);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
-            xmlfields.add(def);
+            fields.add(def);
             // otype field
             def = new FieldDefs("Type", "integer", -1, -1, "otype", FieldDefs.TYPE_INTEGER, -1, FieldDefs.DBSTATE_SYSTEM);
             def.setDBPos(2);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
-            xmlfields.add(def);
+            fields.add(def);
             // owner field
             def = new FieldDefs("Owner", "string", 11, 11, "owner", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_SYSTEM);
             def.setDBSize(12);
             def.setDBPos(3);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
-            xmlfields.add(def);
-            rootBuilder.setXMLValues(xmlfields);
+            fields.add(def);
+            rootBuilder.setFields(fields);
         }
         return rootBuilder;
     }
@@ -1131,7 +1131,7 @@ public class MMBase extends ProcessorModule {
                 bul.setMaintainer(parser.getBuilderMaintainer());
                 bul.setSearchAge("" + parser.getSearchAge());
                 bul.setInitParameters(parser.getProperties());
-                bul.setXMLValues(parser.getFieldDefs()); // temp  ?
+                bul.setFields(parser.getFieldDefs()); // temp  ?
 
 
                 // oke set the huge hack for insert layout
