@@ -118,6 +118,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.core.FieldType", doc));
 
         //Since you can use search query objects in the bridge, the important parts of the search query interfaces need to be remotely available as well.
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
