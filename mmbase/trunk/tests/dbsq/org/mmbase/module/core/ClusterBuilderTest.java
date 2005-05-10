@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ClusterBuilderTest extends TestCase {
     
@@ -520,91 +520,69 @@ public class ClusterBuilderTest extends TestCase {
     public void testAddRelationDirections() {
         // --- requires role "related" to be defined: ---
         int related = mmbase.getRelDef().getNumberByName("related");
-        assertTrue("Role 'related' must be defined to run this test.", 
-            related != -1);
+        assertTrue("Role 'related' must be defined to run this test.", related != -1);
         // --- requires typerel to be defined for 
         //     source, role, destination = "news", "related", "people": ---
         assertTrue("This (bidirectional) relation-type must be defined to run "
-            + "this test: source, role, destination = "
-            + "'news', 'related', 'people'",
-            mmbase.getTypeRel().reldefCorrect(
-                mmbase.getTypeDef().getIntValue("news"), 
-                mmbase.getTypeDef().getIntValue("people"), related));
+                   + "this test: source, role, destination = "
+                   + "'news', 'related', 'people'",
+            mmbase.getTypeRel().reldefCorrect(mmbase.getTypeDef().getIntValue("news"), 
+                                              mmbase.getTypeDef().getIntValue("people"), related));
         // --- requires relations to define a 'dir' field --
-        assertTrue("Relations must define a 'dir' field to run this test.",
-            insrel.usesdir);
+        assertTrue("Relations must define a 'dir' field to run this test.", insrel.usesdir);
 
         BasicSearchQuery query = new BasicSearchQuery();
         Map roles = new HashMap();
         Map fieldsByName = new HashMap();
-        List tables = Arrays.asList(
-            new Object[] {"news", "related", "people", "insrel", "news0"});
-        Map stepsByAlias 
-            = instance.addSteps(query, tables, roles, true, fieldsByName);
-        instance.addRelationDirections(query, ClusterBuilder.SEARCH_ALL, roles);
+        List tables = Arrays.asList(new Object[] {"news", "related", "people", "insrel", "news0"});
+        Map stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(query, Arrays.asList(new Integer[] {new Integer(ClusterBuilder.SEARCH_ALL)}), roles);
+
         RelationStep relation1 = (RelationStep) stepsByAlias.get("related");
-        assertTrue(relation1.getDirectionality() 
-            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(!relation1.getCheckedDirectionality());
         RelationStep relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue(
-            relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(!relation2.getCheckedDirectionality());
         
         query = new BasicSearchQuery();
-        stepsByAlias 
-            = instance.addSteps(query, tables, roles, true, fieldsByName);
-        instance.addRelationDirections(
-            query, ClusterBuilder.SEARCH_BOTH, roles);
+        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(query, Arrays.asList(new Integer[] {new Integer(ClusterBuilder.SEARCH_BOTH)}), roles);
         relation1 = (RelationStep) stepsByAlias.get("related");
-        assertTrue(relation1.getDirectionality() 
-            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(relation1.getCheckedDirectionality());
         relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue(relation2.getDirectionality()
-            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(relation2.getCheckedDirectionality());
         
         query = new BasicSearchQuery();
-        stepsByAlias 
-            = instance.addSteps(query, tables, roles, true, fieldsByName);
-        instance.addRelationDirections(
-            query, ClusterBuilder.SEARCH_EITHER, roles);
+        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(query, Arrays.asList(new Integer[] {new Integer(ClusterBuilder.SEARCH_EITHER)}), roles);
         relation1 = (RelationStep) stepsByAlias.get("related");
-        assertTrue(relation1.getDirectionality() 
-            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(relation1.getCheckedDirectionality());
         relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue(relation2.getDirectionality()
-            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(relation2.getCheckedDirectionality());
         
         query = new BasicSearchQuery();
-        stepsByAlias 
-            = instance.addSteps(query, tables, roles, true, fieldsByName);
-        instance.addRelationDirections(
-            query, ClusterBuilder.SEARCH_DESTINATION, roles);
+        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(query, Arrays.asList(new Integer[] {new Integer(ClusterBuilder.SEARCH_DESTINATION)}), roles);
         relation1 = (RelationStep) stepsByAlias.get("related");
-        assertTrue(relation1.getDirectionality() 
-            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(relation1.getCheckedDirectionality());
         relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue(relation2.getDirectionality()
-            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation2.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(relation2.getCheckedDirectionality());
         
         query = new BasicSearchQuery();
-        stepsByAlias 
-            = instance.addSteps(query, tables, roles, true, fieldsByName);
-        instance.addRelationDirections(
-            query, ClusterBuilder.SEARCH_SOURCE, roles);
+        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(query, Arrays.asList(new Integer[] {new Integer(ClusterBuilder.SEARCH_SOURCE)}), roles);
         relation1 = (RelationStep) stepsByAlias.get("related");
-        assertTrue(relation1.getDirectionality() 
-            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation1.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(relation1.getCheckedDirectionality());
         relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue(relation2.getDirectionality()
-            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(relation2.getCheckedDirectionality());
     }
     
