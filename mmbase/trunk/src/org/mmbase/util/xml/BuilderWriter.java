@@ -11,7 +11,8 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 
 import org.w3c.dom.*;
 
@@ -24,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.17 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BuilderWriter.java,v 1.18 2005-05-10 22:56:16 michiel Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -150,39 +151,39 @@ public class BuilderWriter extends DocumentWriter  {
         addComment("builder.fieldlist",root);
         root.appendChild(fieldlist);
         // obtain all fields defined in the builder
-        List fields=builder.getFields(FieldDefs.ORDER_CREATE);
+        List fields=builder.getFields(CoreField.ORDER_CREATE);
         for (Iterator f=fields.iterator(); f.hasNext();) {
-            FieldDefs fielddef=(FieldDefs)f.next();
+            CoreField fielddef=(CoreField)f.next();
             // skip otype, cannot occur in a builder xml file (doh)
-            String fieldname=fielddef.getDBName();
+            String fieldname=fielddef.getName();
             if (fieldname.equals("otype")) continue;
-            FieldDefs parentField=null;
-            if (parent!=null) {
-                parentField=parent.getField(fieldname);
+            CoreField parentField = null;
+            if (parent != null) {
+                parentField = parent.getField(fieldname);
             }
             // check guidata
             Element descelm=null;
-            datamap=fielddef.getDescriptions();
+            datamap = fielddef.getLocalizedDescription().asMap();
             for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
                 Map.Entry em= (Map.Entry)i.next();
-                String language=(String)em.getKey();
+                Locale locale = (Locale)em.getKey();
                 String description=(String)em.getValue();
-                if ((parentField==null) || !(description.equals(parentField.getDescription(language)))) {
+                if ((parentField==null) || !(description.equals(parentField.getDescription(locale)))) {
                     if (descelm==null) descelm=document.createElement("descriptions");
                     Element elm=addContentElement("description",description,descelm);
-                    elm.setAttribute("xml:lang",language);
+                    elm.setAttribute("xml:lang", locale.toString());
                 }
             }
             Element guielm=null;
-            datamap=fielddef.getGUINames();
+            datamap = fielddef.getLocalizedGUIName().asMap();
             for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
                 Map.Entry em= (Map.Entry)i.next();
-                String language=(String)em.getKey();
+                Locale locale = (Locale)em.getKey();
                 String name=(String)em.getValue();
-                if ((parentField==null) || !(name.equals(parentField.getGUIName(language)))) {
+                if ((parentField==null) || !(name.equals(parentField.getGUIName(locale)))) {
                     if (guielm==null) guielm=document.createElement("gui");
                     Element elm=addContentElement("guiname",name,guielm);
-                    elm.setAttribute("xml:lang",language);
+                    elm.setAttribute("xml:lang", locale.toString());
                 }
             }
             String guitype=fielddef.getGUIType();
@@ -194,29 +195,29 @@ public class BuilderWriter extends DocumentWriter  {
 
             // positions
             // input
-            int pos=fielddef.getGUIPos();
-            if ((parentField==null) || (pos!=parentField.getGUIPos())) {
+            int pos=fielddef.getEditPosition();
+            if ((parentField==null) || (pos!=parentField.getEditPosition())) {
                 if (poselm==null) poselm=document.createElement("positions");
                 addComment("builder.field.editor.pos.input",poselm);
                 addContentElement("input",""+pos,poselm);
             }
             // list
-            pos=fielddef.getGUIList();
-            if ((parentField==null) || (pos!=parentField.getGUIList())) {
+            pos=fielddef.getListPosition();
+            if ((parentField==null) || (pos!=parentField.getListPosition())) {
                 if (poselm==null) poselm=document.createElement("positions");
                 addComment("builder.field.editor.pos.list",poselm);
                 addContentElement("list",""+pos,poselm);
             }
             // search
-            pos=fielddef.getGUISearch();
-            if ((parentField==null) || (pos!=parentField.getGUISearch())) {
+            pos=fielddef.getSearchPosition();
+            if ((parentField==null) || (pos!=parentField.getSearchPosition())) {
                 if (poselm==null) poselm=document.createElement("positions");
                 addComment("builder.field.editor.pos.search",poselm);
                 addContentElement("search",""+pos,poselm);
             }
 
             if ((parentField==null) || (descelm!=null) || (guielm!=null) ||  (poselm!=null)) {
-                addComment("builder.field",fieldname,""+fielddef.getDBPos(),fieldlist);
+                addComment("builder.field", fieldname, ""+fielddef.getStoragePosition(), fieldlist);
                 Element field=document.createElement("field");
                 fieldlist.appendChild(field);
                 if (descelm!=null) {
@@ -237,19 +238,19 @@ public class BuilderWriter extends DocumentWriter  {
                 addComment("builder.field.db",field);
                 field.appendChild(db);
                 addComment("builder.field.db.name",db);
-                addContentElement("name",fielddef.getDBName(),db);
+                addContentElement("name",fielddef.getName(),db);
                 if (parentField==null) {
-                    String sType = FieldDefs.getDBTypeDescription(fielddef.getDBType());
+                    String sType = Fields.getTypeDescription(fielddef.getType());
                     addComment("builder.field.db.type",db);
                     Element dbtype=addContentElement("type",sType,db);
-                    String sState = FieldDefs.getDBStateDescription(fielddef.getDBState());
+                    String sState = Fields.getStateDescription(fielddef.getState());
                     dbtype.setAttribute("state",sState);
-                    int size=fielddef.getDBSize();
+                    int size = fielddef.getMaxLength();
                     if (size>-1) {
                         dbtype.setAttribute("size",""+size);
                     }
-                    dbtype.setAttribute("notnull",""+fielddef.getDBNotNull());
-                    dbtype.setAttribute("key",""+fielddef.isKey());
+                    dbtype.setAttribute("notnull",""+fielddef.isRequired());
+                    dbtype.setAttribute("key",""+fielddef.isUnique());
                 }
             }
         }
