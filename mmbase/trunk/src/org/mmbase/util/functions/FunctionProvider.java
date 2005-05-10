@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.5 2005-05-03 21:18:01 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.6 2005-05-10 23:00:44 michiel Exp $
  */
 public class FunctionProvider {
 
@@ -68,7 +68,7 @@ public class FunctionProvider {
 
     /**
      * Creates a new empty Parameters object for given function.
-     * @return A new empty Parameters object, or <code>null<code> if no such function.
+     * @return A new empty Parameters object, or <code>null</code> if no such function.
      */
     public Parameters createParameters(String functionName) {
         Function function = getFunction(functionName);
