@@ -19,9 +19,7 @@ import org.mmbase.cache.*;
 
 
 import org.mmbase.module.builders.DayMarkers;
-import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.*;
@@ -53,7 +51,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.303 2005-05-09 16:34:11 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.304 2005-05-10 11:36:33 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -303,7 +301,7 @@ public class MMObjectBuilder extends MMTable {
     }
     
     // contains the builder's field definitions
-    protected Hashtable fields;
+    protected Map fields;
 
 
     /**
@@ -1880,14 +1878,14 @@ public class MMObjectBuilder extends MMTable {
      * @param fieldName the name of the field to remove
      */
     public void removeField(String fieldName) {
-        FieldDefs def=getField(fieldName);
-        int dbpos=def.getDBPos();
+        FieldDefs def = getField(fieldName);
+        int dbpos = def.getDBPos();
         fields.remove(fieldName);
         // move them all up one place
-        for (Enumeration e=fields.elements();e.hasMoreElements();) {
-            def=(FieldDefs)e.nextElement();
-            int curpos=def.getDBPos();
-            if (curpos>=dbpos) def.setDBPos(curpos-1);
+        for (Iterator e = fields.values().iterator(); e.hasNext();) {
+            def = (FieldDefs) e.next();
+            int curpos = def.getDBPos();
+            if (curpos >= dbpos) def.setDBPos(curpos - 1);
         }
         updateFields();
     }
@@ -3578,18 +3576,17 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Stores fields information of this table.
-     * Asside from the fields supplied by the caller, a field 'otype' is added.
-     * @param xmlfields A Vector with fields as they appear in the current table.
-     *        This data is retrieved from an outside source (such as an xml file), and thus
-     *        may be incorrect.
+     * Asside from the fields supplied by the caller, a field 'otype' is added (if missing).
+     *
+     * @param f A List with fields (as CoreField objects) as defined by MMBase. This may not be in sync with the actual database table, about which Storage will report then.
      */
-    public void setXMLValues(Vector xmlfields) {
-        fields = new Hashtable();
+    public void setFields(List f) {
+        fields = new HashMap();
 
-        Enumeration enumeration = xmlfields.elements();
-        while (enumeration.hasMoreElements()) {
-            FieldDefs def=(FieldDefs)enumeration.nextElement();
-            String name=(String) def.getDBName();
+        Iterator i = f.iterator();
+        while (i.hasNext()) {
+            CoreField def = (CoreField) i.next();
+            String name = (String) def.getName();
             def.setParent(this);
             fields.put(name, def);
         }
@@ -3603,14 +3600,14 @@ public class MMObjectBuilder extends MMTable {
             def.setDBPos(2);
             // required field
             def.setDBNotNull(true);
-            enumeration = xmlfields.elements();
-            while (enumeration.hasMoreElements()) {
-                FieldDefs field=(FieldDefs)enumeration.nextElement();
-                int pos=field.getDBPos();
-                if (pos>1) field.setDBPos(pos+1);
+            i = f.iterator();
+            while (i.hasNext()) {
+                FieldDefs field = (FieldDefs) i.next();
+                int pos = field.getDBPos();
+                if (pos > 1) field.setDBPos(pos + 1);
             }
             def.setParent(this);
-            fields.put(FIELD_OBJECT_TYPE,def);
+            fields.put(FIELD_OBJECT_TYPE, def);
         }
         updateFields();
     }
