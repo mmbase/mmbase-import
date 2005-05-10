@@ -140,6 +140,7 @@ public class Importer
                people.setFirstname(arrstrFullDataString[5]);
                people.setSuffix(arrstrFullDataString[6]);
                people.setLastname(arrstrFullDataString[7]);
+               people.setInitials(arrstrFullDataString[9]);
                people.setPassword(arrstrFullDataString[17]);
                people.setUsername(arrstrFullDataString[16]);
                people.setAddress(arrstrFullDataString[10] + " " +  arrstrFullDataString[11] + " " + arrstrFullDataString[12]);
