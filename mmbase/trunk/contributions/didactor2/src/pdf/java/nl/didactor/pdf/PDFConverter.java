@@ -72,7 +72,8 @@ public class PDFConverter {
                     new Chunk( 
                         Image.getInstance( headerImage ),
                         310.0f,
-                        -14.0f
+//                        -14.0f
+                        -60.0f 
                     )
                 ),
                 false
