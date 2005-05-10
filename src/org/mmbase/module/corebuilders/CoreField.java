@@ -38,7 +38,7 @@ import org.mmbase.util.*;
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: CoreField.java,v 1.1 2005-05-09 21:41:02 michiel Exp $
+ * @version $Id: CoreField.java,v 1.2 2005-05-10 11:35:47 michiel Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
@@ -98,6 +98,7 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
         this.key = name;
         this.state = state;
         this.typeInt = type;
+        this.typeString = FieldDefs.getDBTypeDescription(type);
         this.guiType = guiType;
         this.guiName     = new LocalizedString(guiName);
         this.description = new LocalizedString(guiName);
@@ -224,6 +225,14 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
     public MMObjectBuilder getParent() {
         return parent;
     }
+    /**
+     * Set the parent builder for this field
+     * @param parent the fielddefs parent
+     */
+    public void setParent(MMObjectBuilder parent) {
+        this.parent = parent;
+    }
+
 
     public org.mmbase.bridge.NodeManager getNodeManager() {
         throw new UnsupportedOperationException("Cannot get NodeManager from CoreField. You can use getParent to obtain the MMObjectBuilder");
@@ -234,13 +243,7 @@ public class CoreField extends org.mmbase.bridge.implementation.AbstractDataType
      * Returns a description for this field.
      */
     public String toString() {
-        return "DEF GUIName=" + getGUIName() + " GUIType=" + guiType +
-               " Input=" + guiPos + " Search=" + guiSearch + " List=" + guiList +
-               " DBname=" + key +
-               " DBType=" + getDBTypeDescription()+
-               " DBSTATE=" + getDBStateDescription() +
-               " DBNOTNULL=" + required + " DBPos=" + pos + " DBSIZE=" + maxLength +
-               " unique=" + unique;
+        return getDBTypeDescription() + "/" + guiType + " " + key;
     }
 
     /**
