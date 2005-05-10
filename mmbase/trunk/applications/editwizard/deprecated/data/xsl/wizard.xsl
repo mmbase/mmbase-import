@@ -7,7 +7,7 @@
   @author Michiel Meeuwissen
   @author Pierre van Rooden
   @author Martijn Houtman
-  @version $Id: wizard.xsl,v 1.5 2004-04-16 09:02:38 pierre Exp $
+  @version $Id: wizard.xsl,v 1.6 2005-05-10 16:19:59 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -567,6 +567,7 @@
         <div>
           <input type="hidden" name="{@fieldname}" value="{value}" id="{@fieldname}">
             <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
           </input>
 
           <xsl:if test="(@ftype='datetime') or (@ftype='date')">
