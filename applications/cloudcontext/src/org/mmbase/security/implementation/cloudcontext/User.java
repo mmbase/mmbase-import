@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.11 2004-01-19 17:27:24 michiel Exp $
+ * @version $Id: User.java,v 1.11.2.1 2005-05-11 14:28:34 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends UserContext implements MMBaseObserver {
@@ -39,7 +39,11 @@ public class User extends UserContext implements MMBaseObserver {
     User(MMObjectNode n, long l) {
         node = n;
         key = l;
-        Users.getBuilder().addLocalObserver(this);
+//        Adding local observers seems like a plan, but unfortunately there is no way to unregister
+//        a user that got out of use. This results in a nasty memoryleak and, eventually,
+//        bad to almost stand-still perfromance when you craete new users...
+//
+//        Users.getBuilder().addLocalObserver(this);
     }
 
     // javadoc inherited
