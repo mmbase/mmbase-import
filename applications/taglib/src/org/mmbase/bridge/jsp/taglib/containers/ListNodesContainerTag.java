@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 
 /**
@@ -22,18 +23,22 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.15 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.16 2005-05-11 14:45:22 pierre Exp $
  */
-public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
+public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
 
     protected NodeQuery   query       = null;
+    protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute   path        = Attribute.NULL;
     protected Attribute   searchDirs  = Attribute.NULL;
     protected Attribute   nodeManager = Attribute.NULL;
     protected  Attribute   element     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
 
+    public void setCachepolicy(String t) throws JspTagException {
+        cachePolicy = getAttribute(t);
+    }
 
     public void setType(String t) throws JspTagException {
         nodeManager = getAttribute(t);
@@ -80,14 +85,14 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
-                
+
                 query = getCloudVar().createNodeQuery();
                 Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
-                
+
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
                     Step nodeStep = query.getStep(alias);
-                    if (nodeStep == null) { 
+                    if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
                     }
                     query.setNodeStep(nodeStep);
@@ -97,18 +102,21 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                 }
             }
         }
-            
+        if (cachePolicy != Attribute.NULL) {
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
+
         if (nodes != Attribute.NULL) {
             Queries.addStartNodes(query, nodes.getString(this));
         }
-        
+
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
         }
-        
+
         return EVAL_BODY;
     }
-    
+
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -117,9 +125,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                 }
             } catch (java.io.IOException ioe){
                 throw new JspTagException(ioe.toString());
-            } 
+            }
         }
-        return SKIP_BODY;        
+        return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
         query = null;

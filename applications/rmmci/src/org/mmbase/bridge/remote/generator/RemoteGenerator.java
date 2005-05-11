@@ -82,6 +82,7 @@ public class RemoteGenerator {
         sb.append("import java.util.*;\n");
         sb.append("import java.rmi.*;\n");
         sb.append("import org.mmbase.security.*;\n");
+        sb.append("import org.mmbase.cache.*;\n");
         sb.append("\n");
 
         sb.append("/**\n");
@@ -217,14 +218,14 @@ public class RemoteGenerator {
             String m = xmlClass.getImplements();
             StringTokenizer st = new StringTokenizer(m, ",");
             while (st.hasMoreTokens()) {
-                String token = st.nextToken();                
+                String token = st.nextToken();
                 //XMLClass xmlc = mmci.getClass(xmlClass.getImplements());
                 XMLClass xmlc = mmci.getClass(token);
                 if (xmlc != null && needsRemote(xmlc)) {
                     impl += ", Remote" + xmlc.getShortName();
                 } else {
                     //impl = ", " + token;
-                }                
+                }
             }
         }
 

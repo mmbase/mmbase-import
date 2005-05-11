@@ -16,6 +16,7 @@ import javax.servlet.jsp.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 //import org.mmbase.util.logging.*;
 
@@ -24,13 +25,19 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.10 2005-01-05 11:50:08 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.11 2005-05-11 14:45:22 pierre Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
     //private static final Logger log = Logging.getLoggerInstance(RelatedNodesContainerTag.class);
 
+    protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute role      = Attribute.NULL;
+
+    public void setCachepolicy(String t) throws JspTagException {
+        cachePolicy = getAttribute(t);
+    }
+
     /**
      * @param role a role
      */
@@ -39,7 +46,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
     }
 
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
             if (nodeManager != Attribute.NULL || role != Attribute.NULL || searchDirs != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
@@ -49,18 +56,18 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
             Node node = getNode();
             Cloud cloud = getCloudVar();
             query = cloud.createNodeQuery();
-            
+
             Step step = query.addStep(node.getNodeManager());
             query.setAlias(step, node.getNodeManager().getName() + "0");
             query.addNode(step, node);
-            
+
             if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
-                
+
                 String nodeManagerName;
                 if (nodeManager == Attribute.NULL) {
                     nodeManagerName = "object";
                 } else {
-                    nodeManagerName = nodeManager.getString(this); 
+                    nodeManagerName = nodeManager.getString(this);
                 }
                 RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
                                                                   (String) role.getValue(this), (String) searchDirs.getValue(this));
@@ -69,13 +76,13 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
-                
+
                 List newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
-                
+
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
                     Step nodeStep = Queries.searchStep(newSteps, alias);
-                    if (nodeStep == null) { 
+                    if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such (new) step)");
                     }
                     query.setNodeStep(nodeStep);
@@ -85,7 +92,10 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 }
             }
         }
-        
+        if (cachePolicy != Attribute.NULL) {
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
+
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
         }

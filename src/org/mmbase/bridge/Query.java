@@ -9,18 +9,22 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import org.mmbase.storage.search.*;
+
 import java.util.SortedSet;
+
+import org.mmbase.storage.search.*;
+import org.mmbase.cache.CachePolicy;
 
 /**
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.28 2004-11-30 14:06:55 pierre Exp $
+ * @author Pierre van Rooden
+ * @version $Id: Query.java,v 1.29 2005-05-11 14:45:22 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
-public interface Query extends SearchQuery, Cloneable {
+public interface Query extends SearchQuery, Cacheable, Cloneable {
 
     /**
      * Returns the Cloud for which this Query was defined.
@@ -29,8 +33,8 @@ public interface Query extends SearchQuery, Cloneable {
     Cloud getCloud();
 
     /**
-     * Wheter this query is 'aggregating'. You can only use 'addAggregatedField' on aggregating querys.
-     * @return is aggregating
+     * Whether this query is 'aggregating'. You can only use 'addAggregatedField' on aggregating querys.
+     * @return <code>true</code> if the query is aggregating
      * @todo Should this not appear in SearchQuery itself? Or should there be an AggregatingQuery interface?
      * It is now used in BasicCloud.getList.
      */

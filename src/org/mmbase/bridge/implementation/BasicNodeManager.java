@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.91 2005-05-07 14:33:03 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.92 2005-05-11 14:45:22 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -298,12 +298,17 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         try {
             boolean checked = cloud.setSecurityConstraint(query);
 
-            List resultList = (List) nodeListCache.get(query);
+            List resultList = null;
+            if (query.getCachePolicy().checkPolicy(query)) {
+                resultList = (List) nodeListCache.get(query);
+            }
 
             if (resultList == null) {
                 resultList = mmb.getSearchQueryHandler().getNodes(query, builder);
                 builder.processSearchResults(resultList);
-                nodeListCache.put(query, resultList);
+                if (query.getCachePolicy().checkPolicy(query)) {
+                    nodeListCache.put(query, resultList);
+                }
             }
 
             BasicNodeList resultNodeList;
@@ -439,8 +444,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
             List v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp), params, tokens);
-            if (v == null) { 
-                v = new ArrayList(); 
+            if (v == null) {
+                v = new ArrayList();
             }
             int items=1;
             try {
@@ -509,7 +514,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Function getFunction(String functionName) {
-        // first try the functions of this builder itself:       
+        // first try the functions of this builder itself:
         Function function = builder.getFunction(functionName);
 
         // We are not very interested in NodeFunction, because those would logically be requested

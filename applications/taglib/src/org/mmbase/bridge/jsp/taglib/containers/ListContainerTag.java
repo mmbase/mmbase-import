@@ -15,22 +15,27 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.cache.CachePolicy;
 
 /**
  * Container cognate for ListTag.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.12 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: ListContainerTag.java,v 1.13 2005-05-11 14:45:22 pierre Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
     private Query   query        = null;
+    private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
 
+    public void setCachepolicy(String t) throws JspTagException {
+        cachePolicy = getAttribute(t);
+    }
 
     public void setPath(String t) throws JspTagException {
         path = getAttribute(t);
@@ -58,12 +63,16 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     }
 
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         if (path == Attribute.NULL) {
             throw new JspTagException("Path attribute is mandatory");
         }
         Cloud cloud = getCloudVar();
         query = cloud.createQuery();
+
+        if (cachePolicy != Attribute.NULL) {
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
@@ -82,9 +91,9 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
                 }
             } catch (java.io.IOException ioe){
                 throw new JspTagException(ioe.toString());
-            } 
+            }
         }
-        return SKIP_BODY;        
+        return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
         query = null;

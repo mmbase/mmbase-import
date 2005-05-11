@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.124 2005-03-01 14:21:55 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.125 2005-05-11 14:45:22 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -124,7 +124,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (userContext == null) {
             log.debug("Login failed");
             throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
-        }        
+        }
         // end authentication...
 
         if (userContext.getAuthenticationType() == null) {
@@ -154,7 +154,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         userContext = user;
         if (userContext == null) {
             throw new java.lang.SecurityException("Login invalid: did not supply user object");
-        }        
+        }
 
         if (userContext.getAuthenticationType() == null) {
             log.warn("Security implementation did not set 'authentication type' in the user object.");
@@ -628,11 +628,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
             AggregatedResultCache cache = AggregatedResultCache.getCache();
 
-            List resultList = (List) cache.get(query);
+            List resultList = null;
+            if (query.getCachePolicy().checkPolicy(query)) {
+                resultList = (List) cache.get(query);
+            }
             if (resultList == null) {
                 ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
                 resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
-                cache.put(query, resultList);
+                if (query.getCachePolicy().checkPolicy(query)) {
+                    cache.put(query, resultList);
+                }
             }
             query.markUsed();
             NodeManager tempNodeManager;
@@ -661,8 +666,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
         // check multilevel cache if needed
-        List resultList = (List)multilevelCache.get(query);
-
+        List resultList = null;
+        if (query.getCachePolicy().checkPolicy(query)) {
+            resultList = (List)multilevelCache.get(query);
+        }
         // if unavailable, obtain from database
         if (resultList == null) {
             log.debug("result list is null, getting from database");
@@ -671,7 +678,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             } catch (SearchQueryException sqe) {
                 throw new BridgeException(query.toString() + ":" + sqe.getMessage(), sqe);
             }
-            multilevelCache.put(query, resultList);
+            if (query.getCachePolicy().checkPolicy(query)) {
+                multilevelCache.put(query, resultList);
+            }
         }
 
         query.markUsed();
