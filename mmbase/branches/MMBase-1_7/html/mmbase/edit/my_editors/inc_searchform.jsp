@@ -13,7 +13,7 @@
 	</tr>
 	<tr valign="top">
 	  <td align="right" class="name">Days old</td>
-	  <td><input class="small" type="text" name="conf_days" value="<%= conf_days %>" size="9" maxlength="9" /></td>
+	  <td><input class="small" type="text" name="conf_days" value="<mm:write referid="conf_days" />" size="9" maxlength="9" /></td>
 	</tr>
 	<mm:fieldlist nodetype="$ntype" type="search">
 		<tr valign="top">
