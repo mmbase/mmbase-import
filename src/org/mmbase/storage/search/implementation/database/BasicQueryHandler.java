@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.36 2005-05-02 13:00:01 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.37 2005-05-11 14:31:34 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -66,7 +66,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         Connection con = null;
         Statement stmt = null;
         String sqlString = null;
-        
+
         try {
             // Flag, set if offset must be supported by skipping results.
             boolean mustSkipResults =
@@ -306,17 +306,17 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         if (index != null) {
                             value = storageManager.getValue(rs, index.intValue(), field, true);
                         } else {
-                            java.sql.Blob b = storageManager.getBlobFromFile(node, field, true);
-                            if (b == null) { 
+                            java.sql.Blob b = storageManager.getBlobValue(node, field, true);
+                            if (b == null) {
                                 value = MMObjectNode.VALUE_NULL;
-                            } else {   
-                                if (b.length() == -1) { 
+                            } else {
+                                if (b.length() == -1) {
                                     value = MMObjectNode.VALUE_SHORTED;
                                 } else {
                                     value = b.getBytes(0L, (int) b.length());
                                 }
                             }
-                            
+
                         }
                         node.setValue(fieldName, value);
                     }
