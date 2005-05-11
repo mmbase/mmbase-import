@@ -1,6 +1,6 @@
 <% String title = "Edit node"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
 <% // Two new strings 
 String ntype = "";			// Type of node
 String node_gui = "";		// GUI variable set in builder
