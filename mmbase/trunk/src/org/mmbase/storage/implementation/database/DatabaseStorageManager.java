@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.93 2005-05-10 22:48:15 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.94 2005-05-11 14:31:34 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -49,7 +49,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     private static boolean legacyWarned = false;
 
-    
+
 
     /**
      * The factory that created this manager
@@ -365,10 +365,10 @@ public class DatabaseStorageManager implements StorageManager {
                 inStream.close();
                 String encoding = factory.getMMBase().getEncoding();
                 if (encoding.equalsIgnoreCase("ISO-8859-1")) {
-                    // CP 1252 only fills in the 'blanks' of ISO-8859-1, 
+                    // CP 1252 only fills in the 'blanks' of ISO-8859-1,
                     // so it is save to upgrade the encoding, in case accidentily those bytes occur
-                    encoding = "CP1252";                    
-                }                
+                    encoding = "CP1252";
+                }
                 untrimmedResult = new String(bytes.toByteArray(), encoding);
             } catch (IOException ie) {
                 throw new StorageException(ie);
@@ -376,10 +376,10 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             untrimmedResult = result.getString(index);
             if (factory.hasOption(Attributes.LIE_CP1252)) {
-                try {                
+                try {
                     String encoding = factory.getMMBase().getEncoding();
                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
-                        untrimmedResult = new String(untrimmedResult.getBytes("ISO-8859-1"), "CP1252");                
+                        untrimmedResult = new String(untrimmedResult.getBytes("ISO-8859-1"), "CP1252");
                     }
                  } catch(java.io.UnsupportedEncodingException uee) {
                      // cannot happen
@@ -387,7 +387,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-        
+
         if(untrimmedResult != null) {
             if (factory.hasOption(Attributes.TRIM_STRINGS)) {
                 untrimmedResult = untrimmedResult.trim();
@@ -524,11 +524,15 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    protected Blob getBlobValue(MMObjectNode node, CoreField field) throws StorageException {
+    public Blob getBlobValue(MMObjectNode node, CoreField field) throws StorageException {
+        return getBlobValue(node, field, false);
+    }
+
+    public Blob getBlobValue(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-            return getBlobFromFile(node, field, false);
+            return getBlobFromFile(node, field, mayShorten);
         } else {
-            return getBlobFromDatabase(node, field, false);
+            return getBlobFromDatabase(node, field, mayShorten);
         }
     }
 
@@ -644,7 +648,7 @@ public class DatabaseStorageManager implements StorageManager {
                     node.storeValue(field.getName(), new ByteArrayInputStream(new byte[0]));
                 } else {
                     if (binaryFile.exists()) {
-                        binaryFile.delete();                        
+                        binaryFile.delete();
                     }
                     return;
                 }
@@ -715,7 +719,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param field the binary field
      * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
      */
-    public Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
+    protected Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
         String fieldName = field.getName();
         File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
         if (binaryFile == null) {
@@ -1241,10 +1245,10 @@ public class DatabaseStorageManager implements StorageManager {
         if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             byte[] rawchars = null;
             try {
-                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {                    
-                    encoding = "CP1252";                    
+                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {
+                    encoding = "CP1252";
                 } else {
-                }  
+                }
                 rawchars = value.getBytes(encoding);
                 ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
                 statement.setBinaryStream(index, stream, rawchars.length);
@@ -1271,26 +1275,26 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, setValue);
 
         }
-        if (value != null) {            
-            if (! encoding.equalsIgnoreCase("UTF-8")) {                
+        if (value != null) {
+            if (! encoding.equalsIgnoreCase("UTF-8")) {
                 try {
                     value = new String(value.getBytes(encoding), encoding);
                 } catch(java.io.UnsupportedEncodingException uee) {
                     log.error(uee);
                     // cannot happen
                 }
-            }            
+            }
 
             // execute also getSurrogator, to make sure that it does not confuse, and the node contains what it would contain if fetched from database.
-            if (factory.getGetSurrogator() != null) { 
+            if (factory.getGetSurrogator() != null) {
                 value = factory.getGetSurrogator().transform(value);
-            }            
+            }
             if (factory.hasOption(Attributes.TRIM_STRINGS)) {
                 value = value.trim();
             }
         }
-        
-        
+
+
         if (objectValue == null) node.storeValue(field.getName(), value);
 
         return value;
@@ -1514,13 +1518,13 @@ public class DatabaseStorageManager implements StorageManager {
                 dbtype = field.getType();
             } else { // use database type.
                 dbtype = getJDBCtoMMBaseType(result.getMetaData().getColumnType(index), dbtype);
-            }            
-            
+            }
+
             switch (dbtype) {
                 // string-type fields
-            case CoreField.TYPE_XML : 
+            case CoreField.TYPE_XML :
                 return getXMLValue(result, index, field, mayShorten);
-            case CoreField.TYPE_STRING : 
+            case CoreField.TYPE_STRING :
                 return getStringValue(result, index, field, mayShorten);
             case CoreField.TYPE_BYTE :
                 Blob b =  getBlobValue(result, index, field, mayShorten);
@@ -2458,12 +2462,12 @@ public class DatabaseStorageManager implements StorageManager {
                                         }
                                     } else {
                                         if (foundColumn) {
-                                            
+
                                             Blob b = getBlobFromDatabase(node, field, false);
                                             byte[] bytes = (byte[]) b.getBytes(0L, (int) b.length());
                                             node.setValue(fieldName, bytes);
                                             storeBinaryAsFile(node, field);
-                                            
+
                                             node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
                                             // node.commit(); no need, because we only changed blob (so no database updates are done)
                                             result++;
@@ -2505,7 +2509,7 @@ public class DatabaseStorageManager implements StorageManager {
             inputStream = is;
             size = -1;
         }
-        
+
         public InputStream getBinaryStream() {
             if (bytes != null) {
                 return new ByteArrayInputStream(bytes);
@@ -2546,7 +2550,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
             bytes = b.toByteArray();
             size = bytes.length;
-            
+
         }
 
         public long length() {
@@ -2555,15 +2559,15 @@ public class DatabaseStorageManager implements StorageManager {
             }
             return size;
         }
-        
+
         public long position(Blob pattern, long start) {
             throw new UnsupportedOperationException("");
         }
-        
+
         public long  position(byte[] pattern, long start) {
             throw new UnsupportedOperationException("");
         }
-        
+
         public OutputStream setBinaryStream(long pos) {
             throw new UnsupportedOperationException("");
         }
@@ -2573,7 +2577,7 @@ public class DatabaseStorageManager implements StorageManager {
         public int setBytes(long pos, byte[] bytes, int offset, int len) {
             throw new UnsupportedOperationException("");
         }
-        
+
         public void truncate(long len) {
             throw new UnsupportedOperationException("");
         }
