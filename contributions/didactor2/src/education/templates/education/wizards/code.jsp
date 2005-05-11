@@ -152,7 +152,7 @@
          --%>
          <%// create new role %>
          <mm:import id="number_of_roles" reset="true">0</mm:import>
-         <mm:listnodes type="tests">
+         <mm:listnodes type="roles">
             <mm:import id="number_of_roles" reset="true"><mm:size /></mm:import>
          </mm:listnodes>
 
@@ -351,7 +351,7 @@
    <br>
 
    <mm:import id="number_of_metadata" reset="true">0</mm:import>
-   <mm:listnodes type="tests">
+   <mm:listnodes type="metastandard">
       <mm:import id="number_of_metadata" reset="true"><mm:size /></mm:import>
    </mm:listnodes>
 
