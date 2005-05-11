@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.Step;
 //import org.mmbase.util.logging.*;
 
@@ -22,17 +23,21 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.12 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.13 2005-05-11 14:45:22 pierre Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
     //  private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
 
     private Query     query      = null;
+    private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
 
+    public void setCachepolicy(String t) throws JspTagException {
+        cachePolicy = getAttribute(t);
+    }
 
     public void setPath(String t) throws JspTagException {
         path = getAttribute(t);
@@ -59,6 +64,10 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         }
         Cloud cloud = getCloudVar();
         query = cloud.createQuery();
+
+        if (cachePolicy != Attribute.NULL) {
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
 
         Node node = getNode();
         Step step = query.addStep(node.getNodeManager());

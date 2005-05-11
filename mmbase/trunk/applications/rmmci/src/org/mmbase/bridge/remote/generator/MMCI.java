@@ -77,6 +77,7 @@ public class MMCI {
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
 
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cacheable",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType", doc));
@@ -104,6 +105,9 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
+        // 'core' classes
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.core.FieldType", doc));
+        // storage interfaces
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.RelationStep",doc));
@@ -118,17 +122,15 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.core.FieldType", doc));
-
-        //Since you can use search query objects in the bridge, the important parts of the search query interfaces need to be remotely available as well.
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
-        //xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
-
+        // cache classes
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.cache.CachePolicy",doc));
+        // security classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.UserContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.AuthenticationData",doc));
-
+        // function classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
     }
