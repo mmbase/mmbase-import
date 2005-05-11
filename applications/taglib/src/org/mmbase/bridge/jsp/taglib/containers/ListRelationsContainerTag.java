@@ -9,13 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
+import java.util.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import java.util.*;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 
 import org.mmbase.util.logging.Logger;
@@ -26,16 +27,21 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.8 2005-04-26 08:51:03 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.9 2005-05-11 14:45:22 pierre Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
     private static final Logger log = Logging.getLoggerInstance(ListRelationsContainerTag.class);
     private NodeQuery   query        = null;
     private NodeQuery   relatedQuery        = null;
+    private Attribute cachePolicy  = Attribute.NULL;
     private Attribute type       = Attribute.NULL;
     private Attribute role       = Attribute.NULL;
     private Attribute searchDir  = Attribute.NULL;
+
+    public void setCachepolicy(String t) throws JspTagException {
+        cachePolicy = getAttribute(t);
+    }
 
     /**
      * @param type a nodeManager
@@ -72,24 +78,28 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
         for (int i = 0 ; i < querySteps.size(); i++) {
             Step queryStep = (Step) querySteps.get(i);
             Step rStep = (Step) rSteps.get(i);
-            Queries.copyConstraint(query.getConstraint(), queryStep, r, rStep);  
-            Queries.copySortOrders(query.getSortOrders(), queryStep, r, rStep);  
+            Queries.copyConstraint(query.getConstraint(), queryStep, r, rStep);
+            Queries.copySortOrders(query.getSortOrders(), queryStep, r, rStep);
         }
 
         return r;
     }
 
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         Cloud cloud = getCloudVar();
         NodeManager nm = null;
         if (type != Attribute.NULL) {
             nm = getCloudVar().getNodeManager(type.getString(this));
         }
         Node relatedFromNode = getNode();
-        query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
-        relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
+        query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
+        relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
 
+        if (cachePolicy != Attribute.NULL) {
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            relatedQuery.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
         return EVAL_BODY;
     }
 
@@ -101,9 +111,9 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
                 }
             } catch (java.io.IOException ioe){
                 throw new JspTagException(ioe.toString());
-            } 
+            }
         }
-        return SKIP_BODY;        
+        return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
         query = null;

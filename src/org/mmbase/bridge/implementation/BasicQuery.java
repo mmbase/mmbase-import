@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -20,12 +21,11 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.security.Authorization;
 
-
 /**
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.44 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: BasicQuery.java,v 1.45 2005-05-11 14:45:22 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -34,11 +34,20 @@ public class BasicQuery implements Query  {
     private static final Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
     /**
-     * Wether this Query was used already. If it is used, it may not be changed any more.
+     * Whether this Query was used already. If it is used, it may not be changed any more.
      */
     protected boolean used = false;
 
+    /**
+     * Whether this Query is aggregating.
+     * @todo this member is in BasicSearchQuery too (but private).
+     */
     protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).
+
+    /**
+     * Whether this Query is cacheable.
+     */
+    protected CachePolicy cachePolicy = CachePolicy.ALWAYS;
 
     /**
      * The QueryCheck object associated with this Query, or null if no such object was determined yet.
@@ -78,8 +87,6 @@ public class BasicQuery implements Query  {
      * The explicitely added 'extra' fields. Because you explicitely added those, they will not be removed if the query becomes 'distinct'.
      */
     protected List explicitFields = new ArrayList();
-
-
 
     BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
@@ -142,13 +149,19 @@ public class BasicQuery implements Query  {
         return query.isDistinct();
     }
 
-
     // bridge.Query impl.:
 
     public boolean isAggregating() {
         return aggregating;
     }
 
+    public CachePolicy getCachePolicy() {
+        return cachePolicy;
+    }
+
+    public void setCachePolicy(CachePolicy policy) {
+        this.cachePolicy = policy;
+    }
 
     /**
      * @since MMBase-1.7.1
@@ -227,6 +240,7 @@ public class BasicQuery implements Query  {
         aliasSequences.put(name, seq);
         return glueAlias(name, seq);
     }
+
     /**
      * Glues a string and integer together to a new string.
      */
