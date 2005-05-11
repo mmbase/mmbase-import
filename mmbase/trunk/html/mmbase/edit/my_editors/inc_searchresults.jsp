@@ -57,7 +57,7 @@
 		</mm:maycreaterelation></mm:compare>
 	  </mm:present>
 	  </td>
-  	  <td align="right"><mm:index offset="$[+$ofs + 1]" /></td>
+  	  <td align="right"><% String o = String.valueOf(ofs.intValue() + 1); %><mm:index offset="<%= o %>" /><%-- mm:index offset="$[+$ofs + 1]" / --%></td>
   	  <% int i = 0; // to check if we should make a link %>
 	  <mm:fieldlist type="list" nodetype="$ntype">
 	    <td><% if (i==0) { %><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"></mm:maywrite><% } %><mm:fieldinfo type="guivalue" /><% if (i==0) { %><mm:maywrite></a></mm:maywrite><% } %> </td>
@@ -88,7 +88,7 @@
 		<mm:first>|</mm:first>
 		<a href="<mm:url referid="search_str" referids="_@ofs" />"><mm:index /></a>
 		<mm:last>
-		  <mm:write><mm:islessthan value="$[+ $totsize - $conf_max]">&nbsp;&raquo;&raquo;</mm:islessthan></mm:write>
+		  <mm:write><mm:islessthan value="${+ $totsize - $conf_max}">&nbsp;&raquo;&raquo;</mm:islessthan></mm:write>
 		</mm:last>
 		<mm:last inverse="true">|</mm:last>
 	  </mm:nextbatches>
