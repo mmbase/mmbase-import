@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.41 2005-05-09 22:11:15 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.42 2005-05-11 09:47:17 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -74,6 +74,7 @@ public class ContentTag extends LocaleTag  {
                         defaultPostProcessors.clear();
                         defaultEncodings.clear();
                         charTransformers.clear();
+                        parameterizedCharTransformerFactories.clear();
                         contentTypes.clear();
                         initialize(getResourceLoader(), resource);
                     }
@@ -125,7 +126,7 @@ public class ContentTag extends LocaleTag  {
         log.service("Reading taglib write-escapers");
         InputStream stream = ContentTag.class.getResourceAsStream("resources/taglibcontent.xml");
         if (stream != null) {
-            log.info("Reading backwards compatible resource " + ContentTag.class.getName()+"/resources/taglibcontext.xml");
+            log.info("Reading backwards compatible resource " + ContentTag.class.getName() + "/resources/taglibcontext.xml");
             InputSource escapersSource = new InputSource(stream);
             readXML(escapersSource);
         }
