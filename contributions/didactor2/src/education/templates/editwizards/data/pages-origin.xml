@@ -24,6 +24,7 @@
            <object>
               <relation destination="attachments" role="posrel" />
               <relation destination="images" role="pos2rel" />
+              <relation destination="urls" role="posrel" />
            </object>
         </relation>
     </action>
