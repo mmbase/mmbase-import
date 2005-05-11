@@ -18,12 +18,12 @@ import org.mmbase.util.functions.*;
  *
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: BasicFunction.java,v 1.5 2005-05-09 21:48:44 michiel Exp $
+ * @version $Id: BasicFunction.java,v 1.6 2005-05-11 09:45:15 michiel Exp $
  */
 public class BasicFunction extends WrappedFunction {
 
     protected Cloud cloud = null;
-    protected Node node = null;
+    protected BasicNode node = null;
 
     /**
      * Constructor for Basic Function
@@ -49,7 +49,7 @@ public class BasicFunction extends WrappedFunction {
      * @param cloud The user's cloud
      * @param function The function to wrap
      */
-    BasicFunction(Node node, Function function) {
+    BasicFunction(BasicNode node, Function function) {
          this(node.getCloud(), function);
          this.node = node;
     }
@@ -63,6 +63,13 @@ public class BasicFunction extends WrappedFunction {
             }
             return new BasicFunctionValue(cloud, wrappedFunction.getFunctionValue(parameters));
         }
+    }
+    public Parameters createParameters() {
+        Parameters params = super.createParameters();
+        if (node != null) {
+            params.setIfDefined(Parameter.NODE, node.noderef);
+        }
+        return params;
     }
 
     public String toString() {
