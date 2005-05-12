@@ -923,12 +923,14 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${backport-util-concurrent.jar}"/>
     </antcall>
 
+    <!--
     <echo message="commons collections" />
     <antcall target="downloadgz">
       <param name="sourcefile"   value="${commons-collections.loc}" />
       <param name="destfile"     value="${commons-collections.dest}" />
       <param name="expandedfile" value="${commons-collections.jar}"/>
     </antcall>
+    -->
 
   </target>
 

@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.9 2004-12-17 13:04:13 michiel Exp $
+# $Id: build.properties.default,v 1.10 2005-05-12 09:57:31 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -94,12 +94,19 @@ docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 
 
 # ----- Log4j ----------
-log4j.version=1.2.8
-log4j.fullversion=jakarta-log4j-${log4j.version}
-log4j.file=${log4j.fullversion}.tgz
+#log4j.version=1.3alpha-6
+#log4j.fullversion=logging-log4j-${log4j.version}
+#log4j.file=${log4j.fullversion}.tar.gz
+#log4j.dest=${download.dir}/${log4j.file}
+#log4j.loc=${mmbase.loc}/jakarta-log4j/${log4j.file}
+#log4j.jar=${expand.dir}/${log4j.fullversion}/log4j-${log4j.version}.jar
+log4j.version=1.2.9
+log4j.fullversion=logging-log4j-${log4j.version}
+log4j.file=${log4j.fullversion}.tar.gz
 log4j.dest=${download.dir}/${log4j.file}
 log4j.loc=${mmbase.loc}/jakarta-log4j/${log4j.file}
 log4j.jar=${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar
+
 
 # ----- Xalan and Xerces ----------
 xalan.version=xalan-j_2_5_2
@@ -127,6 +134,23 @@ taglibs-standard.dest=${download.dir}/${taglibs-standard.file}
 taglibs-standard.loc=http://apache.mirror.rokscom.nl/jakarta/taglibs/standard/binaries/${taglibs-standard.file}
 taglibs-standard-jstl.jar=${expand.dir}/${taglibs-standard.version}/lib/jstl.jar
 taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/standard.jar
+
+
+# ----- 1.5 backport --
+#http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-1.0/
+backport-util-concurrent.version=backport-util-concurrent-1.1_01
+backport-util-concurrent.file=${backport-util-concurrent.version}.tar.gz
+backport-util-concurrent.dest=${download.dir}/${backport-util-concurrent.file}
+backport-util-concurrent.loc=http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-1.1_01/${backport-util-concurrent.file}
+backport-util-concurrent.jar=${expand.dir}/${backport-util-concurrent.version}/backport-util-concurrent.jar
+
+
+# ----- Jakarta commons collections ----------
+#commons-collections.version=commons-collections-3.1
+#commons-collections.file=${commons-collections.version}.tar.gz
+#commons-collections.dest=${download.dir}/${commons-collections.file}
+#commons-collections.loc=http://apache.mirror.rokscom.nl/jakarta/commons/collections/binaries/${commons-collections.file}
+#commons-collections.jar=${expand.dir}/${commons-collections.version}/commons-collections-3.1.jar
 
 
 
