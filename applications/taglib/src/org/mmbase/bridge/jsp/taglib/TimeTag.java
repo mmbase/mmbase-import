@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.46 2005-03-16 14:52:20 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.47 2005-05-12 17:42:54 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -314,19 +314,19 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             cal.setTime(date);
             int prec = getPrecision();
             switch (prec) {
-                case PRECISION_YEARS :
-                    cal.set(Calendar.MONTH, Calendar.JANUARY);
-                case PRECISION_MONTHS :
-                    cal.set(Calendar.DAY_OF_MONTH, 1);
-                case PRECISION_DAYS :
-                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                case PRECISION_HOURS :
-                    cal.set(Calendar.MINUTE, 0);
-                case PRECISION_MINUTES :
-                    cal.set(Calendar.SECOND, 0);
-                case PRECISION_SECONDS :
-                default :
-                    cal.set(Calendar.MILLISECOND, 0);
+            case PRECISION_YEARS :
+                cal.set(Calendar.MONTH, Calendar.JANUARY);
+            case PRECISION_MONTHS :
+                cal.set(Calendar.DAY_OF_MONTH, 1);
+            case PRECISION_DAYS :
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+            case PRECISION_HOURS :
+                cal.set(Calendar.MINUTE, 0);
+            case PRECISION_MINUTES :
+                cal.set(Calendar.SECOND, 0);
+            case PRECISION_SECONDS :
+            default :
+                cal.set(Calendar.MILLISECOND, 0);
             }
             if (prec == PRECISION_WEEKS) {
                 // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS                

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.300 2005-05-12 16:34:03 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.301 2005-05-12 17:42:54 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -408,6 +408,24 @@ version: $Id: mmbase-taglib.xml,v 1.300 2005-05-12 16:34:03 michiel Exp $
         </info>
       </examplevalue>
 
+    </attribute>
+    <attribute>
+      <name>add</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8</since>
+    </attribute>
+    <attribute>
+      <name>retain</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8</since>
+    </attribute>
+    <attribute>
+      <name>remove</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8</since>
     </attribute>
     <see tag="listreferrer" />
   </taginterface>
@@ -1422,6 +1440,21 @@ version: $Id: mmbase-taglib.xml,v 1.300 2005-05-12 16:34:03 michiel Exp $
       <rtexprvalue>true</rtexprvalue>
       <see tag="distinct" />
       <since>MMBase-1.8.0</since>
+    </attribute>
+    <attribute>
+      <name>add</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>retain</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>remove</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;

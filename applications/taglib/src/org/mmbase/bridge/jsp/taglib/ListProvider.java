@@ -8,13 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
+import javax.servlet.jsp.JspTagException;
 
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.8 2003-12-18 11:52:42 michiel Exp $ 
+ * @version $Id: ListProvider.java,v 1.9 2005-05-12 17:42:54 michiel Exp $ 
  */
 public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider {
     /**
@@ -55,5 +56,6 @@ public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.tag
      * @since MMBase-1.7
      */
     public void remove();
+
 
 }
