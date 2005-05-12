@@ -27,7 +27,7 @@ public class ClassToXML {
     }
 
     public static Element classToXML(String className, Document document) throws Exception {
-        Hashtable methodHash = new Hashtable();
+        Set appendedMethods = new HashSet();
         Class clazz = Class.forName(className);
 
         Element xmle = document.createElement(clazz.isInterface() ? "interface" : "class");
@@ -43,6 +43,7 @@ public class ClassToXML {
             }
             implementsString += interfaceClasses[counter].getName();
         }
+        //System.out.println("" + clazz + " implements " + implementsString);
         xmle.setAttribute("implements", implementsString);
         Method[] methods = clazz.getMethods();
         //add
@@ -108,9 +109,9 @@ public class ClassToXML {
                 Class returnType = methods[i].getReturnType();
                 returnValue.appendChild(ClassToXML.classToXML(returnType, document));
                 method.appendChild(returnValue);
-                if (methodHash.get(key) == null) {
+                if (! appendedMethods.contains(key)) {
                     xmle.appendChild(method);
-                    methodHash.put(key, "true");
+                    appendedMethods.add(key);
                 }
             }
         }
