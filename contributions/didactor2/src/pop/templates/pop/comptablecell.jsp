@@ -6,8 +6,7 @@
                 </a>
               </td>
                 <% isEmpty = true; %>
-                <mm:list nodes="$currentpop" path="pop,popfeedback,people"
-                    constraints="people.number LIKE $user">
+                <mm:list nodes="$currentpop" path="pop,popfeedback,people" constraints="people.number='$user'">
                   <mm:field name="popfeedback.number" jspvar="thisFeedback" vartype="String">
                     <mm:list nodes="<%= thisCompetencie %>" path="competencies,popfeedback"
                         constraints="<%= "popfeedback.number LIKE " + thisFeedback %>">

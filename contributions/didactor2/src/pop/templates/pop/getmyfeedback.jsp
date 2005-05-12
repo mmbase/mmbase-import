@@ -3,7 +3,7 @@
 <% isEmpty = true; %>
 <mm:compare referid="currentcomp" value="-1" inverse="true">
   <mm:list nodes="$currentpop" path="pop,popfeedback,people"
-      constraints="people.number LIKE $user">
+      constraints="people.number='$user'">
     <mm:node element="popfeedback">
       <mm:field name="number" jspvar="thisFeedback" vartype="String">
         <mm:list nodes="$currentcomp" path="competencies,popfeedback"
