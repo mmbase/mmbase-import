@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.46 2005-05-05 08:37:18 michiel Exp $
+ * @version $Id: Casting.java,v 1.47 2005-05-12 11:23:07 michiel Exp $
  */
 
 import java.util.*;
@@ -261,21 +261,22 @@ public class Casting {
                 log.error(uee);
                 return o;
             }
+        } else if (o instanceof String) {
+            return escape(escaper, (String) o);
+        } else if (o instanceof CharSequence) {
+            return new StringWrapper((CharSequence) o, escaper);
         } else {
-            if (o instanceof String && escaper != null) {
-                return new StringWrapper((String) o, escaper);
-            } else {
-                return o;
-            }
+            return o;
         }
+
 
     }
 
-    private static String escape(CharTransformer escaper, String string) {
+    private static String escape(CharTransformer escaper, CharSequence string) {
         if (escaper != null) {
-            return escaper.transform(string);
+            return escaper.transform(string.toString());
         } else {
-            return string;
+            return string.toString();
         }
     }
     /**
@@ -442,7 +443,12 @@ public class Casting {
         if (i instanceof MMObjectNode) {
             res = (MMObjectNode)i;
         } else if (i instanceof Node) {
-            res = parent.getNode(((Node)i).getNumber());
+            Node node = (Node) i;
+            if (node.isNew()) {// sigh
+                res = parent.getTmpNode("" + node.getNumber());
+            } else {
+                res = parent.getNode(node.getNumber());
+            }
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
             if (nodenumber != -1) {
@@ -909,9 +915,9 @@ public class Casting {
      */
     public static class StringWrapper implements CharSequence {
         private final CharTransformer escaper;
-        private final String string;
+        private final CharSequence string;
         private  String escaped = null;
-        StringWrapper(String s, CharTransformer e) {
+        StringWrapper(CharSequence s, CharTransformer e) {
             escaper = e;
             string  = s;
             
@@ -935,7 +941,7 @@ public class Casting {
             if (escaped == null) escaped = escape(escaper, string);
             return escaped;
         }
-        public String getString() {
+        public CharSequence getString() {
             return string;
         }
     }
