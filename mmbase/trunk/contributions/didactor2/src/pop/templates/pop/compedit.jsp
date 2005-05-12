@@ -35,9 +35,23 @@
         <td>Zelfbeoordeling</td>
         <td><textarea name="myfeedback2" class="popFormInput" cols="50" rows="5"><mm:write referid="myfeedback2"/></textarea></td>
       </tr>
-      <tr style="vertical-align:top;">
-        <td>Persoonlijke taken</td>
-        <td>
+  </form>
+  </table>
+  <table class="font" width="80%">
+    <tr>
+      <td>
+        <input type="button" class="formbutton" onClick="editcompform.submit()" value="opslaan">
+        <input type="button" class="formbutton" onClick="editcompform.command.value='no';editcompform.submit()" value="terug">
+      </td>
+
+    </tr>
+  </table>
+<br/>
+  <table width="80%" border="0" class="popTaskList">
+    <tr>
+      <td colspan="3">Persoonlijke taken</td>
+    </tr>
+  </table>
           <% isEmpty = true; %>
           <mm:list nodes="$currentpop" path="pop,todoitems,competencies" orderby="todoitems.number" directions="UP"
               constraints="competencies.number LIKE $currentcomp">
@@ -47,12 +61,7 @@
               ><mm:field name="todoitems.name" jspvar="todoName" vartype="String"
               ><% if (todoName.length()>0) { %><%= todoName %><% } else { %>...<% } %></mm:field></a><br/>
           </mm:list>
-          <% if (isEmpty) { %>&nbsp<% } %>
-        </td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-        <td>
+          <% if (isEmpty) { %>&nbsp<% } %><br/>
           <a href="#1" onclick="editcompform.command.value='addtodo';editcompform.submit();return false;"
             ><img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$referids"/>"
                 border="0" alt="Maak een nieuwe persoonlijke taak aan"/></a>
@@ -60,16 +69,11 @@
                 return false;editcompform.command.value='deltodo';editcompform.submit();return false;">
             <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"
                 border="0" alt="Verwijder de geselecteerde persoonlijke taken"/></a>
-        </td>
-      </tr>
-  </form>
-  </table>
+<br/>
+    <mm:relatedcontainer path="popfeedback,pop">
+      <mm:constraint field="pop.number" referid="currentpop" operator="EQUAL"/>
   <table class="font" width="80%">
     <tr>
-      <td>
-        <input type="button" class="formbutton" onClick="editcompform.submit()" value="aanmaken">
-        <input type="button" class="formbutton" onClick="editcompform.command.value='no';editcompform.submit()" value="terug">
-      </td>
       <td align="right">
         <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
           <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$referids"/>"
@@ -77,8 +81,6 @@
       </td>
     </tr>
   </table>
-    <mm:relatedcontainer path="popfeedback,pop">
-      <mm:constraint field="pop.number" referid="currentpop" operator="EQUAL"/>
       <table width="80%" border="0" class="popSpecialTableHeader">
         <tr>
           <td colspan="3">Beoordelingen</td>

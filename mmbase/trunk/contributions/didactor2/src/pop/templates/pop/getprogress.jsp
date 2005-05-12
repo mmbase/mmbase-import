@@ -103,7 +103,7 @@
     <mm:relatednodescontainer type="learnobjects" role="posrel">
       <mm:sortorder field="posrel.pos" direction="up"/>
       <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
-        <mm:related path="needcomp,competencies">
+        <mm:related path="developcomp,competencies">
           <mm:field name="competencies.number" jspvar="thisCompetencie" vartype="String">
             <% neededCompetencies += thisCompetencie + ","; %>
           </mm:field>
@@ -115,9 +115,7 @@
 <mm:compare referid="gatekeeper" value="1">
 <% if (neededCompetencies.length() != 0) { %>
   <mm:list nodes="<%= neededCompetencies %>" path="competencies">
-    <% boolean needIntake = true;
-       boolean passed = true; 
-    %>
+    <% boolean needIntake = true; %>
     <mm:node element="competencies">
       <mm:related path="havecomp,pop" constraints="pop.number LIKE $currentpop">
         <% needIntake = false; %>
@@ -129,11 +127,10 @@
         <mm:import id="testNo" jspvar="thisIntake" reset="true"><mm:field name="number"/></mm:import>
         <%@include file="teststatus2.jsp"%>
         <mm:compare referid="teststatus" value="passed" inverse="true">
-          <mm:import id="intake" reset="true">0</mm:import>
-          <% passed = false; %>
           <% if (notpassedIntakes.equals("")) { notpassedIntakes = thisIntake; } else { notpassedIntakes += thisIntake + ","; } %>
-          <mm:compare referid="teststatus" value="failed">
-          </mm:compare>
+        </mm:compare>
+        <mm:compare referid="teststatus" value="incomplete">
+          <mm:import id="intake" reset="true">0</mm:import>
         </mm:compare>
       </mm:relatednodes>
     </mm:node>
