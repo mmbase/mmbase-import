@@ -11,11 +11,11 @@
     </action>
 
     <action type="load">
-   <relation destination="images" role="dragimagerel" />
-   <relation destination="images" role="dropimagerel" />
-        <relation destination="feedback" role="related" />
-   <relation destination="dropanswers" role="related" />
-        <relation destination="metadata" role="related">
+      <relation destination="images" role="dragimagerel" />
+      <relation destination="images" role="dropimagerel" />
+      <relation destination="feedback" role="related" />
+      <relation destination="dropanswers" role="related" />
+      <relation destination="metadata" role="related">
           <object type="metadata">
            <relation destination="metalangstring" role="posrel">
               <object type="metalangstring">
