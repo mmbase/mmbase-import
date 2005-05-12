@@ -570,6 +570,7 @@ public class RemoteGenerator {
      * @javadoc
      */
     void generateObjectWrappers(MMCI mmci) {
+        System.out.println("Creating ObjectWrapperHelper");
         StringBuffer helper = new StringBuffer();
         helper.append("package org.mmbase.bridge.remote;");
         helper.append("import java.util.*;\n");
@@ -594,74 +595,44 @@ public class RemoteGenerator {
         StringBuffer sb2 = new StringBuffer();
         List v = mmci.getClasses();
 
+        //System.out.println("Sorting " + v);
+
+        // most 'specific' type must come first.
+
         Collections.sort(v, new Comparator() {
             public int compare(Object one, Object two) {
                 XMLClass oneClass = (XMLClass)one;
                 XMLClass twoClass = (XMLClass)two;
+                List oneSuperClasses  = getSuperClasses(oneClass);
+                List twoSuperClasses  = getSuperClasses(twoClass);
+                //System.out.println("comparing " + oneClass + " implements " + oneSuperClasses + " with " + twoClass + " implements " + twoSuperClasses);
 
-                List oneImpl = getSuperClasses(oneClass);
-                List twoImplt = getSuperClasses(twoClass);
-
-                List oneSub = getSubClasses(oneClass);
-                List twoSub = getSubClasses(twoClass);
-
-                //classes that don't implement anything always first
-                if (oneImpl.size() == 0 || twoImplt.size() == 0) {
-
-                    return oneImpl.size() - twoImplt.size();
-                }
-
-                boolean oneExtendsTwo = false;
-                boolean twoExtendsOne = false;
-                for (int x = 0; x < oneSub.size(); x++) {
-                    XMLClass j = (XMLClass)oneSub.get(x);
-                    if (j.getName().equals(twoClass.getName())) {
-                        twoExtendsOne = true;
-                    }
-                }
-
-
-
-                for (int x = 0; x < twoSub.size(); x++) {
-                    XMLClass j = (XMLClass)twoSub.get(x);
-                    if (j.getName().equals(oneClass.getName())) {
-
-                        oneExtendsTwo = true;
-                    }
-                }
-
-                if (oneExtendsTwo){
-                    //System.err.println(oneClass.getName() + " extends " + twoClass.getName());
-                    return 1;
-                }
-
-                if (twoExtendsOne){
-                    //System.err.println(oneClass.getName() + " is extended by " + twoClass.getName());
+                if (oneSuperClasses.contains(twoClass)) {
+                    //System.out.println("" + oneClass + " is more specific than " + twoClass);
                     return -1;
                 }
-
-                //System.err.println(oneClass.getName() + " equals " + twoClass.getName());
-                /*
-                if (ontImpl.indexOf(twoClass.getName()) != -1) {
-                    retval = 1;
-                } else if (twoImplt.indexOf(oneClass.getName()) != -1) {
-                    retval = -1;
+                if (twoSuperClasses.contains(oneClass)) {
+                    //System.out.println("" + oneClass + " is less specific than " + twoClass);
+                    return +1;
+                }
+                if (oneSuperClasses.size() == 0 && twoSuperClasses.size() == 0) {
+                    // sort arbritrary, just to make it consistent with equals.
+                    return oneClass.getName().compareTo(twoClass.getName());
+                } else {
+                    // user super-classes for comparison else, perhaps the other class is a subclass of the superclass.
+                    if (oneSuperClasses.size() > 0) {
+                        return compare(oneSuperClasses.get(0), twoClass);
+                    } else {
+                        return compare(oneClass, twoSuperClasses.get(0));
+                    }
                 }
 
-                if (retval != 0) {
-                    System.err.println(oneClass.getName() + " < " + twoClass.getName());
-
-                }
-                return retval;
-                //System.err.println(oneClass.getName() + " ?? " + twoClass.getName());
-                //return oneClass.getName().compareTo(twoClass.getName());
-
-                 */
-                return 0;
+                //return 0;
             }
 
         });
-        Collections.reverse(v);
+
+        //System.out.println("Result " + v);
         Iterator i = v.iterator();
 
         sb.append("public static Object localToRMIObject(Object o) throws RemoteException {\n");
