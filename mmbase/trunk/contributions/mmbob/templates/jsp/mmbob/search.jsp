@@ -8,8 +8,10 @@
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="searchkey" />
-<mm:import externid="pathtype">moderatorteam</mm:import>
+<mm:import externid="pathtype">search</mm:import>
 <mm:import externid="posterid" id="profileid" />
+<mm:import externid="searchmode">internal</mm:import>
+
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -38,8 +40,9 @@
 </div>
                                                                                                        
 <div class="bodypart">
-
 <mm:include page="path.jsp?type=$pathtype" />
+
+<mm:compare referid="searchmode" value="database">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
 	<form action="<mm:url page="search.jsp" referids="forumid" />" method="post">
 	<tr>
@@ -75,6 +78,56 @@
 	</mm:listcontainer>
 </table>
 </mm:present>
+</mm:compare>
+
+<mm:compare referid="searchmode" value="internal">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
+	<form action="<mm:url page="search.jsp" referids="forumid" />" method="post">
+	<tr>
+		<th>Search </th>
+		<th>
+		in <select name="searchareaid">
+		   <option value="-1">All Areas
+                  <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+			<option value="<mm:field name="id" />"><mm:field name="name" />
+		  </mm:nodelistfunction>
+		   </select>
+		</th>
+		<td>
+		<input name="searchkey" size="20" value="<mm:write referid="searchkey" />">
+		</td>
+		<td>
+		<input type="submit" value="search" />
+		</td>
+	</td>
+	</form>
+</table>
+<mm:present referid="searchkey">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
+	<tr><th><mm:write referid="mlg.Area" /></th><th><mm:write referid="mlg.Topic" /></th><th>Poster</th></tr>
+	<mm:import externid="searchareaid">-1</mm:import>
+	<mm:import id="page">1</mm:import>
+	<mm:import id="pagesize">10</mm:import>
+	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,searchkey,page,pagesize">
+	    <tr>
+ 	      <td>
+		<mm:field name="postareaname" />
+	      </td>
+	      <td>
+    		<a href="<mm:url page="thread.jsp" referids="forumid">
+		<mm:param name="postareaid"><mm:field name="postareaid" /></mm:param>
+		<mm:param name="postthreadid"><mm:field name="postthreadid" /></mm:param>
+		<mm:param name="postingid"><mm:field name="postingid" /></mm:param>
+		</mm:url>#p<mm:field name="postingid" />"><mm:field name="subject" /></a>
+	      </td>
+ 	      <td>
+		<mm:field name="poster" />
+	      </td>
+            </tr>
+	</mm:nodelistfunction>
+</table>
+</mm:present>
+</mm:compare>
 
 
 </div>                                                                                                        
