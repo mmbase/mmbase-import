@@ -38,14 +38,14 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
   <mm:nodeinfo type="gui" />:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
 
-    <a href="<mm:url page="navigate.jsp" referids="node_number" />">
+    <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
       <span class="tree"></span><span class="alt">[tree]</span>
      </a>
      </td>
@@ -72,7 +72,7 @@
   <td class="data" width="90%"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
   <td class="navigate" width="0%">
  <mm:maywrite>
- <a  href="<mm:url referids="node_number"  page="edit_aliases.jsp" />">
+ <a  href="<mm:url referids="this_node@node_number"  page="edit_aliases.jsp" />">
        <span class="select"></span><span class="alt">[edit aliases]</span>
 </a>     
    </mm:maywrite>    
