@@ -9,8 +9,8 @@
     </action>
     
     <action type="load">
-        <field name="title" ftype="line" dtminlength="1"/>
-        <field name="description" rows="8"/>
+        <field name="title"/>
+        <field name="description"/>
         <field name="handle" />
         <relation destination="metadata" role="related">
           <object type="metadata">

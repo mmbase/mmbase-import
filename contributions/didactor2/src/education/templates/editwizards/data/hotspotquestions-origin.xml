@@ -12,7 +12,7 @@
 
     <action type="load">
         <relation destination="hotspotanswers" role="related" />
-   <relation destination="images" role="related" />
+        <relation destination="images" role="related" />
         <relation destination="feedback" role="related" />
         <relation destination="metadata" role="related">
           <object type="metadata">
