@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.26 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ListNodesTag.java,v 1.27 2005-05-12 16:15:08 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -35,6 +35,8 @@ public class ListNodesTag extends AbstractNodeListTag {
     protected Attribute element    = Attribute.NULL;
     protected Attribute searchDirs = Attribute.NULL;
     protected Attribute nodes      = Attribute.NULL;
+
+    protected Attribute distinct   = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -71,6 +73,13 @@ public class ListNodesTag extends AbstractNodeListTag {
      */
     public void setNodes(String n) throws JspTagException {
        nodes = getAttribute(n);
+    }
+
+    /**
+     * @since MMBase-8
+     */
+    public void setDistinct(String d) throws JspTagException {
+        distinct = getAttribute(d);
     }
 
 
@@ -116,6 +125,9 @@ public class ListNodesTag extends AbstractNodeListTag {
         }
         if (nodes != Attribute.NULL) {
             Queries.addStartNodes(query, nodes.getString(this));
+        }
+        if (distinct != Attribute.NULL) {
+            query.setDistinct(distinct.getBoolean(this, false));
         }
         return query;
     }
