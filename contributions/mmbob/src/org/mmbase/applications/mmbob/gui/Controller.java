@@ -222,7 +222,7 @@ public class Controller {
      */
     public List getPostings(String forumid, String postareaid, String postthreadid, int activeid, int page, int pagesize, String imagecontext) {
         List list = new ArrayList();
-       long start = System.currentTimeMillis();
+       //long start = System.currentTimeMillis();
 
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
@@ -282,8 +282,8 @@ public class Controller {
                 }
             }
         }
-        long end = System.currentTimeMillis();
-        //log.info("getPostings "+(end-start)+"ms");
+        //long end = System.currentTimeMillis();
+        //log.info("searchPostings "+(end-start)+"ms");
 
         return list;
     }
@@ -516,6 +516,49 @@ public class Controller {
 			}
 		}
             }
+        return list;
+    }
+
+
+    public List searchPostings(String forumid,String searchareaid,String searchkey,int page,int pagesize) {
+        long start = System.currentTimeMillis();
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+		int startpos = page*pagesize;
+		int i = 1;
+		int j = 1;
+            	Enumeration e = null;
+		log.info("SEARCHAREA="+searchareaid);
+		if (!searchareaid.equals("-1")) {
+	                PostArea a = f.getPostArea(searchareaid);
+			if (a!=null) e = a.searchPostings(searchkey).elements();
+		} else {
+            		e = f.searchPostings(searchkey).elements();
+		}
+		log.info("E="+e);
+		if (e!=null) {
+            	while (e.hasMoreElements() && j<25) {
+                	Posting p = (Posting) e.nextElement();
+                	MMObjectNode virtual = builder.getNewNode("admin");
+               	 	virtual.setValue("postingid", p.getId());
+			PostThread pt = p.getParent();
+			PostArea pa = pt.getParent();
+               	 	virtual.setValue("postareaid", pa.getId());
+               	 	virtual.setValue("postareaname", pa.getName());
+               	 	virtual.setValue("postthreadid", pt.getId());
+                	virtual.setValue("subject", p.getSubject());
+                	virtual.setValue("poster", p.getPoster());
+                	virtual.setValue("posterid", f.getPoster(p.getPoster()));
+			list.add(virtual);
+			j++;
+		}
+		}
+            }
+        long end = System.currentTimeMillis();
+        log.info("searchPostings "+(end-start)+"ms");
         return list;
     }
 

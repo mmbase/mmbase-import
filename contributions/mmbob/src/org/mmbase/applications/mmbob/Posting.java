@@ -199,6 +199,16 @@ public class Posting {
 	return c_body;
     }
 
+
+    public boolean inBody(String searchkey) {
+	if (c_body.equals("")) {
+		if (body.indexOf(searchkey)!=-1) return true;
+	} else {
+		if (c_body.indexOf(searchkey)!=-1) return true;
+	}
+	return false;
+    }
+
     /**
      * get the accountname/nick of the poster of this posting
      *
@@ -299,5 +309,9 @@ public class Posting {
         	body = smilies.transform(body, themeid, imagecontext);
 	}
 	return body;
+    }
+
+    public PostThread getParent() {
+	return parent;
     }
 }

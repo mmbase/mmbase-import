@@ -788,6 +788,7 @@ public class Poster {
         while (i.hasNext()) {
               Node rnode=i.nextNode();
 	      RemoteHost rm = new RemoteHost(this,rnode.getStringValue("host"),rnode.getIntValue("lastupdatetime"),rnode.getIntValue("updatecount"));
+	      rm.setId(rnode.getNumber());
 	      remotehosts.add(rm);
 	}
     }

@@ -596,5 +596,24 @@ public class PostThread {
 		return size;
 	}
     }
+
+
+    public Vector searchPostings(String searchkey) {
+	Vector results = new Vector();
+	return searchPostings(results,searchkey);
+    }
+
+   public Vector searchPostings(Vector results,String searchkey) {
+	if (postings!=null) {
+        	Enumeration e = postings.elements();
+        	while (e.hasMoreElements()) {
+            	Posting posting = (Posting) e.nextElement();
+	    	if (posting.inBody(searchkey)) {
+			results.add(posting);
+	    	}
+		}
+	}
+	return results;
+    }
 }
 

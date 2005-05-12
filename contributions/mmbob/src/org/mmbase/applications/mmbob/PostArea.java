@@ -806,7 +806,9 @@ public class PostArea {
      */
     public void maintainMemoryCaches() {
 	int ptime = ForumManager.getPreloadChangedThreadsTime();
-        if (ptime!=0 && postthreads != null && firstcachecall) {
+        //if (ptime!=0 && postthreads != null && firstcachecall) {
+        if (ptime!=0 && firstcachecall) {
+       	    if (postthreads == null) readPostThreads();
             firstcachecall = false;
             int time = (int) (System.currentTimeMillis() / 1000) - ptime;
             Enumeration e = postthreads.elements();
@@ -872,5 +874,22 @@ public class PostArea {
    public int getSpeedPostTime() {
 	return parent.getSpeedPostTime();
    }
+
+
+    public Vector searchPostings(String searchkey) {
+	Vector results = new Vector();
+	return searchPostings(results,searchkey);
+    }
+
+   public Vector searchPostings(Vector results,String searchkey) {
+	if (postthreads!=null) {
+        	Enumeration e = postthreads.elements();
+      	 	while (e.hasMoreElements()) {
+            		PostThread thread = (PostThread) e.nextElement();
+	    		results = thread.searchPostings(results,searchkey);
+		}
+	}
+	return results;
+    }
 
 }
