@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.299 2005-05-12 16:15:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.300 2005-05-12 16:34:03 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2624,7 +2624,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <extends>fieldreferrer</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
       Changes the field `name' from node `node' (can also be list).
     </info>
