@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.298 2005-05-11 14:45:22 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.299 2005-05-12 16:15:08 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1304,6 +1304,13 @@ version: $Id: mmbase-taglib.xml,v 1.298 2005-05-11 14:45:22 pierre Exp $
       <see tag="list" attribute="nodes" />
       <since>MMBase-1.7.1</since>
     </attribute>
+    <attribute>
+      <name>distinct</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="distinct" />
+      <since>MMBase-1.8.0</since>
+    </attribute>
     <example>&lt;mm:listnodes type="mags"  &gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
   &lt;mm:field name="title" /&gt;
@@ -1408,6 +1415,13 @@ version: $Id: mmbase-taglib.xml,v 1.298 2005-05-11 14:45:22 pierre Exp $
       <rtexprvalue>true</rtexprvalue>
       <see tag="listnodescontainer" attribute="searchdirs" />
       <since>MMBase-1.7.1</since>
+    </attribute>
+    <attribute>
+      <name>distinct</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="distinct" />
+      <since>MMBase-1.8.0</since>
     </attribute>
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
