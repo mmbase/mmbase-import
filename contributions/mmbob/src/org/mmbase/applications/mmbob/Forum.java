@@ -319,6 +319,16 @@ public class Forum {
         return posters.elements();
     }
 
+    public Vector searchPostings(String searchkey) {
+	Vector results = new Vector();
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea area = (PostArea) e.nextElement();
+	    results = area.searchPostings(results,searchkey);
+	}
+	return results;
+    }
+
     /**
      * get the posters that are online
      *

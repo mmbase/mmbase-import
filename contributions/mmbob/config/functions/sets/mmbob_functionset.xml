@@ -556,6 +556,24 @@
 		</return> 
 	</function>
 
+	<function name="searchPostings">
+		<description>search in the forum / area</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>searchPostings</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="searchareaid" type="String" description="MMBase node number of the forum" />
+		<param name="searchkey" type="String" description="searchkey" />
+		<param name="page" type="int" description="page number" />
+		<param name="pagesize" type="int" description="size per page" />
+		<return type="NodeList"> 
+			<field name="id" type="int" description="MMBase node number of a moderator (poster)" />
+			<field name="account" type="String" description="Account name of this moderator" />
+			<field name="firstname" type="String" description="Firstname of this moderator" />
+			<field name="lastname" type="String" description="Last name of this moderator" />
+		</return> 
+	</function>
+
 	<function name="newModerator">
 		<description>Add a moderator to a postarea within a forum</description>
 		<type>class</type>

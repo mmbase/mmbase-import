@@ -59,6 +59,10 @@ public class RemoteHost {
 	this.updatecount = updatecount;
    }
 
+   public void setId(int id) {
+	this.id = id;
+   }
+
    public int getId() {
 	return id;
    }
