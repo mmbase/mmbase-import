@@ -36,7 +36,7 @@
   <mm:relatednodescontainer type="learnobjects" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
     <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
-      <mm:related path="needcomp,competencies">
+      <mm:related path="developcomp,competencies">
         <mm:field name="competencies.number" jspvar="thisCompetencie" vartype="String">
           <% neededCompetencies += thisCompetencie + ","; %>
         </mm:field>

@@ -133,7 +133,7 @@
         <mm:relatedcontainer path="givenanswers,madetests">
           <mm:constraint field="madetests.number" value="$madetest"/>
           <mm:related>
-            <mm:field name="givenanswers.score" id="givenanswerscore"/>
+            <mm:field name="givenanswers.score" id="givenanswerscore" write="false" />
             <mm:node referid="intakeresult">
               <mm:compare referid="givenanswerscore" value="0">
                 <mm:setfield name="score">0</mm:setfield>
