@@ -84,7 +84,7 @@ public abstract class ObjectWrapper {
 
         if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
             List source = (List)o;
-            List list = new Vector();
+            List list = new ArrayList();
             for (int x = 0; x < source.size(); x++) {
                 list.add(rmiObjectToRemoteImplementation(source.get(x)));
             }
