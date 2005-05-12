@@ -15,7 +15,6 @@ import org.mmbase.util.logging.*;
 
 /**
  * A Filtering Reader based on CharTransformers.
-
 <pre>
 
   _________   ____  
@@ -29,7 +28,7 @@ import org.mmbase.util.logging.*;
 
   </pre>
  * This reader can be instantiated with another Reader and a CharTransformer. All reading from this
- reader will be transformed output from reading on the given Reader.
+ * reader will be transformed output from reading on the given Reader.
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
@@ -52,7 +51,7 @@ public class TransformingReader extends PipedReader {
         try {            
             connect(w);
             link = new CharTransformerLink(charTransformer, in, w, true);
-            ChainedCharTransformer.executor.execute(link);          
+            org.mmbase.util.ThreadPools.filterExecutor.execute(link);          
         } catch (IOException ioe) {
             log.error(ioe.getMessage() + Logging.stackTrace(ioe));
         }

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 
   </pre>
  * This writer can be instantiated with another Writer and a CharTransformer. All writing will be transformed by the given 
- * CharTransformer before ariving at the give Writer.
+ * CharTransformer before ariving at the given Writer.
  *
  * When ready, this TransformingWriter should be 'closed'. A coding example can be found in this classe's main method.
  *
@@ -55,7 +55,7 @@ public class TransformingWriter extends PipedWriter {
         try {            
             connect(r);
             link = new CharTransformerLink(charTransformer, r, out, false);
-            ChainedCharTransformer.executor.execute(link);
+            org.mmbase.util.ThreadPools.filterExecutor.execute(link);    
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
         }
