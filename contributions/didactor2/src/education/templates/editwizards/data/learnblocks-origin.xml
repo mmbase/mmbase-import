@@ -67,7 +67,7 @@
            Note: the 'wizard.xsl' file depends on the title being "Bijbehorende leerobjecten" in order to
            select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
         -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" searchdir="destination">
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="learnobjects" searchdir="destination">
             <title>Bijbehorende leerobjecten</title>
             <item>
                 <field fdatapath="object/field[@name='name']" ftype="data">
