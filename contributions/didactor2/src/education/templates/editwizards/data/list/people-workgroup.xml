@@ -28,18 +28,6 @@
     </action>
 
     <action type="load">
-        <!--<field fdatapath="//object[@type='roles']/field[@name='name']"/>
-        <relation destinationtype="people" role="rolerel">-->
-        <!--    <object type="insrel">
-              <relation destinationtype="roles" role="related">
-                <object type="roles">
-                  <field name="name"/>
-                </object>
-              </relation>
-            </object>
-            <object type="people"/>-->
-<!--        </relation>-->
-
     </action>
 
     <command name="startwizard" inline="true" wizardname="people" objectnumber="new" />
