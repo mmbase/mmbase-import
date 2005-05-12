@@ -61,13 +61,10 @@
            them since they don't have the 'learnobject' type; it generates:
              <list destination="learnobjects" fdatapath="relation[@role='posrel' and object/@type='learnobjects']" ...
 
-           Workaround: use fdatapath.
-             fortunately the only posrel we have is to learnobjects, so this is a bit of an ugly hack
-
            Note: the 'wizard.xsl' file depends on the title being "Bijbehorende leerobjecten" in order to
            select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
         -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="learnobjects" searchdir="destination">
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel' and ( object/@type='learnobjects' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
             <title>Bijbehorende leerobjecten</title>
             <item>
                 <field fdatapath="object/field[@name='name']" ftype="data">
@@ -108,10 +105,9 @@
            </command>
         </list>
 
-
         <!-- we need a new list because there can be only one search command per list -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
-            <title>Zoeken op metadata</title>
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"  fdatapath="relation[@role='posrel' and ( object/@type='learnobjects' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
+             <title>Zoeken op metadata</title>
             <item displaytype="none"></item>
 
             <action type="create">
