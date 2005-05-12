@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.70 2005-05-09 10:54:36 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.71 2005-05-12 16:15:08 michiel Exp $
  */
 
 public class WriterHelper {
@@ -378,7 +378,7 @@ public class WriterHelper {
         setJspvar();
         if (pushed) {
             if (log.isDebugEnabled()) {
-                log.debug("Value was set already by this tag");
+                log.debug("Value was already pushed by this tag");
             }
             _Stack.set(_Stack.size() - 1, value);
         } else {
