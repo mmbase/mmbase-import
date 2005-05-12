@@ -17,14 +17,15 @@ import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.*;
 import java.io.IOException;
-
+import java.util.*;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.13 2005-02-07 09:23:15 andre Exp $
+ * @version $Id: NodeListHelper.java,v 1.14 2005-05-12 17:42:54 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -62,10 +63,16 @@ public class NodeListHelper implements ListProvider {
 
     protected Attribute comparator = Attribute.NULL;
 
+    protected Attribute add = Attribute.NULL;
+    protected Attribute retain = Attribute.NULL;
+    protected Attribute remove= Attribute.NULL;
+
+
     /**
      * Lists do implement ContextProvider
      */
     private   ContextCollector  collector;
+
 
     /**
      * Determines whether a field in {@link AbstractNodeListTag#orderby} changed
@@ -134,6 +141,29 @@ public class NodeListHelper implements ListProvider {
         comparator = thisTag.getAttribute(c);
     }
 
+    /**
+     * @since MMBase-1.8
+     */
+    public void setAdd(String a) throws JspTagException {
+        add = thisTag.getAttribute(a);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public void setRetain(String a) throws JspTagException {
+        retain = thisTag.getAttribute(a);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public void setRemove(String a) throws JspTagException {
+        remove = thisTag.getAttribute(a);
+    }
+
+
+
     public String getComparator() throws JspTagException {
         return comparator.getString(thisTag);
     }
@@ -151,6 +181,39 @@ public class NodeListHelper implements ListProvider {
     }
 
     public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+        Cloud cloud = null;
+        if (cloud == null) {
+            Query q = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
+            if (q != null) cloud = q.getCloud();
+        }
+        if (cloud == null && nodes.size() > 0) {
+            cloud = nodes.getNode(0).getCloud();            
+        }
+        
+        if (add != Attribute.NULL) {
+            Object addObject = thisTag.getObject(add.getString(thisTag));
+            if (addObject instanceof Collection) {
+                nodes.addAll((Collection) addObject);
+            } else {
+                nodes.add(Casting.toNode(addObject, cloud));
+            }
+        }
+        if (retain != Attribute.NULL) {
+            Object retainObject = thisTag.getObject(retain.getString(thisTag));
+            if (retainObject instanceof Collection) {
+                nodes.retainAll((Collection) retainObject);
+            } else {
+                nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
+            }
+        }
+        if (remove != Attribute.NULL) {
+            Object removeObject = thisTag.getObject(remove.getString(thisTag));
+            if (removeObject instanceof Collection) {
+                nodes.removeAll((Collection) removeObject);
+            } else {
+                nodes.remove((Casting.toNode(removeObject, cloud)));
+            }
+        }
         ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag.getPageContext());
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
