@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.55 2005-05-12 10:04:40 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.56 2005-05-12 11:25:08 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -205,15 +205,16 @@ public class ImportTag extends ContextReferrerTag {
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                     setValue(body);
+                    getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                 }  else {
                     //  might be vartype="list" or so, still need to set
-                    getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                     setValue(null);
+                    getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                 }
             }
         } else { // get value from the body of the tag.
+            setValue(bodyContent != null ? bodyContent.getString() : "");
             if (useId != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
@@ -230,7 +231,6 @@ public class ImportTag extends ContextReferrerTag {
                     throw new JspTagException("Attributes externid, id and jspvar cannot be all missing");
                 }
             }
-            setValue(bodyContent != null ? bodyContent.getString() : "");
         }
         found = false; // for use next time
         useId = null;
