@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 
-import java.util.List;
+import java.util.*;
+import org.mmbase.util.Casting;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.66 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.67 2005-05-12 17:42:54 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -121,6 +122,16 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
+    public void setAdd(String c) throws JspTagException {
+        listHelper.setAdd(c);
+    }
+    public void setRetain(String c) throws JspTagException {
+        listHelper.setRetain(c);
+    }
+    public void setRemove(String c) throws JspTagException {
+        listHelper.setRemove(c);
+    }
+
 
     /**
      * Sets the selection query
