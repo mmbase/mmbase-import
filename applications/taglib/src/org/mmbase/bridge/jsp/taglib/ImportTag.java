@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.53 2005-05-09 10:54:36 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.54 2005-05-12 08:54:48 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -179,6 +179,9 @@ public class ImportTag extends ContextReferrerTag {
                 value = escaper.transform((String) value);
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Setting " + value + " " + (value == null ? "NULL" : "" + value.getClass()));
+        }
         helper.setValue(value, noImplicitList);
     }
     /**
@@ -202,12 +205,12 @@ public class ImportTag extends ContextReferrerTag {
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    setValue(body);
                     getContextProvider().getContextContainer().reregister(useId, helper.getValue());
+                    setValue(body);
                 }  else {
                     //  might be vartype="list" or so, still need to set
-                    setValue(null);
                     getContextProvider().getContextContainer().reregister(useId, helper.getValue());
+                    setValue(null);
                 }
             }
         } else { // get value from the body of the tag.
