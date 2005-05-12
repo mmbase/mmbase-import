@@ -92,6 +92,18 @@
     <mm:remove referid="command"/>
     <mm:import id="command">-1</mm:import>
   </mm:compare>
+  <mm:compare referid="command" value="detail">
+    <jsp:include page="progressdetail.jsp"/>
+
+    <mm:remove referid="command"/>
+    <mm:import id="command">-1</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="coachdetail">
+    <jsp:include page="coachpredetail.jsp"/>
+
+    <mm:remove referid="command"/>
+    <mm:import id="command">-1</mm:import>
+  </mm:compare>
   <mm:compare referid="command" value="no">
     <jsp:include page="voortgang.jsp">
       <jsp:param name="msg" value="<%= msgString %>"/>

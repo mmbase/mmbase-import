@@ -31,7 +31,8 @@
         <mm:import id="progressvalue" jspvar="progress" vartype="Double" reset="true"><mm:write referid="progress"/></mm:import>
 
         <tr style="vertical-align:top;">
-          <td class="listItem"><mm:field name="educations.name"/><br/> from class <mm:field name="classes.name"/></td>
+          <td class="listItem"><a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"/>"
+              ><mm:field name="educations.name"/></a><br/> from class <mm:field name="classes.name"/></td>
           <td class="listItem" style="text-align:center">
             <mm:compare referid="intake" value="1">
               <img src="<mm:treefile page="/pop/gfx/check.gif" objectlist="$includePath" referids="$referids"/>"
@@ -57,7 +58,7 @@
                         referids="$referids,currentfolder">
                       <mm:param name="command">detail</mm:param>
                     </mm:treefile>">
-<img src="/didactor/pop/gfx/1.gif" width=4 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 alt="" border="0" /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/4.gif" width=<%= 100-progress.doubleValue() %> height=13 alt="" border="0" /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 alt="" border="0" /></a><mm:write referid="progress"/>%</td>
+<img src="/didactor/pop/gfx/1.gif" width=4 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 alt="Bekijk de testresultaten" border="0" /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 alt="" border="0" /><img src="/didactor/pop/gfx/4.gif" width=<%= 100-progress.doubleValue() %> height=13 alt="Bekijk de testresultaten" border="0" /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 alt="" border="0" /></a><mm:write referid="progress"/>%</td>
           <td class="listItem">
             <mm:compare referid="intake" value="1">
               <mm:compare referid="startflag" value="1">
