@@ -215,4 +215,13 @@ public class XMLClass {
     public String toString() {
         return getName();
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof XMLClass) {
+            XMLClass other = (XMLClass) o;
+            return getName().equals(other.getName());
+        } else {
+            return false;
+        }
+    }
 }
