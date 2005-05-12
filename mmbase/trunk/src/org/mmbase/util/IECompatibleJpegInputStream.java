@@ -22,11 +22,10 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.5 2005-02-09 21:18:20 keesj Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.6 2005-05-12 15:37:44 michiel Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
-    private Thread converter;
     private PipedInputStream pis;
     private PipedOutputStream pos;
 
@@ -42,11 +41,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
             pis.connect(pos);
         } catch (IOException ioe) {
         }
-
-        // I don't know if it's to heavy to start a thread
-        // maybe just calling the run method is enough(proivded that the buffers are big enough)..
-        converter = new Thread(this, "IECompatibleJpegInputStream");
-        converter.start();
+        ThreadPools.filterExecutor.execute(this);
     }
 
     public void run() {
@@ -113,8 +108,6 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
 
     public void close() throws IOException {
         pis.close();
-        converter.interrupt();
-        converter = null;
         super.close();
     }
 
