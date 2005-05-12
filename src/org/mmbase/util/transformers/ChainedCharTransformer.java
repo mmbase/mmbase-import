@@ -9,9 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-//import edu.emory.mathcs.backport.java.util.concurrent.*;
 import java.io.*;
 import java.util.*;
+import org.mmbase.util.ThreadPools;
 
 import org.mmbase.util.logging.*;
 
@@ -44,16 +44,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.22 2005-05-05 08:19:11 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.23 2005-05-12 15:37:44 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
-
-    
-    //static final Executor executor = Executors.newCachedThreadPool();
-    static final MMExecutor executor = new MMExecutor();
-
+   
     private List charTransformers = new ArrayList();
 
     public ChainedCharTransformer() {
@@ -124,7 +120,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                     links.add(link);
                     w = new PipedWriter(r);  
                     closeWriterAfterUse = true;
-                    executor.execute(link);
+                    ThreadPools.filterExecutor.execute(link);
                 } else {  // arrived at first in chain, start transforming
                     ct.transform(startReader, w);
                     if (closeWriterAfterUse) {
