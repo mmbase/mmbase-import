@@ -64,11 +64,11 @@
 
        <mm:node number="<%= questionNum %>">
 
-        <mm:field name="name" jspvar="name" vartype="String">
+        <mm:field name="title" jspvar="title" vartype="String">
 
-            <% name  = name.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
+            <% title  = title.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
 
-         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= name %>")+rotate(90)</mm:import>
+         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= title %>")+rotate(90)</mm:import>
 
          </mm:field>
 
