@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.54 2005-05-12 08:54:48 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.55 2005-05-12 10:04:40 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -214,7 +214,6 @@ public class ImportTag extends ContextReferrerTag {
                 }
             }
         } else { // get value from the body of the tag.
-            setValue(bodyContent != null ? bodyContent.getString() : "");
             if (useId != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
@@ -231,6 +230,7 @@ public class ImportTag extends ContextReferrerTag {
                     throw new JspTagException("Attributes externid, id and jspvar cannot be all missing");
                 }
             }
+            setValue(bodyContent != null ? bodyContent.getString() : "");
         }
         found = false; // for use next time
         useId = null;
