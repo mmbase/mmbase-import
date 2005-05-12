@@ -54,7 +54,19 @@
       %>
    </mm:field>
 
+   <%// Here we are makeing a whole text part %>
    <mm:import jspvar="text" reset="true">
+      <%// The title of page %>
+      <mm:field name="showtitle">
+         <mm:compare value="1">
+            <mm:field name="name" jspvar="sTitle" vartype="String" write="false">
+               <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+10)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
+               <br/>
+            </mm:field>
+         </mm:compare>
+      </mm:field>
+
+      <%// intro & text have been filterd %>
       <%= sIntro %><%= sText %>
 
       <%
@@ -66,16 +78,6 @@
       %>
       <%-- the <hr> will be translated into a pagebreak in the PDF --%>
       <hr/>
-      
-      <%// Here we are makeing PDF version for conversion %>
-      <mm:field name="showtitle">
-         <mm:compare value="1">
-            <mm:field name="name" jspvar="sTitle" vartype="String" write="false">
-               <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+10)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
-               <br/>
-            </mm:field>
-         </mm:compare>
-      </mm:field>
 
       <%// Go through all paragraphs %>
       <table  border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -91,7 +93,10 @@
                            <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+10)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
                         </mm:compare>
                      </mm:field>
-                     <mm:field name="body"/>
+                     <mm:field name="body" escape="none" jspvar="sRawHTML" vartype="String">
+                        <%= doCleaning(sRawHTML) %>
+                     </mm:field>
+
 
                      <% // see the types/images_position at the editwizards
                            // <option id="1">rechts (oorspronkelijk formaat)</option>
