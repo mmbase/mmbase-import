@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.125.2.14 2004-11-23 14:56:44 pierre Exp $
+    @version $Id: wizard.xsl,v 1.125.2.15 2005-05-13 14:02:47 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1429,14 +1429,14 @@
     <td>
       <xsl:if test="@displaytype=&apos;audio&apos;">
         <span	class="imgbutton"	title="{$tooltip_audio}">
-          <a href="{$ew_context}/rastreams.db?{field/@number}">
+					<a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_audio"/>
           </a>
         </span>
       </xsl:if>
       <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
-          <a href="{$ew_context}/rmstreams.db?{field/@number}">
+					<a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_video"/>
          </a>
         </span>
