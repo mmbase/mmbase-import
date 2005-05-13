@@ -22,6 +22,7 @@ import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.applications.email.*;
 
 /**
  * @author Daniel Ockeloen
@@ -47,7 +48,7 @@ public class Poster {
     private HashMap seenthreads = new HashMap();
     private ArrayList signatures;
     private ArrayList remotehosts;
-
+    private String mailbody="";;
     private static final int STATE_ACTIVE = 0;
     private static final int STATE_DISABLED = 1;
 
@@ -70,6 +71,7 @@ public class Poster {
 	password = node.getStringValue(prefix+"password");
 	firstname = node.getStringValue(prefix+"firstname");
 	lastname = node.getStringValue(prefix+"lastname");
+	email = node.getStringValue(prefix+"email");
 	postcount = node.getIntValue(prefix+"postcount");
 	level = node.getStringValue(prefix+"level");
 	location = node.getStringValue(prefix+"location");
@@ -790,6 +792,37 @@ public class Poster {
 	      RemoteHost rm = new RemoteHost(this,rnode.getStringValue("host"),rnode.getIntValue("lastupdatetime"),rnode.getIntValue("updatecount"));
 	      rm.setId(rnode.getNumber());
 	      remotehosts.add(rm);
+	}
+    }
+   
+
+    public void sendEmailOnChange(PostThread t) {
+	String line="";
+	if (!line.equals("")) line+="------------------------------------------------\n\r";
+	line+=t.getLastPoster()+" has just replied a thread your subscribed to : '"+t.getLastSubject()+"'\n\r";
+	line+="\n\rYou can find the thread here : http://localhost:9000/mmbob/thread.jsp?forumid="+t.getParent().getParent().getId()+"&postareaid="+t.getParent().getId()+"&postthreadid="+t.getId()+"&postingid="+t.getLastPostNumber()+"#p"+t.getLastPostNumber()+"\n\r";
+	this.mailbody+=line;
+	sendUpdateMail();
+    }
+
+    public void sendUpdateMail() {
+        SendMailInterface sendmail = (SendMailInterface) MMBase.getMMBase().getModule("sendmail");
+	log.info("Sending mail to : "+getEmail());
+        if (sendmail != null && !getEmail().equals("")) {
+		String from = parent.getFromEmailAddress();
+		String to = getEmail();
+		String subject = "update mail";
+		String body = "Hello "+getAccount()+" ("+getFirstName()+" "+getLastName()+")\n\r\n\r";
+		body+=mailbody;
+		mailbody="";
+		body+="\n\r\n\rThe forum Admins\n\r";
+
+		HashMap headers =  new HashMap();
+        	headers.put("Reply-To", "");
+       	 	headers.put("CC","");
+        	headers.put("BCC","");
+        	headers.put("Subject", subject);
+		log.info("SENDMAIL="+sendmail.sendMail(from, to, body, headers));
 	}
     }
 }

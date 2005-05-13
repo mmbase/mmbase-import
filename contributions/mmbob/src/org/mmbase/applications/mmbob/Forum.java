@@ -60,6 +60,7 @@ public class Forum {
     private Hashtable posternames = new Hashtable();
     private Vector onlineposters = new Vector();
     private Vector newposters = new Vector();
+    private HashMap threadobservers=new HashMap();
 
     private ForumConfig config;
 
@@ -94,6 +95,7 @@ public class Forum {
         preCachePosters();
         readAreas();
         readSignatures();
+        readThreadObservers();
         readRoles();
     }
 
@@ -747,6 +749,7 @@ public class Forum {
             query.addField(step2.getNext(), postersmanager.getField("password"));
             query.addField(step2.getNext(), postersmanager.getField("firstname"));
             query.addField(step2.getNext(), postersmanager.getField("lastname"));
+            query.addField(step2.getNext(), postersmanager.getField("email"));
             query.addField(step2.getNext(), postersmanager.getField("postcount"));
             query.addField(step2.getNext(), postersmanager.getField("level"));
             query.addField(step2.getNext(), postersmanager.getField("location"));
@@ -816,6 +819,39 @@ public class Forum {
 		} else {
 			log.error("Got a signature of a missing poster !"+node.getStringValue("posters.account"));
 		}
+            }
+        }
+    }
+
+
+    private void readThreadObservers() {
+        if (node != null) {
+            NodeManager forumsmanager = ForumManager.getCloud().getNodeManager("forums");
+            NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
+            NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
+            NodeManager threadobserversmanager = ForumManager.getCloud().getNodeManager("threadobservers");
+            Query query = ForumManager.getCloud().createQuery();
+            Step step1 = query.addStep(forumsmanager);
+            RelationStep step2 = query.addRelationStep(postareasmanager);
+            RelationStep step3 = query.addRelationStep(postthreadsmanager);
+            RelationStep step4 = query.addRelationStep(threadobserversmanager);
+
+            StepField f1 = query.addField(step1, forumsmanager.getField("number"));
+            query.addField(step3.getNext(), postthreadsmanager.getField("number"));
+            query.addField(step4.getNext(), threadobserversmanager.getField("number"));
+            query.addField(step4.getNext(), threadobserversmanager.getField("emailonchange"));
+            query.addField(step4.getNext(), threadobserversmanager.getField("bookmarked"));
+            query.addField(step4.getNext(), threadobserversmanager.getField("ignorelist"));
+
+            query.setConstraint(query.createConstraint(f1, new Integer(node.getNumber())));
+
+            NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
+            while (i.hasNext()) {
+                Node node = i.nextNode();
+		ThreadObserver to = new ThreadObserver(this,node.getIntValue("threadobservers.number"),node.getStringValue("threadobservers.emailonchange"),node.getStringValue("threadobservers.bookmarked"),node.getStringValue("threadobservers.ignorelist"));
+		int postthreadid = node.getIntValue("postthreads.number");
+		to.setThreadId(postthreadid);
+		threadobservers.put(new Integer(postthreadid),to);
             }
         }
     }
@@ -1383,5 +1419,23 @@ public class Forum {
    public int getSpeedPostTime() {
 	return ForumManager.getSpeedPostTime();
    }
+
+   public ThreadObserver getThreadObserver(int id) {
+	Object o = threadobservers.get(new Integer(id));
+	if (o!=null) return (ThreadObserver)o;
+	return null;
+   }
+
+  public boolean setEmailOnChange(int id,Poster ap,boolean state) {
+	Object o = threadobservers.get(new Integer(id));
+	if (o!=null) {
+		return ((ThreadObserver)o).setEmailOnChange(ap,state);
+	} else {
+		ThreadObserver to = new ThreadObserver(this,-1,"","","");
+		to.setThreadId(id);
+		threadobservers.put(new Integer(id),to);
+		return to.setEmailOnChange(ap,state);
+	}
+  }
 
 }

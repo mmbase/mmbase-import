@@ -485,7 +485,7 @@ public class PostArea {
         postthreads = new Vector();
 
        	long start = System.currentTimeMillis();
-	log.info("reading threads");
+	//log.info("reading threads");
             NodeManager postareasmanager = ForumManager.getCloud().getNodeManager("postareas");
             NodeManager postthreadsmanager = ForumManager.getCloud().getNodeManager("postthreads");
             Query query = ForumManager.getCloud().createQuery();
@@ -527,7 +527,7 @@ public class PostArea {
                 namecache.put("" + n2.getValue("postthreads.number"), postthread);
             }
        	long end = System.currentTimeMillis();
-	log.info("end reading threads time="+(end-start));
+	//log.info("end reading threads time="+(end-start));
 
          // check the count number
          if (postcount!=newcount) {
