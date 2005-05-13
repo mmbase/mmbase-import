@@ -13,6 +13,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
+import org.mmbase.util.Casting;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.48 2005-05-03 10:52:00 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.49 2005-05-13 09:47:12 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -121,6 +123,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         return Integer.parseInt("" + o);
     }
 
+
     public int doStartTag() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("start writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
@@ -135,20 +138,20 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             if (pageContext.getSession() == null) {
                 throw new JspTagException("Cannot write to session if session is disabled");
             }
-            pageContext.getSession().setAttribute(sessionVar.getString(this), helper.getValue());
+            pageContext.getSession().setAttribute(sessionVar.getString(this), getEscapedValue(helper.getValue()));
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         if (requestVar != Attribute.NULL) {
-            pageContext.setAttribute(requestVar.getString(this), helper.getValue(), PageContext.REQUEST_SCOPE);
+            pageContext.setAttribute(requestVar.getString(this), getEscapedValue(helper.getValue()), PageContext.REQUEST_SCOPE);
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to request.
         }
         if (applicationVar != Attribute.NULL) {
-            pageContext.setAttribute(applicationVar.getString(this), helper.getValue(), PageContext.APPLICATION_SCOPE);
+            pageContext.setAttribute(applicationVar.getString(this), getEscapedValue(helper.getValue()), PageContext.APPLICATION_SCOPE);
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to application.
         }
 
         if (cookie != Attribute.NULL) {
-            Object v = helper.getValue();
+            Object v = getEscapedValue(helper.getValue());
             String cookievalue;
             if (v instanceof Node) {
                 cookievalue = "" + ((Node) v).getNumber();

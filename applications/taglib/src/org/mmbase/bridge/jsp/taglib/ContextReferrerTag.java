@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.70 2005-05-07 14:35:00 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.71 2005-05-13 09:47:12 michiel Exp $
  * @see ContextTag
  */
 
@@ -558,6 +558,18 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return helper.getValue();
     }
     final public void haveBody() { helper.haveBody(); }
+
+    /**
+     * Returns the escaped value associated with this tag, but only if the escape attribute was set explicitely (so not when only inherited from content-tag).
+     * @since MMBase-1.8
+     */
+    protected Object getEscapedValue(Object value) throws JspTagException {
+        if (helper.getEscape() == null) {
+            return value;
+        } else {
+            return ContentTag.getCharTransformer((String) helper.getEscape(), getContextProvider().getContextContainer(), this).transform(Casting.toString(value));
+        }
+    }
 
 
 }

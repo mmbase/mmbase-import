@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.71 2005-05-12 16:15:08 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.72 2005-05-13 09:47:12 michiel Exp $
  */
 
 public class WriterHelper {
@@ -168,7 +168,9 @@ public class WriterHelper {
      */
 
     public String getEscape() throws JspTagException {
-        return (String) escape.getValue(thisTag);
+        String e = (String) escape.getValue(thisTag);
+        if ("".equals(e)) return null;
+        return e;
     }
 
     /**
