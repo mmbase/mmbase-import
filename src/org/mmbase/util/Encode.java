@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.22 2005-05-09 14:15:36 michiel Exp $
+ * @version $Id: Encode.java,v 1.23 2005-05-13 09:49:09 michiel Exp $
  **/
 public class Encode {
 
@@ -73,6 +73,7 @@ public class Encode {
             register("org.mmbase.util.transformers.LinkFinder");
             register("org.mmbase.util.transformers.Censor");
             register("org.mmbase.util.transformers.Rot13");
+            register("org.mmbase.util.transformers.Rot5");
         } catch (IllegalArgumentException e) {
             log.warn("", e);
         }
