@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.20 2005-04-11 07:30:39 pierre Exp $
+    @version $Id: searchlist.xsl,v 1.21 2005-05-13 14:03:40 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -126,7 +126,7 @@
                 </xsl:when>
                 <xsl:when test="@type=&apos;audioparts&apos;">
                   <td>
-                    <a href="{$ew_context}/rastreams.db?{@number}">
+                    <a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
                       <xsl:call-template name="prompt_audio" />
                     </a>
                   </td>
@@ -134,7 +134,7 @@
                 </xsl:when>
                 <xsl:when test="@type=&apos;videoparts&apos;">
                   <td>
-                    <a href="{$ew_context}/rmstreams.db?{@number}">
+                    <a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
                       <xsl:call-template name="prompt_video" />
                     </a>
                   </td>
