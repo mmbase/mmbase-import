@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" 
-  xmlns:date="org.mmbase.bridge.util.xml.DateFormat" 
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
   extension-element-prefixes="node date">
   <!--
     wizard.xsl
@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.144 2005-04-11 14:24:45 michiel Exp $
+    @version $Id: wizard.xsl,v 1.145 2005-05-13 14:03:40 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1440,16 +1440,16 @@
     <td>
       <xsl:if test="@displaytype=&apos;audio&apos;">
         <span	class="imgbutton"	title="{$tooltip_audio}">
-          <a href="{$ew_context}/rastreams.db?{field/@number}">
+          <a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_audio"/>
           </a>
         </span>
       </xsl:if>
       <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
-          <a href="{$ew_context}/rmstreams.db?{field/@number}">
+          <a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_video"/>
-         </a>
+          </a>
         </span>
       </xsl:if>
     </td>
