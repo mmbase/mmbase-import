@@ -629,6 +629,7 @@ public class ForumsConfig {
     	checkTypeRel("forums", "forumrules", "related",-1);
     	checkTypeRel("postareas", "forumrules", "related",-1);
     	checkTypeRel("posters", "remotehosts", "related",-1);
+    	checkTypeRel("postthreads", "threadobservers", "related",-1);
     }
 
 

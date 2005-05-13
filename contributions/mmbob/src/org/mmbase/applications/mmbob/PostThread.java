@@ -290,6 +290,9 @@ public class PostThread {
 
 			syncNode(ForumManager.FASTSYNC);
 			parent.signalNewReply(this);
+			// signal the threadobservers
+			ThreadObserver to = parent.getParent().getThreadObserver(id);
+			if (to!=null) to.signalContentAdded(this);
 
                 } else {
                         log.error("Forum can't load relation nodemanager postthreads/postings/related");
