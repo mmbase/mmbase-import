@@ -13,7 +13,7 @@
 
   <property name="taglib2.jar"       value="${project.jar.dir}/mmbase-taglib-2.jar" />
 
-  <target name="dependent.jar"           depends="jar1" />
+  <target name="dependent.jar"           depends="jar1,jar2" />
   <target name="dependent.package"       depends="dependent.jar,taglib.doc,package" />
   <target name="dependent.install"       depends="dependent.jar,dependent.install.documentation,install,install.taglib2.tld" />
   <target name="dependent.documentation" depends="taglib.doc,documentation" />
@@ -72,12 +72,9 @@
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}">
         <include name="**" />
-        <exclude name="**/taglib.tld" />
       </metainf>    
-      <!--
       <fileset     dir="${project.build.dir}/classes" includes="**" />
       <fileset     dir="${project.classes.dir}" includes="${project.classes.includes}" />
-      -->
     </jar>
 
   </target>
