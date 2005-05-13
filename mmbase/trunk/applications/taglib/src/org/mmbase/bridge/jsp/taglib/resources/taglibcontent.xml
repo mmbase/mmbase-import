@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.32 2005-05-08 13:26:56 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.33 2005-05-13 09:47:12 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -232,7 +232,13 @@
   <escaper id="rot13">
     <class>org.mmbase.util.transformers.Rot13</class>    
     <info>
-      Performs 'rot 13' encoding of the string. Can be decoded by doing a rot13 again.
+      Performs 'rot 13' encoding of the string, to scramble letters. Can be decoded by doing a rot13 again.
+    </info>
+  </escaper>
+  <escaper id="rot5">
+    <class>org.mmbase.util.transformers.Rot5</class>    
+    <info>
+      Performs 'rot 5' encoding of the string. This scrambles the digits.
     </info>
   </escaper>
 
