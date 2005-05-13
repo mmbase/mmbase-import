@@ -15,29 +15,26 @@ import java.io.Writer;
 import org.mmbase.util.logging.*;
 
 /**
- * Rot13 implementation. Letter a-m are shifted 13 positions forward, n-z 13 backwards and other characters are untouched, which results in
- * scrambled - but easily decoded - strings.
+ * Rot5 implementation. Digits 0-4 are shifted 5 positions forward, digits 5-9 are shifted 5
+ * backwards and other characters are untouched, which results in scrambled - but easily decoded -
+ * strings. You would want this to combine with {@link Rot13} for the letters.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
  */
 
-public class Rot13 extends ReaderTransformer implements CharTransformer {
+public class Rot5 extends ReaderTransformer implements CharTransformer {
 
-    private static final Logger log = Logging.getLoggerInstance(Rot13.class);
+    private static final Logger log = Logging.getLoggerInstance(Rot5.class);
 
-    protected Writer rot13(Reader r, Writer w) {
+    protected Writer rot5(Reader r, Writer w) {
         try {
             int c = r.read();
             while (c != -1) {
-                if (c >= 'a' && c <= 'm') {
-                    c += 13;
-                } else if  (c >= 'n' && c <= 'z') {
-                    c -= 13;
-                } else if  (c >= 'A' && c <= 'M') {
-                    c += 13;
-                } else if  (c >= 'A' && c <= 'Z') {
-                    c -= 13;
+                if (c >= '0' && c <= '4') {
+                    c += 5;
+                } else if  (c >= '5' && c <= '9') {
+                    c -= 5;
                 }
                 w.write(c);
                 c = r.read();
@@ -49,17 +46,17 @@ public class Rot13 extends ReaderTransformer implements CharTransformer {
     }
 
     public Writer transform(Reader r, Writer w) {
-        return rot13(r, w);
+        return rot5(r, w);
     }
 
     /**
      * For Rot13, transformBack does the same as {@link #transform}
      **/
     public Writer transformBack(Reader r, Writer w) {
-        return rot13(r, w);
+        return rot5(r, w);
     }
 
     public String toString() {
-        return "ROT-13";
+        return "ROT-5";
     }
 }
