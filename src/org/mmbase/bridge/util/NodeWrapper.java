@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.3 2005-05-02 12:31:16 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.4 2005-05-14 14:04:45 nico Exp $
  * @since   MMBase-1.8
  */
 
@@ -97,10 +97,10 @@ public abstract class NodeWrapper implements Node, Comparable {
     public NodeList getRelatedNodes() { return node.getRelatedNodes(); }
     public NodeList getRelatedNodes(String nodeManager) { return node.getRelatedNodes(nodeManager); }
     public NodeList getRelatedNodes(NodeManager nodeManager) { return node.getRelatedNodes(nodeManager); }
-    public NodeList getRelatedNodes(String nodeManager, String role, String searchDir) { return getRelatedNodes(nodeManager, role, searchDir); }
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) { return getRelatedNodes(nodeManager, role, searchDir); }
+    public NodeList getRelatedNodes(String nodeManager, String role, String searchDir) { return node.getRelatedNodes(nodeManager, role, searchDir); }
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) { return node.getRelatedNodes(nodeManager, role, searchDir); }
     public int countRelatedNodes(String nodeManager) { return node.countRelatedNodes(nodeManager); }
-    public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir) { return countRelatedNodes(otherNodeManager, role, searchDir); }
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir) { return node.countRelatedNodes(otherNodeManager, role, searchDir); }
     public StringList getAliases() { return node.getAliases(); }
     public void createAlias(String alias) { node.createAlias(alias); }
     public void deleteAlias(String alias) { node.deleteAlias(alias); }

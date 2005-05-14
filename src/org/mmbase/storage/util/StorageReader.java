@@ -20,7 +20,7 @@ import org.mmbase.util.xml.DocumentReader;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.8 2005-05-09 16:28:49 michiel Exp $
+ * @version $Id: StorageReader.java,v 1.9 2005-05-14 14:04:45 nico Exp $
  * @since MMBase-1.7
  */
 public class StorageReader extends DocumentReader  {
@@ -188,7 +188,7 @@ public class StorageReader extends DocumentReader  {
                     String optionValue = optionTag.getAttribute("value");
                     Boolean value = Boolean.TRUE;
                     if (optionValue != null && !optionValue.equals("")) {
-                        value = new Boolean(optionValue);
+                        value = Boolean.valueOf(optionValue);
                     }
                     attributes.put(optionName,value);
                 }
