@@ -7,13 +7,16 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core;
+package org.mmbase.clustering;
+
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectNode;
 
 
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.4 2004-10-09 10:51:03 nico Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {

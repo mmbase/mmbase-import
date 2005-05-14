@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering.multicast;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -19,18 +19,18 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * MulticastChangesReceiver is a thread object that builds a MultiCast Thread 
+ * ChangesReceiver is a thread object that builds a MultiCast Thread 
  * to receive changes from other MMBase Servers.
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: MulticastChangesReceiver.java,v 1.2 2005-03-16 19:21:39 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public class MulticastChangesReceiver implements Runnable {
+public class ChangesReceiver implements Runnable {
 
     /** MMbase logging system */
-    private static final Logger log = Logging.getLoggerInstance(MulticastChangesReceiver.class);
+    private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
     /** counter of incoming messages */
     private int incount = 0;
@@ -60,7 +60,7 @@ public class MulticastChangesReceiver implements Runnable {
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
      */
-    public MulticastChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn) {
+    public ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn) {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn=nodesToSpawn;

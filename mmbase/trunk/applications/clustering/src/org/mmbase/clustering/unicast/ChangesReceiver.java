@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering.unicast;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,16 +22,16 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * UnicastChangesReceiver is a thread object that builds a Unicast Thread 
+ * ChangesReceiver is a thread object that builds a Unicast Thread 
  * to receive changes from other MMBase Servers.
  * 
  * @author Nico Klasens
- * @version $Id: UnicastChangesReceiver.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: ChangesReceiver.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public class UnicastChangesReceiver implements Runnable {
+public class ChangesReceiver implements Runnable {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(UnicastChangesReceiver.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ChangesReceiver.class.getName());
 
     /** counter of incoming messages */
     private int incount = 0;
@@ -50,7 +50,7 @@ public class UnicastChangesReceiver implements Runnable {
      * @param unicastPort port of the unicast connections
      * @param nodesToSpawn Queue of received messages
      */
-    public UnicastChangesReceiver(int unicastPort, Queue nodesToSpawn) {
+    public ChangesReceiver(int unicastPort, Queue nodesToSpawn) {
         this.nodesToSpawn = nodesToSpawn;
         this.unicastPort = unicastPort;
         this.start();

@@ -61,8 +61,11 @@
 	<!--
 	name="clustering" the MMBaseChangeInterface which communicates with
 	other MMBase instance which use the same storage
-	See applications/clustering for implementations
-	-->
+    jgroups.Multicast is reliable multicast implemented using JGroups.
+    -->
+    <property name="clustering">org.mmbase.clustering.jgroups.Multicast</property>
+	<!-- property name="clustering">org.mmbase.clustering.multicast.Multicast</property -->
+	<!-- property name="clustering">org.mmbase.clustering.unicast.Uniicast</property -->
 
 	<!--
 	name="host" the host or ip number of the machine this mmbase node is

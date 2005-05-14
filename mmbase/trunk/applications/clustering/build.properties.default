@@ -1,0 +1,3 @@
+# ----- JGroups and Commons-Logging ---------
+jgroups-core.jar=${build.dir}/lib/jgroups-core.jar
+commons-logging.jar=${build.dir}/lib/commons-logging.jar
