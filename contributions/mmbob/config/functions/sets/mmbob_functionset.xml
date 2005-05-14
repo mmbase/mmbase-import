@@ -448,6 +448,7 @@
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
 		<param name="postthreadid" type="String" description="MMBase node number of the postthread" />
+		<param name="posterid" type="int" description="MMBase node number of the poster" />
 		<param name="page" type="int" description="Current page number" />
 		<param name="pagesize" type="int" description="Number of postings per page">5</param>
 		<param name="baseurl" type="String" description="Base url for links in the navigation html">thread.jsp</param>
@@ -563,6 +564,7 @@
 		<method>searchPostings</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="searchareaid" type="String" description="MMBase node number of the forum" />
+		<param name="searchpostthreadid" type="String" description="MMBase node number of the forum">-1</param>
 		<param name="searchkey" type="String" description="searchkey" />
 		<param name="page" type="int" description="page number" />
 		<param name="pagesize" type="int" description="size per page" />
@@ -956,6 +958,34 @@
 		<param name="newmode" type="String" description="list mode" />
 		<param name="newencoding" type="String" description="list mode" />
 		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
+	<function name="setEmailOnChange">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>setEmailOnChange</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postthreadid" type="String" description="MMBase node number of the postthread" />
+		<param name="posterid" type="int" description="MMBase node number of the poster" />
+		<param name="state" type="String" description="MMBase node number of the postthread" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="setBookmarkedChange">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>setBookmarkedChange</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postthreadid" type="String" description="MMBase node number of the postthread" />
+		<param name="posterid" type="int" description="MMBase node number of the poster" />
+		<param name="state" type="String" description="MMBase node number of the postthread" />
+		<return type="Boolean"> 
 		</return> 
 	</function>
 

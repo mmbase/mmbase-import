@@ -1438,4 +1438,25 @@ public class Forum {
 	}
   }
 
+
+  public boolean setBookmarkedChange(int id,Poster ap,boolean state) {
+	Object o = threadobservers.get(new Integer(id));
+	if (o!=null) {
+		return ((ThreadObserver)o).setBookmarkedChange(ap,state);
+	} else {
+		ThreadObserver to = new ThreadObserver(this,-1,"","","");
+		to.setThreadId(id);
+		threadobservers.put(new Integer(id),to);
+		return to.setBookmarkedChange(ap,state);
+	}
+  }
+
+   public String getEmailtext(String role) {
+        return ForumManager.getEmailtext(role);
+   }
+
+   public String getExternalRootUrl() {
+        return ForumManager.getExternalRootUrl();
+   }
+
 }

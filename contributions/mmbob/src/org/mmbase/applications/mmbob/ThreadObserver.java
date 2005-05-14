@@ -65,6 +65,11 @@ public class ThreadObserver {
 	return false;
    }
   
+   public boolean isBookmarked(Poster p) {
+	if (bookmarked.contains(p)) return true;
+	return false;
+   }
+
    public void setId(int id) {
 	this.id = id;
    }
@@ -91,6 +96,22 @@ public class ThreadObserver {
 	} else {
 		if (emailonchange.contains(p)) {
 			emailonchange.remove(p);
+			return save();
+		}
+	}
+	return false;
+  }
+
+
+  public boolean setBookmarkedChange(Poster p,boolean state) {
+	if (state) {
+		if (!bookmarked.contains(p)) {
+			bookmarked.add(p);
+			return save();
+		}
+	} else {
+		if (bookmarked.contains(p)) {
+			bookmarked.remove(p);
 			return save();
 		}
 	}
