@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering.unicast;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -25,16 +25,16 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * UnicastChangesSender is a thread object sending the nodes found in the
+ * ChangesSender is a thread object sending the nodes found in the
  * sending queue over unicast connections
  * 
  * @author Nico Klasens
- * @version $Id: UnicastChangesSender.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: ChangesSender.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public class UnicastChangesSender implements Runnable {
+public class ChangesSender implements Runnable {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(UnicastChangesSender.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ChangesSender.class.getName());
 
     /** counter of send messages */
     private int outcount = 0;
@@ -68,7 +68,7 @@ public class UnicastChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param mmbase MMBase instance
      */
-    public UnicastChangesSender(int unicastPort, int unicastTimeout, Queue nodesToSend, MMBase mmbase) {
+    public ChangesSender(int unicastPort, int unicastTimeout, Queue nodesToSend, MMBase mmbase) {
         this.nodesToSend = nodesToSend;
         this.unicastPort = unicastPort;
         this.unicastTimeout = unicastTimeout;

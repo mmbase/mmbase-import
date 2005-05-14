@@ -7,10 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering.unicast;
 
 import java.util.Map;
 
+import org.mmbase.clustering.ClusterManager;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -22,9 +23,9 @@ import org.mmbase.util.xml.UtilReader;
  * 
  * @author Nico Klasens
  * @created 20-sep-2004
- * @version $Id: Unicast.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: Unicast.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public class Unicast extends SharedStorage {
+public class Unicast extends ClusterManager {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(Unicast.class.getName());
@@ -38,9 +39,9 @@ public class Unicast extends SharedStorage {
     private int unicastTimeout = 10*1000;
     
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
-    private UnicastChangesSender ucs;
+    private ChangesSender ucs;
     /** Receiver which reads the message from the line and puts message in the nodesToSpawn Queue */
-    private UnicastChangesReceiver ucr;
+    private ChangesReceiver ucr;
     
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
@@ -77,15 +78,15 @@ public class Unicast extends SharedStorage {
     }
     
     /**
-     * @see org.mmbase.module.core.change.SharedStorage#startCommunicationThreads()
+     * @see org.mmbase.clustering.ClusterManager#startCommunicationThreads()
      */
     protected void startCommunicationThreads() {
-        ucs = new UnicastChangesSender(unicastPort, unicastTimeout, nodesToSend, mmbase);
-        ucr = new UnicastChangesReceiver(unicastPort, nodesToSpawn);
+        ucs = new ChangesSender(unicastPort, unicastTimeout, nodesToSend, mmbase);
+        ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
     }
 
     /**
-     * @see org.mmbase.module.core.change.SharedStorage#stopCommunicationThreads()
+     * @see org.mmbase.clustering.ClusterManager#stopCommunicationThreads()
      */
     protected void stopCommunicationThreads() {
         ucs.stop();

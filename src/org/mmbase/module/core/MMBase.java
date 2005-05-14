@@ -12,9 +12,10 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 
+import org.mmbase.clustering.MMBaseChangeDummy;
+import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
-import org.mmbase.module.core.change.MMBaseChangeDummy;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
@@ -34,7 +35,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.129 2005-05-10 22:47:24 michiel Exp $
+ * @version $Id: MMBase.java,v 1.130 2005-05-14 15:25:35 nico Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -307,7 +308,7 @@ public class MMBase extends ProcessorModule {
         // start the JDBC module if present
         getModule("JDBC", true);
 
-        initializeSharedStorage(getInitParameter("SHAREDSTORAGE"));
+        initializeClustering(getInitParameter("CLUSTERING"));
 
         String builderPath = getInitParameter("BUILDERFILE");
         if (builderPath == null || builderPath.equals("")) {
@@ -378,16 +379,17 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * @param sharedStorageClass
+     * initialize Clustering
+     * @param clusterClass classname of cluster manager
      * @since MMBase-1.7.2
      */
-    private void initializeSharedStorage(String sharedStorageClass) {
-        if (sharedStorageClass != null) {
-            log.debug("Starting Multicasting: " + sharedStorageClass);
+    private void initializeClustering(String clusterClass) {
+        if (clusterClass != null) {
+            log.debug("Starting Multicasting: " + clusterClass);
 
             Class newclass;
             try {
-                newclass = Class.forName(sharedStorageClass);
+                newclass = Class.forName(clusterClass);
                 mmc = (MMBaseChangeInterface) newclass.newInstance();
             } catch (Exception e) {
                 log.error("Failed to start MMBaseChangeInterface: " + e.getMessage());

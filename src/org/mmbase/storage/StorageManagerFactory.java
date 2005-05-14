@@ -16,6 +16,7 @@ import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.clustering.ChangeManager;
 import org.mmbase.core.CoreField;
 
 import org.mmbase.util.ResourceLoader;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.14 2005-05-10 22:58:27 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.15 2005-05-14 15:25:36 nico Exp $
  */
 public abstract class StorageManagerFactory {
 

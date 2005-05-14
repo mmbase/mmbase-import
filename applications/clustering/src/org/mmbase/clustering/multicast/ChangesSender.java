@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering.multicast;
 
 import java.net.*;
 import java.io.*;
@@ -18,18 +18,18 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * MulticastChangesSender is a thread object sending the nodes found in the
+ * ChangesSender is a thread object sending the nodes found in the
  * sending queue over the multicast 'channel'
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: MulticastChangesSender.java,v 1.1 2004-10-09 10:51:07 nico Exp $
+ * @version $Id: ChangesSender.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public class MulticastChangesSender implements Runnable {
+public class ChangesSender implements Runnable {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(MulticastChangesSender.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ChangesSender.class.getName());
 
     /** counter of send messages */
     private int outcount = 0;
@@ -57,7 +57,7 @@ public class MulticastChangesSender implements Runnable {
      * @param mTTL time-to-live of the multicast packet (0-255)
      * @param nodesToSend Queue of messages to send
      */
-    public MulticastChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend) {
+    public ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend) {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
