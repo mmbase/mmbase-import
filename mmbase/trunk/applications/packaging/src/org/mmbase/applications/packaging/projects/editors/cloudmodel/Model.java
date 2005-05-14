@@ -528,28 +528,31 @@ public class Model {
 	body+="\t<names>\n";
 	body+="\t\t<!-- singles per language as defined by ISO 639 -->\n";
 	HashMap sn=nb.getSingularNames();
-	Iterator snk=sn.keySet().iterator();
+	Iterator snk=sn.entrySet().iterator();
 	while (snk.hasNext()) {
-		String key=(String)snk.next();
-		String value=(String)sn.get(key);
+        Map.Entry entry = (Map.Entry) snk.next(); 
+		String key=(String) entry.getKey();
+		String value=(String) entry.getValue();
 		body+="\t\t<singular xml:lang=\""+key+"\">"+value+"</singular>\n";
 	}
 	body+="\t\t<!-- singles per language as defined by ISO 639 -->\n";
 	HashMap pn=nb.getPluralNames();
-	Iterator pnk=pn.keySet().iterator();
+	Iterator pnk=pn.entrySet().iterator();
 	while (pnk.hasNext()) {
-		String key=(String)pnk.next();
-		String value=(String)pn.get(key);
+        Map.Entry entry = (Map.Entry) pnk.next();
+		String key=(String) entry.getKey();
+		String value=(String) entry.getValue();
 		body+="\t\t<plural xml:lang=\""+key+"\">"+value+"</plural>\n";
 	}
 	body+="\t</names>\n";
 	body+="\t<!-- <descriptions> small description of the builder for human reading -->\n";
 	body+="\t<descriptions>\n";
 	Map de=nb.getDescriptions();
-	Iterator dek=de.keySet().iterator();
+	Iterator dek=de.entrySet().iterator();
 	while (dek.hasNext()) {
-		String key=(String)dek.next();
-		String value=(String)de.get(key);
+        Map.Entry entry = (Map.Entry) dek.next();
+		String key=(String) entry.getKey();
+		String value=(String) entry.getValue();
 		body+="\t\t<description xml:lang=\""+key+"\">"+value+"</description>\n";
 	}
 	body+="\t</descriptions>\n";
@@ -563,19 +566,21 @@ public class Model {
 		body+="\t\t\t<descriptions>\n";
 
 		de=nbf.getDescriptions();
-		dek=de.keySet().iterator();
+		dek=de.entrySet().iterator();
 		while (dek.hasNext()) {
-			String key=(String)dek.next();
-			String value=(String)de.get(key);
+            Map.Entry entry = (Map.Entry) dek.next(); 
+			String key=(String) entry.getKey();
+			String value=(String) entry.getValue();
 			body+="\t\t\t\t<description xml:lang=\""+key+"\">"+value+"</description>\n";
 		}
 		body+="\t\t\t</descriptions>\n";
 		body+="\t\t\t<gui>\n";
 		de=nbf.getGuiNames();
-		dek=de.keySet().iterator();
+		dek=de.entrySet().iterator();
 		while (dek.hasNext()) {
-			String key=(String)dek.next();
-			String value=(String)de.get(key);
+            Map.Entry entry = (Map.Entry) dek.next(); 
+			String key=(String) entry.getKey();
+			String value=(String) entry.getValue();
 			body+="\t\t\t\t<guiname xml:lang=\""+key+"\">"+value+"</guiname>\n";
 		}
 		body+="\t\t\t\t<guitype>"+nbf.getGuiType()+"</guitype>\n";

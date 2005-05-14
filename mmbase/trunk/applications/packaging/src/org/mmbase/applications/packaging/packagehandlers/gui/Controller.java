@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.mmbase.applications.packaging.InstallManager;
 import org.mmbase.applications.packaging.PackageManager;
@@ -65,14 +66,15 @@ public class Controller {
      */
     public List getPackageHandlers() {
         // get the current package handlers we have installed
-        HashMap packagehandlers = PackageManager.getPackageHandlers();
+        Map packagehandlers = PackageManager.getPackageHandlers();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Iterator e = packagehandlers.keySet().iterator();
+        Iterator e = packagehandlers.entrySet().iterator();
         while (e.hasNext()) {
-            String key = (String) e.next();
-            String value = (String) packagehandlers.get(key);
+            Map.Entry entry = (Map.Entry) e.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
 
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", key);
