@@ -7,8 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering;
 
+import org.mmbase.clustering.ClusterManager;
 import org.mmbase.module.core.MMObjectBuilder;
 
 /**
@@ -17,7 +18,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.1 2004-10-09 10:51:07 nico Exp $
+ * @version $Id: MessageProbe.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
 public class MessageProbe implements Runnable {
 
@@ -30,7 +31,7 @@ public class MessageProbe implements Runnable {
      * @javadoc
      * @scope private
      */
-    SharedStorage parent=null;
+    ClusterManager parent=null;
     /**
      * @javadoc
      * @scope private
@@ -65,7 +66,7 @@ public class MessageProbe implements Runnable {
     /**
      * @javadoc
      */
-    public MessageProbe(SharedStorage parent,MMObjectBuilder bul,String machine,
+    public MessageProbe(ClusterManager parent,MMObjectBuilder bul,String machine,
             String id,String tb,String ctype,boolean remote) {
         this.parent=parent;
         this.bul=bul;

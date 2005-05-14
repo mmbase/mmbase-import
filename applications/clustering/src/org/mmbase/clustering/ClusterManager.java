@@ -7,14 +7,15 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering;
 
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.mmbase.clustering.MessageProbe;
+import org.mmbase.clustering.WaitNode;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseChangeInterface;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.Queue;
@@ -23,18 +24,18 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * SharedStorage is a thread object that reads the receive queue
+ * ClusterManager is a thread object that reads the receive queue
  * and calls the objects (listeners) who need to know.
- * The SharedStorage starts communication threads to handle the sending 
+ * The ClusterManager starts communication threads to handle the sending 
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: SharedStorage.java,v 1.2 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ClusterManager.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
+public abstract class ClusterManager implements MMBaseChangeInterface, Runnable {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(SharedStorage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ClusterManager.class.getName());
     
     /** Followup number of message */
     protected int follownr = 1;
@@ -79,7 +80,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this, "SharedStorage");
+            kicker = new Thread(this, "ClusterManager");
             kicker.setDaemon(true);
             kicker.start();
             startCommunicationThreads();
@@ -87,7 +88,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
     }
 
     /**
-     * Stops the SharedStorage.
+     * Stops the ClusterManager.
      */
     public void stop() {
         stopCommunicationThreads();

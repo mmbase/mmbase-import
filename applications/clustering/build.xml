@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="clustering" default="jar" basedir=".">
+  <property name="project.name"      value="clustering" />
+  <property name="project.package"   value="org/mmbase/clustering" />
+  <property name="project.target.templates.dir"   value="clustering" />
+  <property name="project.config.dir.includes"   value="utils/**" />
+  <property name="project.config.jar.includes"   value="**" />
+  &base;
+</project>

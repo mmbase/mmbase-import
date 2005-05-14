@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.util;
+package org.mmbase.clustering;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.3 2004-04-09 09:03:03 michiel Exp $
+ * @version $Id: ChangeManager.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {

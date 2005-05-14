@@ -7,10 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering.multicast;
 
 import java.util.Map;
 
+import org.mmbase.clustering.ClusterManager;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,9 +27,9 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: Multicast.java,v 1.1 2005-05-14 15:25:36 nico Exp $
  */
-public class Multicast extends SharedStorage {
+public class Multicast extends ClusterManager {
 
     private static final Logger log = Logging.getLoggerInstance(Multicast.class);
     
@@ -53,9 +54,9 @@ public class Multicast extends SharedStorage {
     private int dpsize = 64*1024;
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
-    private MulticastChangesSender mcs;
+    private ChangesSender mcs;
     /** Receiver which reads the message from the line and puts message in the nodesToSpawn Queue */
-    private MulticastChangesReceiver mcr;
+    private ChangesReceiver mcr;
 
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
@@ -106,8 +107,8 @@ public class Multicast extends SharedStorage {
 
     
     protected void startCommunicationThreads() {
-        mcs = new MulticastChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend);
-        mcr = new MulticastChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
+        mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend);
+        mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
     }
     
     protected void stopCommunicationThreads() {

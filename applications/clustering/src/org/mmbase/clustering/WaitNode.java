@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core.change;
+package org.mmbase.clustering;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
