@@ -4,7 +4,7 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,forum*)>
+<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
@@ -59,6 +59,10 @@
 <!ELEMENT avatars (upload*,gallery*)>
 <!ELEMENT upload EMPTY>
 <!ATTLIST upload enable (false|true) #IMPLIED>
+
+<!ELEMENT emailtexts (emailtext*)>
+<!ELEMENT emailtext (#PCDATA)>
+<!ATTLIST emailtext role CDATA #IMPLIED>
 
 <!ELEMENT email (#PCDATA)>
 <!ATTLIST email from CDATA #IMPLIED>
@@ -117,3 +121,7 @@
 <!ATTLIST preloadchangedthreads minutes CDATA #IMPLIED>
 <!ATTLIST preloadchangedthreads hours CDATA #IMPLIED>
 <!ATTLIST preloadchangedthreads days CDATA #IMPLIED>
+
+<!ELEMENT urls (#PCDATA)>
+<!ATTLIST urls root CDATA #IMPLIED>
+<!ATTLIST urls externalroot CDATA #IMPLIED>

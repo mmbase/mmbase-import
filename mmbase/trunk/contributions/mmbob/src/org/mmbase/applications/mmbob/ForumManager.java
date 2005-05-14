@@ -41,6 +41,7 @@ public class ForumManager {
     private static Hashtable forumnamecache=new Hashtable();
     private static ForumMMBaseSyncer syncfast,syncslow;
     private static ForumSwapManager swapmanager;
+    private static ForumEmailSender emailsender;
     private static ForumsConfig config;
 
     public static final int FASTSYNC = 1;
@@ -88,6 +89,7 @@ public class ForumManager {
             syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
             syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
             swapmanager = new ForumSwapManager(1 * 60 * 1000);
+            ForumEmailSender emailsender = new ForumEmailSender();
             running = true;
         }
     }
@@ -561,6 +563,14 @@ public class ForumManager {
 
    public static int getPostingsOverflowThreadpage() {
 	return config.getPostingsOverflowThreadpage();
+   }
+
+   public static String getEmailtext(String role) {
+	return config.getEmailtext(role);
+   }
+
+   public static String getExternalRootUrl() {
+	return config.getExternalRootUrl();
    }
 
 }

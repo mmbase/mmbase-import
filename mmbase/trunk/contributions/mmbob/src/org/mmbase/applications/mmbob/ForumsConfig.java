@@ -44,6 +44,7 @@ public class ForumsConfig {
    private int speedposttime=60;
    private int postingsoverflowpostarea=4;
    private int postingsoverflowthreadpage=15;
+   private HashMap emailtexts =  new HashMap();
 
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
@@ -56,6 +57,8 @@ public class ForumsConfig {
     private String privateMessagesEnabled = "true";
     private int postingsPerPage = 10;
     private String fromEmailAddress = "";
+    private String rooturl = "";
+    private String externalrooturl = "";
     private String htmlHeaderPath = "header.jsp";
     private String htmlFooterPath = "footer.jsp";
 
@@ -217,6 +220,8 @@ public class ForumsConfig {
                             postingsoverflowthreadpage = (Integer.valueOf(inttemp)).intValue();
                         }
 
+                        rooturl = getAttributeValue(reader,n,"urls","root");
+                        externalrooturl = getAttributeValue(reader,n,"urls","externalroot");
                         fromEmailAddress = getAttributeValue(reader,n,"email","from");
 
                         for(Enumeration ns2=reader.getChildElements(n,"layout");ns2.hasMoreElements(); ) {
@@ -257,6 +262,24 @@ public class ForumsConfig {
 					if (filterwords==null) filterwords = new HashMap();
 					filterwords.put(replace,with);	
 				}			
+			     }
+			     n4=n4.getNextSibling();				
+			   }
+			}
+                        for (Enumeration ns2=reader.getChildElements(n,"emailtexts");ns2.hasMoreElements(); ) {
+                            Element n2=(Element)ns2.nextElement();
+			    org.w3c.dom.Node n4 = n2.getFirstChild();
+			    while (n4!=null) {
+                            nm=n4.getAttributes();
+                            if (nm!=null) {
+				String role=null;
+				String text=null;
+                               	n3=nm.getNamedItem("role");
+                                if (n3!=null) {
+                          		role=n3.getNodeValue();
+				}
+				text=n4.getFirstChild().getNodeValue();
+				if (role!=null && text!=null) emailtexts.put(role,text);
 			     }
 			     n4=n4.getNextSibling();				
 			   }
@@ -763,5 +786,15 @@ public class ForumsConfig {
 
    public int getPostingsOverflowThreadpage() {
 	return postingsoverflowthreadpage;
+   }
+
+   public String getEmailtext(String role) {
+	Object o = emailtexts.get(role);
+	if (o!=null) return (String)o;
+	return null;
+   }
+
+   public String getExternalRootUrl() {
+	return externalrooturl;
    }
 }

@@ -798,31 +798,49 @@ public class Poster {
 
     public void sendEmailOnChange(PostThread t) {
 	String line="";
-	if (!line.equals("")) line+="------------------------------------------------\n\r";
-	line+=t.getLastPoster()+" has just replied a thread your subscribed to : '"+t.getLastSubject()+"'\n\r";
-	line+="\n\rYou can find the thread here : http://localhost:9000/mmbob/thread.jsp?forumid="+t.getParent().getParent().getId()+"&postareaid="+t.getParent().getId()+"&postthreadid="+t.getId()+"&postingid="+t.getLastPostNumber()+"#p"+t.getLastPostNumber()+"\n\r";
-	this.mailbody+=line;
-	sendUpdateMail();
+	if (!mailbody.equals("")) line+=parent.getEmailtext("updatedivider");
+	line+=parent.getEmailtext("updatethreadchange");
+	this.mailbody+=filterEmail(line,t);
     }
 
     public void sendUpdateMail() {
+	if (!mailbody.equals("")) {
         SendMailInterface sendmail = (SendMailInterface) MMBase.getMMBase().getModule("sendmail");
 	log.info("Sending mail to : "+getEmail());
         if (sendmail != null && !getEmail().equals("")) {
 		String from = parent.getFromEmailAddress();
 		String to = getEmail();
 		String subject = "update mail";
-		String body = "Hello "+getAccount()+" ("+getFirstName()+" "+getLastName()+")\n\r\n\r";
+		String body = filterEmail(parent.getEmailtext("updateheader"));
 		body+=mailbody;
 		mailbody="";
-		body+="\n\r\n\rThe forum Admins\n\r";
+		body+=filterEmail(parent.getEmailtext("updatefooter"));
 
 		HashMap headers =  new HashMap();
         	headers.put("Reply-To", "");
        	 	headers.put("CC","");
         	headers.put("BCC","");
         	headers.put("Subject", subject);
-		log.info("SENDMAIL="+sendmail.sendMail(from, to, body, headers));
+		sendmail.sendMail(from, to, body, headers);
+	}
 	}
     }
+
+
+   public String filterEmail(String body,PostThread t) {
+	String hostpart=parent.getExternalRootUrl();
+        StringObject obj=new StringObject(body);
+        obj.replace("$lastposter", t.getLastPoster());
+        obj.replace("$lastsubject", t.getLastSubject());
+        obj.replace("$url", hostpart+"thread.jsp?forumid="+t.getParent().getParent().getId()+"&postareaid="+t.getParent().getId()+"&postthreadid="+t.getId()+"&postingid="+t.getLastPostNumber()+"#p"+t.getLastPostNumber());
+   	return obj.toString();
+   }
+
+   public String filterEmail(String body) {
+        StringObject obj=new StringObject(body);
+        obj.replace("$account", getAccount());
+        obj.replace("$firstname", getFirstName());
+        obj.replace("$lastname", getLastName());
+   	return obj.toString();
+   }
 }
