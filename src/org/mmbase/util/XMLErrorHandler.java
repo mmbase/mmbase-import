@@ -21,14 +21,14 @@ import org.xml.sax.SAXParseException;
  * @move org.mmbase.util.xml
  * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.15 2005-04-18 13:55:02 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.16 2005-05-14 14:04:45 nico Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
-    public static int WARNING =   1;
-    public static int ERROR =   2;
-    public static int FATAL_ERROR = 3;
-    public static int NEVER = 4;
+    public static final int WARNING =   1;
+    public static final int ERROR =   2;
+    public static final int FATAL_ERROR = 3;
+    public static final int NEVER = 4;
 
     private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class);
     private int exceptionLevel;

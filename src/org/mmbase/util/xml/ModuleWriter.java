@@ -16,7 +16,7 @@ import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.6 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ModuleWriter.java,v 1.7 2005-05-14 14:04:45 nico Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
 
@@ -57,9 +57,10 @@ public class ModuleWriter extends DocumentWriter  {
         root.appendChild(properties);
         // properties.property
         Map datamap=module.getInitParameters();
-        for (Iterator i=datamap.keySet().iterator(); i.hasNext();) {
-            String propname=(String)i.next();
-            String propvalue=(String)datamap.get(propname);
+        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next(); 
+            String propname = (String) entry.getKey();
+            String propvalue = (String) entry.getValue();
             Element elm=addContentElement("property",propvalue,properties);
             elm.setAttribute("name",propname);
         }

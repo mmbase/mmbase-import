@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.143 2005-05-09 15:02:42 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.144 2005-05-14 14:04:45 nico Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -491,7 +491,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
                 case Field.TYPE_XML:     return getXMLValue(fieldName);
                 case Field.TYPE_NODE:    return getNodeValue(fieldName);
-                case Field.TYPE_BOOLEAN: return new Boolean(getBooleanValue(fieldName));
+                case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
                 case Field.TYPE_DATETIME:return getDateValue(fieldName);
                 case Field.TYPE_LIST:    return getListValue(fieldName);
                 default:

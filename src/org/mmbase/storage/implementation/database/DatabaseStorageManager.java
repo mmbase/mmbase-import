@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.94 2005-05-11 14:31:34 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.95 2005-05-14 14:04:45 nico Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -451,7 +451,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (result.wasNull()) {
             return null;
         } else {
-            return new Boolean(value);
+            return Boolean.valueOf(value);
         }
     }
 
@@ -1136,7 +1136,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (!setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) {
             boolean bool = Casting.toBoolean(value);
             statement.setBoolean(index, bool);
-            node.storeValue(field.getName(),new Boolean(bool));
+            node.storeValue(field.getName(),Boolean.valueOf(bool));
         }
     }
 
