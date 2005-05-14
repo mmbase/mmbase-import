@@ -9,7 +9,7 @@
         "failed" if the intake was failed
 --%>
 	<mm:import id="teststatus" reset="true">incomplete</mm:import>
-    <mm:list nodes="$testNo" path="tests,intakeresults,copybooks" constraints="copybooks.number LIKE $copybookNo">
+    <mm:list nodes="$testNo" path="tests,intakeresults,copybooks" constraints="copybooks.number='$copybookNo'">
 		<mm:field name="intakeresults.score">
 	        <mm:compare value="1">
 				<mm:import id="teststatus" reset="true">passed</mm:import>

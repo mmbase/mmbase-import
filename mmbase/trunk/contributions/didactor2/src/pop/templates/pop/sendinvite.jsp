@@ -8,7 +8,7 @@
   <mm:list nodes="$currentpop">
     <mm:field name="popfeedback.number" jspvar="thisFeedback" vartype="String">
       <mm:list nodes="$currentcomp" path="competencies,popfeedback"
-          constraints="<%= "popfeedback.number LIKE " + thisFeedback %>">
+          constraints="<%= "popfeedback.number='" + thisFeedback + "'" %>">
         <% isEmpty = false; %>
         <mm:node element="popfeedback" id="newfeedback">
           <mm:setfield name="text"><mm:write referid="query"/></mm:setfield>

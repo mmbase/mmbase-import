@@ -117,7 +117,7 @@
   <mm:list nodes="<%= neededCompetencies %>" path="competencies">
     <% boolean needIntake = true; %>
     <mm:node element="competencies">
-      <mm:related path="havecomp,pop" constraints="pop.number LIKE $currentpop">
+      <mm:related path="havecomp,pop" constraints="pop.number='$currentpop'">
         <% needIntake = false; %>
       </mm:related>
       <mm:field name="number" jspvar="thisCompetencie">
