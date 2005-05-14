@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.41 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MediaFragments.java,v 1.42 2005-05-14 14:08:35 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -136,7 +136,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_FILTEREDURLS.equals(function)) {
             return getFilteredURLs(node, translateURLArguments(args, null),null);
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
-            return new Boolean(isSubFragment(node));
+            return Boolean.valueOf(isSubFragment(node));
         } else if (FUNCTION_ROOT.equals(function)) {
             MMObjectNode parent = getRootFragment(node);
             return parent;

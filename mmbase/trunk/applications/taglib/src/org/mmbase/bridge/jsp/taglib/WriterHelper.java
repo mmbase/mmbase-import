@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.72 2005-05-13 09:47:12 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.73 2005-05-14 14:05:39 nico Exp $
  */
 
 public class WriterHelper {
@@ -354,7 +354,7 @@ public class WriterHelper {
                     break;
                 case TYPE_BOOLEAN:
                     if (! (v instanceof Boolean)) {
-                        v = new Boolean(Casting.toBoolean(v));
+                        v = Boolean.valueOf(Casting.toBoolean(v));
                     }
                     break;
                 case TYPE_NODE:

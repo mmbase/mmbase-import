@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.42 2004-12-03 14:49:21 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.43 2005-05-14 14:06:48 nico Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -671,7 +671,7 @@ public class WizardDatabaseConnector {
             String value = Utils.getText(node);
             if (!"".equals(value)) {
                 int boolAsInt = org.mmbase.util.Casting.toInt(value);
-                value = org.mmbase.util.Casting.toString(new Boolean(boolAsInt > 0));
+                value = org.mmbase.util.Casting.toString(Boolean.valueOf(boolAsInt > 0));
                 Utils.storeText(node, value);
             }
         }

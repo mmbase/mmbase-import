@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.26 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Channel.java,v 1.27 2005-05-14 14:06:47 nico Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -727,10 +727,10 @@ public class Channel extends MMObjectBuilder {
         }
 
         if (field.equals(F_READLOGIN)) {
-            return new Boolean((node.getIntValue(F_STATE) & STATE_READ_LOGIN)>0);
+            return Boolean.valueOf((node.getIntValue(F_STATE) & STATE_READ_LOGIN)>0);
         }
         if (field.equals(F_WRITELOGIN)) {
-            return new Boolean((node.getIntValue(F_STATE) & STATE_WRITE_LOGIN)>0);
+            return Boolean.valueOf((node.getIntValue(F_STATE) & STATE_WRITE_LOGIN)>0);
         }
         if (field.equals(F_HASMOODS)) {
             if (node.getRelationCount("mood")>0) return "yes"; else return "no";
@@ -748,7 +748,7 @@ public class Channel extends MMObjectBuilder {
      */
     protected Object executeFunction(MMObjectNode node,String function,String field) {
         if (function.equals(F_HASMOODS)) {
-            return new Boolean(node.getRelationCount("mood")>0);
+            return Boolean.valueOf(node.getRelationCount("mood")>0);
         } else {
             return super.executeFunction(node,function,field);
         }
