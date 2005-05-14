@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.6 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMContainerCompare.java,v 1.7 2005-05-14 14:04:45 nico Exp $
  * @todo   Should implement java.util.Comparator. Perhaps should be named MMObjectNodeComparator. Btw, this class is not used.
  * 
  */
@@ -48,7 +48,7 @@ public class MMContainerCompare implements CompareInterface {
         this.orderfields=orderfields;
         for (Enumeration e=orderfields.elements();e.hasMoreElements();) {
             e.nextElement();
-            orderdirections.addElement(new Boolean(ASC));
+            orderdirections.addElement(Boolean.valueOf(ASC));
         }
     }
 
@@ -67,7 +67,7 @@ public class MMContainerCompare implements CompareInterface {
 
     public void addField(String field,boolean direction) {
         orderfields.addElement(field);
-        orderdirections.addElement(new Boolean(direction));
+        orderdirections.addElement(Boolean.valueOf(direction));
     }
 
     public boolean setField(String field,boolean direction) {
@@ -76,7 +76,7 @@ public class MMContainerCompare implements CompareInterface {
 
         i=orderfields.indexOf(field);
         if (i!=-1) {
-            orderdirections.setElementAt(new Boolean(direction),i);
+            orderdirections.setElementAt(Boolean.valueOf(direction),i);
             rtn=true;
         } else {
             rtn=false;

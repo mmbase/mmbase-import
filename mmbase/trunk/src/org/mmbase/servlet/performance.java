@@ -19,14 +19,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @rename  Performance
  * @author  vpro
- * @version $Id: performance.java,v 1.14 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: performance.java,v 1.15 2005-05-14 14:04:44 nico Exp $
  */
 public class performance extends BridgeServlet {
 
-    public static long INT_LOOP = 20000000;
-    public static long STRING_LOOP = 2500000;
-    public static long METHOD_LOOP = 10000000;
-    public static String TEST_STRING = "test";
+    public static final long INT_LOOP = 20000000;
+    public static final long STRING_LOOP = 2500000;
+    public static final long METHOD_LOOP = 10000000;
+    public static final String TEST_STRING = "test";
 
     /**
      * @javadoc

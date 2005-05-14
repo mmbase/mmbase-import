@@ -41,9 +41,10 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         } else {
             tagger= new StringTagger("");
             if (params!=null) {
-                for (Iterator keys=params.keySet().iterator(); keys.hasNext(); ) {
-                    String key=(String)keys.next();
-                    Object o = params.get(key);
+                for (Iterator entries=params.entrySet().iterator(); entries.hasNext(); ) {
+                    Map.Entry entry = (Map.Entry) entries.next(); 
+                    String key=(String) entry.getKey();
+                    Object o = entry.getValue();
                     if (o instanceof Vector) {
                         tagger.setValues(key,(Vector)o);
                     } else {
