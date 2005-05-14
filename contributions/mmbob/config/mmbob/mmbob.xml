@@ -11,7 +11,9 @@
     <generatedata role="areas" file="generate/areas.txt" tokenizer="," />
     <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" " />
 
-    <preloadchangedthreads days="1" />
+    <urls externalroot="http://localhost:9000/mmbob/" root="/mmbob/" />
+
+    <preloadchangedthreads days="90" />
     <swapoutunusedthreads hours="12" />
 
     <accountcreation type="open" />
@@ -27,7 +29,25 @@
       <gallery enable="true"/>
     </avatars>
 
-    <email from="your.emailaddress@yourdomain.org"/>
+    <email from="daniel@xs4all.nl" />
+    <emailtexts>
+	<emailtext role="updateheader">
+Hai $account ($firstname $lastname),
+
+</emailtext>
+	<emailtext role="updatedivider">----------------------------------------
+
+</emailtext>
+	<emailtext role="updatethreadchange">$lastposter has just replied a thread your subscribed to : '$lastsubject'
+
+You can find the thread here : $url
+
+</emailtext>
+	<emailtext role="updatefooter">
+
+The Forum admins.	
+</emailtext>
+    </emailtexts>
    
     <layout>
       <header path="header.jsp"/>
@@ -35,6 +55,8 @@
     </layout>
 
     <filters>
+	<filter type="content" replace="fuck" with="f***" />
+	<filter type="content" replace="shit" with="s**t" />
 	<filter type="content" replace="microsoft" with="micro$oft" />
 	<filter type="content" replace="mmbase" with="MMBase" />
     </filters>
@@ -46,8 +68,10 @@
     <contactinfo enable="true"/>
     <smileys enable="true"/>
     <privatemessages enable="true"/>
-    <postingsperpage value="15"/>
-    <speedposttime value="90"/>
+    <postingsperpage value="5"/>
+    <postingsoverflowpostarea value="4"/>
+    <postingsoverflowthreadpage value="10"/>
+    <speedposttime value="10"/>
 
   </forums>
 </mmbobconfig>
