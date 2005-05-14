@@ -22,7 +22,7 @@
       <!-- Javadoc comments -->
       <module name="JavadocType">
          <property name="authorFormat" value="\S+"/>
-         <property name="versionFormat" value="\$Revision: .*\$|\$Id: .*\$"/>
+         <property name="versionFormat" value="\$Revision: 1.1 $|\$Id: checkstyle-mmbase.xml,v 1.1 2005-05-14 17:24:26 nico Exp $"/>
       </module>
       <module name="JavadocMethod">
          <property name="scope" value="protected"/>

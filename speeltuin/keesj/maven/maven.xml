@@ -1,23 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:j="jelly:core" xmlns:x="jelly:xml" xmlns:deploy="deploy" xmlns:ant="jelly:ant">
-<!-- after the prepare-bin-filesystem also copy libs and config  -->
-  <goal name="init">
+<project
+  xmlns:j="jelly:core"
+  xmlns:ant="jelly:ant"
+  xmlns:artifact="artifact"
+  xmlns:license="license"
+  xmlns:maven="jelly:maven"
+  xmlns:util="jelly:util"
+  xmlns:x="jelly:xml"
+  xmlns:define="jelly:define"
+>
+
+  <goal name="all:eclipse" description="Generate Eclipse files for ALL Subprojects">
+    <j:set var="goal" value="eclipse" />
+    <attainGoal name="multiproject:goal" />
+  </goal>
+
+  <goal name="all:idea" description="Generate IntelliJ IDEA files for ALL Subprojects">
+    <attainGoal name="idea:multiproject" />
+  </goal>
+
+  <goal name="all:site" description="Generate sites ALL Subprojects">
+    <attainGoal name="multiproject:site"/>
+  </goal>
+
+  <goal name="all:install" description="Install ALL Subprojects">
+    <attainGoal name="multiproject:install"/>
+  </goal>
+
+  <goal name="all:clean-install" description="Clean and install ALL Subprojects">
+    <attainGoal name="all:clean"/>
+    <attainGoal name="all:install"/>
+  </goal>
+
+  <goal name="all:clean" description="Clean ALL Subprojects">
+    <attainGoal name="multiproject:clean"/>
+  </goal>
   
+  <!--
+    ===========================================================================
+    ALL:CLEAN-FAST Performs a Maven 'clean' on all projects.
+    It doesn't use Maven's builtin 'clean' goal to prevent it from breaking
+    when it can't resolve a new dependency.
+  ===========================================================================
+  -->
+  <goal name="all:clean-fast" description="Clean ALL Subprojects without dependency checking">
+    <j:if test="${empty(maven.multiproject.basedir)}">
+      <j:set var="maven.multiproject.basedir" value="${basedir}" />
+    </j:if>
+    <j:if test="${empty(maven.multiproject.includes)}">
+      <j:set var="maven.multiproject.includes" value="*/project.xml" />
+    </j:if>
+	
+    <maven:reactor 
+        banner="Gathering project list"
+    	basedir="${maven.multiproject.basedir}"
+        includes="${maven.multiproject.includes}"
+        excludes="${maven.multiproject.excludes}"
+        postProcessing="true"
+        ignoreFailures="${maven.multiproject.ignoreFailures}"
+        collectOnly="true" />
+
+    	<!-- basedir="${maven.multiproject.basedir}" -->
+
+    
+    <j:forEach var="reactorProject" items="${reactorProjects}">
+        <!-- this list of things to delete is lifted from clean:clean -->
+        <ant:delete dir="${reactorProject.context.getVariable('maven.build.dest')}" />
+        <ant:delete dir="${reactorProject.context.getVariable('maven.build.dir')}" />
+        <ant:delete file="${reactorProject.context.getVariable('basedir')}/velocity.log"
+            quiet="true"
+            failonerror="false" />
+    </j:forEach>
+  </goal>
+
+  <goal name="mavenize">
+    <j:set var="mmbaseroot" value="<DIR-CVS-ALL-MODULE>"/>
+    <j:set var="taglibroot" value="${mmbaseroot}/applications/taglib"/>
+    <j:set var="documentationroot" value="${mmbaseroot}/documentation"/>
+
     <j:set var="cvsuser" value="guest"/>
     <j:set var="cvspasswd" value="guest"/>
     <j:set var="cvsmethod" value="pserver"/>
-    <j:set var="mmbaseroot" value="tmp/mmbase-core"/>
-    <j:set var="taglibroot" value="tmp/mmbase-taglib"/>
     <j:set var="cvsroot" value=":${cvsmethod}:${cvsuser}@cvs.mmbase.org:/var/cvs "/>
     <!--
     <ant:cvs command="-d${cvsroot} login"/>
-        <ant:echo>${cvsroot}</ant:echo>
+    <ant:echo>${cvsroot}</ant:echo>
     <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}"/>
     -->
 
-    <ant:cvs cvsRoot="${cvsroot}" package="mmbase-core" dest="tmp"/>
-    <ant:cvs cvsRoot="${cvsroot}" package="mmbase-taglib" dest="tmp"/>
+    <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbaseroot}"/>
+
     <ant:delete dir="mmbase-core/CVS"/>
+
     <ant:copy todir="mmbase-core/src/java">
       <ant:fileset dir="${mmbaseroot}/src" defaultexcludes="no">
         <ant:exclude name="org/mmbase/module/builders/ConvertJAI.java"/>
@@ -48,5 +122,44 @@
     <ant:copy todir="mmbase-taglib/src/java">
       <ant:fileset dir="${taglibroot}/src"/>
     </ant:copy>
+    <ant:copy todir="mmbase-docs/doc">
+      <ant:fileset dir="${documentationroot}">
+      	<ant:exclude name="build.xml"/>
+      	<ant:exclude name="build.properties"/>
+      	<ant:exclude name="build.properties.default"/>
+      </ant:fileset>
+    </ant:copy>
   </goal>
+
+  <goal name="mavenize-clean" description="Clean all imported mmbase sources">
+    <j:if test="${empty(maven.multiproject.basedir)}">
+      <j:set var="maven.multiproject.basedir" value="${basedir}" />
+    </j:if>
+    <j:if test="${empty(maven.multiproject.includes)}">
+      <j:set var="maven.multiproject.includes" value="*/project.xml" />
+    </j:if>
+	
+    <maven:reactor 
+        banner="Gathering project list"
+    	basedir="${maven.multiproject.basedir}"
+        includes="${maven.multiproject.includes}"
+        excludes="${maven.multiproject.excludes}"
+        postProcessing="true"
+        ignoreFailures="${maven.multiproject.ignoreFailures}"
+        collectOnly="true" />
+    
+    <j:forEach var="reactorProject" items="${reactorProjects}">
+        <ant:delete dir="${reactorProject.context.getVariable('maven.build.dest')}" />
+        <ant:delete dir="${reactorProject.context.getVariable('maven.build.dir')}" />
+        <ant:delete file="${reactorProject.context.getVariable('basedir')}/velocity.log"
+            quiet="true"
+            failonerror="false" />
+        <ant:delete dir="${reactorProject.context.getVariable('basedir')}/src" />
+        <ant:delete dir="${reactorProject.context.getVariable('basedir')}/doc" />
+        <ant:delete>
+        	<fileset dir="${reactorProject.context.getVariable('basedir')}/config" excludes="**/INDEX"/>
+        </ant:delete>
+    </j:forEach>
+  </goal>
+
 </project>

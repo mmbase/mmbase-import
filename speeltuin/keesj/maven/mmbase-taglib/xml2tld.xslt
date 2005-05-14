@@ -12,15 +12,32 @@
 
   <xsl:param name="version">1.2</xsl:param>
   <xsl:param name="uri">http://www.mmbase.org/mmbase-taglib-1.0</xsl:param>
-  <xsl:output omit-xml-declaration="yes" method="xml" standalone="no" indent="yes" />
+  <xsl:output
+    omit-xml-declaration="yes"
+    method="xml" 
+    indent="yes" />
 
   
   
   <!-- main entry point -->
   <xsl:template match="taglib">
-    <taglib>
+    <xsl:choose>
+      <xsl:when test="$version &lt; 2.0">        
+        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE taglib  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" 
+          "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd"&gt;
+</xsl:text>
+        <taglib>
           <xsl:call-template name="taglib"  />
-    </taglib>
+        </taglib>
+      </xsl:when>
+      <xsl:otherwise>        
+        <taglib xmlns="http://java.sun.com/xml/ns/j2ee">
+          <xsl:attribute namespace="http://www.w3.org/2001/XMLSchema-instance" name="schemaLocation">http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd</xsl:attribute>
+          <xsl:attribute name="version">2.0</xsl:attribute>
+          <xsl:call-template name="taglib"  />
+        </taglib>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
 
