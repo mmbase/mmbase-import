@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/maven-base/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mmbase:MasterPOM</id>
+    <artifactId>MasterPOM</artifactId>
+    <name>MMBase, content management system</name>
+    <groupId>mmbase</groupId>
+    <shortDescription>This POM is the "Master POM"</shortDescription>
+    <build />
+    <properties />
+    <reports>
+        <report>maven-multiproject-plugin</report>
+        <report>maven-dashboard-plugin</report>
+    </reports>
+</project>
+
