@@ -7,7 +7,7 @@
 <mm:import externid="currentprofile" jspvar="currentProfile" reset="true">-1</mm:import>
 <% String profileConstraint = ""; %>
 <mm:compare referid="currentprofile" value="-1" inverse="true">
-<% profileConstraint = "profiles.number LIKE " + currentProfile; %>
+<% profileConstraint = "profiles.number='" + currentProfile + "'"; %>
 </mm:compare>
 <mm:list nodes="$currentpop" path="pop,related,profiles,related,competencies" orderby="competencies.number" directions="UP" 
     constraints="<%= profileConstraint %>">
