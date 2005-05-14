@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.27 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Message.java,v 1.28 2005-05-14 14:06:47 nico Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -1077,7 +1077,7 @@ public class Message extends MMObjectBuilder {
             return new Integer(getNrMsgAndHighSeq(node).messageCount);
         }
         if (field.equals(F_HAS_REPLIES)) {
-            return new Boolean(hasReplies(node));
+            return Boolean.valueOf(hasReplies(node));
         }
         if (field.equals(F_PARENT)) {
             return node.getValue(F_THREAD);

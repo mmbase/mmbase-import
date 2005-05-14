@@ -48,7 +48,7 @@ public class XMLClass {
         this.data = new Double(data);
     }
     public void setData(boolean data){
-        this.data = new Boolean(data);
+        this.data = Boolean.valueOf(data);
     }
     public void setData(float data){
         this.data = new Float(data);

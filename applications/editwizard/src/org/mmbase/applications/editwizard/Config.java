@@ -29,7 +29,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.57 2005-03-16 13:00:52 michiel Exp $
+ * @version $Id: Config.java,v 1.58 2005-05-14 14:06:48 nico Exp $
  */
 
 public class Config {
@@ -729,13 +729,13 @@ public class Config {
         protected boolean getParam(String paramName, boolean def) {
             String b = getParam(paramName);
             if (b == null) return def;
-            return new Boolean(b).booleanValue();
+            return Boolean.valueOf(b).booleanValue();
         }
 
         protected Boolean getParam(String paramName, Boolean def) {
             String b = getParam(paramName);
             if (b == null) return def;
-            return new Boolean(b);
+            return Boolean.valueOf(b);
         }
 
         /**
