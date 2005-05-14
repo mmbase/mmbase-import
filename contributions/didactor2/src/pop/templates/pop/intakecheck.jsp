@@ -50,7 +50,7 @@
        boolean passed = true; 
     %>
     <mm:node element="competencies" id="thiscompetency">
-      <mm:related path="havecomp,pop" constraints="pop.number LIKE $currentpop">
+      <mm:related path="havecomp,pop" constraints="pop.number='$currentpop'">
         <% needIntake = false; %>
       </mm:related>
       <% if (needIntake) { 

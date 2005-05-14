@@ -9,7 +9,7 @@
                 <mm:list nodes="$currentpop" path="pop,popfeedback,people" constraints="people.number='$user'">
                   <mm:field name="popfeedback.number" jspvar="thisFeedback" vartype="String">
                     <mm:list nodes="<%= thisCompetencie %>" path="competencies,popfeedback"
-                        constraints="<%= "popfeedback.number LIKE " + thisFeedback %>">
+                        constraints="<%= "popfeedback.number='" + thisFeedback +"'" %>">
                       <% isEmpty = false; %>
                       <td class="listItem"><mm:field name="popfeedback.rank"/></td>
                       <td class="listItem"><mm:field name="popfeedback.text"/></td>
@@ -22,7 +22,7 @@
                 <% } %>
               <td class="listItem">
                 <mm:list nodes="<%= thisCompetencie %>" path="competencies,todoitems,pop" 
-                    constraints="pop.number LIKE $currentpop" orderby="todoitems.number" directions="UP">
+                    constraints="pop.number='$currentpop'" orderby="todoitems.number" directions="UP">
                   &bull; <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath"
                            referids="$referids,currentfolder,currentprofile">
                            <mm:param name="currentcomp"><%= thisCompetencie %></mm:param>

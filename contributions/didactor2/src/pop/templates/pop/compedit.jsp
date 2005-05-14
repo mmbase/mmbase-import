@@ -54,7 +54,7 @@
   </table>
           <% isEmpty = true; %>
           <mm:list nodes="$currentpop" path="pop,todoitems,competencies" orderby="todoitems.number" directions="UP"
-              constraints="competencies.number LIKE $currentcomp">
+              constraints="competencies.number='$currentcomp'">
             <% isEmpty = false; %>
             <input type="checkbox" name="ids" value="<mm:field name="todoitems.number"/>"><a href="#1"
                 onclick="editcompform.command.value='addtodo';editcompform.todonumber.value='<mm:field name="todoitems.number"/>';editcompform.submit();return false;"
