@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.6
- * @version $Id: BooleanHandler.java,v 1.1 2004-12-22 15:38:54 pierre Exp $
+ * @version $Id: BooleanHandler.java,v 1.2 2005-05-14 14:05:39 nico Exp $
  */
 
 public class BooleanHandler extends AbstractTypeHandler {
@@ -107,7 +107,7 @@ public class BooleanHandler extends AbstractTypeHandler {
             if (query.getSteps().size() > 1) {
                 fieldName = field.getNodeManager().getName()+"."+fieldName;
             }
-            Constraint con = Queries.createConstraint(query, fieldName, getOperator(), new Boolean(value.equals("true")));
+            Constraint con = Queries.createConstraint(query, fieldName, getOperator(), Boolean.valueOf(value));
             Queries.addConstraint(query, con);
             return con;
         } else {

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.49 2005-03-16 14:52:20 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.50 2005-05-14 14:05:39 nico Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -182,7 +182,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                         }
                         break;
                     case Field.TYPE_BOOLEAN:
-                        value = new Boolean(node.getBooleanValue(fieldName));
+                        value = Boolean.valueOf(node.getBooleanValue(fieldName));
                         break;
                     case Field.TYPE_LIST:
                         value = node.getListValue(fieldName);
