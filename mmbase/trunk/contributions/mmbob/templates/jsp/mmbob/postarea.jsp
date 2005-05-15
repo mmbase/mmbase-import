@@ -74,7 +74,25 @@
 	</tr>
 </table>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
+	<tr>
+	<form action="<mm:url page="postarea.jsp" referids="forumid" />" method="post">
+	<td align="left" />
+	<mm:write referid="mlg.Area_name"/> <select name="postareaid" onChange="submit()">
+            <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+		<mm:field name="id">
+		<option value="<mm:field name="id" />" <mm:compare referid2="postareaid">selected</mm:compare>><mm:field name="name" />
+		</mm:field>
+	    </mm:nodelistfunction>
+	</select>
+	<!-- <input type="submit" value="go"> -->
+	</td>
+	</form>
+	<td align="right">
+	<a href="<mm:url page="search.jsp" referids="forumid,postareaid" />">search</a>&nbsp;
+	</td></tr>
+</table>
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
   <tr>
     <th width="15">&nbsp;</th>
     <th width="15">&nbsp;</th>
@@ -92,7 +110,7 @@
   <tr>
     <td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td>
     <td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td>
-    <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td>
+    <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /> <mm:field name="emailonchange"><mm:compare value="true">[email]</mm:compare></mm:field> <mm:field name="bookmarked"><mm:compare value="true">[bookmarked]</mm:compare></mm:field></td>
     <td align="left"><mm:field name="creator" /></td>
     <td align="left"><mm:field name="replycount" /></td>
     <td align="left"><mm:field name="viewcount" /></td>
