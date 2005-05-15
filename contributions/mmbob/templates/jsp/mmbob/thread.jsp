@@ -82,18 +82,41 @@
 			</th>
 			</tr>
 </table>
+
+
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
+	<tr>
+	<form action="<mm:url page="postarea.jsp" referids="forumid" />" method="post">
+	<td align="left" />
+	<mm:write referid="mlg.Area_name"/> <select name="postareaid" onChange="submit()">
+            <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+		<mm:field name="id">
+		<option value="<mm:field name="id" />" <mm:compare referid2="postareaid">selected</mm:compare>><mm:field name="name" />
+		</mm:field>
+	    </mm:nodelistfunction>
+	</select>
+	<!-- <input type="submit" value="go"> -->
+	</td>
+	</form>
+	</tr>
+</table>
+<table cellpadding="0" cellspacing="0" style="margin-top : 4px;" width="95%">
 	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
-   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
+   	 <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
 			(<mm:field name="pagecount" id="pagecount" />) 
 			<mm:field name="navline" />
 			<mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
-		  </mm:nodefunction>
 	  </b>
+	</td>
+	<td align="right">
+	<a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">email : off</a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">email : on</a></mm:compare></mm:field> | 
+	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">bookmarked : off</a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">bookmarked : on</a></mm:compare></mm:field> | 
+	<a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />">search</a>&nbsp;
 	</td></tr>
+        </mm:nodefunction>
 </table>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
   		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize,imagecontext">
 		  <mm:first>
 			<tr><th width="25%" align="left"><mm:write referid="mlg.Member"/></th><th align="left"><mm:write referid="mlg.Topic"/>: <mm:field name="subject" /></th></tr>
