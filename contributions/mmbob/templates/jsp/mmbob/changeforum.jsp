@@ -236,8 +236,9 @@
   <form action="<mm:url page="index.jsp">
         <mm:param name="forumid" value="$forumid" />
 				</mm:url>" method="post">
+	<mm:import id="rulesid">-1</mm:import>
 	<mm:relatednodes type="forumrules">
-		<mm:import id="rulesid"><mm:field name="number" /></mm:import>
+		<mm:import id="rulesid" reset="true"><mm:field name="number" /></mm:import>
 	<tr><th>Title</th><td colspan="2"><input name="title" value="<mm:field name="title" />" size="70" style="width: 100%"></td></tr>
 	<tr><th>Rules</th><td colspan="2">
 	<textarea name="body" rows="15" cols="70"><mm:field name="body" /></textarea>
@@ -245,8 +246,17 @@
 	<input type="hidden" name="rulesid" value="<mm:write referid="rulesid"/>" />
 	<input type="hidden" name="action" value="changerules" />
 	<tr><th>&nbsp;</th>
-<td align="middle" >
 	</mm:relatednodes>
+	<mm:compare referid="rulesid" value="-1">
+	<tr><th>Title</th><td colspan="2"><input name="title" value="" size="70" style="width: 100%"></td></tr>
+	<tr><th>Rules</th><td colspan="2">
+	<textarea name="body" rows="15" cols="70"></textarea>
+	</td></tr>
+	<input type="hidden" name="rulesid" value="<mm:write referid="rulesid"/>" />
+	<input type="hidden" name="action" value="addrules" />
+	<tr><th>&nbsp;</th>
+	</mm:compare>
+        <td align="middle" >
         <input type="hidden" name="admincheck" value="true">
 	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
