@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE languageguiset PUBLIC "//MMBase - languageguiset //" "http://www.mmbase.org/dtd/languageguiset_1_0.dtd">
 <languageguiset>
+	<keyword name="on">
+		<translation language="nl" value="aan" />
+		<translation language="df" value="on" />
+	</keyword>
+	<keyword name="off">
+		<translation language="nl" value="uit" />
+		<translation language="df" value="off" />
+	</keyword>
+	<keyword name="Profile_settings">
+		<translation language="nl" value="Prive instellingen" />
+		<translation language="df" value="Profile settings" />
+	</keyword>
+	<keyword name="Forum_rules">
+		<translation language="nl" value="Forum regels" />
+		<translation language="df" value="Forum rules" />
+	</keyword>
+	<keyword name="Search">
+		<translation language="nl" value="Zoeken" />
+		<translation language="df" value="Search" />
+	</keyword>
 	<keyword name="Edit_message">
 		<translation language="nl" value="Bericht bewerken" />
 		<translation language="df" value="Edit message" />
