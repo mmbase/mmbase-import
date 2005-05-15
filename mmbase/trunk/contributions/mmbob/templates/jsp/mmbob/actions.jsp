@@ -82,6 +82,36 @@
 	</mm:booleanfunction>
 </mm:compare>
 
+<mm:compare value="threademailoff" referid="action">
+	<mm:import externid="postthreadid" />
+	<mm:import id="state">false</mm:import>
+	<mm:booleanfunction set="mmbob" name="setEmailOnChange" referids="forumid,postthreadid,posterid,state">
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="threademailon" referid="action">
+	<mm:import externid="postthreadid" />
+	<mm:import id="state">true</mm:import>
+	<mm:booleanfunction set="mmbob" name="setEmailOnChange" referids="forumid,postthreadid,posterid,state">
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="bookmarkedoff" referid="action">
+	<mm:import externid="postthreadid" />
+	<mm:import id="state">false</mm:import>
+	<mm:booleanfunction set="mmbob" name="setBookmarkedChange" referids="forumid,postthreadid,posterid,state">
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="bookmarkedon" referid="action">
+	<mm:import externid="postthreadid" />
+	<mm:import id="state">true</mm:import>
+	<mm:booleanfunction set="mmbob" name="setBookmarkedChange" referids="forumid,postthreadid,posterid,state">
+	</mm:booleanfunction>
+</mm:compare>
 
 <mm:compare value="removeprivatemessage" referid="action">
 	<mm:import externid="mailboxid" />
@@ -176,6 +206,16 @@
 	</mm:node>
 </mm:compare>
 
+<mm:compare value="addrules" referid="action">
+	<mm:import externid="title" />
+	<mm:import externid="body" />
+	<mm:node id="forumnode" referid="forumid" />
+	<mm:createnode id="rulesid" type="forumrules">
+		<mm:setfield name="title"><mm:write referid="title" /></mm:setfield>
+		<mm:setfield name="body"><mm:write referid="body" /></mm:setfield>
+	</mm:createnode>
+	<mm:createrelation role="related" source="forumnode" destination="rulesid" />
+</mm:compare>
 
 <mm:compare value="changeconfig" referid="action">
 	<mm:import externid="loginmodetype" />
