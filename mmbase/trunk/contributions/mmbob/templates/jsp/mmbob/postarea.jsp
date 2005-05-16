@@ -45,8 +45,11 @@
 </div>
                                                                                                               
 <div class="bodypart">
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+<mm:include page="path.jsp?type=postarea" referids="logoutmodetype" />
+</mm:nodefunction>
 
-<mm:include page="path.jsp?type=postarea" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
   		  <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
 			<mm:import id="guestwritemodetype"><mm:field name="guestwritemodetype" /></mm:import>
@@ -78,7 +81,7 @@
 	<tr>
 	<form action="<mm:url page="postarea.jsp" referids="forumid" />" method="post">
 	<td align="left" />
-	<mm:write referid="mlg.Area_name"/> <select name="postareaid" onChange="submit()">
+	<a href=""><mm:write referid="mlg.Area_name"/></a> <select name="postareaid" onChange="submit()">
             <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
 		<mm:field name="id">
 		<option value="<mm:field name="id" />" <mm:compare referid2="postareaid">selected</mm:compare>><mm:field name="name" />
@@ -89,7 +92,7 @@
 	</td>
 	</form>
 	<td align="right">
-	<a href="<mm:url page="search.jsp" referids="forumid,postareaid" />">search</a>&nbsp;
+	<a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
