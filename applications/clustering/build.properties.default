@@ -1,3 +1,8 @@
+download.dir=download
 # ----- JGroups and Commons-Logging ---------
-jgroups-core.jar=${build.dir}/lib/jgroups-core.jar
-commons-logging.jar=${build.dir}/lib/commons-logging.jar
+jgroups.version=JGroups-2.2.7
+jgroups.file=${jgroups.version}.bin.zip
+jgroups.dest=${download.dir}/${jgroups.file}
+jgroups.loc=http://ovh.dl.sourceforge.net/sourceforge/javagroups/${jgroups.file}
+jgroups.jar=${expand.dir}/${jgroups.version}/jgroups.jar
+# commons-logging.jar=${build.dir}/lib/commons-logging.jar

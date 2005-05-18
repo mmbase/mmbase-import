@@ -4,25 +4,68 @@
 >
 
 <project name="clustering" default="dependent.jar" basedir=".">
+  <property file="build.properties.default" />
+  
   <property name="project.name"      value="clustering" />
   <property name="project.package"   value="org/mmbase/clustering" />
+  <property name="project.comment"   value="MMBase Clustering sollutions" />
   <property name="project.target.templates.dir"   value="clustering" />
   <property name="project.config.dir.includes"   value="utils/**" />
   <property name="project.config.jar.includes"   value="**" />
-  <property name="project.jars.dir"     location="../../../optional" />
   <property name="project.jars.includes" value="**" />
   &base;
   
-  <target name="dependent.jar" depends="jgroups,jar" />
+  <target name="dependent.jar" description="Create mmbase-clustering.jar" 
+    depends="jgroups.jar,project.manifest" />
 
-  <target name="jgroups">
-    <!--
-    <antcall directory="../.." target="download">
-      <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/package-list" />
+  <target name="jgroups.jar"
+    description="Get JGroups jar">
+    
+    <echo message="jgroups" />
+	
+	<antcall target="downloadzip">
+      <param name="sourcefile" value="${jgroups.loc}"/>
+      <param name="destfile" value="${jgroups.dest}"/>
+      <param name="destdir" value="${expand.dir}"/>
+      <param name="expandedfile" value="${jgroups.jar}"/>
     </antcall>
-    -->
+	
+	<echo message="creating jar" />
+	<antcall target="compile" />
+
+    <mkdir dir="${project.build.dir}/classes/org/mmbase/clustering" /><!-- hate ant -->
+    <echo message="creating jar" />    
+    <jar jarfile="${project.jar}">
+      <fileset     dir="${project.build.dir}/classes">
+        <include name="**" />
+      </fileset>
+      <fileset     dir="${project.classes.dir}" includes="${project.classes.includes}" />
+    </jar>
+  
   </target>
 
+  
+  
+  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <unzip src="${destfile}" dest="${destdir}"/>
+  </target>
+
+  <target name="download" unless="exist" depends="testexist">
+    <!-- Download the package -->
+    <mkdir dir="${download.dir}" />
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
+  <target name="testexpanded">
+    <echo message="Testing for ${expandedfile}"/>
+    <available file="${expandedfile}" property="expanded"/>
+  </target>
 
 </project>
