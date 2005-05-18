@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCompetence" maintainer="didactor.nl" version="9" auto-deploy="true">
+<application name="DidactorCompetence" maintainer="didactor.nl" version="20" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -17,6 +17,16 @@
       <builder maintainer="didactor.nl" version="2">todoitems</builder>
       <builder maintainer="didactor.nl" version="2">popfeedback</builder>
       <builder maintainer="didactor.nl" version="2">intakeresults</builder>
+
+      <builder maintainer="didactor.nl" version="1">competencetypes</builder>
+      <builder maintainer="didactor.nl" version="1">profiletypes</builder>
+      <builder maintainer="didactor.nl" version="1">profilelevels</builder>
+      <builder maintainer="didactor.nl" version="1">coretasks</builder>
+      <builder maintainer="didactor.nl" version="1">coreassignments</builder>
+      <builder maintainer="didactor.nl" version="1">resources</builder>
+      <builder maintainer="didactor.nl" version="1">priorities</builder>
+      <builder maintainer="didactor.nl" version="1">ratings</builder>
+
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -57,6 +67,21 @@
         <!-- Structure for saving intake results -->
         <relation from="copybooks" to="intakeresults" type="related" />
         <relation from="tests" to="intakeresults" type="related" />
+
+
+
+        <relation from="competencies" to="competencetypes" type="posrel" />
+        <relation from="profiles"     to="profiletypes"    type="posrel" />
+        <relation from="profiles"     to="profilelevels"   type="related" />
+        <relation from="coretasks"    to="resources"       type="posrel" />
+        <relation from="coretasks"    to="tests"           type="posrel" />
+
+
+        <relation from="insrel"      to="coretasks"       type="posrel" />
+        <relation from="insrel"      to="coreassignments" type="posrel" />
+        <relation from="insrel"      to="priorities"      type="posrel" />
+        <relation from="insrel"      to="ratings"         type="posrel" />
+
     </allowedrelationlist>
 
     <datasourcelist>
