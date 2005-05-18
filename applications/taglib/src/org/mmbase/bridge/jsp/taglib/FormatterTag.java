@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.51 2005-05-02 22:29:31 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.52 2005-05-18 15:34:32 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -51,9 +51,12 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     protected Attribute options = Attribute.NULL;
     protected Attribute wants   = Attribute.NULL; 
 
+    protected Attribute namespaceAware   = Attribute.NULL; 
+
     protected Source   xsltSource = null;
 
     private static javax.xml.parsers.DocumentBuilder documentBuilder;
+    private static javax.xml.parsers.DocumentBuilder documentBuilderNS;
     private URL cwd;
 
     private static final class Counter {
@@ -102,11 +105,16 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         try {            
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dfactory.setNamespaceAware(true);
+            dfactory.setNamespaceAware(false);
             documentBuilder = dfactory.newDocumentBuilder();
+            dfactory.setNamespaceAware(true);
+            documentBuilderNS = dfactory.newDocumentBuilder();
             org.xml.sax.ErrorHandler handler = new org.mmbase.util.XMLErrorHandler();
+            org.xml.sax.EntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
             documentBuilder.setErrorHandler(handler);
-            documentBuilder.setEntityResolver( new org.mmbase.util.XMLEntityResolver());
+            documentBuilder.setEntityResolver(resolver); 
+            documentBuilderNS.setErrorHandler(handler);
+            documentBuilderNS.setEntityResolver(resolver);
         }  catch (Exception e) {
             log.error(e.toString());
         }
@@ -188,12 +196,17 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }         
     }
 
+    public void setNamespaceware(String n) throws JspTagException {
+        namespaceAware = getAttribute(n);
+    }
+
     /**
      * The  Xslt tag will call this, to inform this tag about the XSLT which must be done.
      */
     public void setXsltSource(Source xs) {
         xsltSource = xs;
     }
+
 
     /**
      * Subtags can write themselves as XML to the DOM document of this
@@ -251,7 +264,13 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         int w = getWants();
         if ((w == WANTS_DEFAULT && getFormat() < FORMAT_LIMIT_WANTXML) || w == WANTS_DOM) { // also if format is unset, that means: use xslt
-            xmlGenerator = new Generator(documentBuilder);
+            if(namespaceAware.getBoolean(this, true)) {
+                xmlGenerator = new Generator(documentBuilderNS);
+                xmlGenerator.setNamespaceAware(true);
+            } else {
+                xmlGenerator = new Generator(documentBuilder);
+                xmlGenerator.setNamespaceAware(false);
+            }
         } else {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }
