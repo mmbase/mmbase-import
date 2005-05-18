@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.io.*;
 import java.util.*;
+import java.net.URL;
 
 import javax.xml.transform.*;
 import javax.xml.parsers.*;
@@ -37,7 +38,7 @@ import org.apache.xml.serialize.*;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.28 2005-05-18 15:28:20 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.29 2005-05-18 22:08:32 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -114,15 +115,43 @@ public class XSLTransformer {
      * @since MMBase-1.6
      */
     public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
-        TemplateCache cache= TemplateCache.getCache();
-        Source xsl = new StreamSource(xslFile);
         try {
-            xsl.setSystemId(xslFile.toURL().toString());
+            transform(xml, xslFile.toURL(), result, params, considerDir);
+        } catch (java.net.MalformedURLException mfe) {
+            throw new TransformerException(mfe.getMessage(), mfe);
+        }
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static void transform(Source xml, URL xslFile, Result result, Map params) throws TransformerException {
+        transform(xml, xslFile, result, params, true);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static void transform(Source xml, URL xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
+        TemplateCache cache= TemplateCache.getCache();
+        Source xsl;
+        try {
+            xsl = new StreamSource(xslFile.openStream());
+        } catch (IOException ioe) {
+            throw new TransformerException(ioe.getMessage(), ioe);
+        }
+        try {
+            xsl.setSystemId(xslFile.toString());
         } catch (Exception e) {
         }
         URIResolver uri;
         if (considerDir) {
-            uri = new URIResolver(xslFile.getParentFile());
+            try {
+                uri = new URIResolver(new URL(xslFile, "."));
+            } catch (java.net.MalformedURLException mfe) {
+                // oddd..
+                throw new TransformerException(mfe.getMessage(), mfe);
+            }
         } else {
             uri = new URIResolver();
         }
@@ -340,8 +369,8 @@ public class XSLTransformer {
                     DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
                     Generator generator = new Generator(documentBuilder, cloud);
                     generator.setNamespaceAware(true);
-                    //generator.add(node, node.getNodeManager().getField("body"));
-                    generator.add(node);
+                    generator.add(node, node.getNodeManager().getField("body"));
+                    //generator.add(node);
                     //log.info("" + node.getXMLValue("body").getDocumentElement().getNamespaceURI());
                     generator.add(node.getRelations());
                     NodeList relatedNodes = node.getRelatedNodes();
