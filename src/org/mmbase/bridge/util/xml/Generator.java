@@ -11,6 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
 
@@ -23,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.26 2005-05-02 21:38:20 michiel Exp $
+ * @version $Id: Generator.java,v 1.27 2005-05-18 15:31:41 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -68,7 +70,8 @@ public class Generator {
             DOMImplementation impl = documentBuilder.getDOMImplementation();
             document = impl.createDocument(namespaceAware ? NAMESPACE : null, 
                                            "objects", 
-                                           impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM));
+                                           impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
+                                           );
             this.cloud = cloud;
             if (cloud != null) {
                 addCloud();
@@ -106,6 +109,31 @@ public class Generator {
         }
                 
     }
+    protected final void setAttribute(Element element, String name, String value) {
+        // attributes normally have no namespace. You can assign one, but then they will always have
+        // to be indicated explicitely (in controdiction to elements).
+        // So attributes are created without namespace.
+        /*
+        if (namespaceAware) {
+            element.setAttributeNS(NAMESPACE, name, value);
+        } else {
+            element.setAttribute(name, value);
+        }
+        */
+        element.setAttribute(name, value);
+    }
+    
+    protected final String getAttribute(Element element, String name) {
+        // see setAttribute
+        /*
+        if (namespaceAware) {
+            return element.getAttributeNS(NAMESPACE, name);
+        } else {
+            return element.getAttribute(name);
+        }
+        */
+        return element.getAttribute(name);
+    }
 
     /**
      * Returns the document as a String.
@@ -125,7 +153,7 @@ public class Generator {
     }
 
     private void addCloud() {
-        document.getDocumentElement().setAttribute("cloud", cloud.getName());
+        setAttribute(document.getDocumentElement(), "cloud", cloud.getName());
     }
 
     /**
@@ -145,14 +173,15 @@ public class Generator {
 
         // get the field...
         Element field = (Element)object.getFirstChild();
-        while (field != null && !fieldDefinition.getName().equals(field.getAttribute("name"))) {
+        while (field != null && !fieldDefinition.getName().equals(getAttribute(field, "name"))) {
             field = (Element)field.getNextSibling();
         }
         // when not found, we are in a strange situation..
         if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));
         // when it is filled (allready), we can return
-        if (field.getTagName().equals("field"))
+        if (field.getTagName().equals("field")) {
             return;
+        }
 
         // was not filled, so fill it... first remove the unfilled
         Element filledField = createElement("field");
@@ -160,10 +189,10 @@ public class Generator {
         field.getParentNode().replaceChild(filledField, field);
         field = filledField;
         // the name
-        field.setAttribute("name", fieldDefinition.getName());
+        setAttribute(field, "name", fieldDefinition.getName());
         // now fill it with the new info...
         // format
-        field.setAttribute("format", getFieldFormat(fieldDefinition));
+        setAttribute(field, "format", getFieldFormat(fieldDefinition));
         // the value
         switch (fieldDefinition.getType()) {
         case Field.TYPE_XML :
@@ -194,9 +223,13 @@ public class Generator {
      */
     public void add(org.mmbase.bridge.Node node) {
         // process all the fields..
-        FieldIterator i = node.getNodeManager().getFields().fieldIterator();
+        NodeManager nm = node.getNodeManager();
+        FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator();
         while (i.hasNext()) {
-            add(node, i.nextField());
+            Field field = i.nextField();
+            if (field.getType() != Field.TYPE_BYTE) {
+                add(node, field);
+            }
         }
     }
 
@@ -231,6 +264,26 @@ public class Generator {
 
         }
     }
+
+    protected Element getElementById(Node n, String id) {
+
+        NodeList list = n.getChildNodes();
+        for (int i = 0 ; i < list.getLength(); i++) {
+            Node node = list.item(i);
+            if (node instanceof Element) {
+                if (getAttribute((Element) node, "id").equals(id)) {
+                    return (Element) node;
+                }
+            }
+        }
+        for (int i = 0 ; i < list.getLength(); i++) {
+            Node node = list.item(i);
+            Element subs = getElementById(node, id);
+            if (subs != null) return subs;
+        }
+        return null;
+        
+    }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
      * @param node MMbase node
@@ -246,14 +299,7 @@ public class Generator {
             // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
             object = getDocument().getElementById("" + node.getNumber());
         } else {
-            // TODO: this code should be removed!! but other code doesnt work :(
-            // this cant be fast in performance...
-            String xpath = "//*[@id='" + node.getNumber() + "']";
-            try {
-                object = (Element)org.apache.xpath.XPathAPI.selectSingleNode(getDocument().getDocumentElement(), xpath);
-            } catch (javax.xml.transform.TransformerException te) {
-                throw new BridgeException("error executing query: '" + xpath + "'", te);
-            }
+            object = getElementById(getDocument(), "" + node.getNumber());
         }
 
         if (object != null)
@@ -270,10 +316,10 @@ public class Generator {
         // node didnt exist, so we need to create it...
         object = createElement("object");
 
-        object.setAttribute("id", "" + node.getNumber());
-        object.setAttribute("type", node.getNodeManager().getName());
+        setAttribute(object, "id", "" + node.getNumber());
+        setAttribute(object, "type", node.getNodeManager().getName());
         // and the otype (type as number)
-        object.setAttribute("otype", node.getStringValue("otype"));
+        setAttribute(object, "otype", node.getStringValue("otype"));
 
         // add the fields (empty)
         // While still having 'unfilledField's
@@ -285,7 +331,7 @@ public class Generator {
             Element field = createElement("unfilledField");
 
             // the name
-            field.setAttribute("name", fieldDefinition.getName());
+            setAttribute(field, "name", fieldDefinition.getName());
             // add it to the object
             object.appendChild(field);
         }
@@ -367,16 +413,16 @@ public class Generator {
         // we have to know what the relation type was...
         org.mmbase.bridge.Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
 
-        fieldElement.setAttribute("object", "" + relation.getNumber());
+        setAttribute(fieldElement, "object", "" + relation.getNumber());
 
         if (relation.getSource().getNumber() == relatedNode.getNumber()) {
-            fieldElement.setAttribute("role", reldef.getStringValue("sname"));
-            fieldElement.setAttribute("related", "" + relation.getDestination().getNumber());
-            fieldElement.setAttribute("type", "source");
+            setAttribute(fieldElement, "role", reldef.getStringValue("sname"));
+            setAttribute(fieldElement, "related", "" + relation.getDestination().getNumber());
+            setAttribute(fieldElement, "type", "source");
         } else {
-            fieldElement.setAttribute("role", reldef.getStringValue("dname"));
-            fieldElement.setAttribute("related", "" + relation.getSource().getNumber());
-            fieldElement.setAttribute("type", "destination");
+            setAttribute(fieldElement, "role", reldef.getStringValue("dname"));
+            setAttribute(fieldElement, "related", "" + relation.getSource().getNumber());
+            setAttribute(fieldElement, "type", "destination");
         }
         return fieldElement;
     }
