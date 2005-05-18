@@ -104,7 +104,7 @@
         <td><%= m.getString("config.xmlmode") %></td>  
         <td>
           <select name="mmjspeditors_xmlmode">
-            <mm:import id="xmlmodes" vartype="list">flat,xml,kupu</mm:import>
+            <mm:import id="xmlmodes" vartype="list">wiki,xml,kupu</mm:import>
             <mm:aliaslist referid="xmlmodes">
               <option value="<mm:write />" <mm:compare referid2="config.xmlmode">selected="selected"</mm:compare>><mm:write /></option>
             </mm:aliaslist>
