@@ -18,7 +18,6 @@ import org.mmbase.clustering.WaitNode;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMBaseChangeInterface;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,20 +30,21 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.2 2005-05-18 21:27:47 andre Exp $
+ * @version $Id: ClusterManager.java,v 1.3 2005-05-18 23:57:29 michiel Exp $
  */
-public abstract class ClusterManager implements MMBaseChangeInterface, Runnable {
+public abstract class ClusterManager implements Runnable {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ClusterManager.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
     
     /** Followup number of message */
     protected int follownr = 1;
     /** Number of processed messages */
     protected int spawncount = 0;
 
-    /** Collections of nodes a thread is waiting on for change */
-    protected Vector waitingNodes = new Vector();
+    /** Collections of nodes a thread is waiting on for change 
+     * @todo should be Set.
+     */
+    protected Vector waitingNodes = new Vector(); 
     /** Queue with messages to send to other MMBase instances */
     protected Queue nodesToSend = new Queue(64);
     /** Queue with received messages from other MMBase instances */
@@ -59,7 +59,7 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable 
     protected boolean spawnThreads = true; 
     
     /**
-     * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
+     * @javadoc
      */
     public void init(MMBase mmb) {
         this.mmbase = mmb;
@@ -99,7 +99,7 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable 
     }
     
     /**
-     * @see org.mmbase.module.core.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
+     * @javadoc
      */
     public boolean changedNode(int nodenr, String tableName, String type) {
         String message = createMessage(nodenr, tableName, type);
@@ -149,14 +149,14 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable 
     }
     
     /**
-     * @see org.mmbase.module.core.MMBaseChangeInterface#waitUntilNodeChanged(org.mmbase.module.core.MMObjectNode)
+     * @javadoc
      */
     public boolean waitUntilNodeChanged(MMObjectNode node) {
         try {
             WaitNode wnode = new WaitNode(node);
-            waitingNodes.addElement(wnode);
+            waitingNodes.add(wnode);
             wnode.doWait(60*1000);
-            waitingNodes.removeElement(wnode);
+            waitingNodes.remove(wnode);
         } catch(Exception e) {
             log.error(Logging.stackTrace(e));
         }
