@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.301 2005-05-12 17:42:54 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.302 2005-05-18 15:34:32 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4876,6 +4876,16 @@ Of course, the default behavior of getSmartPath can still be overridden.
           </p>
         </info>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>namespaceware</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	Whether the generated DOM (if that happens) must be created with the namespace
+	http://www.mmbase.org/objects. Defaults to true.
+      </info>
+      <since>MMBase-1.8</since>
     </attribute>
     <extends>contextreferrer</extends>
     <extends>writer</extends>
