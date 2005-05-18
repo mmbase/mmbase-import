@@ -16,7 +16,7 @@ import java.util.Map;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.8 2005-03-22 15:02:05 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.9 2005-05-18 08:08:09 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -40,7 +40,7 @@ public class StandaloneContextContainer extends ContextContainer {
     }
 
 
-    protected  Map getBacking() {
+    protected  Backing getBacking() {
         return backing;        
     }
 

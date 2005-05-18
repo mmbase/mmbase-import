@@ -26,10 +26,10 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.1 2005-03-22 15:02:05 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.2 2005-05-18 08:08:09 michiel Exp $
  */
 
-public  class BasicBacking extends AbstractMap {
+public  class BasicBacking extends AbstractMap  implements Backing {
 
     private static final int SCOPE = PageContext.PAGE_SCOPE;
     protected final Map originalPageContextValues;
@@ -95,8 +95,21 @@ public  class BasicBacking extends AbstractMap {
         }
         return b.put(key, value);
     }
+
+    // overriden for efficiency only (the implementation of AbstractMap does not seem very efficient)
+    public Object get(Object key) {
+        return b.get(key);
+    }
+
+    public Object getOriginal(Object key) {
+        return b.get(key);
+    }
+    public boolean containsOwnKey(Object key) {
+        return b.containsKey(key);
+    }
+
         
-    public void release() {
+    void release() {
         if (originalPageContextValues != null) {
             //log.debug("Restoring pageContext with " + originalPageContextValues);
             // restore the pageContext
@@ -111,6 +124,10 @@ public  class BasicBacking extends AbstractMap {
             }
             originalPageContextValues.clear();
         }
+    }
+
+    public String toString() {
+        return "BASIC BACKING " + super.toString();
     }
         
         
