@@ -33,7 +33,7 @@ Applications build file
 
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,crontab,vwms,scan,packaging" />
+  <target name="all18" depends="init,all17,crontab,vwms,scan,packaging,clustering" />
 
   <target name="all"   depends="init,all18" />
 
@@ -137,6 +137,12 @@ Applications build file
      </ant>
   </target>
 
+  <target name="clustering" depends="mmbase">
+     <ant dir="clustering"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+     </ant>
+  </target>
+
   <target name="install">
     <ant dir="taglib"        target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -183,6 +189,10 @@ Applications build file
     <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+
+    <ant dir="clustering"      target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
   </target>
 
   <target name="clean">
@@ -200,6 +210,8 @@ Applications build file
      <ant dir="vwms"      target="clean" inheritAll="false" />
      <ant dir="scan"      target="clean" inheritAll="false" />
      <ant dir="crontab"      target="clean" inheritAll="false" />
+     <ant dir="clustering"      target="clean" inheritAll="false" />
+
      <delete dir="${applications.build.dir}" />
   </target>
 
