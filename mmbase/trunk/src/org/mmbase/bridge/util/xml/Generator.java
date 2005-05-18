@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.27 2005-05-18 15:31:41 michiel Exp $
+ * @version $Id: Generator.java,v 1.28 2005-05-18 19:33:26 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -325,7 +325,7 @@ public class Generator {
         // While still having 'unfilledField's
         // you know that the node is not yet presented completely.
 
-        FieldIterator i = node.getNodeManager().getFields().fieldIterator();
+        FieldIterator i = node.getNodeManager().getFields(NodeManager.ORDER_CREATE).fieldIterator();
         while (i.hasNext()) {
             Field fieldDefinition = i.nextField();
             Element field = createElement("unfilledField");
