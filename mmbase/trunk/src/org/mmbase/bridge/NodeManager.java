@@ -25,15 +25,42 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.35 2004-10-09 09:39:31 nico Exp $
+ * @version $Id: NodeManager.java,v 1.36 2005-05-18 09:02:08 michiel Exp $
  */
 public interface NodeManager extends Node {
 
+    /**
+     * A constant for use with {@link #getFields(int)}, meaning `all fields, even those which are
+     * not stored.
+     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
+     */
     public final static int ORDER_NONE = -1;
+    /**
+     * A constant for use with {@link #getFields(int)}, meaning `all fields, in storage order (so
+     * which are in storage'.
+     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
+     */
     public final static int ORDER_CREATE = 0;
+    /**
+     * A constant for use with {@link #getFields(int)}, meaning all fields which a user may want to
+     * fill when creating or editing this node. That are normally all nodes without the `automatic'
+     * ones like `number' and `otype'.
+     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
+     */
     public final static int ORDER_EDIT = 1;
+    /**
+     * A constant for use with {@link #getFields(int)}. When presenting a Node in some list overview
+     * then less essential fields can be left out, to get a more concise presentation of the node.
+     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
+     */
     public final static int ORDER_LIST = 2;
+    /**
+     * A constant for use with {@link #getFields(int)} On some fields, like binary fields (e.g. images) it makes no sense searching. These are left
+     * out among the `search' fields.
+     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
+     */
     public final static int ORDER_SEARCH = 3;
+
     public final static int GUI_SINGULAR = 1;
     public final static int GUI_PLURAL = 2;
 
@@ -143,10 +170,18 @@ public interface NodeManager extends Node {
     public FieldList getFields();
 
     /**
-     * Retrieve a subset of field types of this NodeManager, depending on a given order.
+     * Retrieve a subset of field types of this NodeManager, depending on a given order. The order
+     * is a integer constant which symbolizes `none', `create', `edit', `list' or `search'. These last three one may recognize
+     * from builder XML's. `none' means `all fields'. The actual integer contants are present as the
+     * ORDER contants in this interface.
      *
      * @param order the order in which to list the fields
-     * @return a <code>List</code> of <code>FieldType</code> objects
+     * @return a <code>FieldList</code> object, which is a specialized <code>List</code> of {@link Field} objects.
+     * @see   #ORDER_NONE
+     * @see   #ORDER_CREATE
+     * @see   #ORDER_EDIT
+     * @see   #ORDER_LIST
+     * @see   #ORDER_SEARCH
      */
     public FieldList getFields(int order);
 
@@ -347,21 +382,6 @@ public interface NodeManager extends Node {
      * @return  Check if the current user may create a new node of this type.
      */
     public boolean mayCreateNode();
-
-
-
-    /**
-     * Returns a list of 'argument' definition of a certain function on nodes manager by this NodeManager.
-     *
-     *
-     * @since MMBase-1.7
-     */
-
-    /*
-    public List   getFunctionParameters(String function) {
-        return new ArrayList();
-    }
-    */
 
 
 
