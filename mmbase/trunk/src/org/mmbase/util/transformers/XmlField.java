@@ -11,6 +11,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.mmbase.util.StringObject;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.XSLTransformer;
 
 
 import org.mmbase.util.logging.Logger;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.31 2005-05-08 13:22:05 michiel Exp $
+ * @version $Id: XmlField.java,v 1.32 2005-05-18 22:09:21 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -44,7 +45,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int HTML_BLOCK_BR_NOSURROUNDINGP  = 11;
 
     // default doctype
-    public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
+    public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_1.dtd\">\n";
 
     // cannot be decoded:
     public final static int ASCII = 51;
@@ -495,15 +496,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * Base function for XSL conversions.
      */
 
-    private static String XSLTransform(String xslfile, String data) {
+    private static String XSLTransform(String xslFile, String data) {
         try {
-            TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer(new StreamSource(ResourceLoader.getConfigurationRoot().getResourceAsStream("xslt/" + xslfile)));
+            java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/" + xslFile);
             java.io.StringWriter res = new java.io.StringWriter();
-            transformer.transform(new StreamSource(new StringReader(data)), new StreamResult(res));
+            XSLTransformer.transform(new StreamSource(new StringReader(data)), u, new StreamResult(res), null);
             return res.toString();
-        } catch (Exception e) {
-            return "XSL transformation did not succeed: " + e.toString() + "\n" + data;
+        } catch (javax.xml.transform.TransformerException te) {
+            return te.getMessage();
         }
     }
 
