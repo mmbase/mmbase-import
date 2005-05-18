@@ -78,7 +78,7 @@
   <target name="init.get">
     <!-- JUnit -->
     <property name="junit.version" value="junit3.8.1"/>
-    <property name="junit.url" value="http://prdownloads.sourceforge.net/junit/${junit.version}.zip"/>
+    <property name="junit.url" value="http://www.mmbase.org/download/jars/junit/${junit.version}.zip"/>
     <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
     <available property="junit.present" 
       file="${download.dir}/${junit.version}.zip"/>
@@ -99,7 +99,7 @@
   </target>
 
 
-  <target name="compile" description="Compile the source directory" depends="init">
+  <target name="compile" description="Compile the source directory" depends="init,expand.junit">
 
     <mkdir dir="${tests.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
