@@ -1,36 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="profiles" maintainer="didactor.nl" version="3" extends="object">
+<builder name="profiletypes" maintainer="didactor.nl" version="1" extends="object">
   <status>active</status>
-
   <classfile>Dummy</classfile>
-  <searchage>31</searchage>
+  <searchage>9999</searchage>
 
   <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Competentie Profiel</singular>
-    <singular xml:lang="en">Competence Profile</singular>
+    <singular xml:lang="nl">Profiel type</singular>
+    <singular xml:lang="en">Profile type</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Competentie Profielen</plural>
-    <plural xml:lang="en">Competence Profiles</plural>
+    <plural xml:lang="nl">Profiel type</plural>
+    <plural xml:lang="en">Profile types</plural>
   </names>
 
+  <!-- <descriptions>
+  small description of the builder for human reading
+  -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Een profiel van competenties, die aangeven welke competenties een student moet hebben.</description>
-    <description xml:lang="en">A profile containing competencies, describing which competencies a student should develop.</description>
+    <description xml:lang="nl"></description>
+    <description xml:lang="en"></description>
   </descriptions>
 
+  <!-- <properties>
+  you can define properties to be used by the classfile (if used) it uses
+  a key/value system. Its a optional tag.
+  -->
   <properties>
     <property name="max-nodes-from-query">200</property>
   </properties>
-
+  <!-- inherited fields:
+    - text
+    - needescore
+    - maychange
+    - mayview
+    - questionsperpage
+    - feedbackpage
+    - questionamount
+  -->
   <fieldlist>
+
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Naam van het profiel</description>
-        <description xml:lang="en">Name of the profile</description>
+        <description xml:lang="nl"></description>
+        <description xml:lang="en"></description>
       </descriptions>
       <!-- gui related -->
       <gui>
@@ -60,6 +75,9 @@
 
 
 
+
+
+
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
@@ -68,8 +86,8 @@
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Algemene omschrijving</guiname>
-        <guiname xml:lang="en">General description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="en">Description</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -86,7 +104,7 @@
       <!-- database related  -->
       <db>
         <!-- name of the field in the database -->
-        <name>general_description</name>
+        <name>description</name>
         <!-- MMBase datatype and demands on it -->
         <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
       </db>
@@ -94,16 +112,17 @@
 
 
 
+
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl"></description>
-        <description xml:lang="en">It is a general description based on professional context, type of work, responsibilities, complexity new developments in the professional field etc.</description>
+        <description xml:lang="en"></description>
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Beroepsbeschrijving</guiname>
-        <guiname xml:lang="en">Description of profession</guiname>
+        <guiname xml:lang="nl">Position</guiname>
+        <guiname xml:lang="en">Position</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -120,13 +139,11 @@
       <!-- database related  -->
       <db>
         <!-- name of the field in the database -->
-        <name>description_of_profession</name>
+        <name>pos</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
+        <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
-
-
 
 
 
