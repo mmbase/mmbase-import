@@ -3,11 +3,26 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="clustering" default="jar" basedir=".">
+<project name="clustering" default="dependent.jar" basedir=".">
   <property name="project.name"      value="clustering" />
   <property name="project.package"   value="org/mmbase/clustering" />
   <property name="project.target.templates.dir"   value="clustering" />
   <property name="project.config.dir.includes"   value="utils/**" />
   <property name="project.config.jar.includes"   value="**" />
+  <property name="project.jars.dir"     location="../../../optional" />
+  <property name="project.jars.includes" value="**" />
   &base;
+  
+  <target name="dependent.jar" depends="jgroups,jar" />
+
+  <target name="jgroups">
+    <!--
+    <antcall directory="../.." target="download">
+      <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
+      <param name="destfile"   value="${download.dir}/package-list" />
+    </antcall>
+    -->
+  </target>
+
+
 </project>
