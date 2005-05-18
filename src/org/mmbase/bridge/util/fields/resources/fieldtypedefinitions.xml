@@ -9,17 +9,29 @@
   It could define default values, possible values, default sort orders etc etc.
 
   @author Michiel Meeuwissen
-  @version $Id: fieldtypedefinitions.xml,v 1.3 2004-09-20 11:56:53 pierre Exp $
+  @version $Id: fieldtypedefinitions.xml,v 1.4 2005-05-18 22:06:28 michiel Exp $
 -->
 
-<!--
+
   <fieldtype id="xml">
-    <setprocessor type="string">
-      <class>org.mmbase.core.processors.XMLValidate</class>
-    </setprocessor>
+    <specialization id="mmxf">
+      <setprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.MmxfSetString</class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.MmxfGetString</class>
+      </getprocessor>
+    </specialization>
 
+    <specialization id="html">
+      <setprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.HtmlSetString</class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.HtmlGetString</class>
+      </getprocessor>
+    </specialization>
   </fieldtype>
--->
 
   
   <fieldtype id="string">
@@ -42,6 +54,11 @@
       </setprocessor>
       <getprocessor>
         <class>org.mmbase.util.transformers.UpperCaser</class>
+      </getprocessor>
+    </specialization>
+    <specialization id="index">
+      <getprocessor>
+        <class>org.mmbase.bridge.util.fields.GetIndex</class>
       </getprocessor>
     </specialization>
   </fieldtype>
