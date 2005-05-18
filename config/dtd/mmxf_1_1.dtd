@@ -2,11 +2,12 @@
 <!ATTLIST mmxf 
     version    NMTOKEN  #IMPLIED
 >
-<!ELEMENT section ( p | section | ul )* > 
+<!ELEMENT section h ( p | section | ul )* > 
 <!ATTLIST section 
-    title CDATA   #REQUIRED 
     id    NMTOKEN  #IMPLIED
 >
+<!ELEMENT h ( #PCDATA )* >
+
 <!ELEMENT p  ( #PCDATA | em | ul | a)* >
 <!ATTLIST p id  NMTOKEN  #IMPLIED > 
 
