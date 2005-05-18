@@ -3,101 +3,141 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.7 2004-06-30 16:19:35 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.8 2005-05-18 15:35:17 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
-  xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
-  xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
-  xmlns:mmxf="http://www.mmbase.org/mmxf"
-  exclude-result-prefixes="node mmxf"
-  version = "1.1"
->
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+    xmlns:o="http://www.mmbase.org/objects"
+    xmlns:mmxf="http://www.mmbase.org/mmxf"
+    exclude-result-prefixes="node mmxf o"
+    version="1.0" >
+
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
   <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
 
+  <xsl:output method="xml" omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
-  <xsl:param name="formatter_imgdb" />    <!-- this information is needed to correctly construct img.db urls -->
+  <xsl:param name="cloud">mmbase</xsl:param>
+  <xsl:param name="formatter_imgdb" />
 
-  <xsl:output method="xml" omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
+
+
 
   <xsl:variable name="newstype">xmlnews</xsl:variable>
-	<!-- I had an 'xmlnews' type... Can easily switch beteen them like
-             this.  Perhaps you prefer 'news' itself to contain XML fields. -->
+  <!-- I had an 'xmlnews' type... Can easily switch beteen them like
+       this.  Perhaps you prefer 'news' itself to contain XML fields. -->
 
    <!-- If objects is the entrance to this XML, then only handle the root child of it -->
-  <xsl:template match="objects">
-    <xsl:apply-templates select="object[1]" />
+  <xsl:template match="o:objects">
+    <div class="objects">
+      <xsl:apply-templates select="o:object[1]" />
+    </div>
   </xsl:template>
 
-   <!-- how to present a node -->
-   <xsl:template match="object">
-    <xsl:apply-templates select="field">
-    </xsl:apply-templates>
+
+  <!-- how to present a node -->
+  <xsl:template match="o:object">
+    <xsl:apply-templates select="o:field" />
   </xsl:template>
 
 
    <!-- how to present a news node -->
-   <xsl:template match="object[@type=$newstype and not(unfilledField)]">
-     <xsl:apply-templates select="field[@name='title']"    />
-     <xsl:apply-templates select="field[@name='subtitle']" />
-     <xsl:apply-templates select="field[@name='body']" />
+   <xsl:template match="o:object[@type=$newstype and not(o:unfilledField)]">
+     <xsl:apply-templates select="o:field[@name='title']"    />
+     <xsl:apply-templates select="o:field[@name='subtitle']" />
+     <xsl:apply-templates select="o:field[@name='body']" />
    </xsl:template>
 
 
-  <xsl:template match="object[@type=$newstype]/field[@name='title']" >
+  <xsl:template match="o:object[@type=$newstype]/o:field[@name='title']" >
     <h1><xsl:value-of select="." /></h1>
   </xsl:template>
 
-  <xsl:template match="object[@type=$newstype]/field[@name='subtitle']" >
+  <xsl:template match="o:object[@type=$newstype]/o:field[@name='subtitle']" >
     <h2><xsl:value-of select="." /></h2>
   </xsl:template>
 
 
-  <xsl:template match="field[@format='xml']">
-    <xsl:apply-templates />
+  <xsl:template match="o:field[@format='xml']">
+    <xsl:apply-templates  />
   </xsl:template>
 
+
   <!-- how to present a nodes that are related to paragraphs. -->
-  <xsl:template match="object" mode="concise">
+  <xsl:template match="o:object" mode="concise">
     <xsl:choose>
       <xsl:when test="@type='images'">
-        <img src="{node:function(string(./field[@name='number'] ), 'servletpath(,cache(s(100x100)))')}" alt="{./field[@name='description']}" align="right" />
-          <!-- Resin's xslt-impl, does not pass 'Nodes', so we limit ourselves to strings. :-( -->
+	<img src="{node:function($cloud, string(./o:field[@name='number'] ), 'servletpath(,cache(s(100x100)))')}" alt="{./o:field[@name='description']}" 
+	     align="right" />
+	<!-- Resin's xslt-impl, does not pass 'Nodes', so we limit ourselves to strings. :-( -->
       </xsl:when>
       <xsl:when test="@type='urls'">
-        <a href="{field[@name='url']}"><xsl:value-of select="field[@name='description']" /></a><br />
+	<a href="{./o:field[@name='url']}">
+	  <xsl:attribute name="alt">
+	    <xsl:choose>
+	      <xsl:when test="./o:field[@name='subtitle']" >
+		<xsl:value-of select="./o:field[@name='subtitle']" />
+	      </xsl:when>
+	      <xsl:when test="./o:field[@name='description']" >
+		<xsl:value-of select="./o:field[@name='description']" />
+	      </xsl:when>
+	      <xsl:otherwise>
+		URL
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:attribute>
+	  <xsl:choose>
+	    <xsl:when test="./o:field[@name='title'] != ''" >
+	      <xsl:value-of select="./o:field[@name='title']" />
+	    </xsl:when>
+	    <xsl:when test="./o:field[@name='name'] != ''" >
+	      <xsl:value-of select="./o:field[@name='name']" />
+	    </xsl:when>
+	    <xsl:when test="./o:field[@name='description'] != ''" >
+	      <xsl:value-of select="./o:field[@name='description']" />
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="./o:field[@name='url']" />
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</a>
+	<xsl:if test="position() &lt; last()">, </xsl:if>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
 
 
   <!--how to present nodes that are related to words -->
-  <xsl:template match="object" mode="inline">
+  <xsl:template match="o:object" mode="inline">
     <xsl:choose>
       <xsl:when test="@type='images'">
-        <a href="{$formatter_imgdb}{./field[@name='number']}" alt="{./field[@name='description']}">plaatje</a>
+        <a href="{$formatter_imgdb}{./o:field[@name='number']}" alt="{./o:field[@name='description']}">plaatje</a>
       </xsl:when>
       <xsl:when test="@type='urls'">
-        <a href="{field[@name='url']}"><xsl:value-of select="position()" /></a>
+        <a href="{o:field[@name='url']}"><xsl:value-of select="position()" /></a>
         <xsl:if test="position() &lt; last()"><xsl:text>, </xsl:text></xsl:if>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
 
   <!-- An anchor can handle only urls links -->
-  <xsl:template match="a" mode="sub">
+  <xsl:template match="mmxf:a" mode="sub">
     <xsl:param name="relatednodes" />
     <xsl:variable name="urls" select="$relatednodes[@type='urls']" />
     <xsl:choose>
       <xsl:when test="not($urls)">
         <!-- no relations found, simply ignore the anchor -->
         <xsl:copy-of select="@*" />
-        <xsl:apply-templates />
+	<xsl:apply-templates />
       </xsl:when>
-      <xsl:when test="count($urls)=1">
+      <xsl:when test="count($urls) = 1">
         <!-- only one url is related, it is simple to make the body clickable -->
-        <a href="{$urls/field[@name='url']}"><xsl:apply-templates  /></a>
+	<a href="{$urls[1]/o:field[@name='url']}" 
+	   alt="{$urls[1]/o:field[@name='title']}">
+	  <xsl:apply-templates  />
+	</a>
       </xsl:when>
       <xsl:otherwise>
         <!-- more than one url related to this anchor, we add between parentheses a list of links -->
@@ -109,63 +149,63 @@
 
 
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="section">
-    <xsl:copy>
+  <xsl:template match="mmxf:section">
+    <!-- store the 'relation' nodes for convenience in $rels:-->
+    <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
+    
+    <!-- also for conveniences: all related nodes to this node-->
+    <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
+   
+    <!-- There are two type of relations, it is handy to treat them seperately: -->
+    <xsl:variable name="srelations" select="//o:objects/o:object[@id=$rels[@type='source']/@object and o:field[@name='id'] = current()/@id]" />
+    <xsl:variable name="drelations" select="//o:objects/o:object[@id=$rels[@type='destination']/@object and o:field[@name='id'] = current()/@id]" />
 
-      <!-- store the 'relation' nodes for convenience in $rels:-->
-      <xsl:variable name="rels"   select="ancestor::object/relation[@role='idrel']" />
 
-        <!-- also for conveniences: all related nodes to this node-->
-      <xsl:variable name="related_to_node"   select="//objects/object[@id=$rels/@related]" />
+    <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
 
-        <!-- There are two type of relations, it is handy to treat them seperately: -->
-      <xsl:variable name="srelations" select="//objects/object[@id=$rels[@type='source']/@object      and field[@name='id'] = current()/@id]" />
-      <xsl:variable name="drelations" select="//objects/object[@id=$rels[@type='destination']/@object and field[@name='id'] = current()/@id]" />
-
-        <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
-      <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/field[@name = 'dnumber']] | $related_to_node[@id = $drelations/field[@name='snumber']]" />
-
-      <xsl:apply-templates select="." mode="sub">
-        <xsl:with-param name="relatednodes" select="$relatednodes" />
-      </xsl:apply-templates>
-    </xsl:copy>
+    <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/o:field[@name = 'dnumber']] | $related_to_node[@id = $drelations/o:field[@name='snumber']]" />
+    
+    <xsl:apply-templates select="." mode="sub">
+      <xsl:with-param name="relatednodes" select="$relatednodes" />
+    </xsl:apply-templates>
   </xsl:template>
 
 
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="p|a[@id != '']">
-    <xsl:copy>
-
+  <xsl:template match="mmxf:p|mmxf:a[@id != '']">
+    <xsl:element name="{name()}">
+      <xsl:copy-of select="@*" />
       <!-- store the 'relation' nodes for convenience in $rels:-->
-      <xsl:variable name="rels"   select="ancestor::object/relation[@role='idrel']" />
+      <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
 
         <!-- also for conveniences: all related nodes to this node-->
-      <xsl:variable name="related_to_node"   select="//objects/object[@id=$rels/@related]" />
+      <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
 
         <!-- There are two type of relations, it is handy to treat them seperately: -->
-      <xsl:variable name="srelations" select="//objects/object[@id=$rels[@type='source']/@object      and field[@name='id'] = current()/@id]" />
-      <xsl:variable name="drelations" select="//objects/object[@id=$rels[@type='destination']/@object and field[@name='id'] = current()/@id]" />
+      <xsl:variable name="srelations" select="//o:objects/o:object[@id=$rels[@type='source']/@object and o:field[@name='id'] = current()/@id]" />
+      <xsl:variable name="drelations" select="//o:objects/o:object[@id=$rels[@type='destination']/@object and o:field[@name='id'] = current()/@id]" />
 
-        <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
-      <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/field[@name = 'dnumber']] | $related_to_node[@id = $drelations/field[@name='snumber']]" />
+      <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
+      <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/o:field[@name = 'dnumber']] | $related_to_node[@id = $drelations/o:field[@name='snumber']]" />
 
       <xsl:apply-templates select="." mode="sub">
         <xsl:with-param name="relatednodes" select="$relatednodes" />
       </xsl:apply-templates>
-    </xsl:copy>
+    </xsl:element>
   </xsl:template>
 
 
   <!-- A paragraph can handle images and urls links -->
-  <xsl:template match="section|p" mode="sub">
+  <xsl:template match="mmxf:section|mmxf:p" mode="sub">
     <xsl:param name="relatednodes" />
-    <xsl:apply-templates  select="$relatednodes[@type='images']"  mode="concise" />
     <xsl:copy-of select="@*" />
+    <xsl:apply-templates  select="$relatednodes[@type='images']"  mode="concise" />
     <xsl:apply-templates />
     <xsl:if test="count($relatednodes[@type='urls']) &gt; 0">
       <small><xsl:apply-templates  select="$relatednodes[@type='urls']"  mode="concise" /></small>
     </xsl:if>
   </xsl:template>
 
+  
 
 </xsl:stylesheet>
