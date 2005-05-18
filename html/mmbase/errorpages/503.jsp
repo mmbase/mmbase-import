@@ -4,7 +4,7 @@
     <title>503 temporary unavailable</title>
     <%@include file="meta.jsp"%>
   </head>
-  <body >
+  <body class="basic">
     <h1>503 This web-site is temporary unavailable</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>

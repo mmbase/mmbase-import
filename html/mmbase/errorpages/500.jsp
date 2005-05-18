@@ -1,6 +1,8 @@
 <%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
+<mm:import jspvar="ticket"><mm:time time="now" format="yyyyMMddHHmmssSSS" /></mm:import>
+
 <mm:log jspvar="log">
 <%
 int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -56,17 +58,14 @@ StringBuffer msg = new StringBuffer();
          // add stack stacktraces
          if (t != null) {
          msg.append(t.getMessage()).append("\n");
-  //         msg.append(org.mmbase.util.logging.Logging.stackTrace(t)).append("\n");
+	 msg.append(org.mmbase.util.logging.Logging.stackTrace(t)).append("\n");
          }
 
     } 
 }
 
-// prepare error ticket
-String ticket = System.currentTimeMillis()+"";
-
 // write errors to mmbase log
-log.error(ticket+":\n" + msg);
+log.error(ticket + ":\n" + msg);
 
 %>
 <mm:content type="text/html"  expires="0">
@@ -75,22 +74,38 @@ log.error(ticket+":\n" + msg);
   <mm:import id="title">MMBase - Error <%= status %></mm:import>
   <title><mm:write referid="title" /></title>
   <%@include file="meta.jsp" %>
+  <script language="javascript">
+    function show() {
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('show').style.display = 'none';
+}
+    function hide() {
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('show').style.display = 'block';
+}
+  </script>
 </head>
 <body class="basic">
   <h1><mm:write referid="title" /></h1>
-  <h1><%= exception.getMessage() %></h1>
+  <h1><%= exception != null ? exception.getMessage() : "NO EXCEPTION" %></h1>
   <h2>Error ticket: <%= ticket %></h2>
   <% String referrer = request.getHeader("Referer");
      if (referrer != null) {
   %>
   <p><a href="<%= referrer %>">back</a></p>
   <% } %>
-  <mm:write value="<%=msg.toString()%>" escape="p" />
+  <div id="show">   
+    <a href="javascript: show();">Show error</a>
+  </div>
+  <div id="error" style="background-color:yellow; display: none;">
+    <a href="javascript: hide();">Hide error</a>
+    <mm:import id="msg"><%=msg.toString()%></mm:import>
+    <mm:write referid="msg" escape="p" />
+  </div>
   
   <hr />
   Please contact your system administrator about this.
-  
-</body>
+  </body>
 </html>
 </mm:content>
 </mm:log>
