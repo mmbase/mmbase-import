@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="profiles">
-   <title>Profielen editor</title>
+   <title xml:lang="nl">Competentie Profielen</title>
+   <title xml:lang="en">Competence Profiles</title>
+
    <action type="create">
       <object type="profiles">
       </object>
@@ -13,6 +15,8 @@
    <action type="load">
       <relation destination="preassessments" role="related"/>
       <relation destination="competencies" role="related"/>
+      <relation destination="profiletypes" role="posrel"/>
+      <relation destination="profilelevels" role="related"/>
    </action>
    <lists>
    </lists>
@@ -21,8 +25,22 @@
    </steps>
 
 <form-schema id="edit_profiles">
-   <field name="name" dtminlength="0" dtmaxlength="255">
-   <prompt>name</prompt></field>
+   <field name="name" dtminlength="1" dtmaxlength="255">
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
+   </field>
+
+   <field name="general_description" ftype="html" rows="8" dtminlength="0" dtmaxlength="255">
+      <prompt xml:lang="nl">Algemene omschrijving</prompt>
+      <prompt xml:lang="en">General description</prompt>
+   </field>
+
+   <field name="description_of_profession" ftype="html" rows="8" dtminlength="0" dtmaxlength="255">
+      <prompt xml:lang="nl">Beroepsbeschrijving</prompt>
+      <prompt xml:lang="en">Description of profession</prompt>
+   </field>
+
+
 
    <list extends="list/preassessments.xml"/>
 
@@ -47,5 +65,61 @@
          </relation>
       </action>
    </list>
+
+
+   <list role="posrel" destination="profiletypes" minoccurs="0" maxoccurs="*" ordertype="number">
+      <title xml:lang="nl">Profiel type</title>
+      <title xml:lang="en">Profile type</title>
+      <item>
+         <field name="name" ftype="data"/>
+         <field ftype="startwizard" wizardname="profiletypes" />
+      </item>
+      <command name="search" nodepath="profiletypes" fields="name" age="-1" orderby="number" directions="down">
+         <search-filter>
+            <name xml:lang="nl">Naam bevat</name>
+            <name xml:lang="en">Name</name>
+            <search-fields>name</search-fields>
+         </search-filter>
+      </command>
+      <command name="startwizard" inline="true" wizardname="profiletypes" objectnumber="new">
+         <prompt xml:lang="nl">Nieuw</prompt>
+         <prompt xml:lang="en">New</prompt>
+      </command>
+
+      <action type="create">
+         <relation destinationtype="profiletypes" role="posrel"/>
+      </action>
+   </list>
+
+
+
+
+   <list role="related" destination="profilelevels" minoccurs="0" maxoccurs="*" ordertype="number">
+      <title xml:lang="nl">Profiel niveau</title>
+      <title xml:lang="en">Profile level</title>
+      <item>
+         <field name="name" ftype="data"/>
+         <field ftype="startwizard" wizardname="profilelevels" />
+      </item>
+      <command name="search" nodepath="profilelevels" fields="name" age="-1" orderby="number" directions="down">
+         <search-filter>
+            <name xml:lang="nl">Naam bevat</name>
+            <name xml:lang="en">Name</name>
+            <search-fields>name</search-fields>
+         </search-filter>
+      </command>
+      <command name="startwizard" inline="true" wizardname="profilelevels" objectnumber="new">
+         <prompt xml:lang="nl">Nieuw</prompt>
+         <prompt xml:lang="en">New</prompt>
+      </command>
+
+      <action type="create">
+         <relation destinationtype="profilelevels" role="related"/>
+      </action>
+   </list>
+
+
+
+
 </form-schema>
 </wizard-schema>
