@@ -28,6 +28,8 @@ import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.apache.xml.serialize.*;
+
 /**
  * Make XSL Transformations
  *
@@ -35,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.27 2005-05-02 21:39:51 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.28 2005-05-18 15:28:20 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -112,10 +114,6 @@ public class XSLTransformer {
      * @since MMBase-1.6
      */
     public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
-
-        if (xml instanceof DOMSource) {
-            log.info("transforming xlm with name-space " + ((DOMSource) xml).getNode().getNamespaceURI());
-        }
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
         try {
@@ -143,7 +141,6 @@ public class XSLTransformer {
         }
         Transformer transformer = cachedXslt.newTransformer();
         //Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        log.info("" + transformer.getClass());
         if (log.isDebugEnabled()) {
             log.debug("Size of transformer " + SizeOf.getByteSize(transformer) + " bytes");
         }
@@ -274,18 +271,22 @@ public class XSLTransformer {
         }
     }
 
+
     /**
      * Invocation of the class from the commandline for testing/building
      */
     public static void main(String[] argv) {
+
         // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
-            log.info("Use with two arguments: xslt-file <xml-inputfile|node-number> [xml-outputfile]");
+            log.info("Use with two arguments: <xslt-file>|SER <xml-inputfile|node-number> [xml-outputfile]");
             log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir [key=value options]");
             log.info("special options can be:");
             log.info("   usecache=true:     Use the Template cache or not (to speed up)");
             log.info("   exclude=<filename>:  File/directory name to exclude (can be used multiple times");
             log.info("   extension=<file extensions>:  File extensions to use in transformation results (defaults to html)");
+            log.info("   SER:  Serializes using xerces' XMLSerializer. (could also be done with XSL, but its quite impossible with namespaces and attributes)");
+
             log.info("Other options are passed to XSL-stylesheet as parameters.");
 
         } else {
@@ -330,21 +331,38 @@ public class XSLTransformer {
                     }
                 } else {
                     log.debug("" + in + " does not exist, interpreting it as a node, connecting using RMMCI");
+                    Result result = getResult(argv);
+                    log.info("RMMCI");
+                    String nodeNumber = argv[1];
                     Cloud cloud = ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext").getCloud("mmbase", "anonymous", null);
                     params.put("cloud", cloud);
-                    String nodeNumber = argv[1];
                     Node node = cloud.getNode(nodeNumber);
                     DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
                     Generator generator = new Generator(documentBuilder, cloud);
                     generator.setNamespaceAware(true);
+                    //generator.add(node, node.getNodeManager().getField("body"));
                     generator.add(node);
+                    //log.info("" + node.getXMLValue("body").getDocumentElement().getNamespaceURI());
                     generator.add(node.getRelations());
                     NodeList relatedNodes = node.getRelatedNodes();
-                    generator.add(node.getRelatedNodes());
-                    transform(new DOMSource(generator.getDocument().getDocumentElement()),  new File(argv[0]), getResult(argv), params, true);
+                    generator.add(relatedNodes);
+                    log.info("transforming");
+                    if (argv[0].equals("SER")) {
+                        XMLSerializer serializer = new XMLSerializer();
+                        serializer.setNamespaces(true);
+                        serializer.setOutputByteStream(System.out);
+                        serializer.serialize(generator.getDocument());
+                    } else {
+                        transform(new DOMSource(generator.getDocument()),  new File(argv[0]), result, params, true);
+                    }
                 }
-            } catch (Exception io) {
-                log.error(io.getMessage(), io);
+            } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
+                Throwable cause = ex.getCause();
+                while (cause != null) {
+                    log.error("CAUSE" + cause.getMessage(), cause);
+                    cause = cause.getCause();
+                }
             }
         }
     }
