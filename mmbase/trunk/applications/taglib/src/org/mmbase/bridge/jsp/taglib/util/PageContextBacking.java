@@ -23,18 +23,19 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.2 2005-05-02 11:57:10 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.3 2005-05-18 08:08:09 michiel Exp $
  */
 
-public  class PageContextBacking extends AbstractMap {
+public  class PageContextBacking extends AbstractMap implements Backing {
 
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     private final PageContext pageContext;
 
     // We also want to store null, pageContext cannot contain those.
-
     private Set nulls = new HashSet();
+
+    private Map unwrapped = new HashMap();
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
@@ -59,16 +60,18 @@ public  class PageContextBacking extends AbstractMap {
                                             return name;
                                         }
                                         public Object getValue() {
-                                            if (nul == null) {
-                                                return Casting.unWrap(pageContext.getAttribute(name, SCOPE));                                                            
+                                            if (nul == null) {                                                
+                                                return pageContext.getAttribute(name, SCOPE); 
                                             } else {
                                                 return null;
                                             }
                                         }
                                         public Object setValue(Object value) {
-                                            Object was = Casting.unWrap(pageContext.getAttribute(name, SCOPE));
-                                            pageContext.setAttribute(name, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
-                                            if (value == null) {
+                                            Object was = pageContext.getAttribute(name, SCOPE);
+                                            if (value != null) {
+                                                pageContext.setAttribute(name, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+                                            } else { 
+                                                pageContext.removeAttribute(name, SCOPE);
                                                 nulls.add(name);
                                             }
                                             return was;
@@ -83,6 +86,7 @@ public  class PageContextBacking extends AbstractMap {
                             public void remove() {
                                 pageContext.removeAttribute(name, SCOPE);
                                 nulls.remove(name);
+                                unwrapped.remove(name);
                             }
                         };
                 }
@@ -93,8 +97,6 @@ public  class PageContextBacking extends AbstractMap {
     }
     
     public Object put(Object key, Object value) {
-        
-        Object was = Casting.unWrap(pageContext.getAttribute((String) key, SCOPE));
         if (value == null) {
             nulls.add(key);
         } else {
@@ -102,7 +104,31 @@ public  class PageContextBacking extends AbstractMap {
             Object v = Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY));
             pageContext.setAttribute(k, v, SCOPE);
         }
-        return was;
+        return unwrapped.put(key, value);
+    }
+    public Object get(Object key) {
+        return pageContext.getAttribute((String) key, SCOPE);
+    }
+    public Object getOriginal(Object key) {
+        Object value = unwrapped.get(key);
+        if (value != null) return value;
+        return pageContext.getAttribute((String) key, SCOPE);
+    }
+    public boolean containsKey(Object key) {
+        return pageContext.getAttribute((String) key, SCOPE) != null ||  nulls.contains(key);
+    }
+
+    public boolean containsOwnKey(Object key) {
+        return unwrapped.containsKey(key);
+    }
+
+    void release() {
+        nulls = null;
+        unwrapped = null;
+    }
+
+    public String toString() {
+        return "PAGECONTEXT BACKING " + super.toString();
     }
         
 } 

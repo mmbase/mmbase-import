@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.33 2005-05-02 11:57:10 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.34 2005-05-18 08:08:09 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -107,12 +107,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      *
      * @since MMBase-1.8
      */
-    protected abstract Map getBacking();
+    protected  abstract Backing getBacking();
 
-    /**
-     * @since MMBase-1.8
-     */
+
     public abstract void release();
+
 
     public Set entrySet() {
         return getBacking().entrySet();
@@ -121,6 +120,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     private   final String id;
     protected final ContextContainer parent;
     protected final PageContext pageContext;
+
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -249,7 +249,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
     private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
-        Object result =  getBacking().get(key);
+        Object result =  getBacking().getOriginal(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
         }
@@ -313,8 +313,6 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return get(key);
     }
 
-    protected abstract boolean checkJspVar(String jspvar, String newId);
-
     /**
      * @since MMBase-1.7 (here)
      */
@@ -325,8 +323,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * @since MMBase-1.8
      */
-    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {        
-        register(newId, helper.getValue(), check && checkJspVar(helper.getJspvar(), newId), true);
+    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {   
+        register(newId, helper.getValue(), check, true);
     }
 
     /**
@@ -340,7 +338,6 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         Pair pair = getPair(newId, checkParent);
 
         if (pair != null) {
-
             pair.context.register(pair.restKey, n, check, ! pair.wentDown);
 
         } else {
@@ -431,7 +428,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * @since MMBase-1.7 (here)
      */
     public boolean isRegistered(String key) throws JspTagException {
-        return containsKey(key, false); // don't check parent.
+        return getBacking().containsOwnKey(key);
     }
 
     /**
@@ -711,7 +708,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
     public String toString() {
         if (id == null) {
-            return "the context without id (root?)" + getBacking().toString();
+            return "the context without id " + getBacking().toString();
         } else {
             return "context '" + id  + "'" + getBacking().toString();
         }
