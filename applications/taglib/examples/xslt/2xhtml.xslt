@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.12 2005-05-08 15:41:58 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.13 2005-05-18 15:45:07 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -32,26 +32,26 @@
   <!-- how to present a news node -->
   <xsl:template match="o:object[@type=$newstype and not(o:unfilledField)]">
     <xsl:apply-templates select="o:field[@name='title']"  />
-      <xsl:if test="not(o:field[@name='subtitle'] = '')">
-        <font color="{$subtitle_color}"><xsl:apply-templates select="o:field[@name='subtitle']" /></font>
-      </xsl:if>
-      <div class="toc">
-        table of contents:<br />
-        <xsl:for-each select="o:field[@name='body']/mmxf:mmxf/mmxf:section">
-          <a>
-            <xsl:attribute name="href">#<xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" /></xsl:attribute>
-            <xsl:value-of select="mmxf:h" />
-            </a><br />
-        </xsl:for-each>
-      </div>
-	<xsl:apply-templates select="o:field[@name='body']" />
-	<p>
+    <xsl:if test="not(o:field[@name='subtitle'] = '')">
+      <font color="{$subtitle_color}"><xsl:apply-templates select="o:field[@name='subtitle']" /></font>
+    </xsl:if>
+    <div class="toc">
+      table of contents:<br />
+      <xsl:for-each select="o:field[@name='body']/mmxf:mmxf/mmxf:section">
+	<a>
+	  <xsl:attribute name="href">#<xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" /></xsl:attribute>
+	  <xsl:value-of select="mmxf:h" />
+	  </a><br />
+      </xsl:for-each>
+    </div>
+    <xsl:apply-templates select="o:field[@name='body']" />
+    <p>
       <xsl:call-template name="date">     
-	<xsl:with-param name="datetime" select="field[@name='date']" />
+	<xsl:with-param name="datetime" select="o:field[@name='date']" />
       </xsl:call-template>
-      </p>
+    </p>
   </xsl:template>
-
+  
   <xsl:template match = "mmxf:h" mode="h1">
     <h3 style="color:red;">
       <a>
