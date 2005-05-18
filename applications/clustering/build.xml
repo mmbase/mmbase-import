@@ -18,6 +18,9 @@
   <target name="dependent.jar" description="Create mmbase-clustering.jar" 
     depends="jgroups.jar,project.manifest" />
 
+  <target name="dependent.install" description="Install clustering" 
+	  depends="dependent.jar,install" />
+
   <target name="jgroups.jar"
     description="Get JGroups jar">
     
