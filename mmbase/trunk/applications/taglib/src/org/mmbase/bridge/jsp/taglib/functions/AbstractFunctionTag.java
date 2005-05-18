@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.19 2005-05-08 13:26:56 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.20 2005-05-18 08:04:58 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -164,7 +164,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (functionOrNode != null) {
                 if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use                    
                     log.debug("using node-function!");
-                    return FunctionFactory.getFunction(((NodeProvider) functionOrNode).getNodeVar(), functionName); // NodeFunction.getFunction(getNode(),functionName)
+                    return ((NodeProvider) functionOrNode).getNodeVar().getFunction(functionName);
                 } else { // just use the functioncontainer
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
