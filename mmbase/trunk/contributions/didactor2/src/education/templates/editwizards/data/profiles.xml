@@ -50,12 +50,18 @@
          <field name="name" ftype="data"/>
          <field ftype="startwizard" wizardname="competencies" />
       </item>
-      <command name="search" nodepath="competencies" fields="name" age="-1" orderby="number" directions="down">
+
+      <command name="search" nodepath="competencetypes,competencies" fields="competencetypes.name,competencies.name" age="-1" orderby="competencetypes.name,competencies.name" directions="up,up">
          <search-filter>
-            <name>Naam bevat</name>
-            <search-fields>name</search-fields>
+            <name>Competentie type bevat</name>
+            <search-fields>competencetypes.name</search-fields>
+         </search-filter>
+         <search-filter>
+            <name>Competentie bevat</name>
+            <search-fields>competencies.name</search-fields>
          </search-filter>
       </command>
+
       <command name="startwizard" inline="true" wizardname="competencies" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
