@@ -1,5 +1,12 @@
 Migratie issues
 
+2005-05-10
+    Profiles builder has got some new fields.
+    
+    ALTER TABLE `mmb_profiles`   ADD `general_description`       BLOB DEFAULT NULL;
+    ALTER TABLE `mmb_profiles`   ADD `description_of_profession` BLOB DEFAULT NULL;
+
+
 2005-05-04
     People builder has got some new and some changed fields.
 
