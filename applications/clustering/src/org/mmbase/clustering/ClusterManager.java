@@ -18,6 +18,7 @@ import org.mmbase.clustering.WaitNode;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBaseChangeInterface;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ClusterManager.java,v 1.2 2005-05-18 21:27:47 andre Exp $
  */
 public abstract class ClusterManager implements MMBaseChangeInterface, Runnable {
 
