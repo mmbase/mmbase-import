@@ -9,6 +9,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 
+import java.util.regex.*;
+
 import org.mmbase.util.StringObject;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.XSLTransformer;
@@ -21,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.32 2005-05-18 22:09:21 michiel Exp $
+ * @version $Id: XmlField.java,v 1.33 2005-05-18 23:18:05 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -36,6 +38,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int XML      = 4;
     public final static int POORBODY = 5;
     public final static int RICHBODY = 6;
+    public final static int WIKI     = 12;
 
     // cannot yet be encoded even..
     public final static int HTML_INLINE    = 7;
@@ -272,12 +275,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     break;
                 }
             }
-            if (pos == -1)
+            if (pos == -1) {
                 break; // not found, could not happen.
+            }
             // replace it.
             obj.delete(pos, 4);
             obj.insert(pos, "</h>");
-            pos += 2;
+            pos += 4;
             pos = obj.indexOf("<p>$", pos); // search the next one.
         }
         // ready, close all sections still open.
@@ -374,11 +378,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         } else {
             cleanupText(obj);
         }
+
+    }
+    private static String prepareDataString(String data) {
+        return Xml.XMLEscape(data).replaceAll("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
     }
     private static StringObject prepareData(String data) {
-        StringObject obj = new StringObject(Xml.XMLEscape(data));
-        obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
-        return obj;
+        return new StringObject(prepareDataString(data));
     }
 
 
@@ -395,6 +401,26 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private static void handleNewlines(StringObject obj) {
         obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />" the \n was necessary for </ul></p>
         obj.replace("\n", "<br />\r");  // handle new remaining newlines.
+    }
+
+    private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
+    private static Pattern wikiP = Pattern.compile("<p>\\[(\\w+)\\]");
+    private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
+
+
+    public static String wikiToXML(String data) {
+        Matcher anchors = wikiAnchor.matcher(prepareDataString(data));
+        data = anchors.replaceAll("<a id=\"$1\">$2</a>");
+        StringObject obj = new StringObject(data);
+        handleRich(obj, true, false, true);
+        handleFormat(obj, false);
+        String string = obj.toString();
+        Matcher ps = wikiP.matcher(string);
+        string = ps.replaceAll("<p id=\"$1\">");
+        Matcher sections = wikiSection.matcher(string);
+        string = sections.replaceAll("<section id=\"$1\"><h>");
+        return string;
+
     }
 
     /**
@@ -637,6 +663,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             case RICHBODY :
             case POORBODY :
                 return XSLTransform("mmxf2rich.xslt", XML_TAGSTART + data + XML_TAGEND);
+            case WIKI :
+                return XSLTransform("2rich.xslt", data);
             case ASCII :
                 return XSLTransform("mmxf2ascii.xslt", data);
             case XHTML :
@@ -664,6 +692,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 break;
             case POOR :
                 result = XML_TAGSTART + poorToXML(r) + XML_TAGEND;
+                validate(XML_HEADER + result);
+                break;
+            case WIKI :
+                result = XML_TAGSTART + wikiToXML(r) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
             case RICHBODY :
