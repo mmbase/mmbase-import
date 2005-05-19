@@ -29,7 +29,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.58 2005-05-14 14:06:48 nico Exp $
+ * @version $Id: Config.java,v 1.59 2005-05-19 09:04:23 pierre Exp $
  */
 
 public class Config {
@@ -331,7 +331,7 @@ public class Config {
                 String sFields = realSearchField;
                 if (sFields == null) sFields = searchFields;
                 if (sFields.equals("owner") || sFields.endsWith(".owner")) {
-                    sType = "string";
+                    sType = "like";
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
                     sType = "equals";
                 }
@@ -653,7 +653,7 @@ public class Config {
 
                 if (config.templates != null) {
                     URL templatesDir = getResource(config.templates);
-                    if (templatesDir == null) {                        
+                    if (templatesDir == null) {
                         throw new WizardException("" +  config.templates + " does not exist");
                     }
                     extraDirs.add("templates:", templatesDir);
