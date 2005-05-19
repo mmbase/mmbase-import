@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.15 2005-04-13 11:37:33 michiel Exp $
+  @version $Id: prompts.xsl,v 1.16 2005-05-19 08:44:53 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -110,7 +110,12 @@
 <xsl:variable name="tooltip_logout" >Uitloggen en terug naar de startpagina</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
-  <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
+  <xsl:param name="searchvalue" />
+  <xsl:value-of select="$title" disable-output-escaping="yes"  />
+  <xsl:if test="$searchvalue" >
+    , zoek op <xsl:value-of select="$searchvalue" />
+  </xsl:if>
+  (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
 <xsl:variable name="tooltip_sort_on">Sorteer op</xsl:variable>
