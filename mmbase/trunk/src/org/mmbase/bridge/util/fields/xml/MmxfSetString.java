@@ -24,14 +24,15 @@ import org.apache.xml.serialize.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.1 2005-05-18 22:06:28 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.2 2005-05-19 13:43:33 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfSetString.class);
 
-    private static XmlField xmlField = new XmlField(XmlField.POOR);
+    private static XmlField xmlField = new XmlField(XmlField.WIKI);
+
     
     private Document parse(String value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
         try {
@@ -63,30 +64,19 @@ public class MmxfSetString implements  Processor {
         return document; 
     }
 
-    private void parseWiki(org.w3c.dom.Node element) {
-    }
-
-    private Document parseWiki(Document document) {
-        Element root = document.getDocumentElement();
-        org.w3c.dom.NodeList childs = root.getChildNodes();
-        for (int i = 0; i < childs.getLength(); i++) {
-            parseWiki(childs.item(i));
-        }
-        return document;
-    }
-
+    
     public Object process(Node node, Field field, Object value) {
         
 
         try {
             switch(MmxfGetString.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case MmxfGetString.MODE_KUPU: {
-                log.info("Handeling kupu-input: " + value);
+                log.debug("Handeling kupu-input: " + value);
                 return parseKupu(parse("" + value));
             }
             case MmxfGetString.MODE_WIKI: {
-                Document document  = parse(xmlField.transformBack(""  + value));
-                return parseWiki(document);
+                log.debug("Handling wiki-input: " + value);
+                return  parse(xmlField.transformBack("" + value));
             }
             case MmxfGetString.MODE_FLAT: {
                 return parse(xmlField.transformBack("" + value));
