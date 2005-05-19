@@ -88,7 +88,7 @@
 		<mm:first>|</mm:first>
 		<a href="<mm:url referid="search_str" referids="_@ofs" />"><mm:index /></a>
 		<mm:last>
-		  <mm:write><mm:islessthan value="${+ $totsize - $conf_max}">&nbsp;&raquo;&raquo;</mm:islessthan></mm:write>
+		  <mm:write><mm:islessthan value="$[+ $totsize - $conf_max]">&nbsp;&raquo;&raquo;</mm:islessthan></mm:write>
 		</mm:last>
 		<mm:last inverse="true">|</mm:last>
 	  </mm:nextbatches>
