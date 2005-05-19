@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.34 2005-05-18 08:08:09 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.35 2005-05-19 13:07:49 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -498,12 +498,13 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             enc = getDefaultCharacterEncoding(pageContext);
         } else {
             // I think this happens seldom, if ever.
-            log.debug("form encoding specified: " + enc);
+            log.info("form encoding specified: " + enc);
         }
 
         if (enc.equalsIgnoreCase("ISO-8859-1")) {
             enc = "CP1252";                                
-        }                            
+        }                 
+        log.info("Fixing char encoding of " + value + " to " + enc);
         return fixEncoding(value, enc);
     }
    
@@ -546,7 +547,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 if (log.isDebugEnabled()) {
                     log.debug("searching " + referId + " in multipart post");
                 }
-                result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
+                //result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
+                result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
