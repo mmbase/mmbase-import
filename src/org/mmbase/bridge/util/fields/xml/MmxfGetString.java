@@ -17,6 +17,8 @@ import org.mmbase.util.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.parsers.*;
+
+import java.io.*;
 import org.w3c.dom.*;
 
 
@@ -24,7 +26,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.1 2005-05-18 22:06:28 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.2 2005-05-19 13:43:33 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -32,14 +34,17 @@ public class MmxfGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfGetString.class);
 
     public static final int MODE_XML   = 0;
-    public static final int MODE_FLAT  = 1;
-    public static final int MODE_WIKI  = 2;
-    public static final int MODE_KUPU  = 3;
+    public static final int MODE_PRETTYXML   = 1;
+    public static final int MODE_FLAT  = 2;
+    public static final int MODE_WIKI  = 3;
+    public static final int MODE_KUPU  = 4;
     
 
     public static int getMode(Object mode) {
         if ("xml".equals(mode)) {
             return MODE_XML;
+        } else if ("prettyxml".equals(mode)) {
+            return MODE_PRETTYXML;
         } else if ("flat".equals(mode)) {
             return MODE_FLAT;
         } else if ("wiki".equals(mode)) {
@@ -83,7 +88,7 @@ public class MmxfGetString implements  Processor {
             switch(getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case MODE_KUPU: {
                 //
-                log.info("Generating kupu-compatible XML for" + value);
+                log.debug("Generating kupu-compatible XML for" + value);
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2kupu.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
@@ -91,7 +96,7 @@ public class MmxfGetString implements  Processor {
                 return res.toString();
             }
             case MODE_WIKI: {
-                log.info("Generating 'wiki'  for" + value);
+                log.debug("Generating 'wiki'  for" + value);
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2rich.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
@@ -99,17 +104,35 @@ public class MmxfGetString implements  Processor {
                 return res.toString();
             }
             case MODE_FLAT: {
-                log.info("Generating 'flat'  for" + value);
+                log.debug("Generating 'flat'  for" + value);
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2rich.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), null);
                 return res.toString();
             }
+            case MODE_PRETTYXML: {
+                // get the XML from this thing....
+                // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+                // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
+                // org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
+                Document xml = node.getXMLValue(field.getName());
+                
+                if(xml != null) {
+                    return org.mmbase.util.xml.XMLWriter.write(xml, true, true);
+                }
+                return "";
+                
+            }                
             case MODE_XML:
             default:
-                // on default, supose a text-area, which can be translated to 
-                return value;      
+                Document xml = node.getXMLValue(field.getName());
+                
+                if(xml != null) {
+                    // make a string from the XML
+                    return org.mmbase.util.xml.XMLWriter.write(xml, false, true);
+                }
+                return "";
             }          
         } catch (Exception e) {
             log.error(e.getMessage(), e);
