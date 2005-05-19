@@ -2,6 +2,8 @@
 %><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
 <title><%=m.getString("commit_node.commit")%></title>
+
+<mm:log>Saving with XML-mode <%=cloud.getProperty("org.mmbase.xml-mode")%></mm:log>
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />
 <mm:import externid="page">0</mm:import>
@@ -13,6 +15,8 @@
 <mm:import externid="deleterelations" />
 <mm:import externid="ok" />
 <mm:import externid="node_number" />
+<mm:import externid="save" />
+<mm:present referid="save"><mm:import id="ok" reset="true" /></mm:present>
 
 <mm:url id="redirectTo" write="false"  page="<%=peek(urlStack)%>"><% if (urlStack.size() > 1) { %><mm:param name="nopush" value="url" /><% } %></mm:url>
 
@@ -80,9 +84,18 @@
           <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
       </mm:maywrite>       
+      <mm:remove referid="redirectTo" />
+      <mm:present referid="save">
+	<mm:url id="redirectTo" write="false" page="change_node.jsp" >
+	  <mm:param name="node_number"><mm:field name="number" /></mm:param>
+	  <mm:param name="push"><mm:field name="number" /></mm:param>
+	</mm:url>
+      </mm:present>
+      <mm:notpresent referid="save">
+	<mm:url id="redirectTo" write="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url>
+      </mm:notpresent>
     </mm:node>
-    <mm:remove referid="redirectTo" />
-    <mm:url id="redirectTo" write="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url>
+
 </mm:present>
 </mm:notpresent>
 
