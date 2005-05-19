@@ -27,7 +27,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.49.2.5 2004-09-16 10:44:38 pierre Exp $
+ * @version $Id: Config.java,v 1.49.2.6 2005-05-19 09:00:36 pierre Exp $
  */
 
 public class Config {
@@ -325,7 +325,7 @@ public class Config {
                 String sFields = realSearchField;
                 if (sFields == null) sFields = searchFields;
                 if (sFields.equals("owner") || sFields.endsWith(".owner")) {
-                    sType = "string";
+                    sType = "like";
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
                     sType = "equals";
                 }
