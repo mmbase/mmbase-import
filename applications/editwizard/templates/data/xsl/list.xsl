@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.40 2005-04-13 11:37:33 michiel Exp $
+    @version $Id: list.xsl,v 1.41 2005-05-19 08:44:53 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -30,6 +30,7 @@
   <xsl:param name="start" />
   <xsl:param name="fields" />
   <xsl:param name="searchfields" />
+  <xsl:param name="realsearchfield" />
   <xsl:param name="nodepath" />
   <xsl:param name="startnodes" />
   <xsl:param name="orderby" />
@@ -69,7 +70,9 @@
   <xsl:template name="subtitle">
     <td>
       <div title="{$tooltip_edit_list}">
-        <xsl:call-template name="prompt_edit_list" />
+        <xsl:call-template name="prompt_edit_list" >
+            <xsl:with-param name="searchvalue" select="$searchvalue" />
+        </xsl:call-template>
       </div>
     </td>
   </xsl:template>
@@ -102,10 +105,10 @@
           <br />
           <div width="100%" align="left">
             <xsl:if test="$createprompt">
-              <div style="width: 200px;">	 
-                <xsl:value-of select="$createprompt" /> 
-              </div>		   		
-            </xsl:if>            
+              <div style="width: 200px;">
+                <xsl:value-of select="$createprompt" />
+              </div>
+            </xsl:if>
             <a
               href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}"
               title="{$tooltip_new}">
@@ -142,10 +145,10 @@
                 <td>
 
                   <xsl:if test="$createprompt">
-                    <div style="width: 200px;">	 
-                      <xsl:value-of select="$createprompt" /> 
-                    </div>		   		
-                  </xsl:if>            
+                    <div style="width: 200px;">
+                      <xsl:value-of select="$createprompt" />
+                    </div>
+                  </xsl:if>
                   <a href="{$wizardpage}&amp;referrer={$referrer_encoded}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
                     <xsl:call-template name="prompt_new" />
                   </a>
@@ -164,6 +167,9 @@
 
                   <select name="realsearchfield">
                     <option value="{$searchfields}">
+                      <xsl:if test="$realsearchfield=$searchfields" >
+                        <xsl:attribute name="selected">selected</xsl:attribute>
+                      </xsl:if>
                       <xsl:call-template name="prompt_search_title" />
                     </option>
                     <xsl:call-template name="search-fields-default" />
@@ -214,17 +220,29 @@
   <xsl:template name="search-fields-default">
     <xsl:if test="$objecttype=&apos;&apos;">
       <option value="number">
+        <xsl:if test="$realsearchfield=&apos;number&apos;" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_number" />
       </option>
       <option value="owner">
+        <xsl:if test="$realsearchfield=&apos;owner&apos;" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_owner" />
       </option>
     </xsl:if>
     <xsl:if test="$objecttype!=&apos;&apos;">
       <option value="{$objecttype}.number">
+        <xsl:if test="$realsearchfield=concat($objecttype,&apos;.number&apos;)" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_number" />
       </option>
       <option value="{$objecttype}.owner">
+        <xsl:if test="$realsearchfield=concat($objecttype,&apos;.owner&apos;)" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_owner" />
       </option>
     </xsl:if>
