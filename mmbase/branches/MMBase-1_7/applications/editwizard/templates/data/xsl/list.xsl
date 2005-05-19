@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.37.2.2 2005-03-22 09:38:28 pierre Exp $
+    @version $Id: list.xsl,v 1.37.2.3 2005-05-19 08:49:13 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -28,6 +28,7 @@
   <xsl:param name="start" />
   <xsl:param name="fields" />
   <xsl:param name="searchfields" />
+  <xsl:param name="realsearchfield" />
   <xsl:param name="nodepath" />
   <xsl:param name="startnodes" />
   <xsl:param name="orderby" />
@@ -67,7 +68,9 @@
   <xsl:template name="subtitle">
     <td>
       <div title="{$tooltip_edit_list}">
-        <xsl:call-template name="prompt_edit_list" />
+        <xsl:call-template name="prompt_edit_list" >
+          <xsl:with-param name="searchvalue" select="$searchvalue">
+        </xsl:call-template>
       </div>
     </td>
   </xsl:template>
@@ -151,6 +154,9 @@
 
                   <select name="realsearchfield">
                     <option value="{$searchfields}">
+                      <xsl:if test="$realsearchfield=$searchfields" >
+                        <xsl:attribute name="selected">selected</xsl:attribute>
+                      </xsl:if>
                       <xsl:call-template name="prompt_search_title" />
                     </option>
                     <xsl:call-template name="search-fields-default" />
@@ -201,17 +207,29 @@
   <xsl:template name="search-fields-default">
     <xsl:if test="$objecttype=&apos;&apos;">
       <option value="number">
+        <xsl:if test="$realsearchfield=&apos;number&apos;" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_number" />
       </option>
       <option value="owner">
+        <xsl:if test="$realsearchfield=&apos;owner&apos;" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_owner" />
       </option>
     </xsl:if>
     <xsl:if test="$objecttype!=&apos;&apos;">
       <option value="{$objecttype}.number">
+        <xsl:if test="$realsearchfield=concat($objecttype,&apos;.number&apos;)" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_number" />
       </option>
       <option value="{$objecttype}.owner">
+        <xsl:if test="$realsearchfield=concat($objecttype,&apos;.owner&apos;)" >
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="prompt_search_owner" />
       </option>
     </xsl:if>
