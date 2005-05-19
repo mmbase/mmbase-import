@@ -28,7 +28,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.10 2005-05-02 11:40:56 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.11 2005-05-19 13:09:40 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -56,9 +56,7 @@ public class XmlHandler extends StringHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        String xmlmode = node == null ? "" : "" + node.getCloud().getProperty(Cloud.PROP_XMLMODE);
-        if (xmlmode.equals("")) xmlmode = "xml";
-        if(! search && xmlmode.equals("xml")) {
+        if(! search) {
             StringBuffer buffer = new StringBuffer();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
@@ -66,43 +64,17 @@ public class XmlHandler extends StringHandler {
             buffer.append("\"");
             addExtraAttributes(buffer);
             buffer.append(">");
+            String value;
             if (node != null) {
-                try {
-                    // get the XML from this thing....
-                    // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-                    // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
-                    // org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
-                    org.w3c.dom.Document xml = node.getXMLValue(field.getName());
-
-                    if(xml != null) {
-                        // make a string from the XML
-                        TransformerFactory tfactory = TransformerFactory.newInstance();
-                        //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-                        Transformer serializer = tfactory.newTransformer();
-                        serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-                        serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                        StringBufferWriter str = new StringBufferWriter(buffer);     
-                        Writer w = new TransformingWriter(str, ct);
-                        // there is a <field> tag placed around it,... we hate it :)
-                        // change this in the bridge?
-                        serializer.transform(new DOMSource(xml),  new StreamResult(w));
-
-                        w.close();
-
-                    }
-                } catch(IOException ioe) {
-                    throw new JspTagException(ioe.toString() + " " + Logging.stackTrace(ioe));
-                } catch(TransformerConfigurationException tce) {
-                    throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
-                } catch(TransformerException te) {
-                    throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
-                }
+                value = node.getStringValue(field.getName());
             } else {
-                String opt = tag.getOptions();
-                if (opt != null && opt.indexOf("noempty") > -1) {
-                    buffer.append(" ");
-                }
+                value = "";
             }
+            buffer.append(value);
+            String opt = tag.getOptions();
+            if (opt != null && opt.indexOf("noempty") > -1 && value.equals("")) {
+                buffer.append(" ");
+            }            
             buffer.append("</textarea>");
             return buffer.toString();
         } else {
