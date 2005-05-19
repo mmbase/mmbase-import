@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.1 2005-04-25 15:03:07 pierre Exp $
+    @version  $Id: index.jsp,v 1.1.2.1 2005-05-19 09:09:25 pierre Exp $
     -->
 
    <link rel="stylesheet" type="text/css" href="../style.css" />
