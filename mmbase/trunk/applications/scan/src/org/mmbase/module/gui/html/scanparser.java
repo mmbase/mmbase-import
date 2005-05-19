@@ -13,6 +13,7 @@ package org.mmbase.module.gui.html;
 import java.util.*;
 import java.io.*;
 import java.util.zip.*;
+import javax.servlet.*;
 
 import org.mmbase.module.*;
 import org.mmbase.util.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.69 2005-01-24 13:13:44 marcel Exp $
+ * @version $Id: scanparser.java,v 1.70 2005-05-19 12:06:54 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -77,6 +78,28 @@ public class scanparser extends ProcessorModule {
         rnd=new RandomPlus();
         crcseed=rnd.nextInt();
     }
+
+     /**
+      * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
+      * which is set when servscan is loaded.
+      * Fixed on 22 December 1999 by daniel & davzev.
+      * @param ext A String containing the extension.
+      * @return The mimetype.
+      */
+     public String getMimeType(String ext) {
+         return getMimeTypeFile("dummy."+ext);
+     }
+ 
+     public String getMimeTypeFile(String fileName) {
+         ServletContext sx = MMBaseContext.getServletContext();
+         String mimeType = sx.getMimeType(fileName);
+         if (mimeType == null) {
+             log.warn("getMimeType(" + fileName + "): Can't find mimetype retval=null -> setting mimetype to default text/html");
+             mimeType = "text/html";
+         }
+         return mimeType;
+     }
+
 
     public String doPrePart(String template, int last, int rpos, int numitems,int epos) {
         int precmd=0,postcmd=0,prepostcmd=0,index;
