@@ -39,6 +39,14 @@
 
 
 <mm:present referid="display">
+
+      <%-- the <hr> will be translated into a pagebreak in the PDF --%>
+      <mm:compare referid="node_type" value="page">
+          <hr/>
+      </mm:compare>
+
+
+
    <%
       String sIntro = "";
       String sText = "";
@@ -76,9 +84,6 @@
             throw new ServletException("Please set 'internalUrl' in the web.xml!");
          }
       %>
-      <%-- the <hr> will be translated into a pagebreak in the PDF --%>
-      <hr/>
-
       <%// Go through all paragraphs %>
       <table  border="0" cellpadding="0" cellspacing="0" width="100%">
          <mm:related path="posrel,paragraphs" orderby="posrel.pos" directions="UP">

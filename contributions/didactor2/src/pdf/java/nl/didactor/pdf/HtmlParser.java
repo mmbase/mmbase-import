@@ -24,7 +24,7 @@ public class HtmlParser extends com.lowagie.text.html.HtmlParser {
 
     public HtmlParser() {
         super();
-        System.err.println("nl.didactor.pdf.HtmlParser created");
+//        System.err.println("nl.didactor.pdf.HtmlParser created");
     }
     
 // maps hr -> newpage
@@ -87,7 +87,7 @@ public class HtmlParser extends com.lowagie.text.html.HtmlParser {
     
     public void go(DocListener document, InputStream is) {
         try {
-            System.err.println("Going to parse...");
+//            System.err.println("Going to parse...");
             parser.parse(new InputSource(is), getHtmlHandler(document));
         }
         catch(SAXException se) {
