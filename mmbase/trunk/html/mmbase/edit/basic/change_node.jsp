@@ -38,9 +38,22 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+   <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
+    <mm:fieldlist type="edit">
+      <mm:fieldinfo type="type">
+	<mm:compare value="8">
+	  <mm:import id="hasxml" reset="true" />
+	  <mm:fieldinfo type="guitype">
+	    <mm:compare value="mmxf">
+	      <mm:import id="hasmmxf" reset="true" />
+	    </mm:compare>
+	  </mm:fieldinfo>
+	</mm:compare>
+      </mm:fieldinfo>
+    </mm:fieldlist>
+
   <mm:nodeinfo type="gui" />:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
@@ -48,9 +61,25 @@
     <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
       <span class="tree"></span><span class="alt">[tree]</span>
      </a>
-     </td>
-  </th></tr>
-    <mm:fieldlist id="my_form" type="edit" fields="owner">
+     <mm:present referid="hasmmxf">
+       <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
+       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu</mm:import>
+       <mm:stringlist referid="xmlmodes">
+	 <mm:compare referid2="config.xmlmode" inverse="true">
+	   <a href="<mm:url referids="this_node@node_number">
+	     <mm:param name="mmjspeditors_xmlmode"><mm:write /></mm:param>
+	     </mm:url>"><mm:write /></a>
+	 </mm:compare>
+	 <mm:compare referid2="config.xmlmode">
+	   <mm:write />
+	 </mm:compare>
+	 <mm:last inverse="true"> | </mm:last>
+       </mm:stringlist>
+       | <a target="_new" href="<mm:url referids="node_number" page="mmxf_preview.jsp" />">preview</a>
+     </mm:present>
+   </td>
+   </th></tr>
+   <mm:fieldlist id="my_form" type="edit" fields="owner">
       <tr>
         <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
         <td class="listdata" colspan="2"><mm:fieldinfo type="$showtype" />&nbsp;</td>
@@ -59,6 +88,7 @@
 <tr>
 <td colspan="3" class="buttons">
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="save" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
