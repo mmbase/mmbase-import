@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.27 2005-04-13 11:37:33 michiel Exp $
+    @version $Id: prompts.xsl,v 1.28 2005-05-19 08:44:53 pierre Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -92,8 +92,8 @@
   <xsl:variable name="tooltip_new">Add a new item to the list</xsl:variable>
   <xsl:template name="prompt_new">
     <img src="{$mediadir}new.gif"
-         alt="{$tooltip_new}" 
-         title="{$tooltip_new}" 
+         alt="{$tooltip_new}"
+         title="{$tooltip_new}"
          class="imgbutton"/>
   </xsl:template>
 
@@ -194,7 +194,12 @@
 
   <!-- prompts and tooltips for lists -->
   <xsl:template name="prompt_edit_list">
-      <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
+      <xsl:param name="searchvalue" />
+      <xsl:value-of select="$title" disable-output-escaping="yes"  />
+      <xsl:if test="$searchvalue" >
+        , searching on <xsl:value-of select="$searchvalue" />
+      </xsl:if>
+      (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
   </xsl:template>
   <xsl:variable name="tooltip_edit_list">These are the items that you can edit.</xsl:variable>
   <xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
