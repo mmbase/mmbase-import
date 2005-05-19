@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.95 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.96 2005-05-19 13:41:07 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1307,8 +1307,9 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (objectValue == null && field.isRequired()) objectValue = "";
-        objectValue = Casting.toXML(objectValue);
-        node.storeValue(field.getName(), objectValue);
+        org.w3c.dom.Document xml = node.getXMLValue(field.getName());
+        objectValue = org.mmbase.util.xml.XMLWriter.write(xml, false, true);
+        node.storeValue(field.getName(), objectValue); // to make sure that it is the same as in the database
         setStringValue(statement, index, objectValue, field, node);
     }
 
