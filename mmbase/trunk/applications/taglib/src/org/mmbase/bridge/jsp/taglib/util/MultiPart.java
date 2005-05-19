@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.12 2005-05-02 11:45:32 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.13 2005-05-19 13:07:49 michiel Exp $
  **/
 
 public class MultiPart {
@@ -147,10 +147,10 @@ public class MultiPart {
             String xmltext = new String(xmlbytes);
             if (xmltext.startsWith("<?xml")) {
                 int i = xmltext.indexOf("encoding");
-                log.info("i=*" + i + "*");
+                log.debug("i=*" + i + "*");
                 if (i > 0) {
                     int j = xmltext.indexOf("?>", i);
-                    log.info("j=*" + j + "*");
+                    log.debug("j=*" + j + "*");
                     if (j > i) {
                         // get trimmed attribute value
                         encoding = xmltext.substring(i + 8, j).trim();
@@ -178,6 +178,8 @@ public class MultiPart {
         public Object getParameterValues(String param) throws JspTagException {
             // this method will return null, if the parameter is not set...
             Object value = parametersMap.get(param);
+            //log.debug("Got param " + param + " " + (value == null ? "NULL" : value.getClass().getName()) + " " + value);
+                    
             if (value instanceof FileItem) {
                 try {
                     return encodeBytesAsString(((FileItem)value).get());
