@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.62 2005-03-16 19:16:28 michiel Exp $
+ * @version $Id: Module.java,v 1.63 2005-05-19 12:07:37 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -239,27 +239,6 @@ public abstract class Module extends FunctionProvider {
     public void maintainance() {
     }
 
-    /**
-     * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
-     * which is set when servscan is loaded.
-     * Fixed on 22 December 1999 by daniel & davzev.
-     * XXX: why is this in Module???
-     * @param ext A String containing the extension.
-     * @return The mimetype.
-     */
-    public String getMimeType(String ext) {
-        return getMimeTypeFile("dummy."+ext);
-    }
-
-    public String getMimeTypeFile(String fileName) {
-        ServletContext sx = MMBaseContext.getServletContext();
-        String mimeType = sx.getMimeType(fileName);
-        if (mimeType == null) {
-            log.warn("getMimeType(" + fileName + "): Can't find mimetype retval=null -> setting mimetype to default text/html");
-            mimeType = "text/html";
-        }
-        return mimeType;
-    }
 
     /**
      * Calls shutdown of all registered modules.
@@ -268,7 +247,7 @@ public abstract class Module extends FunctionProvider {
      */
     public static synchronized final void shutdownModules() {
         Iterator i = getModules();
-        while (i.hasNext()) {
+        while (i != null && i.hasNext()) {
             Module m = (Module) i.next();
             log.service("Shutting down " + m.getName());
             m.shutdown();
