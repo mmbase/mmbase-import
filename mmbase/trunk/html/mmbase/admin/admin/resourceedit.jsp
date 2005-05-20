@@ -150,7 +150,7 @@
 
     while (i.hasNext()) {
        String res = (String) i.next();
-       URL url = resourceLoader.findResource(res);
+       URL url = resourceLoader.getResource(res);
        URLConnection con = url.openConnection();
        boolean editable = con.getDoOutput();
 %>
