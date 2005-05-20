@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.13 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.14 2005-05-20 09:03:35 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -279,7 +279,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 }
 
 /**
- * Implements SesrvletOutputStream.
+ * Implements ServletOutputStream.
  */
 class MyServletOutputStream extends ServletOutputStream {
 

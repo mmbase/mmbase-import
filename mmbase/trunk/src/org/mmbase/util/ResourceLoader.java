@@ -87,7 +87,7 @@ When you want to place a configuration file then you have several options, wich 
  *   Resources which do not reside in the MMBase configuration repository, can also be handled. Those can be resolved relatively to the web root, using {@link #getWebRoot()}. 
  * </p>
  *
- * <p>Resource can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
+ * <p>Resources can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
  *
  * <p>If you want to check beforehand if a resource can be changed, then something like <code>resourceLoader.getResource().openConnection().getDoOutput()</code> can be used.</p>
  * <p>That is also valid if you want to check for existance. <code>resourceLoader.getResource().openConnection().getDoInput()</code>.</p>
@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.14 2005-04-25 14:14:43 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.15 2005-05-20 09:02:54 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -290,7 +290,7 @@ public class ResourceLoader extends ClassLoader {
             }
             if (configPath != null) {
                 if (servletContext != null) {
-                    // take into account configpath can start at webrootdir
+                    // take into account that configpath can start at webrootdir
                     if (configPath.startsWith("$WEBROOT")) {
                         configPath = servletContext.getRealPath(configPath.substring(8));
                     }
@@ -510,8 +510,9 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * Returns the 'parent' ResourceLoader. Or <code>null</code> if this ClassLoader has no parent. You can create a ResourceLoader with a parent by
-     * {@link #getChildResourceLoader(String)}.
+     * Returns the 'parent' ResourceLoader. Or <code>null</code> if this ClassLoader has no
+     * parent. You can create a ResourceLoader with a parent by {@link
+     * #getChildResourceLoader(String)}.
      */
     public ResourceLoader getParentResourceLoader() {
         return parent;
@@ -532,7 +533,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns a set of 'sub resources' (read: 'files in the same directory'), which can succesfully be be loaded by the ResourceLoader.
+     * Returns a set of 'sub resources' (read: 'files in the same directory'), which can succesfully be loaded by the ResourceLoader.
      *
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
      * @param recursive If true, then also subdirectories are searched.
@@ -571,7 +572,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * If you want to change a resource, or create one. Then this method can be used. Specify the
+     * If you want to change a resource, or create one, then this method can be used. Specify the
      * desired resource-name and you get an OutputStream back, to which you must write.
      *
      * This is a shortcut to <code>findResource(name).openConnection().getOutputStream()</code>
@@ -582,14 +583,14 @@ public class ResourceLoader extends ClassLoader {
      * @throws IOException If the Resource for some reason could not be created.
      */
     public OutputStream createResourceAsStream(String name) throws IOException {
-        if (name.equals("")) {
+        if (name == null || name.equals("")) {
             throw new IOException("You cannot create a resource with an empty name");
         }
         return findResource(name).openConnection().getOutputStream();
     }
 
     /**
-     * Returns the givens resource as a InputSource (XML streams). ResourceLoader is often used for
+     * Returns the givens resource as an InputSource (XML streams). ResourceLoader is often used for
      * XML.
      * The System ID is set, otherwise you could as wel do new InputSource(r.getResourceAsStream());
      * @param name The name of the resource to be loaded
@@ -617,7 +618,9 @@ public class ResourceLoader extends ClassLoader {
      * configuration in in XML.
      *
      * @param name The name of the resource to be loaded
-     * @return The Document if succesfull, <code>null</code> if there is not such resource.
+     * @return The Document if succesful, <code>null</code> if there is no such resource.
+     * @throws SAXException If the resource does not present parseable XML.
+     * @throws IOException 
      */
     public Document getDocument(String name) throws org.xml.sax.SAXException, IOException  {
         InputSource source = getInputSource(name);
@@ -656,7 +659,7 @@ public class ResourceLoader extends ClassLoader {
                 serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, docType.getPublicId());
                 serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, docType.getSystemId());
             }
-            // Indenting not very nice int all xslt-engines, but well, its better then depending
+            // Indenting not very nice in all xslt-engines, but well, its better then depending
             // on a real xslt or lots of code.
             serializer.transform(source, streamResult);
         } catch (final TransformerException te) {
@@ -673,14 +676,16 @@ public class ResourceLoader extends ClassLoader {
      * @see #createResourceAsStream(String)
      */
     public void  storeDocument(String name, Document doc) throws IOException {
-        log.info("Storing " + doc.getDoctype());
+        log.service("Storing " + doc.getDoctype() + " in resource " + name);
         storeSource(name, new DOMSource(doc), doc.getDoctype());
     }
 
     /**
      * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
-     * Resource are actually InputStreams (byte arrays), but often they are quite text-oriented
+     * Resources are actually InputStreams (byte arrays), but often they are quite text-oriented
      * (like e.g. XML's or property-files), so this method may be useful.
+     * A resource is supposed to be a property-file if it's name ends in ".properties", it is
+     * supposed to be XML if it's content starts with &lt;?xml.
      * @see #getResourceAsStream(String)
      */
     public Reader getReader(String name) throws IOException {
@@ -721,7 +726,9 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
+     * Returns a writer for a given resource, so that you can overwrite or create it. This performs
+     * the tricky task of serializing to the right encoding. It supports the same tricks as {@link
+     * #getReader}, but then inversed.
      * @see #getReader(String)
      * @see #createResourceAsStream(String)
      */
@@ -1148,7 +1155,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /** 
-     * A URLConnection base on an MMBase node.
+     * A URLConnection based on an MMBase node.
      * @see FileConnection
      */
     private class NodeConnection extends URLConnection {
@@ -1214,7 +1221,7 @@ public class ResourceLoader extends ClassLoader {
             if (node != null) {
                 return new ByteArrayInputStream(node.getByteValue(Resources.HANDLE_FIELD));
             } else {
-               throw new IOException("No such (node) resource for " + name);
+                throw new IOException("No such (node) resource for " + name);
             }
         }
         public OutputStream getOutputStream() throws IOException {
@@ -1271,7 +1278,15 @@ public class ResourceLoader extends ClassLoader {
 
     }
 
+    /**
+     * If running in a servlet 2.3 environment the ServletResourceURLStreamHandler is not fully
+     * functional. A warning about that is logged, but only once.
+     */
     private static boolean warned23 = false;
+
+    /**
+     * URLStreamHandler based on the servletContext object of ResourceLoader
+     */
     protected  class ServletResourceURLStreamHandler extends PathURLStreamHandler {
         private String root;
         ServletResourceURLStreamHandler(String r) {
