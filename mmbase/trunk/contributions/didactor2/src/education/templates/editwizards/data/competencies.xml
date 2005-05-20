@@ -3,7 +3,7 @@
 <wizard-schema id="competencies">
    <title xml:lang="nl">Competentie editor</title>
    <title xml:lang="en">Competence editor</title>
-   
+
    <action type="create">
       <object type="competencies">
       </object>
@@ -59,7 +59,7 @@
    </list>
 
 
-   <list role="posrel" destination="competencetypes" minoccurs="0" maxoccurs="*" ordertype="number">
+   <list role="posrel" destination="competencetypes" minoccurs="1" maxoccurs="1" ordertype="number">
       <title xml:lang="nl">Competentie type</title>
       <title xml:lang="en">Competence type</title>
       <item>
