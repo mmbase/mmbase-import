@@ -2,12 +2,12 @@
 <!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
 <util>
  <properties>
-	<!--
-	name="channelname"  Name of the channel the current instance should communicate on.
-	-->
-	<property name="channelname">local</property>
-
-    <!--
+   <!--
+       name="channelname"  Name of the channel the current instance should communicate on.
+     -->
+   <property name="channelname">local</property>
+   
+   <!--
     name="channelproperties"  Long string with all properties of a JChannel protocol stack. 
     Whitespaces and carriage returns are ignored. May be used for readability.
 
@@ -21,16 +21,16 @@
 
     JGroups automatically fragments large messages. Datagramsize is therefore not needed.
     -->
-	<property name="channelproperties">
-        UDP(mcast_addr=224.0.0.1;mcast_port=16080;ip_ttl=1):
-        PING(timeout=3000;num_initial_members=6):
-        FD(timeout=3000):
-        VERIFY_SUSPECT(timeout=1500):
-        pbcast.NAKACK(gc_lag=10;retransmit_timeout=600,1200,2400,4800):
-        UNICAST(timeout=600,1200,2400,4800):
-        pbcast.STABLE(desired_avg_gossip=10000):
-        FRAG:
-        pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)
-    </property>
-  </properties>
+   <property name="channelproperties">
+     UDP(mcast_addr=224.0.0.1;mcast_port=16080;ip_ttl=1):
+     PING(timeout=3000;num_initial_members=6):
+     FD(timeout=3000):
+     VERIFY_SUSPECT(timeout=1500):
+     pbcast.NAKACK(gc_lag=10;retransmit_timeout=600,1200,2400,4800):
+     UNICAST(timeout=600,1200,2400,4800):
+     pbcast.STABLE(desired_avg_gossip=10000):
+     FRAG:
+     pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)
+   </property>
+ </properties>
 </util>
