@@ -5,7 +5,7 @@
     <title xml:lang="en">Priorities</title>
 
     <action type="create">
-        <object type="competencetypes">
+        <object type="priorities">
         </object>
     </action>
 
