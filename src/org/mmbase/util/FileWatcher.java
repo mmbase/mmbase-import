@@ -15,6 +15,8 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * Original javadoc.
+
  *  This will run as a thread after it has been started.
  *  It will check every interval if one of it's files has been changed.
  *  When one of them has been changed, the OnChange method will be called, with the file that
@@ -44,15 +46,22 @@ import org.mmbase.util.logging.*;
  *	wait(100*1000);
  *	watcher.exit();
  *    </code>
- *
+ * 
  * Thanks to contributions by Mathias Bogaert.
  * Licence was changed from apache 1.1 to Mozilla.
+ *
+ * MMBase javadoc
+ *
+ * This code was originally borrowed from the log4j project (as can still be seen from the authors),
+ * it was however quite heavily adapted. You are probably better of using a {@link ResourceWatcher}
+ * (since MMBase 1.8), because that does not watch only files. Its implementation does of course use
+ * FileWatcher, for the 'file' part of the watching.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.27 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: FileWatcher.java,v 1.28 2005-05-20 09:03:56 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);

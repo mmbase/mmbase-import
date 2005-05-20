@@ -23,12 +23,12 @@ import org.mmbase.util.logging.*;
 
 /**
  *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
- *  to is added or changed, it onChange will be triggered, if not a 'more important' wil was
+ *  to is added or changed, it's onChange will be triggered, if not a 'more important' wil was
  *  existing already. If a file is removed, and was the most important one, it will be removed from the filewatcher. 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.3 2005-03-16 19:04:48 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.4 2005-05-20 09:02:54 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -43,7 +43,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     static  Set resourceWatchers = new HashSet();
 
     /**
-     * Considers all resource-watchers. Perhaps onChange must be called, because there is node for this resource available now.
+     * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
      */
     static void setResourceBuilder() {
         synchronized(resourceWatchers) {
@@ -85,7 +85,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     protected Map       nodeNumberToResourceName = new HashMap();
 
     /**
-     * Whether this ResourceWatchers has been started (see {@link #start}
+     * Whether this ResourceWatcher has been started (see {@link #start})
      */
     private boolean running = false;
 
@@ -135,7 +135,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     }
 
     /**
-     * If a node (of the type 'resourceBuilder' changes, checked if it is a node belonging to one of the resource of this resource-watcher.
+     * If a node (of the type 'resourceBuilder') changes, checks if it is a node belonging to one of the resource of this resource-watcher.
      * If so, {@link #onChange} is called.
      */
     protected boolean nodeChanged(String number, String ctype) {       
@@ -218,7 +218,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
     /**
      * When a resource is added to this ResourceWatcher, this method is called to create a
-     * FileWatcher, and add all Files associated with the resource to it.
+     * {@link FileWatcher}, and add all files associated with the resource to it.
      */
     protected synchronized void createFileWatcher(String resource) {
         FileWatcher fileWatcher = new ResourceFileWatcher(resource);
