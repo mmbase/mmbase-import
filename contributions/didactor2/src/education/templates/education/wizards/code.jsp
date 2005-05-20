@@ -288,54 +288,88 @@
    <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href="#" title=""><fmt:message key="competence"/></nobr></a>
    <br>
    <div id='competence_0' style='display: none'>
-      <%
-         String[] arrstrNames =    {"Competenties",
-                                    "Preassessments",
-                                    "Postassessments",
-                                    "Profielen",
-                                    "P.O.P."};
-         String[] arrstrBuilders = {"competencies",
-                                    "preassessments",
-                                    "postassessments",
-                                    "profiles",
-                                    "pop"};
-         String[] arrstrWizards =  {"competencies",
-                                    "preassessments",
-                                    "postassessments",
-                                    "profiles",
-                                    "pop"};
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=competencies&nodepath=competencies&searchfields=name&fields=name' title="Bewerk competenties" target="text">Competenties</a></nobr></td>
+         </tr>
+      </table>
 
-         String[] arrstrTitles =   {"Bewerk competenties",
-                                    "Bewerk preassessments",
-                                    "Bewerk postassessments",
-                                    "Bewerk profielen",
-                                    "Bewerk persoonlijk opleidingplan"};
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=preassessments&nodepath=preassessments&searchfields=name&fields=name' title="Bewerk preassessments" target="text">Preassessments</a></nobr></td>
+         </tr>
+      </table>
 
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=postassessments&nodepath=postassessments&searchfields=name&fields=name' title="Bewerk postassessments" target="text">Postassessments</a></nobr></td>
+         </tr>
+      </table>
 
-         for(int f = 0; f < arrstrNames.length; f++)
-         {
-            %>
-               <table border="0" cellpadding="0" cellspacing="0">
-                  <tr>
-                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                        <%
-                           if(f == arrstrNames.length - 1)
-                           {
-                              %><td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td><%
+      <% //----------------------- PROFILES ----------------------- %>
+      <mm:import id="profiles_exist" reset="true">false</mm:import>
+      <mm:listnodes type="profiles">
+         <mm:import id="profiles_exist" reset="true">true</mm:import>
+      </mm:listnodes>
 
-                           }
-                           else
-                           {
-                              %><td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td><%
-                           }
-                        %>
-                     <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=<%= arrstrWizards[f] %>&nodepath=<%= arrstrBuilders[f] %>&searchfields=name&fields=name' title="<%= arrstrTitles[f] %>" target="text"><%= arrstrNames[f] %></a></nobr></td>
-                  </tr>
-               </table>
-            <%
-         }
-      %>
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><a href='javascript:clickNode("profiles_root")'><img src="gfx/tree_plus.gif" border="0" align="middle" id='img_profiles_root'/></a></td>
+            <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_profiles_root"/>'/></td>
+            <td><nobr><a href='<mm:write referid="listjsp"/>?wizard=profiles&nodepath=profiles&searchfields=name&fields=name' title="Bewerk profielen" target="text">Profielen</a></nobr></td>
+         </tr>
+      </table>
+      <div id="profiles_root" style="display:none">
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
+               <mm:compare referid="profiles_exist" value="true">
+                  <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+               </mm:compare>
+               <mm:compare referid="profiles_exist" value="true" inverse="true">
+                  <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
+               </mm:compare>
+               <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=profiles&objectnumber=new' title='<fmt:message key="createNewProfileDescription"/>' target="text"><fmt:message key="createNewProfile"/></a></nobr></td>
+            </tr>
+
+            <mm:listnodes type="profiles">
+               <tr>
+                  <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                  <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
+                  <mm:last inverse="true">
+                     <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+                  </mm:last>
+                  <mm:last>
+                     <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
+                  </mm:last>
+                  <td><img src="gfx/edit_learnobject.gif" width="16" border="0" align="middle" /></td>
+                  <td><nobr>&nbsp;<a href="competence_matrix.jsp?profile=<mm:field name="number"/>" target="text"><mm:field name="name"/></a></nobr></td>
+               </tr>
+            </mm:listnodes>
+            </tr>
+         </table>
+      </div>
+
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=pop&nodepath=pop&searchfields=name&fields=name' title="Bewerk persoonlijk opleidingplan" target="text">P.O.P.</a></nobr></td>
+         </tr>
+      </table>
 
    </div>
 
