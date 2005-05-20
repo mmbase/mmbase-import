@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.33 2005-05-18 23:18:05 michiel Exp $
+ * @version $Id: XmlField.java,v 1.34 2005-05-20 09:08:02 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -403,14 +403,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         obj.replace("\n", "<br />\r");  // handle new remaining newlines.
     }
 
-    private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
+    private static Pattern wikiWrappingAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
     private static Pattern wikiP = Pattern.compile("<p>\\[(\\w+)\\]");
     private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
-
+    private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
 
     public static String wikiToXML(String data) {
-        Matcher anchors = wikiAnchor.matcher(prepareDataString(data));
-        data = anchors.replaceAll("<a id=\"$1\">$2</a>");
+        Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
+        data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
         handleRich(obj, true, false, true);
         handleFormat(obj, false);
@@ -419,6 +419,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         string = ps.replaceAll("<p id=\"$1\">");
         Matcher sections = wikiSection.matcher(string);
         string = sections.replaceAll("<section id=\"$1\"><h>");
+        Matcher anchors = wikiAnchor.matcher(string);
+        string = anchors.replaceAll("<a id=\"$1\" />");
         return string;
 
     }
