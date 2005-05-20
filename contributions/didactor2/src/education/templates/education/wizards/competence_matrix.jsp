@@ -4,6 +4,7 @@
 <%@ page import = "java.util.TreeMap" %>
 
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
@@ -13,8 +14,16 @@
 
 <%
    String sProfileID = request.getParameter("profile");
+   String bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + request.getLocale().getLanguage();
 %>
 
+<fmt:bundle basename="<%= bundleCompetence %>">
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />' />
+</head>
+
+<body>
 <mm:node number="<%= sProfileID %>">
    <%
       String sConstraints = "profiles.number=" + sProfileID;
@@ -76,36 +85,22 @@
    </mm:list>
 
 
-   <table border="1" cellpadding="0" cellspacing="0">
+   <table border="1" cellpadding="0" cellspacing="0" style="border:0px" class="titlefield2">
       <% // Let's paint the header of the table %>
       <tr>
-         <td colspan="2"><b>Competenties</b></td>
-         <%
-            if(hsetCoreTasks.size() > 0)
-            {
-               %>
-                  <td style="border-top:0px;border-bottom:0px;">&nbsp;&nbsp;&nbsp;</td>
-                  <td colspan="<%= hsetCoreTasks.size() %>"><b>&nbsp;Kerntaken&nbsp;</b></td>
-               <%
-            }
-            if(hsetCoreAssignments.size() > 0)
-            {
-               %>
-                  <td style="border-top:0px;border-bottom:0px;">&nbsp;&nbsp;&nbsp;</td>
-                  <td colspan="<%= hsetCoreAssignments.size() %>"><b>&nbsp;Kerntaken&nbsp;</b></td>
-               <%
-            }
-         %>
-         <td><b>&nbsp;Succes criteria&nbsp;</b></td>
+         <td colspan="2" style="border-color:#000000"><fmt:message key="CompetenceMatrixCompetences"/></td>
+         <td style="border:0px;">&nbsp;&nbsp;&nbsp;</td>
+         <td colspan="<%= hsetCoreTasks.size() %>" style="border-color:#000000; border-right:0px">&nbsp;<fmt:message key="CompetenceMatrixCoreTasks"/>&nbsp;</td>
+         <td style="border-color:#000000;border-top:0px; border-right:0px;">&nbsp;&nbsp;&nbsp;</td>
+         <td colspan="<%= hsetCoreAssignments.size() %>" style="border-color:#000000;border-right:0px">&nbsp;<fmt:message key="CompetenceMatrixCoreAssignments"/>&nbsp;</td>
+         <td style="border-color:#000000">&nbsp;<fmt:message key="CompetenceMatrixRatings"/>&nbsp;</td>
       </tr>
       <tr>
-         <td colspan="2"><a href="<mm:write referid="wizardjsp"/>?wizard=profiles&objectnumber=<mm:field name="number"/>" style="text-decoration:none;"><mm:field name="name"/></a></td>
+         <td colspan="2" style="border-color:#000000; border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=profiles&objectnumber=<mm:field name="number"/>" style="text-decoration:none;"><mm:field name="name"/></a></td>
+         <td style="border-top:0px; border-left:0px; border-right:0px">&nbsp;</td>
          <%// Core tasks header
             if(hsetCoreTasks.size() > 0)
             {
-               %>
-                  <td style="border-top:0px;border-bottom:0px;">&nbsp;</td>
-               <%
                for(Iterator it = hsetCoreTasks.iterator(); it.hasNext();)
                {
                   String sCoreTaskID = (String) it.next();
@@ -114,20 +109,27 @@
                         <mm:field name="name" jspvar="sName" vartype="String">
                            <mm:node number="progresstextbackground">
                               <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName %>)+rotate(270)</mm:import>
-                              <td><a href="<mm:write referid="wizardjsp"/>?wizard=coretasks&objectnumber=<%= sCoreTaskID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
+                              <td style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=coretasks&objectnumber=<%= sCoreTaskID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
                            </mm:node>
                         </mm:field>
                      </mm:node>
                   <%
                }
             }
+            else
+            {//Header: click here to create a new one
+               %>
+                  <mm:node number="progresstextbackground">
+                     <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,"<fmt:message key="CompetenceMatrixAddNewCoreTask"/>")+rotate(270)</mm:import>
+                     <td style="border-color:#000000; border-top:0px; border-right:0px"><img border="0" src="<mm:image template="$template" />"/></td>
+                  </mm:node>
+               <%
+            }
          %>
+         <td style="border-color:#000000; border-top:0px; border-right:0px; border-bottom:0px">&nbsp;</td>
          <%//Core Assignments header
             if(hsetCoreAssignments.size() > 0)
             {
-               %>
-                  <td style="border-top:0px;border-bottom:0px;">&nbsp;</td>
-               <%
                for(Iterator it = hsetCoreAssignments.iterator(); it.hasNext();)
                {
                   String sCoreAssignmentID = (String) it.next();
@@ -136,15 +138,24 @@
                         <mm:field name="name" jspvar="sName" vartype="String">
                            <mm:node number="progresstextbackground">
                               <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName %>)+rotate(270)</mm:import>
-                              <td><a href="<mm:write referid="wizardjsp"/>?wizard=coreassignments&objectnumber=<%= sCoreAssignmentID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
+                              <td style="border-color:#000000; border-right:0px; border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=coreassignments&objectnumber=<%= sCoreAssignmentID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
                            </mm:node>
                         </mm:field>
                      </mm:node>
                   <%
                }
             }
+            else
+            {//Header: click here to create a new one
+               %>
+                  <mm:node number="progresstextbackground">
+                     <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,"<fmt:message key="CompetenceMatrixAddNewCoreAssignment"/>")+rotate(270)</mm:import>
+                     <td style="border-color:#000000;border-top:0px;border-right:0px"><img border="0" src="<mm:image template="$template" />"/></td>
+                  </mm:node>
+               <%
+            }
          %>
-         <td>&nbsp;</td>
+         <td style="border-color:#000000;border-top:0px">&nbsp;</td>
       </tr>
 
       <%
@@ -174,65 +185,78 @@
 
 
          <tr>
-            <td><%= iNumber %>.</td>
-            <td><a href="<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<mm:field name="competencies.number"/>" style="text-decoration:none;"><mm:field name="competencies.name"/></a></td>
+            <td style="border-color:#000000; border-top:0px; border-right:0px"><%= iNumber %>.</td>
+            <td style="border-color:#000000; border-top:0px;"><a href="<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<mm:field name="competencies.number"/>" style="text-decoration:none;"><mm:field name="competencies.name"/></a></td>
+            <td style="border-top:0px; border-left:0px; border-right:0px">&nbsp;</td>
             <%
                if(hsetCoreTasks.size() > 0)
                {
-                  %>
-                     <td style="border-top:0px;border-bottom:0px;">&nbsp;</td>
-                  <%
                   for(Iterator it = hsetCoreTasks.iterator(); it.hasNext();)
                   {
                      String sCoreTaskID = (String) it.next();
+
+                     %><td align="center" style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%"><%
+
                      if ((mapCoreTasks.get(sCoreTaskID) != null) && (((ArrayList) mapCoreTasks.get(sCoreTaskID)).contains(sCompetenceID)))
                      {
-                        %>
-                           <td align="center"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none;">X<a></td>
-                        <%
+                        %>X<%
                      }
                      else
                      {
-                        %>
-                           <td>&nbsp;</td>
-                        <%
+                        %>&nbsp;<%
                      }
+
+                     %><a></td><%
                   }
                }
+               else
+               {//click here to create a new one
+                  %><td align="center" style="border-color:#000000; border-top:0px; border-right:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a></td><%
+               }
+               %>
+                  <mm:last inverse="true">
+                     <td style="border-color:#000000; border-top:0px; border-bottom:0px; border-right:0px">&nbsp;</td>
+                  </mm:last>
+                  <mm:last>
+                     <td style="border-color:#000000; border-top:0px; border-right:0px">&nbsp;</td>
+                  </mm:last>
+               <%
                if(hsetCoreAssignments.size() > 0)
                {
-                  %>
-                     <td style="border-top:0px;border-bottom:0px;">&nbsp;</td>
-                  <%
                   for(Iterator it = hsetCoreAssignments.iterator(); it.hasNext();)
                   {
                      String sCoreAssignmentID = (String) it.next();
+
+                     %><td align="center" style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%"><%
+
                      if ((mapCoreAssignments.get(sCoreAssignmentID) != null) && (((ArrayList) mapCoreAssignments.get(sCoreAssignmentID)).contains(sCompetenceID)))
                      {
-                        %>
-                           <td align="center"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none;">X<a></td>
-                        <%
+                        %>X<%
                      }
                      else
                      {
-                        %>
-                           <td>&nbsp;</td>
-                        <%
+                        %>&nbsp;<%
                      }
+
+                     %><a></td><%
                   }
                }
+               else
+               {//click here to create a new one
+                  %><td align="center" style="border-color:#000000;border-top:0px;border-right:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a></td><%
+               }
             %>
-            <td>
+            <td style="border-color:#000000;border-top:0px">
                <mm:node element="insrel">
                   <mm:import id="rating_is_empty" reset="true">true</mm:import>
 
                   <mm:relatednodes type="ratings">
                      <mm:import id="rating_is_empty" reset="true">false</mm:import>
-                     <a href="<mm:write referid="wizardjsp"/>?wizard=ratings&objectnumber=<mm:field name="number"/>" style="text-decoration:none;"><mm:field name="name"/></a>
+                     <a href="<mm:write referid="wizardjsp"/>?wizard=ratings&objectnumber=<mm:field name="number"/>" style="text-decoration:none; width:100%"><mm:field name="name"/></a>
                   </mm:relatednodes>
 
                   <mm:compare referid="rating_is_empty" value="true">
-                     &nbsp;
+                     <a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a>
                   </mm:compare>
                </mm:node>
             </td>
@@ -244,5 +268,7 @@
    </table>
 
 </mm:node>
-
+</body>
+</html>
+</fmt:bundle>
 </mm:cloud>
