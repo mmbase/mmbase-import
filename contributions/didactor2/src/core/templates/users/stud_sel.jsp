@@ -46,9 +46,7 @@
       String nodeNo = eUserList.nextElement().toString();// get current object
     %>
     <mm:node number="<%=nodeNo%>">
-      <a href="<mm:treefile page="/address/updatecontact.jsp" objectlist="$includePath" referids="$referids">
-         <mm:param name="callerpage">/index.jsp</mm:param>
-         <mm:param name="addressbook">-1</mm:param>
+      <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
          <mm:param name="contact"><mm:field name="number"/></mm:param>
        </mm:treefile>" class="users">
       <%-- Online/offline status is retrieved using the nl.didactor.builders.PeopleBuilder class  --%>
