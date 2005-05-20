@@ -13,7 +13,7 @@ import org.mmbase.bridge.Node;
 import java.util.*;
 
 /**
- * A 'lazy' dimension is a Dimension object which depends on a image-node and conversion
+ * A 'lazy' dimension is a Dimension object which depends on an image-node and conversion
  * template. The actual dimension will only be requested from this node, as soon as {@link
  * #getWidth} or {@link #getHeight} are called for the first time. 
  *
