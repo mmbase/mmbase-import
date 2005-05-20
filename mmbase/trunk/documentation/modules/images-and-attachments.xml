@@ -1,10 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?>
+﻿<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
   <articleinfo>
     <title>Images and Attachments</title>
     <date>2005-05-09</date>
-    <edition>$Id: images-and-attachments.xml,v 1.6 2005-05-09 23:50:38 michiel Exp $</edition>
+    <edition>$Id: images-and-attachments.xml,v 1.7 2005-05-20 10:06:31 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -284,6 +284,53 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         For every day usage you know enough now. The following sections will be more technical.
       </para>
     </section>
+  </section>
+  <section>
+    <title>XSLT</title>
+    <para>
+      Sometimes you want to generate output using XSLT. This happens for example in the Editwizard
+      implementation and you can also do it on a JSP page using the `mm:formatter' tag. Generally,
+      as in these two examples, the source XML would describe the fields of the mmbase nodes only,
+      like e.g. &lt;field name="number"&gt;123&lt;/field&gt;. So, the same problem as in JSP/taglib
+      arises, namely, how to convert this to an actual URL for the image or the attachment? The
+      mm:image tag is not available in XSL.
+    </para>
+    <para>
+      One could start with simply creating URL's using the number. You only need to know what the
+      URLs of the servlets are then. These could possibly be passed as a parameter into the XSL, or
+      could simply be hard-coded in your custom XSL.
+    </para>
+    <para>
+      The problem would then be solved at least for attachments. For images, the problem is again
+      more complex, because generally you would not include also the 'icaches' node in the XML.
+    </para>
+    <para>
+      The solution which was used in Editwizards and also in the default XSLTs used by mm:formatter
+      is to use Xalan extensions, which actually boils down to the possibility to call java
+      functions from inside XSL. The draw-back of course is that this creates a Xalan dependency (or
+      at least on similar products, e.g. also the XSLT processor of Resin supports this), and worse,
+      that it would become quite hard to perform the XSLT not on the server itself.
+    </para>
+    <para>
+      For this to work the utility class org.mmbase.bridge.util.xml.NodeFunction was created, which
+      can be installed in your XSL like this:
+      <programlisting><![CDATA[
+<xsl:stylesheet  
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+    ....
+]]>
+      </programlisting>
+      and then be used like this:
+      <programlisting><![CDATA[
+<img src ="{node:function($cloud, ./o:field[@name='number'], 'servletpath(,cache(s(100x100&gt;)))')}" 
+      ]]>
+      </programlisting>
+
+      We refer to the javadoc  of       
+      <ulink url="http://www.mmbase.org/api/org/mmbase/bridge/util/xml/NodeFunction.html">NodeFunction</ulink>
+      for more information on how to use it.      
+    </para>
   </section>
   <section>
     <title>More about the builders, 'servlet builders'.</title>
