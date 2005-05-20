@@ -20,7 +20,6 @@ public class DidactorCompetence extends Component {
 
     public void init() {
         Component.getComponent("education").registerInterested(this);
-        System.out.println("i'm getting inited");
     }
 
     /**
@@ -69,36 +68,28 @@ public class DidactorCompetence extends Component {
         if (needComp.size() > 0) {
             // Check if the user has all of the needed competencies
             Node user = cloud.getNode(Integer.parseInt((String)context.get("user")));
-            NodeList hasPop = user.getRelatedNodes("pop", "related", "destination");
-            Node pop = (Node) hasPop.get(0);
-            NodeList popHasComp = pop.getRelatedNodes("competencies", "havecomp", "destination");
+            NodeList hasComp = user.getRelatedNodes("competencies", "havecomp", "destination");
             for (int i=0; i<needComp.size(); i++) {
-                if (!popHasComp.contains(needComp.get(i))) {
+                if (!hasComp.contains(needComp.get(i))) {
                     return 0;
                 }
             }
         }
 
         if (maxlevel > 1) {
-            NodeList developComp = lo.getRelatedNodes("competencies", "developcomp", "destination");
+            NodeList developComp = lo.getRelatedNodes("competencies", "needcomp", "destination");
             Node user = cloud.getNode(Integer.parseInt((String)context.get("user")));
-            NodeList hasPop = user.getRelatedNodes("pop", "related", "destination");
-            Node pop = (Node) hasPop.get(0);
-            NodeList popHasComp = pop.getRelatedNodes("competencies", "havecomp", "destination");
-            NodeList popDevelopComp = pop.getRelatedNodes("competencies", "developcomp", "destination");
-            int retval = 1;
-            if (developComp.size() == 0 || popHasComp.size() + popDevelopComp.size() == 0 ) {
-              retval = 2;
-            } else {
-              for (int i=0; i<developComp.size(); i++) {
-                  if (!popHasComp.contains(developComp.get(i)) && !popDevelopComp.contains(developComp.get(i))) {
-                      retval = 2;
-                  }
-              }
+            NodeList hasComp = user.getRelatedNodes("competencies", "havecomp", "destination");
+            int retval = 2;
+            for (int i=0; i<developComp.size(); i++) {
+                if (!hasComp.contains(developComp.get(i))) {
+                    retval = 1; // a competence is being developt that the user doesn't already have
+                }
             }
             return retval;
         }
 
         return 2;
     }
+
 }
