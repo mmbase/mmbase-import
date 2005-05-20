@@ -18,10 +18,34 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.4 2005-05-09 21:53:11 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.5 2005-05-20 08:53:15 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  {
+
+    private static Locale defaultLocale = null; // means 'system default' and 'unset'.
+
+    /**
+     * Sets a default locale for this JVM or web-app. When not using it, the locale is the system
+     * default. Several web-apps do run in one JVM however and it is very imaginable that you want a
+     * different default for the Locale.
+     *
+     * So, this function can be called only once. Calling it the second time will not do
+     * anything. It returns the already set default locale then, which should probably prompt you to log an error
+     * a throw an exception or so. Otherwise it returns <code>null</code> indicating that the
+     * default locale is now what you just set.
+     */
+    public static Locale setDefault(Locale locale) {
+        if (defaultLocale != null) return defaultLocale;
+        defaultLocale = locale;
+        return null;
+    }
+    /**
+     * Returns the default locale if set, or otherwise the system default ({@link java.util.Locale#getDefault}).
+     */
+    public static Locale getDefault() {
+        return defaultLocale != null ? defaultLocale : Locale.getDefault();
+    }
 
     private final String key;
     private Map    values = null;
@@ -40,7 +64,7 @@ public class LocalizedString  {
      */
     public String get(Locale locale) {
         if (locale == null) {
-            locale = org.mmbase.module.core.MMBase.getMMBase().getLocale();
+            locale = defaultLocale == null ? Locale.getDefault() : defaultLocale;
         }
         if (values != null) {
             String result = (String) values.get(locale);
@@ -67,7 +91,7 @@ public class LocalizedString  {
             // This code 'fixes' that reference.
             // It's not nice, but as a proper fix likely requires a total rewrite of Module.java and
             // MMBase.java, this will have to do for the moment.
-            if (locale.equals(org.mmbase.module.core.MMBase.getMMBase().getLocale())) {
+            if (locale.equals(defaultLocale)) {
                 result = (String) values.get(null);
                 if (result != null) {
                     values.put(locale, result);
@@ -89,7 +113,7 @@ public class LocalizedString  {
 
     /**
      * Sets the value for a certain locale. If the value for a more general locale is still unset,
-     * it will also set that (so, it sets also nl when setting nl_BE when nl still is unset).
+     * it will also set that (so, it sets also nl when setting nl_BE if nl still is unset).
      */
     public void set(String value, Locale locale) {
         if (values == null) {
@@ -97,11 +121,7 @@ public class LocalizedString  {
         }
 
         if (locale == null) {
-            // It is possible that MMBase has not been loaded, so only retrieve the locale if all the
-            // modules have been loaded. This prevents issues with recursive calls while loading modules.
-            if (org.mmbase.module.Module.getModules() != null) {
-                locale = org.mmbase.module.core.MMBase.getMMBase().getLocale();
-            }
+            locale = defaultLocale;
         }
 
         values.put(locale, value);
