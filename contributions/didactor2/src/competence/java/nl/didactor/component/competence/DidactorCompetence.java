@@ -1,5 +1,5 @@
 package nl.didactor.component.competence;
-import nl.didactor.component.Component; 
+import nl.didactor.component.Component;
 import org.mmbase.bridge.*;
 import java.util.Map;
 
@@ -20,6 +20,7 @@ public class DidactorCompetence extends Component {
 
     public void init() {
         Component.getComponent("education").registerInterested(this);
+        System.out.println("i'm getting inited");
     }
 
     /**
@@ -51,14 +52,14 @@ public class DidactorCompetence extends Component {
      * </ul>
      * For competence management, this means that:
      * <ul>
-     *  <li>If the user doesn't have competence that is related to the object in a 
+     *  <li>If the user doesn't have competence that is related to the object in a
      *      'must-have' relation, it returns '0';
-     *  <li>If the user has the competence that is related to the object in a 
+     *  <li>If the user has the competence that is related to the object in a
      *      'develops' relation, it returns '1'.
-     * </ul> 
+     * </ul>
      */
     private int showLo(Cloud cloud, Map context, int lonumber, int maxlevel) {
-        if (maxlevel == 0) 
+        if (maxlevel == 0)
             return 0;
         Node lo = cloud.getNode(lonumber);
 
@@ -68,28 +69,36 @@ public class DidactorCompetence extends Component {
         if (needComp.size() > 0) {
             // Check if the user has all of the needed competencies
             Node user = cloud.getNode(Integer.parseInt((String)context.get("user")));
-            NodeList hasComp = user.getRelatedNodes("competencies", "havecomp", "destination");
+            NodeList hasPop = user.getRelatedNodes("pop", "related", "destination");
+            Node pop = (Node) hasPop.get(0);
+            NodeList popHasComp = pop.getRelatedNodes("competencies", "havecomp", "destination");
             for (int i=0; i<needComp.size(); i++) {
-                if (!hasComp.contains(needComp.get(i))) {
+                if (!popHasComp.contains(needComp.get(i))) {
                     return 0;
                 }
             }
         }
 
         if (maxlevel > 1) {
-            NodeList developComp = lo.getRelatedNodes("competencies", "needcomp", "destination");
+            NodeList developComp = lo.getRelatedNodes("competencies", "developcomp", "destination");
             Node user = cloud.getNode(Integer.parseInt((String)context.get("user")));
-            NodeList hasComp = user.getRelatedNodes("competencies", "havecomp", "destination");
-            int retval = 2;
-            for (int i=0; i<developComp.size(); i++) {
-                if (!hasComp.contains(developComp.get(i))) {
-                    retval = 1; // a competence is being developt that the user doesn't already have
-                }
+            NodeList hasPop = user.getRelatedNodes("pop", "related", "destination");
+            Node pop = (Node) hasPop.get(0);
+            NodeList popHasComp = pop.getRelatedNodes("competencies", "havecomp", "destination");
+            NodeList popDevelopComp = pop.getRelatedNodes("competencies", "developcomp", "destination");
+            int retval = 1;
+            if (developComp.size() == 0 || popHasComp.size() + popDevelopComp.size() == 0 ) {
+              retval = 2;
+            } else {
+              for (int i=0; i<developComp.size(); i++) {
+                  if (!popHasComp.contains(developComp.get(i)) && !popDevelopComp.contains(developComp.get(i))) {
+                      retval = 2;
+                  }
+              }
             }
             return retval;
         }
 
         return 2;
     }
-
 }
