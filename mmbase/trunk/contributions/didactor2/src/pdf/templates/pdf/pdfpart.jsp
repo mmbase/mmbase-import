@@ -40,27 +40,10 @@
 
 <mm:present referid="display">
 
-      <%-- the <hr> will be translated into a pagebreak in the PDF --%>
-      <mm:compare referid="node_type" value="page">
-          <hr/>
-      </mm:compare>
-
-
-
-   <%
-      String sIntro = "";
-      String sText = "";
-   %>
-   <mm:field name="intro" escape="none" jspvar="sRawHTML" vartype="String">
-      <%
-         sIntro = doCleaning(sRawHTML);
-      %>
-   </mm:field>
-   <mm:field name="text" escape="none" jspvar="sRawHTML" vartype="String">
-      <%
-         sText = doCleaning(sRawHTML);
-      %>
-   </mm:field>
+   <%-- the <hr> will be translated into a pagebreak in the PDF --%>
+   <mm:compare referid="node_type" value="page">
+       <hr/>
+   </mm:compare>
 
    <%// Here we are makeing a whole text part %>
    <mm:import jspvar="text" reset="true">
@@ -74,10 +57,14 @@
          </mm:compare>
       </mm:field>
 
-      <%// intro & text have been filterd %>
-      <%= sIntro %><%= sText %>
-
-      <%
+      <mm:field name="intro" escape="none" jspvar="sRawIntro" vartype="String">
+         <%= doCleaning(sRawIntro) %>
+      </mm:field>
+      <mm:field name="text" escape="none" jspvar="sRawText" vartype="String">
+         <%= doCleaning(sRawText) %>
+      </mm:field>
+      
+     <%
          String baseUrl = getServletContext().getInitParameter("internalUrl");
          if (baseUrl == null)
          {
