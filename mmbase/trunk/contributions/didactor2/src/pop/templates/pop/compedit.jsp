@@ -47,7 +47,7 @@
     </tr>
   </table>
 <br/>
-  <table width="80%" border="0" class="popTaskList">
+  <table width="80%" border="0" class="font">
     <tr>
       <td colspan="3">Persoonlijke taken</td>
     </tr>
@@ -90,6 +90,7 @@
         <tr>
           <th class="listHeader">Door</th>
           <th class="listHeader">Aan samengewerkt door middel van</th>
+          <th class="listHeader">Score</th>
           <th class="listHeader">Beoordeling</th>
         </tr>
         <mm:related>
@@ -99,15 +100,23 @@
               <mm:related>
                 <tr>
                   <td class="listItem"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></td>
-                  <mm:field name="popfeedback.status" jspvar="isAnswered" vartype="String">
-                    <% if (!isAnswered.equals("0")) { %>
-                      <td class="listItem"><mm:field name="popfeedback.rank"/></td>
-                      <td class="listItem"><mm:field name="popfeedback.text"/></td>
-                    <% } else { %>
-                      <td class="listItem"><i>niet geantwoord</i></td>
-                      <td class="listItem">&nbsp;</td>
-                    <% } %>
-                   </mm:field>
+                  <mm:node element="popfeedback">
+                    <mm:field name="status" jspvar="isAnswered" vartype="String">
+                      <% if (!isAnswered.equals("0")) { %>
+                        <td class="listItem"><mm:field name="rank"/></td>
+                        <td class="listItem">
+                          <mm:related path="ratings">
+                            <mm:field name="ratings.name" id="rating" write="true"/>
+                          </mm:related>
+                        </td>
+                        <td class="listItem"><mm:field name="text"/></td>
+                      <% } else { %>
+                        <td class="listItem"><i>niet geantwoord</i></td>
+                        <td class="listItem">&nbsp;</td>
+                        <td class="listItem">&nbsp;</td>
+                      <% } %>
+                    </mm:field>
+                  </mm:node>
                 </tr>
               </mm:related>
             </mm:relatedcontainer>

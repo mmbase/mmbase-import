@@ -24,6 +24,16 @@
             <td>Beoordeling</td>
             <td><textarea name="feedback2" cols="50" rows="5"></textarea></td>
           </tr>
+          <tr>
+            <td>Score</td>
+            <td>
+              <mm:list path="ratings" orderby="ratings.pos" directions="DOWN">
+                <mm:first><select name="rating"></mm:first>
+                  <option value="<mm:field name="number"/>"><mm:field name="name"/></option>
+                <mm:last></select></mm:last>
+              </mm:list>
+            </td>
+          </tr>
         </table>
         <input type="submit" class="formbutton" value="versturen">
         <input type="submit" class="formbutton" value="terug" onClick="givefeedbackform.command.value='no'">
