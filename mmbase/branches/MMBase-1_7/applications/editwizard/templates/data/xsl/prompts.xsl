@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.20.2.4 2005-05-19 08:49:13 pierre Exp $
+    @version $Id: prompts.xsl,v 1.20.2.5 2005-05-20 10:34:52 pierre Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -190,14 +190,28 @@
   <xsl:variable name="tooltip_logout">Logout and return to the index page</xsl:variable>
 
   <!-- prompts and tooltips for lists -->
-  <xsl:template name="prompt_edit_list">
-    <xsl:param name="searchvalue" />
-    <xsl:value-of select="$title" disable-output-escaping="yes"  />
+	<xsl:template name="prompt_search_age">
+		<xsl:param name="age" />
+		<xsl:if test="$age=1"> from the previous day</xsl:if>
+		<xsl:if test="$age=7"> from the previous 7 days</xsl:if>
+		<xsl:if test="$age=31"> from the previous month</xsl:if>
+		<xsl:if test="$age=356"> from the previous year</xsl:if>
+		<xsl:if test="$age=-1"> over the whole cloud</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="prompt_edit_list">
+		<xsl:param name="age" />
+		<xsl:param name="searchvalue" />
+		<xsl:value-of select="$title" disable-output-escaping="yes"  />
+		<xsl:call-template name="prompt_search_age" >
+			<xsl:with-param name="age" select="$age" />
+		</xsl:call-template>
     <xsl:if test="$searchvalue" >
       - search for <xsl:value-of select="$searchvalue" />
     </xsl:if>
     (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
   </xsl:template>
+	
   <xsl:variable name="tooltip_edit_list">These are the items that you can edit.</xsl:variable>
   <xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
   <xsl:variable name="tooltip_sort_up">up</xsl:variable>
