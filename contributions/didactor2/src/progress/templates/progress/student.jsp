@@ -63,6 +63,9 @@
 
 <di:hasrole role="teacher">
 <div style="float: right">
+<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="contact"><mm:write referid="student"/></mm:param>
+</mm:treefile>">Portfolio</a>
 <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="Terug naar overzicht"/></a>
 </div>
 </di:hasrole>
