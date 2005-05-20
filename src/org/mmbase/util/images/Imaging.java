@@ -167,7 +167,7 @@ public abstract class Imaging {
      * Most transformations which alter the dimension of an image are supported: geometry, border, rotate, part.
      *
      * Probably because of different rounding strategies, there is sometimes a difference of one or
-     * two pixels beteen the predication and/or the result of ImageMagick and/or JAI.
+     * two pixels beteen the prediction and/or the result of ImageMagick and/or JAI.
      */
     public static Dimension predictDimension(Dimension originalSize, List params) {
 

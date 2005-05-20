@@ -55,7 +55,7 @@ public class Dimension {
         }
     }
     public int hashCode() {
-        return x * (y + 1);
+        return (x + 1) * (y + 1);
     }
 
 }
