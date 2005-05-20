@@ -227,11 +227,19 @@
             <mm:fieldinfo type="name">
                 <mm:compare value="handle">
                   <mm:field name="mimetype" jspvar="mimetype" vartype="String">
+                  <mm:field name="filename" jspvar="filename" vartype="String">
                     <% if (mimetype.startsWith("image/")) { %>
                           <img src="<mm:image/>"/>
+                    <% } else if (mimetype.equals("application/x-shockwave-flash") || filename.toLowerCase().endsWith(".swf")) { %>
+                        <object width="600" height="400">
+                            <param name="movie" value="<mm:attachment/>">
+                            <embed src="<mm:attachment/>" width="600" height="400">
+                            </embed>
+                        </object>
                     <% } else { %>
                         <a href="<mm:attachment/>">download</a>
                     <% } %>
+                  </mm:field>
                   </mm:field>
                 </mm:compare>
                 <mm:compare value="handle" inverse="true">
