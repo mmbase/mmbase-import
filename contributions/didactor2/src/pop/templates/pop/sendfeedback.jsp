@@ -1,8 +1,9 @@
 <mm:import externid="nfeedback"/>
 <mm:import jspvar="feedback1" externid="feedback1"/>
 <mm:import jspvar="feedback2" externid="feedback2"/>
+<mm:import jspvar="rating" externid="rating">-1</mm:import>
 <% boolean isSuccess = false; %>
-<mm:node number="$nfeedback">
+<mm:node number="$nfeedback" id="thisfeedback">
   <mm:field name="status">
     <mm:compare value="0">
       <% isSuccess = true; %><html  >
@@ -13,6 +14,17 @@
         <mm:import id="inviteefname"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></mm:import>
         <mm:import id="from"><mm:field name="people.email"/></mm:import>
       </mm:related>
+      <% boolean isNoRating = true; %>
+      <mm:related path="related,ratings">
+        <mm:node element="related">
+          <mm:maydelete>
+            <mm:deletenode deleterelations="true"/>
+          </mm:maydelete>
+        </mm:node>
+      </mm:related>
+      <mm:compare referid="rating" value="-1" inverse="true">
+        <mm:createrelation role="related" source="thisfeedback" destination="rating" />
+      </mm:compare>
       <mm:related path="pop,people">
         <mm:import id="userfname"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></mm:import>
         <mm:import id="to"><mm:field name="people.email"/></mm:import>
