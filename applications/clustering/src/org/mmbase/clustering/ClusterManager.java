@@ -30,9 +30,9 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.3 2005-05-18 23:57:29 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.4 2005-05-20 10:53:49 michiel Exp $
  */
-public abstract class ClusterManager implements Runnable {
+public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
     
