@@ -66,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.11 2005-05-20 09:02:54 michiel Exp $
+ * @version $Id: SizeOf.java,v 1.12 2005-05-20 15:15:49 keesj Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {
@@ -106,7 +106,7 @@ public class SizeOf {
      * @since MMBase-1.8
      */
     public void clear() {
-        countedObject.clear();
+        countedObjects.clear();
     }
     /**
      * @return The size in bytes obj structure will take, or <code>0</code> if the object was
