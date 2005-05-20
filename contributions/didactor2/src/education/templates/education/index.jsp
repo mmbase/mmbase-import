@@ -608,7 +608,9 @@
         </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px"/><a href="javascript:openContent( '<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
           <mm:node number="component.pop" notfound="skip">
             <mm:relatednodes type="providers" constraints="providers.number=$provider">
-              <%@include file="popcheck.jsp" %>
+              <mm:list nodes="$user" path="people,related,pop">
+                <mm:first><%@include file="popcheck.jsp" %></mm:first>
+              </mm:list>
             </mm:relatednodes>
           </mm:node> 
 
