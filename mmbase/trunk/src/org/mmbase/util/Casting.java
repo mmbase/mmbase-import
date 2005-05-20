@@ -11,13 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 /**
- * Collects MMBase specific 'cast' information, as static
- * to... functions. This is used (and used to be implemented) in
- * MMObjectNode. But this functionality is more generic to MMbase.
+ * Collects MMBase specific 'cast' information, as static to... functions. This is used (and used to
+ * be implemented) in MMObjectNode. But this functionality is more generic to MMbase.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.47 2005-05-12 11:23:07 michiel Exp $
+ * @version $Id: Casting.java,v 1.48 2005-05-20 08:49:18 michiel Exp $
  */
 
 import java.util.*;
@@ -394,8 +393,9 @@ public class Casting {
             String xmltext = toString(o);
             if (log.isServiceEnabled()) {
                 String msg = xmltext;
-                if (msg.length() > 20)
+                if (msg.length() > 20) {
                     msg = msg.substring(0, 20);
+                }
                 log.service("Object " + msg + "... is not a Document, but a " + o.getClass().getName());
             }
             return convertStringToXML(xmltext);
@@ -785,6 +785,7 @@ public class Casting {
         try {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             dfactory.setValidating(false);
+            dfactory.setNamespaceAware(true);
             DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
             // dont log errors, and try to process as much as possible...
             XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
@@ -880,7 +881,7 @@ public class Casting {
             list = l;
             escaper = e;
         }
-        public Object get(int index) { return escape(escaper, "" + list.get(index)); }
+        public Object get(int index) { return Casting.wrap(list.get(index), escaper); }
         public int size() { return list.size(); }
         public Object set(int index, Object value) { return list.set(index, value); }
         public void add(int index, Object value) { list.add(index, value); }
