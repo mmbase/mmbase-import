@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.119 2005-05-10 15:54:38 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.120 2005-05-21 08:26:18 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -78,7 +78,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Cloud cloud;
 
     /**
-     * @since MMBases-1.7
+     * @since MMBase-1.7
      */
     private boolean sessionCloud = true;
 
@@ -386,7 +386,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
-            String contextPath = request.getContextPath();
+            String contextPath = request.getContextPath().replace('/', '_');
             if (!setRealm("MMBase" + contextPath + "@" + request.getServerName())) {
                 return SKIP_BODY;
             }
