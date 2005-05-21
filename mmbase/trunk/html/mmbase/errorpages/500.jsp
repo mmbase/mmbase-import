@@ -13,6 +13,7 @@ if (domain.startsWith("www.")) {
 String webmasterEmail = "webmaster@"+domain;
 
 // prepare error details
+String title = null;
 StringBuffer msg = new StringBuffer();
 {
 
@@ -48,7 +49,11 @@ StringBuffer msg = new StringBuffer();
              status = HttpServletResponse.SC_NOT_FOUND;
              response.setStatus(status);
          }
-        e = e.getCause();
+	 if (e instanceof ServletException) {
+	     e = ((ServletException) e).getRootCause();
+	 } else {
+	 e = e.getCause();
+}
      }
 
      msg.append("status: ").append(status).append("\n\n");
@@ -57,8 +62,16 @@ StringBuffer msg = new StringBuffer();
          Throwable t = (Throwable) stack.pop();
          // add stack stacktraces
          if (t != null) {
-         msg.append(t.getMessage()).append("\n");
-	 msg.append(org.mmbase.util.logging.Logging.stackTrace(t)).append("\n");
+       	     String message = t.getMessage();
+	     if (title == null) {
+	        title = message;
+		if (title == null) {
+		  StackTraceElement el = t.getStackTrace()[0];
+		  title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
+                }
+	     }
+             msg.append(message).append("\n");
+	     msg.append(org.mmbase.util.logging.Logging.stackTrace(t)).append("\n");
          }
 
     } 
@@ -87,7 +100,7 @@ log.error(ticket + ":\n" + msg);
 </head>
 <body class="basic">
   <h1><mm:write referid="title" /></h1>
-  <h1><%= exception != null ? exception.getMessage() : "NO EXCEPTION" %></h1>
+  <h1><%= title != null ? title : "NO EXCEPTION" %></h1>
   <h2>Error ticket: <%= ticket %></h2>
   <% String referrer = request.getHeader("Referer");
      if (referrer != null) {
