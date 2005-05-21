@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.71 2005-05-13 09:47:12 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.72 2005-05-21 08:51:50 michiel Exp $
  * @see ContextTag
  */
 
@@ -567,7 +567,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (helper.getEscape() == null) {
             return value;
         } else {
-            return ContentTag.getCharTransformer((String) helper.getEscape(), getContextProvider().getContextContainer(), this).transform(Casting.toString(value));
+            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer((String) helper.getEscape(), getContextProvider().getContextContainer(), this);
+            if (ct != null) {
+                return ct.transform(Casting.toString(value));
+            } else {
+                return value;
+            }
         }
     }
 
