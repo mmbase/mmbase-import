@@ -65,6 +65,26 @@
 		<translation language="nl" value="** Verkeerde inlognaam of wachtwoord **" />
 		<translation language="df" value="** Wrong accountname or password **" />
 	</keyword>
+	<keyword name="problem_missing_topic">
+		<translation language="nl" value="** probleem leeg onderwerp,aub invullen **" />
+		<translation language="df" value="*** problem missing topic,please enter a topic ***" />
+	</keyword>
+	<keyword name="problem_missing_body">
+		<translation language="nl" value="** probleem geen tekst ,aub invullen **" />
+		<translation language="df" value="*** problem missing text,please enter a text ***" />
+	</keyword>
+	<keyword name="problem_already_posted">
+		<translation language="nl" value="** Dit bericht was al verzonden **" />
+		<translation language="df" value="*** this was already posted to the forum ***" />
+	</keyword>
+	<keyword name="problem_illegal_html">
+		<translation language="nl" value="*** deze bijdrage bevat illegale html codes ***" />
+		<translation language="df" value="*** this posting contains illegal html codes ***" />
+	</keyword>
+	<keyword name="problem_speedposting">
+		<translation language="nl" value="*** Het is niet toegestaan om sneller te posten dan " />
+		<translation language="df" value="*** You are not allowed to post more than 1 every " />
+	</keyword>
 	<keyword name="closed">
 		<translation language="nl" value="gesloten" />
 		<translation language="df" value="closed" />
