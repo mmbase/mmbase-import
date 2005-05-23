@@ -310,7 +310,7 @@
             <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
             <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=competencies&nodepath=competencies&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemCompetencesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCompetences"/></a></nobr></td>
+            <td><nobr>&nbsp;<a href='<%= request.getContextPath() %>/competence/competence_by_type.jsp' title="<fmt:message key="CompetenceTreeItemCompetencesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCompetences"/></a></nobr></td>
          </tr>
       </table>
 
@@ -372,7 +372,7 @@
                      <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
                   </mm:last>
                   <td><img src="gfx/edit_learnobject.gif" width="16" border="0" align="middle" /></td>
-                  <td><nobr>&nbsp;<a href="competence_matrix.jsp?profile=<mm:field name="number"/>" target="text"><mm:field name="name"/></a></nobr></td>
+                  <td><nobr>&nbsp;<a href="<%= request.getContextPath() %>/competence/competence_matrix.jsp?profile=<mm:field name="number"/>" target="text"><mm:field name="name"/></a></nobr></td>
                </tr>
             </mm:listnodes>
             </tr>
