@@ -88,7 +88,7 @@
    <table border="1" cellpadding="0" cellspacing="0" style="border:0px" class="titlefield2">
       <% // Let's paint the header of the table %>
       <tr>
-         <td colspan="2" style="border-color:#000000"><fmt:message key="CompetenceMatrixCompetences"/></td>
+         <td colspan="2" style="border-color:#000000; background:#BDBDBD"><fmt:message key="CompetenceMatrixCompetences"/></td>
          <td style="border:0px;">&nbsp;&nbsp;&nbsp;</td>
          <td colspan="<%= hsetCoreTasks.size() %>" style="border-color:#000000; border-right:0px">&nbsp;<fmt:message key="CompetenceMatrixCoreTasks"/>&nbsp;</td>
          <td style="border-color:#000000;border-top:0px; border-right:0px;">&nbsp;&nbsp;&nbsp;</td>
@@ -108,7 +108,7 @@
                %>
             </mm:field>
          </mm:write>
-         <td colspan="2" style="border-color:#000000; border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=profiles&objectnumber=<mm:field name="number"/>" style="text-decoration:none;"><%= sProfileName %></a></td>
+         <td colspan="2" valign="top" style="border-color:#000000; border-top:0px; background:#BDBDBD"><a href="<mm:write referid="wizardjsp"/>?wizard=profiles&objectnumber=<mm:field name="number"/>" style="text-decoration:none;" class="titlefield2"><%= sProfileName %></a></td>
          <td style="border-top:0px; border-left:0px; border-right:0px">&nbsp;</td>
          <%// Core tasks header
             if(hsetCoreTasks.size() > 0)
