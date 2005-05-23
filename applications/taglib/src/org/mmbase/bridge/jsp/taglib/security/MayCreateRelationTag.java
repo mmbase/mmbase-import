@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.9 2005-05-23 19:39:40 andre Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.10 2005-05-23 21:37:29 michiel Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
@@ -52,19 +52,18 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
         Node sourceNode      = getNode(source.getString(this));
         Node destinationNode = getNode(destination.getString(this));
         
-		org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
+        org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
         int snumber = sourceNode.getNodeManager().getNumber();
         int dnumber = destinationNode.getNodeManager().getNumber();
         int rnumber = rm.getNumber();
-		if (log.isDebugEnabled()) log.debug("snumber: " +  snumber + " dnumber: " + dnumber + " rnumber: " + rnumber);
+        if (log.isDebugEnabled()) log.debug("snumber: " +  snumber + " dnumber: " + dnumber + " rnumber: " + rnumber);
         
         if (rm.mayCreateRelation(sourceNode, destinationNode) != getInverse()
-        	&& mmb.getTypeRel().contains(snumber, dnumber, rnumber) ) {
+            && mmb.getTypeRel().contains(snumber, dnumber, rnumber) ) {
             return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
 
     }
-
 }
