@@ -131,19 +131,19 @@
   <tr><th colspan="3"><mm:write referid="mlg.Add_new_topic" /></th></tr>
   <tr><th colspan="3" align="center">
 	<mm:compare referid="postresult" value="no_subject">
-	<font color="red">*** problem missing topic,please enter a topic ***</font>
+	<font color="red"><mm:write referid="mlg.problem_missing_topic" /></font>
 	</mm:compare>
 	<mm:compare referid="postresult" value="no_body">
-	<font color="red">*** problem missing text,please enter a text ***</font>
+	<font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
 	</mm:compare>
 	<mm:compare referid="postresult" value="duplicate_post">
-	<font color="red">*** this was already posted to the forum ***</font>
+	<font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
 	</mm:compare>
 	<mm:compare referid="postresult" value="illegal_html">
-	<font color="red">*** this posting contains illegal html codes ***</font>
+	<font color="red"><mm:write referid="mlg.problem_illegal_html" /></font>
 	</mm:compare>
 	<mm:compare referid="postresult" value="speed_posting">
-	<font color="red">*** You are not allowed to post more than 1 every <mm:write referid="speedposttime" /> seconds ***</font>
+	<font color="red"><mm:write referid="mlg.problem_speedposting" /><mm:write referid="speedposttime" /> sec ***</font>
 	</mm:compare>
   </th></tr>
   <form action="<mm:url page="newpost.jsp">
