@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  * 
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.6 2005-04-25 14:27:48 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.7 2005-05-23 11:00:39 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -129,7 +129,7 @@ public class ClassAuthentication {
                 return null;
             }
             load(configFile);
-            watcher = new ResourceWatcher() {
+            watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
                 public void onChange(String file) {
                     load(file);
                 }
