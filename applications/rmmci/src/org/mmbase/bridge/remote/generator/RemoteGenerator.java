@@ -593,47 +593,34 @@ public class RemoteGenerator {
 
         StringBuffer sb = new StringBuffer();
         StringBuffer sb2 = new StringBuffer();
-        List v = mmci.getClasses();
+        List v = new ArrayList(mmci.getClasses());
+        List w = new ArrayList();
+        System.out.println("Sorting " + v);
 
-        //System.out.println("Sorting " + v);
-
-        // most 'specific' type must come first.
-
-        Collections.sort(v, new Comparator() {
-            public int compare(Object one, Object two) {
-                XMLClass oneClass = (XMLClass)one;
-                XMLClass twoClass = (XMLClass)two;
-                List oneSuperClasses  = getSuperClasses(oneClass);
-                List twoSuperClasses  = getSuperClasses(twoClass);
-                //System.out.println("comparing " + oneClass + " implements " + oneSuperClasses + " with " + twoClass + " implements " + twoSuperClasses);
-
-                if (oneSuperClasses.contains(twoClass)) {
-                    //System.out.println("" + oneClass + " is more specific than " + twoClass);
-                    return -1;
-                }
-                if (twoSuperClasses.contains(oneClass)) {
-                    //System.out.println("" + oneClass + " is less specific than " + twoClass);
-                    return +1;
-                }
-                if (oneSuperClasses.size() == 0 && twoSuperClasses.size() == 0) {
-                    // sort arbritrary, just to make it consistent with equals.
-                    return oneClass.getName().compareTo(twoClass.getName());
-                } else {
-                    // user super-classes for comparison else, perhaps the other class is a subclass of the superclass.
-                    if (oneSuperClasses.size() > 0) {
-                        return compare(oneSuperClasses.get(0), twoClass);
-                    } else {
-                        return compare(oneClass, twoSuperClasses.get(0));
-                    }
-                }
-
-                //return 0;
+        // now handle more specific classes
+        int specificity = 0;
+        int currentSize = w.size() - 1;
+        while (v.size() > 0) {
+            specificity++;
+            System.out.println("specificity:" + specificity);
+            if (w.size() == currentSize) {
+                System.err.println("ERROR: Could not resolve order in ObjectWrapperHelper");
+                w.add(0, v);
             }
+            currentSize = w.size();
+            for (Iterator i = v.iterator(); i.hasNext();) {
+                XMLClass xml = (XMLClass) i.next();
+                if (w.containsAll(getSuperClasses(xml))) {
+                    w.add(0, xml);
+                    i.remove();
+                    break;
+                }
+            }
+        }
 
-        });
 
         //System.out.println("Result " + v);
-        Iterator i = v.iterator();
+        Iterator i = w.iterator();
 
         sb.append("public static Object localToRMIObject(Object o) throws RemoteException {\n");
         sb.append("		Object retval = null;\n");
