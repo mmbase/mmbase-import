@@ -74,9 +74,9 @@
   </goal>
 
   <goal name="mavenize">
-    <j:set var="mmbaseroot" value="<DIR-CVS-ALL-MODULE>"/>
-    <j:set var="taglibroot" value="${mmbaseroot}/applications/taglib"/>
-    <j:set var="documentationroot" value="${mmbaseroot}/documentation"/>
+    <j:set var="mmbaseroot" value="ALL"/>
+    <j:set var="taglibroot" value="${mmbaseroot}/mmbase/applications/taglib"/>
+    <j:set var="documentationroot" value="${mmbaseroot}/mmbase/documentation"/>
 
     <j:set var="cvsuser" value="guest"/>
     <j:set var="cvspasswd" value="guest"/>
@@ -93,31 +93,31 @@
     <ant:delete dir="mmbase-core/CVS"/>
 
     <ant:copy todir="mmbase-core/src/java">
-      <ant:fileset dir="${mmbaseroot}/src" defaultexcludes="no">
-        <ant:exclude name="org/mmbase/module/builders/ConvertJAI.java"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/src" defaultexcludes="no">
+	<ant:exclude name="org/mmbase/util/images/JAIImageConverter.java"/>
         <ant:exclude name="org/mmbase/module/JMSendMail.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMOracle.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMInformix42Node.java"/>
       </ant:fileset>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests">
-      <ant:fileset dir="${mmbaseroot}/tests/bridge"/>
-      <ant:fileset dir="${mmbaseroot}/tests/common"/>
-      <ant:fileset dir="${mmbaseroot}/tests/convertimage"/>
-      <ant:fileset dir="${mmbaseroot}/tests/dbsq"/>
-      <ant:fileset dir="${mmbaseroot}/tests/typerel"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/tests/bridge"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase//tests/common"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/tests/convertimage"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/tests/dbsq"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/tests/typerel"/>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests/config">
-      <ant:fileset dir="${mmbaseroot}/tests/config"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/tests/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-webapp/src/webapp">
-      <ant:fileset dir="${mmbaseroot}/html"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/html"/>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests/config">
-      <ant:fileset dir="${mmbaseroot}/tests/config"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/tests/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-core-config/config">
-      <ant:fileset dir="${mmbaseroot}/config"/>
+      <ant:fileset dir="${mmbaseroot}/mmbase/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-taglib/src/java">
       <ant:fileset dir="${taglibroot}/src"/>
