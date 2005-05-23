@@ -15,16 +15,22 @@ import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * A very simple tag to check if a relation may be created. It needs two nodes.
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.8 2004-07-26 20:18:02 nico Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.9 2005-05-23 19:39:40 andre Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
+    
+    private static final Logger log = Logging.getLoggerInstance(MayCreateRelationTag.class);
+
     private Attribute role = Attribute.NULL;
     private Attribute source = Attribute.NULL;
     private Attribute destination = Attribute.NULL;
@@ -45,12 +51,20 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
         RelationManager rm   = getCloudVar().getRelationManager(role.getString(this));
         Node sourceNode      = getNode(source.getString(this));
         Node destinationNode = getNode(destination.getString(this));
-
-        if (rm.mayCreateRelation(sourceNode, destinationNode) != getInverse()) {
+        
+		org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
+        int snumber = sourceNode.getNodeManager().getNumber();
+        int dnumber = destinationNode.getNodeManager().getNumber();
+        int rnumber = rm.getNumber();
+		if (log.isDebugEnabled()) log.debug("snumber: " +  snumber + " dnumber: " + dnumber + " rnumber: " + rnumber);
+        
+        if (rm.mayCreateRelation(sourceNode, destinationNode) != getInverse()
+        	&& mmb.getTypeRel().contains(snumber, dnumber, rnumber) ) {
             return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
+
     }
 
 }
