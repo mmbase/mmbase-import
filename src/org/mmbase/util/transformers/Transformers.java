@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-
+import java.util.Iterator;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -45,18 +46,40 @@ public class Transformers {
             log.error("Class " + name + " specified for " + errorId + " could not be found");
             return null;
         }
-        if (! CharTransformer.class.isAssignableFrom(clazz)) {
-            log.error("The class " + clazz + " specified for "  + errorId + " is not a CharTransformer");
+        
+        if (! Transformer.class.isAssignableFrom(clazz) &&
+            ! ParameterizedTransformerFactory.class.isAssignableFrom(clazz)) {
+            log.error("The class " + clazz + " specified for "  + errorId + " is not a Transformer");
             return null;
         }
-        CharTransformer ct;
+        Object t;
         try {
-            ct = (CharTransformer) clazz.newInstance();
+            t = clazz.newInstance();
         } catch (Exception ex) {
             log.error("Error instantiating a " + clazz + ": " + ex.toString());
             return null;
         }
-        
+        if (t instanceof ParameterizedTransformerFactory) {
+            ParameterizedTransformerFactory pt = (ParameterizedTransformerFactory) t;
+            Parameters params = pt.createParameters();
+            Iterator it = org.mmbase.util.StringSplitter.split(config).iterator();
+            int i = 0;
+            while (it.hasNext()) {
+                params.set(i++, it.next());
+            }
+            config = "";
+            t = pt.createTransformer(params);
+        }        
+        CharTransformer ct;
+
+        if (t instanceof CharTransformer) {
+            ct = (CharTransformer) t;
+        } else if (t instanceof ByteToCharTransformer) {
+            ct = new ByteCharTransformer((ByteToCharTransformer) t);
+        } else {
+            log.error("The class " + clazz + " specified for "  + errorId + " is not a CharTransformer or a ByteToCharTransformer");
+            return null;            
+        }
 
         if (config == null) config = "";
         if (ct instanceof ConfigurableTransformer) {
