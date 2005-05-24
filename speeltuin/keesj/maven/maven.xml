@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
 <project
   xmlns:j="jelly:core"
   xmlns:ant="jelly:ant"
@@ -11,6 +18,7 @@
 >
 
   <goal name="all:eclipse" description="Generate Eclipse files for ALL Subprojects">
+    <j:set var="maven.multiproject.excludes" value="project.xml" />
     <j:set var="goal" value="eclipse" />
     <attainGoal name="multiproject:goal" />
   </goal>
@@ -59,9 +67,6 @@
         postProcessing="true"
         ignoreFailures="${maven.multiproject.ignoreFailures}"
         collectOnly="true" />
-
-    	<!-- basedir="${maven.multiproject.basedir}" -->
-
     
     <j:forEach var="reactorProject" items="${reactorProjects}">
         <!-- this list of things to delete is lifted from clean:clean -->
@@ -73,51 +78,74 @@
     </j:forEach>
   </goal>
 
-  <goal name="mavenize">
-    <j:set var="mmbaseroot" value="ALL"/>
-    <j:set var="taglibroot" value="${mmbaseroot}/mmbase/applications/taglib"/>
-    <j:set var="documentationroot" value="${mmbaseroot}/mmbase/documentation"/>
+  <goal name="mm:deploy-war">
+    <j:if test="${empty(mmbase.war)}">
+	  <j:set var="mmbase.war" value="mmbase-webapp"/>
+	  <echo>mmbase.war missing. default setting ${mmbase.war}</echo>
+    </j:if>
+    <j:set var="maven.multiproject.includes" value="${mmbase.war}/project.xml" />
+    <j:set var="goal" value="tomcat:deploy" />
+    <attainGoal name="multiproject:goal" />
+  </goal>
+
+  <goal name="mm:checkout">
+    <j:if test="${empty(mmbase.checkout.dir)}">
+	  <j:set var="mmbase.checkout.dir" value="../mmbase-head"/>
+      <echo>mmbase.checkout.dir missing. default setting ${mmbase.checkout.dir}</echo>
+    </j:if>
 
     <j:set var="cvsuser" value="guest"/>
     <j:set var="cvspasswd" value="guest"/>
     <j:set var="cvsmethod" value="pserver"/>
     <j:set var="cvsroot" value=":${cvsmethod}:${cvsuser}@cvs.mmbase.org:/var/cvs "/>
-    <!--
-    <ant:cvs command="-d${cvsroot} login"/>
-    <ant:echo>${cvsroot}</ant:echo>
-    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}"/>
-    -->
 
-    <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbaseroot}"/>
+    <j:if test="${mmbase.checkout.login == 'true'}">
+	    <ant:cvs command="-d${cvsroot} login"/>
+	    <ant:echo>${cvsroot}</ant:echo>
+	    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}"/>
+    </j:if>
+
+    <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase.checkout.dir}"/>
 
     <ant:delete dir="mmbase-core/CVS"/>
+  </goal>  
+
+  <goal name="mm:mavenize">
+    <j:if test="${empty(mmbase.checkout.dir)}">
+	  <j:set var="mmbase.checkout.dir" value="../mmbase-head"/>
+      <echo>mmbase.checkout.dir missing. default setting ${mmbase.checkout.dir}</echo>
+    </j:if>
+    
+    <j:set var="taglibroot" value="${mmbase.checkout.dir}/applications/taglib"/>
+    <j:set var="documentationroot" value="${mmbase.checkout.dir}/documentation"/>
 
     <ant:copy todir="mmbase-core/src/java">
-      <ant:fileset dir="${mmbaseroot}/mmbase/src" defaultexcludes="no">
-	<ant:exclude name="org/mmbase/util/images/JAIImageConverter.java"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/src" defaultexcludes="no">
+		<ant:exclude name="org/mmbase/util/images/JAIImageConverter.java"/>
         <ant:exclude name="org/mmbase/module/JMSendMail.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMOracle.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMInformix42Node.java"/>
       </ant:fileset>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests">
-      <ant:fileset dir="${mmbaseroot}/mmbase/tests/bridge"/>
-      <ant:fileset dir="${mmbaseroot}/mmbase//tests/common"/>
-      <ant:fileset dir="${mmbaseroot}/mmbase/tests/convertimage"/>
-      <ant:fileset dir="${mmbaseroot}/mmbase/tests/dbsq"/>
-      <ant:fileset dir="${mmbaseroot}/mmbase/tests/typerel"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/bridge"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/common"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/convertimage"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/dbsq"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/typerel"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/util"/>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests/config">
-      <ant:fileset dir="${mmbaseroot}/mmbase/tests/config"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-webapp/src/webapp">
-      <ant:fileset dir="${mmbaseroot}/mmbase/html"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/html"/>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests/config">
-      <ant:fileset dir="${mmbaseroot}/mmbase/tests/config"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-core-config/config">
-      <ant:fileset dir="${mmbaseroot}/mmbase/config"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-taglib/src/java">
       <ant:fileset dir="${taglibroot}/src"/>
@@ -131,7 +159,7 @@
     </ant:copy>
   </goal>
 
-  <goal name="mavenize-clean" description="Clean all imported mmbase sources">
+  <goal name="mm:mavenize-clean" description="Clean all imported mmbase sources">
     <j:if test="${empty(maven.multiproject.basedir)}">
       <j:set var="maven.multiproject.basedir" value="${basedir}" />
     </j:if>

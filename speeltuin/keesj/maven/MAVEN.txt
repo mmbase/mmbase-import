@@ -18,7 +18,8 @@ and overriding them at the appropriate level.
 
 The properties files in Maven are processed in the following order:
  1. Built-in properties are processed
- 2. ${basedir}/project.properties (basedir is replaced by the directory where the project.xml file in use resides)
+ 2. ${basedir}/project.properties (basedir is replaced by the directory where 
+    the project.xml file in use resides)
  3. ${basedir}/build.properties
  4. ${user.home}/build.properties
  5. System properties
@@ -41,7 +42,9 @@ ${basedir}/build.properties
     These are properties specific to the project, but also the user running it.
     It is for overriding values in the project.properties for this user only.
     It should not be checked into the source repository. If a user is required
-    to set any of these properties for a build to run properly, a build.properties.sample file should be created and checked into the source repository as a courtesy.
+    to set any of these properties for a build to run properly, a 
+    build.properties.sample file should be created and checked into the source
+    repository as a courtesy.
 ${user.home}/build.properties
     These are properties specific to the user but shared among all projects. 
     This typically specifies remote repositories to download from and upload to,
@@ -84,3 +87,29 @@ link checking the site.
 
 If you would like normal operations to succeed, but for no dependency downloading
 to occur, set the maven.repo.remote.enabled property to false.
+Unresolvable artifacts
+----------------------
+Due to license restrictions some libraries can't be redistribitued by others 
+than Sun, so you'll have to get it yourself.
+
+You'll have to download each one and place it in your local Maven repository
+(on UNIX systems, this defaults to ~/.maven/repository/; on Windows, it's in the
+equivalent "home" directory)
+
+In the "repository" folder, make one directory for each "groupId" -- in cases 
+where there is no "groupId" but only an "id", make a directory with that name.
+Then in each of those directories, make a jars directory. A UNIX example:
+
+cd ~/.maven/repository
+mkdir -p ejb/jars
+mkdir -p jdo/jars
+mkdir -p jta/jars
+mkdir -p jai/jars
+and so on
+
+Then, copy each of the downloaded jars into the corresponding directory. You may
+also need to rename the JAR in the form {artifactId}-{version}.jar, except in 
+the case of "ejb" where the dependency overrides the naming convention.
+
+This part is a little tricky the first time, but you only have to do it once,
+and it becomes pretty natural.

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
 <project>
     <pomVersion>3</pomVersion>
     <id>mmbase:maven-base</id>
@@ -191,9 +198,6 @@
             <artifactId>servletapi</artifactId>
             <version>2.3</version>
             <type>jar</type>
-            <properties>
-                <war.bundle>${war.bundle}</war.bundle>
-            </properties>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -204,6 +208,33 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>1.1_01</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+	    <dependency>
+			<groupId>jai</groupId>
+			<artifactId>jai_codec</artifactId>
+			<version>1.1.2_01</version>
+			<url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+	        <properties>
+	            <war.bundle>${war.bundle}</war.bundle>
+	        </properties>
+	    </dependency>
+	    <dependency>
+			<groupId>jai</groupId>
+			<artifactId>jai_core</artifactId>
+			<version>1.1.2_01</version>
+			<url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+	        <properties>
+	            <war.bundle>${war.bundle}</war.bundle>
+	        </properties>
+	    </dependency>
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
@@ -225,7 +256,25 @@
             <artifactId>xalan</artifactId>
             <version>2.6.0</version>
             <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
         </dependency>
+
+		<!-- tomcat deploy plugin -->        
+        <dependency>
+            <groupId>codeczar-tomcat</groupId>
+            <artifactId>maven-tomcat-plugin</artifactId>
+            <version>1.1</version>
+            <type>plugin</type>
+            <url>http://www.codeczar.com/products/maven-tomcat-plugin/</url>
+        </dependency>
+		<dependency>
+			<groupId>maven-plugins</groupId>
+			<artifactId>maven-findbugs-plugin</artifactId>
+			<version>0.8.4</version>
+			<type>plugin</type>
+		</dependency>
     </dependencies>
     <build>
         <nagEmailAddress>maven@keesj.dds.nl</nagEmailAddress>
@@ -299,6 +348,10 @@
         <report>maven-checkstyle-plugin</report>
         <report>maven-pmd-plugin</report>
         <report>maven-tasklist-plugin</report>
+		<!-- report>maven-clover-plugin</report -->
+		<report>maven-simian-plugin</report>
+		<report>maven-findbugs-plugin</report>
+
     </reports>
 </project>
 
