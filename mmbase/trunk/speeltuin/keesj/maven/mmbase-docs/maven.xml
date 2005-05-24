@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project xmlns:ant="jelly:ant">
+
+    <postGoal name="sdocbook:prepare-filesystem">
+
+        <!-- use a custom fo stylesheet -->
+        <!-- copy todir="${maven.sdocbook.stylesheets.dir}/fo">
+            <fileset dir="${maven.sdocbook.src.dir}/styles/fo"/>
+        </copy -->
+
+        <!-- use a custom html stylesheet -->
+        <!-- copy todir="${maven.sdocbook.stylesheets.dir}/html">
+            <fileset dir="${maven.sdocbook.src.dir}/styles/html"/>
+        </copy -->
+
+        <!-- copy images -->
+        <!-- copy todir="${maven.sdocbook.stylesheets.dir}/images">
+            <fileset dir="${maven.sdocbook.src.dir}/images"/>
+        </copy -->
+
+    </postGoal>
+
+    
+</project>
