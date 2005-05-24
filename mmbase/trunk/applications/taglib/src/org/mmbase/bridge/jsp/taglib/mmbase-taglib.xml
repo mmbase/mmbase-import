@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.302 2005-05-18 15:34:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.303 2005-05-24 13:37:25 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -414,20 +414,46 @@ version: $Id: mmbase-taglib.xml,v 1.302 2005-05-18 15:34:32 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
+      <info>
+        Adds to this list all elements represented by the value of this attribute. The value refers
+        to some taglib variable, like the id of another list, or the id of a node (which is only one
+        element then).
+      </info>      
     </attribute>
     <attribute>
       <name>retain</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
+      <info>
+        Removes al the elements from the list, besides the one which are also present in the
+        object referred by this attribute.
+      </info>
     </attribute>
     <attribute>
       <name>remove</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
+        Removes al the elements from the list which are present in the
+        object referred by this attribute.
     </attribute>
     <see tag="listreferrer" />
+    <example>
+      <pre><![CDATA[
+<mm:import id="list1" vartype="list">a,b,c,d,e</mm:import>
+<mm:import id="list2" vartype="list">c,d,e,f</mm:import> 
+
+<mm:stringlist id="list3" referid="list1" add="list2" />
+<mm:stringlist id="list4" referid="list1" retain="list2" />
+<mm:stringlist id="list5" referid="list1" remove="list2" />
+  
+
+<mm:write referid="list3" /> / <mm:write referid="list4" /> / <mm:write referid="list5" />
+
+]]>
+      </pre>
+    </example>
   </taginterface>
   <taginterface>
     <name>condition</name>
@@ -5791,13 +5817,13 @@ The 0 is just counter, which starts at 0 on every page.
         <value>DAY</value>
       </possiblevalue>
       <possiblevalue>
-        <value>DAY OF YEAR</value>
+        <value>DAYOFYEAR</value>
       </possiblevalue>
       <possiblevalue>
-        <value>DAY OF MONTH</value>
+        <value>DAYOFMONTH</value>
       </possiblevalue>
       <possiblevalue>
-        <value>DAY OF WEEK</value>
+        <value>DAYOFWEEK</value>
       </possiblevalue>
       <possiblevalue>
         <value>HOUR</value>
