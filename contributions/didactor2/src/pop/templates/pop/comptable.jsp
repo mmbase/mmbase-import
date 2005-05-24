@@ -18,6 +18,7 @@
         <th class="listHeader">Competentie</th>
         <th class="listHeader">Aan gewerkt door middel van</th>
         <th class="listHeader">Zelfbeoordeling</th>
+        <th class="listHeader">Score</th>
         <th class="listHeader">Voornemens</th>
       </tr>
       <mm:node number="$currentpop">
