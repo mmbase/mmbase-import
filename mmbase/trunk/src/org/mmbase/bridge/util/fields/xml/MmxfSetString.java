@@ -17,14 +17,12 @@ import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import org.mmbase.util.logging.*;
 
-// only used for debugging in main.
-import org.apache.xml.serialize.*;
 
 /**
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.2 2005-05-19 13:43:33 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.3 2005-05-24 11:42:04 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -122,6 +120,8 @@ public class MmxfSetString implements  Processor {
 
         System.out.println("\n-------------\nout:\n");
         Document document = (Document) setProcessor.process(node, node.getNodeManager().getField("body"), wiki);
+        System.out.println(org.mmbase.util.xml.XMLWriter.write(document, false));
+        /*
         try{
             XMLSerializer serializer = new XMLSerializer();
             serializer.setNamespaces(true);
@@ -130,6 +130,7 @@ public class MmxfSetString implements  Processor {
         } catch (java.io.IOException ioe) {
             System.err.println(ioe.getMessage());
         }
+        */
 
         
     }
