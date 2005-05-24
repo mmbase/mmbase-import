@@ -11,12 +11,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The EditTag can create an url to an editor with nodenrs, fields and paths.
- * FieldTags register these with the EditTag. This way the linked editor
- * 'knows' which nodes and fields are available in the page.
+ * This is an example implementation of the EditTag. EditTagYAMMe works together
+ * with the editor yammeditor.jsp.
  *
+ * @see EditTag
  * @author Andre van Toly
- * @version $Id: EditTagYAMMe.java,v 1.2 2005-03-18 13:19:26 andre Exp $
+ * @version $Id: EditTagYAMMe.java,v 1.3 2005-05-24 20:15:27 andre Exp $
  */
 
 public class EditTagYAMMe extends TagSupport implements EditTag {
@@ -26,7 +26,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
     private static String editor;
     private static String icon;
     private static ArrayList startList = new ArrayList();       // startnodes: 346
-    private static ArrayList pathList  = new ArrayList();       // paths: 346.news,posrel,urls
+    private static ArrayList pathList  = new ArrayList();       // paths: 346_news,posrel,urls
     private static ArrayList nodeList  = new ArrayList();       // nodes: 602 (should be 346.602)
     private static ArrayList fieldList = new ArrayList();       // fields: 602_news.title
     
@@ -47,23 +47,17 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
     }
     
     public int doStartTag() throws JspException {
-        try {
-            // Start by printing some bogus information
-            pageContext.getOut().print("<div class=\"et\">");
-            return EVAL_BODY_INCLUDE;
-        } catch (IOException ioe) {
-            throw new JspException(ioe.getMessage());
-        }
+      return EVAL_BODY_INCLUDE;
     }
         
     public int doEndTag() throws JspException {
         try {
             pageContext.getOut().print(makeHTML(editor, icon) +
-                "<br />gevonden startnodes : " + makeList4Url(startList) + 
-                "<br />gevonden pad: " + makeList4Url(pathList) +
-                "<br />gevonden nodes: " + makeList4Url(nodeList) +
-                "<br />gevonden velden : " + makeList4Url(fieldList) +
-                " ");
+                "<!-- gevonden startnodes : " + makeList4Url(startList) + 
+                "gevonden pad: " + makeList4Url(pathList) +
+                "gevonden nodes: " + makeList4Url(nodeList) +
+                "gevonden velden : " + makeList4Url(fieldList) +
+                "-->");
             fieldList.clear();  // clear the lists!
             startList.clear();
             pathList.clear();
@@ -77,7 +71,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
     
     /**
      * Here is were the FieldTag registers its fields and some associated 
-     * and maybe usefull information with the EditTag.
+     * and maybe usefull information with EditTagYAMMe.
      *
      * @param query     SearchQuery that delivered the field
      * @param nodenr    Nodenumber of the node the field belongs to
@@ -91,7 +85,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
         String path = getPathFromQuery(query);
         if (path != null && !path.equals("") && !pathList.contains(path)) {
             pathList.add(path);
-            log.info("Added path : " + path);
+            log.debug("Added path : " + path);
         }
         
         ArrayList nl = getNodesFromQuery(query, nodenr);
@@ -103,7 +97,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
             // fills fld2snMap (only used to keep track of startnodes)
             if (!fld2snMap.containsValue(nr) ) {
                 fld2snMap.put(String.valueOf(nodenr), nr);
-                log.info("@ Added nodenr : " + nodenr + " sn : " + nr);
+                log.debug("Added nodenr : " + nodenr + " sn : " + nr);
             } else {					// a node is a startnode when there was
            		startnode = true;		//   no previous field with this nodenr as startnodenr
             }
@@ -111,7 +105,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
             // fill startList (startnodes)
             if (!startList.contains(nr) && startnode) {
                 startList.add(nr);
-                log.info("Added startnode : " + nr);
+                log.debug("Added startnode : " + nr);
             }
             
             // fill nodeList (just the nodes in a page)
@@ -119,14 +113,14 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
             String str = nr + "_" + String.valueOf(nodenr);
 			if (!nodeList.contains(str)) {
 				nodeList.add(str);
-				log.info("Added nodenr : " + str);
+				log.debug("Added nodenr : " + str);
 			}
 			
 			// fill fieldList (all the used fields in a page)
             String fieldstr = nr + "_" + fieldName;
             if (!fieldList.contains(fieldstr)) {
                 fieldList.add(fieldstr);
-                log.info("Added field : " + fieldstr);
+                log.debug("Added field : " + fieldstr);
             }
         }
         
@@ -137,7 +131,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
      * Extract the startnodes from a query
      *
      * @param   query The SearchQuery
-     * @param   int   Nodenumber
+     * @param   nr    Nodenumber
      * @return  ArrayList with the startnodes
      */
     public ArrayList getNodesFromQuery(Query query, int nr) {
@@ -147,7 +141,6 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
         
         if (steps.size() == 1) {    //
             snl.add(number);
-            // log.info("Found startnode (just 1 step) : " + number);
         } 
         
         Iterator si = steps.iterator();
@@ -162,7 +155,6 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
                 
                 if (!snl.contains(number)) {
                     snl.add(number);
-                    // log.info("Found startnode : " + number);
                 }
             }
             
@@ -174,7 +166,8 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
     * Just get the path from this query
     *
     * @param query  The query
-    * @return       A path like 345.news,posrel,urls
+    * @return       A path like 345_news,posrel,urls which is the nodenumber of
+    *               the node this field belongs to and the path that leads to it.
     */  
     public String getPathFromQuery(Query query) {
         String path = null;     
@@ -213,8 +206,8 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
     /**
     * Creates a ; seperated string for the url with paths, fields or startnodes.
     * 
-    * @param al     One of the lists
-    * @return       A ; seperated string
+    * @param al     One of the ArrayLists
+    * @return       A ; seperated string with the elements from the ArrayList
     *
     */
     public static String makeList4Url(ArrayList al) {
@@ -237,7 +230,7 @@ public class EditTagYAMMe extends TagSupport implements EditTag {
     *
     * @param editor     An url to an editor
     * @param icon       An url to a graphic file
-    * @return           A HTML string with a link suitable for an editor like yammeditor.
+    * @return           An HTML string with a link suitable for the editor yammeditor.jsp
     * 
     */
     public static String makeHTML(String editor, String icon) {

@@ -101,18 +101,6 @@ Breakdown:
 </p>
 -->
 <!--
-
-<div><a href="#" onclick="toggle('edit_1');return false;" title="Hide or show...">Toon form!</a></div>
-<div style="display: none;" id="edit_1">
-<div class="relatednode">
-More about this related node....
-</div>
-</div>
-
-<div>
-related nodes  in rechterkolom
-- je kunt related node uitklappen met javascript
-
     <% 
     out.println("<br /><br /><b>Session info</b>");
     String[] names  = session.getValueNames();
@@ -121,7 +109,6 @@ related nodes  in rechterkolom
         out.println("<br />session value : " + session.getValue(names[j]));
     }
     %>
-</div>
 -->
 </body>
 </html>
