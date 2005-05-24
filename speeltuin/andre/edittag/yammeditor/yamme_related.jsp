@@ -97,12 +97,21 @@ if (pmap.containsKey(nr)) {
       <td class="path" colspan="3">
       <span class="fltleft"><%= path %></span>
       <%
-      // buggy part.. (there can be > 1 nodetypes in a path)
+      // buggy part.. (there can be > 1 nodetypes (and thus relations!) in a path)
       String ant = path.substring(path.lastIndexOf(",") + 1, path.length());
       String arole = path.substring(path.indexOf(",") + 1,path.lastIndexOf(","));
+      if (arole.indexOf(",") > -1) {		// delete parts before komma
+      	arole = arole.substring(arole.lastIndexOf(",") + 1, arole.length());
+      }
+      if (arole.equals("insrel")) arole = "related";
       %>
       <span class="fltright">
-       <a href="#"><img src="/mmbase/edit/my_editors/img/mmbase-search.gif" alt="search" width="21" height="20" /></a>
+       <a href="javascript:OpenWindow('<mm:url page="yamme_search.jsp" referids="nr">
+		 <mm:param name="path"><%= path %></mm:param>
+		 <mm:param name="type"><%= ant %></mm:param>
+		 <mm:param name="role"><%= arole %></mm:param>
+	   </mm:url>','Search','height=480,width=540, scrollbars=YES, menubar=0, toolbar=0, status=0, directories=0, resizable=1')""
+       ><img src="/mmbase/edit/my_editors/img/mmbase-search.gif" alt="search" width="21" height="20" /></a>
        <a href="javascript:OpenWindow('<mm:url page="yamme_create.jsp" referids="nr">
 		 <mm:param name="path"><%= path %></mm:param>
 		 <mm:param name="type"><%= ant %></mm:param>

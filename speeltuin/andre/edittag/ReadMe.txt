@@ -3,9 +3,9 @@
 
 André van Toly
 andre@toly.nl
-21 febr 2005
+24 May 2005
 
-The EditTag is a simple MMBase JSP tag that can the data being displayed by 
+The EditTag is a simple MMBase JSP tag that can make the data being displayed by 
 <mm:field> tags accessible. It builds on the principle that data in MMBase nodes
 is stored in fields, which in all cases you can only get with a field tag. 
 Whether you use the simple <mm:node> tag, or more complicated <mm:list>, 

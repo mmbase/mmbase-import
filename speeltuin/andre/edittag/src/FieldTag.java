@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.3 2005-03-18 13:19:26 andre Exp $
+ * @version $Id: FieldTag.java,v 1.4 2005-05-24 20:15:27 andre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -99,14 +99,14 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
 
     /**
-	 * EditTag
-	 * 
+	 * Method to handle the EditTag if it is present around fields and their nodes.
+	 * <br /><br />
 	 * If the FieldTag is inside an EditTag then it wil register itself with the EditTag.
-	 * The EditTag will provide access to an editor. Not only the field will be 
-	 * registered but also the query it originated from and other usefull information.
+	 * The EditTag can provide access to an editor. Not only the field and its nodes will 
+	 * be registered but also the query it originated from.
 	 * 
-	 * @todo  EXPERIMENTAL
      * @since MMBase-1.8
+	 * @todo  EXPERIMENTAL
      */
      protected void handleEditTag() {
         // Andre is busy with this...
@@ -154,7 +154,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 			}
 
 			// Register field and its node with EditTag
-			log.debug("ET register fieldName : " + fieldName + " with nodenr : " + nodenr );
+			log.debug("EditTag register fieldName : " + fieldName + " with nodenr : " + nodenr );
 			et.registerField(query, nodenr, fieldName);
 		}
     }
@@ -236,7 +236,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                         }
                         break;
                     case Field.TYPE_BOOLEAN:
-                        value = new Boolean(node.getBooleanValue(fieldName));
+                        value = Boolean.valueOf(node.getBooleanValue(fieldName));
                         break;
                     case Field.TYPE_LIST:
                         value = node.getListValue(fieldName);
@@ -277,7 +277,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         nodeProvider = null;
         field = null;
         fieldName = null;
-        super.doEndTag();
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 }
