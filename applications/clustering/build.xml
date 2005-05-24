@@ -12,43 +12,38 @@
   <property name="project.target.templates.dir"   value="clustering" />
   <property name="project.config.dir.includes"   value="utils/**" />
   <property name="project.config.jar.includes"   value="**" />
-  <property name="project.jars.includes" value="**" />
+
+  <property name="project.jars.dir"        location="${expand.dir}/${jgroups.version}.bin/" />
+  <property name="project.jars.includes"   value="jgroups-all.jar" />
   &base;
   
-  <target name="dependent.jar" description="Create mmbase-clustering.jar" 
-    depends="jgroups.jar,project.manifest" />
+  <target name="dependent.jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,jar">
+  </target>
 
   <target name="dependent.install" description="Install clustering" 
 	  depends="dependent.jar,install" />
 
-  <target name="jgroups.jar"
-    description="Get JGroups jar">
+  <target name="jgroups.jar" description="Get JGroups jar">
     
     <echo message="jgroups" />
 	
-	<antcall target="downloadzip">
+    <antcall target="downloadzip">
       <param name="sourcefile" value="${jgroups.loc}"/>
       <param name="destfile" value="${jgroups.dest}"/>
       <param name="destdir" value="${expand.dir}"/>
       <param name="expandedfile" value="${jgroups.jar}"/>
     </antcall>
-	
-	<echo message="creating jar" />
-	<antcall target="compile" />
 
-    <mkdir dir="${project.build.dir}/classes/org/mmbase/clustering" /><!-- hate ant -->
-    <echo message="creating jar" />    
-    <jar jarfile="${project.jar}">
-      <fileset     dir="${project.build.dir}/classes">
-        <include name="**" />
-      </fileset>
-      <fileset     dir="${project.classes.dir}" includes="${project.classes.includes}" />
-    </jar>
-  
+    <echo message="${project.jars.dir}${project.jars.includes}" />
   </target>
 
   
+  <!--
+      Well it is not very complicated, this download stuff,
+      but should we reuse the code of the main build.xml rather then copying it?
+  -->
   
+
   <target name="downloadzip" unless="expanded" depends="download,testexpanded">
     <!-- Extract the package -->
     <mkdir dir="${destdir}" />
