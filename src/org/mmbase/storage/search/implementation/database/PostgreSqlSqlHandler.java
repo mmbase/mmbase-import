@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.10 2005-05-02 13:06:21 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.11 2005-05-24 14:00:39 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -103,28 +103,29 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     */
 
     /**
+     * {@link http://www.postgresql.org/docs/7.4/static/functions-datetime.html}
      * @javadoc
      */
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
-            case FieldValueDateConstraint.CENTURY:
-                datePartFunction = "CENTURY";
-                break;
-            case FieldValueDateConstraint.QUARTER:
-                datePartFunction = "QUARTER";
-                break;
-            case FieldValueDateConstraint.WEEK:
-                datePartFunction = "WEEK";
-                break;
-            case FieldValueDateConstraint.DAY_OF_YEAR:
-                datePartFunction = "DAYOFYEAR";
-                break;
-            case FieldValueDateConstraint.DAY_OF_WEEK:
-                datePartFunction = "DAYOFWEEK";
-                break;
-            default:
-                log.debug("Unknown datePart " + datePart);
+        case FieldValueDateConstraint.CENTURY:
+            datePartFunction = "CENTURY";
+            break;
+        case FieldValueDateConstraint.QUARTER:
+            datePartFunction = "QUARTER";
+            break;
+        case FieldValueDateConstraint.WEEK:
+            datePartFunction = "WEEK";
+            break;
+        case FieldValueDateConstraint.DAY_OF_YEAR:
+            datePartFunction = "DOY";
+            break;
+        case FieldValueDateConstraint.DAY_OF_WEEK:
+            datePartFunction = "DOW";
+            break;
+        default:
+            log.debug("Unknown datePart " + datePart);
         }
         if (datePartFunction != null) {
             sb.append("EXTRACT(");
@@ -133,6 +134,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             appendField(sb, step, fieldName, multipleSteps);
             sb.append(")");
         } else {
+            // others are supported in super..
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
         }
     }
