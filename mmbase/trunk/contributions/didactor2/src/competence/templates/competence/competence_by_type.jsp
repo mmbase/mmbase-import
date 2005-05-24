@@ -32,16 +32,17 @@
 <%
    HashSet hsetCompetences = new HashSet();
    String sConstraints = "(1=1) ";
+   if(sSearchValue == null) sSearchValue = "";
 
-   if((sRealSearchField.equals("number")) && (!sSearchValue.equals("")))
+   if((sRealSearchField != null) && (sRealSearchField.equals("number")) && (!sSearchValue.equals("")))
    {
       sConstraints += " AND (number=" + sSearchValue + ") ";
    }
-   if((sRealSearchField.equals("name")) && (!sSearchValue.equals("")))
+   if((sRealSearchField != null) && (sRealSearchField.equals("name")) && (!sSearchValue.equals("")))
    {
       sConstraints += " AND (name like '%" + sSearchValue + "%') ";
    }
-   if((sRealSearchField.equals("owner")) && (!sSearchValue.equals("")))
+   if((sRealSearchField != null) && (sRealSearchField.equals("owner")) && (!sSearchValue.equals("")))
    {
       sConstraints += " AND (owner=" + sSearchValue + ") ";
    }
@@ -92,9 +93,17 @@
                      <span class="header"><fmt:message key="CompetenceTypesMatrixSearchResultsTitle"/></span>
                      <br>
                      <select class="input" name="age">
+                        <option value="-1"
+                           <%
+                              if((sSearchAge != null) && (sSearchAge.equals("-1")))
+                              {
+                                 %> selected="selected" <%
+                              }
+                           %>
+                        ><fmt:message key="CompetenceTypesMatrixSearchTimeAll"/></option>
                         <option value="0"
                            <%
-                              if(sSearchAge.equals("0"))
+                              if((sSearchAge != null) && (sSearchAge.equals("0")))
                               {
                                  %> selected="selected" <%
                               }
@@ -102,7 +111,7 @@
                         ><fmt:message key="CompetenceTypesMatrixSearchTimeToday"/></option>
                         <option value="1"
                            <%
-                              if(sSearchAge.equals("1"))
+                              if((sSearchAge != null) && (sSearchAge.equals("1")))
                               {
                                  %> selected="selected" <%
                               }
@@ -110,7 +119,7 @@
                         ><fmt:message key="CompetenceTypesMatrixSearchTimeDay"/></option>
                         <option value="7"
                            <%
-                              if(sSearchAge.equals("7"))
+                              if((sSearchAge != null) && (sSearchAge.equals("7")))
                               {
                                  %> selected="selected" <%
                               }
@@ -118,7 +127,7 @@
                         ><fmt:message key="CompetenceTypesMatrixSearchTimeWeek"/></option>
                         <option value="31"
                            <%
-                              if(sSearchAge.equals("31"))
+                              if((sSearchAge != null) && (sSearchAge.equals("31")))
                               {
                                  %> selected="selected" <%
                               }
@@ -126,48 +135,40 @@
                         ><fmt:message key="CompetenceTypesMatrixSearchTimeMonth"/></option>
                         <option value="365"
                            <%
-                              if(sSearchAge.equals("365"))
+                              if((sSearchAge != null) && (sSearchAge.equals("365")))
                               {
                                  %> selected="selected" <%
                               }
                            %>
                         ><fmt:message key="CompetenceTypesMatrixSearchTimeYear"/></option>
-                        <option value="-1"
-                           <%
-                              if(sSearchAge.equals("-1"))
-                              {
-                                 %> selected="selected" <%
-                              }
-                           %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeAll"/></option>
                      </select>
 
 
                      <select name="realsearchfield">
                         <option value="name"
                            <%
-                              if(sRealSearchField.equals("name"))
+                              if((sRealSearchField != null) && (sRealSearchField.equals("name")))
                               {
                                  %> selected="selected" <%
                               }
                            %>
-                        >Titel bevat</option>
+                        ><fmt:message key="CompetenceTypesMatrixSearchByName"/></option>
                         <option value="number"
                            <%
-                              if(sRealSearchField.equals("number"))
+                              if((sRealSearchField != null) && (sRealSearchField.equals("number")))
                               {
                                  %> selected="selected" <%
                               }
                            %>
-                        >Nummer is</option>
+                        ><fmt:message key="CompetenceTypesMatrixSearchByNumber"/></option>
                         <option value="owner"
                            <%
-                              if(sRealSearchField.equals("owner"))
+                              if((sRealSearchField != null) && (sRealSearchField.equals("owner")))
                               {
                                  %> selected="selected" <%
                               }
                            %>
-                        >Eigenaar is</option>
+                        ><fmt:message key="CompetenceTypesMatrixSearchByOwner"/></option>
                      </select>
 
 
