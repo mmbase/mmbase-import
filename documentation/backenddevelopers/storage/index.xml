@@ -7,7 +7,7 @@
 
     <date>2003-08-20</date>
 
-    <edition>$Id: index.xml,v 1.4 2005-02-03 09:08:06 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.5 2005-05-24 18:37:14 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -246,6 +246,13 @@
       parameters you can change.
     </para>
     <para>See : <ulink url="configuration.html">The Configuration Document</ulink></para>
+  </section>
+  <section id="conversion">
+    <title>Conversions</title>
+    <para>
+      How to on how to convert between databases, and field-types.
+    </para>
+    <para>See : <ulink url="conversions.html">The database conversion document</ulink></para>
   </section>
 
   <section id="howto">
