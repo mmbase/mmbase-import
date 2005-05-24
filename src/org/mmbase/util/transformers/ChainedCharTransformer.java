@@ -44,7 +44,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.23 2005-05-12 15:37:44 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.24 2005-05-24 21:42:54 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -153,18 +153,6 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
         return "CHAINED"  + charTransformers;
     }
 
-
-    /**
-     * This makes implementation ready for plugin of a ThreadPool
-     */
-    static class MMExecutor { // implements Executor (1.5 feature)
-        public void execute(Runnable r) {
-            Thread t = new Thread(r, "EXECUTOR");
-            t.setDaemon(false);
-            t.start();
-            
-        }
-    }
 
 
     // main for testing purposes
