@@ -202,7 +202,7 @@ public class CronDaemon implements Runnable {
             } catch (InterruptedException ie) {
                 log.info("Interrupted: " + ie.getMessage());
             } catch (Throwable t) {
-                log.error(t.getClass().getName() + " " + t.getMessage());
+                log.error(t.getClass().getName() + " " + t.getMessage(), t);
             }
         }
     }

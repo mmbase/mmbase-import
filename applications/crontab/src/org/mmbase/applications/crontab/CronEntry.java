@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.1 2004-10-05 11:32:15 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.2 2005-05-24 19:15:49 michiel Exp $
  */
 
 public class CronEntry {
@@ -142,9 +142,7 @@ public class CronEntry {
                 // fall through
             case CANBEMORE_JOB_TYPE :
             default :
-                thread = new ExceptionLoggingThread(cronJob, "CronJob " + toString());
-                thread.setDaemon(true);
-                thread.start();
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(cronJob);
                 return true;
         }
 
@@ -230,22 +228,6 @@ public class CronEntry {
         return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime);
     }
 
-    private class ExceptionLoggingThread extends Thread {
-        ExceptionLoggingThread(Runnable run, String name) {
-            super(run, name);
-        }
-
-        /**
-         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
-         */
-        public void run() {
-            try {
-                super.run();
-            } catch (Throwable t) {
-                log.error("Error during cron-job " + CronEntry.this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
-            }
-        }
-    }
 
     /**
      * Convert a jobType int to a jobType String. invalid types are accepted and return DEFAULT_JOB_TYPE_STRING
