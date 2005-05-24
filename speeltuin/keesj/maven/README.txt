@@ -1,6 +1,9 @@
-README for maven-mmbase $Id: README.txt,v 1.8 2005-05-23 18:05:53 keesj Exp $
+README for maven-mmbase $Id: README.txt,v 1.9 2005-05-24 19:36:18 nico Exp $
+
+See the MAVEN.txt when you have maven related issues
 
 RUNNING:
+install java >1.4
 download maven from http://maven.apache.org/
 @> cd tmp
 @> tar zxvf ~/Documents/maven-1.0-rc1.tar.gz
@@ -14,7 +17,7 @@ cvs -d:pserver:guest@cvs.mmbase.org:/var/cvs login
 (type guest at the prompt)
 
 run the mavenised ant task in this directory
-@>maven mavenize
+@>maven init
 This wil checkout the current mmbase to the tmp directory
 and copy files to the respective projects
 
