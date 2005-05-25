@@ -66,3 +66,10 @@ table.popSpecialTableHeader {
 	text-align: left; 
 	font-size: 1.2em;
 	border-bottom: 5px solid #E7E7E7 }
+
+table.popGreyTableHeader {
+	font-weight: bold;
+	color: #FFFFFF; 
+    background-color: #999999;
+	text-align: left; 
+	font-size: 1.2em }
