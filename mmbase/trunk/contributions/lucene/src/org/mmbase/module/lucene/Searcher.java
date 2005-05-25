@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.5 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: Searcher.java,v 1.6 2005-05-25 08:53:56 pierre Exp $
  **/
 public class Searcher {
 
@@ -55,6 +55,8 @@ public class Searcher {
     }
 
     public List search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
+        // log the value searched
+        SearchLog.log(value);
         List list = new LinkedList();
         if (value!=null && !value.equals("")) {
             try {
@@ -114,7 +116,6 @@ public class Searcher {
             booleanQuery.add(extraQuery, true, false);
             query = booleanQuery;
         }
-        log.debug("Final query:"+query);
         return searcher.search(query,filter,sort);
     }
 

@@ -15,6 +15,7 @@ import org.w3c.dom.NodeList;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.module.lucene.query.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.11 2005-04-27 12:50:32 pierre Exp $
+ * @version $Id: Lucene.java,v 1.12 2005-05-25 08:53:56 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -207,6 +208,9 @@ public class Lucene extends Module implements MMBaseObserver {
             QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
 
             IndexDefinition queryDefinition = (IndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
+
+            // do not cache these queries
+            queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
 
             queries.add(queryDefinition);
 
