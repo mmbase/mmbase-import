@@ -2,7 +2,7 @@
 <!DOCTYPE luceneindex PUBLIC "-//MMBase//DTD luceneindex config 2.0//EN" "http://www.mmbase.org/dtd/luceneindex_2_0.dtd">
 <luceneindex>
   <index>
-    <query type="documents">
+    <list type="documents">
       <constraint field="visible" value="1" />
       <field name="title" />
       <field name="subtitle" />
@@ -13,8 +13,8 @@
       <field name="visible" />
       <field name="handle" />
       <field name="documentnummer" />
-    </query>
-    <query path="cases,documents" element="cases">
+    </list>
+    <list path="cases,documents" element="cases">
       <constraint field="cases.visible" value="1" />
       <field name="cases.title" />
       <field name="cases.subtitle" />
@@ -27,6 +27,6 @@
       <field name="cases.end" alias="end" />
       <field name="cases.visible" alias="visible" />
       <field name="cases.casusnummer" />
-    </query>
+    </list>
   </index>
 </luceneindex>
