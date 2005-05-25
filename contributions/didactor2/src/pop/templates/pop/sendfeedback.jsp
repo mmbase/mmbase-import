@@ -3,6 +3,7 @@
 <mm:import jspvar="feedback2" externid="feedback2"/>
 <mm:import jspvar="rating" externid="rating">-1</mm:import>
 <% boolean isSuccess = false; %>
+<mm:remove referid="thisfeedback"/>
 <mm:node number="$nfeedback" id="thisfeedback">
   <mm:field name="status">
     <mm:compare value="0">
@@ -44,6 +45,11 @@
 
 
 <%-- some sending email code--%>
+<mm:import id="ratingmsg"></mm:import>
+<mm:node number="rating" notfound="skip">
+  <mm:import id="ratingmsg" reset="true">Volgens hem/haar score je: <mm:field name="name"/><br/></mm:import>
+</mm:node>
+
 <mm:import id="subject">TODO NB</mm:import>
 <mm:import id="body"><HTML>
 Beste <b><mm:write referid="userfname"/>,<br/>
@@ -52,6 +58,8 @@ Je hebt de volgende beoordeling over <b><mm:write referid="compname"/></b> van <
 <br/>
 Samengewerkt door middel van: "<%= feedback1.replaceAll("\\n", "<br/>") %>"<br/>
 <%= feedback2.replaceAll("\\n", "<br/>") %><br/>
+<br/>
+<mm:write referid="ratingmsg"/>
 </HTML></mm:import>
 <%@include file="sendmail.jsp" %>
 
