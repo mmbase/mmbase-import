@@ -14,24 +14,28 @@ import java.util.*;
 
 import javax.servlet.jsp.*;
 
+import org.mmbase.util.Casting;
 import org.mmbase.bridge.jsp.taglib.util.*;
 
 /**
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.20 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: StringListTag.java,v 1.21 2005-05-25 09:36:30 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { // need to extend NodeRefferer becasue of AliasListTag, no MI in java.
 
-    protected  List    returnList;
+    protected List returnList;
     protected Iterator iterator;
     protected int      currentItemIndex= -1;
 
     protected Attribute  max = Attribute.NULL;
     protected Attribute  comparator = Attribute.NULL;
+    protected Attribute  add= Attribute.NULL;
+    protected Attribute  retain = Attribute.NULL;
+    protected Attribute  remove = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -58,6 +62,18 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
     public void setMax(String m) throws JspTagException {       
         max = getAttribute(m);
+    }
+
+    public void setAdd(String a) throws JspTagException {       
+        add = getAttribute(a);
+    }
+
+    public void setRetain(String r) throws JspTagException {       
+        retain = getAttribute(r);
+    }
+
+    public void setRemove(String r) throws JspTagException {       
+        remove = getAttribute(r);
     }
 
     protected int getMaxNumber() throws JspTagException {
@@ -114,10 +130,14 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
-            if (! (o instanceof List)) {
-                throw new JspTagException("Context variable " + getReferid() + " is not a List");
+            if (! (o instanceof Collection)) {
+                throw new JspTagException("Context variable " + getReferid() + " is not a Collection");
             }
-            returnList = (List) o;
+            if (o instanceof List) {
+                returnList = (List) o;
+            } else {
+                returnList = new ArrayList((Collection) o);
+            }
             truncateList();
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
@@ -125,7 +145,36 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         } else {
             returnList = getList();
         }
-        currentItemIndex = - 1;  // reset index
+
+        if (getId() != null) {
+            returnList = new ArrayList(returnList);
+        }
+        if (add != Attribute.NULL) {
+            Object addObject = getObject(add.getString(this));
+            if (addObject instanceof Collection) {
+                returnList.addAll((Collection) addObject);
+            } else {
+                returnList.add(Casting.toString(addObject));
+            }
+        }
+        if (retain != Attribute.NULL) {
+            Object retainObject = getObject(retain.getString(this));
+            if (retainObject instanceof Collection) {
+                returnList.retainAll((Collection) retainObject);
+            } else {
+                returnList.retainAll(Collections.singletonList(Casting.toString(retainObject)));
+            }
+        }
+        if (remove != Attribute.NULL) {
+            Object removeObject = getObject(remove.getString(this));
+            if (removeObject instanceof Collection) {
+                returnList.removeAll((Collection) removeObject);
+            } else {
+                returnList.remove(Casting.toString(removeObject));
+            }
+        }
+
+        currentItemIndex = - 1;  // reset index        
 
         ListSorter.sort(returnList, (String) comparator.getValue(this), pageContext);
         iterator = returnList.iterator();
