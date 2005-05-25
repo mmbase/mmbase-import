@@ -36,14 +36,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.42 2005-05-11 09:47:17 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.43 2005-05-25 09:35:09 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
     private static  Logger log;
 
 
-    private static final CharTransformer COPY = CopyCharTransformer.INSTANCE;
+    static final CharTransformer COPY = CopyCharTransformer.INSTANCE;
 
     private static final long DEFAULT_EXPIRE_TIME = 60; // one minute
 
