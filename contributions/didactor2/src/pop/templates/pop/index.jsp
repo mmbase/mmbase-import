@@ -22,6 +22,14 @@
 
 <%@ include file="getids.jsp" %>
 
+<div class="rows">
+
+<div class="navigationbar">
+  <div class="titlebar">
+    <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="persoonlijk ontwikkelings plan" /> Persoonlijk ontwikkelings plan
+  </div>		
+</div>
+
 <%@ include file="leftpanel.jsp" %>
 
 <%-- right section --%>
@@ -40,6 +48,7 @@
       ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
   </div>
   <%@ include file="todo.jsp" %>
+  <%@ include file="docs.jsp" %>
   <mm:compare referid="command" value="continue">
     <mm:remove referid="command"/>
     <mm:import id="command">editcomp</mm:import>
