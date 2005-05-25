@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCompetence" maintainer="didactor.nl" version="10" auto-deploy="true">
+<application name="DidactorCompetence" maintainer="didactor.nl" version="11" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorPortfolio" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
         <requires name="Resources" maintainer="didactor.nl" version="2" />
     </requirements>
@@ -62,6 +63,12 @@
         <relation from="popfeedback" to="ratings" type="related" />
         <relation from="competencies" to="popfeedback" type="related" />
         <relation from="competencies" to="todoitems" type="related" />
+
+        <relation from="popfeedback" to="folders" type="related" />
+        <relation from="popfeedback" to="attachments" type="related" />
+        <relation from="popfeedback" to="chatlogs" type="related" />
+        <relation from="popfeedback" to="pages" type="related" />
+        <relation from="popfeedback" to="urls" type="related" />
 
         <relation from="competencies" to="tests" type="comprel" />
 
