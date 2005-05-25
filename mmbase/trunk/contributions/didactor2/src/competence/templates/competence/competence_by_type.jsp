@@ -18,6 +18,8 @@
    String sSearchValue = request.getParameter("searchvalue");
    String sRealSearchField = request.getParameter("realsearchfield");
    String sSearchAge = request.getParameter("age");
+   if(sSearchAge == null) sSearchAge = "-1";
+   String sDeleteNode = request.getParameter("delete_node");
 %>
 
 <fmt:bundle basename="<%= bundleCompetence %>">
@@ -30,6 +32,15 @@
 
 <body>
 <%
+   if((sDeleteNode != null) && (!sDeleteNode.equals("")))
+   {//delete selected node
+      %>
+         <mm:node number="<%=sDeleteNode%>" notfound="skip">
+            <mm:deletenode deleterelations="true"/>
+         </mm:node>
+      <%
+   }
+
    HashSet hsetCompetences = new HashSet();
    String sConstraints = "(1=1) ";
    if(sSearchValue == null) sSearchValue = "";
@@ -45,10 +56,6 @@
    if((sRealSearchField != null) && (sRealSearchField.equals("owner")) && (!sSearchValue.equals("")))
    {
       sConstraints += " AND (owner=" + sSearchValue + ") ";
-   }
-   if(sSearchAge != null)
-   {
-//      sConstraints += "AND (age < " + sSearchAge + ")";
    }
 %>
 
@@ -90,6 +97,7 @@
                </td>
                <td>
                   <form>
+                     <input type="hidden" id="delete_node" name="delete_node" value=""/>
                      <span class="header"><fmt:message key="CompetenceTypesMatrixSearchResultsTitle"/></span>
                      <br>
                      <select class="input" name="age">
@@ -198,24 +206,30 @@
    TreeMap mapCompetenceTypeGroups = new TreeMap();
    int iMaxRows = 0;
 %>
+
 <mm:listnodes type="competencetypes" orderby="pos">
+
    <mm:field name="number" jspvar="sCompetenceTypeID" vartype="String">
       <%
          ArrayList arliTmp = null;
       %>
-      <mm:related path="posrel,competencies" orderby="posrel.pos">
-         <mm:node element="competencies">
-            <mm:field name="number" jspvar="sCompetenceID" vartype="String">
-               <%
-                  if(hsetCompetences.contains(sCompetenceID))
-                  {
-                     if (arliTmp == null) arliTmp = new ArrayList();
-                     arliTmp.add(sCompetenceID);
-                  }
-               %>
-            </mm:field>
-         </mm:node>
-      </mm:related>
+      <mm:relatedcontainer path="posrel,competencies">
+         <mm:ageconstraint field="competencies.number" maxage="<%= sSearchAge %>"/>
+         <mm:sortorder field="posrel.pos" />
+         <mm:related>
+            <mm:node element="competencies">
+               <mm:field name="number" jspvar="sCompetenceID" vartype="String">
+                  <%
+                     if(hsetCompetences.contains(sCompetenceID))
+                     {
+                        if (arliTmp == null) arliTmp = new ArrayList();
+                        arliTmp.add(sCompetenceID);
+                     }
+                  %>
+               </mm:field>
+            </mm:node>
+         </mm:related>
+      </mm:relatedcontainer>
       <%
          mapCompetenceTypeGroups.put(sCompetenceTypeID, arliTmp);
          if ((arliTmp != null) && (iMaxRows < arliTmp.size())) iMaxRows = arliTmp.size();
@@ -277,7 +291,7 @@
                String sCompetenceID = (String) arliTmp.get(f);
                %>
                   <mm:node number="<%= sCompetenceID %>">
-                     <nobr><a href="#"><img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/></a> <a href='<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<%= sCompetenceID %>'><mm:field name="name" /></a></nobr>
+                     <nobr><a href="#" onClick="document.getElementById('delete_node').value='<%= sCompetenceID %>'; document.forms[0].submit(); return false;"><img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/></a> <a href='<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<%= sCompetenceID %>'><mm:field name="name" /></a></nobr>
                   </mm:node>
                <%
             }
