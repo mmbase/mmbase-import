@@ -90,7 +90,7 @@ See http://www.MMBase.org/license
 
   <goal name="mm:checkout">
     <j:if test="${empty(mmbase.checkout.dir)}">
-	  <j:set var="mmbase.checkout.dir" value="../mmbase-head"/>
+	  <j:set var="mmbase.checkout.dir" value="mmbase-head"/>
       <echo>mmbase.checkout.dir missing. default setting ${mmbase.checkout.dir}</echo>
     </j:if>
 
@@ -112,7 +112,7 @@ See http://www.MMBase.org/license
 
   <goal name="mm:mavenize">
     <j:if test="${empty(mmbase.checkout.dir)}">
-	  <j:set var="mmbase.checkout.dir" value="../mmbase-head"/>
+	  <j:set var="mmbase.checkout.dir" value="mmbase-head/mmbase"/>
       <echo>mmbase.checkout.dir missing. default setting ${mmbase.checkout.dir}</echo>
     </j:if>
     
@@ -121,7 +121,7 @@ See http://www.MMBase.org/license
 
     <ant:copy todir="mmbase-core/src/java">
       <ant:fileset dir="${mmbase.checkout.dir}/src" defaultexcludes="no">
-		<ant:exclude name="org/mmbase/util/images/JAIImageConverter.java"/>
+		<!-- ant:exclude name="org/mmbase/util/images/JAIImageConverter.java"/ -->
         <ant:exclude name="org/mmbase/module/JMSendMail.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMOracle.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMInformix42Node.java"/>
