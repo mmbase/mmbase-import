@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.10 2005-05-25 08:16:00 marcel Exp $
+README for maven-mmbase $Id: README.txt,v 1.11 2005-05-25 14:26:51 marcel Exp $
 
 (See the MAVEN.txt when you have maven related issues)
 
@@ -91,3 +91,37 @@ maven jar:install
 cd ../mmbase-webapp
 maven war
 
+
+Using eclipse
+-------------
+
+First generate a new project by issuing the following command:
+
+maven all:eclipse
+
+To edit sources, open eclipse and open a new Workspace and click on Workspace.
+Now import mmbase with the following sequence:
+
+ File ->
+   Import -> 
+     Existing project in Workspace
+
+Point the directory to this maven-directory and add the following projects:
+
+ - mmbase-core-config
+ - mmbase-core
+ - mmbase-taglibs
+ - mmbase-webapp
+ - mmbase-docs
+
+After that, tell eclipse where it can find the maven-repository by clicking:
+
+ Window -> 
+   Preferences -> 
+     Java -> 
+       Build Path -> 
+         Classpath Vairables 
+
+and make a new variable with name 'MAVEN_REPO' where directory is the maven-repository.
+Under linux, this is ~/.maven/repository, under windows this is in the equivalent of 
+"home" directory.
