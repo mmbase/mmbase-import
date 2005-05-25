@@ -36,11 +36,3 @@
   <mm:import id="currentprofile">-1</mm:import>
 </mm:compare>
 <mm:import externid="currentcomp">-1</mm:import>
-
-<div class="rows">
-
-<div class="navigationbar">
-  <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="persoonlijk ontwikkelings plan" /> Persoonlijk ontwikkelings plan
-  </div>		
-</div>
