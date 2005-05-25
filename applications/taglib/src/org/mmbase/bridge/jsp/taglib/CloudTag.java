@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.120 2005-05-21 08:26:18 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.121 2005-05-25 09:37:31 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -603,8 +603,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             // add some information for actual logout
             // Logout is loging in with 'anonymous' with some extra info.
             Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
-            logoutInfo.setIfDefined(Parameter.REQUEST, request);
-            logoutInfo.setIfDefined(Parameter.RESPONSE, response);
+            fillStandardParameters(logoutInfo);
             if (cloud != null) {
                 String authenticate = cloud.getUser().getAuthenticationType();            
                 logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, authenticate);
@@ -870,6 +869,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     }
 
+
+    
+
     /**
      * Sets logon-variables using the login page (with the loginpage attribute) in the Map argument.
      * @param uses A Map which will be passed to the security system,.
@@ -907,8 +909,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 }
                 user.setIfDefined(key, value);
             }
-            user.setIfDefined(Parameter.REQUEST, request);
-            user.setIfDefined(Parameter.RESPONSE, response);
+            fillStandardParameters(user);
             return EVAL_BODY;
         } else {
             // no command give, send redirect to specified login page
@@ -1120,8 +1121,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         case AuthenticationData.METHOD_DELEGATE:
             log.debug("delegate for " + getAuthenticate());
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
-            user.setIfDefined(Parameter.REQUEST, request);
-            user.setIfDefined(Parameter.RESPONSE, response);
             if (logon != null) {
                 user.setIfDefined(AuthenticationData.PARAMETER_USERNAMES, logon);
             }
@@ -1167,6 +1166,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         // do the MMCI cloud logging on
         if (user != null) {
+            fillStandardParameters(user);
             if (doLogin(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
