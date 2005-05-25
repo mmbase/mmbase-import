@@ -1,5 +1,6 @@
 <%@ include file="getmyfeedback.jsp" %>
 <% if (isEmpty) { %>
+  <mm:remove referid="thisfeedback"/>
   <mm:maycreate type="popfeedback">
     <mm:createnode type="popfeedback" id="thisfeedback"/>
   </mm:maycreate>
