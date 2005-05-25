@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.39 2005-05-02 22:24:51 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.40 2005-05-25 09:39:01 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -170,7 +170,9 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
         String fieldName = field.getName();
         String guiType = field.getGUIType();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
-        log.info("Received " + fieldValue);
+        if (log.isDebugEnabled()) {
+            log.debug("Received " + fieldValue);
+        }
 
         if (fieldName.equals("owner")) {
             if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
