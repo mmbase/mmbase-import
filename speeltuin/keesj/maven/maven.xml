@@ -114,7 +114,7 @@ See http://www.MMBase.org/license
 
   <goal name="mm:mavenize">
     <!-- marcel: jexl bug: property-vars can be queried but empty() flags them as being empty -->
-    <j:set var="mmbase_checkout_dir" value="${mmbase.checkout.dir}" />
+    <j:set var="mmbase_checkout_dir" value="${mmbase.checkout.dir}/mmbase" />
 
     <j:if test="${empty(mmbase_checkout_dir)}">
 	  <j:set var="mmbase_checkout_dir" value="mmbase-head/mmbase"/>
