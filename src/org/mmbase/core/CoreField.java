@@ -22,11 +22,25 @@ public interface CoreField extends FieldType, Storable {
 
 
     
-
+    /*
+     * @see org.mmbase.bridge.NodeManager#ORDER_NONE
+     */
     final static int ORDER_NONE   = -1;
+    /*
+     * @see org.mmbase.bridge.NodeManager#ORDER_CREATE
+     */
     final static int ORDER_CREATE = 0;
+    /*
+     * @see org.mmbase.bridge.NodeManager#ORDER_EDIT
+     */
     final static int ORDER_EDIT   = 1;
+    /*
+     * @see org.mmbase.bridge.NodeManager#ORDER_LIST
+     */
     final static int ORDER_LIST   = 2;
+    /*
+     * @see org.mmbase.bridge.NodeManager#ORDER_SEARCH
+     */
     final static int ORDER_SEARCH = 3;
 
 
