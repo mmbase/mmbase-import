@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title xml:lang="nl">Relation</title>
+    <title xml:lang="nl">Relatie</title>
     <title xml:lang="en">Relation</title>
 
     <action type="create">
@@ -17,7 +17,7 @@
 
 
     <form-schema id="step1">
-        <title xml:lang="nl">Relation</title>
+        <title xml:lang="nl">Relatie</title>
         <title xml:lang="en">Relation</title>
 
 
