@@ -256,7 +256,7 @@
                <mm:node element="insrel">
                   <mm:import id="rating_is_empty" reset="true">true</mm:import>
 
-                  <mm:relatednodes type="ratings">
+                  <mm:relatednodes type="ratings" orderby="ratings.pos" directions="down">
                      <mm:import id="rating_is_empty" reset="true">false</mm:import>
                      <a href="<mm:write referid="wizardjsp"/>?wizard=ratings&objectnumber=<mm:field name="number"/>" style="text-decoration:none; width:100%"><mm:field name="name"/></a>
                   </mm:relatednodes>
