@@ -53,7 +53,7 @@
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	</mm:url>" method="post" name="posting">
-	<tr><th><mm:write referid="mlg.Name" /></th><td colspan="2">
+	<tr><th width="100"><mm:write referid="mlg.Name" /></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
 		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
@@ -150,7 +150,7 @@
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	</mm:url>" method="post" name="posting">
-	<tr><th><mm:write referid="mlg.Name" /></th><td colspan="2">
+	<tr><th width="100"><mm:write referid="mlg.Name" /></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
 		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
