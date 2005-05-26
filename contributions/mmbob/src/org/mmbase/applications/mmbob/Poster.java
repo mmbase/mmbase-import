@@ -732,10 +732,8 @@ public class Poster {
     }
 
     public Iterator getRemoteHosts() {
-	if (remotehosts!=null) {
-		return remotehosts.iterator();
-	}
-	return null;
+	if (remotehosts==null) readRemoteHosts();
+	return remotehosts.iterator();
     }
 
     public void checkRemoteHost(String host) {

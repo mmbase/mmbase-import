@@ -423,9 +423,9 @@ public class PostThread {
 	if (c<1) c=1;
 	int n=page+1;
 	if (n>pagecount) n=pagecount;
-	//String result = "("+pagecount+") <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+c+"\""+cssclass+">&lt</a>";
 	String result = "<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+c+"\""+cssclass+">&lt</a>";
-	for (int i=1;i<=pagecount;i++) {
+	int i=1;
+	for (i=1;i<=pagecount;i++) {
 	  result+=" <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">";
 	  if (i<overflowpage || i==pagecount) {
 	  	if (i==page) {
@@ -440,6 +440,9 @@ public class PostThread {
 	  }
 	  result+="</a>";
         } 
+        String lastword = "last";
+        if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
+	result += " <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+(i-1)+"#reply\""+cssclass+"> "+lastword+"</a>";
 	result += " <a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+n+"\""+cssclass+">&gt</a>";
 	return result;
    }
@@ -462,7 +465,8 @@ public class PostThread {
 	if (pagecount==1) return "";
 
 	String result = "(";
-	for (int i=1;i<=pagecount;i++) {
+	int i=1;
+	for (i=1;i<=pagecount;i++) {
 	  if (i!=1) result+=" ";
 	  if (i<overflowpage || i==pagecount) {
 	  	result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+i+"\""+cssclass+">"+i+"</a>";
@@ -472,6 +476,11 @@ public class PostThread {
 		}
 	  }
         } 
+	if (i>1) {
+        	String lastword = "last";
+        	if (parent.getParent().getLanguage().equals("nl")) lastword="laatste";
+	  	result+="<a href=\""+baseurl+"?forumid="+f+"&postareaid="+a+"&postthreadid="+p+"&page="+(i-1)+"#reply\""+cssclass+"> "+lastword+"</a>";
+	}
 	result += ")";
 	return result;
    }

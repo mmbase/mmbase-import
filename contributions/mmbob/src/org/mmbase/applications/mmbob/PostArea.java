@@ -348,7 +348,8 @@ public class PostArea {
         int n = page + 1;
         if (n > pagecount) n = pagecount;
         String result = "<a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + c + "\"" + cssclass + ">&lt</a>";
-        for (int i = 1; i <= pagecount; i++) {
+	int i = 1;
+        for (i = 1; i <= pagecount; i++) {
             result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + i + "\"" + cssclass + ">";
             if (i == page) {
                 result += "[" + i + "]";
@@ -357,6 +358,9 @@ public class PostArea {
             }
             result += "</a>";
         }
+	String lastword = "last";
+	if (parent.getLanguage().equals("nl")) lastword="laatste";
+        result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + (i-1) + "\"" + cssclass + "> "+lastword+"</a>";
         result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&page=" + n + "\"" + cssclass + ">&gt</a>";
         return result;
     }
