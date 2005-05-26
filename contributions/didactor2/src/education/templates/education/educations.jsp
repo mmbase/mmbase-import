@@ -16,6 +16,8 @@
 </head>
 
 <body>
+<div class="learnenvironment">
+
 <%-- remember this page --%>
 <mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="learnobject"><mm:write referid="edu"/></mm:param>
@@ -42,7 +44,7 @@
       <mm:param name="path_segment"></mm:param>
    </mm:treeinclude>
 </mm:node>
-
+</div>
 </body>
 
 </html>

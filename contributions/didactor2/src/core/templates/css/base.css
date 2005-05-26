@@ -88,6 +88,10 @@ table.font {
 	font-weight: normal;
 	color: #000000;
 	text-decoration: none }		
+.learnenvironment {
+        font-size: 1.2em;
+}
+
 
 /* ###### navigation-menu lines on the top of the screen ###### */
 

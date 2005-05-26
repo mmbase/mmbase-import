@@ -23,7 +23,7 @@
 </head>
 <body>
 
-
+<div class="learnenvironment">
 
 <mm:node number="$learnobject">
 
@@ -42,6 +42,7 @@
    </mm:treeinclude>
 </mm:node>
 
+</div>
 
 
 </body>
