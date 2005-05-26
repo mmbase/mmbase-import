@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSortOrder.java,v 1.7 2005-05-02 13:05:00 michiel Exp $
+ * @version $Id: BasicSortOrder.java,v 1.8 2005-05-26 07:51:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
@@ -25,6 +25,8 @@ public class BasicSortOrder implements SortOrder {
 
     /** Direction property. */
     private int direction = SortOrder.ORDER_ASCENDING;
+
+    private boolean caseSensitive = true;
 
     /**
      * Constructor.
@@ -50,9 +52,8 @@ public class BasicSortOrder implements SortOrder {
      */
     public BasicSortOrder setDirection(int direction) {
         if (direction != SortOrder.ORDER_ASCENDING
-        && direction != SortOrder.ORDER_DESCENDING) {
-            throw new IllegalArgumentException(
-            "Invalid direction value: " + direction);
+            && direction != SortOrder.ORDER_DESCENDING) {
+            throw new IllegalArgumentException("Invalid direction value: " + direction);
         }
         this.direction = direction;
         return this;
@@ -79,14 +80,27 @@ public class BasicSortOrder implements SortOrder {
         }
     }
 
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public BasicSortOrder setCaseSensitive(boolean c) {
+        caseSensitive = c;
+        return this;
+    }
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj instanceof SortOrder) {
             SortOrder order = (SortOrder) obj;
-            return field.getFieldName().equals(order.getField().getFieldName())
-                && BasicStepField.compareSteps(
-                    field.getStep(), order.getField().getStep())
-                && direction == order.getDirection();
+            return 
+                field.getFieldName().equals(order.getField().getFieldName())
+                && BasicStepField.compareSteps(field.getStep(), order.getField().getStep())
+                && direction == order.getDirection()
+                && caseSensitive == order.isCaseSensitive()
+                ;
         } else {
             return false;
         }
@@ -97,7 +111,7 @@ public class BasicSortOrder implements SortOrder {
         String alias = field.getStep().getAlias();
         return
             61 * field.getFieldName().hashCode()
-            + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction;
+            + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction + (caseSensitive ? 13 : 0);
     }
 
     // javadoc is inherited

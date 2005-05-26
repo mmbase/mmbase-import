@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.3 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.4 2005-05-26 07:54:44 michiel Exp $
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -32,6 +32,7 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     protected Attribute container  = Attribute.NULL;
     protected Attribute direction  = Attribute.NULL;
     protected Attribute field      = Attribute.NULL;
+    protected Attribute casesensitive = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -39,6 +40,9 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
 
     public void setDirection(String d) throws JspTagException {
         direction = getAttribute(d);
+    }
+    public void setCasesensitive(String s) throws JspTagException {
+        casesensitive = getAttribute(s);
     }
     public void setField(String f) throws JspTagException {
         field = getAttribute(f);
@@ -52,7 +56,7 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
         int order = Queries.getSortOrder(direction.getString(this));
         StepField stepField = query.createStepField(field.getString(this));
                    
-        query.addSortOrder(stepField, order);
+        query.addSortOrder(stepField, order, casesensitive.getBoolean(this, true));
         return SKIP_BODY;
     }
 

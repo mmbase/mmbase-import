@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.45 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: BasicQuery.java,v 1.46 2005-05-26 07:53:16 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -553,10 +553,15 @@ public class BasicQuery implements Query  {
         query.setConstraint(c);
     }
 
+
     public SortOrder addSortOrder(StepField f, int direction) {
+        return addSortOrder(f, direction, true);
+    }
+    public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive) {
         if (used) throw new BridgeException("Query was used already");
         BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
+        s.setCaseSensitive(caseSensitive);
         return s;
     }
 
