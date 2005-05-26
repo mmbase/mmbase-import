@@ -41,11 +41,14 @@
 </mm:present>
 <!-- end action check -->
 
-<mm:node number="$postthreadid">
-  <mm:import id="threadstate"><mm:field name="state" /></mm:import>
-  <mm:import id="threadmood"><mm:field name="mood" /></mm:import>
-  <mm:import id="threadtype"><mm:field name="type" /></mm:import>
-</mm:node>
+<mm:nodefunction set="mmbob" name="getPostThreadInfo" referids="forumid,postareaid,postthreadid,pagesize">
+<mm:compare referid="page" value="-1">
+<mm:import id="page" reset="true"><mm:field name="pagecount" /></mm:import>
+</mm:compare>
+  <mm:import id="threadstate"><mm:field name="threadstate" /></mm:import>
+  <mm:import id="threadmood"><mm:field name="threadmood" /></mm:import>
+  <mm:import id="threadtype"><mm:field name="threadtype" /></mm:import>
+</mm:nodefunction>
 
 <%--Check if the poster is an moderator --%>
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
@@ -219,7 +222,7 @@
 			<mm:write referid="mlg.Last_visit"/> : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
 			</mm:compare>
 			</mm:field>
-			<br /><br /><br /><br /><br />
+			<br /><br />
                         </p>
 			</td>
 			<td class="<mm:field name="tdvar" />" valign="top" align="left">
@@ -258,7 +261,8 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3"><mm:write referid="mlg.Fast_reply"/></th></tr>
-  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,pagecount@page" />#reply" method="post" name="posting">
+  <mm:import id="page" reset="true">-1</mm:import>
+  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
 	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
 
 		<mm:compare referid="posterid" value="-1" inverse="true">
