@@ -42,6 +42,7 @@
   </div>
 
   <div class="contentBodywit">
+  <h2><fmt:message key="CHOOSE_A_LETTER_OR_SEARCH"/></h2>
   <mm:import id="startChar" externid="c" jspvar="startChar"/>
   <% 
   boolean cvalid = false;
@@ -52,8 +53,15 @@
       %>
       <a href="?c=<%= c %>"><%= String.valueOf(c).toUpperCase() %></a>
       <% if (c != 'z') { %> | <% } %>
-  <% } %><p/><% 
-  if (cvalid) { %>
+  <% } %><p/>
+    <mm:import externid="portfolio_query"></mm:import>
+
+  <form action="<mm:treefile page="/portfolio/listall.jsp" objectlist="$includePath" referids="$referids" />" method="GET">
+  <input type="text" name="portfolio_query" value="<mm:write referid="portfolio_query"/>"> <input type="submit" value="<fmt:message key="SEARCH"/>">
+  </form>
+
+  
+ <%  if (cvalid) { %>
   <mm:listnodes type="people" orderby="lastname,firstname" constraints="lastname LIKE '${startChar}%'">
     <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type"/></mm:import>
     <mm:compare referid="nodetype" value="contacts" inverse="true">
@@ -62,7 +70,20 @@
         </mm:treefile>"><mm:field name="firstname"/> <mm:field name="lastname"/></a><br>
     </mm:compare>
    </mm:listnodes>
-  <% } %>
+   <% } %>
+    <mm:isempty inverse="true" referid="portfolio_query">
+    
+    <mm:listnodes type="people" orderby="lastname,firstname" constraints="lastname LIKE '${portfolio_query}%' OR firstname LIKE '%${portfolio_query}%'">
+    <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type"/></mm:import>
+    <mm:compare referid="nodetype" value="contacts" inverse="true">
+       <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+            <mm:param name="contact"><mm:field name="number"/></mm:param>
+        </mm:treefile>"><mm:field name="firstname"/> <mm:field name="lastname"/></a><br>
+    </mm:compare>
+   </mm:listnodes>
+        
+    </mm:isempty> 
+      
   </div>
 </div>
 

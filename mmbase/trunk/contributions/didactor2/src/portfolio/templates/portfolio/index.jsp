@@ -550,7 +550,7 @@ Mijn gegevens:
   <mm:compare referid="myuser" value="$user">
   <tr>
     <td>
-      <a href="index.jsp?edit=true">edit</a>
+      <a href="index.jsp?edit=true"><img src="<mm:treefile page="/portfolio/gfx/edit.gif" objectlist="$includePath"/>" alt="edit" border="0"></a>
     </td>
   <tr>
   </mm:compare>
