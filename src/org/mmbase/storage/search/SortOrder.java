@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds to use of ORDER BY in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: SortOrder.java,v 1.3 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: SortOrder.java,v 1.4 2005-05-26 07:50:47 michiel Exp $
  * @since MMBase-1.7
  */
 public interface SortOrder {
@@ -49,6 +49,13 @@ public interface SortOrder {
      * This corresponds to the use of ASC and DESC in SQL SELECT-syntax.
      */
     int getDirection();
+
+    /**
+     * Whether sorting must happen case sensitivily. If not, normally something like ordering on the
+     * uppercased field will happen.
+     * @since MMBase-1.8
+     */
+    boolean isCaseSensitive();
 
     /**
      * Compares this sortorder to the specified object. The result is
