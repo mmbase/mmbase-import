@@ -106,7 +106,7 @@ See http://www.MMBase.org/license
 	    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}"/>
     </j:if>
 
-    <echo>checking out mmbase in ${mmbase_checkout_dir}/...</echo>
+    <echo>checking out mmbase in ${mmbase_checkout_dir}/ ...</echo>
     <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}"/>
 
     <ant:delete dir="mmbase-core/CVS"/>
