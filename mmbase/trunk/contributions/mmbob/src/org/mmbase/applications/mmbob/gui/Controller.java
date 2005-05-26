@@ -1149,6 +1149,27 @@ public class Controller {
         return virtual;
     }
 
+
+    public MMObjectNode getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            PostArea a = f.getPostArea(postareaid);
+	    if (a != null) {
+           	 PostThread t = a.getPostThread(postthreadid);
+                 if (t != null) {
+            		virtual.setValue("threadstate", t.getState());
+            		virtual.setValue("threadmood", t.getState());
+            		virtual.setValue("threadtype", t.getType());
+            		virtual.setValue("pagecount", t.getPageCount(pagesize));
+		 }
+	   }
+        }
+        return virtual;
+    }
+
     /**
      * Remove a postarea (including postthreads and postings) from a forum
      *

@@ -636,6 +636,20 @@
 		</return> 
 	</function>
 
+
+	<function name="getPostThreadInfo">
+		<description>Provide general info on this postthread</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getPostThreadInfo</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
+		<param name="postthreadid" type="String" description="MMBase node number of the postarea" />
+                <param name="pagesize" type="int" description="Number of postings per page">25</param>
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="getPostThreads">
 		<description>List all the portthreads within a postarea</description>
 		<type>class</type>
