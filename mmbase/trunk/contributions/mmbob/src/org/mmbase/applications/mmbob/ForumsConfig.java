@@ -563,6 +563,9 @@ public class ForumsConfig {
 	body += "\t\t<generatedata role=\"body\" file=\"generate/body.txt\" tokenizer=\",!? \" />\n";
 	body += "\t\t<generatedata role=\"smileys\" file=\"generate/smileys.txt\" tokenizer=\" \\n\\r\" />\n";
 	body += "\t\t<generatedata role=\"punctuation\" file=\"generate/punctuation.txt\" tokenizer=\" \\n\\r\" />\n\n";
+	body += "\t\t<urls externalroot=\""+getExternalRootUrl()+"\" root=\""+getRootUrl()+"\" />\n";
+	body += "\t\t<preloadchangedthreads  minutes=\""+(preloadchangedthreadstime/60)+"\" />\n";
+	body += "\t\t<swapoutunusedthreads  minutes=\""+(swapoutunusedthreadstime/60)+"\" />\n";
 	body += "\t\t<accountcreation type=\""+getAccountCreationType()+"\" />\n";
 	body += "\t\t<accountremoval type=\""+getAccountRemovalType()+"\" />\n\n";
 	body += "\t\t<loginmode type=\""+getLoginModeType()+"\" />\n";
@@ -575,10 +578,26 @@ public class ForumsConfig {
 	body += "\t\t</avatars>\n\n";
 
 	body += "\t\t<email from=\""+getFromEmailAddress()+"\"/>\n\n";
+	body += "\t\t<emailtexts>\n";
+	Iterator i=emailtexts.keySet().iterator();
+        while (i.hasNext()) {
+                String role=(String)i.next();
+                String text=(String)emailtexts.get(role);
+		body += "\t\t\t<emailtext role=\""+role+"\" >"+text+"</emailtext>\n";
+	}
+	body += "\t\t</emailtexts>\n";
 	body += "\t\t <layout>\n";
 	body += "\t\t\t<header path=\""+getHeaderPath()+"\"/>\n";
 	body += "\t\t\t<footer path=\""+getFooterPath()+"\"/>\n";
 	body += "\t\t</layout>\n\n";
+	body += "\t\t<filters>\n";
+	i=filterwords.keySet().iterator();
+        while (i.hasNext()) {
+                String replace=(String)i.next();
+                String with=(String)filterwords.get(replace);
+		body += "\t\t\t<filter type=\"content\" replace=\""+replace+"\" with=\""+with+"\" />\n";
+	}
+	body += "\t\t</filters>\n";
 
 	body += "\t\t<xslts>\n";
 	body += "\t\t\t<postings odd=\""+getXSLTPostingsOdd()+"\" even=\""+getXSLTPostingsEven()+"\" />\n";
@@ -588,6 +607,9 @@ public class ForumsConfig {
 	body += "\t\t<smileys enable=\""+getSmileysEnabled()+"\"/>\n";
 	body += "\t\t<privatemessages enable=\""+getPrivateMessagesEnabled()+"\"/>\n";
 	body += "\t\t<postingsperpage value=\""+getPostingsPerPage()+"\"/>\n\n";
+	body += "\t\t<postingsoverflowpostarea value=\""+getPostingsOverflowPostarea()+"\"/>\n\n";
+	body += "\t\t<postingsoverflowthreadpage value=\""+getPostingsOverflowThreadpage()+"\"/>\n\n";
+	body += "\t\t<speedposttime value=\""+getSpeedPostTime()+"\"/>\n\n";
 
 	// now loop all the forums
         for (Enumeration forums = ForumManager.getForums(); forums.hasMoreElements();) {
@@ -796,5 +818,9 @@ public class ForumsConfig {
 
    public String getExternalRootUrl() {
 	return externalrooturl;
+   }
+
+   public String getRootUrl() {
+	return rooturl;
    }
 }
