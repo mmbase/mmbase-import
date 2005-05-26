@@ -319,6 +319,24 @@
             <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
             <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=coretasks&nodepath=coretasks&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemCoreTasksDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreTasks"/></a></nobr></td>
+         </tr>
+      </table>
+
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=coreassignments&nodepath=coreassignments&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemCoreAssignmentsDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreAssignments"/></a></nobr></td>
+         </tr>
+      </table>
+
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+            <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
             <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=preassessments&nodepath=preassessments&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemPreGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPreGrades"/></a></nobr></td>
          </tr>
       </table>
