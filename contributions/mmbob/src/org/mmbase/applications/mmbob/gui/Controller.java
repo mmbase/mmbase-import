@@ -181,8 +181,21 @@ public class Controller {
                 Poster ap = f.getPoster(activeid);
                 if (ap != null) {
                     virtual.setValue("state", thread.getState(ap));
+		    ThreadObserver to = f.getThreadObserver(thread.getId());
+		    if (to!=null && to.wantsEmailOnChange(ap)) {
+			virtual.setValue("emailonchange","true");  
+		    } else {
+			virtual.setValue("emailonchange","false");  
+		    }
+		    if (to!=null && to.isBookmarked(ap)) {
+			virtual.setValue("bookmarked","true");  
+		    } else {
+			virtual.setValue("bookmarked","false");  
+		    }
                 } else {
                     virtual.setValue("state", thread.getState());
+		    virtual.setValue("emailonchange","false");  
+		    virtual.setValue("bookmarked","false");  
                 }
                 virtual.setValue("type", thread.getType());
                 virtual.setValue("creator", thread.getCreator());
@@ -520,7 +533,8 @@ public class Controller {
     }
 
 
-    public List searchPostings(String forumid,String searchareaid,String searchkey,int page,int pagesize) {
+    public List searchPostings(String forumid,String searchareaid,String searchpostthreadid,String searchkey,int page,int pagesize) {
+	log.info("F="+forumid+" A="+searchareaid+" T="+searchpostthreadid);
         long start = System.currentTimeMillis();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
@@ -531,14 +545,20 @@ public class Controller {
 		int i = 1;
 		int j = 1;
             	Enumeration e = null;
-		log.info("SEARCHAREA="+searchareaid);
 		if (!searchareaid.equals("-1")) {
-	                PostArea a = f.getPostArea(searchareaid);
-			if (a!=null) e = a.searchPostings(searchkey).elements();
+			if (!searchpostthreadid.equals("-1")) {
+	                	PostArea a = f.getPostArea(searchareaid);
+				if (a!=null) {
+	                		PostThread t = a.getPostThread(searchpostthreadid);
+					e = t.searchPostings(searchkey).elements();
+				}
+			} else {
+	                	PostArea a = f.getPostArea(searchareaid);
+				if (a!=null) e = a.searchPostings(searchkey).elements();
+			}
 		} else {
             		e = f.searchPostings(searchkey).elements();
 		}
-		log.info("E="+e);
 		if (e!=null) {
             	while (e.hasMoreElements() && j<25) {
                 	Posting p = (Posting) e.nextElement();
@@ -1195,7 +1215,7 @@ public class Controller {
      * @param cssclass  stylesheet name for the url links
      * @return (virtual) MMObjectNode containing navline, lastpage, pagecount
      */
-    public MMObjectNode getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int page, int pagesize, String baseurl, String cssclass) {
+    public MMObjectNode getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 
@@ -1211,6 +1231,23 @@ public class Controller {
                     virtual.setValue("navline", t.getNavigationLine(baseurl, page, pagesize,overflowpage, cssclass));
                     virtual.setValue("lastpage", "" + t.isLastPage(page, pagesize));
                     virtual.setValue("pagecount", t.getPageCount(pagesize));
+                    Poster ap = f.getPoster(posterid);
+               	    if (ap != null) {
+		    	ThreadObserver to = f.getThreadObserver(t.getId());
+		    	if (to!=null && to.wantsEmailOnChange(ap)) {
+				virtual.setValue("emailonchange","true");  
+		    	} else {
+				virtual.setValue("emailonchange","false");  
+		    	}
+		        if (to!=null && to.isBookmarked(ap)) {
+				virtual.setValue("bookmarked","true");  
+		        } else {
+				virtual.setValue("bookmarked","false");  
+		        }
+               	    } else {
+		    	virtual.setValue("emailonchange","false");  
+			virtual.setValue("bookmarked","false");  
+                    }
                 }
             }
         }
@@ -1422,7 +1459,6 @@ public class Controller {
      */
     public boolean newAdministrator(String forumid, String sactiveid, String sadministratorid) {
         try {
-	    log.info("ADD ADMIN="+sadministratorid);
             int activeid = Integer.parseInt(sactiveid);
             int moderatorid = Integer.parseInt(sadministratorid);
             Forum f = ForumManager.getForum(forumid);
@@ -1925,17 +1961,21 @@ public class Controller {
 	}
 
         public List getRemoteHosts(String forumid,String sactiveid) {
+		log.info("AAA1");
        		List list = new ArrayList();
   		VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         	try {
             		int activeid = Integer.parseInt(sactiveid);
+			log.info("AAA2");
 
             		Forum f = ForumManager.getForum(forumid);
             		if (f != null) {
                        	    Poster poster = f.getPoster(activeid);
+				log.info("AAA3");
 		            Iterator e = poster.getRemoteHosts();
 			    if (e!=null)  {
             		    	while (e.hasNext()) {
+					log.info("AAA4");
                            	 	RemoteHost rm = (RemoteHost) e.next();
                     			MMObjectNode virtual = builder.getNewNode("admin");
                     			virtual.setValue("id", ""+rm.getId());
@@ -1993,5 +2033,37 @@ public class Controller {
 		return "";
 	}
 
+    public boolean setBookmarkedChange(String forumid, String postthreadid,int posterid,String state) {
+        Forum f = ForumManager.getForum(forumid);
+        Poster ap = f.getPoster(posterid);
+        if (ap !=null && f != null) {	
+		try {
+			int id=Integer.parseInt(postthreadid);
+			if (state.equals("true")) {
+				f.setBookmarkedChange(id,ap,true);
+			} else {
+				f.setBookmarkedChange(id,ap,false);
+			}
+		} catch (Exception e) {}
+        }
+        return false;
+    }
+
+
+    public boolean setEmailOnChange(String forumid, String postthreadid,int posterid,String state) {
+        Forum f = ForumManager.getForum(forumid);
+        Poster ap = f.getPoster(posterid);
+        if (ap !=null && f != null) {	
+		try {
+			int id=Integer.parseInt(postthreadid);
+			if (state.equals("true")) {
+				f.setEmailOnChange(id,ap,true);
+			} else {
+				f.setEmailOnChange(id,ap,false);
+			}
+		} catch (Exception e) {}
+        }
+        return false;
+    }
 	
 }
