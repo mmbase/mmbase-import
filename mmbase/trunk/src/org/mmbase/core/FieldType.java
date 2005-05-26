@@ -17,9 +17,24 @@ import java.util.*;
  * @since MMBase-1.8
  */
 public interface FieldType extends org.mmbase.bridge.DataType {
+    /**
+     * A return value for {@link #getState()}. A field's state is 'virtual' if it is not persistent in
+     * storage.
+     */
     public final static int STATE_VIRTUAL    = 0;
+
+    /**
+     * A return value for {@link #getState()}. A field's state is 'persistent' if it  persistent in
+     * storage, and editable.
+     */
     public final static int STATE_PERSISTENT = 2;
+    /**
+     * A return value for {@link #getState()}. A field's state is 'system' if it persistent and in
+     * storage not editable by users.
+     */
     public final static int STATE_SYSTEM     = 3;
+    // @todo logically also VIRTUALSYSTEM must exist.
+
     public final static int STATE_UNKNOWN    = -1;
 
 
