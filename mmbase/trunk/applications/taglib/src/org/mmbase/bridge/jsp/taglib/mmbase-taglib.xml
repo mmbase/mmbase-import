@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.303 2005-05-24 13:37:25 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.304 2005-05-26 07:54:44 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6192,6 +6192,21 @@ The 0 is just counter, which starts at 0 on every page.
       <possiblevalue>
         <value>DOWN</value>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>casesensitive</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	Default to true. 
+      </info>
+      <possiblevalue>
+        <value>true</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>false</value>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
   </tag>
 

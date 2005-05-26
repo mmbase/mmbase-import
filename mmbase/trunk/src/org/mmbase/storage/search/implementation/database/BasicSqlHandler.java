@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.44 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.45 2005-05-26 07:52:35 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -539,23 +539,32 @@ public class BasicSqlHandler implements SqlHandler {
             while (iSortOrders.hasNext()) {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
 
+                boolean uppered = false;
+                if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == FieldDefs.TYPE_STRING) {
+                    sb.append("UPPER(");
+                    uppered = true;
+                }
                 // Fieldname.
                 Step step = sortOrder.getField().getStep();
                 appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+                if (uppered) {
+                    sb.append("),");
+                    // also order by field itself, so ensure uniqueness.
+                    appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+                }
 
                 // Sort direction.
                 switch (sortOrder.getDirection()) {
-                    case SortOrder.ORDER_ASCENDING:
-                        sb.append(" ASC");
-                        break;
-
-                    case SortOrder.ORDER_DESCENDING:
-                        sb.append(" DESC");
-                        break;
-
-                    default: // Invalid direction value.
-                        throw new IllegalStateException(
-                        "Invalid direction value: " + sortOrder.getDirection());
+                case SortOrder.ORDER_ASCENDING:
+                    sb.append(" ASC");
+                    break;
+                    
+                case SortOrder.ORDER_DESCENDING:
+                    sb.append(" DESC");
+                    break;
+                    
+                default: // Invalid direction value.
+                    throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
                 }
 
                 if (iSortOrders.hasNext()) {
