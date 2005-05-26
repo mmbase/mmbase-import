@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.96 2005-05-19 13:41:07 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.97 2005-05-26 19:38:47 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2147,18 +2147,12 @@ public class DatabaseStorageManager implements StorageManager {
                         field.setStorageType(storageType);
                         int type = getJDBCtoMMBaseType(storageType, curtype);
                         if (type != curtype) {
-                            log.error(
-                                "VERIFY: Field '"
-                                    + field.getName()
-                                    + "' of builder '"
-                                    + builder.getTableName()
-                                    + "' mismatch : type defined as "
-                                    + Fields.getTypeDescription(curtype)
-                                    + ", but in storage "
-                                    + Fields.getTypeDescription(type)
-                                    + " ("
-                                    + colInfo.get("TYPE_NAME")
-                                    + ")");
+                            log.warn("VERIFY: Field '" + field.getName() + "' of builder '"
+                                      + builder.getTableName() + "' mismatch : type defined as "
+                                      + Fields.getTypeDescription(curtype)
+                                      + ", but in storage " + Fields.getTypeDescription(type)
+                                      + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
+                            field.setType(type);
                         } else {
                             boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                             if (nullable == field.isRequired()) {
