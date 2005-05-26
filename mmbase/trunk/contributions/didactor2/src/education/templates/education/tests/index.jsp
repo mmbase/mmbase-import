@@ -51,7 +51,7 @@
         <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
       </head>
       <body>
-
+<div class="learnenvironment">
       
         <h1><mm:field name="name"/></h1>
         <mm:field id="maychange" name="maychange" write="false"/>
@@ -99,7 +99,7 @@
                </tr></table>
                </mm:compare>
             </mm:compare>
-          
+</div>
       </body>
     </html>
   </mm:present>

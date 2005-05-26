@@ -61,14 +61,16 @@
 <mm:notpresent referid="showfeedback">
  
 
-<di:hasrole role="teacher">
 <div style="float: right">
 <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="contact"><mm:write referid="student"/></mm:param>
-</mm:treefile>">Portfolio</a>
-<a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="Terug naar overzicht"/></a>
-</div>
+</mm:treefile>"><img src="<mm:treefile page="/progress/gfx/portfolio.gif"  objectlist="$includePath" referids="$referids"/>" alt="Portfolio" border="0"/></a>
+
+<di:hasrole role="teacher">
+<a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="Terug naar overzicht" border="0"/></a>
 </di:hasrole>
+
+</div>
  
 <table class="Font">
 <tr>

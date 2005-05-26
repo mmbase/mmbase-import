@@ -35,6 +35,7 @@
 </head>
 
 <body>
+<div class="learnenvironment">
 
 <mm:node number="$learnobject">
    <mm:field name="showtitle">
@@ -57,6 +58,7 @@
    </mm:treeinclude>
 </mm:node>
 
+</div>
 
 </body>
 

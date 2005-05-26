@@ -9,7 +9,7 @@
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
 </head>
 <body>
-
+<div class="learnenvironment">
 <mm:import externid="learnobject" required="true"/>
 
 <!-- TODO show the flash animation -->
@@ -65,7 +65,7 @@
     %>
   
 </mm:node>
-
+</div>
 </body>
 </html>
 </mm:cloud>
