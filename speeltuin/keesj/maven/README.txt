@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.12 2005-05-27 13:12:21 marcel Exp $
+README for maven-mmbase $Id: README.txt,v 1.13 2005-05-27 20:36:15 keesj Exp $
 
 (See the MAVEN.txt when you have maven related issues)
 
@@ -15,7 +15,7 @@ path variable to this directory:
 @> tar zxvf ~/Documents/maven-1.0-rc1.tar.gz
 @> MAVEN_HOME=$HOME/tmp/maven-1.0-rc1
 @> export MAVEN_HOME
-@> PATH=$PATH:$MAVEN_HOME/bina
+@> PATH=$PATH:$MAVEN_HOME/bin
 
 import external libraries
 -------------------------
@@ -77,33 +77,10 @@ maven mm:checkout
 maven mm:mavenize
 
 #
-# creating the mmbase-core-config jar
+# next you should run maven all:install to create an mmbase war file
+# 
 #
-
-cd mmbase-core-config
-maven jar:install
-
-#
-# creating the mmbase-core jar
-#
-
-cd ../mmbase-core
-maven jar:install
-
-#
-# creating the mmbase-taglib jar
-#
-
-cd ../mmbase-taglib
-maven jar:install
-
-#
-# creating the mmbase-webapp 
-#
-
-cd ../mmbase-webapp
-maven war
-
+maven all:install
 
 Using eclipse
 -------------
