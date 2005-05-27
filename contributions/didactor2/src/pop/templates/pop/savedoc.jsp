@@ -1,5 +1,6 @@
 <mm:import externid="addnode"/>
-<% msgString = "Item added"; %>
+<mm:node number="$addnode" notfound="skip">
+<% msgString = "Item is toegevoegd"; %>
 <%@ include file="getmyfeedback.jsp" %>
 <% if (isEmpty) { %>
   <mm:remove referid="thisfeedback"/>
@@ -20,3 +21,4 @@
   <mm:createrelation role="related" source="thisfeedback" destination="addnode"/>
 </mm:notpresent>
 <mm:remove referid="isrelated"/>
+</mm:node>
