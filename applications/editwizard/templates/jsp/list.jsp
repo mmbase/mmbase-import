@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.55 2005-04-13 11:53:01 michiel Exp $
+     * @version  $Id: list.jsp,v 1.56 2005-05-27 09:07:14 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -214,13 +214,14 @@ for (int i=0; i < results.size(); i++) {
         } else {
             field=item.getNodeManager().getField(fieldname);
         }
-        if (field.getGUIType().equals("eventtime")) {
+        if (field.getGUIType().equals("eventtime") || field.getType() == Field.TYPE_DATETIME) {
            // eventtime is formatted lateron with xslt
-           value = item.getStringValue(fieldname);
+           value = "" + item.getIntValue(fieldname);
            if (value.equals("-1")) {
              value = "";
            }
         } else {
+        
           value = item.getStringValue("gui(" + fieldname + ")");
         }
         addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
