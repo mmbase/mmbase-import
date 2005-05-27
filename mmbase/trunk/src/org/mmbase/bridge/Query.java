@@ -20,7 +20,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.30 2005-05-26 07:53:16 michiel Exp $
+ * @version $Id: Query.java,v 1.31 2005-05-27 10:39:06 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -313,7 +313,7 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
 
     /**
      * Defaulting version of {@link addSortOrder(StepField, int, boolean} (sorting case
-     * sensitively).
+     * insensitively).
      */
     SortOrder addSortOrder(StepField f, int direction);
 
