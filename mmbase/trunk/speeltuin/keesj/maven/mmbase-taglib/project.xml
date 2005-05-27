@@ -52,6 +52,15 @@ See http://www.MMBase.org/license
                 </includes>
                 <filtering>false</filtering>
             </resource>
+            <resource>
+                <directory>${basedir}/src/java/</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.dtd</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
         </resources>
     </build>
 </project>
