@@ -89,6 +89,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
+  <property name="concurrent.jar"   value="${build.dir}/lib/backport-util-concurrent.jar"/>
 
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
@@ -318,6 +319,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
         <pathelement path="${fileupload.jar}" />
+        <pathelement path="${concurrent.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
@@ -385,6 +387,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${mail.jar}" />
         <pathelement path="${fileupload.jar}" />
         <pathelement path="${activation.jar}" />
+        <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
       </classpath>
       <!-- mmbase custom tags -->
@@ -433,6 +436,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <fileset dir="${project.config.dir}"
                includes="${project.config.dir.includes}"
                >
+	<exclude name="functions/**" /> <!-- should be in the jar -->
       </fileset>
     </copy>
   </target>
