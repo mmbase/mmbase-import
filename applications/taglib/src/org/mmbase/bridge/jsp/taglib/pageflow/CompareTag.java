@@ -14,6 +14,7 @@ import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.util.Casting;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -28,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.38 2005-04-15 11:35:02 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.39 2005-05-27 08:37:41 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -84,7 +85,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
 
     public int doStartTag() throws JspTagException {
         Object compare1;
-
+        
         // find compare1
         if (getReferid() == null) {
             compare1 =  findWriter().getWriterValue();
@@ -94,10 +95,12 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
         if (compare1 instanceof Boolean) {
             compare1 = compare1.toString();
+        } else if (compare1 instanceof Date) {
+            compare1 = Casting.toInteger(compare1);
         } else if (compare1 instanceof List) {
-            compare1 = org.mmbase.util.Casting.toString(compare1);
+            compare1 = Casting.toString(compare1);
         } else if (compare1 instanceof Node) {
-            compare1 = org.mmbase.util.Casting.toString(compare1);
+            compare1 = Casting.toString(compare1);
         }
 
         if (! (compare1 instanceof Comparable)) {
@@ -107,7 +110,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         boolean result = false;
         if (regexp != Attribute.NULL) {
             if (value != Attribute.NULL || valueSet != Attribute.NULL) {
-                throw new JspTagException("Cannot use 'regexp' attribute in combination with 'value' of 'valueSet' attributes");
+                throw new JspTagException("Cannot use 'regexp' attribute in combination with 'value' or 'valueSet' attributes");
             }
             Pattern pattern = Pattern.compile (regexp.getString(this));
             result = pattern.matcher("" + compare1).matches();
@@ -133,7 +136,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             
             Iterator i = compareToSet.iterator();
             
-                        
+            
             if (compare1 instanceof Number) {
                 compare1 = new BigDecimal(compare1.toString()); 
                 while (i.hasNext()) {
@@ -144,6 +147,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                         } else {
                             compare2 = new BigDecimal((String)compare2);
                         }
+                    } else if (compare2 instanceof Date) {
+                        compare2 = Casting.toInteger(compare2);
                     } else if (compare2 instanceof Number) {
                         compare2 = new BigDecimal(compare2.toString());
                     } else if (compare2 instanceof Node) {
@@ -186,7 +191,5 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         } else {
             return SKIP_BODY;
         }
-
-       
     }
 }
