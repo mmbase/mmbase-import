@@ -10,8 +10,8 @@
     <singular xml:lang="nl">Kernopgaven</singular>
     <singular xml:lang="en">Core assignment</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Core assignments</plural>
-    <plural xml:lang="en">Kernopgaven</plural>
+    <plural xml:lang="nl">Kernopgaven</plural>
+    <plural xml:lang="en">Core assignments</plural>
   </names>
 
   <!-- <descriptions>
