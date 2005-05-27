@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.61 2005-03-01 15:14:23 pierre Exp $
+ * @version $Id: Dove.java,v 1.62 2005-05-27 09:35:05 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -74,7 +74,7 @@ public class Dove extends AbstractDove {
      * @param node  the MMBase node that owns the field (or null)
      * @param f The field to check
      */
-    private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, Field f) {
+    private boolean isDataField(NodeManager nodeManager, Field f) {
         String fname = f.getName();
         return (nodeManager.hasField(fname)) && // skip temporary fields
                (!"owner".equals(fname)) && // skip owner/otype/number fields!
@@ -86,6 +86,10 @@ public class Dove extends AbstractDove {
                (!"dir".equals(fname));
     }
 
+    private boolean isEditableField(NodeManager nodeManager, Field f) {
+        return isDataField(nodeManager, f) && f.getState() == Field.STATE_PERSISTENT;
+    }
+
     /**
      * Utility function, determines whether a field is a data field.
      * Data fields are fields mentioned explicitly in the builder configuration file.
@@ -95,8 +99,12 @@ public class Dove extends AbstractDove {
      * @param node  the MMBase node that owns the field
      * @param fname The name of the field to check
      */
-    private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, String fname) {
+    private boolean isDataField(NodeManager nodeManager, String fname) {
         return nodeManager.hasField(fname);
+    }
+
+    private boolean isEditableField(NodeManager nodeManager, String fname) {
+        return isDataField(nodeManager, fname) && nodeManager.getField(fname).getState() == Field.STATE_PERSISTENT;
     }
 
     /**
@@ -139,6 +147,8 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
+                    } else if (type == Field.TYPE_DATETIME) {
+                        fel = addContentElement(FIELD, "" + node.getDateValue(fname).getTime() / 1000, out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
@@ -151,7 +161,7 @@ public class Dove extends AbstractDove {
                 String fname = field.getAttribute(ELM_NAME);
                 if ((fname == null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR, "name required for field",out);
-                    err.setAttribute(ELM_TYPE,IS_PARSER);
+                    err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else if (isDataField(nm,fname)) {
                     Element fel;
                     int type = nm.getField(fname).getType();
@@ -159,6 +169,8 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
+                    } else if (type == Field.TYPE_DATETIME) {
+                        fel = addContentElement(FIELD, "" + node.getDateValue(fname).getTime() / 1000, out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
@@ -955,26 +967,39 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
+        node.getCloud().setProperty(Cloud.PROP_XMLMODE, "flat");
+        log.info("Values " + values);
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry me = (Map.Entry)i.next();
             String key = (String)me.getKey();
-            if (isDataField(node.getNodeManager(),key)) {
+            if (isEditableField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
                 if ((originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String)originalValues.get(key);
-                    String mmbaseValue = node.getStringValue(key);
+                    String mmbaseValue;
+                    if (node.getNodeManager().getField(key).getType() ==  Field.TYPE_DATETIME) {
+                        mmbaseValue = "" + node.getDateValue(key).getTime() / 1000;
+                    } else {
+                        mmbaseValue = node.getStringValue(key);
+                    }
+                    /*
                     if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
                         Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key + " value found: " + mmbaseValue + "value expected: " + originalValue, out);
                         err.setAttribute(ELM_TYPE, IS_SERVER);
                         return false;
                     }
+                    */
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("Setting field " + key + " to '" + value + "'");
                 }
-                node.setValue(key, value);
+                if (value instanceof byte[]) {
+                    node.setValue(key, value);
+                } else {
+                    node.setStringValue(key, org.mmbase.util.Casting.toString(value));
+                }
                 Element fieldElement = doc.createElement(FIELD);
                 fieldElement.setAttribute(ELM_NAME, key);
                 if (!(value instanceof byte[])) {
@@ -1183,6 +1208,7 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean putChangeNode(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
+        log.info(" values " +  values);
         // now check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
