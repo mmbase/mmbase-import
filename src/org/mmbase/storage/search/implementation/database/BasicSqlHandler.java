@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.45 2005-05-26 07:52:35 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.46 2005-05-27 10:48:30 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -531,6 +531,15 @@ public class BasicSqlHandler implements SqlHandler {
             append(sbGroups.toString());
         }
 
+        appendSortOrders(sb, query);
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected StringBuffer appendSortOrders(StringBuffer sb, SearchQuery query) {
+        boolean multipleSteps = query.getSteps().size() > 1;
         // ORDER BY
         List sortOrders = query.getSortOrders();
         if (sortOrders.size() > 0) {
@@ -572,8 +581,8 @@ public class BasicSqlHandler implements SqlHandler {
                 }
             }
         }
+        return sb;
     }
-
 
     /**
      * Appends the 'LIKE' operator for the given case sensitiviy. Some databases support a case
@@ -600,28 +609,28 @@ public class BasicSqlHandler implements SqlHandler {
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
-            case -1:
+        case -1:
+            break;
+        case FieldValueDateConstraint.YEAR:
+            datePartFunction = "YEAR";
+            break;
+        case FieldValueDateConstraint.MONTH:
+            datePartFunction = "MONTH";
+            break;
+        case FieldValueDateConstraint.DAY_OF_MONTH:
+            datePartFunction = "DAY";
+            break;
+        case FieldValueDateConstraint.HOUR:
+            datePartFunction = "HOUR";
+            break;
+        case FieldValueDateConstraint.MINUTE:
+            datePartFunction = "MINUTE";
                 break;
-            case FieldValueDateConstraint.YEAR:
-                datePartFunction = "YEAR";
-                break;
-            case FieldValueDateConstraint.MONTH:
-                datePartFunction = "MONTH";
-                break;
-            case FieldValueDateConstraint.DAY_OF_MONTH:
-                datePartFunction = "DAY";
-                break;
-            case FieldValueDateConstraint.HOUR:
-                datePartFunction = "HOUR";
-                break;
-            case FieldValueDateConstraint.MINUTE:
-                datePartFunction = "MINUTE";
-                break;
-            case FieldValueDateConstraint.SECOND:
-                datePartFunction = "SECOND";
-                break;
-            default:
-                throw new UnsupportedOperationException("This date partition function (" + datePart + ") is not supported.");
+        case FieldValueDateConstraint.SECOND:
+            datePartFunction = "SECOND";
+            break;
+        default:
+            throw new UnsupportedOperationException("This date partition function (" + datePart + ") is not supported.");
         }
         if (datePartFunction != null) {
             sb.append("EXTRACT(");
