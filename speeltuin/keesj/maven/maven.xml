@@ -106,8 +106,13 @@ See http://www.MMBase.org/license
 	    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}" />
     </j:if>
 
-    <echo>checking out mmbase in ${mmbase_checkout_dir}/ ...</echo>
-    <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}" tag="${mmbase.checkout.tag}" compression="true" />
+    <echo>checking out mmbase version '${mmbase.checkout.tag}' in ${mmbase_checkout_dir}/ ...</echo>
+    <j:if test="${mmbase.checkout.tag == HEAD}">
+        <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}" compression="true" />
+    </j:if>
+    <j:if test="${mmbase.checkout.tag != HEAD}">
+        <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}" tag="${mmbase.checkout.tag}" compression="true" />
+    </j:if>
 
     <ant:delete dir="mmbase-core/CVS"/>
   </goal>  
