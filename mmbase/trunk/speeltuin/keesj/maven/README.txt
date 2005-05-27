@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.11 2005-05-25 14:26:51 marcel Exp $
+README for maven-mmbase $Id: README.txt,v 1.12 2005-05-27 13:12:21 marcel Exp $
 
 (See the MAVEN.txt when you have maven related issues)
 
@@ -44,6 +44,19 @@ cvspass command fails) run
 @> cvs -d:pserver:guest@cvs.mmbase.org:/var/cvs login
 (type guest at the prompt)
 
+Choose cvs-version
+------------------
+
+In order to checkout a certain version of mmbase, define the version
+by setting mmbase.checkout.tag in project.properties. 
+
+Supported versions are:
+
+ - MMBase-1_4
+ - MMBase-1_5
+ - MMBase-1_6
+ - MMBase-1_7   - latest stable release
+ - HEAD         - current development release, later becomes 1.8
 
 After these prerequisitions are met, your system is ready to install
 mmbase with maven.
