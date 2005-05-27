@@ -29,12 +29,12 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.39 2005-05-27 08:37:41 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.40 2005-05-27 08:52:17 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(CompareTag.class);
+    protected static final Logger log = Logging.getLoggerInstance(CompareTag.class);
 
     private Attribute value    = Attribute.NULL;
     private Attribute valueSet = Attribute.NULL;
@@ -141,14 +141,16 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                 compare1 = new BigDecimal(compare1.toString()); 
                 while (i.hasNext()) {
                     Object compare2 = i.next();         
+                    if (compare2 instanceof Date) {
+                        compare2 = Casting.toInteger(compare2);
+                    }
+
                     if (compare2 instanceof String) {
                         if ("".equals(compare2)) { // do something reasonable in IsEmpty
                             compare2 = new BigDecimal(0);
                         } else {
                             compare2 = new BigDecimal((String)compare2);
                         }
-                    } else if (compare2 instanceof Date) {
-                        compare2 = Casting.toInteger(compare2);
                     } else if (compare2 instanceof Number) {
                         compare2 = new BigDecimal(compare2.toString());
                     } else if (compare2 instanceof Node) {
@@ -165,6 +167,9 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             } else { 
                 while (i.hasNext()) {
                     Object compare2 = i.next();         
+                    if (compare2 instanceof Date) {
+                        compare2 = Casting.toInteger(compare2);
+                    }
                     if (compare2 instanceof Number) {
                         compare2 = new BigDecimal(compare2.toString()); 
                         Number compare1n;
