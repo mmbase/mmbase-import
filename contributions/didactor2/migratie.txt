@@ -2,7 +2,7 @@ Migratie issues
 
 2005-05-27
 
-    Please run migrate-2005-05-10.jsp
+    Please run migrate-2005-05-10.jsp ONCE for each didactor install
 
 2005-05-10
     Profiles builder has got some new fields.
