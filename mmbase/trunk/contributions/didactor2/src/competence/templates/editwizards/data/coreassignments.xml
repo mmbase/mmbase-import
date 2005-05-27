@@ -15,7 +15,6 @@
 
 
     <form-schema id="step1">
-        <title>Competence types</title>
         <field name="name" dtminlength="1">
            <prompt xml:lang="nl">Naam</prompt>
            <prompt xml:lang="en">Name</prompt>
