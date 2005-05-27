@@ -4,6 +4,9 @@
 >
 
 <project name="clustering" default="dependent.jar" basedir=".">
+  <property name="project.download.dir" location="download" />
+  <property name="project.expand.dir"   value="${project.download.dir}/expand" />
+
   <property file="build.properties.default" />
   
   <property name="project.name"      value="clustering" />
@@ -13,7 +16,7 @@
   <property name="project.config.dir.includes"   value="utils/**" />
   <property name="project.config.jar.includes"   value="**" />
 
-  <property name="project.jars.dir"        location="${expand.dir}/${jgroups.version}.bin/" />
+  <property name="project.jars.dir"        location="${project.expand.dir}/${jgroups.version}.bin/" />
   <property name="project.jars.includes"   value="jgroups-all.jar" />
   &base;
   
@@ -30,7 +33,7 @@
     <antcall target="downloadzip">
       <param name="sourcefile" value="${jgroups.loc}"/>
       <param name="destfile" value="${jgroups.dest}"/>
-      <param name="destdir" value="${expand.dir}"/>
+      <param name="destdir" value="${project.expand.dir}"/>
       <param name="expandedfile" value="${jgroups.jar}"/>
     </antcall>
 
@@ -52,7 +55,7 @@
 
   <target name="download" unless="exist" depends="testexist">
     <!-- Download the package -->
-    <mkdir dir="${download.dir}" />
+    <mkdir dir="${project.download.dir}" />
     <get src="${sourcefile}" dest="${destfile}" verbose="on" />
   </target>
 
