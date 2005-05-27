@@ -1,5 +1,9 @@
 Migratie issues
 
+2005-05-27
+
+    Please run migrate-2005-05-10.jsp
+
 2005-05-10
     Profiles builder has got some new fields.
     
