@@ -103,11 +103,11 @@ See http://www.MMBase.org/license
     <j:if test="${mmbase.checkout.login == 'true'}">
 	    <ant:cvs command="-d${cvsroot} login"/>
 	    <ant:echo>${cvsroot}</ant:echo>
-	    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}"/>
+	    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}" />
     </j:if>
 
     <echo>checking out mmbase in ${mmbase_checkout_dir}/ ...</echo>
-    <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}"/>
+    <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}" tag="${mmbase.checkout.tag}" compression="true" />
 
     <ant:delete dir="mmbase-core/CVS"/>
   </goal>  
@@ -132,14 +132,15 @@ See http://www.MMBase.org/license
         <ant:exclude name="org/mmbase/module/database/support/MMInformix42Node.java"/>
       </ant:fileset>
     </ant:copy>
-    <ant:copy todir="mmbase-core/src/tests">
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/bridge"/>
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/common"/>
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/convertimage"/>
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/dbsq"/>
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/typerel"/>
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/util"/>
-    </ant:copy>
+    <j:compare name="mmbase.checkout.tag" value="HEAD">
+        <ant:copy todir="mmbase-core/src/tests">
+          <ant:fileset dir="${mmbase_checkout_dir}/tests/bridge"/>
+          <ant:fileset dir="${mmbase_checkout_dir}/tests/common"/>
+          <ant:fileset dir="${mmbase_checkout_dir}/tests/convertimage"/>
+          <ant:fileset dir="${mmbase_checkout_dir}/tests/dbsq"/>
+          <ant:fileset dir="${mmbase_checkout_dir}/tests/typerel"/>
+        </ant:copy>
+      </j:compare>
     <ant:copy todir="mmbase-core/src/tests/config">
       <ant:fileset dir="${mmbase_checkout_dir}/tests/config"/>
     </ant:copy>
