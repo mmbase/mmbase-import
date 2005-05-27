@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import java.util.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -33,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.11 2005-05-27 10:48:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -103,23 +105,23 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
-            case FieldValueDateConstraint.CENTURY:
-                datePartFunction = "CENTURY";
+        case FieldValueDateConstraint.CENTURY:
+            datePartFunction = "CENTURY";
+            break;
+        case FieldValueDateConstraint.QUARTER:
+            datePartFunction = "QUARTER";
+            break;
+        case FieldValueDateConstraint.WEEK:
+            datePartFunction = "WEEK";
+            break;
+        case FieldValueDateConstraint.DAY_OF_YEAR:
+            datePartFunction = "DAYOFYEAR";
+            break;
+        case FieldValueDateConstraint.DAY_OF_WEEK:
+            datePartFunction = "DAYOFWEEK";
                 break;
-            case FieldValueDateConstraint.QUARTER:
-                datePartFunction = "QUARTER";
-                break;
-            case FieldValueDateConstraint.WEEK:
-                datePartFunction = "WEEK";
-                break;
-            case FieldValueDateConstraint.DAY_OF_YEAR:
-                datePartFunction = "DAYOFYEAR";
-                break;
-            case FieldValueDateConstraint.DAY_OF_WEEK:
-                datePartFunction = "DAYOFWEEK";
-                break;
-            default:
-                log.debug("Unknown datePart " + datePart);
+        default:
+            log.debug("Unknown datePart " + datePart);
         }
         if (datePartFunction != null) {
             sb.append(datePartFunction);
@@ -129,6 +131,45 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         } else {
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
         }
+    }
+    protected StringBuffer appendSortOrders(StringBuffer sb, SearchQuery query) {
+        // ORDER BY
+        boolean multipleSteps = query.getSteps().size() > 1;
+        List sortOrders = query.getSortOrders();
+        if (sortOrders.size() > 0) {
+            sb.append(" ORDER BY ");
+            Iterator iSortOrders = sortOrders.iterator();
+            while (iSortOrders.hasNext()) {
+                SortOrder sortOrder = (SortOrder) iSortOrders.next();
+
+                boolean uppered = false;
+                if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == FieldDefs.TYPE_STRING) {
+                    sb.append("BINARY ");
+                }
+                // Fieldname.
+                Step step = sortOrder.getField().getStep();
+                appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+
+                // Sort direction.
+                switch (sortOrder.getDirection()) {
+                case SortOrder.ORDER_ASCENDING:
+                    sb.append(" ASC");
+                    break;
+                    
+                case SortOrder.ORDER_DESCENDING:
+                    sb.append(" DESC");
+                    break;
+                    
+                default: // Invalid direction value.
+                    throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
+                }
+
+                if (iSortOrders.hasNext()) {
+                    sb.append(",");
+                }
+            }
+        }
+        return sb;
     }
 
     // javadoc is inherited
