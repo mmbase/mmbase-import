@@ -331,6 +331,18 @@ public class Forum {
 	return results;
     }
 
+    public PostThread getPostThread(String postthreadid) {
+        Enumeration e = postareas.elements();
+        while (e.hasMoreElements()) {
+            PostArea area = (PostArea) e.nextElement();
+	    PostThread pt = area.getPostThread(postthreadid);
+	    if (pt != null) {
+		return pt;
+	    }
+	}
+	return null;
+    }
+
     /**
      * get the posters that are online
      *
@@ -848,7 +860,7 @@ public class Forum {
             NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
-		ThreadObserver to = new ThreadObserver(this,node.getIntValue("threadobservers.number"),node.getStringValue("threadobservers.emailonchange"),node.getStringValue("threadobservers.bookmarked"),node.getStringValue("threadobservers.ignorelist"));
+		ThreadObserver to = new ThreadObserver(this,node.getIntValue("threadobservers.number"),node.getIntValue("postthreads.number"),node.getStringValue("threadobservers.emailonchange"),node.getStringValue("threadobservers.bookmarked"),node.getStringValue("threadobservers.ignorelist"));
 		int postthreadid = node.getIntValue("postthreads.number");
 		to.setThreadId(postthreadid);
 		threadobservers.put(new Integer(postthreadid),to);
@@ -1431,8 +1443,8 @@ public class Forum {
 	if (o!=null) {
 		return ((ThreadObserver)o).setEmailOnChange(ap,state);
 	} else {
-		ThreadObserver to = new ThreadObserver(this,-1,"","","");
-		to.setThreadId(id);
+		ThreadObserver to = new ThreadObserver(this,-1,id,"","","");
+		//to.setThreadId(id);
 		threadobservers.put(new Integer(id),to);
 		return to.setEmailOnChange(ap,state);
 	}
@@ -1442,12 +1454,24 @@ public class Forum {
   public boolean setBookmarkedChange(int id,Poster ap,boolean state) {
 	Object o = threadobservers.get(new Integer(id));
 	if (o!=null) {
-		return ((ThreadObserver)o).setBookmarkedChange(ap,state);
+		((ThreadObserver)o).setBookmarkedChange(ap,state);
+		if (state) { 
+			ap.addBookmarkedThread(id);
+		} else {
+			ap.removeBookmarkedThread(id);
+		}
+		return true;
 	} else {
-		ThreadObserver to = new ThreadObserver(this,-1,"","","");
-		to.setThreadId(id);
+		ThreadObserver to = new ThreadObserver(this,-1,id,"","","");
+		//to.setThreadId(id);
 		threadobservers.put(new Integer(id),to);
-		return to.setBookmarkedChange(ap,state);
+		if (state) { 
+			ap.addBookmarkedThread(id);
+		} else {
+			ap.removeBookmarkedThread(id);
+		}
+		to.setBookmarkedChange(ap,state);
+		return true;
 	}
   }
 

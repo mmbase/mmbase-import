@@ -221,6 +221,48 @@ public class Controller {
     }
 
 
+    public List getBookmarkedThreads(String forumid, String postareaid, int activeid, int pagesize, int page, int overviewpagesize, String baseurl, String cssclass) {
+        List list = new ArrayList();
+
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            PostArea a = f.getPostArea(postareaid);
+            if (activeid != -1) {
+                Poster ap = f.getPoster(activeid);
+            	Iterator e = ap.getBookmarkedThreads(page, overviewpagesize);
+            	while (e.hasNext()) {
+                	Integer tid = (Integer) e.next();
+                	PostThread thread = f.getPostThread(""+tid);
+                	MMObjectNode virtual = builder.getNewNode("admin");
+                	virtual.setValue("mood", thread.getMood());
+                        virtual.setValue("state", thread.getState());
+                	virtual.setValue("postthreadid", thread.getId());
+                	virtual.setValue("postareaname", thread.getParent().getName());
+                	virtual.setValue("postareaid", thread.getParent().getId());
+                	virtual.setValue("forumid", thread.getParent().getParent().getId());
+                	virtual.setValue("type", thread.getType());
+                	virtual.setValue("creator", thread.getCreator());
+              	  	virtual.setValue("postcount", thread.getPostCount());
+                	virtual.setValue("pagecount", thread.getPageCount(pagesize));
+                	virtual.setValue("replycount", thread.getPostCount() - 1);
+                	virtual.setValue("viewcount", thread.getViewCount());
+                	virtual.setValue("lastposter", thread.getLastPoster());
+                	virtual.setValue("lastposttime", thread.getLastPostTime());
+                	virtual.setValue("lastsubject", thread.getLastSubject());
+                    	virtual.setValue("lastposternumber",thread.getLastPosterNumber());
+                    	virtual.setValue("lastpostnumber",thread.getLastPostNumber());
+			int overflowpage = ForumManager.getPostingsOverflowPostarea();
+                        virtual.setValue("navline", thread.getNavigationLine(baseurl,  pagesize,overflowpage, cssclass));
+                	list.add(virtual);
+		}
+	    }
+        }
+        return list;
+    }
+
+
     /**
      * List the postings within a postthread
      *
@@ -534,8 +576,8 @@ public class Controller {
 
 
     public List searchPostings(String forumid,String searchareaid,String searchpostthreadid,String searchkey,int page,int pagesize) {
-	log.info("F="+forumid+" A="+searchareaid+" T="+searchpostthreadid);
         long start = System.currentTimeMillis();
+	searchkey = searchkey.toLowerCase();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
