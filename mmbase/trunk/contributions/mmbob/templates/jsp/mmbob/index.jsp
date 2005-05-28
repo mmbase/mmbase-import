@@ -49,6 +49,7 @@
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <tr>
       <mm:compare referid="posterid" value="-1">
+     <mm:compare referid="entree" value="null">
         <th width="100"><mm:field name="accountcreationtype"><mm:compare value="open"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="image_guest"/></a></mm:compare></mm:field></th>
       <td align="left">
         <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
@@ -84,6 +85,40 @@
           <input type="submit" value="<mm:write referid="mlg.login"/>" />
         </form>
         <p />
+      </mm:compare>
+      <mm:compare referid="entree" value="null" inverse="true">
+        <th width="100">
+	</th>
+      <td align="left">
+        <form action="newposter.jsp?forumid=<mm:write referid="forumid" />" method="post">
+          <mm:present referid="loginfailed">
+            <br />
+            <center>
+              <h4>
+               <mm:write referid="loginfailedreason">
+                 <mm:compare value="account blocked">
+                   ** <mm:write referid="mlg.Account_disabled"/> **
+                 </mm:compare>
+                 <mm:compare value="account not valid">
+                   <center> ** Geen lid van dit forum ** </center>
+                 </mm:compare>
+                 <mm:compare value="password not valid">
+                   ** <mm:write referid="mlg.Wrong_password" /> **
+                 </mm:compare>
+               </mm:write>
+              </h4>
+            </center>
+            </mm:present>
+
+          <mm:notpresent referid="loginfailed">
+            <h4><mm:write referid="mlg.Welcome" /> <mm:write referid="mlg.on_the" /> <mm:field name="name" /> <mm:write referid="mlg.forum" /> !</h4>
+            <p /><b><mm:write referid="mlg.login" /></b><p />
+          </mm:notpresent>
+          <center><input type="submit" value="wordt lid van dit forum via entree" /></center>
+        </form>
+        <p />
+      </mm:compare>
+
       </mm:compare>
       <mm:compare referid="posterid" value="-1" inverse="true">
         <th width="100">
@@ -164,8 +199,8 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
   <tr>
    <td align="right">
-        <mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="profile.jsp" referids="forumid,posterid" />"> Profile settings |</mm:compare>
-	<mm:node referid="forumid"><mm:relatednodes type="forumrules"><a href="<mm:url page="rules.jsp" referids="forumid"><mm:param name="rulesid"><mm:field name="number" /></mm:param></mm:url>">Forum rules | </a></mm:relatednodes></mm:node><a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg.The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg.Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg.All_members" /></a> | <a href="<mm:url page="search.jsp" referids="forumid" />">Search</a>
+        <mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="profile.jsp" referids="forumid,posterid" />"><mm:write referid="mlg.Profile_settings" /> |</mm:compare>
+	<mm:node referid="forumid"><mm:relatednodes type="forumrules"><a href="<mm:url page="rules.jsp" referids="forumid"><mm:param name="rulesid"><mm:field name="number" /></mm:param></mm:url>"><mm:write referid="mlg.Forum_rules" /> | </a></mm:relatednodes></mm:node><a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg.The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg.Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg.All_members" /></a> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid" />"><mm:write referid="mlg.Search" /></a>
    </td>
   </tr>
 </table>

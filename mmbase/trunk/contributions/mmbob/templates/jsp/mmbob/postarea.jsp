@@ -92,7 +92,7 @@
 	</td>
 	</form>
 	<td align="right">
-	<a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+	<a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
