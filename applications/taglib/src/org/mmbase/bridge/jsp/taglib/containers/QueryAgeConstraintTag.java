@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.5 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.6 2005-05-28 09:10:15 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
@@ -33,6 +33,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
     protected Attribute container  = Attribute.NULL;
 
     protected Attribute field      = Attribute.NULL;
+    protected Attribute element    = Attribute.NULL;
     protected Attribute minAge     = Attribute.NULL;
     protected Attribute maxAge     = Attribute.NULL;
     protected Attribute inverse    = Attribute.NULL;
@@ -41,8 +42,15 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         container = getAttribute(c);
     }
 
+    /**
+     * @deprecated Use {@link #setElement}
+     */
     public void setField(String f) throws JspTagException { // default to 'number'
         field = getAttribute(f);
+    }
+
+    public void setElement(String e) throws JspTagException { 
+        element = getAttribute(e);
     }
 
     public void setMinage(String a) throws JspTagException {
@@ -95,10 +103,15 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         Query query = c.getQuery();
 
         String fieldName;
-        if (field == Attribute.NULL) {
+        if (field == Attribute.NULL && element == Attribute.NULL) {
             fieldName = "number";
-        } else {
+        } else if (field != Attribute.NULL) {
+            if(element != Attribute.NULL) {
+                throw new JspTagException("Could not specify both 'field' and 'element' attributes on ageconstraint");
+            }
             fieldName = field.getString(this);
+        } else {
+            fieldName = element.getString(this) + ".number";
         }
 
         StepField stepField = query.createStepField(fieldName);

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.304 2005-05-26 07:54:44 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.305 2005-05-28 09:10:15 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5939,18 +5939,31 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAgeConstraintTag</tagclass>
     <info>
       <p>
-  In MMBase, objects on default do not have a `creation time' field. But the `number' field can
-  be used to estimate the age (in days), because for every day a `day mark' is remembered. This
-  tags give easy access to this functionality.
+	In MMBase, objects on default do not have a `creation time' field. But the `number' field can
+	be used to estimate the age (in days), because for every day a `day mark' is remembered. This
+	tags give easy access to this functionality.
       </p>
       <p>
-  Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
-  fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
-  on the date parts of such a field.
+	Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
+	fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
+	on the date parts of such a field.
       </p>
     </info>
     <see tag="constraint" attribute="part" />
     <since>MMBase-1.7</since>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        If the surrounding nodelist container is a list container then the constraint can be on the
+        several elements from the path. With this attribute you must indicate to wich. This is not
+        needed for listnodes and relatednodes containers.
+      </info>
+      <since>MMBase-1.8</since>
+      <see tag="listcontainer" />
+      <see tag="listnodescontainer" />
+    </attribute>
     <attribute>
       <name>field</name>
       <required>false</required>
@@ -5959,7 +5972,9 @@ The 0 is just counter, which starts at 0 on every page.
         If the surrounding nodelist container is a list container then the constraint can be on the
         several elements from the path. With this attribute you must indicate to wich. This is not
         needed for listnodes and relatednodes containers (and probably would be a `number' field otherwise).
+	This attribute is deprecated in favour of 'element'.
       </info>
+      <see tag="ageconstraint" attribute="element"/>
       <see tag="listcontainer" />
       <see tag="listnodescontainer" />
     </attribute>
