@@ -620,7 +620,7 @@ public class PostThread {
         	Enumeration e = postings.elements();
         	while (e.hasMoreElements()) {
             	Posting posting = (Posting) e.nextElement();
-	    	if (posting.inBody(searchkey)) {
+	    	if (posting.inBody(searchkey) || posting.inSubject(searchkey)) {
 			results.add(posting);
 	    	}
 		}

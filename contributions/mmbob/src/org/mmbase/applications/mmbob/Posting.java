@@ -202,10 +202,19 @@ public class Posting {
 
     public boolean inBody(String searchkey) {
 	if (c_body.equals("")) {
-		if (body.indexOf(searchkey)!=-1) return true;
+		if (body.toLowerCase().indexOf(searchkey)!=-1) return true;
+		//if (body.indexOf(searchkey)!=-1) return true;
 	} else {
-		if (c_body.indexOf(searchkey)!=-1) return true;
+		if (c_body.toLowerCase().indexOf(searchkey)!=-1) return true;
+		//if (c_body.indexOf(searchkey)!=-1) return true;
 	}
+	return false;
+    }
+
+
+    public boolean inSubject(String searchkey) {
+	if (subject.toLowerCase().indexOf(searchkey)!=-1) return true;
+	//if (subject.indexOf(searchkey)!=-1) return true;
 	return false;
     }
 

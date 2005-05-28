@@ -41,21 +41,27 @@ public class ThreadObserver {
    private int threadid=-1;
    private Forum parent;
 
-   public ThreadObserver(Forum parent,int id,String emailonchange,String bookmarked,String ignorelist) {
+   public ThreadObserver(Forum parent,int id,int threadid,String emailonchange,String bookmarked,String ignorelist) {
 	this.parent = parent;
 	this.id=id;
 	this.threadid=threadid;
-	this.emailonchange = decodeList(this.emailonchange,emailonchange);
-	this.bookmarked = decodeList(this.bookmarked,bookmarked);
-	this.ignorelist = decodeList(this.ignorelist,ignorelist);
+	this.emailonchange = decodeList(this.emailonchange,emailonchange,"emailonchange");
+	this.bookmarked = decodeList(this.bookmarked,bookmarked,"bookmarked");
+	this.ignorelist = decodeList(this.ignorelist,ignorelist,"ignorelist");
    }
 
-   public ArrayList decodeList(ArrayList list,String names) {
+   public ArrayList decodeList(ArrayList list,String names,String type) {
 	StringTokenizer tok =  new StringTokenizer(names,",\n\r");
 	while (tok.hasMoreTokens()) {
 		String name = tok.nextToken();
 		Poster p = parent.getPoster(name);
-		if (p!=null) list.add(p);
+		if (p!=null) { 
+			list.add(p);
+			if (type.equals("bookmarked")) {
+				log.info("B1="+threadid);
+				p.addBookmarkedThread(threadid);
+			}
+		}
 	}
 	return list;
    }

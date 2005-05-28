@@ -47,6 +47,7 @@ public class Poster {
     private HashMap mailboxes;
     private HashMap seenthreads = new HashMap();
     private ArrayList signatures;
+    private ArrayList bookmarked = new ArrayList();
     private ArrayList remotehosts;
     private String mailbody="";;
     private static final int STATE_ACTIVE = 0;
@@ -840,5 +841,19 @@ public class Poster {
         obj.replace("$firstname", getFirstName());
         obj.replace("$lastname", getLastName());
    	return obj.toString();
+   }
+
+    public Iterator getBookmarkedThreads(int page,int pagesize) {
+        return bookmarked.iterator();
+    }
+
+   public void addBookmarkedThread(int threadid) {
+	Integer tid = new Integer(threadid);
+	if (!bookmarked.contains(tid)) bookmarked.add(tid);
+   }
+
+   public void removeBookmarkedThread(int threadid) {
+	Integer tid = new Integer(threadid);
+	if (bookmarked.contains(tid)) bookmarked.remove(tid);
    }
 }
