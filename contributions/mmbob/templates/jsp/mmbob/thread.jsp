@@ -115,9 +115,8 @@
 	  </b>
 	</td>
 	<td align="right">
-	<a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
-	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
-	<a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+	<a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
+	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
         </mm:nodefunction>
 </table>
@@ -260,7 +259,7 @@
 <mm:compare referid="guestwritemodetype" value="open">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
-  <tr><th colspan="3"><mm:write referid="mlg.Fast_reply"/></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Reply"/></th></tr>
   <mm:import id="page" reset="true">-1</mm:import>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
 	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
