@@ -113,7 +113,9 @@
                   <mm:field name="poster"><mm:param name="posterid" value="$_" /></mm:field>
 	  	  <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
                         <mm:field name="avatar"><mm:compare value="" inverse="true">
-                         <img align="left" width="50" border="0" src="../img.db?<mm:field name="avatar" />" style="margin-top: 5px; margin-right: 10px;">
+                	<mm:node number="$_">
+                  		<img src="<mm:image template="s(80x80)" />" align="right" width="80" border="0">
+                	</mm:node>
                         </mm:compare></mm:field>
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
 			<mm:write referid="mlg.Level"/> : <mm:field name="level" /> <br />

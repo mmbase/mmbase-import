@@ -260,6 +260,27 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3"><mm:write referid="mlg.Reply"/></th></tr>
+	<mm:import externid="error" from="session">none</mm:import>
+	<mm:compare referid="error" value="none" inverse="true">
+	<tr><th colspan="3">
+	<mm:compare referid="error" value="no_subject">
+	<font color="red"><mm:write referid="mlg.problem_missing_topic" /></font>
+	</mm:compare>
+	<mm:compare referid="error" value="no_body">
+	<font color="red"><mm:write referid="mlg.problem_missing_body" /></font>
+	</mm:compare>
+	<mm:compare referid="error" value="duplicate_post">
+	<font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
+	</mm:compare>
+	<mm:compare referid="error" value="illegal_html">
+	<font color="red"><mm:write referid="mlg.problem_illegal_html" /></font>
+	</mm:compare>
+	<mm:compare referid="error" value="speed_posting">
+	<mm:import externid="speedposttime" from="session">60</mm:import>
+	<font color="red"><mm:write referid="mlg.problem_speedposting" /><mm:write referid="speedposttime" /> sec ***</font>
+	</mm:compare>
+	</th></tr>
+	</mm:compare>
   <mm:import id="page" reset="true">-1</mm:import>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
 	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
@@ -276,7 +297,7 @@
 		</mm:compare>
 
 		</td></tr>
-	<tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
+	<tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"><mm:compare referid="error" value="none" inverse="true"><mm:import externid="body" from="session"></mm:import><mm:write referid="body" /><mm:import id="error" reset="true">none</mm:import><mm:write referid="error" session="error" /></mm:compare></textarea></td></tr>
 	<tr><td colspan="3"><input type="hidden" name="action" value="postreply">
 	<center><input type="submit" value="<mm:write referid="mlg.Post_reply"/>"/></center>
 	</td></tr>
