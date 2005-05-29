@@ -16,17 +16,12 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * Test cases for the Encoder
  * 
  * @author keesj
  */
 public class EncodeTest extends TestCase {
-    //MMBase logger
-    private static Logger log = Logging.getLoggerInstance(ResourceLoaderTest.class);
 
     public final static String TEST_EMPTY_STRING = "";
 
@@ -71,7 +66,7 @@ public class EncodeTest extends TestCase {
 
 
     public void testUndocumentedEncoders() {
-        Set encodings = Encode.possibleEncodings();
+        Set encodings = new TreeSet(Encode.possibleEncodings());
         encodings.removeAll(getDocumentedEncodings());
         assertTrue("found undocumeted encoding(s)" + encodings, encodings.isEmpty());
     }
@@ -80,11 +75,9 @@ public class EncodeTest extends TestCase {
      * test if encode and decode methods are symetric string is encoded and the decoded the same result  
      */
     public void testCharEncoders(){
-        Iterator iter = getDocumentedEncodings().iterator();
+        Iterator iter = getSymmetricEncodings().iterator();
         while (iter.hasNext()) {
             String name = (String) iter.next();
-            //this test currently fails , but the previous test testDocumentedEncodersRequestable does not
-            //it looks like one of the test above can brake the workings
             Encode encode = new Encode(name);
             if (encode.isCharEncoder()){
                 for (int x =0 ; x < TESTS.length ; x++){
@@ -96,6 +89,24 @@ public class EncodeTest extends TestCase {
         }        
     }
     
+    public Set getSymmetricEncodings() {
+        SortedSet symmetricEncodings = new TreeSet();
+        symmetricEncodings.add("BASE64");
+        symmetricEncodings.add("ESCAPE_HTML");
+        symmetricEncodings.add("ESCAPE_HTML_ATTRIBUTE");
+        symmetricEncodings.add("ESCAPE_SINGLE_QUOTE");
+        symmetricEncodings.add("ESCAPE_URL");
+        symmetricEncodings.add("ESCAPE_URL_PARAM");
+        symmetricEncodings.add("ESCAPE_WML");
+        symmetricEncodings.add("ESCAPE_XML");
+        symmetricEncodings.add("ESCAPE_XML_ATTRIBUTE");
+        symmetricEncodings.add("ESCAPE_XML_ATTRIBUTE_DOUBLE");
+        symmetricEncodings.add("ESCAPE_XML_ATTRIBUTE_SINGLE");
+        symmetricEncodings.add("ROT-13");
+        symmetricEncodings.add("ROT-5");
+
+        return symmetricEncodings;
+    }
     /**
      * 
      * @return a new set containing the names of the encoders that are
@@ -104,14 +115,34 @@ public class EncodeTest extends TestCase {
     public Set getDocumentedEncodings() {
         SortedSet documentedEncodings = new TreeSet();
         documentedEncodings.add("BASE64");
-        documentedEncodings.add("ESCAPE_XML");
         documentedEncodings.add("ESCAPE_HTML");
         documentedEncodings.add("ESCAPE_HTML_ATTRIBUTE");
-        documentedEncodings.add("ESCAPE_WML");
-        //documentedEncodings.add("ESCAPE_WML_ATTRIBUTE");
+        documentedEncodings.add("ESCAPE_SINGLE_QUOTE");
         documentedEncodings.add("ESCAPE_URL");
         documentedEncodings.add("ESCAPE_URL_PARAM");
-        documentedEncodings.add("ESCAPE_SINGLE_QUOTE");
-        return documentedEncodings;
+        documentedEncodings.add("ESCAPE_WML");
+        documentedEncodings.add("ESCAPE_XML");
+        documentedEncodings.add("ESCAPE_XML_ATTRIBUTE");
+        documentedEncodings.add("ESCAPE_XML_ATTRIBUTE_DOUBLE");
+        documentedEncodings.add("ESCAPE_XML_ATTRIBUTE_SINGLE");
+        documentedEncodings.add("MD5");
+        documentedEncodings.add("MMXF_ASCII");
+        documentedEncodings.add("MMXF_BODY");
+        documentedEncodings.add("MMXF_BODY_POOR");
+        documentedEncodings.add("MMXF_BODY_RICH");
+        documentedEncodings.add("MMXF_HTML_BLOCK");
+        documentedEncodings.add("MMXF_HTML_BLOCK_BR");
+        documentedEncodings.add("MMXF_HTML_BLOCK_BR_NOSURROUNDINGP");
+        documentedEncodings.add("MMXF_HTML_BLOCK_NOSURROUNDINGP");
+        documentedEncodings.add("MMXF_HTML_INLINE");
+        documentedEncodings.add("MMXF_MMXF");
+        documentedEncodings.add("MMXF_POOR");
+        documentedEncodings.add("MMXF_RICH");
+        documentedEncodings.add("MMXF_XHTML");
+        documentedEncodings.add("REGEXPS_ENTIRE");
+        documentedEncodings.add("REGEXPS_WORDS");
+        documentedEncodings.add("ROT-13");
+        documentedEncodings.add("ROT-5");
+       return documentedEncodings;
     }
 }
