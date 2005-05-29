@@ -47,9 +47,30 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
         }
     }
 
-    public final static int WORDS     = 1;
-    public final static int LINES     = 2; // not yet supported
-    public final static int ENTIRE    = 3; // not yet supported
+    /**
+     * Match word by word, but only in PCDATA of xml elements.
+     */
+    public final static int XMLTEXT_WORDS     = 1;
+    /**
+     * Match in PCDATA of xml elements.
+     */
+    public final static int XMLTEXT     = 2; 
+
+    /**
+     * Match word by word.
+     */
+    public final static int WORDS    = 3; 
+
+    /**
+     * Match line by line.
+     */
+    public final static int LINES    = 4; 
+
+
+    /**
+     * Match the entire stream (so, one String must be created).
+     */
+    public final static int ENTIRE    = 5; 
 
 
 
@@ -131,6 +152,27 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
         }
     }
     
+    protected boolean replace(String string, Writer w) throws IOException {
+        Iterator i  = getPatterns().iterator();
+
+        while (i.hasNext()) {
+            Entry entry = (Entry) i.next();
+            Pattern p = (Pattern) entry.getKey();
+            Matcher m = p.matcher(string);
+            if (m.matches()) {
+                String result = (String) entry.getValue();
+                for (int j = m.groupCount(); j >= 0; j--) {
+                    result = result.replaceAll("\\$" + j, m.group(j));
+                }
+                w.write(result);
+                return true;
+            }
+        }
+        w.write(string);
+        return false;
+
+    }
+
     /**
      * Takes one word (as a StringBuffer), checks if it can be made clickable, and if so, does it.
      *
@@ -175,35 +217,16 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
             w = word.toString();
         }
 
-        // ready to make the anchor now.
+        // ready to make the replacements now.
+        boolean result = replace(w, writer);
 
-        Iterator i  = getPatterns().iterator();
-
-        while (i.hasNext()) {
-            Entry entry = (Entry) i.next();
-            Pattern p = (Pattern) entry.getKey();
-            Matcher m = p.matcher(w);
-            if (m.matches()) {
-                String result = (String) entry.getValue();
-                for (int j = m.groupCount(); j >= 0; j--) {
-                    result = result.replaceAll("\\$" + j, m.group(j));
-                }
-                writer.write(result);
-                if (postFix != null) {
-                    writer.write(postFix.toString());
-                } 
-                return true;
-            }
-        }
-
-        writer.write(w);
         if (postFix != null) {
             writer.write(postFix.toString());
         } 
-        return false;
+        return result;
     }
 
-    public Writer transform(Reader r, Writer w) {
+    public Writer transformXmlTextWords(Reader r, Writer w)  {
         int replaced = 0;
         StringBuffer word = new StringBuffer();  // current word
         boolean translating = true;
@@ -241,8 +264,114 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
         return w;
     }
 
+    public Writer transformXmlText(Reader r, Writer w)  {
+        int replaced = 0;
+        StringBuffer xmltext = new StringBuffer();  // current word
+        boolean translating = true;
+        try {
+            log.trace("Starting regexp replacing");
+            while (true) {
+                int c = r.read();
+                if (c == -1) break;
+                // perhaps better use SAX to decently detect XML, but then it probably won't work
+                // very well on sloppy XML (like HTML).
+                if (c == '<') {  // don't do it in existing tags and attributes
+                    translating = false;
+                    if (replace(xmltext.toString(), w)) replaced++;
+                    w.write(c);
+                } else if (c == '>') {
+                    translating = true;
+                    xmltext.setLength(0);
+                    w.write(c);
+                } else if (! translating) {
+                    w.write(c);
+                } else {
+                    xmltext.append((char) c);
+                }
+            }
+            // write last word
+            if (translating && replace(xmltext.toString(), w)) replaced++;
+            log.debug("Finished regexp replacing. Replaced " + replaced + " words");
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
+        }
+        return w;
+    }
+    public Writer transformWords(Reader r, Writer w)  {
+        int replaced = 0;
+        StringBuffer word = new StringBuffer();  // current word
+        try {
+            log.trace("Starting regexp replacing");
+            while (true) {
+                int c = r.read();
+                if (c == -1) break;
+                if (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' || c == '<' || c == '>' ) {
+                    if (replaceWord(word, w)) replaced++;
+                    word.setLength(0);
+                    w.write(c);
+                } else {       
+                    word.append((char) c);
+                }
+            }
+            // write last word
+            if (replaceWord(word, w)) replaced++;
+            log.debug("Finished regexp replacing. Replaced " + replaced + " words");
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
+        }
+        return w;
+    }
+
+
+
+    public Writer transformLines(Reader r, Writer w) {
+        BufferedReader reader = new BufferedReader(r);
+        try {
+            String line = reader.readLine();
+            while (line != null) {
+                replace(line, w);
+                line = reader.readLine();
+            }
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
+        }
+        return w;
+    }
+
+    public Writer transformEntire(Reader r, Writer w) {
+        StringWriter sw = new StringWriter();
+        try {
+            while (true) {
+                int c = r.read();
+                if (c == -1) break;
+                sw.write(c);
+            }
+            replace(sw.toString(), w);
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
+        }
+
+        return w;
+    }
+
+
+    public Writer transform(Reader r, Writer w) {
+        switch(to) {
+        case XMLTEXT_WORDS: return transformXmlTextWords(r, w);
+        case XMLTEXT:       return transformXmlText(r, w);
+        case WORDS:         return transformWords(r, w);
+        case LINES:         return transformLines(r, w);
+        case ENTIRE:        return transformEntire(r, w);
+        default: throw new UnknownCodingException(getClass(), to);
+        }
+    }
+
     public String getEncoding() {
         switch (to) {
+        case XMLTEXT_WORDS:
+            return "REGEXPS_XMLTEXT_WORDS";
+        case XMLTEXT:
+            return "REGEXPS_XMLTEXT";
         case WORDS:
             return "REGEXPS_WORDS";
         case LINES:
@@ -254,12 +383,17 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
         }
     }
     
+    private static final Map h = new HashMap();
+    static {
+        h.put("REGEXPS_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));
+        h.put("REGEXPS_XMLTEXT",        new Config(RegexpReplacer.class, XMLTEXT,  "Search and replaces regexps, only in XML text() blocks."));
+        h.put("REGEXPS_WORDS",          new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));
+        h.put("REGEXPS_LINES",          new Config(RegexpReplacer.class, LINES,  "Search and replaces regexps, line-by-line"));
+        h.put("REGEXPS_ENTIRE",         new Config(RegexpReplacer.class, ENTIRE,  "Search and replaces regexps"));
+    }
 
     public Map transformers() {
-        Map h = new HashMap();
-        h.put("REGEXPS_WORDS",  new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));
-        h.put("REGEXPS_ENTIRE",  new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps"));
-        return h;
+        return Collections.unmodifiableMap(h);
     }
 
     public String toString() {

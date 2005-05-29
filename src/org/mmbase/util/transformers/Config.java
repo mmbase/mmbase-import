@@ -27,4 +27,7 @@ public class Config {
         config = i;
         info = in;
     }
+    public String toString() {
+        return "" + config + ":" + info;
+    }
 }
