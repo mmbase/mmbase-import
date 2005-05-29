@@ -1,14 +1,12 @@
 package org.mmbase.module.corebuilders;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import java.util.*;
 
 /**
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.5 2003-04-29 18:45:22 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.6 2005-05-29 11:20:04 nico Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -127,7 +125,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     public void testBidirectionalNodeManagerAllowedRelations7() {
         // by source-manager
         try {
-            RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
+            newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
             fail("Should have thrown exception for non-existing relations");
         } catch (NotFoundException e) {
         };
@@ -260,7 +258,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     }
     public void testUnidirectionalNodeManagerAllowedRelations7() {
         try {
-            RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
+            newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
             fail("Should have thrown exception for non-existing relations");
         } catch (NotFoundException e) {
         };

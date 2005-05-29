@@ -5,23 +5,21 @@ import java.io.*;
 
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.Parameters;
-import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests for convertimage-interface implementation.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.4 2005-04-14 17:10:09 keesj Exp $
+ * @version $Id: ConvertImageTest.java,v 1.5 2005-05-29 11:20:04 nico Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
-    private final static Logger log = Logging.getLoggerInstance(ConvertImageTest.class);
 
     private final static String JPG_IMAGE_NAME = "testimage.jpg";
 
     public void testImportedJpegImage() {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
-        byte[] bytes = node.getByteValue("handle");
+        node.getByteValue("handle");
         assertTrue("MMBase failed to determine mime-type properly (magicfile problem?)", node.getStringValue("itype").equals("jpeg"));
         //node.delete();
     }

@@ -1,18 +1,12 @@
 package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.logging.*;
-import java.util.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSqlHandlerTestTest extends TestCase {
 

@@ -2,6 +2,8 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 import java.util.*;
+
+import org.mmbase.core.FieldType;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -10,7 +12,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -78,7 +80,7 @@ public class NodeSearchQueryTest extends TestCase {
             StepField stepField = (StepField) iStepFields.next();
             FieldDefs field = images.getField(stepField.getFieldName());
             assertTrue(fields.contains(field));
-            assertTrue(field.getDBType() != FieldDefs.TYPE_BYTE &&
+            assertTrue(field.getDBType() != FieldType.TYPE_BYTE &&
                 (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM));
         }
@@ -86,7 +88,7 @@ public class NodeSearchQueryTest extends TestCase {
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != FieldDefs.TYPE_BYTE &&
+            if (field.getDBType() != FieldType.TYPE_BYTE &&
                 (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 assertTrue(instance.getField(field) != null);
@@ -101,7 +103,7 @@ public class NodeSearchQueryTest extends TestCase {
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != FieldDefs.TYPE_BYTE &&
+            if (field.getDBType() != FieldType.TYPE_BYTE &&
                 (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 StepField stepField = instance.getField(field);

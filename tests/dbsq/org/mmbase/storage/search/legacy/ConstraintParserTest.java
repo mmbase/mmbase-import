@@ -6,13 +6,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ConstraintParserTest extends TestCase {
     
@@ -57,7 +56,7 @@ public class ConstraintParserTest extends TestCase {
     
     /** Test of parseValue method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testParseValue() {
-        Step step1 = query.addStep(news);
+        query.addStep(news);
         StepField numericalField = instance.getField("number");
         StepField stringField = instance.getField("title");
         Iterator iTokens = Arrays.asList(new String[] {
@@ -191,9 +190,9 @@ public class ConstraintParserTest extends TestCase {
     
     /** Test of parseSimpleCondition method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testParseSimpleCondition() {
-        Step step1 = query.addStep(images).setAlias("step1");
+        query.addStep(images).setAlias("step1");
         RelationStep step2 = query.addRelationStep(insrel, news);
-        Step step3 = step2.getNext();
+        step2.getNext();
         StepField field1 = instance.getField("step1.title");
         StepField field2 = instance.getField("step1.description");
         StepField field3 = instance.getField("step1.number");
@@ -471,9 +470,9 @@ public class ConstraintParserTest extends TestCase {
     
     /** Test of parseCondition method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testParseCondition() {
-        Step step1 = query.addStep(images).setAlias("step1");
+        query.addStep(images).setAlias("step1");
         RelationStep step2 = query.addRelationStep(insrel, news);
-        Step step3 = step2.getNext();
+        step2.getNext();
         StepField field1 = instance.getField("step1.title");
         StepField field2 = instance.getField("news.number");
 
@@ -549,11 +548,11 @@ public class ConstraintParserTest extends TestCase {
     
     /** Test of toConstraint method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testToConstraint() {
-        Step step1 = query.addStep(images).setAlias("step1");
+        query.addStep(images).setAlias("step1");
         RelationStep step2 = query.addRelationStep(insrel, news);
-        Step step3 = step2.getNext();
+        step2.getNext();
         StepField field1 = instance.getField("step1.title");
-        StepField field2 = instance.getField("news.number");
+        instance.getField("news.number");
 
         // Empty constraint
         Constraint constraint = instance.toConstraint("");

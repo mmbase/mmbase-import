@@ -7,14 +7,12 @@ import junit.framework.*;
 import junit.textui.TestRunner;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandlerTest.java,v 1.7 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.8 2005-05-29 11:20:04 nico Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 
@@ -26,9 +24,6 @@ public class BasicQueryHandlerTest extends TestCase {
 
     /** Test instance. */
     private BasicQueryHandler instance;
-
-    /** Disallowed values map. */
-    private Map disallowedValues = null;
 
     /** MMBase query. */
     private MMBase mmbase = null;
@@ -118,7 +113,7 @@ public class BasicQueryHandlerTest extends TestCase {
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title"); // should not affect result node fieldnames!
-            BasicSortOrder sortOrder = query.addSortOrder(newsTitleField)
+            query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
@@ -158,7 +153,7 @@ public class BasicQueryHandlerTest extends TestCase {
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title"); // should not affect result node fieldnames!
-            BasicSortOrder sortOrder = query.addSortOrder(newsTitleField)
+            query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
@@ -195,7 +190,7 @@ public class BasicQueryHandlerTest extends TestCase {
             NodeSearchQuery nodeQuery = new NodeSearchQuery(news);
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = nodeQuery.getField(newsTitle);
-            BasicSortOrder sortOrder = nodeQuery.addSortOrder(newsTitleField)
+            nodeQuery.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = nodeQuery.getField(newsOwner);
@@ -233,7 +228,7 @@ public class BasicQueryHandlerTest extends TestCase {
             FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title");
-            BasicSortOrder sortOrder = query.addSortOrder(newsTitleField)
+            query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);

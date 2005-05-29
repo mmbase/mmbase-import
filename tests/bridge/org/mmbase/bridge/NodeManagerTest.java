@@ -33,7 +33,6 @@ public class NodeManagerTest extends BridgeTest {
         cloud = getCloud();
         nodes = cloud.getCloudContext().createNodeList();
         Node node = cloud.getNodeManager("aa").createNode();
-        byte[] bytes = {72,101,108,108,111,32,119,111,114,108,100,33};
         node.setByteValue("bytefield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
         node.setFloatValue("floatfield", 300);
