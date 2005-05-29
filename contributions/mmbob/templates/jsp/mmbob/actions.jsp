@@ -48,8 +48,14 @@
         </mm:compare>
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
-	<mm:booleanfunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
-	</mm:booleanfunction>
+	<mm:write referid="body" session="body" />
+	<mm:nodefunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
+		
+	<mm:import id="error"><mm:field name="error" /></mm:import>
+	<mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>	
+	<mm:write referid="speedposttime" session="speedposttime" />
+	<mm:write referid="error" session="error" />
+	</mm:nodefunction>
 </mm:compare>
 
 
