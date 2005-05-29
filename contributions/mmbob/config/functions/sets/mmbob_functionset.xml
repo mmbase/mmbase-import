@@ -787,6 +787,18 @@
 		</return> 
 	</function>
 
+	<function name="newFolder">
+		<description>Add a new folder</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>newFolder</method>
+		<param name="forumid" type="String" description="" />
+		<param name="posterid" type="int" description="" />
+		<param name="newfolder" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="getPostAreas">
 		<description>Get the PostAreas of the given forum</description>
 		<type>class</type>
