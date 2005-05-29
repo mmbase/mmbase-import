@@ -1,6 +1,5 @@
 package org.mmbase.storage.search.implementation;
 
-import java.util.*;
 import junit.framework.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
@@ -11,7 +10,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicRelationStepTest extends TestCase {
 
@@ -23,9 +22,6 @@ public class BasicRelationStepTest extends TestCase {
 
     /** Test instance. */
     private BasicRelationStep instance = null;
-
-    /** Relation builder for relation step of test instance. */
-    private InsRel relation = null;
 
     /** Previous step of test instance. */
     private Step previous = null;

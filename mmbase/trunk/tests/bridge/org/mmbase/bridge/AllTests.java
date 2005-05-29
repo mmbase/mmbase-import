@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.tests.MMBaseTest;
+
 import junit.framework.*;
 
 /**
@@ -28,7 +30,7 @@ public class AllTests {
     }
 
     public static Test suite() throws Exception {
-        org.mmbase.tests.BridgeTest.startMMBase();
+        MMBaseTest.startMMBase();
 
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");

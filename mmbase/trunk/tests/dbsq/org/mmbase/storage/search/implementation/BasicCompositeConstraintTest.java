@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicCompositeConstraintTest extends TestCase {
     
@@ -17,9 +17,6 @@ public class BasicCompositeConstraintTest extends TestCase {
     
     /** Test instance. */
     private BasicCompositeConstraint instance = null;
-    
-    /** MMBase instance. */
-    private MMBase mmbase = null;
     
     public BasicCompositeConstraintTest(java.lang.String testName) {
         super(testName);
@@ -34,7 +31,7 @@ public class BasicCompositeConstraintTest extends TestCase {
      */
     public void setUp() throws Exception {
         MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
+        MMBase.getMMBase();
         instance = new BasicCompositeConstraint(TEST_OPERATOR);
     }
     

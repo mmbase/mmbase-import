@@ -91,11 +91,11 @@ public class FilledNodeTest extends NodeTest {
                     new Long(Long.MAX_VALUE).compareTo((Long)object) == 0);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue("getValue on string field should give \"Bridge testing!\" but gave " + object,
-                    "Bridge testing!".equals((String)object));
+                    "Bridge testing!".equals(object));
             } else if (fieldTypes[i].equals("xml")) {
                 //   assertTrue(getEmptyDocument().isEqualNode((org.w3c.dom.Node)object)); java 1.5
                 assertTrue("getValue on xml field should give ??? but gave ",
-                    Casting.toString(getEmptyDocument()).equals(Casting.toString((Document)object)));
+                    Casting.toString(getEmptyDocument()).equals(Casting.toString(object)));
             } else if (fieldTypes[i].equals("node")) {
                 Node typedefNode = getCloud().getNodeManager("bb");
                 assertTrue("getValue on node field should give " + typedefNode.getNumber() +" but gave " + ((Node) object).getNumber(),
@@ -168,7 +168,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(d == -1);
             } else if (fieldTypes[i].equals("node")) {
-                assertTrue(d == (double)getCloud().getNodeManager("bb").getNumber());
+                assertTrue(d == getCloud().getNodeManager("bb").getNumber());
             } else if (fieldTypes[i].equals("boolean")) {
                 assertTrue(d == 1);
             } else if (fieldTypes[i].equals("datetime")) {
@@ -200,7 +200,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(f == -1);
             } else if (fieldTypes[i].equals("node")) {
-                assertTrue(f == (float)getCloud().getNodeManager("bb").getNumber());
+                assertTrue(f == getCloud().getNodeManager("bb").getNumber());
             } else if (fieldTypes[i].equals("boolean")) {
                 assertTrue(f == 1);
             } else if (fieldTypes[i].equals("datetime")) {
@@ -264,7 +264,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(l == -1);
             } else if (fieldTypes[i].equals("node")) {
-                assertTrue(l == (long)getCloud().getNodeManager("bb").getNumber());
+                assertTrue(l == getCloud().getNodeManager("bb").getNumber());
             } else if (fieldTypes[i].equals("boolean")) {
                 assertTrue(l == 1);
             } else if (fieldTypes[i].equals("datetime")) {

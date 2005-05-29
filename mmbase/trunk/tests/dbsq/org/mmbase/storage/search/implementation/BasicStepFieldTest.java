@@ -1,6 +1,8 @@
 package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
+
+import org.mmbase.core.FieldType;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
@@ -9,12 +11,11 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicStepFieldTest extends TestCase {
     
     private final static String TEST_ALIAS = "abcd";
-    private final static String TEST_TABLE_ALIAS = "efgh";
     
     private final static String BUILDER_NAME1 = "images";
     private final static String BUILDER_NAME2 = "news";
@@ -68,7 +69,7 @@ public class BasicStepFieldTest extends TestCase {
         Step step2 = new BasicStep(builder2);
         // FieldDefs object does not belong to step, should throw IllegalArgumentException.
         try {
-            BasicStepField stepField = new BasicStepField(step2, fieldDefs);
+            new BasicStepField(step2, fieldDefs);
             fail("FieldDefs object does not belong to step, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
@@ -136,26 +137,25 @@ public class BasicStepFieldTest extends TestCase {
         FieldDefs imagesDescription = images.getField("description");
         FieldDefs imagesHandle = images.getField("handle");
         FieldDefs imagesItype = images.getField("itype");
-        FieldDefs emptyFieldDef = new FieldDefs();
         
         Step step = new BasicStep(images);
         instance = new BasicStepField(step, imagesNumber);
-        assertTrue(instance.getType() == FieldDefs.TYPE_NODE);
+        assertTrue(instance.getType() == FieldType.TYPE_NODE);
         
         instance = new BasicStepField(step, imagesOwner);
-        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldType.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesTitle);
-        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldType.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesDescription);
-        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldType.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesHandle);
-        assertTrue(instance.getType() == FieldDefs.TYPE_BYTE);
+        assertTrue(instance.getType() == FieldType.TYPE_BYTE);
         
         instance = new BasicStepField(step, imagesItype);
-        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldType.TYPE_STRING);
     }
     
     /** Test of testValue method, of class org.mmbase.storage.search.implementation.BasicStepField. */
@@ -164,7 +164,6 @@ public class BasicStepFieldTest extends TestCase {
         FieldDefs imagesNumber = images.getField("number");
         FieldDefs imagesHandle = images.getField("handle");
         FieldDefs imagesOwner = images.getField("owner");
-        FieldDefs emptyFieldDef = new FieldDefs();
         
         Step step = new BasicStep(images);
         // NODE type field.

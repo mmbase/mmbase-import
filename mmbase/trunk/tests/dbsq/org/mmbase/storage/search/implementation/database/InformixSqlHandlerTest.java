@@ -1,27 +1,22 @@
 package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
-import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.implementation.database.InformixSqlHandler;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class InformixSqlHandlerTest extends TestCase {
 
     /** Test instance. */
     private InformixSqlHandler instance;
-
-    /** Disallowed values map. */
-    private Map disallowedValues = null;
 
     /** Prefix applied to buildernames to create tablenames. */
     private String prefix = null;
@@ -123,8 +118,7 @@ public class InformixSqlHandlerTest extends TestCase {
         query = new BasicSearchQuery(true);
         BasicStep step1 = query.addStep(images).setAlias(null);
         FieldDefs imagesTitle = images.getField("title");
-        BasicAggregatedField field1
-            = (BasicAggregatedField) query.addAggregatedField(
+        query.addAggregatedField(
                 step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
                     .setAlias(null);
         query.setDistinct(true);

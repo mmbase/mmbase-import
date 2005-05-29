@@ -1,24 +1,31 @@
 package org.mmbase.module.core;
 
-import junit.framework.*;
 import java.util.*;
-import java.sql.*;
-import org.mmbase.module.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.database.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.FieldValueConstraint;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.SearchQuery;
+import org.mmbase.storage.search.SortOrder;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
+import org.mmbase.storage.search.implementation.BasicSearchQuery;
+import org.mmbase.storage.search.implementation.BasicStep;
+import org.mmbase.storage.search.implementation.BasicStepField;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ClusterBuilderTest extends TestCase {
     
@@ -31,14 +38,8 @@ public class ClusterBuilderTest extends TestCase {
     /** Test instance. */
     private ClusterBuilder instance;
     
-    /** Disallowed values map. */
-    private Map disallowedValues = null;
-    
     /** MMBase query. */
     private MMBase mmbase = null;
-    
-    /** Insrel builder. */
-    private InsRel insrel = null;
     
     /** News builder, used as builder example. */
     private MMObjectBuilder news = null;
@@ -65,7 +66,7 @@ public class ClusterBuilderTest extends TestCase {
     public void setUp() throws Exception {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
-        insrel = mmbase.getInsRel();
+        mmbase.getInsRel();
         news = mmbase.getBuilder("news");
         people = mmbase.getBuilder("people");
         assertTrue(
@@ -139,7 +140,7 @@ public class ClusterBuilderTest extends TestCase {
         FieldDefs newsTitle = news.getField("title");
         BasicStepField newsNameField = query.addField(newsStep, newsTitle)
             .setAlias("a_title"); // should not affect result node fieldnames!
-        BasicSortOrder sortOrder = query.addSortOrder(newsNameField)
+        query.addSortOrder(newsNameField)
             .setDirection(SortOrder.ORDER_ASCENDING);
         FieldDefs newsBody = news.getField("body");
         query.addField(newsStep, newsBody);
@@ -529,7 +530,7 @@ public class ClusterBuilderTest extends TestCase {
             mmbase.getTypeRel().reldefCorrect(mmbase.getTypeDef().getIntValue("news"), 
                                               mmbase.getTypeDef().getIntValue("people"), related));
         // --- requires relations to define a 'dir' field --
-        assertTrue("Relations must define a 'dir' field to run this test.", insrel.usesdir);
+        assertTrue("Relations must define a 'dir' field to run this test.", InsRel.usesdir);
 
         BasicSearchQuery query = new BasicSearchQuery();
         Map roles = new HashMap();
@@ -592,7 +593,7 @@ public class ClusterBuilderTest extends TestCase {
         Map fieldsByName = new HashMap();
         List tables = Arrays.asList(
             new Object[] {"news", "related", "people", "news1"});
-        Map stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addSteps(query, tables, roles, true, fieldsByName);
         Vector fieldNames = new Vector(Arrays.asList(
             new Object[] {"news.number"}));
         Vector directions = new Vector();
@@ -605,7 +606,7 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(sortOrder0.getDirection() == SortOrder.ORDER_ASCENDING);
         
         query = new BasicSearchQuery();
-        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addSteps(query, tables, roles, true, fieldsByName);
         fieldNames = new Vector(Arrays.asList(
             new Object[] {"news.number", "related.number", "people.firstname"}));
         directions = new Vector(Arrays.asList(
@@ -645,7 +646,7 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(
             instance.getNodesStep(query.getSteps(), nodeNumber) == objectStep);
 
-        BasicStep insrelStep = query.addStep(mmbase.getInsRel());
+        query.addStep(mmbase.getInsRel());
         BasicStep newsStep = query.addStep(mmbase.getBuilder("news"));
         
         // Find step for builder.

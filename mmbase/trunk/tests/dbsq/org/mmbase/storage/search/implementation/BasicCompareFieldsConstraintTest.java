@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicCompareFieldsConstraintTest extends TestCase {
     
@@ -43,9 +43,6 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     
     /** Second string type Field instance. */
     private BasicStepField stringField2 = null;
-    
-    /** Second integer type Field instance. */
-    private StepField integerField2 = null;
     
     /** Second builder example. */
     private MMObjectBuilder builder2 = null;

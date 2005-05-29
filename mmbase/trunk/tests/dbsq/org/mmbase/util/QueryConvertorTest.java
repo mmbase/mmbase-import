@@ -4,16 +4,14 @@ import junit.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.legacy.ConstraintParser;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class QueryConvertorTest extends TestCase {
 
@@ -81,7 +79,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint0.getField().toString(),
             constraint0.getField().getAlias() == null);
         assertTrue(constraint0.toString(),
-            constraint0.getOperator() == FieldValueConstraint.LIKE);
+            constraint0.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(constraint0.toString(),
             !constraint0.isCaseSensitive());
         assertTrue(constraint0.toString(),
@@ -97,7 +95,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint1.getField().toString(),
             constraint1.getField().getAlias() == null);
         assertTrue(constraint1.toString(),
-            constraint1.getOperator() == FieldValueConstraint.EQUAL);
+            constraint1.getOperator() == FieldCompareConstraint.EQUAL);
         assertTrue(constraint1.toString(),
             constraint1.getValue().equals(new Double(10)));
         FieldValueConstraint constraint2
@@ -111,7 +109,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint2.getField().toString(),
             constraint2.getField().getAlias() == null);
         assertTrue(constraint2.toString(),
-            constraint2.getOperator() == FieldValueConstraint.EQUAL);
+            constraint2.getOperator() == FieldCompareConstraint.EQUAL);
         assertTrue(constraint2.toString(),
             constraint2.getValue().equals(new Double(10)));
         FieldValueConstraint constraint3
@@ -124,7 +122,7 @@ public class QueryConvertorTest extends TestCase {
             constraint3.getField().getFieldName().equals("title"));
         assertTrue(constraint3.getField().toString(),
             constraint3.getField().getAlias() == null);
-        assertTrue(constraint0.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(constraint0.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(constraint3.toString(),
             !constraint3.isCaseSensitive());
         assertTrue(constraint3.toString(),
@@ -149,7 +147,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint0.getField().toString(),
             constraint0.getField().getAlias() == null);
         assertTrue(constraint0.toString(),
-            constraint0.getOperator() == FieldValueConstraint.LIKE);
+            constraint0.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(constraint0.toString(),
             !constraint0.isCaseSensitive());
         assertTrue(constraint0.toString(),
@@ -164,7 +162,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint1.getField().toString(),
             constraint1.getField().getAlias() == null);
         assertTrue(constraint1.toString(),
-            constraint1.getOperator() == FieldValueConstraint.EQUAL);
+            constraint1.getOperator() == FieldCompareConstraint.EQUAL);
         assertTrue(constraint1.toString(),
             constraint1.getValue().equals(new Double(10)));
         constraint2 = (FieldValueConstraint) constraints.get(2);
@@ -177,7 +175,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint2.getField().toString(),
             constraint2.getField().getAlias() == null);
         assertTrue(constraint2.toString(),
-            constraint2.getOperator() == FieldValueConstraint.EQUAL);
+            constraint2.getOperator() == FieldCompareConstraint.EQUAL);
         assertTrue(constraint2.toString(),
             constraint2.getValue().equals(new Double(10)));
         constraint3 = (FieldValueConstraint) constraints.get(3);
@@ -189,7 +187,7 @@ public class QueryConvertorTest extends TestCase {
             constraint3.getField().getFieldName().equals("title"));
         assertTrue(constraint3.getField().toString(),
             constraint3.getField().getAlias() == null);
-        assertTrue(constraint0.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(constraint0.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(constraint3.toString(),
             !constraint3.isCaseSensitive());
         assertTrue(constraint3.toString(),
@@ -214,7 +212,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint0.getField().toString(),
             constraint0.getField().getAlias() == null);
         assertTrue(constraint0.toString(),
-            constraint0.getOperator() == FieldValueConstraint.LIKE);
+            constraint0.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(constraint0.toString(),
             !constraint0.isCaseSensitive());
         assertTrue(constraint0.toString(),
@@ -229,7 +227,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint1.getField().toString(),
             constraint1.getField().getAlias() == null);
         assertTrue(constraint1.toString(),
-            constraint1.getOperator() == FieldValueConstraint.EQUAL);
+            constraint1.getOperator() == FieldCompareConstraint.EQUAL);
         assertTrue(constraint1.toString(),
             constraint1.getValue().equals(new Double(10)));
         constraint2 = (FieldValueConstraint) constraints.get(2);
@@ -242,7 +240,7 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraint2.getField().toString(),
             constraint2.getField().getAlias() == null);
         assertTrue(constraint2.toString(),
-            constraint2.getOperator() == FieldValueConstraint.EQUAL);
+            constraint2.getOperator() == FieldCompareConstraint.EQUAL);
         assertTrue(constraint2.toString(),
             constraint2.getValue().equals(new Double(10)));
         constraint3 = (FieldValueConstraint) constraints.get(3);
@@ -254,7 +252,7 @@ public class QueryConvertorTest extends TestCase {
             constraint3.getField().getFieldName().equals("title"));
         assertTrue(constraint3.getField().toString(),
             constraint3.getField().getAlias() == null);
-        assertTrue(constraint0.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(constraint0.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(constraint3.toString(),
             !constraint3.isCaseSensitive());
         assertTrue(constraint3.toString(),
@@ -279,7 +277,7 @@ public class QueryConvertorTest extends TestCase {
         BasicFieldValueConstraint constraint1
             = (BasicFieldValueConstraint)
             new BasicFieldValueConstraint(query1.getField(imagesTitle), "t_st%")
-                .setOperator(FieldValueConstraint.LIKE)
+                .setOperator(FieldCompareConstraint.LIKE)
                 .setCaseSensitive(false);
         query1.setConstraint(constraint1);
         QueryConvertor.setConstraint(query2, "title=E't?st*'");
@@ -295,7 +293,7 @@ public class QueryConvertorTest extends TestCase {
             = (BasicFieldValueConstraint)
             new BasicFieldValueConstraint(
                     query1.getField(imagesNumber), new Double("1.11"))
-                .setOperator(FieldValueConstraint.LESS_EQUAL);
+                .setOperator(FieldCompareConstraint.LESS_EQUAL);
         composite1.addChild(constraint2);
         query1.getField(imagesNumber);
         QueryConvertor.setConstraint(query2,
@@ -314,7 +312,7 @@ public class QueryConvertorTest extends TestCase {
         BasicFieldValueConstraint constraint3
             = (BasicFieldValueConstraint)
             new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("100"))
-                .setOperator(FieldValueConstraint.NOT_EQUAL);
+                .setOperator(FieldCompareConstraint.NOT_EQUAL);
         composite1.addChild(constraint3);
         QueryConvertor.setConstraint(query2,
             "title=E't?st*'-images.number=s1.11+number=N100");
@@ -329,7 +327,7 @@ public class QueryConvertorTest extends TestCase {
         BasicFieldValueConstraint constraint4
             = (BasicFieldValueConstraint)
             new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("200"))
-                .setOperator(FieldValueConstraint.EQUAL);
+                .setOperator(FieldCompareConstraint.EQUAL);
         composite2.addChild(constraint4);
         QueryConvertor.setConstraint(query2,
             "title=E't?st*'-images.number=s1.11+number=N100|number=E200");
@@ -344,7 +342,7 @@ public class QueryConvertorTest extends TestCase {
         BasicFieldValueConstraint constraint5
             = (BasicFieldValueConstraint)
             new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("0"))
-                .setOperator(FieldValueConstraint.GREATER)
+                .setOperator(FieldCompareConstraint.GREATER)
                 .setInverse(true);
         composite3.addChild(constraint5);
         QueryConvertor.setConstraint(query2,
