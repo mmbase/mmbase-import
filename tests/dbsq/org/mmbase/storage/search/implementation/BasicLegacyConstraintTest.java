@@ -1,14 +1,12 @@
 package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicLegacyConstraintTest extends TestCase {
     

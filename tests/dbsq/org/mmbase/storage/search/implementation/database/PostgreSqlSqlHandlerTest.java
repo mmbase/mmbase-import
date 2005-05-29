@@ -1,28 +1,22 @@
 package org.mmbase.storage.search.implementation.database;
 
-import junit.textui.TestRunner;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler;
 import junit.framework.*;
 import org.mmbase.module.corebuilders.FieldDefs;
-import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PostgreSqlSqlHandlerTest extends TestCase {
 
     /** Test instance. */
     private PostgreSqlSqlHandler instance;
-
-    /** Disallowed values map. */
-    private Map disallowedValues = null;
 
     /** Prefix applied to buildernames to create tablenames. */
     private String prefix = null;

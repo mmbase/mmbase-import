@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ModifiableQueryTest extends TestCase {
     
@@ -35,7 +35,6 @@ public class ModifiableQueryTest extends TestCase {
     private MMObjectBuilder news = null;
     private FieldDefs imagesTitle = null;
     private FieldDefs imagesDescription = null;
-    private FieldDefs newsTitle = null;
     private Step step1 = null;
     private StepField field1 = null;
     
@@ -57,7 +56,7 @@ public class ModifiableQueryTest extends TestCase {
         imagesTitle = images.getField(TITLE);
         imagesDescription = images.getField(DESCRIPTION);
         news = mmbase.getBuilder(NEWS);
-        newsTitle = news.getField(TITLE);
+        news.getField(TITLE);
         
         // Construct query.
         query = new BasicSearchQuery();

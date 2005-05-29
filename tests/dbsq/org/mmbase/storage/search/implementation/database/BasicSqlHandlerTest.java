@@ -1,18 +1,19 @@
 package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
+
+import org.mmbase.core.FieldType;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.logging.*;
 import java.util.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class BasicSqlHandlerTest extends TestCase {
 
@@ -420,7 +421,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_i.m_title ASC"));
 
         // Add second sortorder
-        BasicSortOrder sortOrder3a = query.addSortOrder(field3a);
+        query.addSortOrder(field3a);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equalsIgnoreCase(
         "SELECT m_i.m_title AS m_imageTitle,"
@@ -435,7 +436,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_i.m_title ASC,news.m_title ASC"));
 
         // Add third sortorder.
-        BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
+        query.addSortOrder(field2a);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equalsIgnoreCase(
         "SELECT m_i.m_title AS m_imageTitle,"
@@ -467,8 +468,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Aggregated query.
         query = new BasicSearchQuery(true);
         step1 = query.addStep(images).setAlias(null);
-        BasicAggregatedField field4a
-            = (BasicAggregatedField) query.addAggregatedField(
+        query.addAggregatedField(
                 step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
                     .setAlias(null);
         strSql = instance.toSql(query, instance);
@@ -753,7 +753,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_i.m_title ASC"));
 
         // Add second sortorder
-        BasicSortOrder sortOrder3a = query.addSortOrder(field3a);
+        query.addSortOrder(field3a);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
@@ -770,7 +770,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_i.m_title ASC,news.m_title ASC"));
 
         // Add third sortorder.
-        BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
+        query.addSortOrder(field2a);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
@@ -888,13 +888,13 @@ public class BasicSqlHandlerTest extends TestCase {
 
         BasicSearchQuery query = new BasicSearchQuery();
         StringBuffer sb = new StringBuffer();
-        BasicStep step1 = (BasicStep) query.addStep(images);
+        BasicStep step1 = query.addStep(images);
         step1.setAlias(null);
         FieldDefs imagesTitle = images.getField("title");
         StepField field1 = query.addField(step1, imagesTitle);
         FieldDefs imagesNumber = images.getField("number");
         StepField field2 = query.addField(step1, imagesNumber);
-        BasicStep step2 = (BasicStep) query.addStep(news);
+        BasicStep step2 = query.addStep(news);
         step2.setAlias(null);
         FieldDefs newsNumber = news.getField("number");
         StepField field3 = query.addField(step2, newsNumber);
@@ -1467,64 +1467,64 @@ public class BasicSqlHandlerTest extends TestCase {
 
         try {
             // Empty composite constraint, should throw IllegalStateException.
-            instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+            instance.appendCompositeConstraintToSql(sb, compositeConstraint,
             query, false, false, instance);
             fail("Empty composite constraint, should throw IllegalStateException.");
         } catch (IllegalStateException e) {}
 
         sb.setLength(0);
         compositeConstraint.addChild(constraint2); // Add first child constraint.
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "NOT (m_images.m_number>news.m_number)"));
 
         sb.setLength(0);
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, true, false, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "m_images.m_number>news.m_number"));
 
         sb.setLength(0);
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, true, true, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "m_images.m_number>news.m_number"));
 
         sb.setLength(0);
         compositeConstraint.addChild(constraint1); // Add second child constraint.
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "NOT (m_images.m_number>news.m_number) AND NOT (m_images.m_number>9876)"));
 
         sb.setLength(0);
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, true, false, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "m_images.m_number>news.m_number OR m_images.m_number>9876"));
 
         sb.setLength(0);
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, true, true, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "(m_images.m_number>news.m_number OR m_images.m_number>9876)"));
 
         sb.setLength(0);
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, false, true, instance);
          assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "(NOT (m_images.m_number>news.m_number) AND NOT (m_images.m_number>9876))"));
 
         sb.setLength(0);
         constraint1.setInverse(false); // Set second child not inverse.
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, false, false, instance);
          assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876"));
 
         sb.setLength(0);
-        instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint,
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
         query, true, false, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(
         "m_images.m_number>news.m_number OR NOT (m_images.m_number>9876)"));
@@ -1552,33 +1552,33 @@ public class BasicSqlHandlerTest extends TestCase {
     /** Test of appendFieldValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendFieldValue() {
         StringBuffer sb = new StringBuffer();
-        instance.appendFieldValue(sb, "asd EFG", false, FieldDefs.TYPE_STRING);
+        instance.appendFieldValue(sb, "asd EFG", false, FieldType.TYPE_STRING);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd EFG'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "asd EFG", true, FieldDefs.TYPE_STRING);
+        instance.appendFieldValue(sb, "asd EFG", true, FieldType.TYPE_STRING);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd efg'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "asd EFG", false, FieldDefs.TYPE_XML);
+        instance.appendFieldValue(sb, "asd EFG", false, FieldType.TYPE_XML);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd EFG'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "asd EFG", true, FieldDefs.TYPE_XML);
+        instance.appendFieldValue(sb, "asd EFG", true, FieldType.TYPE_XML);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd efg'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "123.0", true, FieldDefs.TYPE_DOUBLE);
+        instance.appendFieldValue(sb, "123.0", true, FieldType.TYPE_DOUBLE);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("123.0"));
 
         sb.setLength(0);
         instance.appendFieldValue(sb, new Double(123.45), false,
-            FieldDefs.TYPE_DOUBLE);
+            FieldType.TYPE_DOUBLE);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("123.45"));
 
         sb.setLength(0);
         instance.appendFieldValue(sb, new Double(123.0), false,
-            FieldDefs.TYPE_DOUBLE);
+            FieldType.TYPE_DOUBLE);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("123"));
     }
 
@@ -1610,7 +1610,7 @@ public class BasicSqlHandlerTest extends TestCase {
     public void testAppendField() {
         BasicSearchQuery query = new BasicSearchQuery();
         BasicStep step = query.addStep(images);
-        FieldDefs fieldDefs = images.getField("number");
+        images.getField("number");
 
         StringBuffer sb = new StringBuffer();
         instance.appendField(sb, step, "number", false);

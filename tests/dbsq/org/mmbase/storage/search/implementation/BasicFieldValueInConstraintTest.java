@@ -5,13 +5,12 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
-import org.mmbase.module.corebuilders.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
 

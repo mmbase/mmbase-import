@@ -5,14 +5,13 @@ import junit.textui.TestRunner;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.Step;
 import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.storage.search.*;
 
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldNullConstraintTest extends TestCase {
     

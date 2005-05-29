@@ -6,7 +6,6 @@
 
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.Map;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.SqlHandler;
 
@@ -33,8 +32,7 @@ public class TestSqlHandler implements SqlHandler {
      * Implements this method by appending sb with TEST1. 
      */
     public void appendConstraintToSql(StringBuffer sb, Constraint constraint, 
-    SearchQuery query, boolean inverse, boolean inComposite) 
-    throws SearchQueryException {
+    SearchQuery query, boolean inverse, boolean inComposite) {
         sb.append(TEST1);
     }
     
@@ -42,8 +40,7 @@ public class TestSqlHandler implements SqlHandler {
      * Implements this method by appending sb with TEST2.
      */
     public void appendQueryBodyToSql(
-    StringBuffer sb, SearchQuery query, SqlHandler firstInChain) 
-    throws SearchQueryException {
+    StringBuffer sb, SearchQuery query, SqlHandler firstInChain) {
         sb.append(TEST2);
     }
     
@@ -58,8 +55,7 @@ public class TestSqlHandler implements SqlHandler {
      * Implements this method by returning the supportlevel set 
      * in the constructor.
      */
-    public int getSupportLevel(Constraint constraint, SearchQuery query) 
-    throws SearchQueryException {
+    public int getSupportLevel(Constraint constraint, SearchQuery query) {
         return supportLevel;
     }
     
@@ -67,16 +63,14 @@ public class TestSqlHandler implements SqlHandler {
      * Implements this method by returning the supportlevel set 
      * in the constructor.
      */
-    public int getSupportLevel(int feature, SearchQuery query) 
-    throws SearchQueryException {
+    public int getSupportLevel(int feature, SearchQuery query) {
         return supportLevel;
     }
     
     /**
      * Implements this method by returning TEST4.
      */
-    public String toSql(SearchQuery query, SqlHandler firstInChain)
-    throws SearchQueryException {
+    public String toSql(SearchQuery query, SqlHandler firstInChain) {
         return TEST4;
     }
     

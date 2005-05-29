@@ -9,10 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.tests;
 import junit.framework.TestCase;
-import java.io.File;
 
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.module.Module;
 import org.mmbase.module.tools.MMAdmin;
 
 /**
@@ -36,7 +36,7 @@ public abstract class MMBaseTest extends TestCase {
         org.mmbase.module.core.MMBaseContext.init();
         org.mmbase.module.core.MMBase.getMMBase();
         
-        MMAdmin mmadmin = (MMAdmin) org.mmbase.module.core.MMBase.getModule("mmadmin", true);
+        MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
         while (! mmadmin.getState()) {
             Thread.sleep(1000);
         }
