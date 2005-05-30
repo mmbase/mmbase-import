@@ -89,29 +89,22 @@ See http://www.MMBase.org/license
   </goal>
 
   <goal name="mm:checkout">
-    <j:set var="mmbase_checkout_dir" value="${mmbase.checkout.dir}" />
-    <j:if test="${empty(mmbase_checkout_dir)}">
-	  <j:set var="mmbase_checkout_dir" value="mmbase-head"/>
-      <echo>mmbase_checkout_dir missing. default setting ${mmbase_checkout_dir}</echo>
+    <j:if test="${empty(context.getVariable('mmbase.checkout.dir'))}">
+	  <j:set var="mmbase.checkout.dir" value="mmbase-head"/>
+      <echo>mmbase.checkout.dir missing. default setting ${mmbase.checkout.dir}</echo>
     </j:if>
 
     <j:set var="cvsuser" value="guest"/>
     <j:set var="cvspasswd" value="guest"/>
     <j:set var="cvsmethod" value="pserver"/>
-    <j:set var="cvsroot" value=":${cvsmethod}:${cvsuser}@cvs.mmbase.org:/var/cvs "/>
+    <j:set var="cvsroot" value=":${cvsmethod}:${cvsuser}:${cvspasswd}@cvs.mmbase.org:/var/cvs" />
 
-    <j:if test="$mmbase.checkout.login == 'true'}">
-	    <ant:cvs command="-d${cvsroot} login"/>
-	    <ant:echo>${cvsroot}</ant:echo>
-	    <ant:cvspass cvsroot="${cvsroot}" password="${cvspasswd}" />
+    <echo>checking out mmbase version '${mmbase.checkout.tag}' in ${mmbase.checkout.dir}/ ...</echo>
+    <j:if test="${context.getVariable('mmbase.checkout.tag') == 'HEAD'}">
+        <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase.checkout.dir}" compression="true" />
     </j:if>
-
-    <echo>checking out mmbase version '${mmbase.checkout.tag}' in ${mmbase_checkout_dir}/ ...</echo>
-    <j:if test="${mmbase.checkout.tag == HEAD}">
-        <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}" compression="true" />
-    </j:if>
-    <j:if test="${mmbase.checkout.tag != HEAD}">
-        <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase_checkout_dir}" tag="${mmbase.checkout.tag}" compression="true" />
+    <j:if test="${context.getVariable('mmbase.checkout.tag') != 'HEAD'}">
+        <ant:cvs cvsRoot="${cvsroot}" package="all" dest="${mmbase.checkout.dir}" tag="${mmbase.checkout.tag}" compression="true" />
     </j:if>
 
     <ant:delete dir="mmbase-core/CVS"/>
@@ -119,44 +112,44 @@ See http://www.MMBase.org/license
 
   <goal name="mm:mavenize">
     <!-- marcel: jexl bug: property-vars can be queried but empty() flags them as being empty -->
-    <j:set var="mmbase_checkout_dir" value="${mmbase.checkout.dir}/mmbase" />
+    <j:set var="mmbase.checkout.dir" value="${mmbase.checkout.dir}/mmbase" />
 
-    <j:if test="${empty(mmbase_checkout_dir)}">
-	  <j:set var="mmbase_checkout_dir" value="mmbase-head/mmbase"/>
-      <echo>mmbase_checkout_dir missing. default setting ${mmbase_checkout_dir}</echo>
+    <j:if test="${empty(context.getVariable('mmbase.checkout.dir'))}">
+	  <j:set var="mmbase.checkout.dir" value="mmbase-head/mmbase"/>
+      <echo>mmbase.checkout.dir missing. default setting ${mmbase.checkout.dir}</echo>
     </j:if>
     
-    <j:set var="taglibroot" value="${mmbase_checkout_dir}/applications/taglib"/>
-    <j:set var="documentationroot" value="${mmbase_checkout_dir}/documentation"/>
+    <j:set var="taglibroot" value="${mmbase.checkout.dir}/applications/taglib"/>
+    <j:set var="documentationroot" value="${mmbase.checkout.dir}/documentation"/>
 
     <ant:copy todir="mmbase-core/src/java">
-      <ant:fileset dir="${mmbase_checkout_dir}/src" defaultexcludes="no">
+      <ant:fileset dir="${mmbase.checkout.dir}/src" defaultexcludes="no">
 		<!-- ant:exclude name="org/mmbase/util/images/JAIImageConverter.java"/ -->
         <ant:exclude name="org/mmbase/module/JMSendMail.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMOracle.java"/>
         <ant:exclude name="org/mmbase/module/database/support/MMInformix42Node.java"/>
       </ant:fileset>
     </ant:copy>
-    <j:if test="${mmbase.checkout.tag == HEAD}">
+    <j:if test="${context.getVariable('mmbase.checkout.tag') == 'HEAD'}">
       <ant:copy todir="mmbase-core/src/tests">
-        <ant:fileset dir="${mmbase_checkout_dir}/tests/bridge"/>
-        <ant:fileset dir="${mmbase_checkout_dir}/tests/common"/>
-        <ant:fileset dir="${mmbase_checkout_dir}/tests/convertimage"/>
-        <ant:fileset dir="${mmbase_checkout_dir}/tests/dbsq"/>
-        <ant:fileset dir="${mmbase_checkout_dir}/tests/typerel"/>
+        <ant:fileset dir="${mmbase.checkout.dir}/tests/bridge"/>
+        <ant:fileset dir="${mmbase.checkout.dir}/tests/common"/>
+        <ant:fileset dir="${mmbase.checkout.dir}/tests/convertimage"/>
+        <ant:fileset dir="${mmbase.checkout.dir}/tests/dbsq"/>
+        <ant:fileset dir="${mmbase.checkout.dir}/tests/typerel"/>
       </ant:copy>
     </j:if>
     <ant:copy todir="mmbase-core/src/tests/config">
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/config"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-webapp/src/webapp">
-      <ant:fileset dir="${mmbase_checkout_dir}/html"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/html"/>
     </ant:copy>
     <ant:copy todir="mmbase-core/src/tests/config">
-      <ant:fileset dir="${mmbase_checkout_dir}/tests/config"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/tests/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-core-config/config">
-      <ant:fileset dir="${mmbase_checkout_dir}/config"/>
+      <ant:fileset dir="${mmbase.checkout.dir}/config"/>
     </ant:copy>
     <ant:copy todir="mmbase-taglib/src/java">
       <ant:fileset dir="${taglibroot}/src"/>
