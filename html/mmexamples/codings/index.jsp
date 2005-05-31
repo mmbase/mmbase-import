@@ -34,6 +34,9 @@
         then. Orion > 2.0.2 will also work with UTF-8 (provided that included page is also UTF-8).
       </p>
     </li>
+    <li>     
+      <a href="<mm:url page="poster.jsp" />">Simple tests of forms (without using database)</a>. Pushing the buttons should not result in a visual change.
+    </li>
   </ul>
   <hr />
 </mm:content>
