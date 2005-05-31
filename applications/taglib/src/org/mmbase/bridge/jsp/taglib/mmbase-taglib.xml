@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.305 2005-05-28 09:10:15 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.306 2005-05-31 15:35:11 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6199,7 +6199,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-
+        Whether to sort ascending ('UP') or descending ('DOWN'), defaults to UP.
       </info>
       <possiblevalue>
         <value>UP</value>
@@ -6213,7 +6213,10 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	Default to true. 
+        Whether to sort case-sensitively or not. This is only relevant for String type fields. On
+        the database level a case insensitive sort will typically result in a sort of the uppercases
+        field (unless e.g. the database sorts case insensitively on default). This defaults to
+        false, because probably you want that.
       </info>
       <possiblevalue>
         <value>true</value>
