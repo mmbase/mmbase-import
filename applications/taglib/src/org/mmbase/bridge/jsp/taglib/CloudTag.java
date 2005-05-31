@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.121 2005-05-25 09:37:31 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.122 2005-05-31 15:36:40 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -903,7 +903,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             Enumeration enumeration = request.getParameterNames();
             while (enumeration.hasMoreElements()) {
                 String key = (String) enumeration.nextElement();
-                String value = request.getParameter(key);
+                String value = (String) org.mmbase.bridge.jsp.taglib.util.ContextContainer.fixEncoding(request.getParameter(key), pageContext);
                 if (log.isDebugEnabled()) {
                     log.debug("security info --> key:" + key + " value:" + value);
                 }

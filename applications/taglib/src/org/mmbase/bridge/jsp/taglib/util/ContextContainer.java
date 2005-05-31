@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.36 2005-05-25 09:35:36 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.37 2005-05-31 15:36:40 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -472,7 +472,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * encoding property.
      * @since MMBase-1.8
      */
-    protected Object fixEncoding(Object value, String encoding) throws TaglibException {
+    protected static Object fixEncoding(Object value, String encoding) throws TaglibException {
         if(value instanceof String) {
             try {                
                 value = new String(((String)value).getBytes("ISO-8859-1"), encoding);
@@ -491,7 +491,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * @since MMBase-1.8
      */
-    protected Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
+    public static Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         String enc = req.getCharacterEncoding();
         if (enc == null) {
@@ -547,8 +547,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 if (log.isDebugEnabled()) {
                     log.debug("searching " + referId + " in multipart post");
                 }
-                //result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
-                result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
+                result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
+                //result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
