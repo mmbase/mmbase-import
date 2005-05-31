@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.14 2005-05-31 08:46:30 marcel Exp $
+README for maven-mmbase $Id: README.txt,v 1.15 2005-05-31 11:02:21 marcel Exp $
 
 (See the MAVEN.txt when you have maven related issues)
 
@@ -16,6 +16,14 @@ path variable to this directory:
 @> MAVEN_HOME=$HOME/tmp/maven-1.0-rc1
 @> export MAVEN_HOME
 @> PATH=$PATH:$MAVEN_HOME/bin
+
+Maven documentation
+-------------------
+
+A nice small overview of what maven is, how to configure it and how to
+use it, can be downloaded from the following location:
+
+ http://www.sandcastsoftware.com/downloads/maven/ProJavaToolsChap26_Maven.pdf
 
 import external libraries
 -------------------------
