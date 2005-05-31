@@ -8,14 +8,21 @@
 #
 ##############################################################################
 
-# $Id: Makefile,v 1.1 2005-04-19 21:07:29 michiel Exp $
+# $Id: Makefile,v 1.2 2005-05-31 20:24:18 michiel Exp $
 
 XSLTPROC = /usr/bin/env xsltproc
-XSL_DEBUG = --param debug true\(\)
+
+XSL_DEBUG = --param debug tr$(ue\(\)
 XSLTPROC_PARAMS = --nonet --novalid --xinclude
 XSL_FILE = make.xsl
 
-all: clean kupu.html kupuform.html kupumulti.html zope2macros plonemacros silvamacros lenyamacros mmbase kupucnf.html
+
+JAVA_DIR=java
+JAVA_RESOURCE=org.oscom.kupu.Messages
+MSGFMT = /usr/bin/env msgfmt --verbose
+MSGEN  = /usr/bin/env msgen
+
+all: clean kupu.html kupuform.html kupumulti.html zope2macros plonemacros silvamacros lenyamacros mmbase/index.jspx kupucnf.html
 
 kupu.html:
 	$(XSLTPROC) $(XSLTPROC_PARAMS) -o common/kupu.html $(XSL_FILE) dist.kupu
@@ -41,8 +48,21 @@ silvamacros:
 lenyamacros:
 	$(XSLTPROC) $(XSLTPROC_PARAMS) -o apache-lenya/kupu/kupumacros.html $(XSL_FILE) dist-apache-lenya.kupu
 
-mm:
-	$(XSLTPROC) $(XSLTPROC_PARAMS) -o mmbase/index.jspx      $(XSL_FILE) dist-mmbase.kupu
+mmbase/index.jspx: kupu-i18n.jar dist-mmbase.kupu mmbase/*.kupu
+	$(XSLTPROC) $(XSLTPROC_PARAMS) -o $@  make-jspx.xsl dist-mmbase.kupu
+
+
+i18n/kupu-en.po: i18n/kupu.pot
+	$(MSGEN) $< -o $@ 
+
+kupu-i18n.jar: i18n/*.po i18n/kupu-en.po
+	mkdir -p $(JAVA_DIR)
+	 $(MSGFMT) --java2  -d $(JAVA_DIR)  -r $(JAVA_RESOURCE) i18n/kupu-en.po
+	for PO in `ls i18n/*.po` ; do \
+	 LOCALE=`echo $${PO} | sed "s|i18n/kupu-||;s|\.po||"`; \
+	 $(MSGFMT) --java2  -D . -d $(JAVA_DIR) -r $(JAVA_RESOURCE) -l $${LOCALE} $${PO}; \
+	done
+	jar cf $@ -C $(JAVA_DIR) .
 
 
 clean:
@@ -55,6 +75,8 @@ clean:
 	rm -f silva/kupumacros.html
 	rm -f mmbase/index.jspx
 	rm -f apache-lenya/kupu/kupumacros.html
+	rm -rf $(JAVA_DIR)
+	rm -f kupu-i18n.jar
 
 
 debug:

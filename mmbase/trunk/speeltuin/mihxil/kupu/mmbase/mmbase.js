@@ -64,7 +64,7 @@ function loadNode(nodeNumber) {
         //nodeBodyXml = Sarissa.serialize(request.responseXML);
         nodeBodyXml = request.responseXML.xml;
     }
-    alert("received" + nodeBodyXml);
+    //alert("received" + nodeBodyXml);
     
 
     kupu.setHTMLBody(nodeBodyXml);
