@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.13 2005-05-27 20:36:15 keesj Exp $
+README for maven-mmbase $Id: README.txt,v 1.14 2005-05-31 08:46:30 marcel Exp $
 
 (See the MAVEN.txt when you have maven related issues)
 
@@ -115,3 +115,13 @@ After that, tell eclipse where it can find the maven-repository by clicking:
 and make a new variable with name 'MAVEN_REPO' where directory is the maven-repository.
 Under linux, this is ~/.maven/repository, under windows this is in the equivalent of 
 "home" directory.
+
+Working with maven
+------------------
+
+After you have made changes to the code, you may want to compile it. This can be accomplished 
+by typing 'maven all:install' everytime. But with maven, you can speed this up a little bit. 
+
+Type 'maven:console'. This will give a command-line menu of your targets. Type 'all:install'
+to compile and install the code. After this, simply use 'enter' to recompile the code.
+Use 'quit' to exit and go back. 
