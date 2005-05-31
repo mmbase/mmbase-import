@@ -1,18 +1,36 @@
 
-    <html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-      <mm:content type="text/html" expires="0">
-        
+
+  
+  
+  
+
+  
+  
+    
+    
+    <html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:j18n="http://jakarta.apache.org/taglibs/i18n-1.0" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+      <mm:cloud rank="basic user">
+	<mm:import externid="language">client</mm:import>
+        <mm:content type="text/html" language="$language" expires="0">
+	  <j18n:bundle baseName="org.oscom.kupu.Messages" localeRef="javax.servlet.jsp.jstl.fmt.locale.page"/>
+          
+    
     <head>
       
+    
     <title>MMBase Editor</title>
     <mm:import id="kupu_common">../common</mm:import>
   
+    
     <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link>
   
+    
     <link href="${kupu_common}/kupudrawerstyles.css" rel="stylesheet" type="text/css"/>
   
+    
     <link xmlns="" href="mmbase.css" rel="stylesheet" type="text/css"/>
   
+    
     <script type="text/javascript" src="${kupu_common}/sarissa.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupueditor.js"><jsp:text> </jsp:text></script>
@@ -22,25 +40,35 @@
     
     <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
   
+    
     <script type="text/javascript" src="${kupu_common}/kupucontextmenu.js"><jsp:text> </jsp:text></script>
   
+    
     <script type="text/javascript" src="kupuinit.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupustart.js"><jsp:text> </jsp:text></script>
   
+    
     <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"><jsp:text> </jsp:text></script>
   
+    
+    
     <script type="text/javascript" src="${kupu_common}/kupudrawers.js"><jsp:text> </jsp:text></script>
   
+    
     <script xmlns="" type="text/javascript" src="mmbase.js"><jsp:text> </jsp:text></script>
+  
   
     </head>
   
+    
     <body onload="kupu = startKupu();  mmbaseInit();">
       
+    
     <div style="display: none;">
       <xml id="kupuconfig" class="kupuconfig">
         <kupuconfig>
           
+    
     <dst>receive.jspx</dst>
     <use_css>0</use_css>
     <reload_after_save>0</reload_after_save>
@@ -54,6 +82,7 @@
       <class>data</class>
     </table_classes>
   
+    
     <image_xsl_uri>drawers/drawer.xsl</image_xsl_uri>
     <link_xsl_uri>drawers/drawer.xsl</link_xsl_uri>
     <image_libraries_uri>drawers/image.library.jsp</image_libraries_uri>
@@ -61,32 +90,43 @@
     <search_images_uri>drawers/image.library.jsp</search_images_uri>
     <search_links_uri> drawers/link.library.jsp</search_links_uri>
   
+  
         </kupuconfig>
       </xml>
     </div>
   
+    
     <div xmlns="" id="tree">
-      <mm:include page="tree.jspx"/>
+      <mm:include page="tree.jspx?parent=true"/>
     </div>
   
+    
     <div xmlns="" id="node">
       <mm:include page="node.jspx"/>
     </div>
   
+    
     <div xmlns="" id="node">
       <mm:include page="preview.jspx"/>
     </div>
   
+    
     <div xmlns="" id="kupu">
       
-    <div xmlns="http://www.w3.org/1999/xhtml" class="kupu-tb" id="toolbar">
+    <div class="kupu-fulleditor">
       
+    
+    <div class="kupu-tb" id="toolbar">
+      
+    
     <span id="kupu-tb-buttons" class="kupu-tb-buttons">
       
+    
     <span class="kupu-tb-buttongroup kupu-logo" style="float: right" id="kupu-logo">
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-logo" title="Kupu SVN/unreleased" i18n:attributes="title" accesskey="k" onclick="window.open('http://kupu.oscom.org');">&#xA0;</button>
     </span>
   
+    
     <select id="kupu-tb-styles">
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="P" i18n:translate="">
         Normal
@@ -96,38 +136,53 @@
       </option>
     </select>
   
+    
     <span class="kupu-tb-buttongroup">
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-save" id="kupu-save-button" title="save: alt-s" i18n:attributes="title" accesskey="s">&#xA0;</button>
     </span>
   
+    
     <span class="kupu-tb-buttongroup" id="kupu-bg-basicmarkup">
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-bold" id="kupu-bold-button" title="bold: alt-b" i18n:attributes="title" accesskey="b">&#xA0;</button>
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-italic" id="kupu-italic-button" title="italic: alt-i" i18n:attributes="title" accesskey="i">&#xA0;</button>
     </span>
   
+
+    
+    
+    
+    
               <span class="kupu-tb-buttongroup" id="kupu-bg-list">
       
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-insertorderedlist" title="numbered list: alt-#" id="kupu-list-ol-addbutton" i18n:attributes="title" accesskey="#">&#xA0;</button>
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-insertunorderedlist" title="unordered list: alt-*" id="kupu-list-ul-addbutton" i18n:attributes="title" accesskey="*">&#xA0;</button>
               </span>
   
+
+    
+    
     <span class="kupu-tb-buttongroup">
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-image" id="kupu-imagelibdrawer-button" title="image" i18n:attributes="title">&#xA0;</button>
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-inthyperlink" id="kupu-linklibdrawer-button" title="link" i18n:attributes="title">&#xA0;</button>
     </span>
   
+    
     <span class="kupu-tb-buttongroup" id="kupu-bg-remove">
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-removeimage invisible" id="kupu-removeimage-button" title="Remove image" i18n:attributes="title">&#xA0;</button>
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-removelink invisible" id="kupu-removelink-button" title="Remove link" i18n:attributes="title">&#xA0;</button>
     </span>
   
+    
     <span class="kupu-tb-buttongroup" id="kupu-bg-undo">
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-undo" id="kupu-undo-button" title="undo: alt-z" i18n:attributes="title" accesskey="z">&#xA0;</button>
       <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-redo" id="kupu-redo-button" title="redo: alt-y" i18n:attributes="title" accesskey="y">&#xA0;</button>
     </span>
   
+    
+  
     </span>
   
+    
     <select id="kupu-ulstyles" class="kupu-ulstyles">
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="disc" i18n:translate="list-disc">&#x25CF;</option>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="square" i18n:translate="list-square">&#x25A0;</option>
@@ -143,10 +198,13 @@
     </select>
   
     
+    
+    
     <div style="display:block;" class="kupu-librarydrawer-parent">
 
     </div>
   
+    
     <div id="kupu-linkdrawer" class="kupu-drawer kupu-linkdrawer">
       <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">External Link</h1>
       <div id="kupu-linkdrawer-addlink" class="kupu-panels kupu-linkdrawer-addlink">
@@ -176,18 +234,20 @@
       </div>
     </div>
   
+    
     <div id="kupu-tabledrawer" class="kupu-drawer kupu-tabledrawer">
     <h1>Table</h1>
     <div class="kupu-panels">
-      <table width="99%">
+      <table width="300">
         <tr class="kupu-panelsrow">
           <td class="kupu-panel">
-            <table width="100%">
-              <tbody>
+            
+            <div class="kupu-tabledrawer-addtable">
+              <table>
                 <tr>
-                  <td class="kupu-toolbox-label">Table Class</td>
-                  <td width="50%">
-                    <select class="kupu-tabledrawer-classchooser" onchange="drawertool.current_drawer.tool.setTableClass(this.options[this.selectedIndex].value)">
+                  <th class="kupu-toolbox-label">Table Class</th>
+                  <td>
+                    <select class="kupu-tabledrawer-classchooser">
                       <option value="plain">Plain</option>
                       <option value="listing">Listing</option>
                       <option value="grid">Grid</option>
@@ -195,146 +255,148 @@
                     </select>
                   </td>
                 </tr>
-
                 <tr>
-                  <td colspan="2" class="">
-
-                  
-                  <div class="kupu-tabledrawer-addtable">
-                    <table width="100%">
-                      <tr>
-                        <td class="kupu-toolbox-label" width="50%">Rows</td>
-                        <td><input type="text" class="kupu-tabledrawer-newrows"/></td>
-                      </tr>
-                      <tr>
-                        <td class="kupu-toolbox-label">Columns</td>
-                        <td><input type="text" class="kupu-tabledrawer-newcols"/></td>
-                      </tr>
-                      <tr>
-                        <td class="kupu-toolbox-label">Headings</td>
-                        <td class="kupu-toolbox-label">
-                          <input class="kupu-tabledrawer-makeheader" type="checkbox"/>
-                          <label for="kupu-tabledrawer-makeheader">Create</label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="text-align: center">
-                            <button type="button" onclick="drawertool.current_drawer.createTable()">Add Table</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="text-align: center">
-                            <button type="button" onclick="drawertool.current_drawer.tool.fixAllTables()">Fix All Tables</button>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-
-                  
-                  <div class="kupu-tabledrawer-edittable">
-                    <table width="100%">
-                      <tr>
-                        <td width="50%">Current column alignment</td>
-                        <td>
-                          <select id="kupu-tabledrawer-alignchooser" class="kupu-tabledrawer-alignchooser" onchange="drawertool.current_drawer.tool.setColumnAlign(this.options[this.selectedIndex].value)">
-                            <option value="left">Left</option>
-                            <option value="center">Center</option>
-                            <option value="right">Right</option>
-                            </select>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Column</td>
-                        <td>
-                          <button type="button" onclick="drawertool.current_drawer.tool.addTableColumn()">Add</button>
-                          <button type="button" onclick="drawertool.current_drawer.tool.delTableColumn()">Remove</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Row</td>
-                        <td>
-                          <button type="button" onclick="drawertool.current_drawer.tool.addTableRow()">Add</button> 
-                          <button type="button" onclick="drawertool.current_drawer.tool.delTableRow()">Remove</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Fix Table</td>
-                        <td>
-                          <button type="button" onclick="drawertool.current_drawer.tool.fixTable()">Fix</button> 
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-
+                  <th class="kupu-toolbox-label">Rows</th>
+                  <td><input type="text" class="kupu-tabledrawer-newrows" onkeypress="return HandleDrawerEnter(event);"/></td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Columns</th>
+                  <td><input type="text" class="kupu-tabledrawer-newcols" onkeypress="return HandleDrawerEnter(event);"/></td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label"> </th>
+                  <td>
+                    <label><input class="kupu-tabledrawer-makeheader" type="checkbox" onkeypress="return HandleDrawerEnter(event);"/>
+                    Create Headings</label>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+                <tr>
+                  <th class="kupu-toolbox-label"> </th>
+                  <td>
+                      <button type="button" onclick="drawertool.current_drawer.createTable()">Add Table</button>
+                      <button type="button" onclick="drawertool.current_drawer.fixAllTables()">Fix All Tables</button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            
+            <div class="kupu-tabledrawer-edittable">
+              <table>
+                <tr>
+                  <th class="kupu-toolbox-label">Table Class</th>
+                  <td>
+                    <select class="kupu-tabledrawer-classchooser" onchange="drawertool.current_drawer.setTableClass(this.options[this.selectedIndex].value)">
+                      <option value="plain">Plain</option>
+                      <option value="listing">Listing</option>
+                      <option value="grid">Grid</option>
+                      <option value="data">Data</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Current column alignment</th>
+                  <td>
+                    <select id="kupu-tabledrawer-alignchooser" class="kupu-tabledrawer-alignchooser" onchange="drawertool.current_drawer.tool.setColumnAlign(this.options[this.selectedIndex].value)">
+                      <option value="left">Left</option>
+                      <option value="center">Center</option>
+                      <option value="right">Right</option>
+                      </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Column</th>
+                  <td>
+                    <button type="button" onclick="drawertool.current_drawer.addTableColumn()">Add</button>
+                    <button type="button" onclick="drawertool.current_drawer.delTableColumn()">Remove</button>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Row</th>
+                  <td>
+                    <button type="button" onclick="drawertool.current_drawer.addTableRow()">Add</button> 
+                    <button type="button" onclick="drawertool.current_drawer.delTableRow()">Remove</button>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Fix Table</th>
+                  <td>
+                    <button type="button" onclick="drawertool.current_drawer.fixTable()">Fix</button> 
+                  </td>
+                </tr>
+              </table>
+            </div>
           </td>
         </tr>
       </table>
       <div class="kupu-dialogbuttons">
-        <button type="button" onclick="drawertool.closeDrawer()">Close</button>
+        <button type="button" onfocus="window.status='focus';" onmousedown="window.status ='onmousedown';" onclick="drawertool.closeDrawer(this)">Close</button>
       </div>
     </div>
     </div>
 
   
   
+  
+  
     </div>
   
-    <div class="kupu-toolboxes">
+    
+    <div xmlns="" class="kupu-toolboxes">
       
+    
     <div class="kupu-toolbox" id="kupu-toolbox-links">
-      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Links</h1>
+      <h1><j18n:message key="Links"/></h1>
 
       <div id="kupu-toolbox-addlink">
         <div class="kupu-toolbox-label">
           
-          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">
-            Link the highlighted text to this URL:
-          </span>
+          <span><j18n:message key="&#10;            Link the highlighted text to this URL:&#10;          "/></span>
         </div>
 
         <input id="kupu-link-input" class="wide" type="text"/>
         <div class="kupu-toolbox-buttons">
-          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-link-button" class="kupu-toolbox-action" i18n:translate="">Make Link</button>
+          <button><j18n:message key="Make Link"/></button>
         </div>
 
       </div>
     </div>
   
+    
     <div class="kupu-toolbox" id="kupu-toolbox-images">
-            <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Images</h1>
+            <h1><j18n:message key="Images"/></h1>
 
             <div class="kupu-toolbox-label">
-              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Image class:</span>
+              <span><j18n:message key="Image class:"/></span>
             </div>
             <select class="wide" id="kupu-image-float-select">
-              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-inline" i18n:translate="">Inline</option>
-              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-left" i18n:translate="">Left</option>
-              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-right" i18n:translate="">Right</option>
+              <option><j18n:message key="Inline"/></option>
+              <option><j18n:message key="Left"/></option>
+              <option><j18n:message key="Right"/></option>
             </select>
 
             <div class="kupu-toolbox-label">
-              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Insert image at the following URL:</span>
+              <span><j18n:message key="Insert image at the following URL:"/></span>
             </div>
             <input id="kupu-image-input" value="kupuimages/kupu_icon.gif" class="wide" type="text"/>
 
             <div class="kupu-toolbox-buttons">
-              <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-image-addbutton" class="kupu-toolbox-action" i18n:translate="">Insert Image</button>
+              <button><j18n:message key="Insert Image"/></button>
             </div>
     </div>
   
+    
     <div class="kupu-toolbox" id="kupu-toolbox-debug">
-      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Debug Log</h1>
+      <h1><j18n:message key="Debug Log"/></h1>
       <div id="kupu-toolbox-debuglog" class="kupu-toolbox-label">
       </div>
     </div>
   
+  
     </div>
   
-    <div xmlns="http://www.w3.org/1999/xhtml" class="kupu-editorframe">
+    
+    <div class="kupu-editorframe">
       <form>					
         <iframe id="kupu-editor" class="kupu-editor-iframe" frameborder="0" src="start.jsp" scrolling="auto">
           <jsp:text>
@@ -344,10 +406,26 @@
       </form>
     </div>
   
+  
     </div>
+  
+    </div>
+  
   
     </body>
   
-      </mm:content>
+  
+        </mm:content>
+      </mm:cloud>
     </html>
   
+  
+  
+
+  
+  
+
+  
+  
+
+

@@ -1,9 +1,10 @@
-<mm:content type="text/html"
+<mm:content type="text/xml"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <mm:import id="node" externid="kupu_node" from="session" />
+
   <mm:notpresent referid="node">
     <mm:cloud>
       <mm:param name="org.mmbase.xml-mode" value="kupu" />

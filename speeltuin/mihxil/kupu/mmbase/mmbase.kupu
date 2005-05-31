@@ -32,7 +32,7 @@
 
   <kupu:part name="kupu-div">
     <div id="kupu">
-      <kupu:define-slot name="fulleditor" />
+      <kupu:insert-part feature="body" part="fulleditor" />
     </div>
   </kupu:part>
 
