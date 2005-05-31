@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.35 2005-05-25 09:39:52 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.36 2005-05-31 14:45:18 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -259,6 +259,14 @@
       Performs a 'crc32' checksum.
     </info>
   </escaper>
+
+  <escaper id="java">
+    <class>org.mmbase.util.transformers.UnicodeEscaper</class>    
+    <info>
+      Escapes non-ASCII characters to java escape sequences.
+    </info>
+  </escaper>
+
 
   <parameterizedescaper id="regexps">
     <class>org.mmbase.util.transformers.RegexpReplacerFactory</class>    
