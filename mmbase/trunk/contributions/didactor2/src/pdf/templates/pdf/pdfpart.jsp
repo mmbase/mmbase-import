@@ -40,11 +40,6 @@
 
 <mm:present referid="display">
 
-   <%-- the <hr> will be translated into a pagebreak in the PDF --%>
-   <mm:compare referid="node_type" value="page">
-       <hr/>
-   </mm:compare>
-
    <%// Here we are makeing a whole text part %>
    <mm:import jspvar="text" reset="true">
       <%// The title of page %>
@@ -268,10 +263,7 @@
 
 
         <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
-            <br/>
-            <p>
-            <mm:field name="title"/>
-            <br/>
+            <b><mm:field name="title"/></b><br>
             <mm:field name="description"/>
             <br/>
             http://<mm:write referid="providerurl"/>/attachment.db?<mm:field name="number"/>
@@ -279,10 +271,7 @@
         </mm:relatednodes>
 
         <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
-        <br/>
-        <p>
-        <mm:field name="title"/>
-        <br/>
+        <b><mm:field name="title"/></b><br>
         <mm:field name="subtitle"/>
         <br/>
         <mm:field name="playtime"/>
@@ -296,10 +285,7 @@
         </mm:relatednodes>
 
         <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
-        <br/>
-        <p>
-            <mm:field name="title"/>
-            <br/>
+            <b><mm:field name="title"/></b><br>
             <mm:field name="subtitle"/>
             <br/>
             <mm:field name="playtime"/>

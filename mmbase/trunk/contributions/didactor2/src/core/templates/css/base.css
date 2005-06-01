@@ -41,13 +41,13 @@ h3 {
 	font-size: 1em;
 	color: #ED6F2C }
 
-a {	
-	font-weight: normal;
-	color: #000000;
-	text-decoration: none }
+.folders a {
+    text-decoration: none;
+}
 
-a:hover {
-	text-decoration: underline }
+a {	
+	color: #000000;
+}
 
 a.menubar:link {
 	font-family: Tahoma, Arial, Verdana, sans-serif; 
