@@ -54,52 +54,46 @@
  
     <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
     <p>
-      <a href="<mm:attachment/>"><mm:field name="title"/></a>
-      <br/>
-      <mm:field name="description" escape="p"/>
+      <b><mm:field name="title"/></b><br>
+      <i><mm:field name="description" escape="inline"/></i><br>
+      <a href="<mm:attachment/>">Download "<mm:field name="title"/>"</a>
     </p>
     </mm:relatednodes>
 
   <div class="audiotapes">
     <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
-      <mm:field name="title"/>
-      <br/>
-      <mm:field name="subtitle"/>
-      <br/>
-      <mm:field name="playtime"/>
-      <br/>
-      <mm:field name="intro"/>
-      <br/>
-      <mm:field name="body"/>
-      <br/>
-      <a href="<mm:field name="url" />"><mm:field name="title" /></a>
-      <br/>
+      <p>
+        <b><mm:field name="title"/><br>
+        <i><mm:field name="subtitle"/></i></b>
+      </p>
+      <i><mm:field name="intro" escape="p"/></i>
+      <p>
+      <mm:field name="body" escape="inline"/><br>
+      <a href="<mm:field name="url" />">Beluister "<mm:field name="title" />"</a></b>
+      </p>
     </mm:relatednodes>
   </div>
 
   <div class="videotapes">
     <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
-      <mm:field name="title"/>
-      <br/>
-      <mm:field name="subtitle"/>
-      <br/>
-      <mm:field name="playtime"/>
-      <br/>
-      <mm:field name="intro"/>
-      <br/>
-      <mm:field name="body"/>
-      <br/>
-      <a href="<mm:field name="url" />"><mm:field name="title" /></a>
-      <br/>
+      <p>
+        <b><mm:field name="title"/><br>
+        <i><mm:field name="subtitle"/></i></b>
+      </p>
+      <i><mm:field name="intro" escape="p"/></i>
+      <p>
+      <mm:field name="body" escape="inline"/><br>
+     <a href="<mm:field name="url" />">Bekijk "<mm:field name="title" />"</a>
+      </p>
     </mm:relatednodes>
   </div>
 
   <div class="urls">
     <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
-      <a href="<mm:field name="url" />"><mm:field name="name"/></a>
-      <br/>
-      <mm:field name="description"/>
-      <br/>
+      <p><b><mm:field name="name"/></b><br>
+      <i><mm:field name="description" escape="inline"/></i><br/>
+      <a href="<mm:field name="url"/>" target="_blank"><mm:field name="url"/></a>
+      </p>
     </mm:relatednodes>
   </div>
 </mm:node>
