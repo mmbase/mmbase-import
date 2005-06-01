@@ -3,7 +3,7 @@
 <builder name="competencies" maintainer="didactor.nl" version="2" extends="object">
   <status>active</status>
 
-  <classfile>Dummy</classfile>
+  <classfile>nl.didactor.component.competence.builders.CompetencesBuilder</classfile>
   <searchage>31</searchage>
 
   <names>
@@ -58,5 +58,29 @@
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="nl"></description>
+        <description xml:lang="en"></description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Waarde</guiname>
+        <guiname xml:lang="en">Value</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>2</list>
+          <search>2</search>
+        </positions>
+      </editor>
+      <db>
+        <name>value</name>
+        <type state="virtual" size="1024" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+    
   </fieldlist>
 </builder>
