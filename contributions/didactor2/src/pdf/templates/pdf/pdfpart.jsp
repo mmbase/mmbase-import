@@ -51,7 +51,7 @@
       <mm:field name="showtitle">
          <mm:compare value="1">
             <mm:field name="name" jspvar="sTitle" vartype="String" write="false">
-               <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+10)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
+               <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+11)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
                <br/>
             </mm:field>
          </mm:compare>
@@ -82,7 +82,7 @@
                   <td>
                      <mm:field name="showtitle">
                         <mm:compare value="1">
-                           <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+10)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
+                           <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+11)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
                         </mm:compare>
                      </mm:field>
                      <mm:field name="body" escape="none" jspvar="sRawHTML" vartype="String">
