@@ -263,50 +263,47 @@
 
 
         <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
+        <p>
             <b><mm:field name="title"/></b><br>
-            <mm:field name="description"/>
-            <br/>
+            <i><mm:field name="description" escape="inline"/></i>
+            <br>
             http://<mm:write referid="providerurl"/>/attachment.db?<mm:field name="number"/>
-            </p>
+        </p>
+        <br>
         </mm:relatednodes>
 
         <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
-        <b><mm:field name="title"/></b><br>
-        <mm:field name="subtitle"/>
-        <br/>
-        <mm:field name="playtime"/>
-        <br/>
-        <mm:field name="intro"/>
-        <br/>
-        <mm:field name="body"/>
-        <br/>
+        <p><b><mm:field name="title"/></b><br>
+        <i><mm:field name="subtitle"/></i><br>
+        <mm:field name="intro" escape="inline"/>
+        </p>
+        <mm:field name="body" escape="p"/>
+        <p>
         <mm:field name="url" />
         </p>
+        <br>
         </mm:relatednodes>
 
         <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
-            <b><mm:field name="title"/></b><br>
-            <mm:field name="subtitle"/>
-            <br/>
-            <mm:field name="playtime"/>
-            <br/>
-            <mm:field name="intro"/>
-            <br/>
-            <mm:field name="body"/>
-            <br/>
-            <mm:field name="url" />
+         <p><b><mm:field name="title"/></b><br>
+        <i><mm:field name="subtitle"/></i><br>
+        <mm:field name="intro" escape="inline"/>
         </p>
-        </mm:relatednodes>
+        <mm:field name="body" escape="p"/>
+        <p>
+        <mm:field name="url" />
+        </p>
+       </mm:relatednodes>
 
         <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
         <br/>
         <p>
-            <mm:field name="name"/>
-            <br/>
-            <mm:field name="description"/>
+            <b><mm:field name="name"/></b><br>
+            <i><mm:field name="description" escape="inline"/></i>
             <br/>
             <mm:field name="url" />
         </p>
+        <br>
         </mm:relatednodes>
 
 
