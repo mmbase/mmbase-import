@@ -23,6 +23,7 @@
 
 <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
   <mm:field name="postingsperpage" id="pagesize" write="false"/>
+  <mm:field name="replyoneachpage" id="replyoneachpage" write="false"/>
 </mm:nodefunction>
 
 <mm:notpresent referid="pagesize">
@@ -252,8 +253,14 @@
 	</td></tr>
 </table>
 
+<mm:import id="showreply">true</mm:import>
+<mm:compare referid="replyoneachpage" value="false">
+	<mm:compare referid="lastpage" value="false">
+		<mm:import id="showreply" reset="true">false</mm:import>
+	</mm:compare>
+</mm:compare>
 
-<mm:compare referid="lastpage" value="true">
+<mm:compare referid="showreply" value="true">
 <mm:compare referid="threadstate" value="closed" inverse="true">
 
 <mm:compare referid="guestwritemodetype" value="open">
