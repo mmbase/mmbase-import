@@ -1,11 +1,31 @@
+@import url("layout.css");
+
+body { 
+  padding: 0;
+  margin: 0;
+}
+
+a { 
+  color: white;
+}
+a:hover { 
+  background-color: #9f3bff;
+}
+
+#header, #leftColumn { 
+  background-color: #9f3b57;
+  color: #fff;
+  padding: 0;
+}
+
+#leftColumnContent { 
+  padding: 0;
+}
 
 #node {   
-  position: absolute;
-  top: 0px;
-  left: 300px;
-  right: 0px;
-
+  background-color: bf6d83;
   margin: 0px;
+  padding: 0;
   z-index:0;
 } 
 
@@ -18,13 +38,11 @@
 }
 
 
+
 #tree { 
-  position: absolute;  
-  z-index: 0;
-  top: 0px;
-  left: 0px;
-  width: 300px;
+  background-color: green;
   margin: 0px;
+  padding: 0;
  
 }
 #tree ul { 
@@ -38,7 +56,7 @@
 
 }
 #tree a.create {
-	  text-decoration: none;
+  text-decoration: none;
 }
 		
 #preview { 
@@ -47,37 +65,44 @@
 }
 
 #kupu { 
-  position: absolute;
-  left: 300px;
-  right: 0px;
-  top: 200px;
-  background-color: white;
+  background-color: yellow;
   margin: 0px;
   z-index: 1;
 }
 
+textarea#kupu-editor-textarea {
+  background-color: green;
+  margin: 0;
+  padding: 0;
+  height: 100px;
+}
 #kupu div.kupu-editorframe {
-  position: absolute;
-  left: 0px;
-  right: 21em;
-  top: 30px;
-  background-color: white;
+  background-color: yellow;
   margin: 0px;
 }
 #kupu div.kupu-toolboxes {
-  top: 0px;
-  right: 0px;
-  width: 19.4em;
+  background-color: red;
   margin: 0px;
 }
-#kupu div#toolbar { 
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  height: 30px;
+
+#kupu-editor { 
+  background-color: white;
+  margin: 0;
+  padding: 0;
+}
+div#kupu-toolbox-links { 
+  display: none;
+}
+div#kupu-toolbox-images { 
+  display: none;
+}
+div#kupu-toolbox-debug { 
+  display: none;
 }
 
 img.icon { 
   border: 0px;
 }
+
+button.mmbase-logo {background-image: url("mmbase.png");}
+

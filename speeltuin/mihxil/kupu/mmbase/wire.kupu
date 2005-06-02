@@ -14,15 +14,26 @@
     <kupu:insert-part feature="saveonpart"  part="jsincludes" />
     <!-- kupu:insert-part feature="sourceedit"  part="jsincludes" /-->
     <kupu:insert-part feature="drawers"     part="jsincludes" />
-    <kupu:insert-part feature="mmbase"     part="jsincludes" />
+    <kupu:insert-part feature="mmbase"      part="jsincludes" />
   </kupu:fill-slot>
 
   <kupu:fill-slot name="body">
     <kupu:insert-part feature="xmlconfig"  part="xmlconfig" />
-    <kupu:insert-part feature="mmbase"     part="tree-div" />
-    <kupu:insert-part feature="mmbase"     part="node-div" />
-    <kupu:insert-part feature="mmbase"     part="preview-div" />
-    <kupu:insert-part feature="mmbase"     part="kupu-div" />
+    <div id="header">
+      Richtext editor
+    </div>
+    <div id="leftColumn">
+      <div id="leftColumnContent">
+        <kupu:insert-part feature="mmbase"     part="tree-div" />
+        <kupu:insert-part feature="mmbase"     part="node-div" />
+        <kupu:insert-part feature="mmbase"     part="preview-div" />
+      </div>
+    </div>
+    <div id="centerColumn">
+      <div id="centerColumnContent">
+        <kupu:insert-part feature="mmbase"     part="kupu-div" />
+      </div>
+    </div>
   </kupu:fill-slot>
 
   <kupu:fill-slot name="fulleditor">
