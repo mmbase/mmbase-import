@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.15 2005-05-31 11:02:21 marcel Exp $
+README for maven-mmbase $Id: README.txt,v 1.16 2005-06-02 11:57:43 keesj Exp $
 
 (See the MAVEN.txt when you have maven related issues)
 
@@ -130,6 +130,6 @@ Working with maven
 After you have made changes to the code, you may want to compile it. This can be accomplished 
 by typing 'maven all:install' everytime. But with maven, you can speed this up a little bit. 
 
-Type 'maven:console'. This will give a command-line menu of your targets. Type 'all:install'
+Type 'maven console'. This will give a command-line menu of your targets. Type 'all:install'
 to compile and install the code. After this, simply use 'enter' to recompile the code.
 Use 'quit' to exit and go back. 
