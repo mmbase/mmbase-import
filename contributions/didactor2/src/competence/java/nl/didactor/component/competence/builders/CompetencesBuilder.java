@@ -7,6 +7,8 @@ import java.util.Vector;
 
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import net.sf.mmapps.modules.cloudprovider.CloudProvider;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
@@ -27,7 +29,8 @@ public class CompetencesBuilder extends MMObjectBuilder
    {//Commits all competence nodes which are stored in the base
       log.info("[CompetenceBuilder] Commiting all competence nodes");
 
-      Cloud cloud = (Cloud) System.getProperties().get("competence_access_cloud");
+      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
+      Cloud cloud = cloudProvider.getAdminCloud();
       NodeManager nodmanCompetence = cloud.getNodeManager("competencies");
       NodeList nodlistPeople = nodmanCompetence.getList(null, null, null);
       for(Iterator it = nodlistPeople.iterator(); it.hasNext(); )
