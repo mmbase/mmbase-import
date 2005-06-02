@@ -7,10 +7,13 @@
 
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
+<mm:import externid="postareaid">-1</mm:import>
+<mm:import externid="postthreadid">-1</mm:import>
 <mm:import externid="searchkey" />
 <mm:import externid="pathtype">search</mm:import>
 <mm:import externid="posterid" id="profileid" />
 <mm:import externid="searchmode">internal</mm:import>
+<mm:import externid="searchareaid">-1</mm:import>
 
 
 <!-- login part -->
@@ -45,14 +48,26 @@
 <mm:compare referid="searchmode" value="database">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
 	<form action="<mm:url page="search.jsp" referids="forumid" />" method="post">
+	<mm:compare referid="postthreadid" value="-1" inverse="true">
 	<tr>
-		<th>Search key</th>
+		<th><mm:write referid="mlg.Search" /> in thread</th>
+		<td>
+		<input name="searchkey" size="20" value="<mm:write referid="searchkey" />">
+		</td>
+	</tr>
+	</mm:compare>
+	<mm:compare referid="postthreadid" value="-1">
+	<tr>
+		<th><mm:write referid="mlg.Search" /> key <mm:field name="postthreadid" />)</th>
 		<td>
 		<input name="searchkey" size="20" value="<mm:write referid="searchkey" />">
 		</td>
 	</td>
+	</tr>
+	</mm:compare>
 	</form>
 </table>
+
 <mm:present referid="searchkey">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
 	<tr><th><mm:write referid="mlg.Area" /></th><th><mm:write referid="mlg.Topic" /></th><th>Poster</th></tr>
@@ -82,14 +97,27 @@
 
 <mm:compare referid="searchmode" value="internal">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-	<form action="<mm:url page="search.jsp" referids="forumid" />" method="post">
+	<form action="<mm:url page="search.jsp" referids="forumid,postthreadid,postareaid" />" method="post">
+	<mm:compare referid="postthreadid" value="-1" inverse="true">
 	<tr>
-		<th>Search </th>
+		<th colspan="1">Current thread</th>
+		<th colspan="3"><mm:node referid="postthreadid"><mm:field name="subject" /></mm:node></th>
+	</tr>
+	<tr>
+		<th><mm:write referid="mlg.Search" /></th>
 		<th>
 		in <select name="searchareaid">
+		   <mm:compare referid="postareaid" value="-1" inverse="true">
+		   <mm:node referid="postareaid">
+		   <option value="<mm:field name="number" />">Current
+		   </mm:node>
+		   </mm:compare>
+		
 		   <option value="-1">All Areas
                   <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
-			<option value="<mm:field name="id" />"><mm:field name="name" />
+			<mm:field name="id">
+			<option value="<mm:field name="id" />" <mm:compare referid="searchareaid">selected</mm:compare>><mm:field name="name" />
+			</mm:field>
 		  </mm:nodelistfunction>
 		   </select>
 		</th>
@@ -100,15 +128,45 @@
 		<input type="submit" value="search" />
 		</td>
 	</td>
+	</tr>
+	</mm:compare>
+	<mm:compare referid="postthreadid" value="-1">
+	<tr>
+		<th><mm:write referid="mlg.Search" /> </th>
+		<th>
+		in <select name="searchareaid">
+		   <mm:compare referid="postareaid" value="-1" inverse="true">
+		   <mm:node referid="postareaid">
+		   <option value="<mm:field name="number" />">Current
+		   </mm:node>
+		   </mm:compare>
+		   <option value="-1">All Areas
+                  <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+			<mm:field name="id">
+			<option value="<mm:field name="id" />" <mm:compare referid2="searchareaid">selected</mm:compare>><mm:field name="name" />
+			</mm:field>
+		  </mm:nodelistfunction>
+		   </select>
+		</th>
+		<td>
+		<input name="searchkey" size="20" value="<mm:write referid="searchkey" />">
+		</td>
+		<td>
+		<input type="submit" value="search" />
+		</td>
+	</td>
+	</tr>
+	</mm:compare>
 	</form>
 </table>
+
+
 <mm:present referid="searchkey">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
 	<tr><th><mm:write referid="mlg.Area" /></th><th><mm:write referid="mlg.Topic" /></th><th>Poster</th></tr>
-	<mm:import externid="searchareaid">-1</mm:import>
 	<mm:import id="page">1</mm:import>
 	<mm:import id="pagesize">10</mm:import>
-	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,searchkey,page,pagesize">
+	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,postthreadid@searchpostthreadid,searchkey,page,pagesize">
 	    <tr>
  	      <td>
 		<mm:field name="postareaname" />
