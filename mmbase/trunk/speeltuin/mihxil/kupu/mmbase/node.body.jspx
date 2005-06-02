@@ -15,8 +15,17 @@
   </mm:notpresent>
   
   <mm:node id="node" referid="node">
+    <html>
+      <head>
+      </head>
+      <body>
+        <mm:field name="body" escape="none" />
+      </body>
+    </html>
+    <!--
     <mm:formatter xslt="xslt/2kupu.xslt" escape="none">
       <mm:field name="body" />
     </mm:formatter>
+    -->
   </mm:node>
 </mm:content>

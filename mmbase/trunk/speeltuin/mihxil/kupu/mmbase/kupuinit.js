@@ -8,11 +8,13 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.2 2005-04-19 21:58:19 michiel Exp $
+// $Id: kupuinit.js,v 1.3 2005-06-02 17:26:24 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
 //----------------------------------------------------------------------------
+
+var kupu;
 
 function initKupu(iframe) {
     // first we create a logger
@@ -144,7 +146,6 @@ function initKupu(iframe) {
     // remove tags that aren't in the XHTML DTD
     var nonxhtmltagfilter = new NonXHTMLTagFilter();
     kupu.registerFilter(nonxhtmltagfilter);
-
 
     return kupu;
 };

@@ -25,7 +25,7 @@
   </kupu:part>
 
   <kupu:part name="preview-div">
-    <div id="node">
+    <div id="node-preview">
       <mm:include page="preview.jspx" />
     </div>
   </kupu:part>

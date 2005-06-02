@@ -7,10 +7,10 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.2 2005-04-19 21:23:58 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.3 2005-06-02 17:26:24 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
-    <title>MMBase Editor</title>
+    <title>MMBase Richtext Editor</title>
     <mm:import id="kupu_common">../common</mm:import>
   </kupu:part>
 
@@ -23,10 +23,26 @@
     <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
     <!-- script type="text/javascript" src="../../i18n.js/i18n.js"> </script-->
     <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/globals.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xgetelementbyid.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xclientwidth.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xclientheight.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xscrollleft.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xscrolltop.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xaddeventlistener.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xnum.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xdef.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xstr.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xgetcomputedstyle.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xwidth.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xheight.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xgetelementsbytagname.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='cross-browser.com/x/lib/xgetelementsbyclassname.js'><jsp:text> </jsp:text></script>
+    <script type='text/javascript' src='layout.js'><jsp:text> </jsp:text></script>
   </kupu:part>
 
   <kupu:part name="styles">
-    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link>
+    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> <!-- fills image buttons and so on -->
   </kupu:part>
 
 
