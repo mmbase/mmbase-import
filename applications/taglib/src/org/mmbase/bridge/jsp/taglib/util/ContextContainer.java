@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.37 2005-05-31 15:36:40 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.38 2005-06-02 21:32:07 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -696,7 +696,12 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
     }
 
-
+    /**
+     * @since MMBase-1.8
+     */
+    public void setJspVar(String jspvar, int type,  Object value) {
+        getBacking().setJspVar(jspvar, type, value);
+    }
 
     static String getDefaultCharacterEncoding(PageContext pageContext) {
        String charEnc = pageContext.getResponse().getCharacterEncoding();
