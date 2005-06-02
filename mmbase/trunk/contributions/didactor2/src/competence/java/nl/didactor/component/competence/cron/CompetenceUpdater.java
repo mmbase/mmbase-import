@@ -15,7 +15,6 @@ public class CompetenceUpdater implements Runnable
    }
    public void run()
    {
-      System.out.println(new Date());
       competenceBuilder.commitAll();
    }
 }
