@@ -5,8 +5,8 @@
          <field name="name" ftype="data"/>
          <field ftype="startwizard" wizardname="competencies" />
       </item>
-      
-      <command name="search" nodepath="competencetypes,competencies" fields="competencetypes.name,competencies.name" age="-1" orderby="competencetypes.name,competencies.name" directions="up,up">
+
+      <command name="search" nodepath="competencetypes,competencies" fields="competencetypes.name,competencies.name,competencies.value" age="-1" orderby="competencetypes.name,competencies.name" directions="up,up">
          <search-filter>
             <name>Competentie type bevat</name>
             <search-fields>competencetypes.name</search-fields>
@@ -14,6 +14,10 @@
          <search-filter>
             <name>Competentie bevat</name>
             <search-fields>competencies.name</search-fields>
+         </search-filter>
+         <search-filter>
+            <name>Competentie waarde</name>
+            <search-fields>competencies.value</search-fields>
          </search-filter>
       </command>
 
