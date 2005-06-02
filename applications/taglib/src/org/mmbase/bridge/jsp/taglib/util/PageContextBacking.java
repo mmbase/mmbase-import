@@ -15,6 +15,7 @@ import java.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.ContentTag;
+import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
 
 /**
@@ -23,7 +24,7 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.3 2005-05-18 08:08:09 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.4 2005-06-02 21:32:07 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -35,10 +36,26 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     // We also want to store null, pageContext cannot contain those.
     private Set nulls = new HashSet();
 
+    private Set jspvars = new HashSet();
+
     private Map unwrapped = new HashMap();
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
+    }
+
+    public void setJspVar(String jspvar, int vartype, Object value) {
+        if (jspvar == null) return;
+        if (value == null) return;
+        jspvars.add(jspvar);
+        // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
+        if (vartype == WriterHelper.TYPE_STRING) {
+            // string is final, the wrapped version cannot be string..
+            pageContext.setAttribute(jspvar, Casting.unWrap(value));
+        } else {
+            pageContext.setAttribute(jspvar, value);
+        }
+
     }
 
     public Set entrySet() {
@@ -69,7 +86,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
                                         public Object setValue(Object value) {
                                             Object was = pageContext.getAttribute(name, SCOPE);
                                             if (value != null) {
-                                                pageContext.setAttribute(name, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+                                                pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
                                             } else { 
                                                 pageContext.removeAttribute(name, SCOPE);
                                                 nulls.add(name);
@@ -101,7 +118,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
             nulls.add(key);
         } else {
             String k = (String) key;
-            Object v = Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY));
+            Object v = jspvars.contains(key) ? value : Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY));
             pageContext.setAttribute(k, v, SCOPE);
         }
         return unwrapped.put(key, value);
@@ -125,6 +142,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     void release() {
         nulls = null;
         unwrapped = null;
+        jspvars = null;
     }
 
     public String toString() {

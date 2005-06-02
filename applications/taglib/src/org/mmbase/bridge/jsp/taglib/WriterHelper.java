@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.73 2005-05-14 14:05:39 nico Exp $
+ * @version $Id: WriterHelper.java,v 1.74 2005-06-02 21:32:07 michiel Exp $
  */
 
 public class WriterHelper {
@@ -44,7 +44,7 @@ public class WriterHelper {
     static final int TYPE_LIST    = 1;
     static final int TYPE_VECTOR  = 2;
     static final int TYPE_INTEGER = 3;
-    static final int TYPE_STRING  = 4;
+    public static final int TYPE_STRING  = 4;
     static final int TYPE_BYTES   = 6;
     static final int TYPE_DOUBLE  = 7;
     static final int TYPE_LONG    = 8;
@@ -409,21 +409,8 @@ public class WriterHelper {
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
-        if (value != null) {
-            PageContext pageContext = thisTag.getPageContext();
-            Object was = pageContext.getAttribute(jspvar);
-            if (!pushed && was != null && ! was.equals(value)) {
-                // throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was.getClass().getName() + " " + was + "), can't write " + value.getClass().getName() + " " + value + " in it. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-            }
-            // if the underlying implementation uses a Hashtable (Tomcat) then the value may not be null
-            // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
-            if (vartype == TYPE_STRING) {
-                // string is final, the wrapped version cannot be string..
-                pageContext.setAttribute(jspvar, Casting.unWrap(value));
-            } else {
-                pageContext.setAttribute(jspvar, value);
-            }
-        }
+
+        thisTag.getContextProvider().getContextContainer().setJspVar(jspvar, vartype, value);
     }
 
 
