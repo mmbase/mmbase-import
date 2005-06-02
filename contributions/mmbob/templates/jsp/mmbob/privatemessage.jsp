@@ -54,7 +54,7 @@
 	<table cellpadding="0" class="list" cellspacing="0" width="150">
 	<tr><th><mm:write referid="mlg.Folder" /></th></tr>
 	<mm:node referid="posterid">
-	<mm:related path="posrel,forummessagebox">
+	<mm:related path="posmboxrel,forummessagebox">
 		<mm:node element="forummessagebox">
 			<mm:field name="name">
 			<mm:notpresent referid="mailboxid">
@@ -112,7 +112,7 @@
 	  <mm:functioncontainer>
                   <mm:field name="poster"><mm:param name="posterid" value="$_" /></mm:field>
 	  	  <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
-                        <mm:field name="avatar"><mm:compare value="" inverse="true">
+                        <mm:field name="avatar"><mm:compare value="-1" inverse="true">
                 	<mm:node number="$_">
                   		<img src="<mm:image template="s(80x80)" />" align="right" width="80" border="0">
                 	</mm:node>
