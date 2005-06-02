@@ -1,0 +1,12 @@
+<mm:content type="text/html"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <html>
+    <head>
+    </head>
+    <body>
+      <p> No node loaded</p>
+    </body>
+  </html>
+</mm:content>

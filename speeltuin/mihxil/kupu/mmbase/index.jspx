@@ -10,19 +10,19 @@
     
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:j18n="http://jakarta.apache.org/taglibs/i18n-1.0" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
       <mm:cloud rank="basic user">
-	<mm:import externid="language">client</mm:import>
+        <mm:import externid="language">client</mm:import>
         <mm:content type="text/html" language="$language" expires="0">
-	  <j18n:bundle baseName="org.oscom.kupu.Messages" localeRef="javax.servlet.jsp.jstl.fmt.locale.page"/>
+          <j18n:bundle baseName="org.oscom.kupu.Messages" localeRef="javax.servlet.jsp.jstl.fmt.locale.page"/>
           
     
     <head>
       
     
-    <title>MMBase Editor</title>
+    <title>MMBase Richtext Editor</title>
     <mm:import id="kupu_common">../common</mm:import>
   
     
-    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link>
+    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> 
   
     
     <link href="${kupu_common}/kupudrawerstyles.css" rel="stylesheet" type="text/css"/>
@@ -39,6 +39,22 @@
     <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
     
     <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/globals.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementbyid.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xclientwidth.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xclientheight.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xscrollleft.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xscrolltop.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xaddeventlistener.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xnum.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xdef.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xstr.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetcomputedstyle.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xwidth.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xheight.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbytagname.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbyclassname.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="layout.js"><jsp:text> </jsp:text></script>
   
     
     <script type="text/javascript" src="${kupu_common}/kupucontextmenu.js"><jsp:text> </jsp:text></script>
@@ -95,25 +111,34 @@
       </xml>
     </div>
   
-    
-    <div xmlns="" id="tree">
+    <div xmlns="" id="header">
+      Richtext editor
+    </div>
+    <div xmlns="" id="leftColumn">
+      <div id="leftColumnContent">
+        
+    <div id="tree">
       <mm:include page="tree.jspx?parent=true"/>
     </div>
   
-    
-    <div xmlns="" id="node">
+        
+    <div id="node">
       <mm:include page="node.jspx"/>
     </div>
   
-    
-    <div xmlns="" id="node">
+        
+    <div id="node-preview">
       <mm:include page="preview.jspx"/>
     </div>
   
-    
-    <div xmlns="" id="kupu">
+      </div>
+    </div>
+    <div xmlns="" id="centerColumn">
+      <div id="centerColumnContent">
+        
+    <div id="kupu">
       
-    <div class="kupu-fulleditor">
+    <div xmlns="http://www.w3.org/1999/xhtml" class="kupu-fulleditor">
       
     
     <div class="kupu-tb" id="toolbar">
@@ -122,8 +147,9 @@
     <span id="kupu-tb-buttons" class="kupu-tb-buttons">
       
     
-    <span class="kupu-tb-buttongroup kupu-logo" style="float: right" id="kupu-logo">
-      <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-logo" title="Kupu SVN/unreleased" i18n:attributes="title" accesskey="k" onclick="window.open('http://kupu.oscom.org');">&#xA0;</button>
+    <span class="kupu-tb-buttongroup kupu-logo" style="float: right">
+      <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" accesskey="k" id="kupu-logo-button" onclick="window.open('http://kupu.oscom.org');">&#xA0;</button>
+      <button type="button" class="mmbase-logo" title="MMBase" accesskey="k" id="mmbase-logo-button" onclick="window.open('http://www.mmbase.org.org');">&#xA0;</button>
     </span>
   
     
@@ -346,17 +372,17 @@
       
     
     <div class="kupu-toolbox" id="kupu-toolbox-links">
-      <h1><j18n:message key="Links"/></h1>
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Links"/></h1>
 
       <div id="kupu-toolbox-addlink">
         <div class="kupu-toolbox-label">
           
-          <span><j18n:message key="&#10;            Link the highlighted text to this URL:&#10;          "/></span>
+          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="&#10;            Link the highlighted text to this URL:&#10;          "/></span>
         </div>
 
         <input id="kupu-link-input" class="wide" type="text"/>
         <div class="kupu-toolbox-buttons">
-          <button><j18n:message key="Make Link"/></button>
+          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-link-button" class="kupu-toolbox-action" i18n:translate=""><j18n:message key="Make Link"/></button>
         </div>
 
       </div>
@@ -364,30 +390,30 @@
   
     
     <div class="kupu-toolbox" id="kupu-toolbox-images">
-            <h1><j18n:message key="Images"/></h1>
+            <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Images"/></h1>
 
             <div class="kupu-toolbox-label">
-              <span><j18n:message key="Image class:"/></span>
+              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Image class:"/></span>
             </div>
             <select class="wide" id="kupu-image-float-select">
-              <option><j18n:message key="Inline"/></option>
-              <option><j18n:message key="Left"/></option>
-              <option><j18n:message key="Right"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-inline" i18n:translate=""><j18n:message key="Inline"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-left" i18n:translate=""><j18n:message key="Left"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-right" i18n:translate=""><j18n:message key="Right"/></option>
             </select>
 
             <div class="kupu-toolbox-label">
-              <span><j18n:message key="Insert image at the following URL:"/></span>
+              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Insert image at the following URL:"/></span>
             </div>
             <input id="kupu-image-input" value="kupuimages/kupu_icon.gif" class="wide" type="text"/>
 
             <div class="kupu-toolbox-buttons">
-              <button><j18n:message key="Insert Image"/></button>
+              <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-image-addbutton" class="kupu-toolbox-action" i18n:translate=""><j18n:message key="Insert Image"/></button>
             </div>
     </div>
   
     
     <div class="kupu-toolbox" id="kupu-toolbox-debug">
-      <h1><j18n:message key="Debug Log"/></h1>
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Debug Log"/></h1>
       <div id="kupu-toolbox-debuglog" class="kupu-toolbox-label">
       </div>
     </div>
@@ -398,7 +424,7 @@
     
     <div class="kupu-editorframe">
       <form>					
-        <iframe id="kupu-editor" class="kupu-editor-iframe" frameborder="0" src="start.jsp" scrolling="auto">
+        <iframe id="kupu-editor" class="kupu-editor-iframe" frameborder="0" src="start.jspx" scrolling="auto">
           <jsp:text>
           </jsp:text>
         </iframe>
@@ -411,6 +437,8 @@
   
     </div>
   
+      </div>
+    </div>
   
     </body>
   
