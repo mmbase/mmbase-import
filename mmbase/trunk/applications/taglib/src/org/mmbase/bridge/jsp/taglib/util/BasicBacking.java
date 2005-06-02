@@ -16,6 +16,7 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.jsp.taglib.ContentTag;
+import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
 
 /**
@@ -26,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.2 2005-05-18 08:08:09 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.3 2005-06-02 21:32:07 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -49,6 +50,19 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             originalPageContextValues = null;
         }
     }
+    public void setJspVar(String jspvar, int vartype, Object value) {
+        if (jspvar == null) return;
+        if (value == null) return;
+        // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
+        if (vartype == WriterHelper.TYPE_STRING) {
+            // string is final, the wrapped version cannot be string..
+            pageContext.setAttribute(jspvar, Casting.unWrap(value));
+        } else {
+            pageContext.setAttribute(jspvar, value);
+        }
+
+    }
+
     // contains the values originally in the pageContext, so that they can be restored.
     public Set entrySet() {
         return new AbstractSet() {
