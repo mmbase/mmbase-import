@@ -58,7 +58,6 @@ public class ThreadObserver {
 		if (p!=null) { 
 			list.add(p);
 			if (type.equals("bookmarked")) {
-				log.info("B1="+threadid);
 				p.addBookmarkedThread(threadid);
 			}
 		}

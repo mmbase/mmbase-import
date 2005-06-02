@@ -652,20 +652,20 @@ public class ForumsConfig {
     }
 
     private void checkCloudModel() {
-        checkRelDef("related", "related", 1, "Related", "Relared", "insrel");
-        checkRelDef("posrel", "posrel", 1, "Posrel", "Posrel", "posrel");
-        checkRelDef("rolerel", "rolerel", 1, "RoleRel", "RoleRel", "rolerel");
-        checkRelDef("posmboxrel", "posmboxrel", 1, "PosMBoxRel", "PosMBoxRel", "posmboxrel");
-        checkRelDef("forposrel", "forposrel", 1, "ForPosRel", "ForPosRel", "forposrel");
-        checkRelDef("forarearel", "forerearel", 1, "ForAreaRel", "ForAreaRel", "forarearel");
-        checkRelDef("areathreadrel", "areathreadrel", 1, "AreaThreadRel", "AreaThreadRel", "areathreadrel");
+        checkRelDef("related", "related", 2, "Related", "Relared", "insrel");
+        checkRelDef("posrel", "posrel", 2, "Posrel", "Posrel", "posrel");
+        checkRelDef("rolerel", "rolerel", 2, "RoleRel", "RoleRel", "rolerel");
+        checkRelDef("posmboxrel", "posmboxrel", 2, "PosMBoxRel", "PosMBoxRel", "posmboxrel");
+        checkRelDef("forposrel", "forposrel", 2, "ForPosRel", "ForPosRel", "forposrel");
+        checkRelDef("forarearel", "forerearel", 2, "ForAreaRel", "ForAreaRel", "forarearel");
+        checkRelDef("areathreadrel", "areathreadrel", 2, "AreaThreadRel", "AreaThreadRel", "areathreadrel");
     	checkTypeRel("forummessagebox", "forumprivatemessage", "related",-1);
     	checkTypeRel("postareas", "posters", "rolerel",-1);
     	checkTypeRel("images", "posters", "rolerel",-1);
     	checkTypeRel("postthreads", "postings", "related",-1);
     	checkTypeRel("posters", "avatarsets", "related",-1);
     	checkTypeRel("avatarsets", "images", "posrel",-1);
-    	checkTypeRel("posters", "forimmessagebox", "posmboxrel",-1);
+    	checkTypeRel("posters", "forummessagebox", "posmboxrel",-1);
     	checkTypeRel("forums", "posters", "forposrel",-1);
     	checkTypeRel("forums", "posters", "rolerel",-1);
     	checkTypeRel("forums", "postareas", "forarearel",-1);
