@@ -47,7 +47,13 @@
 
 <%-- right section --%>
 <div class="mainContent"> 
-<div class="contentHeader">Voortgangsmonitor</div>
+<div class="contentHeader">Voortgangsmonitor
+  <di:hasrole referid="user" role="teacher">
+    <mm:node number="$student">
+      : <mm:field name="firstname"/> <mm:field name="lastname"/>
+    </mm:node>
+  </di:hasrole>
+</div>
   <div class="contentBody">
 
 <mm:node number="$tests" id="my_tests">
