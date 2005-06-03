@@ -92,6 +92,15 @@
   </mm:compare>
 </mm:compare>
 <mm:compare referid="currentfolder" value="1">
+<di:hasrole referid="user" role="teacher">
+  <mm:compare referid="whatselected" value="class">
+    <jsp:include page="coachpredetail.jsp"/>
+  </mm:compare>
+  <mm:compare referid="whatselected" value="wgroup">
+    <jsp:include page="coachpredetail.jsp"/>
+  </mm:compare>
+</di:hasrole>
+  <mm:compare referid="whatselected" value="student">
   <div class="contentHeader">Voortgangsmonitor</div>
   <mm:compare referid="command" value="intake">
     <mm:import id="competencies" jspvar="competencies" />
@@ -107,16 +116,11 @@
     <mm:remove referid="command"/>
     <mm:import id="command">-1</mm:import>
   </mm:compare>
-  <mm:compare referid="command" value="coachdetail">
-    <jsp:include page="coachpredetail.jsp"/>
-
-    <mm:remove referid="command"/>
-    <mm:import id="command">-1</mm:import>
-  </mm:compare>
   <mm:compare referid="command" value="no">
     <jsp:include page="voortgang.jsp">
       <jsp:param name="msg" value="<%= msgString %>"/>
     </jsp:include>
+  </mm:compare>
   </mm:compare>
 </mm:compare>
 <mm:compare referid="currentfolder" value="2">
@@ -131,7 +135,24 @@
   </div>
 </div>
 </mm:compare>
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+
+<di:hasrole referid="user" role="teacher">
+<mm:compare referid="whatselected" value="0">
+  </div>
+</div>
+<div class="mainContent">
+  <div class="contentHeader">Selecteer een student</div>
+  <div class="contentBody">
+    <b>Overzicht Persoonlijke Ontwikkelings Plan</b><br/><br/>
+    Gebruik de dropdown velden in linkerpaneel om een klas, werkgroep en student te selecteren. Als er een klas of werkgroep 
+    geselecteerd is kunt u op de Voortgangsmonitor klikken om de toestresultaten van de klas of werkgroep te bekijken. Als een 
+    student geselecteerd is kunt u de POP van de student bekijken.
+  </div>
+</div>
+</mm:compare>
+</di:hasrole>
+
+<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
 </fmt:bundle>
 </mm:cloud>
 </mm:content>

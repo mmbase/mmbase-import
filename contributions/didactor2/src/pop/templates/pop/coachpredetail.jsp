@@ -8,95 +8,88 @@
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
-
-
 <%@include file="/shared/setImports.jsp" %>
 
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
 
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
-  <div class="contentBody">
 
-<mm:node number="$education">
+<% String classrels = ""; %>
 
-<b>Preassessment test voor <mm:field name="name" write="true"/></b>
+<mm:compare referid="whatselected" value="class">
+  <mm:list nodes="$class" path="classes,classrel,people">
+    <mm:field name="classrel.number" jspvar="classrelNum" vartype="String">
+      <% classrels += classrelNum + ","; %>
+    </mm:field>
+  </mm:list>
+</mm:compare>
 
-<table class="font">
+<mm:compare referid="whatselected" value="wgroup">
+  <mm:import externid="wgroup"/>
+  <mm:list nodes="$wgroup" path="classes,classrel,people">
+    <mm:field name="classrel.number" jspvar="classrelNum" vartype="String">
+      <% classrels += classrelNum + ","; %>
+    </mm:field>
+  </mm:list>
+</mm:compare>
 
+<div class="contentBody">
+
+<mm:list nodes="<%= classrels %>" path="classrel,copybooks,madetests,tests" fields="tests.number" distinct="true">
   <% List questions = new ArrayList(); %>
-  <mm:relatednodes type="tests" role="related">
-    <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
+  <mm:node element="tests">
+    <mm:import id="testNo"><mm:field name="number"/></mm:import>
+    <b>Test resultaten voor <mm:field name="name"/></b>
     <mm:relatednodes type="questions" role="posrel" orderby="posrel.pos" directions="UP">
       <mm:field name="number" jspvar="questionNum" vartype="String">
         <% questions.add(questionNum); %>
       </mm:field>
     </mm:relatednodes>
-  </mm:relatednodes>
-
-<tr>
-
-<th></th>
-
-    <mm:node number="progresstextbackground">
-
-    <th>
-
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Score')+rotate(90)"/>">
-
-    </th>
-
-     <th>
-
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'As opposed to average')+rotate(90)"/>">
-
-    </th>
-
-    </mm:node>
-
-<% Iterator questionIterator = questions.iterator();
-
-   while (questionIterator.hasNext()) {
-
-       String questionNum = (String) questionIterator.next();
-
+    <table class="font">
+      <tr>
+        <th></th>
+        <mm:node number="progresstextbackground">
+        <th><img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Score')+rotate(90)"/>"></th>
+        <th><img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'As opposed to average')+rotate(90)"/>"></th>
+        </mm:node>
+        <% Iterator questionIterator = questions.iterator();
+           while (questionIterator.hasNext()) {
+               String questionNum = (String) questionIterator.next();
         %>
+               <mm:node number="<%= questionNum %>">
+                 <mm:field name="title" jspvar="title" vartype="String">
+                   <% title  = title.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
+                   <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= title %>")+rotate(90)</mm:import>
+                 </mm:field>
+                 <mm:node number="progresstextbackground">
+                   <th><img src="<mm:image template="$template"/>"></th>
+                 </mm:node>
+               </mm:node>
 
-       <mm:node number="<%= questionNum %>">
+        <% } %>
+      </tr>
+      <mm:list nodes="<%= classrels %>" path="classrel,copybooks,madetests,tests" constraints="tests.number='$testNo'">
+        <mm:import id="madetestNo"><mm:field name="madetests.number"/></mm:import>
+        <mm:import id="classrelNo"><mm:field name="classrel.number"/></mm:import>
+        <mm:list path="classes,classrel,people,related,roles" constraints="classrel.number='$classrelNo' AND roles.name='student'">
+          <mm:import id="studentNo"><mm:field name="people.number"/></mm:import>
+          <mm:treeinclude page="/pop/coachpre_row.jsp" objectlist="$includePath" referids="$referids">
+            <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
+            <mm:param name="madetestNo"><mm:write referid="madetestNo"/></mm:param>
+            <mm:param name="studentNo"><mm:write referid="studentNo"/></mm:param>
+          </mm:treeinclude>
+        </mm:list>
+      </mm:list>
+    </table>
+    <br/><br/><br/>
+  </mm:node>
+</mm:list>
 
-        <mm:field name="title" jspvar="title" vartype="String">
 
-            <% title  = title.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
 
-         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= title %>")+rotate(90)</mm:import>
 
-         </mm:field>
 
-         <mm:node number="progresstextbackground">
-
-         <th><img src="<mm:image template="$template"/>"></th>
-
-         </mm:node>
-
-    </mm:node>
-
-<% } %>
-
-   <mm:node referid="class">
-     <mm:relatednodes type="people">
-       <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
-       <di:hasrole role="student" referid="studentnumber">
-         <mm:treeinclude page="/pop/coachpre_row.jsp" objectlist="$includePath" referids="$referids">
-           <mm:param name="student"><mm:field name="number"/></mm:param>
-           <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
-         </mm:treeinclude>
-       </di:hasrole>
-     </mm:relatednodes>
-   </mm:node> 
-
-</table>
-
-</mm:node>
 
 
   </div>

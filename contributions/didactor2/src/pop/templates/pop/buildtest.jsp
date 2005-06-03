@@ -28,6 +28,8 @@
 
 <%@include file="/education/tests/definitions.jsp" %>
 
+<mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
+
 <mm:import externid="currentfolder">-1</mm:import>
 
 
@@ -35,11 +37,11 @@
 
 <mm:present referid="madetest" inverse="true">
 
-<%-- find user's copybook --%>
+<%-- find student's copybook --%>
 
 <mm:import id="copybookNo"/>
 
-<mm:node number="$user">
+<mm:node number="$student">
 
   <mm:relatedcontainer path="classrel,classes">
 
@@ -131,7 +133,7 @@
 
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 
-<form name="questionform" action="<mm:treefile page="/pop/rate.jsp" objectlist="$includePath" referids="$referids,currentfolder"/>" method="POST">
+<form name="questionform" action="<mm:treefile page="/pop/rate.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>" method="POST">
 
 
 
@@ -307,7 +309,7 @@
 
              <mm:import id="page">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
 
-             <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+             <mm:treeinclude page="$page" objectlist="$includePath" referids="$popreferids">
 
                <mm:param name="question"><mm:field name="number"/></mm:param>
 

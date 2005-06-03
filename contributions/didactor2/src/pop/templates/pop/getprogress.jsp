@@ -1,8 +1,8 @@
-<%-- report either the current user's progress, or the one given by "student" argument --%>
+<%-- report either the current user's progress, or the one given by "user" argument --%>
 
 <mm:import externid="student" id="student" reset="true"><mm:write referid="user"/></mm:import>
 
-<%-- find user's copybook --%>
+<%-- find student's copybook --%>
 
 <mm:import id="copybookNo" reset="true" />
 

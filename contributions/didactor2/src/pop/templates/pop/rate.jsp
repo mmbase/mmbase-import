@@ -23,9 +23,11 @@
 
 <%@include file="/education/tests/definitions.jsp" %>
 
+<mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
+
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$popreferids">
   <mm:param name="extraheader">
     <title>POP</title>
     <link rel="stylesheet" type="text/css" href="css/pop.css" />
@@ -78,7 +80,7 @@
 
     <%-- Make relation between copybooks instance and the madetest --%>
 
-    <mm:node number="$user">
+    <mm:node number="$student">
 
       <mm:relatedcontainer path="classrel,classes">
 
@@ -138,7 +140,7 @@
 
     <%-- Make relation between copybooks instance and the madetest --%>
 
-    <mm:node number="$user">
+    <mm:node number="$student">
 
       <mm:relatedcontainer path="classrel,classes">
 
@@ -254,7 +256,7 @@
 
       <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
 
-      <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+      <mm:treeinclude page="$page" objectlist="$includePath" referids="$popreferids">
 
         <mm:param name="question"><mm:field name="number"/></mm:param>
 
@@ -288,7 +290,7 @@
 
   %>
 
-       <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
+       <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$popreferids">
 
          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
 
@@ -297,7 +299,7 @@
        </mm:treeinclude>
 
        <input type="button" class="formbutton" value="<di:translate id="buttontextnext">Volgende</di:translate>" 
-	     onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder">
+	     onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
              <mm:param name="command">intake</mm:param>
            </mm:treeinclude>'"> 
 
@@ -307,7 +309,7 @@
 
    %>
 
-         <mm:treeinclude page="/pop/buildtest.jsp"  objectlist="$includePath" referids="$referids">
+         <mm:treeinclude page="/pop/buildtest.jsp"  objectlist="$includePath" referids="$popreferids">
 
            <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>
 
@@ -331,7 +333,7 @@
 
   </div>
 </div>
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
 </fmt:bundle>
 </mm:cloud>
 </mm:content>

@@ -132,11 +132,11 @@
 
 <% } %>
 
-    <mm:node number="$user">
+    <mm:node number="$student">
 
-         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
+         <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$popreferids,startAt">
 
-                <mm:param name="student"><mm:field name="number"/></mm:param>
+                <mm:param name="user"><mm:field name="number"/></mm:param>
 
          </mm:treeinclude>
 
@@ -148,7 +148,7 @@
 
 <% if (showNextLink) { %>
 
-<span style="float: right"><a href="<mm:treefile  page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder">
+<span style="float: right"><a href="<mm:treefile  page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
 
     <mm:param name="startAt"><%= startAt + 15 %></mm:param>
     <mm:param name="command">detail</mm:param>
@@ -159,7 +159,7 @@
 
    if (showPrevLink) { %>
 
-<a href="<mm:treefile  page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder">
+<a href="<mm:treefile  page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
 
     <mm:param name="startAt"><%= startAt - 15 %></mm:param>
     <mm:param name="command">detail</mm:param>

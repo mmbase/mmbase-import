@@ -1,10 +1,14 @@
+<mm:import externid="whatselected" reset="true">0</mm:import>
 <mm:import id="currentpop">-1</mm:import>
 <mm:import externid="command">no</mm:import>
 <mm:import externid="returnto">-1</mm:import>
 <mm:import externid="currentfolder">-1</mm:import>
+<mm:import id="popreferids"><mm:write referid="referids"/>,student,whatselected</mm:import>
+<mm:import externid="student"><mm:write referid="user"/></mm:import>
+<mm:node number="$student" notfound="skip">
 <mm:compare referid="currentfolder" value="-1">
   <mm:import externid="currentprofile">-1</mm:import>
-  <mm:list nodes="$user" path="people,related,pop">
+  <mm:list nodes="$student" path="people,related,pop">
     <mm:first>
       <mm:import id="currentpop" reset="true"><mm:field name="pop.number"/></mm:import>
       <mm:compare referid="currentprofile" value="-1">
@@ -19,19 +23,20 @@
   </mm:list>
 </mm:compare>
 <mm:compare referid="currentfolder" value="1">
-  <mm:list nodes="$user" path="people,related,pop">
+  <mm:list nodes="$student" path="people,related,pop">
     <mm:first>
       <mm:import id="currentpop" reset="true"><mm:field name="pop.number"/></mm:import>
     </mm:first>
   </mm:list>
 </mm:compare>
 <mm:compare referid="currentfolder" value="2">
-  <mm:list nodes="$user" path="people,related,pop">
+  <mm:list nodes="$student" path="people,related,pop">
     <mm:first>
       <mm:import id="currentpop" reset="true"><mm:field name="pop.number"/></mm:import>
     </mm:first>
   </mm:list>
 </mm:compare>
+</mm:node>
 <mm:compare referid="currentfolder" value="-1" inverse="true">
   <mm:import id="currentprofile">-1</mm:import>
 </mm:compare>

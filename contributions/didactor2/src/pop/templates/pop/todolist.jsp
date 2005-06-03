@@ -9,17 +9,17 @@
 <mm:import externid="msg">-1</mm:import>
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <form name="todolistform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
-            referids="$referids,currentfolder">
+            referids="$popreferids,currentfolder">
           </mm:treefile>" method="post">
   <input type="hidden" name="command" value="no">
   <input type="hidden" name="returnto" value="no">
   <div class="contentSubHeader">
     <a href="#1" onclick="todolistform.command.value='addtodo';todolistform.submit();return false;">
-              <img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$referids"/>"
+              <img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$popreferids"/>"
                   border="0" alt="Maak een nieuwe persoonlijke taak aan"/></a>
     <a href="#1" onclick="if (!window.confirm('Weet u zeker dat u de geselecteerde persoonlijke taken wilt verwijderen?'))
                   return false;todolistform.command.value='deltodo';todolistform.submit();return false;">
-              <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"
+              <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
                   border="0" alt="Verwijder de geselecteerde persoonlijke taken"/></a>
   </div> 
   <div class="contentBody">
@@ -47,7 +47,7 @@
                 </di:cell>
                 <di:cell>
                   <mm:field name="name" jspvar="todoName" vartype="String">
-                    <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder">
+                    <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
                         <mm:param name="todonumber"><mm:field name="number"/></mm:param>
                         <mm:param name="command">addtodo</mm:param>
                         <mm:param name="returnto">no</mm:param>
