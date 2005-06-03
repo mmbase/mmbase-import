@@ -1,8 +1,11 @@
+<mm:content type="text/xml" expires="-1"
+            xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:jsp="http://java.sun.com/JSP/Page" 
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"            
+            >
 <mm:cloud 
-     xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:jsp="http://java.sun.com/JSP/Page" 
-     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-     >
+    rank="basic user"
+    >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" />
   <mm:import externid="loadonly" />
@@ -20,12 +23,31 @@
       <div class="node" title="${node.number} ${node.title}">
         <mm:notpresent referid="loadonly">
           <p>node # <mm:field name="number" /></p>
-          <mm:fieldlist fields="title,subtitle,intro">
-            <p><mm:fieldinfo type="guiname" /><mm:fieldinfo  options="noempty" type="input" /></p>
-          </mm:fieldlist>
+          <a class="create" title="New" href="javascript: createSubNode(${node});">
+            <mm:link page="/mmbase/style/images/create.gif">
+              <img src="${_}" alt="+" />
+              Creëer subhoofstuk
+            </mm:link>
+          </a>
+          <form>
+            <mm:fieldlist id="field" fields="title,subtitle,intro">              
+              <p>
+                <mm:fieldinfo type="guiname" />
+                <mm:fieldinfo type="name">
+                  <mm:compare value="title">
+                    <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value);'" type="input" />
+                  </mm:compare>
+                  <mm:compare value="title" inverse="true">
+                    <mm:fieldinfo  options="noempty" type="input" />
+                  </mm:compare>
+                </mm:fieldinfo>
+              </p>
+            </mm:fieldlist>
+          </form>
         </mm:notpresent>
       </div>
     </mm:node>
     <mm:write session="kupu_node" referid="node" />
   </mm:present>  
 </mm:cloud>
+</mm:content>

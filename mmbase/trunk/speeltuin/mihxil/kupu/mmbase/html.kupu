@@ -4,12 +4,16 @@
     implementation="mmbase"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     >
-  <kupu:id>$Id: html.kupu,v 1.5 2005-06-02 17:26:24 michiel Exp $</kupu:id>
+  <kupu:id>$Id: html.kupu,v 1.6 2005-06-03 17:26:24 michiel Exp $</kupu:id>
   <kupu:part name="html">
     <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page" 
           xmlns:j18n="http://jakarta.apache.org/taglibs/i18n-1.0"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+      <jsp:output doctype-root-element="html"
+                  doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+                  doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+
       <mm:cloud rank="basic user">
         <mm:import externid="language">client</mm:import>
         <mm:content type="text/html" language="$language" expires="0">

@@ -27,22 +27,27 @@ function adjustLayout() {
 
     var a = xGetElementsByTagName('input', xGetElementById('leftColumn'));
     for (i=0; i < a.length; i++) {
-        xWidth(a[i], leftColumnWidth);
+        xWidth(a[i], leftColumnWidth - 4);
     }
+
     a = xGetElementsByTagName('textarea', xGetElementById('leftColumn'));
     for (i=0; i < a.length; i++) {
-        xWidth(a[i], leftColumnWidth);
+        xWidth(a[i], leftColumnWidth - 4);
     }
     a = xGetElementsByClassName('kupu-editorframe');
     for (i=0; i < a.length; i++) {
         xHeight(a[i], maxHeight - 40);
+        xWidth(a[i], maxWidth);
+        
     }
+
     xHeight("toolboxes", maxHeight);
-    xHeight("kupu-editor", maxHeight - 40);
+    xHeight("kupu-editor", maxHeight - 30);
+    xWidth("kupu-editor", maxWidth);
 
     var nodeHeight = xHeight('node');
 
-    xHeight("tree", maxHeight - nodeHeight);
+    xHeight("tree", maxHeight - nodeHeight - 1);
 
     
 }

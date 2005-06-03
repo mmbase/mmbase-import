@@ -38,50 +38,44 @@
   <mm:import externid="parent" />
   <mm:import externid="node">pol_default</mm:import>
   <mm:node id="n" referid="node">
-    <div class="tree on" id="node_${n}">
-      <a href="javascript: loadNode(${n});"><mm:nodeinfo type="gui" /></a>
-      <ul>
-        <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
-          <mm:sortorder field="pos" />       
-          <li>
-            <mm:size>
-              <mm:isgreaterthan value="0">
-                <a class="turnoff" href="javascript: unloadRelated(${n});">
-                  <img class="icon" src="icons/map-open.gif" />
-                </a>
-              </mm:isgreaterthan>
-            </mm:size>
-            <a class="create" title="New" href="javascript: createSubNode(${n});">+</a>
-
-        </li>
+    <div class="tree" id="node_${n}">
+      <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
+        <mm:sortorder field="pos" />       
+        <mm:size>
+          <mm:isgreaterthan value="0">
+            <a class="" href="javascript: unloadRelated(${n});">
+              <img class="icon" src="icons/map-open.gif" />
+            </a>
+          </mm:isgreaterthan>
+          <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
+        </mm:size>
+        <a href="javascript: loadNode(${n});" id="a_${n}"> ${n.title}</a>
+        <ul>          
         <mm:listrelations id="rel">
           <li> 
             <mm:relatednode id="segment">
-              <div id="node_${segment}" class="tree off">
-                <a href="javascript: loadNode(${segment});"><mm:nodeinfo type="gui" /></a>
-              <ul>
-                <li>
-                  <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
-                    <mm:sortorder field="pos" />
-                    <mm:size>
-                      <mm:isgreaterthan value="0">
-                        <a class="turnon"  href="javascript: loadRelated(${segment});">                    
-                          <img class="icon" src="icons/map.gif" />
-                        </a>
-                      </mm:isgreaterthan>
-                      <mm:compare value="0">
-                        <a class="create" title="New" href="javascript: createSubNode(${segment});">+</a>
-                      </mm:compare>
-                    </mm:size>
-                  </mm:listrelationscontainer>
-                </li>
-              </ul>
+              <div id="node_${segment}" class="tree noncurrent">
+                <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
+                      
+                  <mm:sortorder field="pos" />
+                  <mm:size>
+                    <mm:isgreaterthan value="0">
+                      <a   href="javascript: loadRelated(${segment});">                    
+                        <img class="icon" src="icons/map.gif" />
+                      </a>
+                    </mm:isgreaterthan>
+                    <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
+                  </mm:size>
+                  <a href="javascript: loadNode(${segment});" id="a_${segment}"> ${segment.title}</a>
+                  <ul>
+                  </ul>
+                </mm:listrelationscontainer>
               </div>
             </mm:relatednode>
           </li>
         </mm:listrelations>
-        </mm:listrelationscontainer>
-      </ul>
+        </ul>
+      </mm:listrelationscontainer>
       <!--
     <mm:present referid="parent">
       <p class="debug"><a class="related" href="javascript: reloadTree();">reload</a></p>
