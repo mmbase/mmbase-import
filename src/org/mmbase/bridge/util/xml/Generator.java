@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.28 2005-05-18 19:33:26 michiel Exp $
+ * @version $Id: Generator.java,v 1.29 2005-06-03 14:08:45 pierre Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -72,7 +72,6 @@ public class Generator {
                                            "objects", 
                                            impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
                                            );
-            this.cloud = cloud;
             if (cloud != null) {
                 addCloud();
             }
