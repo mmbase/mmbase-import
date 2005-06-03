@@ -21,23 +21,24 @@ import junit.framework.TestCase;
  * </ul>
  * 
  * @author Kees Jongenburger
- * @verion $Id: ResourceLoaderTest.java,v 1.3 2005-05-29 11:20:41 nico Exp $
+ * @verion $Id: ResourceLoaderTest.java,v 1.4 2005-06-03 07:15:33 michiel Exp $
  */
 public class ResourceLoaderTest extends TestCase {
 
     /**
      * perform lookup of non existing resource
      */
-    public void testNonExistingResource() {
+    public void testNonExistingResource() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("nonExisting/test.xml");
-        assertNull("non existing resource should return null", url);
+        assertTrue("non existing resource should not be openable for input", !url.openConnection().getDoInput());
     }
 
     /**
      * perform lookup of mmbaseroot.xml using getConfigurationroot
      */
-    public void testGetMMBaseRootModule() {
+    public void testGetMMBaseRootModule() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("modules/mmbaseroot.xml");
         assertNotNull("did not find mmbaseroot.xml", url);
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
 }
