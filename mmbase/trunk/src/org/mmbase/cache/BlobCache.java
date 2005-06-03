@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * replacement for the 'handle cache' which was present in MMBase <1.8.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BlobCache.java,v 1.2 2005-05-04 18:21:04 michiel Exp $
+ * @version $Id: BlobCache.java,v 1.3 2005-06-03 15:08:10 pierre Exp $
  * @since MMBase 1.8
  */
 public abstract class BlobCache extends Cache {
@@ -45,9 +45,9 @@ public abstract class BlobCache extends Cache {
     public final String getKey(int nodeNumber, String fieldName) {
         return "" + nodeNumber + '-' + fieldName;
     }
-    
-    public Object put(Object key, Object value) {        
-        if (! isActive()) return null;
+
+    public Object put(Object key, Object value) {
+        if (!checkCachePolicy(key)) return null;
         if (value instanceof byte[]) {
             int max = getMaxEntrySize();
             byte[] b = (byte[]) value;
@@ -56,7 +56,7 @@ public abstract class BlobCache extends Cache {
         } else if (value instanceof String) {
             int max = getMaxEntrySize();
             String s = (String) value;
-            if (max > 0 && s.length() > getMaxEntrySize()) return null;            
+            if (max > 0 && s.length() > getMaxEntrySize()) return null;
         }
         return super.put(key, value);
     }
