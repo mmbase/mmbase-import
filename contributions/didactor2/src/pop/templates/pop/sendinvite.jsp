@@ -34,7 +34,7 @@
   <mm:import id="inviteefname"><mm:field name="firstname"/> <mm:field name="lastname"/></mm:import>
   <mm:import id="to"><mm:field name="email"/></mm:import>
 </mm:node>
-<mm:node number="$user">
+<mm:node number="$student">
   <mm:import id="userfname"><mm:field name="firstname"/> <mm:field name="lastname"/></mm:import>
   <mm:import id="from"><mm:field name="email"/></mm:import>
 </mm:node>

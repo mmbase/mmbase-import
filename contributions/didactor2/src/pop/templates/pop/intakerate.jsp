@@ -14,7 +14,7 @@
 
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$popreferids">
   <mm:param name="extraheader">
     <title>POP</title>
     <link rel="stylesheet" type="text/css" href="css/pop.css" />
@@ -32,11 +32,11 @@
 
 <%@ include file="leftpanel.jsp" %>
 
-<%-- find user's copybook --%>
+<%-- find student's copybook --%>
 
 <mm:import id="copybookNo"/>
 
-<mm:node number="$user">
+<mm:node number="$student">
 
   <mm:relatedcontainer path="classrel,classes">
 
@@ -116,7 +116,7 @@
       <mm:node number="<%= shownQuestion %>">
         <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
 
-        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+        <mm:treeinclude page="$page" objectlist="$includePath" referids="$popreferids">
           <mm:param name="question"><mm:write referid="shownquestion"/></mm:param>
           <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
         </mm:treeinclude>
@@ -165,11 +165,11 @@
   <%@ include file="intakecheck.jsp" %>
 
   <p>Je bent klaar met de preassesment voor deze opleiding en kunt nu aan de opleiding beginnen</p>
-  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
       </mm:treefile>'" value="start" title="Begin met deze cursus">
   </div>
 </div>
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
 </fmt:bundle>
 </mm:cloud>
 </mm:content>

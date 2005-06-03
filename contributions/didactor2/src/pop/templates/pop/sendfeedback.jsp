@@ -39,11 +39,6 @@
 
 <% if (isSuccess) { %>
 
-<mm:import id="link" jspvar="linktofeedback">http://<mm:write referid="servername"/><mm:treefile page="/pop/index.jsp" 
-             objectlist="$includePath" referids="$referids">
-         </mm:treefile>&command=getinvite&nfeedback=<mm:write referid="nfeedback"/></mm:import>
-
-
 <%-- some sending email code--%>
 <mm:import id="ratingmsg"></mm:import>
 <mm:node number="rating" notfound="skip">

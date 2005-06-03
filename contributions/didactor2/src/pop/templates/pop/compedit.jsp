@@ -17,7 +17,7 @@
 
   <mm:node number="$currentcomp">
     <form name="editcompform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
-          referids="$referids,currentprofile,currentcomp">
+          referids="$popreferids,currentprofile,currentcomp">
         </mm:treefile>" method="post">
     <table class="font" width="70%">
     <input type="hidden" name="command" value="savecomp">
@@ -60,11 +60,11 @@
           </mm:list>
           <br/>
           <a href="#1" onclick="editcompform.command.value='addtodo';editcompform.submit();return false;"
-            ><img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$referids"/>"
+            ><img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$popreferids"/>"
                 border="0" alt="Maak een nieuwe persoonlijke taak aan"/></a>
           <a href="#1" onclick="if (!window.confirm('Weet u zeker dat u de geselecteerde persoonlijke taken wilt verwijderen?'))
                 return false;editcompform.command.value='deltodo';editcompform.submit();return false;">
-            <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"
+            <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
                 border="0" alt="Verwijder de geselecteerde persoonlijke taken"/></a>
 <br/>
     <mm:relatedcontainer path="popfeedback,pop">
@@ -73,7 +73,7 @@
         <tr>
           <td align="right">
             <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
-              <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$referids"/>"
+              <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$popreferids"/>"
                 border="0" alt="Nodig een collega uit om een feedback te geven op deze competentie"/></a>
           </td>
         </tr>
@@ -93,7 +93,7 @@
         <mm:related>
           <mm:node element="popfeedback">
             <mm:relatedcontainer path="people">
-              <mm:constraint field="people.number" referid="user" operator="EQUAL" inverse="true"/>
+              <mm:constraint field="people.number" referid="student" operator="EQUAL" inverse="true"/>
               <mm:related>
                 <tr>
                   <td class="listItem"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></td>
@@ -126,7 +126,7 @@
       <tr>
         <td align="right">
           <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
-            <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>" 
+            <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
               border="0" alt="Voeg een document uit je ontwikkelingsgericht portfolio toe"/></a>
         </td>
       </tr>
@@ -140,9 +140,9 @@
       <mm:node number="$thisfeedback">
         <mm:relatednodes type="attachments">
           <input type="checkbox" name="portfolio_items_ids" value="<mm:field name="number"/>">
-          <mm:related path="folders,portfolios,people" constraints="people.number='$user'">
+          <mm:related path="folders,portfolios,people" constraints="people.number='$student'">
             <mm:import id="foldername" reset="true"><mm:field name="folders.name"/></mm:import>
-            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$popreferids">
                 <mm:param name="typeof"><mm:field name="portfolios.type"/></mm:param>
                 <mm:param name="currentfolder"><mm:field name="folders.number"/></mm:param>
               </mm:treefile>"
@@ -151,9 +151,9 @@
         <mm:relatednodes type="folders">
           <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
           <input type="checkbox" name="portfolio_items_ids" value="<mm:field name="number"/>">
-          <mm:related path="portfolios,people" constraints="people.number='$user'">
+          <mm:related path="portfolios,people" constraints="people.number='$student'">
             <mm:import id="foldername" reset="true"><mm:field name="folders.name"/></mm:import>
-            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$popreferids">
                 <mm:param name="typeof"><mm:field name="portfolios.type"/></mm:param>
                 <mm:param name="currentfolder"><mm:write referid="foldernumber"/></mm:param>
               </mm:treefile>"
@@ -161,9 +161,9 @@
         </mm:relatednodes>
         <mm:relatednodes type="urls">
           <input type="checkbox" name="portfolio_items_ids" value="<mm:field name="number"/>">
-          <mm:related path="folders,portfolios,people" constraints="people.number='$user'">
+          <mm:related path="folders,portfolios,people" constraints="people.number='$student'">
             <mm:import id="foldername" reset="true"><mm:field name="folders.name"/></mm:import>
-            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$popreferids">
                 <mm:param name="typeof"><mm:field name="portfolios.type"/></mm:param>
                 <mm:param name="currentfolder"><mm:field name="folders.number"/></mm:param>
               </mm:treefile>"
@@ -171,9 +171,9 @@
         </mm:relatednodes>
         <mm:relatednodes type="pages">
           <input type="checkbox" name="portfolio_items_ids" value="<mm:field name="number"/>">
-          <mm:related path="folders,portfolios,people" constraints="people.number='$user'">
+          <mm:related path="folders,portfolios,people" constraints="people.number='$student'">
             <mm:import id="foldername" reset="true"><mm:field name="folders.name"/></mm:import>
-            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$popreferids">
                 <mm:param name="typeof"><mm:field name="portfolios.type"/></mm:param>
                 <mm:param name="currentfolder"><mm:field name="folders.number"/></mm:param>
               </mm:treefile>"
@@ -181,9 +181,9 @@
         </mm:relatednodes>
         <mm:relatednodes type="chatlogs">
           <input type="checkbox" name="portfolio_items_ids" value="<mm:field name="number"/>">
-          <mm:related path="folders,portfolios,people" constraints="people.number='$user'">
+          <mm:related path="folders,portfolios,people" constraints="people.number='$student'">
             <mm:import id="foldername" reset="true"><mm:field name="folders.name"/></mm:import>
-            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+            <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$popreferids">
                 <mm:param name="typeof"><mm:field name="portfolios.type"/></mm:param>
                 <mm:param name="currentfolder"><mm:field name="folders.number"/></mm:param>
               </mm:treefile>"
@@ -193,7 +193,7 @@
       <br/>
       <a href="#1" onclick="if (!window.confirm('Weet u zeker dat u de geselecteerde documenten wilt verwijderen?'))
           return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
-        <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"
+        <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
           border="0" alt="Verwijder de geselecteerde documenten"/></a>
     </mm:compare>
   </form>

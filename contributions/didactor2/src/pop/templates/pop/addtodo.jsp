@@ -22,7 +22,7 @@
   </mm:compare>
 
   <form name="newtodoform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
-          referids="$referids,currentfolder,currentcomp">
+          referids="$popreferids,currentfolder,currentcomp">
         </mm:treefile>" method="post">
     <input type="hidden" name="command" value="savetodo">
     <input type="hidden" name="returnto" value="<mm:write referid="returnto"/>">

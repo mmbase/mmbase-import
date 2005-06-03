@@ -26,11 +26,11 @@
 %>
 
 
-<%-- find user's copybook --%>
+<%-- find student's copybook --%>
 
 <mm:import id="copybookNo"/>
 
-<mm:node number="$user">
+<mm:node number="$student">
 
   <mm:relatedcontainer path="classrel,classes">
 
@@ -75,13 +75,13 @@
   <%-- "you failed the test for this education and are not allowed to continue, please contact your teacher / coach for advice" --%>
   <p>Je hebt de intake-toets voor deze opleiding niet gehaald en kunt daarom niet aan de opleiding beginnen. 
      Neem contact op met je coach of docent voor advies.</p>
-<input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids,currentfolder"/>'" value="terug">
+<input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>'" value="terug">
 </mm:compare>
 <mm:compare referid="gatekeeper" value="0" inverse="true">
   <mm:compare referid="incompletetestNo" value="-1" inverse="true">
     <%-- "you now start with test for this education" --%>
     <p>Om met deze opleiding te beginnen moet je de volgende intake-toets doen.</p>
-    <mm:treeinclude page="/pop/buildtest.jsp" objectlist="$includePath" referids="$referids">
+    <mm:treeinclude page="/pop/buildtest.jsp" objectlist="$includePath" referids="$popreferids">
       <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
     </mm:treeinclude> 
   </mm:compare>
@@ -97,7 +97,7 @@
 
     <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 
-    <form name="questionform" action="<mm:treefile page="/pop/intakerate.jsp" objectlist="$includePath" referids="$referids,currentfolder"/>" method="POST">
+    <form name="questionform" action="<mm:treefile page="/pop/intakerate.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>" method="POST">
     <input type="hidden" name="command" value="intaketest">
     <mm:list nodes="<%= notpassedIntakes %>" path="tests">
       <mm:node element="tests">
@@ -109,7 +109,7 @@
 
              <mm:import id="page">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
 
-             <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+             <mm:treeinclude page="$page" objectlist="$includePath" referids="$popreferids">
 
                <mm:param name="question"><mm:field id="questionNo" name="number"/></mm:param>
 
@@ -134,7 +134,7 @@
 
     <% } else { %>
       <p>Je bent klaar met de preassesment voor deze opleiding en kunt nu aan de opleiding beginnen</p>
-      <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+      <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
           </mm:treefile>'" value="start" title="Begin met deze cursus">
     <% } %>
 

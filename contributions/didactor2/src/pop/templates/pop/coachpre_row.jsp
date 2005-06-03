@@ -14,45 +14,13 @@
 
 <%@include file="/education/tests/definitions.jsp" %>
 
+<mm:import externid="studentNo" required="true"/>
+
+<mm:import externid="testNo" required="true"/>
+<mm:import externid="madetestNo" required="true"/>
 
 
-<mm:import externid="student" required="true"/>
-
-<mm:import externid="testNo" jspvar="testNo" vartype="Integer" required="true"/>
-
-
-<mm:node number="$student">
-
-  <%-- find copybook --%>
-
-  <mm:import id="copybookNo"/>
-
-  <mm:relatedcontainer path="classrel,classes">
-
-    <mm:constraint field="classes.number" value="$class"/>
-
-    <mm:related>
-
-      <mm:node element="classrel">
-
-        <mm:relatednodes type="copybooks">
-
-          <mm:remove referid="copybookNo"/>
-
-          <mm:field id="copybookNo" name="number" write="false"/>
-
-        </mm:relatednodes>
-
-      </mm:node>
-
-    </mm:related>  
-
-  </mm:relatedcontainer>
-
-  <mm:import id="madetestNo">-1</mm:import>
-  <mm:list nodes="$copybookNo" path="copybooks,madetests,tests" constraints="tests.number=$testNo">
-    <mm:import id="madetestNo" reset="true"><mm:field name="madetests.number"/></mm:import>
-  </mm:list>
+<mm:node number="$studentNo" notfound="skip">
 
   <% List status = new ArrayList(); 
      int average = 0;
@@ -93,7 +61,7 @@
          if (nof_questions==0) score=0;
       %><%= (int)(score*100) %>%
     </td>
-    <td>
+    <td align="center">
       <% if (average>0) { %>+<% }
          if (average<0) { %>-<% }
       %>
@@ -113,7 +81,6 @@
       <% } 
     } %>
   </tr>
-<mm:remove referid="copybookNo"/>
 
 </mm:node> <%-- student --%>
 

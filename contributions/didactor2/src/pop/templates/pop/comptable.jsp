@@ -32,7 +32,7 @@
                 <mm:node number="<%= thisCompetencie %>">
                   <tr style="vertical-align:top;">
                     <td class="listItem">
-                      <img src="<mm:treefile page="/pop/gfx/present.gif" objectlist="$includePath" referids="$referids"/>" border="0"
+                      <img src="<mm:treefile page="/pop/gfx/present.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
                           alt="deze competentie was al aanwezig voor de cursus"/>
                     </td>
                     <%@ include file="comptablecell.jsp" %>
@@ -48,7 +48,7 @@
                 <mm:node number="<%= thisCompetencie %>">
                   <tr style="vertical-align:top;">
                     <td class="listItem">
-                      <img src="<mm:treefile page="/pop/gfx/developed.gif" objectlist="$includePath" referids="$referids"/>" border="0"
+                      <img src="<mm:treefile page="/pop/gfx/developed.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
                           alt="deze competentie is behaald tijdens de cursus"/>
                     </td>
                     <%@ include file="comptablecell.jsp" %>
@@ -65,7 +65,7 @@
                 <mm:node number="<%= thisCompetencie %>">
                   <tr style="vertical-align:top;">
                     <td class="listItem">
-                      <img src="<mm:treefile page="/pop/gfx/todevelop.gif" objectlist="$includePath" referids="$referids"/>" border="0"
+                      <img src="<mm:treefile page="/pop/gfx/todevelop.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
                           alt="deze competentie is nodig"/>
                     </td>
                     <%@ include file="comptablecell.jsp" %>
