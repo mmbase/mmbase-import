@@ -8,16 +8,16 @@
 
   <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Persoonlijke opleidingsplan</singular>
+    <singular xml:lang="nl">Persoonlijke ontwikkelingsplan</singular>
     <singular xml:lang="en">Personal education plan</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Persoonlijke opleidingsplannen</plural>
+    <plural xml:lang="nl">Persoonlijke ontwikkelingsplannen</plural>
     <plural xml:lang="en">Personal education plans</plural>
   </names>
 
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Persoonlijke opleidingsplan</description>
+    <description xml:lang="nl">Persoonlijke ontwikkelingsplan</description>
     <description xml:lang="en">Personal education plan</description>
   </descriptions>
 
