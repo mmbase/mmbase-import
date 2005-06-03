@@ -68,7 +68,7 @@
             fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
             <title>Bijbehorende leerobjecten</title>
             <item>
-                <field fdatapath="object/field[@name='name']" ftype="data">
+                <field name="name" ftype="data">
                     <prompt>Naam</prompt>
                     <description>Naam van het leerobject</description>
                 </field>
@@ -109,7 +109,7 @@
         <!-- we need a new list because there can be only one search command per list -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
             fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
-             <title>Zoeken op metadata</title>
+            <title>Zoeken op metadata</title>
             <item displaytype="none"></item>
 
             <action type="create">
@@ -127,8 +127,26 @@
            </command>
         </list>
 
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
+            fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
+            <title>Zoeken op competencies</title>
+            <item displaytype="none"></item>
 
+            <action type="create">
+                <relation role="posrel" destinationtype="learnobjects">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+             <command name="search" nodepath="competencies,learnobjects" fields="learnobjects.name,competencies.value" age="-1" orderby="learnobjects.number" directions="down" >
 
+                <prompt>Zoeken naar leerobjecten op competencies</prompt>
+                <search-filter>
+                    <name>Competentie</name>
+                    <search-fields>competencies.value</search-fields>
+                </search-filter>
+           </command>
+        </list>
 
         <list role="related" extends="list/online.xml" />
     </form-schema>
