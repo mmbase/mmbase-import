@@ -35,7 +35,7 @@ public class NodeBridgeMixedTest extends MixedTest {
      *  A unit test for JUnit
      */
     public void testRun() {
-        Cloud cloud = PerformanceTestsManager.getCloud();
+        Cloud cloud = MMBarManager.getCloud();
         NodeManager nm = cloud.getNodeManager("mmpo_basicobject");
         if (nm == null) {
             log.error("Can't load nodemanager : " + nm + " from mmbase");
