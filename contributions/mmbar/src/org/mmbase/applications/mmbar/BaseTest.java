@@ -285,7 +285,7 @@ public class BaseTest implements Runnable {
     public boolean perform() {
 
 	// signal the manager we are about to run and make this the running test
-        PerformanceTestsManager.setRunningTest(this);
+        MMBarManager.setRunningTest(this);
 
 	// change our own state to running (gui)
         setState("Running");
@@ -320,7 +320,7 @@ public class BaseTest implements Runnable {
             setState("finished");
 
 	    // clear the running test in the manager
-            PerformanceTestsManager.cleanRunningTest();
+            MMBarManager.cleanRunningTest();
 
 	    // reset the current position count to 0;
             currentpos = 0;
