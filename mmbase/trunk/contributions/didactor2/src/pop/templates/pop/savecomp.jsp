@@ -5,7 +5,7 @@
     <mm:createnode type="popfeedback" id="thisfeedback"/>
   </mm:maycreate>
   <mm:createrelation role="related" source="currentpop" destination="thisfeedback" />
-  <mm:createrelation role="related" source="thisfeedback" destination="user" />
+  <mm:createrelation role="related" source="thisfeedback" destination="student" />
   <mm:createrelation role="related" source="currentcomp" destination="thisfeedback" />
 <% } %>
 <mm:node referid="thisfeedback">

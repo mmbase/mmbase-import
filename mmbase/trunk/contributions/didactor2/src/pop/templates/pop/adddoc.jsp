@@ -2,7 +2,7 @@
   <%@ include file="getmyfeedback.jsp" %>
 
   <form name="newdocform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
-          referids="$referids,currentfolder,currentcomp">
+          referids="$popreferids,currentfolder,currentcomp">
         </mm:treefile>" method="post">
     <input type="hidden" name="command" value="savedoc">
     <input type="hidden" name="returnto" value="<mm:write referid="returnto"/>">
@@ -16,7 +16,7 @@
     </table>
 
     <mm:remove referid="listnotempty"/>    
-    <mm:list nodes="$user" path="people,portfolios,folders,attachments" constraints="portfolios.type='0'">
+    <mm:list nodes="$student" path="people,portfolios,folders,attachments" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
         Voeg documenten uit je ontwikkelingsgericht portfolio toe<br/>
@@ -34,7 +34,7 @@
     <br/>
     <br/>
     <mm:remove referid="listnotempty"/>    
-    <mm:list nodes="$user" path="people,portfolios,folders" constraints="portfolios.type='0'">
+    <mm:list nodes="$student" path="people,portfolios,folders" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
         Voeg mappen uit je ontwikkelingsgericht portfolio toe<br/>
@@ -52,7 +52,7 @@
     <br/>
     <br/>
     <mm:remove referid="listnotempty"/>
-    <mm:list nodes="$user" path="people,portfolios,folders,urls" constraints="portfolios.type='0'">
+    <mm:list nodes="$student" path="people,portfolios,folders,urls" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
         Voeg url uit je ontwikkelingsgericht portfolio toe<br/>
@@ -70,7 +70,7 @@
     <br/>
     <br/>
     <mm:remove referid="listnotempty"/>
-    <mm:list nodes="$user" path="people,portfolios,folders,pages" constraints="portfolios.type='0'">
+    <mm:list nodes="$student" path="people,portfolios,folders,pages" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
         Voeg page uit je ontwikkelingsgericht portfolio toe<br/>
@@ -88,7 +88,7 @@
     <br/>
     <br/>
     <mm:remove referid="listnotempty"/>
-    <mm:list nodes="$user" path="people,portfolios,folders,chatlogs" constraints="portfolios.type='0'">
+    <mm:list nodes="$student" path="people,portfolios,folders,chatlogs" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
         Voeg chatlog uit je ontwikkelingsgericht portfolio toe<br/>
