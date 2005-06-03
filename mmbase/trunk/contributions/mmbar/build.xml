@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base SYSTEM "../../mmbase/applications/buildbase.xml" > ]
+>
+
+<project name="mmbar" default="jar" basedir=".">
+  <property name="project.name"   value="mmbar" />
+  <property name="project.package"   value="org/mmbase/applications/mmbar" />
+  <property name="project.target.templates.dir" value="mmbar" />
+  <property name="project.source.dir" location="." />
+
+  <property name="source.dir" value="../../mmbase" />
+
+  &base;
+
+
+</project>
