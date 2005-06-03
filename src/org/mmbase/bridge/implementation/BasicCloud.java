@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.125 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.126 2005-06-03 15:08:10 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -629,15 +629,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             AggregatedResultCache cache = AggregatedResultCache.getCache();
 
             List resultList = null;
-            if (query.getCachePolicy().checkPolicy(query)) {
-                resultList = (List) cache.get(query);
-            }
             if (resultList == null) {
                 ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
                 resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
-                if (query.getCachePolicy().checkPolicy(query)) {
-                    cache.put(query, resultList);
-                }
+                cache.put(query, resultList);
             }
             query.markUsed();
             NodeManager tempNodeManager;

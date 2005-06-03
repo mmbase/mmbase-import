@@ -19,7 +19,7 @@ import java.util.HashMap;
  * object should be cached or not.
  *
  * @author Pierre van Rooden
- * @version $Id: CachePolicy.java,v 1.1 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: CachePolicy.java,v 1.2 2005-06-03 15:08:10 pierre Exp $
  */
 abstract public class CachePolicy implements Serializable {
 
@@ -88,7 +88,7 @@ abstract public class CachePolicy implements Serializable {
 
     /**
      * Checks whether the policy advises to cache the passed object.
-     * @param o the object to chechk the cache for
+     * @param o the object to check the cache for
      * @return <code>true</code> if the policy advises to cache this object, <code>false</code> otherwise.
      */
     abstract public boolean checkPolicy(Object o);

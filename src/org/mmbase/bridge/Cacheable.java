@@ -12,11 +12,11 @@ package org.mmbase.bridge;
 import org.mmbase.cache.CachePolicy;
 
 /**
- * A Cacheable object contaisn information on cache policies, which determines whether the object should be cached or not.
+ * A Cacheable object contains information on cache policies, which determines whether the object should be cached or not.
  * The code that handles the caching should verify this for a cacheable object.
  *
  * @author Pierre van Rooden
- * @version $Id: Cacheable.java,v 1.1 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: Cacheable.java,v 1.2 2005-06-03 15:08:10 pierre Exp $
  * @since MMBase-1.8
  * @see org.mmbase.cache.CachePolicy
  */

@@ -15,21 +15,22 @@ import java.io.File;
 import org.mmbase.util.LRUHashtable;
 import org.mmbase.module.core.*; // MMBaseContext;
 
-import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
+
+import org.mmbase.bridge.Cacheable;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.SizeOf;
+import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.20 2004-08-04 11:33:39 michiel Exp $
+ * @version $Id: Cache.java,v 1.21 2005-06-03 15:08:10 pierre Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
@@ -221,11 +222,30 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
     }
 
     /**
+     * Checks whether the key object should be cached.
+     * This method returns <code>false</code> if either the current cache is inactive, or the object to cache
+     * has a cache policy associated that prohibits caching of the object.
+     * @param key the object to be cached
+     * @return <code>true</code> if the object can be cached
+     */
+    protected boolean checkCachePolicy(Object key) {
+        CachePolicy policy = null;
+        if (active && key instanceof Cacheable) {
+            policy = ((Cacheable)key).getCachePolicy();
+        }
+        if (policy != null) {
+            return policy.checkPolicy((Cacheable)key);
+        } else {
+            return active;
+        }
+    }
+
+    /**
      * Like 'get' of LRUHashtable but considers if the cache is active or not.
      *
      */
     public  Object get(Object key) {
-        if (! active) return null;
+        if (!checkCachePolicy(key)) return null;
         return super.get(key);
     }
 
@@ -234,7 +254,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
      *
      */
     public Object put(Object key, Object value) {
-        if (! active) return null;
+        if (!checkCachePolicy(key)) return null;
         return super.put(key, value);
     }
 
