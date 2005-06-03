@@ -20,7 +20,7 @@ public class CompetencesBuilder extends MMObjectBuilder
 
    public boolean commit(MMObjectNode node)
    {
-      log.info("[CompetenceBuilder] Commiting of compitence node ID=" + node.getNumber());
+//      log.info("[CompetenceBuilder] Commiting of compitence node ID=" + node.getNumber());
       this.fillValueField(node);
       return super.commit(node);
    }
