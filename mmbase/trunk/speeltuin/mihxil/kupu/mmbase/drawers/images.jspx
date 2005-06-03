@@ -1,12 +1,10 @@
 <?xml version="1.0" ?>
-<%@page session="false"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content type="text/xml" language="en" expires="-1">
+<mm:content xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" type="text/xml" language="en" expires="-1">
 <collection>
-  <uri>drawers/images.jsp</uri>
+  <uri>drawers/images.jspx</uri>
   <icon>kupuimages/kupulibrary.png</icon>
   <title>MMBase</title>
-  <uri>drawers/images.jsp</uri>
+  <uri>drawers/images.jspx</uri>
   <items>
     <mm:cloud>
       <mm:listnodes type="images" id="image">

@@ -42,7 +42,7 @@ function adjustLayout() {
 
     var nodeHeight = xHeight('node');
 
-    xHeight("tree", maxHeight - nodeHeight - 20);
+    xHeight("tree", maxHeight - nodeHeight);
 
     
 }

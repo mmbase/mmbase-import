@@ -13,20 +13,25 @@ a:hover {
 }
 
 #header, #leftColumn { 
-  background-color: #9f3b57;
+  background-color: #527d94;
   color: #fff;
-  padding: 0;
+  padding: 0px;
+  margin: 0px;
 }
 
 #leftColumnContent { 
   padding: 0;
+    margin: 0;
 }
 
+
 #node {   
-  background-color: bf6d83;
-  margin: 0px;
-  padding: 0;
-  z-index:0;
+    background-color: 76a2b6;
+    overflow: auto;
+    margin-top: 0px;
+    margin: 0px;
+    padding: 0;
+    z-index:0;
 } 
 
 
@@ -40,7 +45,8 @@ a:hover {
 
 
 #tree { 
-  background-color: green;
+    overflow: auto;
+    margin-top: 0px;
   margin: 0px;
   padding: 0;
  
@@ -69,25 +75,33 @@ a:hover {
   margin: 0px;
   z-index: 1;
 }
+#kupu-tb-buttons {
+
+}
 
 textarea#kupu-editor-textarea {
   background-color: green;
   margin: 0;
   padding: 0;
-  height: 100px;
 }
+
 #kupu div.kupu-editorframe {
-  background-color: yellow;
-  margin: 0px;
+  background-color: green;
+  margin: 0px
+  margin-right: 0px;
+  padding: 0px;
 }
 #kupu div.kupu-toolboxes {
   background-color: red;
-  margin: 0px;
+  border: 0;
+  padding: 0;
 }
 
 #kupu-editor { 
-  background-color: white;
+  background-color: blue;
+  border: 0;
   margin: 0;
+  margin-right: 0;
   padding: 0;
 }
 div#kupu-toolbox-links { 
@@ -98,6 +112,14 @@ div#kupu-toolbox-images {
 }
 div#kupu-toolbox-debug { 
   display: none;
+}
+.kupu-fulleditor {
+ padding: 0px;
+  background-color: blue;
+}
+#toolbar {
+ padding: 0px;
+  background-color: yellow;
 }
 
 img.icon { 
