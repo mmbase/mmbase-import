@@ -1,6 +1,9 @@
 Migratie issues
 
 2005-06-02
+
+    Please run /migrate-2005-06-02.jsp to set all titles of educations, learnblocks, pages and paragraphs to visible
+
     Competence builder has got a new field.
 
     ALTER TABLE `mmb_competencies`   ADD `value`       BLOB DEFAULT NULL;
