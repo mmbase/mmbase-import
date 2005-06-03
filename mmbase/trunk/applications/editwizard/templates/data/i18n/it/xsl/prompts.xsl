@@ -8,7 +8,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.8 2005-05-19 08:44:53 pierre Exp $
+  @version $Id: prompts.xsl,v 1.9 2005-06-03 14:10:17 pierre Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -101,6 +101,7 @@
 <xsl:variable name="tooltip_logout" >Logout e ritorna alla pagina dell'indice</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
+  <xsl:param name="age" />
   <xsl:param name="searchvalue" />
   <xsl:value-of select="$title" disable-output-escaping="yes"  />(voci <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
