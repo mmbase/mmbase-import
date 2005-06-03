@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.3 2005-06-02 17:26:24 michiel Exp $
+// $Id: kupuinit.js,v 1.4 2005-06-03 08:02:48 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -86,15 +86,19 @@ function initKupu(iframe) {
     var listtool = new ListTool('kupu-list-ul-addbutton', 'kupu-list-ol-addbutton', 'kupu-ulstyles', 'kupu-olstyles');
     kupu.registerTool('listtool', listtool);
 
+
     var linktool = new LinkTool();
     kupu.registerTool('linktool', linktool);
     var linktoolbox = new LinkToolBox("kupu-link-input", "kupu-link-button", 'kupu-toolbox-links', 'kupu-toolbox', 'kupu-toolbox-active');
     linktool.registerToolBox('linktoolbox', linktoolbox);
 
+
     var imagetool = new ImageTool();
     kupu.registerTool('imagetool', imagetool);
     var imagetoolbox = new ImageToolBox('kupu-image-input', 'kupu-image-addbutton', 'kupu-image-float-select', 'kupu-toolbox-images',  'kupu-toolbox', 'kupu-toolbox-active');
+    alert("3" + imagetoolbox);
     imagetool.registerToolBox('imagetoolbox', imagetoolbox);
+
 
     /*
     var sourceedittool = new SourceEditTool('kupu-source-button', 'kupu-editor-textarea');
