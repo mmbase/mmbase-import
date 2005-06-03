@@ -47,8 +47,8 @@ public class Controller {
             log.error("Can't access builder typedef");
         }
         context = LocalContext.getCloudContext();
-        if (!PerformanceTestsManager.isRunning()) {
-            PerformanceTestsManager.init();
+        if (!MMBarManager.isRunning()) {
+            MMBarManager.init();
         }
     }
 
@@ -60,7 +60,7 @@ public class Controller {
      * @return       Description of the Return Value
      */
     public boolean performWriteTest(String name) {
-        if (PerformanceTestsManager.performWriteTest(name)) {
+        if (MMBarManager.performWriteTest(name)) {
             return true;
         } else {
             return false;
@@ -75,7 +75,7 @@ public class Controller {
      * @return       Description of the Return Value
      */
     public boolean performReadTest(String name) {
-        if (PerformanceTestsManager.performReadTest(name)) {
+        if (MMBarManager.performReadTest(name)) {
             return true;
         } else {
             return false;
@@ -90,7 +90,7 @@ public class Controller {
      * @return       Description of the Return Value
      */
     public boolean performMixedTest(String name) {
-        if (PerformanceTestsManager.performMixedTest(name)) {
+        if (MMBarManager.performMixedTest(name)) {
             return true;
         } else {
             return false;
@@ -105,7 +105,7 @@ public class Controller {
      * @return       Description of the Return Value
      */
     public boolean performEnduranceTest(String name) {
-        if (PerformanceTestsManager.performEnduranceTest(name)) {
+        if (MMBarManager.performEnduranceTest(name)) {
             return true;
         } else {
             return false;
@@ -121,18 +121,18 @@ public class Controller {
     public MMObjectNode getStateInfo() {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
-        String state = PerformanceTestsManager.getState();
+        String state = MMBarManager.getState();
         virtual.setValue("state", state);
         if (state.equals("running")) {
-            virtual.setValue("os", PerformanceTestsManager.getOS());
-            virtual.setValue("cpu", PerformanceTestsManager.getCPU());
-            virtual.setValue("server", PerformanceTestsManager.getServer());
-            virtual.setValue("database", PerformanceTestsManager.getDatabase());
-            virtual.setValue("driver", PerformanceTestsManager.getDriver());
-            virtual.setValue("java", PerformanceTestsManager.getJava());
-            virtual.setValue("runningname", PerformanceTestsManager.getRunningName());
-            int count = PerformanceTestsManager.getRunningCount();
-            int pos = PerformanceTestsManager.getRunningPos();
+            virtual.setValue("os", MMBarManager.getOS());
+            virtual.setValue("cpu", MMBarManager.getCPU());
+            virtual.setValue("server", MMBarManager.getServer());
+            virtual.setValue("database", MMBarManager.getDatabase());
+            virtual.setValue("driver", MMBarManager.getDriver());
+            virtual.setValue("java", MMBarManager.getJava());
+            virtual.setValue("runningname", MMBarManager.getRunningName());
+            int count = MMBarManager.getRunningCount();
+            int pos = MMBarManager.getRunningPos();
             virtual.setValue("runningpos", pos);
             virtual.setValue("runningcount", count);
             if (pos == 0) {
@@ -155,14 +155,14 @@ public class Controller {
     public MMObjectNode getWriteTest(String name) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
-        WriteTest wt = PerformanceTestsManager.getWriteTest(name);
+        WriteTest wt = MMBarManager.getWriteTest(name);
         if (wt != null) {
-            virtual.setValue("os", PerformanceTestsManager.getOS());
-            virtual.setValue("cpu", PerformanceTestsManager.getCPU());
-            virtual.setValue("server", PerformanceTestsManager.getServer());
-            virtual.setValue("database", PerformanceTestsManager.getDatabase());
-            virtual.setValue("driver", PerformanceTestsManager.getDriver());
-            virtual.setValue("java", PerformanceTestsManager.getJava());
+            virtual.setValue("os", MMBarManager.getOS());
+            virtual.setValue("cpu", MMBarManager.getCPU());
+            virtual.setValue("server", MMBarManager.getServer());
+            virtual.setValue("database", MMBarManager.getDatabase());
+            virtual.setValue("driver", MMBarManager.getDriver());
+            virtual.setValue("java", MMBarManager.getJava());
             virtual.setValue("name", wt.getName());
             virtual.setValue("description", wt.getDescription());
             virtual.setValue("state", wt.getState());
@@ -184,14 +184,14 @@ public class Controller {
     public MMObjectNode getMixedTest(String name) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
-        MixedTest mt = PerformanceTestsManager.getMixedTest(name);
+        MixedTest mt = MMBarManager.getMixedTest(name);
         if (mt != null) {
-            virtual.setValue("os", PerformanceTestsManager.getOS());
-            virtual.setValue("cpu", PerformanceTestsManager.getCPU());
-            virtual.setValue("server", PerformanceTestsManager.getServer());
-            virtual.setValue("database", PerformanceTestsManager.getDatabase());
-            virtual.setValue("driver", PerformanceTestsManager.getDriver());
-            virtual.setValue("java", PerformanceTestsManager.getJava());
+            virtual.setValue("os", MMBarManager.getOS());
+            virtual.setValue("cpu", MMBarManager.getCPU());
+            virtual.setValue("server", MMBarManager.getServer());
+            virtual.setValue("database", MMBarManager.getDatabase());
+            virtual.setValue("driver", MMBarManager.getDriver());
+            virtual.setValue("java", MMBarManager.getJava());
             virtual.setValue("name", mt.getName());
             virtual.setValue("description", mt.getDescription());
             virtual.setValue("state", mt.getState());
@@ -213,14 +213,14 @@ public class Controller {
     public MMObjectNode getEnduranceTest(String name) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
-        EnduranceTest et = PerformanceTestsManager.getEnduranceTest(name);
+        EnduranceTest et = MMBarManager.getEnduranceTest(name);
         if (et != null) {
-            virtual.setValue("os", PerformanceTestsManager.getOS());
-            virtual.setValue("cpu", PerformanceTestsManager.getCPU());
-            virtual.setValue("server", PerformanceTestsManager.getServer());
-            virtual.setValue("database", PerformanceTestsManager.getDatabase());
-            virtual.setValue("driver", PerformanceTestsManager.getDriver());
-            virtual.setValue("java", PerformanceTestsManager.getJava());
+            virtual.setValue("os", MMBarManager.getOS());
+            virtual.setValue("cpu", MMBarManager.getCPU());
+            virtual.setValue("server", MMBarManager.getServer());
+            virtual.setValue("database", MMBarManager.getDatabase());
+            virtual.setValue("driver", MMBarManager.getDriver());
+            virtual.setValue("java", MMBarManager.getJava());
             virtual.setValue("name", et.getName());
             virtual.setValue("description", et.getDescription());
             virtual.setValue("state", et.getState());
@@ -242,14 +242,14 @@ public class Controller {
     public MMObjectNode getReadTest(String name) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
-        ReadTest rt = PerformanceTestsManager.getReadTest(name);
+        ReadTest rt = MMBarManager.getReadTest(name);
         if (rt != null) {
-            virtual.setValue("os", PerformanceTestsManager.getOS());
-            virtual.setValue("cpu", PerformanceTestsManager.getCPU());
-            virtual.setValue("server", PerformanceTestsManager.getServer());
-            virtual.setValue("database", PerformanceTestsManager.getDatabase());
-            virtual.setValue("driver", PerformanceTestsManager.getDriver());
-            virtual.setValue("java", PerformanceTestsManager.getJava());
+            virtual.setValue("os", MMBarManager.getOS());
+            virtual.setValue("cpu", MMBarManager.getCPU());
+            virtual.setValue("server", MMBarManager.getServer());
+            virtual.setValue("database", MMBarManager.getDatabase());
+            virtual.setValue("driver", MMBarManager.getDriver());
+            virtual.setValue("java", MMBarManager.getJava());
             virtual.setValue("name", rt.getName());
             virtual.setValue("description", rt.getDescription());
             virtual.setValue("state", rt.getState());
@@ -272,7 +272,7 @@ public class Controller {
         try {
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-            for (Iterator i = PerformanceTestsManager.getWriteTests(); i.hasNext(); ) {
+            for (Iterator i = MMBarManager.getWriteTests(); i.hasNext(); ) {
                 MMObjectNode virtual = builder.getNewNode("admin");
                 WriteTest wt = (WriteTest) i.next();
                 virtual.setValue("name", wt.getName());
@@ -299,7 +299,7 @@ public class Controller {
         try {
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-            for (Iterator i = PerformanceTestsManager.getMixedTests(); i.hasNext(); ) {
+            for (Iterator i = MMBarManager.getMixedTests(); i.hasNext(); ) {
                 MMObjectNode virtual = builder.getNewNode("admin");
                 MixedTest mt = (MixedTest) i.next();
                 virtual.setValue("name", mt.getName());
@@ -326,7 +326,7 @@ public class Controller {
         try {
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-            for (Iterator i = PerformanceTestsManager.getEnduranceTests(); i.hasNext(); ) {
+            for (Iterator i = MMBarManager.getEnduranceTests(); i.hasNext(); ) {
                 MMObjectNode virtual = builder.getNewNode("admin");
                 EnduranceTest et = (EnduranceTest) i.next();
                 virtual.setValue("name", et.getName());
@@ -353,7 +353,7 @@ public class Controller {
         try {
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-            for (Iterator i = PerformanceTestsManager.getReadTests(); i.hasNext(); ) {
+            for (Iterator i = MMBarManager.getReadTests(); i.hasNext(); ) {
                 MMObjectNode virtual = builder.getNewNode("admin");
                 ReadTest rt = (ReadTest) i.next();
                 virtual.setValue("name", rt.getName());
@@ -378,7 +378,7 @@ public class Controller {
      */
     public List getWriteTestBenchmarks(String name) {
         List list = new ArrayList();
-        WriteTest wt = PerformanceTestsManager.getWriteTest(name);
+        WriteTest wt = MMBarManager.getWriteTest(name);
         if (wt != null) {
             try {
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
@@ -411,7 +411,7 @@ public class Controller {
      */
     public List getMixedTestBenchmarks(String name) {
         List list = new ArrayList();
-        MixedTest mt = PerformanceTestsManager.getMixedTest(name);
+        MixedTest mt = MMBarManager.getMixedTest(name);
         if (mt != null) {
             try {
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
@@ -444,7 +444,7 @@ public class Controller {
      */
     public List getEnduranceTestBenchmarks(String name) {
         List list = new ArrayList();
-        EnduranceTest et = PerformanceTestsManager.getEnduranceTest(name);
+        EnduranceTest et = MMBarManager.getEnduranceTest(name);
         if (et != null) {
             try {
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
@@ -477,7 +477,7 @@ public class Controller {
      */
     public List getReadTestBenchmarks(String name) {
         List list = new ArrayList();
-        ReadTest rt = PerformanceTestsManager.getReadTest(name);
+        ReadTest rt = MMBarManager.getReadTest(name);
         if (rt != null) {
             try {
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
