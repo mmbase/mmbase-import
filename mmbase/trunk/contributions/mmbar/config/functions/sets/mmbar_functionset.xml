@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+<status>active</status>
+<version>1</version>
+<description>functions for performancetests</description>
+
+	<function name="getWriteTests">
+		<description>list all the write tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getWriteTests</method>
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getWriteTestBenchmarks">
+		<description>list benchmarks of a writetest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getWriteTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getWriteTest">
+		<description>list all the write tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getWriteTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+	<function name="performWriteTest">
+		<description>perform a write test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>performWriteTest</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="getReadTests">
+		<description>list all the read tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getReadTests</method>
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getReadTestBenchmarks">
+		<description>list benchmarks of a readtest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getReadTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getReadTest">
+		<description>list all the read tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getReadTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+	<function name="performReadTest">
+		<description>perform a read test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>performReadTest</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getStateInfo">
+		<description>get state info</description>
+		<type>class</type>
+		<class>org.mmbase.applications.performancetests.gui.Controller</class>
+		<method>getStateInfo</method>
+		<return type="Node"> 
+		</return> 
+	</function>
+
+</functionset>
