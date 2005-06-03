@@ -32,6 +32,9 @@
 
 <%@ include file="leftpanel.jsp" %>
 
+<di:hasrole referid="user" role="teacher" inverse="true">
+  <mm:import id="whatselected" reset="true">student</mm:import>
+</di:hasrole>
 <%-- right section --%>
 <div class="mainContent">
 <mm:compare referid="command" value="getinvite">
@@ -46,6 +49,11 @@
 <mm:compare referid="currentfolder" value="-1">
   <div class="contentHeader">Competenties <mm:compare referid="currentprofile" value="-1" inverse="true"
       ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
+    <di:hasrole referid="user" role="teacher">
+      <mm:node number="$student">
+        : <mm:field name="firstname"/> <mm:field name="lastname"/>
+      </mm:node>
+    </di:hasrole>
   </div>
   <%@ include file="todo.jsp" %>
   <%@ include file="docs.jsp" %>
@@ -101,7 +109,13 @@
   </mm:compare>
 </di:hasrole>
   <mm:compare referid="whatselected" value="student">
-  <div class="contentHeader">Voortgangsmonitor</div>
+  <div class="contentHeader">Voortgangsmonitor
+    <di:hasrole referid="user" role="teacher">
+      <mm:node number="$student">
+        : <mm:field name="firstname"/> <mm:field name="lastname"/>
+      </mm:node>
+    </di:hasrole>
+  </div>
   <mm:compare referid="command" value="intake">
     <mm:import id="competencies" jspvar="competencies" />
     <jsp:include page="intaketest.jsp">
@@ -124,7 +138,13 @@
   </mm:compare>
 </mm:compare>
 <mm:compare referid="currentfolder" value="2">
-  <div class="contentHeader">Persoonlijke taken</div>
+  <div class="contentHeader">Persoonlijke taken
+    <di:hasrole referid="user" role="teacher">
+      <mm:node number="$student">
+        : <mm:field name="firstname"/> <mm:field name="lastname"/>
+      </mm:node>
+    </di:hasrole>
+  </div>
   <%@ include file="todo.jsp" %>
   <mm:compare referid="command" value="-1" inverse="true">
     <jsp:include page="todolist.jsp">
