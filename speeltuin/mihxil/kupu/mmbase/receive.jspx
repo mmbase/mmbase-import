@@ -1,31 +1,69 @@
 <mm:content type="text/html" language="en" expires="-1" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"  xmlns:jsp="http://java.sun.com/JSP/Page">
 
-  <jsp:directive.page import="java.io.*" />
+  <jsp:directive.page import="java.io.*,java.util.*" contentType="text/html; charset=UTF-8" />
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>KUPU- receiver</title>
     </head>
     <body >
-      <mm:import externid="kupu_node" from="session" />
-      <jsp:scriptlet>
-        StringBuffer received = new StringBuffer();
-        BufferedReader r  =  new BufferedReader(request.getReader());
-        String line = r.readLine();
-        while (line != null) {
-        received.append(line);
-          line = r.readLine();             
-        }
-      </jsp:scriptlet>
-      <mm:log>
-        Node: <mm:node referid="kupu_node"><mm:field name="number" /></mm:node>
-        <jsp:expression>received</jsp:expression>
-      </mm:log>
-      <p>
-        Received:
-      </p>
-      <pre>
-        <jsp:expression>received</jsp:expression>
-      </pre>
+      <mm:cloud rank="basic user">
+        <mm:log jspvar="log">
+        <mm:import externid="kupu_node" from="session" />
+        <mm:node referid="kupu_node" jspvar="node">
+          <mm:import externid="fields">false</mm:import>
+          <mm:compare referid="fields" value="false">
+            <mm:param name="org.mmbase.xml-mode" value="kupu" />
+            <jsp:scriptlet>
+              log.info("Saving fields of " + node.getNumber());
+              StringBuffer received = new StringBuffer();
+              BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
+              String line = r.readLine();
+            while (line != null) {
+            received.append(line).append("\n");
+            line = r.readLine();             
+            }
+            node.setStringValue("body", received.toString());
+            node.commit();
+            </jsp:scriptlet>
+            <mm:log><jsp:expression>received</jsp:expression></mm:log>
+            <p>
+              Received:
+          </p>
+          <pre>
+            <jsp:expression>received</jsp:expression>
+          </pre>
+          </mm:compare>          
+          <mm:compare referid="fields" value="true">
+            <jsp:scriptlet>
+               log.info("Saving body of " + node.getNumber());
+                String boundary = "----------__________----------";
+                String fieldPrefix = "field_";                                                                               
+                BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));           
+                String line = r.readLine();                                                                                  
+                while (line != null) {                                                                                       
+                    String[] entry = line.split(":");
+                    String fieldName = entry[0].substring(fieldPrefix.length());                                             
+                    String value;                                                                                            
+                    if (entry.length == 2 &amp;&amp; entry[1].equals(boundary)) {                                            
+                        StringBuffer buf = new StringBuffer();                                                               
+                        line = r.readLine();                                                                      
+                        while (line != null &amp;&amp; ! line.equals(boundary)) {
+                            buf.append(line);                                                                                
+                            line = r.readLine();                                                                             
+                        }                                                                                                    
+                        value = buf.toString();                                                                              
+                    } else {                                                                                                 
+                        value = entry.length == 2 ? entry[1] : "";                                                           
+                    }                                                                                                        
+                    node.setStringValue(fieldName, value);                                                                   
+                    line = r.readLine();                                                                                     
+                }                                                                                                            
+                node.commit();
+            </jsp:scriptlet>
+          </mm:compare>
+        </mm:node>
+        </mm:log>
+      </mm:cloud>
     </body>
   </html>
 </mm:content>

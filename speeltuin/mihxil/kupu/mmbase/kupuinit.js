@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.4 2005-06-03 08:02:48 michiel Exp $
+// $Id: kupuinit.js,v 1.5 2005-06-03 17:26:24 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -42,7 +42,7 @@ function initKupu(iframe) {
     kupu.registerTool('ui', ui); // XXX Should this be a different method?
 
     // add the buttons to the toolbar
-    var savebuttonfunc = function(button, editor) {editor.saveDocument()};
+    var savebuttonfunc = function(button, editor) {saveNode(button, editor);};
     var savebutton = new KupuButton('kupu-save-button', savebuttonfunc);
     kupu.registerTool('savebutton', savebutton);
 
@@ -96,7 +96,6 @@ function initKupu(iframe) {
     var imagetool = new ImageTool();
     kupu.registerTool('imagetool', imagetool);
     var imagetoolbox = new ImageToolBox('kupu-image-input', 'kupu-image-addbutton', 'kupu-image-float-select', 'kupu-toolbox-images',  'kupu-toolbox', 'kupu-toolbox-active');
-    alert("3" + imagetoolbox);
     imagetool.registerToolBox('imagetoolbox', imagetoolbox);
 
 

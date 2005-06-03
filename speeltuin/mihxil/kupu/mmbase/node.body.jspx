@@ -1,31 +1,23 @@
 <mm:content type="text/xml"
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+            expires="-1"
+            xmlns="http://www.w3.org/1999/xhtml" 
+            xmlns:jsp="http://java.sun.com/JSP/Page" 
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <mm:import id="node" externid="kupu_node" from="session" />
-
-  <mm:notpresent referid="node">
-    <mm:cloud>
-      <mm:param name="org.mmbase.xml-mode" value="kupu" />
+  <mm:cloud rank="basic user">
+    <mm:param name="org.mmbase.xml-mode" value="kupu" />
+    <mm:notpresent referid="node">
+      
       <mm:remove referid="node" />
       <mm:import externid="node" from="parameters" />
       <mm:node referid="node" id="node" />
-    </mm:cloud>
-  </mm:notpresent>
+    </mm:notpresent>
+    
+    <mm:node id="node" referid="node">
+      <mm:field name="body" escape="none" id="sent" />
+      <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
+    </mm:node>
+  </mm:cloud>
   
-  <mm:node id="node" referid="node">
-    <html>
-      <head>
-      </head>
-      <body>
-        <mm:field name="body" escape="none" />
-      </body>
-    </html>
-    <!--
-    <mm:formatter xslt="xslt/2kupu.xslt" escape="none">
-      <mm:field name="body" />
-    </mm:formatter>
-    -->
-  </mm:node>
 </mm:content>

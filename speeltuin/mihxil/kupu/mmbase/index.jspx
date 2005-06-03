@@ -9,6 +9,8 @@
     
     
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:j18n="http://jakarta.apache.org/taglibs/i18n-1.0" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+      <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+
       <mm:cloud rank="basic user">
         <mm:import externid="language">client</mm:import>
         <mm:content type="text/html" language="$language" expires="0">
@@ -93,7 +95,7 @@
     <dst>receive.jspx</dst>
     <use_css>0</use_css>
     <reload_after_save>0</reload_after_save>
-    <strict_output>0</strict_output>
+    <strict_output>1</strict_output>
     <content_type>application/xhtml+xml</content_type>
     <compatible_singletons>1</compatible_singletons>
     <table_classes>
@@ -143,7 +145,7 @@
         
     <div id="kupu">
       
-    <div class="kupu-fulleditor">
+    <div xmlns="http://www.w3.org/1999/xhtml" class="kupu-fulleditor">
       
     
     <div class="kupu-tb" id="toolbar">
@@ -154,7 +156,7 @@
     
     <span class="kupu-tb-buttongroup kupu-logo" style="float: right">
       <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" accesskey="k" id="kupu-logo-button" onclick="window.open('http://kupu.oscom.org');">&#xA0;</button>
-      <button type="button" class="mmbase-logo" title="MMBase" id="mmbase-logo-button" onclick="window.open('http://www.mmbase.org');">&#xA0;</button>
+      <button type="button" class="mmbase-logo" title="MMBase 1.8" id="mmbase-logo-button" onclick="window.open('http://www.mmbase.org');">&#xA0;</button>
     </span>
   
     
@@ -228,7 +230,9 @@
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="lower-alpha" i18n:translate="list-loweralpha">a</option>
     </select>
   
-           
+    
+    
+    
     <div style="display:block;" class="kupu-librarydrawer-parent">
 
     </div>
@@ -375,17 +379,17 @@
       
     
     <div class="kupu-toolbox" id="kupu-toolbox-links">
-      <h1><j18n:message key="Links"/></h1>
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Links"/></h1>
 
       <div id="kupu-toolbox-addlink">
         <div class="kupu-toolbox-label">
           
-          <span><j18n:message key="&#10;            Link the highlighted text to this URL:&#10;          "/></span>
+          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="&#10;            Link the highlighted text to this URL:&#10;          "/></span>
         </div>
 
         <input id="kupu-link-input" class="wide" type="text"/>
         <div class="kupu-toolbox-buttons">
-          <button><j18n:message key="Make Link"/></button>
+          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-link-button" class="kupu-toolbox-action" i18n:translate=""><j18n:message key="Make Link"/></button>
         </div>
 
       </div>
@@ -393,30 +397,30 @@
   
     
     <div class="kupu-toolbox" id="kupu-toolbox-images">
-            <h1><j18n:message key="Images"/></h1>
+            <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Images"/></h1>
 
             <div class="kupu-toolbox-label">
-              <span><j18n:message key="Image class:"/></span>
+              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Image class:"/></span>
             </div>
             <select class="wide" id="kupu-image-float-select">
-              <option><j18n:message key="Inline"/></option>
-              <option><j18n:message key="Left"/></option>
-              <option><j18n:message key="Right"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-inline" i18n:translate=""><j18n:message key="Inline"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-left" i18n:translate=""><j18n:message key="Left"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-right" i18n:translate=""><j18n:message key="Right"/></option>
             </select>
 
             <div class="kupu-toolbox-label">
-              <span><j18n:message key="Insert image at the following URL:"/></span>
+              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Insert image at the following URL:"/></span>
             </div>
             <input id="kupu-image-input" value="kupuimages/kupu_icon.gif" class="wide" type="text"/>
 
             <div class="kupu-toolbox-buttons">
-              <button><j18n:message key="Insert Image"/></button>
+              <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-image-addbutton" class="kupu-toolbox-action" i18n:translate=""><j18n:message key="Insert Image"/></button>
             </div>
     </div>
   
     
     <div class="kupu-toolbox" id="kupu-toolbox-debug">
-      <h1><j18n:message key="Debug Log"/></h1>
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><j18n:message key="Debug Log"/></h1>
       <div id="kupu-toolbox-debuglog" class="kupu-toolbox-label">
       </div>
     </div>
@@ -428,7 +432,8 @@
     <div class="kupu-editorframe">
       <form>					
         <iframe id="kupu-editor" class="kupu-editor-iframe" frameborder="0" src="start.jspx" scrolling="auto">
-          <jsp:text> </jsp:text>
+          <jsp:text>
+          </jsp:text>
         </iframe>
         <textarea class="kupu-editor-textarea" id="kupu-editor-textarea"><jsp:text> </jsp:text></textarea>
       </form>

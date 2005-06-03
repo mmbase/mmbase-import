@@ -1,42 +1,91 @@
 @import url("layout.css");
 
 body { 
-  padding: 0;
-  margin: 0;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 a { 
-  color: white;
+  color: #ffa;
+  text-decoration: none;
 }
-a:hover { 
-  background-color: #9f3bff;
+
+ul, ol { 
+  padding-left: 18px;
+}
+#leftColumnContent a:hover { 
+  background-color: #76a2b6;
+}
+
+img { 
+  border: 0;
 }
 
 #header, #leftColumn { 
   background-color: #527d94;
   color: #fff;
-  padding: 0px;
-  margin: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+
 }
+
 
 #leftColumnContent { 
-  padding: 0;
-    margin: 0;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+#node a:hover { 
+   background-color: #527d94;
 }
 
+textarea, input { 
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 2px;
+  margin-left: 2px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
 
 #node {   
-    background-color: 76a2b6;
-    overflow: auto;
-    margin-top: 0px;
-    margin: 0px;
-    padding: 0;
-    z-index:0;
+  background-color: #76a2b6;
+  overflow: hidden;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 } 
 
 
 #node td {
   vertical-align: top;
+}
+#node p { 
+  margin: 0px;
 }
 #node input {
   user-input: enabled;
@@ -45,22 +94,26 @@ a:hover {
 
 
 #tree { 
-    overflow: auto;
-    margin-top: 0px;
-  margin: 0px;
-  padding: 0;
+  overflow: auto;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
  
 }
 #tree ul { 
   list-style-type: none;          
 
  }
-#tree div.on a.turnon {
 
+a.current  { 
+  background-color:  #76a2b6;
 }
-#tree div.off a.turnoff {
 
-}
 #tree a.create {
   text-decoration: none;
 }
@@ -76,33 +129,65 @@ a:hover {
   z-index: 1;
 }
 #kupu-tb-buttons {
-
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 textarea#kupu-editor-textarea {
+  display: none;
   background-color: green;
-  margin: 0;
-  padding: 0;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 #kupu div.kupu-editorframe {
-  background-color: green;
-  margin: 0px
+  background-color: purple;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
   margin-right: 0px;
-  padding: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 #kupu div.kupu-toolboxes {
   background-color: red;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
   border: 0;
-  padding: 0;
 }
 
 #kupu-editor { 
-  background-color: blue;
+  background-color: white;
   border: 0;
-  margin: 0;
-  margin-right: 0;
   padding: 0;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 div#kupu-toolbox-links { 
   display: none;
@@ -114,15 +199,30 @@ div#kupu-toolbox-debug {
   display: none;
 }
 .kupu-fulleditor {
- padding: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
   background-color: blue;
 }
 #toolbar {
- padding: 0px;
-  background-color: yellow;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  height: 30px;
 }
 
 img.icon { 
+  margin-right: 0.5ex;
   border: 0px;
 }
 
