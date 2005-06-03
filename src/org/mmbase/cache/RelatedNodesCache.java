@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.4 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: RelatedNodesCache.java,v 1.5 2005-06-03 15:08:10 pierre Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */
@@ -52,8 +52,10 @@ public class RelatedNodesCache extends QueryResultCache {
 
     private Map numberToKeys = new HashMap();
 
-    
-    public synchronized Object put(SearchQuery query, List queryResult) { 
+
+    public synchronized Object put(SearchQuery query, List queryResult) {
+        // test cache policy before caching
+        if (!checkCachePolicy(query)) return null;
         Integer number = (Integer) ((Step) query.getSteps().get(0)).getNodes().first();
         Set keys = (Set) numberToKeys.get(number);
         if (keys == null) {
@@ -61,7 +63,7 @@ public class RelatedNodesCache extends QueryResultCache {
             numberToKeys.put(number, keys);
         }
         keys.add(query);
-        return super.put(query, queryResult);        
+        return super.put(query, queryResult);
     }
 
 
@@ -81,10 +83,10 @@ public class RelatedNodesCache extends QueryResultCache {
         if (keys != null) {
             Iterator i = keys.iterator();
             while (i.hasNext()) {
-                super.remove(i.next());                
-            }                            
+                super.remove(i.next());
+            }
             numberToKeys.remove(number);
-        }        
+        }
     }
 
     /**
@@ -93,5 +95,5 @@ public class RelatedNodesCache extends QueryResultCache {
     private RelatedNodesCache(int size) {
         super(size);
     }
-        
+
 }

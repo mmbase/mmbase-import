@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.10 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: QueryResultCache.java,v 1.11 2005-06-03 15:08:10 pierre Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -44,7 +44,7 @@ abstract public class QueryResultCache extends Cache {
      * Explicitely invalidates all Query caches for a certain builder. This is used in
      * MMObjectBuilder for 'local' changes, to ensure that imediate select after update always
      * works.
-     * 
+     *
      * @return number of entries invalidated
      */
     public static int invalidateAll(MMObjectBuilder builder) {
@@ -55,7 +55,7 @@ abstract public class QueryResultCache extends Cache {
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
                 QueryResultCache cache = (QueryResultCache) entry.getValue();
-                
+
                 // get the Observers for the builder:
                 Observer observer = (Observer) cache.observers.get(tn);
                 if (observer != null) {
@@ -79,7 +79,7 @@ abstract public class QueryResultCache extends Cache {
             log.error("" + queryCaches  + "already containing " + this + "!!");
         }
     }
-  
+
 
 
     /**
@@ -93,25 +93,25 @@ abstract public class QueryResultCache extends Cache {
     /**
      * Puts a  search result in this cache.
      */
-    public synchronized Object put(SearchQuery query, List queryResult) { 
-        if (! isActive()) return null;
-        
+    public synchronized Object put(SearchQuery query, List queryResult) {
+        if (!checkCachePolicy(query)) return null;
+
         List n =  (List) super.get(query);
         if (n == null) {
             addObservers(query);
         }
-        return super.put(query, queryResult);        
+        return super.put(query, queryResult);
     }
-    
+
     /**
      * Removes an object from the cache. It alsos remove the watch from
      * the observers which are watching this entry.
-     * 
+     *
      * @param key A SearchQuery object.
      */
     public synchronized Object remove(Object key) {
         Object result = super.remove(key);
-        
+
         if (result != null) { // remove the key also from the observers.
             Iterator i = observers.values().iterator();
             while (i.hasNext()) {
@@ -156,7 +156,7 @@ abstract public class QueryResultCache extends Cache {
      * that specific builder.
      */
 
-    private class Observer implements MMBaseObserver {        
+    private class Observer implements MMBaseObserver {
         /**
          * This set contains the types (as a string) which are to be invalidated.
          *
@@ -177,7 +177,7 @@ abstract public class QueryResultCache extends Cache {
                 if (log.isDebugEnabled()) {
                     log.debug("replaced the type: " + type + " with type:" + newType);
                 }
-                type = newType;            
+                type = newType;
             }
             mmb.addLocalObserver (type, this);
             mmb.addRemoteObserver(type, this);
@@ -193,38 +193,38 @@ abstract public class QueryResultCache extends Cache {
         protected int nodeChanged(String number, String builder) {
             int result = 0;
             Set removeKeys = new HashSet();
-            synchronized(this) { 
+            synchronized(this) {
                 Iterator i = cacheKeys.iterator();
-                QUERY_LOOP: 
+                QUERY_LOOP:
                 while (i.hasNext()) {
                     SearchQuery key = (SearchQuery) i.next();
                     Iterator j = key.getSteps().iterator();
-                    while(j.hasNext()) { 
+                    while(j.hasNext()) {
                         Step step = (Step)j.next();
-                        if(step.getTableName().equals(builder)) { 
+                        if(step.getTableName().equals(builder)) {
                             Set nodes = step.getNodes();
-                            if(nodes == null || nodes.size() == 0 || nodes.contains(new Integer(number))) { 
+                            if(nodes == null || nodes.size() == 0 || nodes.contains(new Integer(number))) {
                                 // QueryResultCache.this.remove(key);
                                 removeKeys.add(key);
                                 i.remove();
                                 result++;
                                 // next query
                                 continue QUERY_LOOP;
-                            } 
+                            }
                         }
                     }
                 }
             }
 
             Iterator k = removeKeys.iterator();
-            while(k.hasNext()) { 
+            while(k.hasNext()) {
                 QueryResultCache.this.remove(k.next());
             }
-            
+
             return result;
-            
+
         }
-        
+
 
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
@@ -238,12 +238,12 @@ abstract public class QueryResultCache extends Cache {
             //return true;
 
         }
-        
+
         /**
          * Start watching the entry with the specified key of this MultilevelCache (for this type).
          * @return true if it already was observing this entry.
          */
-        protected synchronized boolean observe(Object key) { 
+        protected synchronized boolean observe(Object key) {
             // assert(MultilevelCache.this.containsKey(key));
             return cacheKeys.add(key);
         }
@@ -251,13 +251,13 @@ abstract public class QueryResultCache extends Cache {
         /**
          * Stop observing this key of multilevelcache
          */
-        protected synchronized boolean stopObserving(Object key) {            
+        protected synchronized boolean stopObserving(Object key) {
             return cacheKeys.remove(key);
         }
 
         public String toString() {
-            return "Observer  " + super.toString() + " watching " + cacheKeys.size() + " keys"; 
+            return "Observer  " + super.toString() + " watching " + cacheKeys.size() + " keys";
         }
     }
-        
+
 }
