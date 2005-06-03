@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.16 2005-05-19 08:44:53 pierre Exp $
+  @version $Id: prompts.xsl,v 1.17 2005-06-03 14:10:18 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -109,11 +109,25 @@
 <xsl:template name="prompt_logout">Uitloggen</xsl:template>
 <xsl:variable name="tooltip_logout" >Uitloggen en terug naar de startpagina</xsl:variable>
 <!-- prompts and tooltips for lists -->
-<xsl:template name="prompt_edit_list" >
+<xsl:template name="prompt_search_age">
+  <xsl:param name="age" />
+  <xsl:if test="$age=1"> van de laatste dag</xsl:if>
+  <xsl:if test="$age=7"> van de laatste 7 dagen</xsl:if>
+  <xsl:if test="$age=31"> van de laatste maand</xsl:if>
+  <xsl:if test="$age=356"> van het afgelopen jaar</xsl:if>
+  <xsl:if test="$age=-1"> over de hele cloud</xsl:if>
+</xsl:template>
+
+<!-- prompts and tooltips for lists -->
+<xsl:template name="prompt_edit_list">
+  <xsl:param name="age" />
   <xsl:param name="searchvalue" />
+  <xsl:call-template name="prompt_search_age" >
+    <xsl:with-param name="age" select="$age" />
+  </xsl:call-template>
   <xsl:value-of select="$title" disable-output-escaping="yes"  />
   <xsl:if test="$searchvalue" >
-    , zoek op <xsl:value-of select="$searchvalue" />
+    - zoek op <xsl:value-of select="$searchvalue" />
   </xsl:if>
   (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>

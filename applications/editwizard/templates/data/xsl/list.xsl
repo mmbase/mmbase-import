@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.41 2005-05-19 08:44:53 pierre Exp $
+    @version $Id: list.xsl,v 1.42 2005-06-03 14:10:18 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -71,7 +71,8 @@
     <td>
       <div title="{$tooltip_edit_list}">
         <xsl:call-template name="prompt_edit_list" >
-            <xsl:with-param name="searchvalue" select="$searchvalue" />
+          <xsl:with-param name="age" select="$age" />
+          <xsl:with-param name="searchvalue" select="$searchvalue" />
         </xsl:call-template>
       </div>
     </td>
