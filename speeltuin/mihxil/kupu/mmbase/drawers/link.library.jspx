@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <libraries>
   <library id="mmbase">
-    <uri>drawers/links.jsp</uri>
+    <uri>drawers/links.jspx</uri>
     <title>MMBase</title>
-    <src>drawers/links.jsp</src>
+    <src>drawers/links.jspx</src>
     <icon>kupuimages/kupulibrary.png</icon>
   </library>
 </libraries>

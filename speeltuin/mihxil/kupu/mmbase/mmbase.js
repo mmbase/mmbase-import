@@ -47,8 +47,8 @@ function loadNode(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'node.jspx?node=' + nodeNumber, false);
         request.send('');
-        nodeXml = Sarissa.serialize(request.responseXML);
-        //nodeXml = request.responseXML.xml;
+        //nodeXml = Sarissa.serialize(request.responseXML);
+        nodeXml = request.responseXML.xml;
     } else {
         var request = new XMLHttpRequest();
         request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
@@ -65,8 +65,8 @@ function loadNode(nodeNumber) {
         request.open('GET', 'node.body.jspx', false);
         request.send('');
         //alert("Getting node.body.jspx");        
-        nodeBodyXml = Sarissa.serialize(request.responseXML);
-        //nodeBodyXml = request.responseXML.xml;
+        //nodeBodyXml = Sarissa.serialize(request.responseXML);
+        nodeBodyXml = request.responseXML.xml;
     }
     //alert("received" + nodeBodyXml);
     
@@ -85,8 +85,8 @@ function loadRelated(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
         request.send('');
-        treeXml = Sarissa.serialize(request.responseXML);
-        //treeXml = request.responseXML.xml;
+        //treeXml = Sarissa.serialize(request.responseXML);
+        treeXml = request.responseXML.xml;
         loadedTrees.add(nodeNumber, treeXml);
     }
     var related = document.getElementById('node_' + nodeNumber);
@@ -107,8 +107,8 @@ function unloadRelated(nodeNumber) {
         var request = new XMLHttpRequest();
         request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
         request.send('');
-        html = Sarissa.serialize(request.responseXML);
-        //html = request.responseXML.xml;
+        //html = Sarissa.serialize(request.responseXML);
+        html = request.responseXML.xml;
     }
     related.innerHTML = html;
     related.className = 'tree off';
@@ -119,8 +119,8 @@ function reloadTree() {
     var request = new XMLHttpRequest();
     request.open('GET', 'tree.jspx?parent=true', false);    
     request.send('');
-    var tree =  Sarissa.serialize(request.responseXML);
-    //var tree = request.responseXML.xml;
+    //var tree =  Sarissa.serialize(request.responseXML);
+    var tree = request.responseXML.xml;
     document.getElementById('tree').innerHTML = tree;
     // alert(" " + uncollapsedNodes.length + " " + uncollapsedNodes);
 }
@@ -132,8 +132,8 @@ function createSubNode(nodeNumber) {
     var request = new XMLHttpRequest();
     request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);    
     request.send('');
-    var result = Sarissa.serialize(request.responseXML);
-    //var result = request.responseXML.xml;
+    //var result = Sarissa.serialize(request.responseXML);
+    var result = request.responseXML.xml;
     alert(result);          
     reloadTree();
 

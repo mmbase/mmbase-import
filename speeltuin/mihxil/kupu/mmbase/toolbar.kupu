@@ -7,7 +7,7 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolbar.kupu,v 1.3 2005-06-02 17:26:24 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolbar.kupu,v 1.4 2005-06-03 08:02:48 michiel Exp $</kupu:id>
 
   <!-- lets limit ourselves to 2 ways of emphasis (in stead of 3) -->
   <kupu:part name="buttongroup-basicmarkup">
@@ -34,8 +34,8 @@
       <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" accesskey="k" id="kupu-logo-button"
               onclick="window.open('http://kupu.oscom.org');"
               >&#160;</button>
-      <button type="button" class="mmbase-logo" title="MMBase" accesskey="k" id="mmbase-logo-button"
-              onclick="window.open('http://www.mmbase.org.org');"
+      <button type="button" class="mmbase-logo" title="MMBase"  id="mmbase-logo-button"
+              onclick="window.open('http://www.mmbase.org');"
               >&#160;</button>
     </span>
   </kupu:part>
