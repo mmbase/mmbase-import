@@ -17,7 +17,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase-core</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${mmbase.version}</version>
             <type>jar</type>
             <properties>
 		        <eclipse.dependency>true</eclipse.dependency>
@@ -27,7 +27,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase-core-config</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${mmbase.version}</version>
             <type>jar</type>
             <properties>
 		        <eclipse.dependency>true</eclipse.dependency>
@@ -36,10 +36,10 @@ See http://www.MMBase.org/license
     		</properties>
         </dependency>
         <dependency>
+            <groupId>mmbase</groupId>
             <artifactId>mmbase-taglib</artifactId>
             <type>jar</type>
-            <groupId>mmbase</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${mmbase.version}</version>
             <properties>
 		        <eclipse.dependency>true</eclipse.dependency>
     			<war.bundle>${war.bundle}</war.bundle>
