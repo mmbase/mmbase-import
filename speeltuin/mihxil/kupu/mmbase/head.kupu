@@ -7,7 +7,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.4 2005-06-03 08:02:48 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.5 2005-06-04 13:03:59 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
     <title>MMBase Richtext Editor</title>
@@ -28,22 +28,22 @@
     <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
     <!-- script type="text/javascript" src="../../i18n.js/i18n.js"> </script-->
     <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/globals.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xgetelementbyid.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xclientwidth.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xclientheight.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xscrollleft.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xscrolltop.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xaddeventlistener.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xnum.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xdef.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xstr.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xgetcomputedstyle.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xwidth.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xheight.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xgetelementsbytagname.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='cross-browser.com/x/lib/xgetelementsbyclassname.js'><jsp:text> </jsp:text></script>
-    <script type='text/javascript' src='layout.js'><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/globals.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementbyid.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xclientwidth.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xclientheight.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xscrollleft.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xscrolltop.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xaddeventlistener.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xnum.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xdef.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xstr.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetcomputedstyle.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xwidth.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xheight.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbytagname.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbyclassname.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="layout.js"><jsp:text> </jsp:text></script>
   </kupu:part>
 
   <kupu:part name="styles">
