@@ -140,9 +140,15 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("MMXF_RICH");
         documentedEncodings.add("MMXF_XHTML");
         documentedEncodings.add("REGEXPS_ENTIRE");
+        documentedEncodings.add("REGEXPS_LINES");
         documentedEncodings.add("REGEXPS_WORDS");
+        documentedEncodings.add("REGEXPS_XMLTEXT");
+        documentedEncodings.add("REGEXPS_XMLTEXT_WORDS");
         documentedEncodings.add("ROT-13");
         documentedEncodings.add("ROT-5");
        return documentedEncodings;
     }
+    
+    
+    
 }
