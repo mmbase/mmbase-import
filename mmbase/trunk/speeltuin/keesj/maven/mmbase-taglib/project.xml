@@ -19,7 +19,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase-core</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>${mmbase.version}</version>
             <url>http://www.mmbase.org/</url>
             <properties>
 		        <eclipse.dependency>true</eclipse.dependency>
