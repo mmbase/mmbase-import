@@ -9,7 +9,7 @@
 
   <kupu:part name="xmlconfig">
     <div style="display: none;">
-      <xml id="kupuconfig" class="kupuconfig">
+      <xml id="kupuconfig" class="kupuconfig"><!-- xmlns="http://kupu.oscom.org/namespaces/dist"-->
         <kupuconfig>
           <kupu:define-slot name="kupuconfig" />
         </kupuconfig>

@@ -7,7 +7,7 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolbar.kupu,v 1.5 2005-06-03 17:26:24 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolbar.kupu,v 1.6 2005-06-04 13:03:59 michiel Exp $</kupu:id>
 
   <!-- lets limit ourselves to 2 ways of emphasis (in stead of 3) -->
   <kupu:part name="buttongroup-basicmarkup">
@@ -20,18 +20,15 @@
 
   <kupu:part name="select-styles">
     <select id="kupu-tb-styles">
-      <option value="P" i18n:translate="">
-        Normal
-      </option>
-      <option value="PRE" i18n:translate="">
-        Formatted
-      </option>
+      <option value="P" i18n:translate="">Normal</option>
+      <option value="PRE" i18n:translate="">Formatted</option>
     </select>
   </kupu:part>
 
   <kupu:part name="logo">
     <span class="kupu-tb-buttongroup kupu-logo" style="float: right">
-      <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" accesskey="k" id="kupu-logo-button"
+      <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" accesskey="k"
+              id="kupu-logo-button" i18n:attributes="title"
               onclick="window.open('http://kupu.oscom.org');"
               >&#160;</button>
       <button type="button" class="mmbase-logo" title="MMBase 1.8"  id="mmbase-logo-button"
