@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project
+	xmlns:j="jelly:core"
+	xmlns:x="jelly:xml"
+	xmlns:util="jelly:util"
+	xmlns:ant="jelly:ant">
+
+	<preGoal name="jar:jar">
+	    <fileScanner var="scanner">
+	    	<fileset dir="${maven.build.dest}"/>
+	    </fileScanner>
+    	<j:forEach var="dir" items="${scanner.directories()}">
+		    <fileScanner var="filescan">
+		    	<fileset dir="${dir.path}" >
+		    		<exclude name="INDEX"/>
+		    		<include name="*"/>
+		    	</fileset>
+		    </fileScanner>
+<!-- Generate INDEX file with each filename on a new line -->
+<echo file="${dir.path}/INDEX"><j:forEach var="file" items="${filescan.iterator()}">${file.name}
+</j:forEach></echo>
+    	</j:forEach>
+	</preGoal>
+
+</project>
