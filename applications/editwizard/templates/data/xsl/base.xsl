@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.33 2004-06-03 08:47:38 michiel Exp $
+    @version $Id: base.xsl,v 1.34 2005-06-04 19:58:31 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -81,7 +81,7 @@
   <!-- relative to root -->
   <xsl:variable name="rootreferrer">
     <xsl:choose>
-      <xsl:when test="substring($referrer, 1, 5) = 'https:'">
+      <xsl:when test="substring($referrer, 1, 6) = 'https:'">
         <xsl:value-of select="$referrer" />
       </xsl:when>
       <xsl:when test="substring($referrer, 1, 5) = 'http:'">
