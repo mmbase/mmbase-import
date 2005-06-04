@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.15 2005-05-20 09:02:54 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.16 2005-06-04 18:51:41 nico Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -282,7 +282,9 @@ public class ResourceLoader extends ClassLoader {
             }
             if (configPath == null) {
                 configPath = System.getProperty("mmbase.config");
-                log.debug("found the mmbase.config path parameter using the mmbase.config system property");
+                if (configPath != null) {
+                    log.debug("found the mmbase.config path parameter using the mmbase.config system property");
+                }
             } else if (System.getProperty("mmbase.config") != null){
                 //if the configPath at this point was not null and the mmbase.config system property is defined
                 //this deserves a warning message since the setting is masked
