@@ -11,9 +11,9 @@ body { background-color: #FFFFFF }
 .TableRowColor         { background: #CCEB6F } /* White */
 
 /* Font used in left-hand frame lists */
-.FrameTitleFont   { font-size: normal; font-family: normal }
-.FrameHeadingFont { font-size: normal; font-family: normal }
-.FrameItemFont    { font-size: normal; font-family: normal }
+.FrameTitleFont   { font-family: Arial, Helvetica, sans-serif; }
+.FrameHeadingFont { font-family: Arial, Helvetica, sans-serif; }
+.FrameItemFont    { font-family: Arial, Helvetica, sans-serif; }
 
 /* Example of smaller, sans-serif font in frames */
 /* .FrameItemFont  { font-size: 10pt; font-family: Helvetica, Arial, sans-serif } */
