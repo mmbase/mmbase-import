@@ -25,8 +25,7 @@
           <p>node # <mm:field name="number" /></p>
           <a class="create" title="New" href="javascript: createSubNode(${node});">
             <mm:link page="/mmbase/style/images/create.gif">
-              <img src="${_}" alt="+" />
-              Creëer subhoofstuk
+              <img src="${_}" alt="+" title="Creëer subhoofstuk" />
             </mm:link>
           </a>
           <form>

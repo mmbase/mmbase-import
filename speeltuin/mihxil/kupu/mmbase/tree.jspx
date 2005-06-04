@@ -1,74 +1,67 @@
-<mm:cloud
-     xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:jsp="http://java.sun.com/JSP/Page" 
-     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-     >
+<mm:content
+    type="text/xml"
+    expires="-1"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+<mm:cloud rank="basic user">
 <!-- 
   Shows:
-  <div class="tree on" id="node_[]">
-     <a>link to node</a>
+  <div class="tree" id="node_[]">
+     [folder] <a id="a_[]">link to node</a>
      <ul>
-       <li> [+/-] new </li>
        <li> 
-         <div class="tree off" id="node_[1]">
-           <a>index First subchapter</a>
-           <ul>
-             <li> [+/-] new </li>
-           </ul>
+         <div class="tree" id="node_[1]">
+           [folder] <a id="a_[1]">index First subchapter</a>
          </div>
        </li>
        <li> 
-         <div class="tree off" id="node_[2]" class="off">
-           <a>index Second subchapter</a>
-           <ul>
-             <li> [+/-] new </li>
-           </ul>
+         <div class="tree" id="node_[2]" class="off">
+           [folder] <a id="a_[2]">index Second subchapter</a>
          </div>
        </li>
         .....
      </ul>
-  </div>
-
--->        
+  </div>                                                            -->        
   <jsp:output omit-xml-declaration="true" />
-  
+
+  <mm:import externid="trunk" />
   <mm:param name="org.mmbase.xml-mode" value="kupu" />
   <mm:node number="pol_default" id="root" />
   <mm:param name="org.mmbase.index-root" referid="root" />
-  <mm:import externid="parent" />
   <mm:import externid="node">pol_default</mm:import>
   <mm:node id="n" referid="node">
     <div class="tree" id="node_${n}">
       <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
         <mm:sortorder field="pos" />       
-        <mm:size>
-          <mm:isgreaterthan value="0">
-            <a class="" href="javascript: unloadRelated(${n});">
-              <img class="icon" src="icons/map-open.gif" />
-            </a>
-          </mm:isgreaterthan>
-          <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
-        </mm:size>
+        <mm:notpresent referid="trunk">
+          <mm:size>
+            <mm:isgreaterthan value="0">
+              <a href="javascript: unloadRelated(${n});">
+                <img class="icon" src="icons/map-open.gif" />
+              </a>
+            </mm:isgreaterthan>
+            <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
+          </mm:size>
+        </mm:notpresent>
         <a href="javascript: loadNode(${n});" id="a_${n}"> ${n.title}</a>
         <ul>          
         <mm:listrelations id="rel">
           <li> 
             <mm:relatednode id="segment">
-              <div id="node_${segment}" class="tree noncurrent">
-                <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
-                      
+              <div id="node_${segment}" class="tree">
+                <mm:listrelationscontainer type="segments" role="index" searchdir="destination">                     
                   <mm:sortorder field="pos" />
                   <mm:size>
                     <mm:isgreaterthan value="0">
-                      <a   href="javascript: loadRelated(${segment});">                    
+                      <a  href="javascript: loadRelated(${segment});">                    
                         <img class="icon" src="icons/map.gif" />
                       </a>
                     </mm:isgreaterthan>
                     <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
                   </mm:size>
                   <a href="javascript: loadNode(${segment});" id="a_${segment}"> ${segment.title}</a>
-                  <ul>
-                  </ul>
                 </mm:listrelationscontainer>
               </div>
             </mm:relatednode>
@@ -76,11 +69,7 @@
         </mm:listrelations>
         </ul>
       </mm:listrelationscontainer>
-      <!--
-    <mm:present referid="parent">
-      <p class="debug"><a class="related" href="javascript: reloadTree();">reload</a></p>
-    </mm:present>    
-    -->
     </div>
   </mm:node>
 </mm:cloud>
+</mm:content>
