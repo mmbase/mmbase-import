@@ -9,7 +9,6 @@ body
 {
 	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 	background-color: white;
-	display: float;
 	margin: 0px;
 	padding: 0px;
 	font-size: 90%;
@@ -71,7 +70,7 @@ h1
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
-	padding-botom: 5px;
+	padding-bottom: 5px;
 }
 
 h2
@@ -391,7 +390,7 @@ a:hover
 input
 {
 	text-align: left;
-	font-family: Monaco, "Courier New", monospaced;
+	font-family: Monaco, "Courier New", monospace;
 	background-color: #D9DDDE;
 	margin: 2px;
 	padding: 2px;
@@ -404,7 +403,7 @@ input
 input.ie
 {
 	text-align: left;
-	font-family: Monaco, "Courier New", monospaced;
+	font-family: Monaco, "Courier New", monospace;
 	background-color: #fff;
 	margin: 2px 4px 2px 2px;
 	padding: 2px;
@@ -413,7 +412,7 @@ input.ie
 input.mmbase
 {
 	text-align: left;
-	font-family: Monaco, "Courier New", monospaced;
+	font-family: Monaco, "Courier New", monospace;
 	background-color: #D9DDDE;
 	margin: 2px;
 	padding: 2px;
@@ -433,7 +432,7 @@ textarea
 	border-color: #666;
 	border-width: 1px 0 0 1px;
 	font-size: 0.9em;
-	font-family: Monaco, "Courier New", monospaced;
+	font-family: Monaco, "Courier New", monospace;
 }
 
 /* Stylesheet for news pages in dev portal */

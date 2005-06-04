@@ -3,7 +3,6 @@ body
 	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 	font-size: 10px;
 	background-color: white;
-	display: float;
 	margin: 0px;
 	padding: 0px;
 }
@@ -69,7 +68,7 @@ h1
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
-	padding-botom: 5px;
+	padding-bottom: 5px;
 }
 
 h2
