@@ -27,12 +27,12 @@ function adjustLayout() {
 
     var a = xGetElementsByTagName('input', xGetElementById('leftColumn'));
     for (i=0; i < a.length; i++) {
-        xWidth(a[i], leftColumnWidth - 4);
+        xWidth(a[i], leftColumnWidth - 6);
     }
 
     a = xGetElementsByTagName('textarea', xGetElementById('leftColumn'));
     for (i=0; i < a.length; i++) {
-        xWidth(a[i], leftColumnWidth - 4);
+        xWidth(a[i], leftColumnWidth - 6);
     }
     a = xGetElementsByClassName('kupu-editorframe');
     for (i=0; i < a.length; i++) {

@@ -14,7 +14,7 @@
 
   <kupu:part name="tree-div">
     <div id="tree">
-      <mm:include page="tree.jspx?parent=true" />
+      <mm:include page="tree.jspx?trunk=true" />
     </div>
   </kupu:part>
 

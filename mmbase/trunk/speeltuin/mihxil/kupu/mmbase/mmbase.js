@@ -22,7 +22,7 @@ function Map() {
 
 var loadedNodes      = new Map();
 var loadedTrees      = new Map();
-var unloadedTrees      = new Map();
+var unloadedTrees    = new Map();
 var uncollapsedNodes = new Array();
 var loadedNodeBodies = new Map();
 
@@ -42,8 +42,13 @@ function serialize(request) {
     //return Sarissa.serialize(request.responseXML);
 }
 
+
+/**
+ * Called by the save button.
+ */
 function saveNode(button, editor) {
-    editor.saveDocument();
+    editor.saveDocument(); // kupu-part of save
+
     var content = "";
     var a = xGetElementsByTagName('input', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
@@ -64,6 +69,9 @@ function saveNode(button, editor) {
 
 }
 
+/**
+ * If title is edited, tree must be updated (used in onKeyUp)
+ */
 function updateTree(nodeNumber, title) {
     var nodeA = document.getElementById('a_' + nodeNumber);
     nodeA.innerHTML = title;
@@ -84,7 +92,9 @@ function loadNode(nodeNumber) {
         loadedNodes.add(currentNode, nodeDiv.innerHTML);
         loadedNodeBodies.add(currentNode, kupu.getHTMLBody());
         currentA = document.getElementById('a_' + currentNode);
-        currentA.className = "";
+        if (currentA != undefined) {
+            currentA.className = "";
+        }
 
      }
      var nodeXml = loadedNodes.get(nodeNumber);
@@ -158,7 +168,7 @@ function unloadRelated(nodeNumber) {
 
 function reloadTree() {
     var request = getRequest();
-    request.open('GET', 'tree.jspx?parent=true', false);    
+    request.open('GET', 'tree.jspx?trunk=true', false);    
     request.send('');
     var tree = serialize(request);
     document.getElementById('tree').innerHTML = tree;
