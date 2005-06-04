@@ -125,7 +125,7 @@
       <div id="leftColumnContent">
         
     <div id="tree">
-      <mm:include page="tree.jspx?parent=true"/>
+      <mm:include page="tree.jspx?trunk=true"/>
     </div>
   
         

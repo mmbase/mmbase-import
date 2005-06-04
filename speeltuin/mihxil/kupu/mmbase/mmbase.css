@@ -18,7 +18,11 @@ a {
 
 ul, ol { 
   padding-left: 18px;
+  margin-left: 0px;
 }
+li { 
+  margin-left: 0px;
+ }
 #leftColumnContent a:hover { 
   background-color: #76a2b6;
 }
@@ -95,6 +99,8 @@ textarea, input {
 
 #tree { 
   overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
   padding-right: 0px;
   padding-left: 0px;
   padding-bottom: 0px;
