@@ -18,7 +18,7 @@ See http://www.MMBase.org/license
             <artifactId>mmbase-core-config</artifactId>
             <type>jar</type>
             <groupId>mmbase</groupId>
-            <version>${pom.currentVersion}</version>
+            <version>${mmbase.version}</version>
             <properties>
 		        <eclipse.dependency>true</eclipse.dependency>
                 <war.bundle>true</war.bundle>
