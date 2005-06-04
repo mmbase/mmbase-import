@@ -17,7 +17,7 @@
 
 		<date>2004-02-05</date>
 
-		<edition>$Id: configuration.xml,v 1.1 2004-02-05 14:05:23 pierre Exp $</edition>
+		<edition>$Id: configuration.xml,v 1.2 2005-06-04 18:50:32 nico Exp $</edition>
 
 		<authorgroup>
 			<!-- one or more authors -->
@@ -69,15 +69,15 @@
 				<para>Configuration of the MMBase-provided JDBC interface.</para>
 			</listitem>
 			<listitem>
-				<formalpara><title><link linkend="configuration_attributes">Database resource (Attributes)</link></title></formalpara>
+				<formalpara><title><!-- <link linkend="configuration_attributes"> -->Database resource (Attributes)<!-- </link> --></title></formalpara>
 				<para>Attributes affect the behavior of the database by specifying additional information such as the path to store blobs on file</para>
 			</listitem>
 			<listitem>
-				<formalpara><title><link linkend="configuration_options">Database resource (Options)</link></title></formalpara>
+				<formalpara><title><!-- <link linkend="configuration_options"> -->Database resource (Options)<!-- </link> --></title></formalpara>
 				<para>Options affect the behavior of the database by turning features on or off, such as whether to create compound indexes.</para>
 			</listitem>
 			<listitem>
-				<formalpara><title><link linkend="configuration_schemes">Database resource (Schemes)</link></title></formalpara>
+				<formalpara><title><!-- <link linkend="configuration_schemes"> -->Database resource (Schemes)<!-- </link> --></title></formalpara>
 				<para>Schemes define templates for SQL statements (or parts of SQL statements), such as the CREATE TABLE statement.</para>
 			</listitem>
 		</itemizedlist>
