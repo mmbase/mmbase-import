@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.307 2005-05-31 20:19:19 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.308 2005-06-05 08:30:30 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4135,6 +4135,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
       This is a list which can only live under a NodeProvider, to iterate through all aliases of the
       Node. In the body you can use the `writer' functionality to actually write out current alias.
@@ -6275,6 +6276,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.StringListTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
       <p>
         A simple list iterating some list, coming from the `context. So the `referid' is required for this list.
