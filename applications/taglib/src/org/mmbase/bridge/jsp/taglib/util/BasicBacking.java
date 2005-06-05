@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.3 2005-06-02 21:32:07 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.4 2005-06-05 08:31:36 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -50,15 +50,17 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             originalPageContextValues = null;
         }
     }
-    public void setJspVar(String jspvar, int vartype, Object value) {
+    public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
         if (value == null) return;
         // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
         if (vartype == WriterHelper.TYPE_STRING) {
             // string is final, the wrapped version cannot be string..
-            pageContext.setAttribute(jspvar, Casting.unWrap(value));
+            Object v = Casting.unWrap(value);
+            if (v == null) return;
+            pc.setAttribute(jspvar, v);
         } else {
-            pageContext.setAttribute(jspvar, value);
+            pc.setAttribute(jspvar, value);
         }
 
     }
