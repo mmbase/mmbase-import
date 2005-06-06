@@ -1,6 +1,9 @@
 <kupu:wire
     implementation="mmbase"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
     >
 
   <kupu:fill-slot name="head">
@@ -20,13 +23,32 @@
   <kupu:fill-slot name="body">
     <kupu:insert-part feature="xmlconfig"  part="xmlconfig" />
     <div id="header">
-      Richtext editor (
-      <a href="./?language=en">en</a>,
-      <a href="./?language=de">de</a>,
-      <a href="./?language=nl">nl</a>,
-      <a href="./?language=eo">eo</a>,
-      <a href="./?language=client">default</a>
-      )
+      <fmt:bundle basename="org.mmbase.jspeditors.editors">
+	<fmt:message key="richtext.editor" />
+	<div id="languageSelector">
+	  <form name="languageform" method="get" action=".">
+	  <select onChange="document.forms['languageform'].submit();" name="language">
+	    <mm:compare referid="rich_language" value="client">
+	      <option value="client" selected="selected"><fmt:message key="default" /></option>
+	    </mm:compare>
+	    <mm:compare referid="rich_language" value="client" inverse="true">
+	      <option value="client"><fmt:message key="default" /></option>
+	    </mm:compare>
+	    <mm:import id="languages" vartype="list">en,de,nl,eo</mm:import>
+	    <mm:stringlist referid="languages">
+	      <mm:locale language="${_}" jspvar="locale">
+		<mm:compare referid2="rich_language">
+		  <option value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
+		</mm:compare>
+		<mm:compare referid2="rich_language" inverse="true">
+		  <option value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
+		</mm:compare>
+	      </mm:locale>
+	    </mm:stringlist>
+	  </select>
+	  </form>
+	</div>
+      </fmt:bundle>
     </div>
     <div id="leftColumn">
       <div id="leftColumnContent">

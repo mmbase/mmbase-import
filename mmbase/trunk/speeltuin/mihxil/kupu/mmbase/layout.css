@@ -1,14 +1,29 @@
 body {
-  margin: 0;
-  padding: 0;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+#footer, #header, #centerColumn, #leftColumn { 
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+
 }
 #header, #footer {
   text-align: center;
-  margin: 0;
 }
 #header {
   height: 20px;
-  padding: 0px 0 0 0;
 }
 
 #centerColumn {
@@ -28,6 +43,7 @@ body {
   left: 0;
 }
 #footer {
+  display: none;          
   height: 40px;
   padding: 16px 0 0 0;
 }
@@ -45,4 +61,47 @@ textarea.kupu-editor-textarea {
   height: auto;
   margin:0;
   padding:0;
+}
+
+textarea, input { 
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 2px;
+  margin-left: 2px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+form { 
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 2px;
+  margin-left: 2px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+option { 
+
+}
+
+#languageSelector 
+{ 
+  height: 18px;
+  overflow: hidden;
+  background-color: yellow;
+  font-size: 5pt;
+  top: 0;
+  right: 5px;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-right: 2px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+   
 }

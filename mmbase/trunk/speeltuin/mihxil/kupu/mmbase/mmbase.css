@@ -1,14 +1,6 @@
 @import url("layout.css");
 
 body { 
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
 }
 
 a { 
@@ -34,42 +26,13 @@ img {
 #header, #leftColumn { 
   background-color: #527d94;
   color: #fff;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-
 }
 
 
-#leftColumnContent { 
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
 #node a:hover { 
    background-color: #527d94;
 }
 
-textarea, input { 
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 2px;
-  margin-left: 2px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
 
 #node {   
   background-color: #76a2b6;
