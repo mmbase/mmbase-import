@@ -1,14 +1,27 @@
-<!ELEMENT mmxf (p | section )* >
+<!--
+    Version 1.1 of MMXF, used in MMBase 1.8
+   -- It is now an actual subset of XHTML 2 (http://www.w3.org/TR/xhtml2/)
+   -- Not completely compatible with mmxf 1.0 (which was never really in use (lacking editors)).
+
+-->
+
+<!ENTITY % Block   "(p | table)*">
+<!ENTITY % Lists    "ol | ul">
+<!ENTITY % Content "(p | table)*">
+<!ENTITY % Text    "(#PCDATA | em | a | %Lists;)*">
+
+
+<!ELEMENT mmxf %Block; section* >
 <!ATTLIST mmxf 
     version    NMTOKEN  #IMPLIED
 >
-<!ELEMENT section h ( p | section | ul )* > 
+<!ELEMENT section h %Block;* section* > 
 <!ATTLIST section 
     id    NMTOKEN  #IMPLIED
 >
 <!ELEMENT h ( #PCDATA )* >
 
-<!ELEMENT p  ( #PCDATA | em | ul | a)* >
+<!ELEMENT p  %Text; >
 <!ATTLIST p id  NMTOKEN  #IMPLIED > 
 
 <!ELEMENT ul ( li )+ >
@@ -19,3 +32,8 @@
 <!ELEMENT a  ( #PCDATA | em )* >
 <!ATTLIST a id  NMTOKEN  #REQUIRED > 
 
+<!ELEMENT table caption? tr+ >
+<!ELEMENT tr (td | th)+>
+<!ELEMENT caption %Text; >
+<!ELEMENT td (%Block; | %Text;) >
+<!ELEMENT th (%Block; | %Text;) >
