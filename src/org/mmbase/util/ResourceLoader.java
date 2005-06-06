@@ -17,6 +17,7 @@ import java.net.*;
 
 // used for resolving in servlet-environment
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 // used for resolving in MMBase database
@@ -97,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.16 2005-06-04 18:51:41 nico Exp $
+ * @version $Id: ResourceLoader.java,v 1.17 2005-06-06 16:32:30 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -361,6 +362,13 @@ public class ResourceLoader extends ClassLoader {
         return webRoot;
     }
 
+    /**
+     * Returns the resource loader associated with the directory of the given request
+     */
+    public static synchronized ResourceLoader getWebDirectory(HttpServletRequest request) {
+        return  ResourceLoader.getWebRoot().getChildResourceLoader(request.getServletPath()).getParentResourceLoader();
+    }
+
 
     /**
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
@@ -531,8 +539,15 @@ public class ResourceLoader extends ClassLoader {
         if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
             return getParentResourceLoader();
         }
-        return new ResourceLoader(this, context);
+        String [] dirs = context.split("/");
+        ResourceLoader rl = this;
+        for (int i = 0; i < dirs.length; i++) {
+            rl =  new ResourceLoader(rl, dirs[i]);
+        }
+        return rl;
+
     }
+
 
     /**
      * Returns a set of 'sub resources' (read: 'files in the same directory'), which can succesfully be loaded by the ResourceLoader.
