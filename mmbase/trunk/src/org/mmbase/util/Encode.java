@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.23 2005-05-13 09:49:09 michiel Exp $
+ * @version $Id: Encode.java,v 1.24 2005-06-06 15:02:59 michiel Exp $
  **/
 public class Encode {
 
@@ -114,7 +114,7 @@ public class Encode {
      */
     public static void register(String clazz) {
         if (! registered.contains(clazz)) { // if already registered, do nothing.
-            log.info("registering encode class " + clazz);
+            log.service("registering encode class " + clazz);
             try {
                 Class atrans = Class.forName(clazz);
                 if(Transformer.class.isAssignableFrom(atrans)) { // make sure it is of the right type.
@@ -334,8 +334,8 @@ public class Encode {
                     while (line != null) {
                             string += line + "\n";
                             line = stdinReader.readLine();
-                    }
-                    System.out.println("----------------");
+                    }                   
+                    log.service("----------------");
                 } catch (java.io.IOException e) {
                     System.err.println(e.toString());
                 }
