@@ -1,19 +1,22 @@
+
 <mm:content type="text/xml" expires="-1"
             xmlns="http://www.w3.org/1999/xhtml"
             xmlns:jsp="http://java.sun.com/JSP/Page" 
+	    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"            
             >
+  <mm:import externid="rich_language" from="session">client</mm:import>
+<mm:locale language="$rich_language">
 <mm:cloud 
     rank="basic user"
     >
+  <fmt:bundle basename="org.mmbase.jspeditors.editors">
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" />
   <mm:import externid="loadonly" />
   <mm:notpresent referid="node">
     <div class="node" title="No Node">
-      <p>
-        No node loaded.
-      </p>
+      <p><fmt:message key="richtext.nonode" /></p>
     </div>
   </mm:notpresent>
   <mm:present referid="node">
@@ -48,5 +51,7 @@
     </mm:node>
     <mm:write session="kupu_node" referid="node" />
   </mm:present>  
+  </fmt:bundle>
 </mm:cloud>
+</mm:locale>
 </mm:content>
