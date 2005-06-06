@@ -36,6 +36,7 @@
   <mm:import id="whatselected" reset="true">student</mm:import>
 </di:hasrole>
 <%-- right section --%>
+<mm:compare referid="whatselected" value="0" inverse="true">
 <div class="mainContent">
 <mm:compare referid="command" value="getinvite">
   <mm:import id="currentpop" reset="true">0</mm:import>
@@ -155,11 +156,10 @@
   </div>
 </div>
 </mm:compare>
+</mm:compare>
 
 <di:hasrole referid="user" role="teacher">
 <mm:compare referid="whatselected" value="0">
-  </div>
-</div>
 <div class="mainContent">
   <div class="contentHeader">Selecteer een student</div>
   <div class="contentBody">
