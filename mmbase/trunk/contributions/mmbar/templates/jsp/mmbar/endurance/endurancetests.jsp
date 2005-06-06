@@ -41,7 +41,7 @@
 	</form>
 	<form action="<mm:url page="index.jsp" referids="main" />" method="post">
 	<td width="100" align="center">
-	<input type="hidden" value="mmbar" name="action" />
+	<input type="hidden" value="performendurancetest" name="action" />
 	<input type="hidden" value="<mm:field name="name" />" name="name" />
 	<input type="submit" value="<mm:field name="action" />" />
 	</td>
