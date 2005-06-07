@@ -8,16 +8,16 @@
   
     
     
-    <html>
-      <jsp:output xmlns:jsp="http://java.sun.com/JSP/Page" doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+    <html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+      <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
-      <mm:cloud xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" rank="basic user">
-	<mm:import id="rich_language" externid="language"/>
+      <mm:cloud rank="basic user">
+        <mm:import id="rich_language" externid="language"/>
         <mm:import externid="rich_language" from="this,session">client</mm:import>
-	<mm:write session="rich_language" referid="rich_language"/>
+        <mm:write session="rich_language" referid="rich_language"/>
         <mm:content type="text/html" language="$rich_language" expires="0">
-          <fmt:bundle xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" basename="org.oscom.kupu.Messages">
-	    
+          <fmt:bundle basename="org.oscom.kupu.Messages">
+            
     
     <head>
       
@@ -31,7 +31,7 @@
     <mm:import id="kupu_common">../common</mm:import>
   
     
-    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></link> 
+    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> 
   
     
     <link href="${kupu_common}/kupudrawerstyles.css" rel="stylesheet" type="text/css"/>
@@ -40,47 +40,48 @@
     <link href="mmbase.css" rel="stylesheet" type="text/css"/>
   
     
-    <script type="text/javascript" src="${kupu_common}/sarissa.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupueditor.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupubasetools.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupuloggers.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/sarissa.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupueditor.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupubasetools.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupuloggers.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
     
-    <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/globals.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementbyid.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xclientwidth.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xclientheight.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xscrollleft.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xscrolltop.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xaddeventlistener.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xnum.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xdef.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xstr.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xgetcomputedstyle.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xwidth.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xheight.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbytagname.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbyclassname.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="layout.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/globals.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementbyid.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xclientwidth.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xclientheight.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xscrollleft.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xscrolltop.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xaddeventlistener.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xnum.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xdef.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xstr.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetcomputedstyle.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xwidth.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xheight.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xtop.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbytagname.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbyclassname.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="layout.js"><jsp:text> </jsp:text></script>
   
     
-    <script type="text/javascript" src="${kupu_common}/kupucontextmenu.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupucontextmenu.js"><jsp:text> </jsp:text></script>
   
     
-    <script type="text/javascript" src="kupuinit.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupustart.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="kupuinit.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupustart.js"><jsp:text> </jsp:text></script>
   
     
-    <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"><jsp:text> </jsp:text></script>
   
     
     
-    <script type="text/javascript" src="${kupu_common}/kupudrawers.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupudrawers.js"><jsp:text> </jsp:text></script>
   
     
-    <script type="text/javascript" src="mmbase.js"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></script>
+    <script type="text/javascript" src="mmbase.js"><jsp:text> </jsp:text></script>
   
   
     </head>
@@ -123,23 +124,23 @@
     <div id="header">
       <fmt:bundle basename="org.mmbase.jspeditors.editors">
 	<fmt:message key="richtext.editor"/>
-	<div id="languageSelector">
+	<div xmlns="" id="languageSelector">
 	  <form name="languageform" method="get" action=".">
 	  <select onChange="document.forms['languageform'].submit();" name="language">
 	    <mm:compare referid="rich_language" value="client">
-	      <option value="client" selected="selected"><fmt:message key="default"/></option>
+	      <option xmlns="" value="client" selected="selected"><fmt:message key="default"/></option>
 	    </mm:compare>
 	    <mm:compare referid="rich_language" value="client" inverse="true">
-	      <option value="client"><fmt:message key="default"/></option>
+	      <option xmlns="" value="client"><fmt:message key="default"/></option>
 	    </mm:compare>
 	    <mm:import id="languages" vartype="list">en,de,nl,eo</mm:import>
 	    <mm:stringlist referid="languages">
 	      <mm:locale language="${_}" jspvar="locale">
 		<mm:compare referid2="rich_language">
-		  <option value="${_}" selected="selected"><jsp:expression xmlns:jsp="http://java.sun.com/JSP/Page">locale.getDisplayName(locale)</jsp:expression></option>
+		  <option xmlns="" value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
 		</mm:compare>
 		<mm:compare referid2="rich_language" inverse="true">
-		  <option value="${_}"><jsp:expression xmlns:jsp="http://java.sun.com/JSP/Page">locale.getDisplayName(locale)</jsp:expression></option>
+		  <option xmlns="" value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
 		</mm:compare>
 	      </mm:locale>
 	    </mm:stringlist>
@@ -189,7 +190,24 @@
     
     <select id="kupu-tb-styles">
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="P" i18n:translate=""><fmt:message key="Normal"/></option>
-      <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="PRE" i18n:translate=""><fmt:message key="Formatted"/></option>
+      <option value="H1">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 1"/></span>
+      </option>
+      <option value="H2">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 2"/></span>
+      </option>
+      <option value="H3">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 3"/></span>
+      </option>
+      <option value="H4">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 4"/></span>
+      </option>
+      <option value="H5">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 5"/></span>
+      </option>
+      <option value="H6">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 6"/></span>
+      </option>
     </select>
   
     
@@ -220,6 +238,7 @@
     <span class="kupu-tb-buttongroup">
       <fmt:message var="_" key="image"/><button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-image" id="kupu-imagelibdrawer-button" title="${_}" i18n:attributes="title">&#xA0;</button>
       <fmt:message var="_" key="link"/><button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-inthyperlink" id="kupu-linklibdrawer-button" title="${_}" i18n:attributes="title">&#xA0;</button>
+      <fmt:message var="_" key="table"/><button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-table" id="kupu-tabledrawer-button" title="${_}" i18n:attributes="title">&#xA0;</button>
     </span>
   
     
@@ -266,8 +285,8 @@
       <div id="kupu-linkdrawer-addlink" class="kupu-panels kupu-linkdrawer-addlink">
         <table>
         <tr><td><div class="kupu-toolbox-label">
-          
-          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="&#10;            Link the highlighted text to this URL:&#10;          "/></span>
+
+          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Link the highlighted text to this URL:"/></span>
         </div>
 
         <input class="kupu-toolbox-st kupu-linkdrawer-input" type="text"/>
@@ -275,8 +294,8 @@
         <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" onclick="drawertool.current_drawer.preview()" i18n:translate=""><fmt:message key="Preview"/></button>
         </td></tr>
         <tr><td colspan="2" align="center">
-        <iframe frameborder="1" scrolling="auto" width="440" height="198" class="kupu-linkdrawer-preview" src="kupublank.html"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page">
-                </jsp:text>
+        <iframe frameborder="1" scrolling="auto" width="440" height="198" class="kupu-linkdrawer-preview" src="kupublank.html"><jsp:text>
+        </jsp:text>
         </iframe>
         </td></tr>
         </table>
@@ -299,14 +318,9 @@
             <div class="kupu-tabledrawer-addtable">
               <table>
                 <tr>
-                  <th class="kupu-toolbox-label">Table Class</th>
+                  <th class="kupu-toolbox-label">Table caption</th>
                   <td>
-                    <select class="kupu-tabledrawer-classchooser">
-                      <option value="plain">Plain</option>
-                      <option value="listing">Listing</option>
-                      <option value="grid">Grid</option>
-                      <option value="data">Data</option>
-                    </select>
+                    <input name="caption"/>
                   </td>
                 </tr>
                 <tr>
@@ -338,24 +352,9 @@
             <div class="kupu-tabledrawer-edittable">
               <table>
                 <tr>
-                  <th class="kupu-toolbox-label">Table Class</th>
+                  <th class="kupu-toolbox-label">Table caption</th>
                   <td>
-                    <select class="kupu-tabledrawer-classchooser" onchange="drawertool.current_drawer.setTableClass(this.options[this.selectedIndex].value)">
-                      <option value="plain">Plain</option>
-                      <option value="listing">Listing</option>
-                      <option value="grid">Grid</option>
-                      <option value="data">Data</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label">Current column alignment</th>
-                  <td>
-                    <select id="kupu-tabledrawer-alignchooser" class="kupu-tabledrawer-alignchooser" onchange="drawertool.current_drawer.tool.setColumnAlign(this.options[this.selectedIndex].value)">
-                      <option value="left">Left</option>
-                      <option value="center">Center</option>
-                      <option value="right">Right</option>
-                      </select>
+                    <input name="caption" onchange=""/>
                   </td>
                 </tr>
                 <tr>
@@ -400,19 +399,17 @@
       
     
     <div class="kupu-toolbox" id="kupu-toolbox-links">
-      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Links</h1>
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Links"/></h1>
 
       <div id="kupu-toolbox-addlink">
         <div class="kupu-toolbox-label">
           
-          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">
-            Link the highlighted text to this URL:
-          </span>
+          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Link the highlighted text to this URL:"/></span>
         </div>
 
         <input id="kupu-link-input" class="wide" type="text"/>
         <div class="kupu-toolbox-buttons">
-          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-link-button" class="kupu-toolbox-action" i18n:translate="">Make Link</button>
+          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-link-button" class="kupu-toolbox-action" i18n:translate=""><fmt:message key="Make Link"/></button>
         </div>
 
       </div>
@@ -420,30 +417,86 @@
   
     
     <div class="kupu-toolbox" id="kupu-toolbox-images">
-            <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Images</h1>
+            <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Images"/></h1>
 
             <div class="kupu-toolbox-label">
-              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Image class:</span>
+              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Image class:"/></span>
             </div>
             <select class="wide" id="kupu-image-float-select">
-              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-inline" i18n:translate="">Inline</option>
-              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-left" i18n:translate="">Left</option>
-              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-right" i18n:translate="">Right</option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-inline" i18n:translate=""><fmt:message key="Inline"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-left" i18n:translate=""><fmt:message key="Left"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-right" i18n:translate=""><fmt:message key="Right"/></option>
             </select>
 
             <div class="kupu-toolbox-label">
-              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Insert image at the following URL:</span>
+              <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Insert image at the following URL:"/></span>
             </div>
             <input id="kupu-image-input" value="kupuimages/kupu_icon.gif" class="wide" type="text"/>
 
             <div class="kupu-toolbox-buttons">
-              <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-image-addbutton" class="kupu-toolbox-action" i18n:translate="">Insert Image</button>
+              <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-image-addbutton" class="kupu-toolbox-action" i18n:translate=""><fmt:message key="Insert Image"/></button>
             </div>
     </div>
   
     
+    <div class="kupu-toolbox" id="kupu-toolbox-tables">
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Tables"/></h1>
+
+      <div class="kupu-toolbox-label">
+        <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Table Class:"/></span>
+        <select class="wide" id="kupu-table-classchooser"> </select>
+      </div>
+
+      <div id="kupu-toolbox-addtable" class="kupu-toolbox-addtable">
+        <div xmlns:i18n="http://xml.zope.org/namespaces/i18n" class="kupu-toolbox-label" i18n:translate=""><fmt:message key="Rows:"/></div>
+        <input class="wide" type="text" id="kupu-table-newrows"/>
+
+        <div xmlns:i18n="http://xml.zope.org/namespaces/i18n" class="kupu-toolbox-label" i18n:translate=""><fmt:message key="Columns:"/></div>
+        <input class="wide" type="text" id="kupu-table-newcols"/>
+
+        <div class="kupu-toolbox-label">
+          <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Headings:"/></span>
+          <input name="kupu-table-makeheader" id="kupu-table-makeheader" type="checkbox"/>
+          <label xmlns:i18n="http://xml.zope.org/namespaces/i18n" for="kupu-table-makeheader" i18n:translate=""><fmt:message key="Create"/></label>
+        </div>
+
+        <div class="kupu-toolbox-buttons">
+          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-fixall-button" i18n:translate=""><fmt:message key="Fix Table"/></button> 
+          <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-addtable-button" i18n:translate=""><fmt:message key="Add Table"/></button> 
+        </div>
+
+      </div>
+
+      <div id="kupu-toolbox-edittable" class="kupu-toolbox-edittable">
+      
+          <div class="kupu-toolbox-label">
+            <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Col Align:"/></span>
+            <select class="wide" id="kupu-table-alignchooser">
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="left" i18n:translate=""><fmt:message key="Left"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="center" i18n:translate=""><fmt:message key="Center"/></option>
+              <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="right" i18n:translate=""><fmt:message key="Right"/></option>
+            </select>
+          </div>
+      
+          <div class="kupu-toolbox-buttons">
+            <br/>
+            <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-addcolumn-button" i18n:translate=""><fmt:message key="Add Column"/></button>
+            <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-delcolumn-button" i18n:translate=""><fmt:message key="Remove Column"/></button>
+            
+            <br/>
+            <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-addrow-button" i18n:translate=""><fmt:message key="Add Row"/></button>
+            <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-delrow-button" i18n:translate=""><fmt:message key="Remove Row"/></button>
+          
+            <button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" id="kupu-table-fix-button" i18n:translate=""><fmt:message key="Fix"/></button>
+          </div>
+          
+      </div>
+
+    </div>
+  
+    
     <div class="kupu-toolbox" id="kupu-toolbox-debug">
-      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate="">Debug Log</h1>
+      <h1 xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Debug Log"/></h1>
       <div id="kupu-toolbox-debuglog" class="kupu-toolbox-label">
       </div>
     </div>
@@ -455,10 +508,10 @@
     <div class="kupu-editorframe">
       <form>					
         <iframe id="kupu-editor" class="kupu-editor-iframe" frameborder="0" src="start.jspx" scrolling="auto">
-          <jsp:text xmlns:jsp="http://java.sun.com/JSP/Page">
+          <jsp:text>
           </jsp:text>
         </iframe>
-        <textarea class="kupu-editor-textarea" id="kupu-editor-textarea"><jsp:text xmlns:jsp="http://java.sun.com/JSP/Page"> </jsp:text></textarea>
+        <textarea class="kupu-editor-textarea" id="kupu-editor-textarea"><jsp:text> </jsp:text></textarea>
       </form>
     </div>
   
@@ -473,7 +526,7 @@
     </body>
   
   
-	  </fmt:bundle>
+          </fmt:bundle>
         </mm:content>
       </mm:cloud>
     </html>
