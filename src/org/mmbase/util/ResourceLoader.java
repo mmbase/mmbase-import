@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.17 2005-06-06 16:32:30 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.18 2005-06-07 16:52:35 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -142,6 +142,7 @@ public class ResourceLoader extends ClassLoader {
 
     private static  ResourceLoader configRoot = null;
     private static  ResourceLoader webRoot = null;
+    private static  ResourceLoader systemRoot = null;
     private static ServletContext  servletContext = null;
 
 
@@ -327,6 +328,24 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
+    /**
+     * Singleton that returns the ResourceLoader for loading from the file-system, relative from
+     * current working directory and falling back to the file system roots. This can be used in
+     * command-line tools and such. In a servlet environment you should use either 
+     * {@link  #getConfigurationRoot} or {@link #getWebRoot}.
+     */
+    public static synchronized ResourceLoader getSystemRoot() {
+        if (systemRoot == null) {
+            systemRoot = new ResourceLoader();
+            systemRoot.roots.add(systemRoot.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
+            File[] roots = File.listRoots();
+            for (int i = 0; i <roots.length; i++) {
+                systemRoot.roots.add(systemRoot.new FileURLStreamHandler(roots[i], true));
+            }
+            
+        }
+        return systemRoot;
+    }
 
     /**
      * Singleton that returns the ResourceLoader for witch the base path is the web root
