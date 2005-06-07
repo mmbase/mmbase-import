@@ -15,6 +15,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
+import org.mmbase.util.ResourceLoader;
+import java.io.*;
 
 import org.mmbase.util.logging.*;
 
@@ -22,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.1 2005-06-06 22:45:09 michiel Exp $
+ * @version $Id: Mmxf.java,v 1.2 2005-06-07 16:47:50 michiel Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */
@@ -38,8 +40,35 @@ public class Mmxf {
     /**
      * Defaulting version of {@link #createTree(org.w3c.dom.Node, Relationmanager, int, String, String, StringBuffer}.
      */
-    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, StringBuffer buf) {
+    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, Writer buf) {
         return createTree(node, relationManager, depth, "title", "body", buf);
+    }
+
+
+    protected static void exception(Writer buf, String message) {
+        if (buf == null) {
+            throw new IllegalArgumentException(message);
+        } else {
+            try { 
+                buf.write("ERROR: " + message + '\n');
+                buf.flush();
+            } catch (IOException ioe) {
+                throw new IllegalArgumentException(ioe.getMessage() + message, ioe);
+            }
+        }
+    }
+
+    protected static void debug(Writer buf, String message) {
+        if (buf == null) {
+            log.debug(message);
+        } else {
+            try {
+                buf.write(message + '\n');
+                buf.flush();
+            } catch (IOException ioe) {
+                throw new IllegalArgumentException(ioe.getMessage() + message, ioe);
+            }
+        }
     }
     /**
      * Creates a a tree of Nodes from an mmxf DOM-Node. The (mmxf) document can of course be stored
@@ -59,61 +88,75 @@ public class Mmxf {
      * @param xmlField   A new mmxf-document is created for the test and written to this field.
      * @param feedBack   A string buffer for feedback (can be e.g. used for logging or presenting on import-jsp).
      */
-    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, String titleField, String xmlField, StringBuffer feedBack) {
+    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, String titleField, String xmlField, Writer feedBack) {
         String nodeName = node.getNodeName();
         if (! (nodeName.equals("section") || nodeName.equals("mmxf"))) {
-            throw new IllegalArgumentException("dom-Node must be a 'section' or 'mmxf' (but is a " + node.getNodeName() + ")");
+            exception(feedBack, "dom-Node must be a 'section' or 'mmxf' (but is a " + node.getNodeName() + ")");
+            return null;
         }
         NodeManager nm = relationManager.getDestinationManager();
         org.w3c.dom.NodeList childs = node.getChildNodes();
+        debug(feedBack, "Found " + childs.getLength() + " childs");
         int i = 0;
 
+        debug(feedBack, "Importing " + nodeName);
         String title;
         if (nodeName.equals("section")) {
-            if (childs.getLength() < 1) throw new IllegalArgumentException("No child nodes! (should at least be a h-child)");
+            if (childs.getLength() < 1) {
+                exception(feedBack, "No child nodes! (should at least be a h-child)");
+            }
             org.w3c.dom.Node h = childs.item(i);
             if (! h.getNodeName().equals("h")) {
-                throw new IllegalArgumentException("No h-tag");
+                exception(feedBack, "No h-tag");
             }
-            title = h.getNodeValue();
+            title = org.mmbase.util.xml.XMLWriter.getNodeTextValue(h);
             i++;
         } else {
             title = "Imported MMXF";
         }
+        debug(feedBack, "Creating node with title '" + title + "'");
         Document mmxf = createMmxfDocument();
         while (i < childs.getLength()) {
             org.w3c.dom.Node next = childs.item(i);
             String name = next.getNodeName();
             if (name.equals("p") || name.equals("table") ||
-                (depth != 0 && name.equals("section"))) {
+                (depth == 0 && name.equals("section"))) {
                 org.w3c.dom.Node n = mmxf.importNode(next, true);
+                debug(feedBack, "appending " + name);
                 mmxf.getDocumentElement().appendChild(n);
             } else {
+                debug(feedBack, "name is not p or table, but " + name + " breaking");
                 break;
             }
             i++;
         }
+        debug(feedBack, "# handled childs:" + i);
         // create the node.
         org.mmbase.bridge.Node newNode = nm.createNode();
         newNode.setStringValue(titleField, title);
         newNode.setXMLValue(xmlField, mmxf);
         newNode.commit();
+        debug(feedBack, "created node " + newNode.getNumber());
 
-        int pos = 0;
+        int pos = 1;
         while (i < childs.getLength()) {
             org.w3c.dom.Node next = childs.item(i);
             String name = next.getNodeName();
+            debug(feedBack, "found  for " + i + " " + name);
             if (name.equals("section")) {
-                org.mmbase.bridge.Node  destination = createTree(node, relationManager, depth > 0 ? depth -1 : depth, titleField, xmlField, feedBack); 
+                org.mmbase.bridge.Node  destination = createTree(next, relationManager, depth > 0 ? depth -1 : depth, titleField, xmlField, feedBack); 
                 Relation relation = relationManager.createRelation(newNode, destination);
-                relation.setIntValue("pos", pos++);                
+                relation.setIntValue("pos", pos);                
                 relation.commit();
+                debug(feedBack, "Created relation " + newNode.getNumber() + " --" + pos + " -->" + destination.getNumber());
+                pos++;
             } else {
-                throw new IllegalArgumentException("Not a section, but a " + name);
+                exception(feedBack, "Not a section, but a " + name);
             }
             i++;
 
         }
+        debug(feedBack, "found " + pos + " subsections on node " + newNode.getNumber());
         return newNode;
             
     }
@@ -127,5 +170,31 @@ public class Mmxf {
                                        );
         document.getDocumentElement().setAttribute("version", "1.1");
         return document;
+    }
+
+    public static void main(String[] argv) {
+        try {
+            CloudContext cc = ContextProvider.getDefaultCloudContext();
+            Cloud cloud = cc.getCloud("mmbase", "class", null);
+            
+            if (argv.length == 0) {
+                System.out.println("Usage:\n java " + Mmxf.class.getName() + " <-Dmmbase.defaultcloudcontext=rmi://...>  <fileName>");
+                return;
+            }
+            ResourceLoader rc = ResourceLoader.getSystemRoot();
+            
+            System.out.println("" + rc);
+            Document doc = rc.getDocument(argv[0]);
+            
+            System.out.println("Found cloud " + cloud.getUser().getIdentifier());
+            RelationManager relationManager = cloud.getRelationManager("segments", "segments", "index");
+            Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
+            org.mmbase.bridge.Node node = Mmxf.createTree(doc.getDocumentElement(), relationManager, 3, writer);
+            System.out.println("Created node " + node.getNumber());
+            
+            
+        } catch (Exception e) {
+            System.err.println("" + e);
+        }
     }
 }
