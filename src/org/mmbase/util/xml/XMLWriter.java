@@ -12,6 +12,7 @@ package org.mmbase.util.xml;
 import java.io.*;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -25,6 +26,25 @@ import org.mmbase.util.logging.*;
  **/
 public class XMLWriter {
     private static Logger log = Logging.getLoggerInstance(XMLWriter.class);
+
+    /**
+     * since MMBase-1.8
+     */
+
+    public static String getNodeTextValue(Node n) {
+        NodeList nl = n.getChildNodes();
+        StringBuffer res = new StringBuffer();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node textnode = nl.item(i);
+            if (textnode.getNodeType() == Node.TEXT_NODE) {
+                res.append(textnode.getNodeValue().trim());
+            } else if (textnode.getNodeType() == Node.CDATA_SECTION_NODE) {
+                res.append(textnode.getNodeValue());
+            }
+        }
+        return res.toString();
+    }
+
     
     /**
      * defaulting version of {@link #write(Node, Writer, boolean, boolean}. (Not ommitting xml declaration).
@@ -49,11 +69,11 @@ public class XMLWriter {
     
 
     /**
-     * defaulting version of {@link #write(Node, boolean, boolean}. (Not ommitting xml
+     * Defaulting version of {@link #write(Node, boolean, boolean}. (Not ommitting xml
      * declaration).
      */
     public static String write(Node node, boolean indent) {
-        return write(node, indent);
+        return write(node, indent, false);
     }
     /**
      * static method to serialize a node to a string
