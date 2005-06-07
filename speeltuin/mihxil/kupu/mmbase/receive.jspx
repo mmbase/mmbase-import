@@ -15,7 +15,7 @@
           <mm:compare referid="fields" value="false">
             <mm:param name="org.mmbase.xml-mode" value="kupu" />
             <jsp:scriptlet>
-              log.info("Saving fields of " + node.getNumber());
+              log.info("Saving body of " + node.getNumber());
               StringBuffer received = new StringBuffer();
               BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
               String line = r.readLine();
@@ -36,16 +36,17 @@
           </mm:compare>          
           <mm:compare referid="fields" value="true">
             <jsp:scriptlet>
-               log.info("Saving body of " + node.getNumber());
+               log.info("Saving fields of " + node.getNumber());
                 String boundary = "----------__________----------";
                 String fieldPrefix = "field_";                                                                               
                 BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));           
                 String line = r.readLine();                                                                                  
-                while (line != null) {                                                                                       
-                    String[] entry = line.split(":");
-                    String fieldName = entry[0].substring(fieldPrefix.length());                                             
+                while (line != null) {                                
+                    int colon = line.indexOf(':');
+                    String fieldName = line.substring(fieldPrefix.length(), colon);
+                    String rest      = line.substring(colon + 1);
                     String value;                                                                                            
-                    if (entry.length == 2 &amp;&amp; entry[1].equals(boundary)) {                                            
+                    if (rest.equals(boundary)) {                                            
                         StringBuffer buf = new StringBuffer();                                                               
                         line = r.readLine();                                                                      
                         while (line != null &amp;&amp; ! line.equals(boundary)) {
@@ -54,8 +55,9 @@
                         }                                                                                                    
                         value = buf.toString();                                                                              
                     } else {                                                                                                 
-                        value = entry.length == 2 ? entry[1] : "";                                                           
-                    }                                                                                                        
+                        value = rest;
+                    }                        
+                    log.info("Setting " + fieldName + " to " + value);
                     node.setStringValue(fieldName, value);                                                                   
                     line = r.readLine();                                                                                     
                 }                                                                                                            

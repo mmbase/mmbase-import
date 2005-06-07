@@ -8,7 +8,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.3 2005-06-03 08:02:48 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.4 2005-06-07 22:02:46 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -21,8 +21,9 @@
 
   <kupu:part name="buttons">
     <span class="kupu-tb-buttongroup">
-      <button type="button" class="kupu-image" id="kupu-imagelibdrawer-button"       title="image" i18n:attributes="title">&#160;</button>
-      <button type="button" class="kupu-inthyperlink" id="kupu-linklibdrawer-button" title="link"  i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-image"        id="kupu-imagelibdrawer-button"  title="image" i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-inthyperlink" id="kupu-linklibdrawer-button"   title="link"  i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-table"        id="kupu-tabledrawer-button"     title="table" i18n:attributes="title">&#160;</button>
     </span>
   </kupu:part>
 
@@ -42,10 +43,8 @@
       <div id="kupu-linkdrawer-addlink" class="kupu-panels kupu-linkdrawer-addlink">
         <table>
         <tr><td><div class="kupu-toolbox-label">
-          <!-- Link to items matching the keyword  -->
-          <span i18n:translate="">
-            Link the highlighted text to this URL:
-          </span>
+
+          <span i18n:translate="">Link the highlighted text to this URL:</span>
         </div>
 
         <input class="kupu-toolbox-st kupu-linkdrawer-input" type="text" />
@@ -56,20 +55,112 @@
         <tr><td colspan="2" align="center">
         <iframe frameborder="1" scrolling="auto" width="440" height="198"
                 class="kupu-linkdrawer-preview" src="kupublank.html"><jsp:text>
-                </jsp:text>
+        </jsp:text>
         </iframe>
         </td></tr>
         </table>
         <div class="kupu-dialogbuttons">
-          <button type="button" onclick="drawertool.current_drawer.save()"
-                    i18n:translate="">Ok</button>
-          <button type="button" onclick="drawertool.closeDrawer()"
-                    i18n:translate="">Cancel</button>
+          <button type="button" onclick="drawertool.current_drawer.save()" i18n:translate="">Ok</button>
+          <button type="button" onclick="drawertool.closeDrawer()" i18n:translate="">Cancel</button>
         </div>
 
       </div>
     </div>
   </kupu:part>
 
+
+
+  <kupu:part name="tabledrawer">
+    <div id="kupu-tabledrawer" class="kupu-drawer kupu-tabledrawer">
+    <h1>Table</h1>
+    <div class="kupu-panels">
+      <table width="300">
+        <tr class="kupu-panelsrow">
+          <td class="kupu-panel">
+            <!-- this gets displayed when not in a table -->
+            <div class="kupu-tabledrawer-addtable">
+              <table>
+                <tr>
+                  <th class="kupu-toolbox-label">Table caption</th>
+                  <td>
+                    <input name="caption" />
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Rows</th>
+                  <td><input type="text" class="kupu-tabledrawer-newrows" onkeypress="return HandleDrawerEnter(event);" /></td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Columns</th>
+                  <td><input type="text" class="kupu-tabledrawer-newcols" onkeypress="return HandleDrawerEnter(event);" /></td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label"> </th>
+                  <td>
+                    <label><input class="kupu-tabledrawer-makeheader"
+                           type="checkbox"
+                           onkeypress="return HandleDrawerEnter(event);"
+                           />
+                    Create Headings</label>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label"> </th>
+                  <td>
+                      <button type="button" onclick="drawertool.current_drawer.createTable()">Add Table</button>
+                      <button type="button" onclick="drawertool.current_drawer.fixAllTables()">Fix All Tables</button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- this gets displayed when in a table -->
+            <div class="kupu-tabledrawer-edittable">
+              <table>
+                <tr>
+                  <th class="kupu-toolbox-label">Table caption</th>
+                  <td>
+                    <input name="caption" onchange="" />
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Column</th>
+                  <td>
+                    <button type="button"
+                            onclick="drawertool.current_drawer.addTableColumn()">Add</button>
+                    <button type="button"
+                            onclick="drawertool.current_drawer.delTableColumn()">Remove</button>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Row</th>
+                  <td>
+                    <button type="button"
+                            onclick="drawertool.current_drawer.addTableRow()">Add</button> 
+                    <button type="button"
+                            onclick="drawertool.current_drawer.delTableRow()">Remove</button>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Fix Table</th>
+                  <td>
+                    <button type="button"
+                            onclick="drawertool.current_drawer.fixTable()">Fix</button> 
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <div class="kupu-dialogbuttons">
+        <button type="button" onfocus="window.status='focus';"
+                onmousedown="window.status ='onmousedown';"
+                onclick="drawertool.closeDrawer(this)">Close</button>
+      </div>
+    </div>
+    </div>
+
+  </kupu:part>
 
 </kupu:feature>

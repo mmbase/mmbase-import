@@ -75,6 +75,7 @@
   <kupu:fill-slot name="toolboxes">
     <kupu:insert-part feature="toolboxes" part="links" />
     <kupu:insert-part feature="toolboxes" part="images" />
+    <kupu:insert-part feature="toolboxes" part="tables" />
     <kupu:insert-part feature="toolboxes" part="debug" />
   </kupu:fill-slot>
 
