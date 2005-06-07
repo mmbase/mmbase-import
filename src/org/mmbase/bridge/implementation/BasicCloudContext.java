@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.41 2005-03-21 12:11:05 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.42 2005-06-07 12:02:37 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -49,20 +49,20 @@ public class BasicCloudContext implements CloudContext {
     /**
      *  constructor to call from the MMBase class
      *  (protected, so cannot be reached from a script)
+     * @throw NotFoundException If mmbase not running and cannot be started because mmbase.config missing
+     * @throw BridgeException   If mmbase not running and cannot be started (but mmbase.config was specified)
      */
     protected BasicCloudContext() {
         Iterator i = org.mmbase.module.Module.getModules();
         // check if MMBase is already running
         if (i == null) {
-            // build the error message, since it has very less overhead (only entered once incase of startup)
-            String message = "MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no propery mmbase.config found)";
+            // build the error message, since it has very litle overhead (only entered once incase of startup)
             // MMBase may only be started from the bridge when the property mmbase.config was provided
             if (java.lang.System.getProperty("mmbase.config") == null) {
                 // when mmbase.config is empty fill it with current working dir + /config
                 // this way there is no need to provide the info on the commandline
                 // java.lang.System.setProperty("mmbase.config", java.lang.System.getProperty("user.dir") + java.io.File.separatorChar + "config");
-                log.error(message);
-                throw new BridgeException(message);
+                throw new NotFoundException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no property mmbase.config found)");
             }
             // when MMBase is not running, try to start it!
             try {
@@ -78,8 +78,7 @@ public class BasicCloudContext implements CloudContext {
             }
             // if still null,.. give error!
             if(i == null) {
-                log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
             }
         }
         // get the core module!
