@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.24 2005-06-06 15:02:59 michiel Exp $
+ * @version $Id: Encode.java,v 1.25 2005-06-07 15:01:32 michiel Exp $
  **/
 public class Encode {
 
@@ -103,6 +103,13 @@ public class Encode {
             throw new IllegalArgumentException("encoding: '" + encoding + "' unknown" + encodings.keySet());
         }
 
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Transformer getTransformer() {
+        return trans;
     }
 
 
@@ -279,8 +286,8 @@ public class Encode {
     public static void  main(String[] argv) {
         try {
             org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false);
-        } catch (Exception e) {
-            log.warn(e);
+        } catch (Throwable e) {
+            System.err.println("Could not intialize mmbase context, proceeding without it: " + e.getMessage());
         }
         String coding = null;
         boolean decode = false;
