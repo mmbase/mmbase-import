@@ -4,12 +4,14 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.10 2005-06-03 09:52:57 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.11 2005-06-07 18:28:13 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
-  xmlns:xsl = "http://www.w3.org/1999/XSL/Transform"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns="http://www.w3.org/1999/xhtml"
   xmlns:mmxf="http://www.mmbase.org/mmxf"
+  exclude-result-prefixes="mmxf"
   version = "1.0"
 >
   <xsl:output
@@ -19,12 +21,12 @@
   
   <xsl:template match = "mmxf:mmxf" >
     <div class="mmxf">
-      <xsl:apply-templates select = "mmxf:section|mmxf:p" />
+      <xsl:apply-templates select = "mmxf:section|mmxf:p|mmxf:table" />
     </div>
   </xsl:template>
   
   
-  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:a|mmxf:em">
+  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:a|mmxf:em|mmxf:table|mmxf:tr|mmxf:th|mmxf:td|mmxf:caption">
     <xsl:element name="{name()}">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="text()|*" />
@@ -37,7 +39,7 @@
   
   
   <xsl:template match ="mmxf:section">
-    <xsl:apply-templates select="mmxf:section|mmxf:h|mmxf:p|mmxf:ul" />
+    <xsl:apply-templates select="mmxf:section|mmxf:h|mmxf:p|mmxf:ul|mmxf:table" />
   </xsl:template>
 
   <xsl:template match="mmxf:h" mode="h1"><xsl:if test="string(.)"><h3><xsl:apply-templates select="node()" /></h3></xsl:if></xsl:template>
@@ -66,6 +68,7 @@
     <xsl:if test="$depth=8"><xsl:apply-templates select="." mode="h8" /></xsl:if>
     <xsl:if test="$depth>8"><xsl:apply-templates select="." mode="deeper" /></xsl:if>
   </xsl:template>
+
 
 
 </xsl:stylesheet>
