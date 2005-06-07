@@ -14,6 +14,7 @@ import java.util.regex.*;
 import org.mmbase.util.StringObject;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.XSLTransformer;
+import org.mmbase.bridge.util.xml.Mmxf;
 
 
 import org.mmbase.util.logging.Logger;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.34 2005-05-20 09:08:02 michiel Exp $
+ * @version $Id: XmlField.java,v 1.35 2005-06-07 14:41:51 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -48,7 +49,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int HTML_BLOCK_BR_NOSURROUNDINGP  = 11;
 
     // default doctype
-    public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_1.dtd\">\n";
+    public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"" + Mmxf.DOCUMENTTYPE_PUBLIC + "\" \"" + Mmxf.DOCUMENTTYPE_SYSTEM + "\">\n";
 
     // cannot be decoded:
     public final static int ASCII = 51;
@@ -58,7 +59,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     // for validation only.
     private final static String XML_HEADER = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n" + XML_DOCTYPE;
-    private final static String XML_TAGSTART = "<mmxf xmlns='http://www.mmbase.org/mmxf'>";
+    private final static String XML_TAGSTART = "<mmxf xmlns='" + Mmxf.NAMESPACE + "''>";
     private final static String XML_TAGEND   = "</mmxf>";
 
 
@@ -232,6 +233,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         char ch;
         int level = 0; // start without being in section.
         int pos = obj.indexOf("<p>$", 0);
+        OUTER:
         while (pos != -1) {
             obj.delete(pos, 4); // remove <p>$
 
@@ -267,21 +269,34 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
             while (true) { // oh yes, and don't allow _ in title.
                 int pos1 = obj.indexOf("_", pos);
-                int pos2 = obj.indexOf("</p>", pos);
+                int posP  = obj.indexOf("</p>", pos);
+                int posNl = obj.indexOf("\n", pos);
+                int delete;
+                int  pos2;
+                if ((posP > 0 && posP < posNl) || posNl == -1) {
+                    pos2 =  posP;
+                    delete = 4;
+                } else {
+                    pos2 = posNl;
+                    delete = 1;
+                }
                 if (pos1 < pos2 && pos1 > 0) {
                     obj.delete(pos1, 1);
                 } else {
                     pos = pos2;
+                    if (pos == -1) {
+                        break OUTER; // not found, could not happen.
+                    }
+                    obj.delete(pos, delete);
+                    obj.insert(pos, "</h>");
+                    pos += 4;
+                    if (delete == 1) {
+                        obj.insert(pos, "<p>");
+                        pos += 3;
+                    }
                     break;
                 }
             }
-            if (pos == -1) {
-                break; // not found, could not happen.
-            }
-            // replace it.
-            obj.delete(pos, 4);
-            obj.insert(pos, "</h>");
-            pos += 4;
             pos = obj.indexOf("<p>$", pos); // search the next one.
         }
         // ready, close all sections still open.
@@ -348,6 +363,113 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     /**
+     * Wikipedia syntax for tables. (simplified)
+     *@since MMBase 1.8
+     */
+    private static void handleTables(StringObject obj) {        
+        int tables = 0;
+        int pos = 0;
+        while (pos != -1) {
+            // always at beginning of line when here.
+
+            if (pos + 3 < obj.length() && ( obj.charAt(pos) == '{' && obj.charAt(pos + 1) == '|' && obj.charAt(pos + 2) == '\n')) {
+                if (pos > 0 && obj.charAt(pos -1) == '\n') {
+                    obj.delete(pos -1, 1);
+                    pos --;
+                }
+                if (pos > 0 && obj.charAt(pos -1) == '\n') {
+                    obj.delete(pos -1, 1);
+                    pos --;
+                }
+                tables ++;
+                obj.delete(pos, 3);
+                obj.insert(pos, "</p><table>");
+                pos += 11;
+                if (obj.charAt(pos) == '|' && obj.charAt(pos + 1) == '+') {
+                    obj.delete(pos, 2);
+                    obj.insert(pos, "<caption>");
+                    pos += 9;
+                    pos = obj.indexOf("\n", pos);
+                    obj.delete(pos, 1);
+                    obj.insert(pos, "</caption>");
+                    pos += 10;
+                }
+                obj.insert(pos, "<tr>");
+                pos += 4;
+            }
+            if (pos >= obj.length()) break;
+            // always in tr here.
+            if (tables > 0) {
+                if (obj.charAt(pos) == '|') {
+                    obj.delete(pos, 1);
+
+                    if (pos + 2 < obj.length() && (obj.charAt(pos) == '-' && obj.charAt(pos + 1) == '\n')) {
+                        obj.delete(pos, 2);
+                        obj.insert(pos, "</tr><tr>");
+                        pos += 9;                  
+                    } else if (pos + 1 < obj.length() && (obj.charAt(pos) == '}' && (pos + 2 == obj.length() || obj.charAt(pos + 1) == '\n'))) {
+                        obj.delete(pos, 2);
+                        obj.insert(pos, "</tr></table>");
+                        tables--;
+                        pos += 13;
+                        if (tables == 0) {
+                            obj.insert(pos, "<p>");
+                            pos +=3;
+                        }
+                        if (pos < obj.length() && obj.charAt(pos) == '\n') obj.delete(pos, 1);
+                    } else if (pos + 3 < obj.length() && (obj.charAt(pos) == '\n' && obj.charAt(pos + 1) == '{' && obj.charAt(pos + 2) == '|')) {
+                        obj.delete(pos, 3);
+                        obj.insert(pos, "<td><table><tr>");
+                        pos += 15;
+                        tables++;
+                    } else {
+                        obj.insert(pos, "<td>");
+                        pos += 4;
+                        int nl = obj.indexOf("\n", pos);
+                        int pipe = obj.indexOf("||", pos);
+                        int end = pipe == -1 || nl < pipe ? nl : pipe; 
+                        if (end == -1) end += obj.length();
+                        pos = end;
+                        obj.delete(pos, 1);
+                        obj.insert(pos, "</td>");
+                        pos += 5;
+                    }
+                    continue;
+                } else if (obj.charAt(pos) == '!') {
+                    obj.delete(pos, 1);
+                    obj.insert(pos, "<th>");
+                    pos += 4;
+                    int nl = obj.indexOf("\n", pos);
+                    int pipe = obj.indexOf("!!", pos);
+                    int end = pipe == -1 || nl < pipe ? nl : pipe; 
+                    if (end == -1) end += obj.length();
+                    pos = end;
+                    obj.delete(pos, 1);
+                    obj.insert(pos, "</th>");
+                    pos += 5;                    
+                    continue;
+                } else {
+                    pos = obj.indexOf("\n", pos) + 1;
+                    if (pos >= obj.length()) break;
+                    // oddd. what to do know?
+                }
+            } else { // not in table, ignore find next new line
+                pos = obj.indexOf("\n", pos) + 1;
+                if (pos == 0) break;
+                if (pos >= obj.length()) break;
+            }
+        }
+        while (tables > 0) {
+            obj.insert(pos, "</tr></table>"); 
+            pos+= 13;
+            tables--;
+            if (tables == 0) {
+                obj.insert(pos, "<p>");
+            }
+        }
+     
+    }
+    /**
      * Removes all new lines and space which are too much.
      */
     private static void cleanupText(StringObject obj) {
@@ -390,6 +512,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     private static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
         // the order _is_ important!
+        handleTables(obj);
         handleList(obj);
         handleParagraphs(obj, leaveExtraNewLines, surroundingP);
         if (sections) {
