@@ -2,7 +2,7 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.5 2005-05-18 22:32:38 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.6 2005-06-07 15:00:04 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet 
@@ -12,13 +12,13 @@
   <xsl:output method = "text" />
   
   <xsl:template match = "mmxf:mmxf" >
-    <xsl:apply-templates select="mmxf:p" />
+    <xsl:apply-templates select="mmxf:p|mmxf:table" />
     <xsl:apply-templates select="mmxf:section">
       <xsl:with-param name="depth">$</xsl:with-param>
     </xsl:apply-templates>   
   </xsl:template>
   
-  <xsl:template match = "mmxf:p|mmxf:ul" >
+  <xsl:template match = "mmxf:p|mmxf:ul|mmxf:table" >
     <xsl:apply-templates select="." mode="rels" />
     <xsl:apply-templates select="mmxf:a|mmxf:em|text()|mmxf:ul" />
     <xsl:text>&#xA;&#xA;</xsl:text>
@@ -31,7 +31,7 @@
     <xsl:apply-templates select = "mmxf:section">
       <xsl:with-param name="depth">$<xsl:value-of select="$depth" /></xsl:with-param>
     </xsl:apply-templates>
-    <xsl:apply-templates select = "mmxf:p|mmxf:ul" />
+    <xsl:apply-templates select = "mmxf:p|mmxf:ul|mmxf:table" />
   </xsl:template>
 
   
@@ -47,6 +47,44 @@
   <xsl:template match="mmxf:li" >
     <xsl:text>- </xsl:text><xsl:apply-templates />
     <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
+
+
+  <xsl:template match="mmxf:table">
+    <xsl:text>{|&#xA;</xsl:text>
+    <xsl:apply-templates select="mmxf:caption" />
+    <xsl:apply-templates select="mmxf:tr" />
+    <xsl:text>|}&#xA;&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="mmxf:caption">
+    <xsl:text>|+</xsl:text>
+    <xsl:apply-templates select="text()|mmxf:p" />
+    <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="mmxf:tr">
+    <xsl:if test="position() != 1">
+      <xsl:text>|-&#xA;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates select="mmxf:th|mmxf:td" />
+    <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="mmxf:th">
+    <xsl:if test="position() != 1">
+      <xsl:text>!</xsl:text>
+    </xsl:if>
+    <xsl:text>!</xsl:text>
+    <xsl:apply-templates />
+  </xsl:template>
+
+  <xsl:template match="mmxf:td">
+    <xsl:if test="position() != 1">
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+    <xsl:text>|</xsl:text>
+    <xsl:apply-templates />
   </xsl:template>
 
   <xsl:template match="*" mode="rels">
