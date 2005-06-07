@@ -1,14 +1,10 @@
-body {
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
+body { 
+  overflow: hidden;
 }
-#footer, #header, #centerColumn, #leftColumn { 
+
+body, #footer, #header, #centerColumn, #leftColumn, #kupu-editor, #kupu div.kupu-editorframe, 
+#kupu, #kupu div.kupu-toolboxes, div.kupu-fulleditor, #toolbar, form, input, textarea, iframe#kupu-editor, iframe,
+div.kupu-toolbox, div.kupu-toolbox-active{ 
   padding-right: 0px;
   padding-left: 0px;
   padding-bottom: 0px;
@@ -17,10 +13,29 @@ body {
   margin-left: 0px;
   margin-bottom: 0px;
   margin-top: 0px;
+  border-right: 0px;
+  border-left: 0px;
+  border-top: 0px;
+  border-bottom: 0px;
 
 }
+form { 
+
+}
+
+/* Height and width of these are reset in layout.js */
+iframe.kupu-editor-iframe { 
+  height: 100px;
+  width: 100px;
+}
+iframe#kupu-editor { 
+  width: 100px;
+  height: 100px;
+}
+
 #header, #footer {
   text-align: center;
+  white-space: nowrap;
 }
 #header {
   height: 20px;
@@ -38,6 +53,7 @@ body {
   margin: 0;
   padding: 0;
   font-size: small;
+  overflow: hidden;
 }
 #leftColumn {
   left: 0;
@@ -48,14 +64,18 @@ body {
   padding: 16px 0 0 0;
 }
 
+#toolbar { 
+  height: 30px;
+}
+
 div.kupu .toolbar { 
   background-color: green;
  }
 div.kupu-toolboxes {
   float: none;
   width: auto;
-  margin: 0;
 }
+
 
 textarea.kupu-editor-textarea {
   height: auto;
@@ -63,45 +83,23 @@ textarea.kupu-editor-textarea {
   padding:0;
 }
 
-textarea, input { 
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
+
+#leftColumn form { 
+  display: block;
   margin-right: 2px;
   margin-left: 2px;
-  margin-bottom: 0px;
-  margin-top: 0px;
 }
 
-form { 
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 2px;
-  margin-left: 2px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
-option { 
-
-}
-
-#languageSelector 
-{ 
+#languageSelector { 
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: inline;
   height: 18px;
   overflow: hidden;
-  background-color: yellow;
-  font-size: 5pt;
-  top: 0;
-  right: 5px;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 2px;
-  margin-bottom: 0px;
-  margin-top: 0px;
    
+}
+
+.tree { 
+  white-space: nowrap;
 }

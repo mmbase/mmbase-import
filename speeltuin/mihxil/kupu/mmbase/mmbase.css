@@ -64,14 +64,6 @@ img {
   overflow: auto;
   overflow-x: auto;
   overflow-y: auto;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
  
 }
 #tree ul { 
@@ -94,102 +86,56 @@ a.current  {
 
 #kupu { 
   background-color: yellow;
-  margin: 0px;
   z-index: 1;
 }
 #kupu-tb-buttons {
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
 }
 
 textarea#kupu-editor-textarea {
   display: none;
-  background-color: green;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
+  background-color: white;
 }
 
 #kupu div.kupu-editorframe {
-  background-color: purple;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
+  background-color: #ccc;
 }
 #kupu div.kupu-toolboxes {
-  background-color: red;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-  border: 0;
+  background-color: green;
+  float: none;
+  width: auto;
 }
 
 #kupu-editor { 
   background-color: white;
-  border: 0;
-  padding: 0;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
-div#kupu-toolbox-links { 
-  display: none;
-}
-div#kupu-toolbox-images { 
-  display: none;
-}
-div#kupu-toolbox-debug { 
-  display: none;
-}
-.kupu-fulleditor {
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-  background-color: blue;
-}
-#toolbar {
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-  height: 30px;
 }
 
+#kupu-editor h1,h2,h3,h4,h5,h6,h7 { 
+  color: red;
+}
+
+div.kupu-toolbox, div.kupu-toolbox-active { 
+  position: absolute;
+  width: 200px;
+  right: 10px;
+  display: block;
+  background-color: #527d94;
+}
+div.kupu-toolbox-active { 
+  background-color: #76a2b6;
+}
+div#kupu-toolbox-links { 
+}
+div#kupu-toolbox-images { 
+  top: 300px;
+
+}
+div#kupu-toolbox-tables { 
+  top: 600px;
+
+}
+div#kupu-toolbox-debug { 
+  top: 600px;
+}
 img.icon { 
   margin-right: 0.5ex;
   border: 0px;
