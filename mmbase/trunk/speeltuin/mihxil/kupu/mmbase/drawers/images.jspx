@@ -1,41 +1,44 @@
 <?xml version="1.0" ?>
-<mm:content xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" type="text/xml" language="en" expires="-1">
+<mm:content 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" type="text/xml" language="en" expires="-1">
   <mm:import externid="search" />
+  <mm:log>Hoi <mm:write referid="search" /></mm:log>
   <mm:import externid="page" vartype="integer" >0</mm:import>
-  <mm:import externid="max" vartype="integer">30</mm:import>
-<collection>
-  <uri>drawers/images.jspx</uri>
-  <icon>kupuimages/kupulibrary.png</icon>
-  <title>MMBase</title>
-  <uri>drawers/images.jspx</uri>
-  <items page="${page}">
+  <mm:import externid="max" vartype="integer">50</mm:import>
+  <collection>
+    <uri>drawers/images.jspx</uri>
+    <icon>kupuimages/kupulibrary.png</icon>
+    <title>MMBase</title>
+    <uri>drawers/images.jspx</uri>
     <mm:cloud>
-      <mm:listnodescontainer type="image">
-        <mm:isnotempty referid="search">
-          <mm:compositeconstraint operator="OR">
-            <mm:constraint field="title" operator="LIKE" value="%$search%" />
-            <mm:constraint field="subtitle" operator="LIKE" value="%$search%" />
-            <mm:constraint field="intro" operator="LIKE" value="%$search%" />
-            <mm:constraint field="body" operator="LIKE" value="%$search%" />
-          </mm:compositeconstraint>
-        </mm:isnotempty>
-        <mm:sortorder field="number" direction="now" />
-        <mm:maxnumber value="$page" />
-        <mm:offset    value="${page * max}" />
+      <mm:import id="nodetype">images</mm:import>
+      <mm:listnodescontainer type="$nodetype">
+        <jsp:directive.include file="library.constraint" />
+      <mm:sortorder field="number" direction="down" />
+      <mm:maxnumber value="$max" />
+      <mm:offset    value="${page * max}" />
+      <items page="${page}" maxpage="${page % max}">
+        
         <mm:listnodes id="image">
           <resource id="${image.number}">          
-            <uri><mm:image template="s(100)" /></uri>
+            <uri><mm:image template="s(80)" /></uri>
             <title><mm:field name="title" /></title>
             <size><mm:field name="filesize" />b</size>
             <mm:image>
               <height>${dimension.height}</height>
               <width>${dimension.width}</width>
             </mm:image>
-            <preview><mm:image template="s(100)" /></preview>
+            <mm:image template="s(100)" >
+              <preview height="${dimension.height}" width="${dimension.width}">${_}</preview>
+            </mm:image>
+            <mm:image template="s(40)" >
+              <icon height="${dimension.height}" width="${dimension.width}">${_}</icon>
+            </mm:image>
           </resource>
         </mm:listnodes>
-      </mm:listnodescontainer>
-    </mm:cloud>
-  </items>
+      </items>
+    </mm:listnodescontainer>
+  </mm:cloud>
 </collection>
 </mm:content>

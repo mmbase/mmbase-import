@@ -1,4 +1,4 @@
-
+//#include <libintl.h>
 /**
  * The node currently being edited
  */
@@ -34,7 +34,7 @@ function startKupu(language) {
     if (window.i18n_message_catalog) {        
         var request = getRequest();
         // sync request, scary...
-        request.open('GET', '../common/kupu.pox.jspx?language=' + language, false);
+        request.open('GET', '../common/kupu.pox.jspx?mymessages=../mmbase/mymessages.jspx&language=' + language, false);
         request.send('');
         if (request.status != '200') {
             alert('Error loading translation (status ' + status + '), falling back to english');
@@ -52,7 +52,7 @@ function startKupu(language) {
     // in a textarea or input (registering onchange, see saveOnPart() for more
     // details)
     kupu.registerContentChanger(getFromSelector('kupu-editor-textarea'));
-
+    
     // let's register saveOnPart(), to ask the user if he wants to save when 
     // leaving after editing
     if (kupu.getBrowserName() == 'IE') {
@@ -116,14 +116,14 @@ function saveNode(button, editor) {
     for (i=0; i < a.length; i++) {
         content += a[i].name + ":" + boundary + "\n" + a[i].value + "\n" + boundary + "\n";
     }
-    kupu.logMessage(_('Sending request part 2 to server'));
+    kupu.logMessage(_("Sending request part 2 to server"));
     var request = getRequest();
     request.open("PUT", "receive.jspx?fields=true", false);
     request.setRequestHeader("Content-type", "text/plain");
     request.send(content);
     kupu.handleSaveResponse(request);
 
-    alert("Saved node " + currentNode);
+    alert(_("saved") + " " + currentNode);
 
 }
 

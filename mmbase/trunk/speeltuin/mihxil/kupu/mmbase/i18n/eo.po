@@ -1,0 +1,25 @@
+# Esperanto translations for mmbase package.
+# Copyright (C) 2005 THE mmbase'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the mmbase package.
+# Michiel Meeuwissen <EMAIL@ADDRESS>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mmbase 18\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-09 00:04+0200\n"
+"PO-Revision-Date: 2005-06-09 00:06+0200\n"
+"Last-Translator: Michiel Meeuwissen <mihxil@xs4all.nl>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mmbase.js:119
+msgid "Sending request part 2 to server"
+msgstr "Sendante parton duan servilen"
+
+#: mmbase.js:126
+msgid "saved"
+msgstr "Savita"

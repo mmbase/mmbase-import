@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
+$Id: drawer.xsl,v 1.3 2005-06-08 22:21:44 michiel Exp $
 -->
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -22,11 +22,11 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
   >
   <xsl:param name="drawertype">image</xsl:param>
   <xsl:param name="drawertitle">Image Drawer</xsl:param>
-  <xsl:param name="showupload"></xsl:param>
-  <xsl:param name="usecaptions"></xsl:param>
+  <xsl:variable name="showupload">yes</xsl:variable>
+  <xsl:param name="usecaptions">yes</xsl:param>
   <xsl:variable name="titlelength" select="20"/>
-  <xsl:template match="/">
-    <html lang="en" xml:lang="en">
+  <xsl:template match="/libraries">
+    <html>
       <head>
         <title>
           <xsl:value-of select="$drawertitle"/>
@@ -46,8 +46,8 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
                 <input id="kupu-searchbox-input"
                   name="searchbox" value="search"
                   style="font-style: italic"
-                  onclick="if (this.value == 'search') this.value = ''; this.style.fontStyle='normal';" onkeyup="if (event.keyCode == 13 ) drawertool.current_drawer.search();"/>
-                <input type="submit" />
+                  onclick="if (this.value == 'search') this.value = ''; this.style.fontStyle='normal';" 
+                  onkeyup="if (event.keyCode == 13 ) drawertool.current_drawer.search();"/>
               </form>
               
             </div>
@@ -64,13 +64,13 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
                       <xsl:apply-templates select="/libraries/*[@selected]/items"/>
                     </div>
                   </td>
+
                   <td id="kupu-propertiespanel" class="panel">
                     <div id="kupu-properties" class="overflow">
                       <xsl:choose>
                         <xsl:when test="$drawertype='image'">
                           <xsl:if test="//resource[@selected]">
-                            <xsl:apply-templates
-                              select="/libraries/*[@selected]//resource[@selected]" mode="image-properties"/>
+                            <xsl:apply-templates select="/libraries/*[@selected]//resource[@selected]" mode="image-properties"/>
                           </xsl:if>
                           <!-- use image upload template -->
                           <xsl:if test="$showupload='yes'">
@@ -78,8 +78,7 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
                           </xsl:if>
                         </xsl:when>
                         <xsl:when test="$drawertype='link'">
-                          <xsl:apply-templates
-                            select="/libraries/*[@selected]//resource[@selected]" mode="link-properties"/>
+                          <xsl:apply-templates select="/libraries/*[@selected]//resource[@selected]" mode="link-properties"/>
                         </xsl:when>
                       </xsl:choose>
                     </div>
@@ -98,7 +97,15 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
   </xsl:template>
   <xsl:template match="library">
     <div onclick="drawertool.current_drawer.selectLibrary('{@id}');"
-         class="kupu-libsource" title="{title}" style="">
+         title="{title}" style="">
+      <xsl:choose>
+        <xsl:when test="position() = 1">
+          <xsl:attribute name="class">kupu-libsource-selected</xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="class">kupu-libsource</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:attribute name="id">
         <xsl:value-of select="@id"/>
       </xsl:attribute>
@@ -134,9 +141,8 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
     </div>
   </xsl:template>
   <xsl:template match="icon">
-    <img src="{.}" alt="{../title}">
-      <xsl:attribute name="class">library-icon-<xsl:value-of select="local-name(..)"/>
-      </xsl:attribute>
+    <img src="{.}" height="{@height}" width="{@width}" alt="{../title}">
+      <xsl:attribute name="class">library-icon-<xsl:value-of select="local-name(..)"/></xsl:attribute>
     </img>
   </xsl:template>
   <xsl:template match="label|title">
@@ -153,46 +159,18 @@ $Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
       </xsl:choose>
     </span>
   </xsl:template>
+
+
   <xsl:template match="resource|collection" mode="image-properties">
     <div>
       <xsl:value-of select="title"/>
     </div>
-    <xsl:choose>
-      <xsl:when test="width">
-        <div>
-          <xsl:variable name="h" select="number(height) div 120"/>
-          <xsl:variable name="w" select="number(width) div 100"/>
-          <xsl:choose>
-            <xsl:when test="($h&gt;$w) and $h&gt;1">
-              <img src="{uri}" title="{title}" height="120"
-                   width="{width div $h}" alt="{title}"/>
-            </xsl:when>
-            <xsl:when test="($w&gt;$h) and $w&gt;1">
-              <img src="{uri}" title="{title}"
-                   height="{height div $w}" width="100" alt="{title}"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <img src="{uri}" title="{title}" height="{height}"
-                   width="{width}" alt="{title}"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </div>
-      </xsl:when>
-      <xsl:when test="preview">
-        <tr>
-          <td>
-            <strong>Preview</strong>
-            <br/>
-            <img src="{preview}" title="{title}" height="{height}"
-                 width="{width}" alt="{title}"/>
-          </td>
-        </tr>
-      </xsl:when>
-    </xsl:choose>
+    <div>
+      <img src="{preview}" width="{preview/@width}" height="{preview/@height}" alt="{title}" />
+    </div>
     <div>
       <xsl:value-of select="size"/>
-      <xsl:if test="width"> (<xsl:value-of select="width"/> by
-      <xsl:value-of select="height"/>)</xsl:if>
+      <xsl:if test="width"> (<xsl:value-of select="width"/> x <xsl:value-of select="height"/>)</xsl:if>
     </div>
     <div>
       <xsl:value-of select="description"/>
