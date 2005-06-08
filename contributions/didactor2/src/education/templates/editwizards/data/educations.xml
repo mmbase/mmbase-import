@@ -28,6 +28,7 @@
               <relation destination="urls" role="posrel" />
            </object>
         </relation>
+        <relation destination="people" role="classrel"/>
     </action>
 
     <action type="delete" />
@@ -59,6 +60,54 @@
         <list destination="classes" role="related" extends="list/classes.xml" />
         <list destination="people" role="rolerel" extends="list/people-education.xml" />
         <list destination="urlcategories" role="related" extends="list/urlcategories.xml" />
+
+
+        <list destination="people" role="classrel" minoccurs="0" maxoccurs="*">
+            <title>Bijbehorende Personen</title>
+            <item>
+                <field name="firstname" ftype="data">
+                    <prompt>Voornaam</prompt>
+                </field>
+                <field fdatapath="object/field[@name='lastname']" ftype="data"><!--name="lastname" ftype="data">-->
+                    <prompt>Achternaam</prompt>
+                </field>
+                <field wizardname="people" ftype="startwizard" />
+            </item>
+
+            <action type="create">
+                <relation destinationtype="people" role="classrel">
+                </relation>
+            </action>
+
+            <action type="add">
+                <relation destinationtype="peope" role="classrel">
+                    <object type="people">
+                    </object>
+                </relation>
+            </action>
+
+            <action type="load">
+            </action>
+
+            <command name="startwizard" inline="true" wizardname="people" objectnumber="new" />
+
+            <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
+                <prompt>Zoeken naar studenten</prompt>
+                <search-filter>
+                    <name>Achternaam bevat</name>
+                    <search-fields>lastname</search-fields>
+                </search-filter>
+                <search-filter>
+                    <name>Voornaam bevat</name>
+                    <search-fields>firstname</search-fields>
+                </search-filter>
+                <search-filter>
+                    <name>Account bevat</name>
+                    <search-fields>account</search-fields>
+                </search-filter>
+            </command>
+        </list>
+
 
     </form-schema>
 
