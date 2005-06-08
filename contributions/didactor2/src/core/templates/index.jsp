@@ -5,8 +5,16 @@
 <%@ page import = "java.util.HashMap" %>
 <%@ page import = "java.util.Iterator" %>
 
+<%@ page import = "nl.didactor.utils.connectors.EducationPeopleConnector" %>
+
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+
+<% //education-people connector
+   EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
+%>
+
+
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
@@ -42,7 +50,7 @@
       <%
          HashMap hmapEducations = new HashMap();
       %>
-      <mm:node number="$user">
+      <mm:node number="$user" jspvar="nodeUser">
          <mm:related path="classrel,classes">
             <mm:node element="classes">
                <mm:field name="number" jspvar="sClassID" vartype="String">
@@ -56,6 +64,13 @@
                </mm:field>
             </mm:node>
          </mm:related>
+         <%
+            for(Iterator it = educationPeopleConnector.relatedEducations("" + nodeUser.getNumber()).iterator(); it.hasNext(); )
+            {
+               String sEducationID = (String) it.next();
+               if(!hmapEducations.containsKey(sEducationID)) hmapEducations.put(sEducationID, null);
+            }
+         %>
       </mm:node>
 
       <%

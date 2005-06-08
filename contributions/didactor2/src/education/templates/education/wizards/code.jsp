@@ -2,6 +2,10 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
+<%@page import="java.util.HashSet"%>
+
+<%@page import = "nl.didactor.utils.connectors.EducationPeopleConnector" %>
+
 <%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
 
 <%
@@ -22,6 +26,10 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
+
+   <%//education-people connector
+      EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
+   %>
 
    <mm:import externid="showcode">false</mm:import>
    <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" /></mm:import>
@@ -708,31 +716,15 @@
    <br>
    <div id='node_0' style='display: none'>
 
-      <% //We go throw all educations for CURRENT USER%>
-      <%
-         int iNumberOfRelations = 0;
+      <% //We go throw all educations for CURRENT USER
+         HashSet hsetEducationsForUser = null;
       %>
-      <mm:node number="$user">
-         <mm:related path="classrel,classes,related,educations">
-            <mm:size jspvar="NumberOfRelations" vartype="Integer" write="false">
-               <%
-                  iNumberOfRelations = NumberOfRelations.intValue();
-               %>
-            </mm:size>
-         </mm:related>
+      <mm:node number="$user" jspvar="node">
+         <%
+            hsetEducationsForUser = educationPeopleConnector.relatedEducations("" + node.getNumber());
+         %>
       </mm:node>
-      <%
-         String sEducationConstraints = new String();
-         if (iNumberOfRelations > 1) sEducationConstraints = "educations.number=" + session.getAttribute("education_topmenu_course");
-      %>
-      <%//Number of educations accroding to constraints %>
-      <mm:import id="number_of_educations" reset="true">0</mm:import>
-      <mm:node number="$user">
-         <mm:related path="classrel,classes,related,educations" constraints="<%=sEducationConstraints%>">
-            <mm:import id="number_of_educations" reset="true"><mm:size /></mm:import>
-         </mm:related>
-      </mm:node>
-
+      <mm:import id="number_of_educations" reset="true"><%= hsetEducationsForUser.size() %></mm:import>
 
 
       <% //new education item %>
@@ -750,15 +742,28 @@
                </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=new" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>?wizard=educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
             </tr>
          </table>
       </di:hasrole>
 
-      <mm:node number="$user">
-         <mm:related path="classrel,classes,related,educations" constraints="<%=sEducationConstraints%>" max="1">
-            <% //Show current education from here %>
-            <mm:node element="educations">
+      <%
+         String sEducationID = null;
+         if(session.getAttribute("education_topmenu_course") != null)
+         {
+            sEducationID = (String) session.getAttribute("education_topmenu_course");
+         }
+         else
+         {
+            if (hsetEducationsForUser.iterator().hasNext())
+            {
+               sEducationID = (String) hsetEducationsForUser.iterator().next();
+            }
+         }
+      %>
+
+         <mm:isgreaterthan referid="number_of_educations" value="0">
+            <mm:node number="<%= sEducationID %>">
                <%@include file="whichimage.jsp"%>
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
@@ -859,8 +864,7 @@
                   </mm:related>
                </div>
             </mm:node>
-         </mm:related>
-      </mm:node>
+         </mm:isgreaterthan>
    </div>
 </mm:compare>
 </fmt:bundle>
