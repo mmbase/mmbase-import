@@ -15,7 +15,8 @@
         <mm:import id="rich_language" externid="language"/>
         <mm:import externid="rich_language" from="this,session">client</mm:import>
         <mm:write session="rich_language" referid="rich_language"/>
-        <mm:content type="text/html" language="$rich_language" expires="0">
+        <mm:content type="text/html" language="${rich_language}" expires="0" jspvar="locale">
+          <mm:import id="lang"><jsp:expression>((java.util.Locale)locale).getLanguage()</jsp:expression></mm:import>
           <fmt:bundle basename="org.oscom.kupu.Messages">
             
     
@@ -46,7 +47,8 @@
     <script type="text/javascript" src="${kupu_common}/kupubasetools.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupuloggers.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
-    
+    <script type="text/javascript" src="../i18n.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupucleanupexpressions.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupucontentfilters.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/globals.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementbyid.js"><jsp:text> </jsp:text></script>
@@ -71,15 +73,16 @@
   
     
     <script type="text/javascript" src="kupuinit.js"><jsp:text> </jsp:text></script>
-    <script type="text/javascript" src="${kupu_common}/kupustart.js"><jsp:text> </jsp:text></script>
   
     
     <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"><jsp:text> </jsp:text></script>
   
     
     
+    
     <script type="text/javascript" src="${kupu_common}/kupudrawers.js"><jsp:text> </jsp:text></script>
   
+
     
     <script type="text/javascript" src="mmbase.js"><jsp:text> </jsp:text></script>
   
@@ -87,7 +90,8 @@
     </head>
   
     
-    <body onload="kupu = startKupu();  mmbaseInit();">
+    <mm:import externid="node"/>
+    <body onload="kupu = startKupu('${lang}'); mmbaseInit('${node}');">
       
     
     <div style="display: none;">
@@ -123,30 +127,30 @@
   
     <div id="header">
       <fmt:bundle basename="org.mmbase.jspeditors.editors">
-	<fmt:message key="richtext.editor"/>
-	<div xmlns="" id="languageSelector">
-	  <form name="languageform" method="get" action=".">
-	  <select onChange="document.forms['languageform'].submit();" name="language">
-	    <mm:compare referid="rich_language" value="client">
-	      <option xmlns="" value="client" selected="selected"><fmt:message key="default"/></option>
-	    </mm:compare>
-	    <mm:compare referid="rich_language" value="client" inverse="true">
-	      <option xmlns="" value="client"><fmt:message key="default"/></option>
-	    </mm:compare>
-	    <mm:import id="languages" vartype="list">en,de,nl,eo</mm:import>
-	    <mm:stringlist referid="languages">
-	      <mm:locale language="${_}" jspvar="locale">
-		<mm:compare referid2="rich_language">
-		  <option xmlns="" value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
-		</mm:compare>
-		<mm:compare referid2="rich_language" inverse="true">
-		  <option xmlns="" value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
-		</mm:compare>
-	      </mm:locale>
-	    </mm:stringlist>
-	  </select>
-	  </form>
-	</div>
+        <fmt:message key="richtext.editor"/>
+        <div xmlns="" id="languageSelector">
+          <form name="languageform" method="get" action=".">
+            <select onChange="document.forms['languageform'].submit();" name="language">
+              <mm:compare referid="rich_language" value="client">
+                <option xmlns="" value="client" selected="selected"><fmt:message key="default"/></option>
+              </mm:compare>
+              <mm:compare referid="rich_language" value="client" inverse="true">
+                <option xmlns="" value="client"><fmt:message key="default"/></option>
+              </mm:compare>
+              <mm:import id="languages" vartype="list">en,de,nl,eo</mm:import>
+              <mm:stringlist referid="languages">
+                <mm:locale language="${_}" jspvar="locale">
+                  <mm:compare referid2="rich_language">
+                    <option xmlns="" value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
+                  </mm:compare>
+                  <mm:compare referid2="rich_language" inverse="true">
+                    <option xmlns="" value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
+                  </mm:compare>
+                </mm:locale>
+              </mm:stringlist>
+            </select>
+          </form>
+        </div>
       </fmt:bundle>
     </div>
     <div id="leftColumn">
@@ -188,7 +192,7 @@
     </span>
   
     
-    <select id="kupu-tb-styles">
+    <select id="kupu-tb-styles"><jsp:text/>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="P" i18n:translate=""><fmt:message key="Normal"/></option>
       <option value="H1">
         <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Heading 1"/></span>
@@ -254,17 +258,23 @@
     </span>
   
     
+
+    
+    <span class="kupu-tb-buttongroup kupu-spellchecker-span" id="kupu-spellchecker">
+      <fmt:message var="_" key="check spelling"/><button xmlns:i18n="http://xml.zope.org/namespaces/i18n" type="button" class="kupu-spellchecker" id="kupu-spellchecker-button" title="${_}" i18n:attributes="title">&#xA0;</button>
+    </span>
+  
   
     </span>
   
     
-    <select id="kupu-ulstyles" class="kupu-ulstyles">
+    <select id="kupu-ulstyles" class="kupu-ulstyles"><jsp:text/>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="disc" i18n:translate="list-disc"><fmt:message key="list-disc"/></option>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="square" i18n:translate="list-square"><fmt:message key="list-square"/></option>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="circle" i18n:translate="list-circle"><fmt:message key="list-circle"/></option>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="none" i18n:translate="list-nobullet"><fmt:message key="list-nobullet"/></option>
     </select>
-    <select id="kupu-olstyles" class="kupu-olstyles">
+    <select id="kupu-olstyles" class="kupu-olstyles"><jsp:text/>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="decimal" i18n:translate="list-decimal"><fmt:message key="list-decimal"/></option>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="upper-roman" i18n:translate="list-upperroman"><fmt:message key="list-upperroman"/></option>
       <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="lower-roman" i18n:translate="list-lowerroman"><fmt:message key="list-lowerroman"/></option>
@@ -309,18 +319,23 @@
   
     
     <div id="kupu-tabledrawer" class="kupu-drawer kupu-tabledrawer">
-    <h1>Table</h1>
+    <h1>aaaaaaaaaaaaaaaaaaaaaajj Table</h1>
     <div class="kupu-panels">
       <table width="300">
         <tr class="kupu-panelsrow">
           <td class="kupu-panel">
             
-            <div class="kupu-tabledrawer-addtable">
+            <div id="kupu-toolbox-addtable" class="kupu-tabledrawer-addtable">
               <table>
                 <tr>
-                  <th class="kupu-toolbox-label">Table caption</th>
+                  <th class="kupu-toolbox-label">Table Class</th>
                   <td>
-                    <input name="caption"/>
+                    <select class="kupu-tabledrawer-classchooser"><jsp:text/>
+                      <option value="plain">Plain</option>
+                      <option value="listing">Listing</option>
+                      <option value="grid">Grid</option>
+                      <option value="data">Data</option>
+                    </select>
                   </td>
                 </tr>
                 <tr>
@@ -352,9 +367,24 @@
             <div class="kupu-tabledrawer-edittable">
               <table>
                 <tr>
-                  <th class="kupu-toolbox-label">Table caption</th>
+                  <th class="kupu-toolbox-label">Table Class</th>
                   <td>
-                    <input name="caption" onchange=""/>
+                    <select class="kupu-tabledrawer-classchooser" onchange="drawertool.current_drawer.setTableClass(this.options[this.selectedIndex].value)"><jsp:text/>
+                      <option value="plain">Plain</option>
+                      <option value="listing">Listing</option>
+                      <option value="grid">Grid</option>
+                      <option value="data">Data</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="kupu-toolbox-label">Current column alignment</th>
+                  <td>
+                    <select id="kupu-tabledrawer-alignchooser" class="kupu-tabledrawer-alignchooser" onchange="drawertool.current_drawer.tool.setColumnAlign(this.options[this.selectedIndex].value)"><jsp:text/>
+                      <option value="left">Left</option>
+                      <option value="center">Center</option>
+                      <option value="right">Right</option>
+                      </select>
                   </td>
                 </tr>
                 <tr>
@@ -422,7 +452,7 @@
             <div class="kupu-toolbox-label">
               <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Image class:"/></span>
             </div>
-            <select class="wide" id="kupu-image-float-select">
+            <select class="wide" id="kupu-image-float-select"><jsp:text/>
               <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-inline" i18n:translate=""><fmt:message key="Inline"/></option>
               <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-left" i18n:translate=""><fmt:message key="Left"/></option>
               <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="image-right" i18n:translate=""><fmt:message key="Right"/></option>
@@ -444,7 +474,7 @@
 
       <div class="kupu-toolbox-label">
         <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Table Class:"/></span>
-        <select class="wide" id="kupu-table-classchooser"> </select>
+        <select class="wide" id="kupu-table-classchooser"><jsp:text/> </select>
       </div>
 
       <div id="kupu-toolbox-addtable" class="kupu-toolbox-addtable">
@@ -471,7 +501,7 @@
       
           <div class="kupu-toolbox-label">
             <span xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:translate=""><fmt:message key="Col Align:"/></span>
-            <select class="wide" id="kupu-table-alignchooser">
+            <select class="wide" id="kupu-table-alignchooser"><jsp:text/>
               <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="left" i18n:translate=""><fmt:message key="Left"/></option>
               <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="center" i18n:translate=""><fmt:message key="Center"/></option>
               <option xmlns:i18n="http://xml.zope.org/namespaces/i18n" value="right" i18n:translate=""><fmt:message key="Right"/></option>

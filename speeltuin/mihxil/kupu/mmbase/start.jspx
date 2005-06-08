@@ -1,17 +1,18 @@
 <mm:content type="text/html"
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
-    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+            expires="0"
+            xmlns="http://www.w3.org/1999/xhtml" 
+            xmlns:jsp="http://java.sun.com/JSP/Page" 
+            xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:import externid="rich_language" from="parameters,session">client</mm:import>
   <mm:locale language="$rich_language">
     <fmt:bundle basename="org.mmbase.jspeditors.editors">
       <html>
-	<head>
-	</head>
-	<body>
-	  <p><fmt:message key="richtext.nonode" /></p>
-	</body>
+        <head>
+        </head>
+        <body>
+          <p><fmt:message key="richtext.nonode" /></p>
+        </body>
       </html>
     </fmt:bundle>
   </mm:locale>

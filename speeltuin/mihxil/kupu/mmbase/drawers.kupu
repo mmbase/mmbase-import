@@ -8,7 +8,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.4 2005-06-07 22:02:46 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.5 2005-06-08 17:32:01 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -70,97 +70,5 @@
 
 
 
-  <kupu:part name="tabledrawer">
-    <div id="kupu-tabledrawer" class="kupu-drawer kupu-tabledrawer">
-    <h1>Table</h1>
-    <div class="kupu-panels">
-      <table width="300">
-        <tr class="kupu-panelsrow">
-          <td class="kupu-panel">
-            <!-- this gets displayed when not in a table -->
-            <div class="kupu-tabledrawer-addtable">
-              <table>
-                <tr>
-                  <th class="kupu-toolbox-label">Table caption</th>
-                  <td>
-                    <input name="caption" />
-                  </td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label">Rows</th>
-                  <td><input type="text" class="kupu-tabledrawer-newrows" onkeypress="return HandleDrawerEnter(event);" /></td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label">Columns</th>
-                  <td><input type="text" class="kupu-tabledrawer-newcols" onkeypress="return HandleDrawerEnter(event);" /></td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label"> </th>
-                  <td>
-                    <label><input class="kupu-tabledrawer-makeheader"
-                           type="checkbox"
-                           onkeypress="return HandleDrawerEnter(event);"
-                           />
-                    Create Headings</label>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label"> </th>
-                  <td>
-                      <button type="button" onclick="drawertool.current_drawer.createTable()">Add Table</button>
-                      <button type="button" onclick="drawertool.current_drawer.fixAllTables()">Fix All Tables</button>
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            <!-- this gets displayed when in a table -->
-            <div class="kupu-tabledrawer-edittable">
-              <table>
-                <tr>
-                  <th class="kupu-toolbox-label">Table caption</th>
-                  <td>
-                    <input name="caption" onchange="" />
-                  </td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label">Column</th>
-                  <td>
-                    <button type="button"
-                            onclick="drawertool.current_drawer.addTableColumn()">Add</button>
-                    <button type="button"
-                            onclick="drawertool.current_drawer.delTableColumn()">Remove</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label">Row</th>
-                  <td>
-                    <button type="button"
-                            onclick="drawertool.current_drawer.addTableRow()">Add</button> 
-                    <button type="button"
-                            onclick="drawertool.current_drawer.delTableRow()">Remove</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="kupu-toolbox-label">Fix Table</th>
-                  <td>
-                    <button type="button"
-                            onclick="drawertool.current_drawer.fixTable()">Fix</button> 
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </td>
-        </tr>
-      </table>
-      <div class="kupu-dialogbuttons">
-        <button type="button" onfocus="window.status='focus';"
-                onmousedown="window.status ='onmousedown';"
-                onclick="drawertool.closeDrawer(this)">Close</button>
-      </div>
-    </div>
-    </div>
-
-  </kupu:part>
 
 </kupu:feature>

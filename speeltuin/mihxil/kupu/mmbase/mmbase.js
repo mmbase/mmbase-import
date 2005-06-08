@@ -26,8 +26,65 @@ var unloadedTrees    = new Map();
 var uncollapsedNodes = new Array();
 var loadedNodeBodies = new Map();
 
-function mmbaseInit() {
+function startKupu(language) {
+    // first let's load the message catalog
+    // if there's no global 'i18n_message_catalog' variable available, don't
+    // try to load any translations
+
+    if (window.i18n_message_catalog) {        
+        var request = getRequest();
+        // sync request, scary...
+        request.open('GET', '../common/kupu.pox.jspx?language=' + language, false);
+        request.send('');
+        if (request.status != '200') {
+            alert('Error loading translation (status ' + status + '), falling back to english');
+        } else {
+            // load successful, continue
+            var dom = request.responseXML;
+            window.i18n_message_catalog.initialize(dom);
+        };
+    }   
+    // initialize the editor, initKupu groks 1 arg, a reference to the iframe
+    var frame = getFromSelector('kupu-editor'); 
+    var kupu = initKupu(frame);
+    
+    // this makes the editor's content_changed attribute set according to changes
+    // in a textarea or input (registering onchange, see saveOnPart() for more
+    // details)
+    kupu.registerContentChanger(getFromSelector('kupu-editor-textarea'));
+
+    // let's register saveOnPart(), to ask the user if he wants to save when 
+    // leaving after editing
+    if (kupu.getBrowserName() == 'IE') {
+        // IE supports onbeforeunload, so let's use that
+        addEventHandler(window, 'beforeunload', saveOnPart);
+    } else {
+        // some versions of Mozilla support onbeforeunload (starting with 1.7)
+        // so let's try to register and if it fails fall back on onunload
+        var re = /rv:([0-9\.]+)/
+        var match = re.exec(navigator.userAgent)
+        if (match[1] && parseFloat(match[1]) > 1.6) {
+            addEventHandler(window, 'beforeunload', saveOnPart);
+        } else {
+            addEventHandler(window, 'unload', saveOnPart);
+        };
+    };
+
+    // and now we can initialize...
+    kupu.initialize();
+
+    return kupu;
+};
+
+
+function mmbaseInit(node) {
+    /*
+
+    };
+    */
     winOnLoad();
+    //loadNode(node);
+
 }
 
 function getRequest() {
@@ -48,7 +105,6 @@ function serialize(request) {
  */
 function saveNode(button, editor) {
     editor.saveDocument(); // kupu-part of save
-
     var content = "";
     var a = xGetElementsByTagName('input', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
@@ -66,6 +122,8 @@ function saveNode(button, editor) {
     request.setRequestHeader("Content-type", "text/plain");
     request.send(content);
     kupu.handleSaveResponse(request);
+
+    alert("Saved node " + currentNode);
 
 }
 
