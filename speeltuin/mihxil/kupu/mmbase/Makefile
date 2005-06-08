@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2005-06-08 22:35:33 michiel Exp $
+# $Id: Makefile,v 1.4 2005-06-08 22:46:36 michiel Exp $
 
 
 KUPU_HOME=..
@@ -9,6 +9,10 @@ XSLTPROC_PARAMS = --nonet --novalid --xinclude
 XSL_FILE=$(KUPU_HOME)/make.xsl
 XSLJSPX_FILE=$(KUPU_HOME)/make-jspx.xsl
 I18N=$(KUPU_HOME)/kupu-i18n.jar
+
+LANGS=nl de fr it eo
+#type in i18n: msginit -l <locale> -i messages.po
+
 
 all: index.jspx
 
@@ -23,15 +27,15 @@ $(I18N):
 messages: *.js
 	mkdir -p i18n
 	xgettext --from-code=UTF-8 -L java -k_ -p i18n *.js 
-	msgmerge --update --backup=off i18n/nl.po i18n/messages.po
-	msgmerge --update --backup=off i18n/eo.po i18n/messages.po
+	for LOCALE in $(LANGS) ; do \
+	   msgmerge --update --backup=off i18n/$${LOCALE}.po i18n/messages.po; \
+	done
 	msgen i18n/messages.po > i18n/en.po
 
 mmbase-kupu-i18n.jar: i18n/*.po
 	mkdir -p resourcebundle
-	for PO in `ls i18n/*.po` ; do \
-		LOCALE=`echo $${PO} | sed "s|i18n/||;s|\.po||"`; \
-	    msgfmt --java2  -D . -d resourcebundle -r org.mmbase.kupu.Messages -l $${LOCALE} $${PO}; \
+	for LOCALE in $(LANGS) ; do \
+	    msgfmt --java2  -D . -d resourcebundle -r org.mmbase.kupu.Messages -l $${LOCALE} i18n/$${LOCALE}.po; \
 	done
 	jar cf $@ -C resourcebundle org
 
