@@ -12,7 +12,7 @@
     <singular xml:lang="en">Competence</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Competenties</plural>
-    <plural xml:lang="en">Competencies</plural>
+    <plural xml:lang="en">Competences</plural>
   </names>
 
   <descriptions>
