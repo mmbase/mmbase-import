@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.7 2005-04-27 11:24:58 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.8 2005-06-08 13:14:18 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -101,19 +101,12 @@ public class NodeProviderHelper implements NodeProvider {
      */
 
     public void fillVars() throws JspTagException {    
+        org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = thisTag.getContextProvider().getContextContainer();
         if (thisTag.id != Attribute.NULL) {
-            thisTag.getContextProvider().getContextContainer().registerNode(getId(), node);
+            cc.registerNode(getId(), node);
         }
         if (jspvar != null && node != null) {
-            PageContext pc = thisTag.getPageContext();
-            if (!checked) {
-                Object was = pc.getAttribute(jspvar);
-                if (was != null && ! was.equals(node)) {
-                    throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was + "), can't write " + node + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-                }
-                checked = true;
-            }
-            pc.setAttribute(jspvar, node);
+            cc.setJspVar(jspvar, WriterHelper.TYPE_NODE, node);
         }
     }
                
