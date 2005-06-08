@@ -1,4 +1,4 @@
-package nl.didactor.education.utils;
+package nl.didactor.component.education.utils;
 
 import java.util.HashSet;
 import java.util.Iterator;
