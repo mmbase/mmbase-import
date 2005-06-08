@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.14 2005-05-10 22:56:16 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.15 2005-06-08 12:25:15 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -107,6 +107,7 @@ public class BuilderReader extends XMLBasicReader {
      * @since MMBase-1.6
      * @param fileName path to the builder configuration file to parse
      * @param mmb The MMBase instance. Used to resolve inheritance of builders
+     * @deprecated use {@link #BuilderReader(InputSource, MMBase)} in combination with {@link org.mmbase.module.core.MMBase#getBuilderLoader}
      */
     public BuilderReader(String fileName, MMBase mmb) {
         super(fileName, BuilderReader.class);
@@ -120,6 +121,7 @@ public class BuilderReader extends XMLBasicReader {
      * the activity status as it is set in the file.
      * This call should be used if only the actual information in the xml file is needed.
      * @param filename path to the builder configuration file to parse
+     * @deprecated use {@link #BuilderReader(InputSource, MMBase)} in combination with {@link org.mmbase.module.core.MMBase#getBuilderLoader}
      */
     public BuilderReader(String filename) {
         this(filename, null);
