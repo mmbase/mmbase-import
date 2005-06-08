@@ -1,7 +1,7 @@
 <%@ page import = "java.util.HashSet" %>
 <%@ page import = "java.util.Iterator" %>
 
-<%@page import = "nl.didactor.component.education.util.EducationPeopleConnector" %>
+<%@page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
