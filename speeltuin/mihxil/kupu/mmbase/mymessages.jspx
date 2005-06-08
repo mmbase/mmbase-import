@@ -1,0 +1,18 @@
+<!-- sadly no way of iterating bundle in jstl, falling back to java -->
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page import="java.util.*" contentType="text/plain" />
+  <jsp:scriptlet>
+    String language = request.getParameter("language");
+    ResourceBundle bundle = ResourceBundle.getBundle("org.mmbase.kupu.messages", language == null ? request.getLocale() : new Locale(language));
+    Enumeration keys = bundle.getKeys();
+    while(keys.hasMoreElements()) {
+    String key = (String)keys.nextElement();
+  </jsp:scriptlet>
+  <message>
+    <msgid><jsp:expression>key</jsp:expression></msgid>
+    <msgstr><jsp:expression>bundle.getString(key)</jsp:expression></msgstr>
+  </message>
+  <jsp:scriptlet>
+    }
+  </jsp:scriptlet>
+</jsp:root>
