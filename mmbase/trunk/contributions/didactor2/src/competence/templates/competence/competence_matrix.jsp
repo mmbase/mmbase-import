@@ -104,7 +104,6 @@
             <mm:field name="name" jspvar="sProfile" vartype="String">
                <%
                   sProfileName = sTemplate.replaceAll("\\{\\$\\$\\$\\}", sProfile);
-                  System.out.println(sProfileName);
                %>
             </mm:field>
          </mm:write>
