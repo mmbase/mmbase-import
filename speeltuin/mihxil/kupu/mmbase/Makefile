@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2005-06-08 22:21:44 michiel Exp $
+# $Id: Makefile,v 1.3 2005-06-08 22:35:33 michiel Exp $
 
 
 KUPU_HOME=..
@@ -28,7 +28,7 @@ messages: *.js
 	msgen i18n/messages.po > i18n/en.po
 
 mmbase-kupu-i18n.jar: i18n/*.po
-	mkdir resourcebundle
+	mkdir -p resourcebundle
 	for PO in `ls i18n/*.po` ; do \
 		LOCALE=`echo $${PO} | sed "s|i18n/||;s|\.po||"`; \
 	    msgfmt --java2  -D . -d resourcebundle -r org.mmbase.kupu.Messages -l $${LOCALE} $${PO}; \

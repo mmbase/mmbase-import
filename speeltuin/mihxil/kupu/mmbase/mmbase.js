@@ -104,19 +104,20 @@ function serialize(request) {
  * Called by the save button.
  */
 function saveNode(button, editor) {
+    kupu.logMessage(_("Saving body (kupu)"));
     editor.saveDocument(); // kupu-part of save
     var content = "";
     var a = xGetElementsByTagName('input', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
         content += a[i].name + ':' + a[i].value + "\n";
     }
-
+    kupu.logMessage(_("Saving fields (form)"));
     var boundary = "----------__________----------";
     a = xGetElementsByTagName('textarea', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
         content += a[i].name + ":" + boundary + "\n" + a[i].value + "\n" + boundary + "\n";
     }
-    kupu.logMessage(_("Sending request part 2 to server"));
+
     var request = getRequest();
     request.open("PUT", "receive.jspx?fields=true", false);
     request.setRequestHeader("Content-type", "text/plain");
@@ -143,6 +144,7 @@ function updateTree(nodeNumber, title) {
  * result is taken from cache.
  */
 function loadNode(nodeNumber) {    
+    kupu.logMessage(_("Loading node"));
     var currentA;
     var nodeDiv = document.getElementById('node');
     if (currentNode != undefined) {
