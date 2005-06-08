@@ -4,7 +4,7 @@
 
 <%@page import="java.util.HashSet"%>
 
-<%@page import = "nl.didactor.utils.connectors.EducationPeopleConnector" %>
+<%@page import = "nl.didactor.education.util.EducationPeopleConnector" %>
 
 <%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
 
