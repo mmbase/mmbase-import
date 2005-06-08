@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.7 2005-06-08 17:32:01 michiel Exp $
+// $Id: kupuinit.js,v 1.8 2005-06-08 22:21:44 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -137,6 +137,12 @@ function initKupu(iframe) {
    // toolbar button is clicked
    var drawertool = new DrawerTool();
    kupu.registerTool('drawertool', drawertool);
+
+   drawertool.search = function() {
+       alert('haaai');
+   }
+           
+
 
    try {
        var linklibdrawer = new LinkLibraryDrawer(linktool, 

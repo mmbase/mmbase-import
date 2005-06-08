@@ -8,7 +8,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.5 2005-06-08 17:32:01 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.6 2005-06-08 22:21:44 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -32,8 +32,8 @@
     <link_xsl_uri>drawers/drawer.xsl</link_xsl_uri>
     <image_libraries_uri>drawers/image.library.jspx</image_libraries_uri>
     <link_libraries_uri>drawers/link.library.jspx</link_libraries_uri>
-    <search_images_uri>drawers/image.library.jspx</search_images_uri>
-    <search_links_uri> drawers/link.library.jspx</search_links_uri>
+    <search_images_uri>drawers/image.library.jspx?search=</search_images_uri>
+    <search_links_uri> drawers/link.library.jspx?search=</search_links_uri>
   </kupu:part>
 
 
