@@ -15,6 +15,19 @@ function winOnLoad()
 function winOnResize() {
   adjustLayout();
 }
+
+function adjustToolBoxesLayout() {
+    var toolbox = 40;
+    var spacing = 5;
+    xTop("kupu-toolbox-links", toolbox);
+    toolbox += xHeight("kupu-toolbox-links") + spacing;
+    xTop("kupu-toolbox-images", toolbox);
+    toolbox += xHeight("kupu-toolbox-images") + spacing;
+    xTop("kupu-toolbox-tables", toolbox);
+    toolbox += xHeight("kupu-toolbox-tables") + spacing;
+    xTop("kupu-toolbox-debug", toolbox);
+
+}
 function adjustLayout() {
     var leftColumnWidth = 150;
     var maxHeight = xClientHeight() - 20;
@@ -48,15 +61,7 @@ function adjustLayout() {
     xHeight("kupu-editor", maxHeightArea - 3);
     xWidth("kupu-editor", maxWidth - 210);
 
-    var toolbox = 40;
-    var spacing = 5;
-    xTop("kupu-toolbox-links", toolbox);
-    toolbox += xHeight("kupu-toolbox-links") + spacing;
-    xTop("kupu-toolbox-images", toolbox);
-    toolbox += xHeight("kupu-toolbox-images") + spacing;
-    xTop("kupu-toolbox-tables", toolbox);
-    toolbox += xHeight("kupu-toolbox-tables") + spacing;
-    xTop("kupu-toolbox-debug", toolbox);
+    adjustToolBoxesLayout();
 
     var nodeHeight = xHeight('node');
 

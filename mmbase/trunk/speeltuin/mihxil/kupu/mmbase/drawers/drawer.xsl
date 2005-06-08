@@ -13,24 +13,26 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.1 2005-04-19 21:15:42 michiel Exp $
+$Id: drawer.xsl,v 1.2 2005-06-08 17:32:02 michiel Exp $
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
-  xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+<xsl:stylesheet 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  >
   <xsl:param name="drawertype">image</xsl:param>
   <xsl:param name="drawertitle">Image Drawer</xsl:param>
   <xsl:param name="showupload"></xsl:param>
   <xsl:param name="usecaptions"></xsl:param>
   <xsl:variable name="titlelength" select="20"/>
   <xsl:template match="/">
-    <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <html lang="en" xml:lang="en">
       <head>
         <title>
           <xsl:value-of select="$drawertitle"/>
         </title>
         <link type="text/css" rel="stylesheet">
-          <xsl:attribute name="href">kupudrawerstyles.css </xsl:attribute>
+          <xsl:attribute name="href">kupudrawerstyles.css</xsl:attribute>
         </link>
       </head>
       <body>
@@ -45,7 +47,9 @@ $Id: drawer.xsl,v 1.1 2005-04-19 21:15:42 michiel Exp $
                   name="searchbox" value="search"
                   style="font-style: italic"
                   onclick="if (this.value == 'search') this.value = ''; this.style.fontStyle='normal';" onkeyup="if (event.keyCode == 13 ) drawertool.current_drawer.search();"/>
+                <input type="submit" />
               </form>
+              
             </div>
             <div class="kupu-panels">
               <table>
@@ -113,10 +117,8 @@ $Id: drawer.xsl,v 1.1 2005-04-19 21:15:42 michiel Exp $
     <div id="{@id}" class="kupu-{local-name()}" title="{description}">
       <xsl:attribute name="onclick">
         <xsl:choose>
-          <xsl:when
-          test="local-name()='collection'">drawertool.current_drawer.selectCollection('<xsl:value-of select="@id"/>');</xsl:when>
-
-          <xsl:otherwise>drawertool.current_drawer.selectItem('<xsl:value-of select="@id"/>')</xsl:otherwise>
+          <xsl:when test="local-name()='collection'">drawertool.current_drawer.selectCollection('<xsl:value-of select="@id"/>');</xsl:when>
+          <xsl:otherwise>drawertool.current_drawer.selectItem(this, '<xsl:value-of select="@id"/>')</xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
       <xsl:apply-templates select="icon"/>

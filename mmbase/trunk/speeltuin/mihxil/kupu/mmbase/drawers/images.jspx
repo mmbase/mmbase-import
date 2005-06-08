@@ -1,24 +1,40 @@
 <?xml version="1.0" ?>
 <mm:content xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" type="text/xml" language="en" expires="-1">
+  <mm:import externid="search" />
+  <mm:import externid="page" vartype="integer" >0</mm:import>
+  <mm:import externid="max" vartype="integer">30</mm:import>
 <collection>
   <uri>drawers/images.jspx</uri>
   <icon>kupuimages/kupulibrary.png</icon>
   <title>MMBase</title>
   <uri>drawers/images.jspx</uri>
-  <items>
+  <items page="${page}">
     <mm:cloud>
-      <mm:listnodes type="images" id="image">
-        <resource id="${image.number}">          
-          <uri><mm:image template="s(100)" /></uri>
-          <title><mm:field name="title" /></title>
-          <size><mm:field name="filesize" />b</size>
-          <mm:image>
-            <height>${dimension.height}</height>
-            <width>${dimension.width}</width>
-          </mm:image>
-          <preview><mm:image template="s(100)" /></preview>
-        </resource>
-      </mm:listnodes>
+      <mm:listnodescontainer type="image">
+        <mm:isnotempty referid="search">
+          <mm:compositeconstraint operator="OR">
+            <mm:constraint field="title" operator="LIKE" value="%$search%" />
+            <mm:constraint field="subtitle" operator="LIKE" value="%$search%" />
+            <mm:constraint field="intro" operator="LIKE" value="%$search%" />
+            <mm:constraint field="body" operator="LIKE" value="%$search%" />
+          </mm:compositeconstraint>
+        </mm:isnotempty>
+        <mm:sortorder field="number" direction="now" />
+        <mm:maxnumber value="$page" />
+        <mm:offset    value="${page * max}" />
+        <mm:listnodes id="image">
+          <resource id="${image.number}">          
+            <uri><mm:image template="s(100)" /></uri>
+            <title><mm:field name="title" /></title>
+            <size><mm:field name="filesize" />b</size>
+            <mm:image>
+              <height>${dimension.height}</height>
+              <width>${dimension.width}</width>
+            </mm:image>
+            <preview><mm:image template="s(100)" /></preview>
+          </resource>
+        </mm:listnodes>
+      </mm:listnodescontainer>
     </mm:cloud>
   </items>
 </collection>

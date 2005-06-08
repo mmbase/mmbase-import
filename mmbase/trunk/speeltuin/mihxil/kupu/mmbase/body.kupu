@@ -6,12 +6,14 @@
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: body.kupu,v 1.4 2005-06-04 13:03:59 michiel Exp $</kupu:id>
+  <kupu:id>$Id: body.kupu,v 1.5 2005-06-08 17:32:01 michiel Exp $</kupu:id>
 
   <kupu:part name="body">
-    <body onload="kupu = startKupu();  mmbaseInit();">
+    <mm:import externid="node" />
+    <body onload="kupu = startKupu('${lang}'); mmbaseInit('${node}');">
       <kupu:define-slot name="body" />
     </body>
   </kupu:part>

@@ -71,6 +71,10 @@ img {
 
  }
 
+iframe { 
+  background-color: red;
+}
+
 a.current  { 
   background-color:  #76a2b6;
 }
@@ -126,16 +130,21 @@ div.kupu-toolbox-active {
 div#kupu-toolbox-links { 
 }
 div#kupu-toolbox-images { 
-  top: 300px;
+  top: 250px;
 
 }
 div#kupu-toolbox-tables { 
-  top: 600px;
+  top: 500px;
+  z-index: 100;
 
 }
 div#kupu-toolbox-debug { 
-  top: 600px;
+  top: 750px;
 }
+
+div#kupu-toolbox-addtable{ 
+
+} 
 img.icon { 
   margin-right: 0.5ex;
   border: 0px;
