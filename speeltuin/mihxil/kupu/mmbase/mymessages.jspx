@@ -3,10 +3,11 @@
   <jsp:directive.page import="java.util.*" contentType="text/plain" />
   <jsp:scriptlet>
     String language = request.getParameter("language");
-    ResourceBundle bundle = ResourceBundle.getBundle("org.mmbase.kupu.messages", language == null ? request.getLocale() : new Locale(language));
+    ResourceBundle bundle = ResourceBundle.getBundle("org.mmbase.kupu.Messages", language == null ? request.getLocale() : new Locale(language));
     Enumeration keys = bundle.getKeys();
     while(keys.hasMoreElements()) {
     String key = (String)keys.nextElement();
+    if (key.equals("")) continue;
   </jsp:scriptlet>
   <message>
     <msgid><jsp:expression>key</jsp:expression></msgid>
