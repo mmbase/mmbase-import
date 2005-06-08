@@ -5,7 +5,7 @@
 <%@ page import = "java.util.HashMap" %>
 <%@ page import = "java.util.Iterator" %>
 
-<%@ page import = "nl.didactor.education.utils.EducationPeopleConnector" %>
+<%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
