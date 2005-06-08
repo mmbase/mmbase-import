@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.54 2005-04-25 14:23:23 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.55 2005-06-08 12:58:58 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -174,30 +174,34 @@ public class TypeDef extends MMObjectBuilder {
 
     public boolean commit(MMObjectNode node) {
         log.service("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        MMObjectBuilder builder = getBuilder(node);
-        BuilderReader originalBuilderXml = new BuilderReader(getBuilderConfiguration(node), getMMBase());
-        BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(
-                                                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                                 "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
-                                                 "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
-                                                 node.getStringValue("config"))), getMMBase());
-        if (!originalBuilderXml.equals(newBuilderXml)) {
-            try {
-                // unload the builder...
-                builder = unloadBuilder(node);
-                // attempt to apply changes to the database
-                // by dropping the buildertable (ARGH!)
-                if (! originalBuilderXml.storageEquals(newBuilderXml)) {
-                    builder.delete();
+        try {
+            MMObjectBuilder builder = getBuilder(node);
+            BuilderReader originalBuilderXml = new BuilderReader(mmb.getBuilderLoader().getInputSource(getBuilderConfiguration(node)), getMMBase());
+            BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(
+                                                                                                  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                                                                                  "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
+                                                                                                  "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
+                                                                                                  node.getStringValue("config"))), getMMBase());
+            if (!originalBuilderXml.equals(newBuilderXml)) {
+                try {
+                    // unload the builder...
+                    builder = unloadBuilder(node);
+                    // attempt to apply changes to the database
+                    // by dropping the buildertable (ARGH!)
+                    if (! originalBuilderXml.storageEquals(newBuilderXml)) {
+                        builder.delete();
+                    }
+                    // finally save our new config.
+                    storeBuilderConfiguration(node);
+                } finally {
+                    // clear config, so it will be refreshed later on
+                    node.storeValue("config",null);
+                    // load the builder again.. (will possibly create a new table)
+                    loadBuilder(node);
                 }
-                // finally save our new config.
-                storeBuilderConfiguration(node);
-            } finally {
-                // clear config, so it will be refreshed later on
-                node.storeValue("config",null);
-                // load the builder again.. (will possibly create a new table)
-                loadBuilder(node);
             }
+        } catch (Exception ioe) {
+            log.error(ioe.getMessage(), ioe);
         }
         return super.commit(node);
     }
@@ -516,30 +520,19 @@ public class TypeDef extends MMObjectBuilder {
         return getSingularName(node.getStringValue("name"), null);
     }
 
-    /**
-     * What should a GUI display for this node/field combo.
-     * If the field specified is 'name', this method returns the gui name (singular name) of the
-     * builder that goes with this node.
-     * @param field the name field of the field to display
-     * @param node The node to display
-     * @return the display of the node's field as a <code>String</code>, null if not specified
-     */
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("name")) {
-            String name = node.getStringValue("name");
-            String guiname= getSingularName(name, null);
-            return guiname;
-        }
-        return null;
-    }
 
     /**
      * The GUIIndicator can depend on the locale. Override this function
      * @since MMBase-1.6
      */
     protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
-        if (field == null || "".equals(field) || "name".equals(field)){
+        if (field == null || "".equals(field)) {
             return getLocaleGUIIndicator(locale, node);
+        } else if ("description".equals(field)) {
+            MMObjectBuilder bul = (MMObjectBuilder)mmb.mmobjs.get(node.getStringValue("name"));
+            if (bul != null) {
+                return bul.getDescription(locale.getLanguage());
+            }
         }
         return null;
     }
