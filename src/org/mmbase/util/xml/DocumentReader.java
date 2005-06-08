@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.6 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: DocumentReader.java,v 1.7 2005-06-08 12:25:15 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -120,6 +120,7 @@ public class DocumentReader  {
     /**
      * Constructs the document by reading it from a file.
      * @param path the path to the file from which to read the document
+     * @deprecated use {@link #DocumentReader(InputSource)} in combination with {@link org.mmbase.util.ResourceLoader#getInputSource(String)}
      */
     public DocumentReader(String path) {
         this(getInputSource(path), validate(), null);
@@ -132,6 +133,7 @@ public class DocumentReader  {
      * @param path the path to the file from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
+     * @deprecated use {@link #DocumentReader(InputSource)} in combination with {@link org.mmbase.util.ResourceLoader#getInputSource(String)}
      */
     public DocumentReader(String path, boolean validating, Class resolveBase) {
         this(getInputSource(path), validating, resolveBase);
