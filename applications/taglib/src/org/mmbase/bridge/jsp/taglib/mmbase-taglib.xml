@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.308 2005-06-05 08:30:30 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.309 2005-06-08 19:37:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3072,16 +3072,22 @@ transaction was commited, following should result anything:
       <possiblevalue>
         <value>type</value>
         <info>
-    The type of this field. Which is an integer.
+          The storage type of this field. Which is an integer. You may like typedescription.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>typedescription</value>
+        <info>
+          The storage type of this field, as a string. Like 'string', 'integer', 'long', 'xml'.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>guitype</value>
         <info>
-    The guitype of this field. The guitype further specializes on the type, and can be found
-    in the guitype field of builder xml's.
-    The combination of type/guitype is used by e.g. the `input' version of this tag, to create
-    feasible HTML input entries.
+          The guitype of this field. The guitype further specializes on the type, and can be found
+          in the guitype field of builder xml's.
+          The combination of type/guitype is used by e.g. the `input' version of this tag, to create
+          feasible HTML input entries.
         </info>
       </possiblevalue>
     </attribute>

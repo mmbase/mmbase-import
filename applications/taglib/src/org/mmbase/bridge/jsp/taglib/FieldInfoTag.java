@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.78 2005-05-10 22:51:03 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.79 2005-06-08 19:37:47 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -66,6 +66,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_TYPE      = 4;
     protected static final int TYPE_GUITYPE   = 5;
     protected static final int TYPE_DESCRIPTION = 6;
+
+    protected static final int TYPE_TYPEDESCRIPTION = 7;
 
     protected static final int TYPE_UNSET     = 100;
 
@@ -109,6 +111,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             return TYPE_GUIVALUE;
        } else if ("type".equals(t)) {
             return TYPE_TYPE;
+       } else if ("typedescription".equals(t)) {
+            return TYPE_TYPEDESCRIPTION;
        } else if ("guitype".equals(t)) {
             return TYPE_GUITYPE;
        } else if ("description".equals(t)) {
@@ -307,6 +311,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         case TYPE_TYPE:
             show = "" + field.getType();
+            break;
+        case TYPE_TYPEDESCRIPTION:
+            show = org.mmbase.core.util.Fields.getTypeDescription(field.getType());
             break;
         case TYPE_GUITYPE:
             show = field.getGUIType();
