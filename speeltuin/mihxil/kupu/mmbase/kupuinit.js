@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.6 2005-06-07 22:02:46 michiel Exp $
+// $Id: kupuinit.js,v 1.7 2005-06-08 17:32:01 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -98,7 +98,7 @@ function initKupu(iframe) {
     var imagetoolbox = new ImageToolBox('kupu-image-input', 'kupu-image-addbutton', 'kupu-image-float-select', 'kupu-toolbox-images',  'kupu-toolbox', 'kupu-toolbox-active');
     imagetool.registerToolBox('imagetoolbox', imagetoolbox);
 
-    /*
+
     var tabletool = new TableTool();
     kupu.registerTool('tabletool', tabletool);
     var tabletoolbox = new TableToolBox('kupu-toolbox-addtable', 
@@ -110,8 +110,12 @@ function initKupu(iframe) {
         'kupu-toolbox', 'kupu-toolbox-active'
         );
     tabletool.registerToolBox('tabletoolbox', tabletoolbox);
-    */
+
     
+    // create some drawers, drawers are some sort of popups that appear when a 
+    // toolbar button is clicked
+    var drawertool = new DrawerTool();
+    kupu.registerTool('drawertool', drawertool);
 
    /*
    var sourceedittool = new SourceEditTool('kupu-source-button', 'kupu-editor-textarea');
@@ -157,6 +161,10 @@ function initKupu(iframe) {
 
    var linkdrawer = new LinkDrawer('kupu-linkdrawer', linktool);
    drawertool.registerDrawer('linkdrawer', linkdrawer);
+
+   var tabledrawerbutton = new KupuButton('kupu-tabledrawer-button',
+                                           opendrawer('tabledrawer'));
+   kupu.registerTool('tabledrawerbutton', tabledrawerbutton);
 
    //var tabledrawer = new TableDrawer('kupu-tabledrawer', tabletool);
    // drawertool.registerDrawer('tabledrawer', tabledrawer);   

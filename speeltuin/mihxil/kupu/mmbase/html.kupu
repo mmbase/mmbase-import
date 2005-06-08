@@ -4,7 +4,7 @@
     implementation="mmbase"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     >
-  <kupu:id>$Id: html.kupu,v 1.9 2005-06-07 22:02:46 michiel Exp $</kupu:id>
+  <kupu:id>$Id: html.kupu,v 1.10 2005-06-08 17:32:01 michiel Exp $</kupu:id>
   <kupu:part name="html">
     <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page" 
@@ -18,7 +18,8 @@
         <mm:import id="rich_language" externid="language" />
         <mm:import externid="rich_language" from="this,session">client</mm:import>
         <mm:write session="rich_language" referid="rich_language" />
-        <mm:content type="text/html" language="$rich_language" expires="0">
+        <mm:content type="text/html"  language="${rich_language}" expires="0" jspvar="locale">
+          <mm:import id="lang"><jsp:expression>((java.util.Locale)locale).getLanguage()</jsp:expression></mm:import>
           <fmt:bundle basename="org.oscom.kupu.Messages">
             <kupu:define-slot name="html" />
           </fmt:bundle>
