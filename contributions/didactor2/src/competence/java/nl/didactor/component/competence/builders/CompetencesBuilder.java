@@ -27,7 +27,7 @@ public class CompetencesBuilder extends MMObjectBuilder
 
    public void commitAll()
    {//Commits all competence nodes which are stored in the base
-      log.info("[CompetenceBuilder] Commiting all competence nodes");
+//      log.info("[CompetenceBuilder] Commiting all competence nodes");
 
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
       Cloud cloud = cloudProvider.getAdminCloud();
