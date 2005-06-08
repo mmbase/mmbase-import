@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.93 2005-06-03 15:08:10 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.94 2005-06-08 11:47:25 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -66,7 +66,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      */
     BasicNodeManager(MMObjectNode node, Cloud cloud, int nodeid) {
         super(node, cloud, nodeid);
-        // no initialization - for a new node, builder is null.
+        // no initialization - for a new nodes, builder is null.
     }
 
     /**
@@ -511,7 +511,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public Function getFunction(String functionName) {
         // first try the functions of this builder itself:
-        Function function = builder.getFunction(functionName);
+        Function function = builder != null ? builder.getFunction(functionName) : null;
 
         // We are not very interested in NodeFunction, because those would logically be requested
         // from a node, not a nodemanager.
