@@ -1,6 +1,8 @@
 <%@ page import = "java.util.HashSet" %>
 <%@ page import = "java.util.Iterator" %>
 
+<%@page import = "nl.didactor.utils.connectors.EducationPeopleConnector" %>
+
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -8,6 +10,9 @@
    <%@include file="/shared/setImports.jsp" %>
 
    <%
+      //education-people connector
+      EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
+
       if(request.getParameter("mode") != null)
       {
          session.setAttribute("education_topmenu_mode", request.getParameter("mode"));
@@ -42,27 +47,16 @@
    </head>
 
    <mm:import id="education_top_menu"><%= session.getAttribute("education_topmenu_mode") %></mm:import>
+
    <%
-      HashSet hsetEducations = new HashSet();
+      HashSet hsetEducations = null;
    %>
-   <mm:node number="$user">
-      <% //We go throw all educations for CURRENT USER%>
-      <mm:node number="$user">
-         <mm:related path="classrel,classes">
-            <mm:node element="classes">
-               <mm:related path="related,educations" distinct="true" fields="educations.number">
-                  <mm:node element="educations">
-                       <mm:field name="number" jspvar="sID" vartype="String" write="false">
-                          <%
-                             hsetEducations.add(sID);
-                          %>
-                       </mm:field>
-                  </mm:node>
-               </mm:related>
-            </mm:node>
-         </mm:related>
-      </mm:node>
+   <mm:node number="$user" jspvar="node">
+      <%
+         hsetEducations = educationPeopleConnector.relatedEducations("" + node.getNumber());
+      %>
    </mm:node>
+
 
    <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 
