@@ -13,12 +13,13 @@ import org.mmbase.bridge.DataType;
 import java.util.List;
 
 /**
- * @javadoc
- * @since MMBase-1.7
+ * A wrapped function is a base class for function objects based on an other function object.
+ *
+ * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.5 2005-05-09 14:14:17 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.6 2005-06-09 21:27:56 michiel Exp $
  */
-public class WrappedFunction implements Function {
+public abstract class WrappedFunction implements Function {
 
     protected Function wrappedFunction;
 
@@ -76,8 +77,12 @@ public class WrappedFunction implements Function {
         wrappedFunction.setReturnType(type);
     }
 
-    public String toString() {
-        return "WRAPPED " + wrappedFunction;
+    public int hashCode() {
+        return getName().hashCode();
     }
+    public String toString() {
+        return "WRAPPED" + getReturnType() + " " + getName() + java.util.Arrays.asList(getParameterDefinition());
+    }
+
 
 }
