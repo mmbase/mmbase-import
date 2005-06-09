@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * 'knows' which nodes and fields are available in the page.
  *
  * @author Andre van Toly
- * @version $Id: EditTag.java,v 1.4 2005-05-24 20:15:27 andre Exp $
+ * @version $Id: EditTag.java,v 1.5 2005-06-09 08:42:59 andre Exp $
  */
 public interface EditTag {
 
@@ -25,14 +25,14 @@ public interface EditTag {
      *
      * @param editor     String with link to the editor
      */ 
-    public void setEditor(String editor);
+    public void setEditor(String editor) throws JspTagException;
     
     /**
      * Location of an icon 
      *
      * @param icon     String with link to icon
      */ 
-    public void setIcon(String icon);
+    public void setIcon(String icon) throws JspTagException;
     
     
     /**
