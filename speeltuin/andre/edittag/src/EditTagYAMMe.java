@@ -9,6 +9,12 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.Entry;
+
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.mmbase.util.XMLBasicReader;
 
 /**
  * This is an example implementation of the EditTag. EditTagYAMMe works together
@@ -16,53 +22,87 @@ import org.mmbase.util.logging.Logging;
  *
  * @see EditTag
  * @author Andre van Toly
- * @version $Id: EditTagYAMMe.java,v 1.3 2005-05-24 20:15:27 andre Exp $
+ * @version $Id: EditTagYAMMe.java,v 1.4 2005-06-09 08:42:59 andre Exp $
  */
 
-public class EditTagYAMMe extends TagSupport implements EditTag {
+public class EditTagYAMMe extends TagSupport implements EditTag, ParamHandler {
 
-    private static final Logger log = Logging.getLoggerInstance(EditTag.class);
+    private static final Logger log = Logging.getLoggerInstance(EditTagYAMMe.class);
 
     private static String editor;
     private static String icon;
     private static ArrayList startList = new ArrayList();       // startnodes: 346
     private static ArrayList pathList  = new ArrayList();       // paths: 346_news,posrel,urls
     private static ArrayList nodeList  = new ArrayList();       // nodes: 602 (should be 346.602)
-    private static ArrayList fieldList = new ArrayList();       // fields: 602_news.title
-    
+    private static ArrayList fieldList = new ArrayList();       // fields: 602_news.title    
     // Map to accommadate the fields and their startnodes
     Map fld2snMap = new HashMap();
     
-    // new statics
     private static Query query;
     private static int nodenr;
     private static String fieldName;
     
-    public void setEditor(String editor) {      // editor : link to the editor
+    // Variables belonging to parametization (?) of edittag
+    protected List parameters;
+    
+    public void setEditor(String editor) throws JspTagException {   // editor : link to the editor
         this.editor = editor;
     }
     
-    public void setIcon(String icon) {          // icon : link to the edit icon
+    public void setIcon(String icon) throws JspTagException {		// icon : link to the edit icon
         this.icon = icon;
     }
     
+    public void addParameter(String key, Object value) throws JspTagException {
+        // parameters.set(key, value);
+        parameters.add(new Entry(key, value));
+    }
+    
     public int doStartTag() throws JspException {
-      return EVAL_BODY_INCLUDE;
+        Class thisClass = EditTag.class;
+        InputSource edittypes = new InputSource(thisClass.getResourceAsStream("resources/edittagtypes.xml"));
+        XMLBasicReader reader  = new XMLBasicReader(edittypes, thisClass);
+        
+        Element edittypesElement = reader.getElementByPath("edittagtypes");
+        Enumeration e = reader.getChildElements(edittypesElement, "editor");
+        while (e.hasMoreElements()) {
+            Element element = (Element) e.nextElement();
+			String typeString = element.getAttribute("type");
+			String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
+			log.info("Resources - type: " + typeString + "  claz: " + claz);
+		}
+        
+        parameters = new ArrayList();
+        return EVAL_BODY_INCLUDE;
     }
         
     public int doEndTag() throws JspException {
         try {
-            pageContext.getOut().print(makeHTML(editor, icon) +
-                "<!-- gevonden startnodes : " + makeList4Url(startList) + 
-                "gevonden pad: " + makeList4Url(pathList) +
-                "gevonden nodes: " + makeList4Url(nodeList) +
-                "gevonden velden : " + makeList4Url(fieldList) +
-                "-->");
+//            if (log.isDebugEnabled()) {
+                log.info("Parameters " + parameters);
+//            }
+			Iterator i = parameters.iterator();
+			while (i.hasNext()) {
+				Entry param  = (Entry) i.next();
+				if (param.getValue() == null) continue;
+				String key = (String) param.getKey();
+				String val = param.getValue().toString();
+                log.info("Parameters/stuk: " + key + " + " + val);
+			}
+            
+            pageContext.getOut().print( makeHTML(editor, icon) );
+            log.info("startnodes : " + makeList4Url(startList));
+            log.info("paths : " + makeList4Url(pathList));
+            log.info("nodes : " + makeList4Url(nodeList));
+            log.info("fields : " + makeList4Url(fieldList));
+            
             fieldList.clear();  // clear the lists!
             startList.clear();
             pathList.clear();
             nodeList.clear();
             fld2snMap.clear();
+        	parameters = null;
+            
             return EVAL_PAGE;
         } catch(IOException ioe) {
             throw new JspException(ioe.getMessage());
