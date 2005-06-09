@@ -11,9 +11,6 @@
 <%
    String imageName = "";
    String sAltText = "";
-
-   String bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + request.getLocale().getLanguage();
-   String bundleEducation  = "nl.didactor.component.education.EducationMessageBundle";
 %>
 
 <%
@@ -26,6 +23,17 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
+
+   <%
+      String bundleCompetence = null;
+      String bundleEducation = null;
+   %>
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+      <%
+         bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + sLangCode;
+         bundleEducation  = "nl.didactor.component.education.EducationMessageBundle";
+      %>
+   </mm:write>
 
    <%//education-people connector
       EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
