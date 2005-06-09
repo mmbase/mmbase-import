@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.7 2005-06-08 12:25:15 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.8 2005-06-09 20:56:50 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -70,7 +70,7 @@ public class DocumentReader  {
 
     protected Document document;
 
-    private String xmlFilePath;
+    private String systemId;
 
     /**  
      * Returns the default setting for validation for DocumentReaders.
@@ -157,7 +157,7 @@ public class DocumentReader  {
      */
     public DocumentReader(InputSource source, boolean validating, Class resolveBase) {
         try {
-            xmlFilePath = source.getSystemId();
+            systemId = source.getSystemId();
             XMLEntityResolver resolver = null;
             if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
             DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
@@ -267,7 +267,7 @@ public class DocumentReader  {
      * @param n the Node whose value to determine
      * @return a String representing the node's textual value 
      */
-    public String getNodeTextValue(Node n) {
+    public static String getNodeTextValue(Node n) {
         NodeList nl = n.getChildNodes();
         StringBuffer res = new StringBuffer();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -285,8 +285,16 @@ public class DocumentReader  {
      * Returns the systemID of the InputSource used to read the document.
      * This is generally the document's file path.
      * @return the systemID as a String
+     * @deprecated use {@link #getSystemId}
      */
     public String getFileName() {
-        return xmlFilePath;
+        return systemId;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public String getSystemId() {
+        return systemId;
     }
 }
