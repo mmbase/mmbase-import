@@ -18,10 +18,10 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.5 2005-05-20 08:53:15 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.6 2005-06-09 21:35:37 michiel Exp $
  * @since MMBase-1.8
  */
-public class LocalizedString  {
+public class LocalizedString  implements java.io.Serializable {
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -47,10 +47,16 @@ public class LocalizedString  {
         return defaultLocale != null ? defaultLocale : Locale.getDefault();
     }
 
-    private final String key;
+    //    private final String key;
+    private String key;
+
     private Map    values = null;
     private String bundle = null;
 
+    // just for the contract of Serializable
+    protected LocalizedString() {
+        
+    }
 
     /**
      * @param k The key of this String
