@@ -37,16 +37,6 @@
 <body>
 <div class="learnenvironment">
 
-<mm:node number="$learnobject">
-   <mm:field name="showtitle">
-      <mm:compare value="1">
-         <mm:field name="name" jspvar="sTitle" vartype="String" write="false">
-            <h1><%= sTitle %></h1>
-         </mm:field>
-      </mm:compare>
-   </mm:field>
-</mm:node>
-
 <mm:treeinclude page="/education/pages/content.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>
 </mm:treeinclude>

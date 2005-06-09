@@ -61,6 +61,13 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
+      <field name="showtitle" ftype="enum">
+         <prompt xml:lang="nl">Titel laten zien</prompt>
+         <prompt xml:lang="en">Show title</prompt>
+         <optionlist select="boolean"></optionlist>
+      </field>
+ 
+
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
