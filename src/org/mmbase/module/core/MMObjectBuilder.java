@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.306 2005-06-09 18:00:48 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.307 2005-06-09 18:41:52 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3886,9 +3886,10 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * A NodeFunction represents a function on a node instances of this builder. This means
-     * that it always has one implicit node argument.
+     * that it always has one implicit node argument. This node-argument needs not be mentioned in
+     * the Parameter array of the constructor.
      */
-    public abstract class NodeFunction extends AbstractFunction {
+    public static abstract class NodeFunction extends AbstractFunction {
 
         public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
             super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType);
@@ -3917,7 +3918,7 @@ public class MMObjectBuilder extends MMTable {
             }
             MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
             if (node == null) {
-                throw new IllegalArgumentException("The node argument of  " + MMObjectBuilder.this.getTableName() + " " + getClass() + " " + toString() + " must not be null "); 
+                throw new IllegalArgumentException("The node argument of  " + getClass() + " " + toString() + " must not be null "); 
             }
             Object o = getFunctionValue(node, parameters);
             if (log.isDebugEnabled()) {
