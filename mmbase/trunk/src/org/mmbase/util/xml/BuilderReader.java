@@ -21,6 +21,7 @@ import org.mmbase.core.implementation.BasicCoreField;
 
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.15 2005-06-08 12:25:15 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.16 2005-06-09 21:31:31 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -46,15 +47,21 @@ public class BuilderReader extends XMLBasicReader {
     public static final String PUBLIC_ID_BUILDER_1_1 = "-//MMBase//DTD builder config 1.1//EN";
     private static final String PUBLIC_ID_BUILDER_1_1_FAULT = "-//MMBase/DTD builder config 1.1//EN";
 
+    /** Public ID of the Builder DTD version 2.0 */
+    public static final String PUBLIC_ID_BUILDER_2_0 = "-//MMBase//DTD builder config 2.0//EN";
+
+
     /** DTD resource filename of the Builder DTD version 1.0 */
     public static final String DTD_BUILDER_1_0 = "builder_1_0.dtd";
     /** DTD resource filename of the Builder DTD version 1.1 */
     public static final String DTD_BUILDER_1_1 = "builder_1_1.dtd";
 
+    public static final String DTD_BUILDER_2_0 = "builder_2_0.dtd";
+
     /** Public ID of the most recent Builder DTD */
-    public static final String PUBLIC_ID_BUILDER = PUBLIC_ID_BUILDER_1_1;
+    public static final String PUBLIC_ID_BUILDER = PUBLIC_ID_BUILDER_2_0;
     /** DTD respource filename of the most recent Builder DTD */
-    public static final String DTD_BUILDER = DTD_BUILDER_1_1;
+    public static final String DTD_BUILDER = DTD_BUILDER_2_0;
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
@@ -64,6 +71,7 @@ public class BuilderReader extends XMLBasicReader {
         // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, BuilderReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, BuilderReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_2_0, DTD_BUILDER_2_0, BuilderReader.class);
 
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, BuilderReader.class);
@@ -241,8 +249,12 @@ public class BuilderReader extends XMLBasicReader {
      * is expanded to fall into the <code>org.mmbase.module.builders</code> package.
      * @return the classname to use.
      */
-    public String getClassFile() {
-        String val = getElementValue("builder.classfile");
+    public String getClassName() {
+        String val = getElementValue("builder.class");
+        if (val.equals("")) { 
+            val = getElementValue("builder.classfile");// deprecated!! (makes no sense, it is no file)
+        }
+        
         if (val.equals("")) {
             if (parentBuilder!=null) {
                 return parentBuilder.getClass().getName();
@@ -260,6 +272,13 @@ public class BuilderReader extends XMLBasicReader {
             val = "org.mmbase.module.corebuilders.TypeDef";
         }
         return val;
+    }
+
+    /**
+     * @deprecated Use {@link #getClassName}
+     */
+    public String getClassFile() {
+        return getClassName();
     }
 
     /**
@@ -308,7 +327,7 @@ public class BuilderReader extends XMLBasicReader {
             Element field = (Element)ns.nextElement();
             CoreField def=(CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
             if (def != null) {
-                decodeFieldDef(field,def);
+                decodeFieldDef(field, def);
             } else {
                 def = decodeFieldDef(field);
                 def.setStoragePosition(pos++);
@@ -316,6 +335,74 @@ public class BuilderReader extends XMLBasicReader {
             }
         }
         return results;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Set getFunctions() {
+        Set results = new HashSet();
+        for(Enumeration ns = getChildElements("builder.functionlist","function"); ns.hasMoreElements(); ) {
+            try {
+                Element functionElement   = (Element)ns.nextElement();
+                final String functionName = functionElement.getAttribute("name");
+                String providerKey        = functionElement.getAttribute("key");
+                String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
+                
+                Function function;
+                Class claz = Class.forName(functionClass);
+                if (Function.class.isAssignableFrom(claz)) {
+                    if (!providerKey.equals("")) {
+                        log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
+                    }
+                    function = (Function) claz.newInstance();
+                } else if (FunctionProvider.class.isAssignableFrom(claz)) {
+                    if ("".equals(providerKey)) providerKey = functionName;
+                    if ("".equals(providerKey)) {
+                        log.error("FunctionProvider " + claz + " specified in " + getSystemId() + " without key or name");
+                        continue;
+                    }
+                    FunctionProvider provider = (FunctionProvider) claz.newInstance();
+                    function = provider.getFunction(providerKey);
+                } else {
+                    if ("".equals(providerKey)) providerKey = functionName;
+                    if ("".equals(providerKey)) {
+                        log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
+                        continue;
+                    }
+                    function = BeanFunction.getFunction(claz, providerKey);
+                }
+                if (! functionName.equals("") && ! function.getName().equals(functionName)) {
+                    log.service("Wrapping " + function.getName() + " to " + functionName);
+                    function = new WrappedFunction(function) {
+                            public String getName() {
+                                return functionName;
+                            }
+                        };
+                }
+                if (! (function instanceof MMObjectBuilder.NodeFunction)) {
+                    // if it contains a 'node' parameter, it can be wrapped into a node-function,
+                    // and be available on nodes of this builder.
+                    Parameters test = function.createParameters();
+                    if (test.containsParameter(Parameter.NODE)) {
+                        final Function f = function;
+                        function = new MMObjectBuilder.NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
+                                protected Object getFunctionValue(org.mmbase.module.core.MMObjectNode node, Parameters parameters) {
+                                    parameters.set(Parameter.NODE, node);
+                                    return f.getFunctionValue(parameters);
+                                }
+                            };
+                    }
+                }
+
+                results.add(function);                                    
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+
+        }
+        return results;
+
     }
 
     /**
@@ -631,7 +718,7 @@ public class BuilderReader extends XMLBasicReader {
                 getPluralNames().equals(b.getPluralNames()) &&
                 getDescriptions().equals(b.getDescriptions()) &&
                 getProperties().equals(b.getProperties()) &&
-                getClassFile().equals(b.getClassFile())
+                getClassName().equals(b.getClassName())
                 ;
         } else {
             return false;
