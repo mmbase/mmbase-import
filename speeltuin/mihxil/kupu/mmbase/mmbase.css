@@ -96,7 +96,7 @@ a.current  {
 }
 
 textarea#kupu-editor-textarea {
-  display: none;
+  display: block;
   background-color: white;
 }
 

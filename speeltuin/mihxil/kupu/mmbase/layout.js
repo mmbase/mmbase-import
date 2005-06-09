@@ -29,6 +29,7 @@ function adjustToolBoxesLayout() {
 
 }
 function adjustLayout() {
+    
     var leftColumnWidth = 150;
     var maxHeight = xClientHeight() - 20;
     var maxWidth  = xClientWidth() - leftColumnWidth - 4;

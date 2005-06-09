@@ -79,11 +79,22 @@ function startKupu(language) {
 
 function mmbaseInit(node) {
     /*
-
-    };
+    KupuZoomTool.prototype.origcommandfunc  = KupuZoomTool.prototype.commandfunc;
+    KupuZoomTool.prototype.commandfunc = function(button, editor) {
+        this.origcommandfunc(button, editor);
+        if (this.zoomed == true) {
+            xGetElementById("leftColumn").style.display = "none";
+            xGetElementById("header").style.display = "none";
+        } else {
+            xGetElementById("leftColumn").style.display = "block";
+            xGetElementById("header").style.display = "block";
+            adjustLayout();
+        }
+    }
+    
     */
     winOnLoad();
-    //loadNode(node);
+    loadNode(node);
 
 }
 
@@ -104,14 +115,14 @@ function serialize(request) {
  * Called by the save button.
  */
 function saveNode(button, editor) {
-    kupu.logMessage(_("Saving body (kupu)"));
+    kupu.logMessage(_("Saving body (kupu)") + " " + currentNode);
     editor.saveDocument(); // kupu-part of save
     var content = "";
     var a = xGetElementsByTagName('input', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
         content += a[i].name + ':' + a[i].value + "\n";
     }
-    kupu.logMessage(_("Saving fields (form)"));
+    kupu.logMessage(_("Saving fields (form)") + " " + currentNode);
     var boundary = "----------__________----------";
     a = xGetElementsByTagName('textarea', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
@@ -144,7 +155,7 @@ function updateTree(nodeNumber, title) {
  * result is taken from cache.
  */
 function loadNode(nodeNumber) {    
-    kupu.logMessage(_("Loading node"));
+    kupu.logMessage(_("Loading node") + " " + nodeNumber);
     var currentA;
     var nodeDiv = document.getElementById('node');
     if (currentNode != undefined) {

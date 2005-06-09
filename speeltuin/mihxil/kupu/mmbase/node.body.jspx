@@ -15,7 +15,12 @@
     </mm:notpresent>
     
     <mm:node id="node" referid="node">
-      <mm:field name="body" escape="none" id="sent" />
+      <html>
+        <head>
+          <link href="kupustyle.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> 
+        </head>
+        <mm:field name="body" escape="none" id="sent" />
+      </html>
       <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
     </mm:node>
   </mm:cloud>
