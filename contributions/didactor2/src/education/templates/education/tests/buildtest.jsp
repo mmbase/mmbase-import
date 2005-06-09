@@ -61,7 +61,7 @@
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath"/>"/>
 </head>
 <body>
-
+<div class="learnenvironment">
 
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 <form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
@@ -201,7 +201,7 @@
 
 </mm:node>
 </form>
-
+</body>
 </body>
 </html>
 </mm:cloud>

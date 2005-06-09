@@ -88,9 +88,20 @@ table.font {
 	font-weight: normal;
 	color: #000000;
 	text-decoration: none }		
+
 .learnenvironment {
-        font-size: 1.2em;
+        font-size: 1.3em;
 }
+
+.learnenvironment table, 
+.learnenvironment td, 
+.learnenvironment tr, 
+.learnenvironment p {
+    font-size: 1em;
+}
+
+ 
+ 
 
 
 /* ###### navigation-menu lines on the top of the screen ###### */
