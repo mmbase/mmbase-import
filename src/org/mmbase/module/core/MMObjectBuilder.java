@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.305 2005-05-10 22:46:56 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.306 2005-06-09 18:00:48 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2116,7 +2116,9 @@ public class MMObjectBuilder extends MMTable {
                     ((sortorder == CoreField.ORDER_EDIT) && (field.getEditPosition()>-1)) ||
                     ((sortorder == CoreField.ORDER_SEARCH) && (field.getSearchPosition()>-1)) ||
                     ((sortorder == CoreField.ORDER_LIST) && (field.getListPosition()>-1))
-                    ) orderedFields.add(field);
+                    ) { 
+                    orderedFields.add(field);
+                }
             }
             Fields.sort(orderedFields, sortorder);
             sortedFieldLists.put(new Integer(sortorder),orderedFields);
@@ -3886,10 +3888,10 @@ public class MMObjectBuilder extends MMTable {
      * A NodeFunction represents a function on a node instances of this builder. This means
      * that it always has one implicit node argument.
      */
-    public abstract class NodeFunction extends ProviderFunction {
+    public abstract class NodeFunction extends AbstractFunction {
 
         public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
-            super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType, MMObjectBuilder.this);
+            super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType);
         }
 
         /**
