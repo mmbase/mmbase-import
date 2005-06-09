@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.4 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.5 2005-06-09 21:26:30 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -163,7 +163,7 @@ abstract public class AbstractFunction implements Function, Comparable {
     }
 
     public String toString() {
-        return "" + returnType + " " + name + Arrays.asList(parameterDefinition);
+        return "" + returnType + " " + getName() + Arrays.asList(parameterDefinition);
     }
 
 }
