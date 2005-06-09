@@ -26,7 +26,7 @@ import java.util.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.5 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BeanFunction.java,v 1.6 2005-06-09 21:27:13 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -142,6 +142,15 @@ public class BeanFunction extends AbstractFunction {
                 } catch (NoSuchMethodException nsme) {
                     defaultValue = null;
                 }
+                if (Character.isUpperCase(parameterName.charAt(0))) {
+                    if (parameterName.length() > 1) {
+                        if (! Character.isUpperCase(parameterName.charAt(1))) {
+                            parameterName = "" + Character.toLowerCase(parameterName.charAt(0)) + parameterName.substring(1);
+                        }
+                    } else {
+                        parameterName = parameterName.toLowerCase();
+                    }
+                }
                 parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
                 setMethods.add(method);
             }
@@ -162,7 +171,7 @@ public class BeanFunction extends AbstractFunction {
             Object bean = claz.newInstance();
             Iterator i = parameters.iterator();
             Iterator j = setMethods.iterator();
-            while(i.hasNext()) {
+            while(i.hasNext() && j.hasNext()) {
                 Object value = i.next();
                 Method method = (Method) j.next();
                 method.invoke(bean, new Object[] {value});
