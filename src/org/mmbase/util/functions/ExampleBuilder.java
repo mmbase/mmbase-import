@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.8 2005-05-10 08:08:21 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.9 2005-06-09 17:59:38 michiel Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
@@ -46,7 +46,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     };
 
     protected final static Parameter[] SUMFIELDS_PARAMETERS = {
-        new Parameter("fields", List.class, new ArrayList()) /* name, type, default value */
+        new Parameter("fields", List.class, Arrays.asList(new String[] {"otype", "number"})) /* name, type, default value */
     };
 
 
