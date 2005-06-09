@@ -3,19 +3,25 @@ package org.mmbase.util.functions;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
+ * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.3 2005-06-09 21:28:33 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.4 2005-06-09 22:34:25 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
 
+    private static final Logger log = Logging.getLoggerInstance(ExampleBean.class);
     private String parameter1;
     private Integer parameter2 = new Integer(0);
     private String parameter3 = "default";
     private MMObjectNode node;
+    private Cloud cloud;
 
     public void setParameter1(String hoi) {
         parameter1 = hoi;
@@ -41,6 +47,13 @@ public final class ExampleBean {
         this.node = node;
     }
 
+    /**
+     * Makes the functions useable in bridge (so with security)
+     */
+    public void setCloud(Cloud c) {
+        cloud = c;
+    }
+
 
     /**
      * A function defined by this class
@@ -55,28 +68,38 @@ public final class ExampleBean {
 
     /**
      * A real node-function (using the node argument). Returns the next newer node of same type.
+     * Also a nice example on the difference between core and bridge.
      */
-    public MMObjectNode successor() {
+    public Object successor() {
         if (node == null) throw new IllegalArgumentException("successor is a node-function");
         int number = node.getNumber();
-        NodeSearchQuery query = new NodeSearchQuery(node.getBuilder());
-        StepField field = query.getField(node.getBuilder().getField("number"));
-        BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, new Integer(node.getNumber()));
-        cons.setOperator(FieldCompareConstraint.GREATER);
-        query.setConstraint(cons);
-        query.addSortOrder(field);
-        query.setMaxNumber(1);
-        try {
-            java.util.Iterator resultList = node.getBuilder().getNodes(query).iterator();
-            if (resultList.hasNext()) {
-                return ((MMObjectNode) resultList.next());
-            } else {
+        if (cloud != null) {
+            log.debug("Using bridge (security restrictions will be honoured)");
+            NodeManager nm = cloud.getNodeManager(node.getBuilder().getTableName());
+            NodeQuery q = nm.createQuery();
+            StepField field = q.getStepField(nm.getField("number"));
+            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, new Integer(number)));
+            q.addSortOrder(field, SortOrder.ORDER_ASCENDING);
+            q.setMaxNumber(1);
+            NodeIterator i = nm.getList(q).nodeIterator();
+            return i.hasNext() ? i.nextNode() : null;
+        } else {
+            log.debug("Using core.");
+            MMObjectBuilder builder = node.getBuilder();
+            NodeSearchQuery query = new NodeSearchQuery(builder);
+            StepField field = query.getField(builder.getField("number"));
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, new Integer(number));
+            cons.setOperator(FieldCompareConstraint.GREATER);
+            query.setConstraint(cons);
+            query.addSortOrder(field);
+            query.setMaxNumber(1);
+            try {
+                java.util.Iterator i = builder.getNodes(query).iterator();
+                return i.hasNext() ? ((MMObjectNode) i.next()) : null;
+            } catch (Exception e) {
                 return null;
             }
-        } catch (Exception e) {
-            return null;
         }
     }
-
 
 }
