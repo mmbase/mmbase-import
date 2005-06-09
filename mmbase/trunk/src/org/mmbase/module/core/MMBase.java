@@ -35,7 +35,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.130 2005-05-14 15:25:35 nico Exp $
+ * @version $Id: MMBase.java,v 1.131 2005-06-09 21:33:03 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -279,6 +279,7 @@ public class MMBase extends ProcessorModule {
             locale = new Locale(tmp, "");
         }
         log.info("MMBase default locale : " + locale);
+        org.mmbase.util.LocalizedString.setDefault(locale);
 
 
         tmp = getInitParameter("ENCODING");
@@ -604,19 +605,19 @@ public class MMBase extends ProcessorModule {
             rootBuilder.setTableName("object");
             List fields = new ArrayList();
             // number field  (note: state = 'system')
-            FieldDefs def = new FieldDefs("Object", "integer", 10, 10, "number", FieldDefs.TYPE_INTEGER, 1, FieldDefs.DBSTATE_SYSTEM);
+            FieldDefs def = new FieldDefs("Object", "integer", 10, 10, "number", FieldDefs.TYPE_INTEGER, 1, FieldDefs.STATE_SYSTEM);
             def.setDBPos(1);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
             fields.add(def);
             // otype field
-            def = new FieldDefs("Type", "integer", -1, -1, "otype", FieldDefs.TYPE_INTEGER, -1, FieldDefs.DBSTATE_SYSTEM);
+            def = new FieldDefs("Type", "integer", -1, -1, "otype", FieldDefs.TYPE_INTEGER, -1, FieldDefs.STATE_SYSTEM);
             def.setDBPos(2);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
             fields.add(def);
             // owner field
-            def = new FieldDefs("Owner", "string", 11, 11, "owner", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_SYSTEM);
+            def = new FieldDefs("Owner", "string", 11, 11, "owner", FieldDefs.TYPE_STRING, -1, FieldDefs.STATE_SYSTEM);
             def.setDBSize(12);
             def.setDBPos(3);
             def.setDBNotNull(true);
@@ -1135,7 +1136,12 @@ public class MMBase extends ProcessorModule {
                 bul.setInitParameters(parser.getProperties());
                 bul.setFields(parser.getFields()); // temp  ?
 
-
+                Iterator f = parser.getFunctions().iterator();
+                while (f.hasNext()) {
+                    org.mmbase.util.functions.Function func = (org.mmbase.util.functions.Function) f.next();
+                    bul.addFunction(func);
+                    log.service("Added " + func + " to " + bul);
+                }
                 // oke set the huge hack for insert layout
                 // XXX: setDBLayout is deprecated
                 //bul.setDBLayout(fields);
