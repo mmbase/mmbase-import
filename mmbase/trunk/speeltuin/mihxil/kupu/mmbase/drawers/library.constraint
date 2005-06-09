@@ -1,0 +1,13 @@
+<mm:isnotempty referid="search">
+  <mm:composite operator="OR">
+    <mm:fieldlist type="search" nodetype="$nodetype">
+      <mm:fieldinfo type="typedescription">
+        <mm:compare valueset="string,xml">
+          <mm:fieldinfo type="name">
+            <mm:constraint field="$_" operator="LIKE" value="%$search%" />
+          </mm:fieldinfo>
+        </mm:compare>
+      </mm:fieldinfo>
+    </mm:fieldlist>
+  </mm:composite>
+</mm:isnotempty>
