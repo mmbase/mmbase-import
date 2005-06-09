@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.307 2005-06-09 18:41:52 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.308 2005-06-09 21:47:59 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3891,7 +3891,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public static abstract class NodeFunction extends AbstractFunction {
 
-        public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
+        public NodeFunction(String name, org.mmbase.bridge.DataType[] def, org.mmbase.bridge.DataType returnType) {
             super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType);
         }
 
@@ -3928,7 +3928,8 @@ public class MMObjectBuilder extends MMTable {
         }
 
         /**
-         * This represents the function on one specific Node. This is instantiated 
+         * This represents the function on one specific Node. This is instantiated when new Istance
+         * if called on a NodeFunction.
          */
         private class NodeInstanceFunction extends WrappedFunction {
 
@@ -3938,10 +3939,7 @@ public class MMObjectBuilder extends MMTable {
                 super(NodeFunction.this);
                 this.node = node;
             }
-
-            /**
-             * @javadoc
-             */
+            //javadoc inherited
             public final Object getFunctionValue(Parameters parameters) {
                 return NodeFunction.this.getFunctionValue(node, parameters);
 
