@@ -1,0 +1,5 @@
+<!ELEMENT	edittagtypes (editor) >
+<!ELEMENT	editor	(class*,info*) >
+<!ATTLIST	editor  type	CDATA	#REQUIRED> 
+<!ELEMENT	class	(#PCDATA)>
+<!ELEMENT	info	(#PCDATA)>

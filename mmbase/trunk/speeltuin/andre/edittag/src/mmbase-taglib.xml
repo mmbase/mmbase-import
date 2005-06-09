@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.3 2005-05-24 20:15:27 andre Exp $
+version: $Id: mmbase-taglib.xml,v 1.4 2005-06-09 08:42:59 andre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -414,20 +414,46 @@ version: $Id: mmbase-taglib.xml,v 1.3 2005-05-24 20:15:27 andre Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
+      <info>
+        Adds to this list all elements represented by the value of this attribute. The value refers
+        to some taglib variable, like the id of another list, or the id of a node (which is only one
+        element then).
+      </info>      
     </attribute>
     <attribute>
       <name>retain</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
+      <info>
+        Removes al the elements from the list, besides the one which are also present in the
+        object referred by this attribute.
+      </info>
     </attribute>
     <attribute>
       <name>remove</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
+        Removes al the elements from the list which are present in the
+        object referred by this attribute.
     </attribute>
     <see tag="listreferrer" />
+    <example>
+      <pre><![CDATA[
+<mm:import id="list1" vartype="list">a,b,c,d,e</mm:import>
+<mm:import id="list2" vartype="list">c,d,e,f</mm:import> 
+
+<mm:stringlist id="list3" referid="list1" add="list2" />
+<mm:stringlist id="list4" referid="list1" retain="list2" />
+<mm:stringlist id="list5" referid="list1" remove="list2" />
+  
+
+<mm:write referid="list3" /> / <mm:write referid="list4" /> / <mm:write referid="list5" />
+
+]]>
+      </pre>
+    </example>
   </taginterface>
   <taginterface>
     <name>condition</name>
@@ -4134,6 +4160,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
       This is a list which can only live under a NodeProvider, to iterate through all aliases of the
       Node. In the body you can use the `writer' functionality to actually write out current alias.
@@ -5220,13 +5247,16 @@ The 0 is just counter, which starts at 0 on every page.
         Since 1.7 there is also a content tag, which is an extension of the locale tag. You could
         probably just as well use only an mm:content.
       </p>
+      <p>
+	The exceptional value 'client' for the 'language' will set the locale to the preference specified by the client.
+      </p>
     </info>
     <attribute>
       <name>language</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A two letter language code according to ISO 639.
+        A two letter language code according to ISO 639, or 'client'.
       </info>
       <examplevalue>
         <value>nl</value>
@@ -5816,13 +5846,13 @@ The 0 is just counter, which starts at 0 on every page.
         <value>DAY</value>
       </possiblevalue>
       <possiblevalue>
-        <value>DAY OF YEAR</value>
+        <value>DAYOFYEAR</value>
       </possiblevalue>
       <possiblevalue>
-        <value>DAY OF MONTH</value>
+        <value>DAYOFMONTH</value>
       </possiblevalue>
       <possiblevalue>
-        <value>DAY OF WEEK</value>
+        <value>DAYOFWEEK</value>
       </possiblevalue>
       <possiblevalue>
         <value>HOUR</value>
@@ -5938,18 +5968,31 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAgeConstraintTag</tagclass>
     <info>
       <p>
-  In MMBase, objects on default do not have a `creation time' field. But the `number' field can
-  be used to estimate the age (in days), because for every day a `day mark' is remembered. This
-  tags give easy access to this functionality.
+	In MMBase, objects on default do not have a `creation time' field. But the `number' field can
+	be used to estimate the age (in days), because for every day a `day mark' is remembered. This
+	tags give easy access to this functionality.
       </p>
       <p>
-  Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
-  fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
-  on the date parts of such a field.
+	Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
+	fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
+	on the date parts of such a field.
       </p>
     </info>
     <see tag="constraint" attribute="part" />
     <since>MMBase-1.7</since>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        If the surrounding nodelist container is a list container then the constraint can be on the
+        several elements from the path. With this attribute you must indicate to wich. This is not
+        needed for listnodes and relatednodes containers.
+      </info>
+      <since>MMBase-1.8</since>
+      <see tag="listcontainer" />
+      <see tag="listnodescontainer" />
+    </attribute>
     <attribute>
       <name>field</name>
       <required>false</required>
@@ -5958,7 +6001,9 @@ The 0 is just counter, which starts at 0 on every page.
         If the surrounding nodelist container is a list container then the constraint can be on the
         several elements from the path. With this attribute you must indicate to wich. This is not
         needed for listnodes and relatednodes containers (and probably would be a `number' field otherwise).
+	This attribute is deprecated in favour of 'element'.
       </info>
+      <see tag="ageconstraint" attribute="element"/>
       <see tag="listcontainer" />
       <see tag="listnodescontainer" />
     </attribute>
@@ -6183,7 +6228,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-
+        Whether to sort ascending ('UP') or descending ('DOWN'), defaults to UP.
       </info>
       <possiblevalue>
         <value>UP</value>
@@ -6191,6 +6236,24 @@ The 0 is just counter, which starts at 0 on every page.
       <possiblevalue>
         <value>DOWN</value>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>casesensitive</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Whether to sort case-sensitively or not. This is only relevant for String type fields. On
+        the database level a case insensitive sort will typically result in a sort of the uppercases
+        field (unless e.g. the database sorts case insensitively on default). This defaults to
+        false, because probably you want that.
+      </info>
+      <possiblevalue>
+        <value>true</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>false</value>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
   </tag>
 
@@ -6238,6 +6301,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.StringListTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
       <p>
         A simple list iterating some list, coming from the `context. So the `referid' is required for this list.
