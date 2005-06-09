@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.2 2005-06-07 16:47:50 michiel Exp $
+ * @version $Id: Mmxf.java,v 1.3 2005-06-09 21:34:37 michiel Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */
@@ -32,7 +32,7 @@ public class Mmxf {
 
     private static final Logger log = Logging.getLoggerInstance(Mmxf.class);
 
-    public final static String NAMESPACE = "http://www.mmbase.org/mmxf";
+    public final static String NAMESPACE = "http://www.mmbase.org/xmlns/mmxf";
     public final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD mmxf 1.1//EN";
     public final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/mmxf_1_1.dtd";
 
@@ -109,7 +109,7 @@ public class Mmxf {
             if (! h.getNodeName().equals("h")) {
                 exception(feedBack, "No h-tag");
             }
-            title = org.mmbase.util.xml.XMLWriter.getNodeTextValue(h);
+            title = org.mmbase.util.xml.DocumentReader.getNodeTextValue(h);
             i++;
         } else {
             title = "Imported MMXF";
