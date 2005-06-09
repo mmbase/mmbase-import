@@ -26,25 +26,6 @@ import org.mmbase.util.logging.*;
  **/
 public class XMLWriter {
     private static Logger log = Logging.getLoggerInstance(XMLWriter.class);
-
-    /**
-     * since MMBase-1.8
-     */
-
-    public static String getNodeTextValue(Node n) {
-        NodeList nl = n.getChildNodes();
-        StringBuffer res = new StringBuffer();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node textnode = nl.item(i);
-            if (textnode.getNodeType() == Node.TEXT_NODE) {
-                res.append(textnode.getNodeValue().trim());
-            } else if (textnode.getNodeType() == Node.CDATA_SECTION_NODE) {
-                res.append(textnode.getNodeValue());
-            }
-        }
-        return res.toString();
-    }
-
     
     /**
      * defaulting version of {@link #write(Node, Writer, boolean, boolean}. (Not ommitting xml declaration).
