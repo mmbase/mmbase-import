@@ -11,15 +11,18 @@ package org.mmbase.util.functions;
 
 import java.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * A function provider maintains a set of {@link Function} objects.
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.6 2005-05-10 23:00:44 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.7 2005-06-09 18:29:37 michiel Exp $
  */
-public class FunctionProvider {
-
+public abstract class FunctionProvider {
+    private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
@@ -42,21 +45,23 @@ public class FunctionProvider {
     public FunctionProvider() {
         // determine parameters through reflection
         Map parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap());
-        for (Iterator i = parameterDefinitions.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) i.next();
-            Function fun = newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN);
-            fun.setDescription("Function automaticly found by reflection on public Parameter[] members");
-            addFunction(fun);
+        try {
+            for (Iterator i = parameterDefinitions.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Function fun = newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN);
+                fun.setDescription("Function automaticly found by reflection on public Parameter[] members");
+                addFunction(fun);
+            }
+        } catch (UnsupportedOperationException uoo) {
+            log.warn("Found parameter definition array in " + this.getClass() + " but newFunctionInstance was not implemented for that");
         }
         addFunction(getFunctions);
     }
 
-    /**
-     * @javadoc
-     */
-    protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
-        return new ProviderFunction(name, parameters, returnType, this);
+    protected  Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
+        throw new UnsupportedOperationException("This class is not a fully implemented function-provider");
     }
+
 
     /**
      * Adds a function to the FunctionProvider. So, you can implement any function and add it to the
@@ -90,14 +95,6 @@ public class FunctionProvider {
         } else {
             return null;
         }
-    }
-
-    /**
-     * What's this??
-     * @javadoc
-     */
-    protected Object executeFunction(String functionName, Parameters parameters) {
-        return null;
     }
 
     /**
