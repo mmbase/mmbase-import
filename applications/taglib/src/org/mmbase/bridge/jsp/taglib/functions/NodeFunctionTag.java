@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.9 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.10 2005-06-09 21:17:48 michiel Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -66,7 +66,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
     }
 
     public int doStartTag() throws JspTagException {
-        Object value = getFunctionValue();
+        Object value = getFunctionValue(false); // don't register, 'fillVars' will do.
         Node node = Casting.toNode(value, getCloudVar());
         setNodeVar(node);
         fillVars();
