@@ -14,8 +14,14 @@
 
 <%
    String sProfileID = request.getParameter("profile");
-   String bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + request.getLocale().getLanguage();
+   String bundleCompetence = null;
 %>
+<mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+   <%
+      bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + sLangCode;
+   %>
+</mm:write>
+
 
 <fmt:bundle basename="<%= bundleCompetence %>">
 <html>

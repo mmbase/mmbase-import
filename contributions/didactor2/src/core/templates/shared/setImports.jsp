@@ -7,7 +7,7 @@
     - if there is more than 1 provider, look if there is an 'url' related to
        one of the providers with the $servername name.
   - current education (if set, into variable $education)
-  - template include path (into variable $includePath) 
+  - template include path (into variable $includePath)
   TODO:
    - if provider/education/class is set: do not calculate again!
 --%>
@@ -22,7 +22,7 @@
         <mm:node>
             <mm:field id="user" name="number" write="false" />
         </mm:node>
-       
+
     </mm:first>
   </mm:listnodes>
   <mm:notpresent referid="user">
@@ -30,10 +30,10 @@
   </mm:notpresent>
 </mm:listnodescontainer>
 
-<%-- get the $servername --%>  
+<%-- get the $servername --%>
 <mm:import id="servername"><%=pageContext.getRequest().getServerName() %></mm:import>
 
-<%-- get the $provider --%>  
+<%-- get the $provider --%>
 <mm:listnodescontainer type="providers">
   <mm:size id="provider_size" write="false" />
   <mm:compare referid="provider_size" value="1">
@@ -70,3 +70,32 @@
   <mm:import externid="education" />
   <mm:import externid="class" />
 </mm:listnodescontainer>
+
+
+
+<%// Global language code %>
+<%
+{
+   String sDefaultLanguage = "nl";
+   String[] sSupportedLanguages = {"en", "nl"};
+   String sLangCode = request.getLocale().getLanguage();
+
+   boolean bLangCodeIsCorrect = false;
+   for(int f = 0; f < sSupportedLanguages.length; f ++)
+   {
+      if(sSupportedLanguages[f].equals(sLangCode))
+      {
+         bLangCodeIsCorrect = true;
+         break;
+      }
+   }
+   if(!bLangCodeIsCorrect)
+   {
+      sLangCode = sDefaultLanguage;
+   }
+
+   %>
+      <mm:import id="lang_code"><%= sLangCode %></mm:import>
+   <%
+}
+%>

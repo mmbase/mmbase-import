@@ -14,13 +14,19 @@
 <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" /></mm:import>
 
 <%
-   String bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + request.getLocale().getLanguage();
    String sSearchValue = request.getParameter("searchvalue");
    String sRealSearchField = request.getParameter("realsearchfield");
    String sSearchAge = request.getParameter("age");
    if(sSearchAge == null) sSearchAge = "-1";
    String sDeleteNode = request.getParameter("delete_node");
+   String bundleCompetence = null;
 %>
+<mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+   <%
+      bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + sLangCode;
+   %>
+</mm:write>
+
 
 <fmt:bundle basename="<%= bundleCompetence %>">
 <html>
