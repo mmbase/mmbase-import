@@ -3,7 +3,7 @@ body {
 }
 
 body, #footer, #header, #centerColumn, #leftColumn, #kupu-editor, #kupu div.kupu-editorframe, 
-#kupu, #kupu div.kupu-toolboxes, div.kupu-fulleditor, #toolbar, form, input, textarea, iframe#kupu-editor, iframe,
+#kupu, #kupu div.kupu-toolboxes, div.kupu-fulleditor, div.kupu-fulleditor-zoomed, #toolbar, form, input, textarea, iframe#kupu-editor, iframe,
 div.kupu-toolbox, div.kupu-toolbox-active{ 
   padding-right: 0px;
   padding-left: 0px;
@@ -18,6 +18,9 @@ div.kupu-toolbox, div.kupu-toolbox-active{
   border-top: 0px;
   border-bottom: 0px;
 
+}
+body.kupu-fulleditor-zoomed { 
+  background-color: green;
 }
 form { 
 

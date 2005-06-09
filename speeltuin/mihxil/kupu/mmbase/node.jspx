@@ -1,15 +1,12 @@
-
 <mm:content type="text/xml" expires="-1"
             xmlns="http://www.w3.org/1999/xhtml"
             xmlns:jsp="http://java.sun.com/JSP/Page" 
-	    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+            xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"            
             >
-  <mm:import externid="rich_language" from="session">client</mm:import>
+<mm:import externid="rich_language" from="session">client</mm:import>
 <mm:locale language="$rich_language">
-<mm:cloud 
-    rank="basic user"
-    >
+<mm:cloud rank="basic user" >
   <fmt:bundle basename="org.mmbase.jspeditors.editors">
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" />
