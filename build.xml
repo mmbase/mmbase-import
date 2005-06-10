@@ -92,6 +92,12 @@ several MMBase-checkouts.
   <!-- applications related setting -->
   <property name="applications.home"  value="${source.dir}/applications" />
 
+  <!-- tests related setting -->
+  <property name="tests.home"  value="${source.dir}/tests" />
+
+  <!-- contributions related setting -->
+  <property name="contributions.home"  value="${source.dir}/contributions" />
+
 
   <property name="source-config.dir"          value="${source.dir}/config"/>
   <property name="source-config-builders.dir" value="${source.dir}/config/builders;${source.dir}/config/applications"/>
@@ -170,7 +176,7 @@ several MMBase-checkouts.
     <!-- copy the test files -->
     <mkdir dir="${build.dir}/mmbase-src/tests"/>
     <copy todir="${build.dir}/mmbase-src/tests">
-      <fileset dir="${source.dir}/tests" defaultexcludes="yes">
+      <fileset dir="${tests.home}" defaultexcludes="yes">
         <exclude name="**/build/**" />
       </fileset>
     </copy>
