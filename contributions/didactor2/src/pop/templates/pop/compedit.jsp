@@ -67,17 +67,9 @@
             <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
                 border="0" alt="Verwijder de geselecteerde persoonlijke taken"/></a>
 <br/>
+<br/>
     <mm:relatedcontainer path="popfeedback,pop">
       <mm:constraint field="pop.number" referid="currentpop" operator="EQUAL"/>
-      <table class="font" width="80%">
-        <tr>
-          <td align="right">
-            <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
-              <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="Nodig een collega uit om een feedback te geven op deze competentie"/></a>
-          </td>
-        </tr>
-      </table>
       <table width="80%" border="0" class="popSpecialTableHeader">
         <tr>
           <td colspan="3">Beoordelingen</td>
@@ -121,16 +113,10 @@
         </mm:related>
       </table></div>
     </mm:relatedcontainer>
-    <br/>
-    <table class="font" width="80%">
-      <tr>
-        <td align="right">
-          <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
-            <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
-              border="0" alt="Voeg een document uit je ontwikkelingsgericht portfolio toe"/></a>
-        </td>
-      </tr>
-    </table>
+        <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
+          <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$popreferids"/>"
+            border="0" alt="Nodig een collega uit om een feedback te geven op deze competentie"/></a>
+    <br/><br/><br/>
     <table width="80%" border="0" class="popGreyTableHeader">
       <tr>
         <td colspan="3"><fmt:message key="PORTFOLIO" /></td>
@@ -195,6 +181,9 @@
           return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
         <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
           border="0" alt="Verwijder de geselecteerde documenten"/></a>
+      <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
+        <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
+          border="0" alt="Voeg een document uit je ontwikkelingsgericht portfolio toe"/></a>
     </mm:compare>
   </form>
   </mm:node>
