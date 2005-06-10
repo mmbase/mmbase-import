@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.3 2005-06-09 21:34:37 michiel Exp $
+ * @version $Id: Mmxf.java,v 1.4 2005-06-10 12:44:11 michiel Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */
@@ -53,7 +53,9 @@ public class Mmxf {
                 buf.write("ERROR: " + message + '\n');
                 buf.flush();
             } catch (IOException ioe) {
-                throw new IllegalArgumentException(ioe.getMessage() + message, ioe);
+                IllegalArgumentException e = new IllegalArgumentException(ioe.getMessage() + message);
+                e.initCause(ioe);
+                throw e;
             }
         }
     }
@@ -66,7 +68,9 @@ public class Mmxf {
                 buf.write(message + '\n');
                 buf.flush();
             } catch (IOException ioe) {
-                throw new IllegalArgumentException(ioe.getMessage() + message, ioe);
+                IllegalArgumentException e = new IllegalArgumentException(ioe.getMessage() + message);
+                e.initCause(ioe);
+                throw e;
             }
         }
     }
