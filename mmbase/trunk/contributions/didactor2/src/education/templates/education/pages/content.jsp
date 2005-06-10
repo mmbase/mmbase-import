@@ -60,7 +60,7 @@
       <h3><mm:field name="title"/></h3>
      <p>
       <i><mm:field name="description" escape="inline"/></i><br>
-      <a href="<mm:attachment/>">Download "<mm:field name="title"/>"</a>
+      <a href="<mm:attachment/>"><img src="<mm:treefile page="/education/gfx/attachment.gif" objectlist="$includePath" />" border="0" alt="Download <mm:field name="title"/>"></a>
     </p>
     </mm:relatednodes>
 
@@ -74,7 +74,7 @@
       <i><mm:field name="intro" escape="p"/></i>
       <p>
       <mm:field name="body" escape="inline"/><br>
-      <a href="<mm:field name="url" />">Beluister "<mm:field name="title" />"</a></b>
+      <a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/audio.gif" objectlist="$includePath" />" border="0" alt="Beluister <mm:field name="title" />"></a></b>
       </p>
     </mm:relatednodes>
   </div>
@@ -88,7 +88,7 @@
       <i><mm:field name="intro" escape="p"/></i>
       <p>
       <mm:field name="body" escape="inline"/><br>
-     <a href="<mm:field name="url" />">Bekijk "<mm:field name="title" />"</a>
+     <a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/video.gif" objectlist="$includePath" />" border="0" alt="Bekijk <mm:field name="title" />"></a>
       </p>
     </mm:relatednodes>
   </div>
