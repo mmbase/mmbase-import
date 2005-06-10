@@ -5,7 +5,7 @@
 	<articleinfo>
 		<title>Storage Conversions</title>
 		<date>2005-05-24</date>
-		<edition>$Id: conversions.xml,v 1.1 2005-05-24 18:37:14 michiel Exp $</edition>
+		<edition>$Id: conversions.xml,v 1.2 2005-06-10 11:32:43 michiel Exp $</edition>
 
 		<authorgroup>
 			<!-- one or more authors -->
@@ -80,6 +80,15 @@
         This can safely be ignored, until the column can be dropped in some way. IIRC even newer
         version of postgresql cannot really drop the column, only hide it. In that case you can
         probably actually remove it by reimporting a database dump.
+      </para>
+      <para>
+        This works too (converting a column 'broadcasttime'):
+        <programlisting>
+          create table mm_programs2 (broadcasttime timestamp) inherits  mm_texts;
+          insert into mm_programs2 (number,otype,owner,begin,m_end,visible,title,body,broadcasttime,lastmodifiedby,lastmodified) select number,otype,owner,begin,m_end,visible,title,body,  '1970-01-01'::date + CAST(broadcasttime ||'s' AS interval),lastmodifiedby,lastmodified from mm_programs;
+          alter table mm_programs rename to mm_programs_orig; alter table mm_programs2 rename to mm_programs;          
+        </programlisting>
+        And then check if everthing is ok, and you can drop mm_programs_orig;
       </para>
     </section>
     <section id="datetime_mysql">
