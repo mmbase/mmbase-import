@@ -57,6 +57,7 @@
   </table>
  
     <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
+      <h3><mm:field name="title"/></h3>
      <p>
       <i><mm:field name="description" escape="inline"/></i><br>
       <a href="<mm:attachment/>">Download "<mm:field name="title"/>"</a>
