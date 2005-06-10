@@ -160,7 +160,7 @@
         <!-- we need a new list because there can be only one search command per list -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
             fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
-            <title>Zoeken op competencies</title>
+            <title>Zoeken op competenties</title>
             <item displaytype="none"></item>
 
             <action type="create">
