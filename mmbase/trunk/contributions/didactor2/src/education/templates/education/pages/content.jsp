@@ -57,8 +57,7 @@
   </table>
  
     <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
-    <p>
-      <b><mm:field name="title"/></b><br>
+     <p>
       <i><mm:field name="description" escape="inline"/></i><br>
       <a href="<mm:attachment/>">Download "<mm:field name="title"/>"</a>
     </p>
@@ -66,9 +65,10 @@
 
   <div class="audiotapes">
     <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
+        <h3><mm:field name="title"/></h3>
       <p>
-        <b><mm:field name="title"/><br>
-        <i><mm:field name="subtitle"/></i></b>
+
+        <i><mm:field name="subtitle"/></i>
       </p>
       <i><mm:field name="intro" escape="p"/></i>
       <p>
@@ -81,8 +81,8 @@
   <div class="videotapes">
     <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
       <p>
-        <b><mm:field name="title"/><br>
-        <i><mm:field name="subtitle"/></i></b>
+        <h3><mm:field name="title"/></h3>
+        <i><mm:field name="subtitle"/></i>
       </p>
       <i><mm:field name="intro" escape="p"/></i>
       <p>
@@ -94,7 +94,8 @@
 
   <div class="urls">
     <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
-      <p><b><mm:field name="name"/></b><br>
+      <h3><mm:field name="name"/></h3>
+      <p>
       <i><mm:field name="description" escape="inline"/></i><br/>
       <a href="<mm:field name="url"/>" target="_blank"><mm:field name="url"/></a>
       </p>
