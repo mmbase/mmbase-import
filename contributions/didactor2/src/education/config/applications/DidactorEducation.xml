@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="11" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="12" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -75,6 +75,7 @@
         <!-- a learnblock is a learnobject too, but for clarity we
              define this relation explicityly -->
         <relation from="learnblocks" to="learnblocks" type="posrel" />
+        <relation from="learnblocks" to="images" type="sizerel" />
 
         <!-- Feedback for answers,questions and tests -->
         <relation from="answers" to="feedback" type="related" /> <!-- ??? -->

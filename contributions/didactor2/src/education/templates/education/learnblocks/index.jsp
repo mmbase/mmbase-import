@@ -33,8 +33,33 @@
       </mm:compare>
    </mm:field>
 
+   
+   <mm:import id="layout"><mm:field name="layout"/></mm:import>
+   <mm:import id="imagelayout"><mm:field name="imagelayout"/></mm:import>
   <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/></mm:import>
-  <%@include file="/shared/cleanText.jsp"%>
+
+  <table width="100%" border="0" class="Font">
+  
+  <mm:compare referid="layout" value="0">
+  <tr><td width="50%"><%@include file="/shared/cleanText.jsp"%></td></tr>
+  <tr><td><%@include file="../pages/images.jsp"%></td></tr>
+  </mm:compare>
+  <mm:compare referid="layout" value="1">
+  <tr><td  width="50%"><%@include file="../pages/images.jsp"%></td></tr>
+  <tr><td><%@include file="/shared/cleanText.jsp"%></td></tr>
+  </mm:compare>
+  <mm:compare referid="layout" value="2">
+  <tr><td><%@include file="/shared/cleanText.jsp"%></td>
+      <td><%@include file="../pages/images.jsp"%></td></tr>
+  </mm:compare>
+  <mm:compare referid="layout" value="3">
+  <tr><td><%@include file="../pages/images.jsp"%></td>
+      <td><%@include file="/shared/cleanText.jsp"%></td></tr>
+  </mm:compare>
+ 
+  </table>
+ 
+
 
    <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="node_id"><mm:write referid="learnobject"/></mm:param>
