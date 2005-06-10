@@ -13,7 +13,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.3 2004-11-19 13:03:48 jdiepenmaat Exp $
+    @version $Id: searchlist.xsl,v 1.4 2005-06-10 09:07:09 jdiepenmaat Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -86,7 +86,7 @@
             </tr>
           </xsl:if>
           <xsl:for-each select="object">
-            <tr number="{@number}" onClick="doclick_search(this);" id="item_{@number}">
+            <tr number="{@number}" id="item_{@number}">
               <xsl:choose>
                 <xsl:when test="(position() mod 2) = 0">
                   <xsl:attribute name="class">even</xsl:attribute>
@@ -95,10 +95,9 @@
                   <xsl:attribute name="class">odd</xsl:attribute>
                 </xsl:otherwise>
               </xsl:choose>
-              <td style="display: none;">
+              <td style="width: 20px">
               <input
                 type="checkbox"
-                style="visibility: hidden;"
                 name="{@number}"
                 did="{@number}"
                 id="cb_{@number}" />
