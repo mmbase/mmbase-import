@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.308 2005-06-09 21:47:59 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.309 2005-06-11 10:40:43 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -243,8 +243,8 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.8
      */
     protected final static Parameter[] WRAP_PARAMETERS = {
-        new Parameter("field", String.class),
-        new Parameter("length", Number.class)
+        new Parameter("field", String.class, true),
+        new Parameter("length", Number.class, new Integer(20))
     };
 
     /**
