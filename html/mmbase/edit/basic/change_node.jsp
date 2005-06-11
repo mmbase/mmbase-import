@@ -61,6 +61,9 @@
     <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
       <span class="tree"></span><span class="alt">[tree]</span>
      </a>
+     <a href="<mm:url page="functions.jsp" referids="this_node@node_number" />">
+       Functions-view.
+     </a>
      <mm:present referid="hasmmxf">
        <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
        <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu</mm:import>
