@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.37 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMBaseServlet.java,v 1.38 2005-06-12 10:31:32 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -399,6 +399,23 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         res.setContentType("text/plain");
         PrintWriter pw = res.getWriter();
         pw.print(org.mmbase.Version.get());
+        String q = req.getQueryString();
+        if ("starttime".equals(q)) {
+            pw.print("\nUp since " + new Date((long) MMBase.startTime * 1000));
+        } else if ("uptime".equals(q)) {
+            int seconds = (int) (System.currentTimeMillis() / 1000) - MMBase.startTime;
+            int days = seconds / (60 * 60 * 24);
+            seconds %=  60 * 60 * 24;
+            int hours = seconds / (60 * 60);
+            seconds %= 60 * 60;
+            int minutes = seconds / 60;
+            seconds %=  60;
+            pw.print("\nUptime: " + (days == 1 ? "1 day" : ( days > 1 ? "" + days + " days" : "")) +
+                     (hours > 0 || days > 0 ? " " + (hours == 1 ? "1 hour" : "" + hours + " hours") : "")  + 
+                     (minutes > 0 || hours > 0 ? " " + (minutes == 1 ? "1 minute" : "" + minutes + " minutes") : "") + 
+                     (seconds > 0 || minutes > 0 ? " " + (seconds == 1 ? "1 second" : "" + seconds + " seconds") : ""));
+                     
+        }
         pw.close();
     }
 
