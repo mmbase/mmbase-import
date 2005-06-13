@@ -31,7 +31,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.40 2004-10-01 08:41:10 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.41 2005-06-13 08:30:44 michiel Exp $
  */
 public class XMLBasicReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
@@ -130,7 +130,7 @@ public class XMLBasicReader extends DocumentReader {
      * @param path Dot-separated list of tags describing path from root element to requested element
      * @return Leaf element of the path
      */
-    public Element getElementByPath(Element e,String path) {
+    public Element getElementByPath(Element e, String path) {
         StringTokenizer st = new StringTokenizer(path,".");
         if (!st.hasMoreTokens()) {
             // faulty path
@@ -148,15 +148,17 @@ public class XMLBasicReader extends DocumentReader {
                           "("+getFileName()+")");
                 return null;
             }
+            OUTER:
             while (st.hasMoreTokens()) {
                 String tag = st.nextToken();
-                NodeList nl = e.getElementsByTagName(tag);
-                if (nl.getLength()>0) {
-                    e = (Element)nl.item(0);
-                } else {
-                    // Handle error!
-                    return null;
-                }
+                NodeList nl = e.getChildNodes();
+                for(int i = 0; i < nl.getLength(); i++) {
+                    if (! (nl.item(i) instanceof Element)) continue;
+                    e = (Element)nl.item(i);
+                    if (e.getTagName().equals(tag)) continue OUTER;
+                } 
+                // Handle error!
+                return null;
             }
             return e;
         }
