@@ -2,7 +2,7 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.6 2005-06-07 15:00:04 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.7 2005-06-13 16:56:49 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet 
@@ -28,10 +28,10 @@
     <xsl:param name="depth" />
     <xsl:value-of select="$depth" /><xsl:text> </xsl:text><xsl:apply-templates select="." mode="rels" /><xsl:value-of select="mmxf:h" />
     <xsl:text>&#xA;&#xA;</xsl:text>
+    <xsl:apply-templates select = "mmxf:p|mmxf:ul|mmxf:table" />
     <xsl:apply-templates select = "mmxf:section">
       <xsl:with-param name="depth">$<xsl:value-of select="$depth" /></xsl:with-param>
     </xsl:apply-templates>
-    <xsl:apply-templates select = "mmxf:p|mmxf:ul|mmxf:table" />
   </xsl:template>
 
   
@@ -41,11 +41,19 @@
   
   <xsl:template match="mmxf:ul" >
     <xsl:text>&#xA;</xsl:text>
-    <xsl:apply-templates select = "mmxf:li" />
+    <xsl:apply-templates select = "mmxf:li" mode="ul" />
+  </xsl:template>
+  <xsl:template match="mmxf:ol" >
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:apply-templates select = "mmxf:li" mode="ol" />
   </xsl:template>
   
-  <xsl:template match="mmxf:li" >
+  <xsl:template match="mmxf:li" mode="ul" >
     <xsl:text>- </xsl:text><xsl:apply-templates />
+    <xsl:text>&#xA;</xsl:text>
+  </xsl:template>
+  <xsl:template match="mmxf:li" mode="ol" >
+    <xsl:text>* </xsl:text><xsl:apply-templates />
     <xsl:text>&#xA;</xsl:text>
   </xsl:template>
 

@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.1 2005-06-07 18:27:05 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.2 2005-06-13 16:56:49 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -30,38 +30,49 @@
     <xsl:apply-templates select="o:object[1]" />
   </xsl:template>
 
-  <xsl:template match="mmxf:h" mode="h1"><h1><xsl:apply-templates select="node()" /></h1></xsl:template>
-  <xsl:template match="mmxf:h" mode="h2"><h2><xsl:apply-templates select="node()" /></h2></xsl:template>
-  <xsl:template match="mmxf:h" mode="h3"><h3><xsl:apply-templates select="node()" /></h3></xsl:template>
-  <xsl:template match="mmxf:h" mode="h4"><h4><xsl:apply-templates select="node()" /></h4></xsl:template>
-  <xsl:template match="mmxf:h" mode="h5"><h5><xsl:apply-templates select="node()" /></h5></xsl:template>
-  <xsl:template match="mmxf:h" mode="h6"><h6><xsl:apply-templates select="node()" /></h6></xsl:template>
-  <xsl:template match="mmxf:h" mode="h7"><h7><xsl:apply-templates select="node()" /></h7></xsl:template>
-  <xsl:template match="mmxf:h" mode="h8"><h8><xsl:apply-templates select="node()" /></h8></xsl:template>
+  <xsl:template match="mmxf:h" mode="h1"><xsl:if test=". != ''"><h1><xsl:apply-templates select="node()" /></h1></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h2"><xsl:if test=". != ''"><h2><xsl:apply-templates select="node()" /></h2></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h3"><xsl:if test=". != ''"><h3><xsl:apply-templates select="node()" /></h3></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h4"><xsl:if test=". != ''"><h4><xsl:apply-templates select="node()" /></h4></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h5"><xsl:if test=". != ''"><h5><xsl:apply-templates select="node()" /></h5></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h6"><xsl:if test=". != ''"><h6><xsl:apply-templates select="node()" /></h6></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h7"><xsl:if test=". != ''"><h7><xsl:apply-templates select="node()" /></h7></xsl:if></xsl:template>
+  <xsl:template match="mmxf:h" mode="h8"><xsl:if test=". != ''"><h8><xsl:apply-templates select="node()" /></h8></xsl:if></xsl:template>
+
 
 
    <!-- how to present a node -->
    <xsl:template match="o:object">
-    <html>
-      <head>
-      </head>
-      <body>
-        <xsl:apply-templates select="o:field[@name='body']" />
-      </body>
-    </html>
+     <body>
+       <xsl:apply-templates select="o:field[@name='body']" />
+     </body>     
   </xsl:template>
 
-
+  <!--
+  <xsl:template match="mmxf:p">
+    <xsl:choose>
+      <xsl:when test="mmxf:ol|mmxf:ul">
+        <xsl:apply-templates select="text()|*" />
+      </xsl:when>
+      <xsl:otherwise>
+        <p>
+          <xsl:copy-of select="@*" />
+          <xsl:apply-templates select="text()|*" />
+        </p>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+-->
 
   <xsl:template match="o:field[@o:format='xml']">
     <xsl:apply-templates />
   </xsl:template>
 
   <xsl:template match = "mmxf:mmxf" >
-    <xsl:apply-templates select = "mmxf:section|mmxf:p" />
+    <body>
+      <xsl:apply-templates select = "mmxf:p|mmxf:table|mmxf:section" />
+    </body>
   </xsl:template>
-
-
 
 
 </xsl:stylesheet>
