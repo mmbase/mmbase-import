@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.48 2005-05-20 08:49:18 michiel Exp $
+ * @version $Id: Casting.java,v 1.49 2005-06-13 08:29:24 michiel Exp $
  */
 
 import java.util.*;
@@ -155,6 +155,25 @@ public class Casting {
                 return value;
             }
         }
+    }
+
+    /**
+     * Whether or not Casting can more or less reliably cast a certain type to String and back.
+     * For collection types also the entries of the collection must be string representable.
+     * @since MMBase-1.8
+     */
+    public static boolean isStringRepresentable(Class type) {
+        return 
+            CharSequence.class.isAssignableFrom(type) ||
+            Number.class.isAssignableFrom(type) || 
+            Boolean.TYPE.isAssignableFrom(type) || 
+            Boolean.class.isAssignableFrom(type) || 
+            Character.class.isAssignableFrom(type) || 
+            Node.class.isAssignableFrom(type) ||
+            MMObjectNode.class.isAssignableFrom(type) ||
+            Document.class.isAssignableFrom(type) ||
+            Collection.class.isAssignableFrom(type) ||
+            Map.class.isAssignableFrom(type);
     }
 
     /**
@@ -610,7 +629,7 @@ public class Casting {
             res = ((Number)i).longValue();
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
-            if (res!=-1) res /= 1000;
+            if (res !=- 1) res /= 1000;
         } else if (i instanceof MMObjectNode) {
             res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
