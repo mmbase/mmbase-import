@@ -20,6 +20,8 @@
   <property name="project.jars.includes"   value="jgroups-all.jar" />
   &base;
   
+  <target name="dependent.package"       depends="dependent.jar,package" />
+
   <target name="dependent.jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,jar">
   </target>
 
