@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
 <builder extends="object" maintainer="mmbase.org" name="insrel" version="0">
 
-  <classfile>org.mmbase.module.corebuilders.InsRel</classfile>
+  <class>org.mmbase.module.corebuilders.InsRel</class>
   
   <searchage>14</searchage>
   
@@ -31,102 +31,101 @@
 	<description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
       </descriptions>
       <gui>
-	<guiname xml:lang="en">Source</guiname>
-	<guiname xml:lang="nl">Bron</guiname>
-	<guiname xml:lang="eo">Fonto</guiname>
-	<guiname xml:lang="it">Fonte</guiname>
-	<guitype>integer</guitype>
+        <guiname xml:lang="en">Source</guiname>
+        <guiname xml:lang="nl">Bron</guiname>
+        <guiname xml:lang="eo">Fonto</guiname>
+        <guiname xml:lang="it">Fonte</guiname>
+        <guitype>integer</guitype>
       </gui>
       <editor>
-	<positions>
+        <positions>
           <input>-1</input>
           <list>1</list>
           <search>1</search>
-	</positions>
+        </positions>
       </editor>
       <db>
-	<name>snumber</name>
-	<type key="false" notnull="true" state="persistent">NODE</type>
+        <name>snumber</name>
+        <type key="false" notnull="true" state="persistent">NODE</type>
       </db>
     </field>
 
     <field>
       <descriptions>
-	<description xml:lang="en">Objectnumber of this relation's destination</description>
-	<description xml:lang="nl">Objectnummer van het doel van deze relatie</description>
+        <description xml:lang="en">Objectnumber of this relation's destination</description>
+        <description xml:lang="nl">Objectnummer van het doel van deze relatie</description>
       </descriptions>
       <gui>
-	<guiname xml:lang="en">Destination</guiname>
-	<guiname xml:lang="nl">Bestemming</guiname>
-	<guiname xml:lang="eo">Celo</guiname>
-	<guiname xml:lang="it">Destinazione</guiname>
-	<guitype>integer</guitype>
+        <guiname xml:lang="en">Destination</guiname>
+        <guiname xml:lang="nl">Bestemming</guiname>
+        <guiname xml:lang="eo">Celo</guiname>
+        <guiname xml:lang="it">Destinazione</guiname>
+        <guitype>integer</guitype>
       </gui>
       <editor>
-	<positions>
+        <positions>
           <input>-1</input>
           <list>2</list>
           <search>2</search>
-	</positions>
+        </positions>
       </editor>
       <db>
-	<name>dnumber</name>
-	<type key="false" notnull="true" state="persistent">NODE</type>
+        <name>dnumber</name>
+        <type key="false" notnull="true" state="persistent">NODE</type>
       </db>
     </field>
 
     <field>
       <descriptions>
-	<description xml:lang="en">This relation's type objectnumber</description>
-	<description xml:lang="nl">Objectnummer van het relatietype van
-	  deze relatie</description>
+        <description xml:lang="en">This relation's type objectnumber</description>
+        <description xml:lang="nl">Objectnummer van het relatietype van deze relatie</description>
       </descriptions>
       <gui>
-	<guiname xml:lang="en">Relation</guiname>
-	<guiname xml:lang="nl">Relatie</guiname>
-	<guiname xml:lang="eo">Rilato</guiname>
-	<guiname xml:lang="it">Relazione</guiname>
-	<guitype>reldef</guitype>
+        <guiname xml:lang="en">Relation</guiname>
+        <guiname xml:lang="nl">Relatie</guiname>
+        <guiname xml:lang="eo">Rilato</guiname>
+        <guiname xml:lang="it">Relazione</guiname>
+        <guitype>reldef</guitype>
       </gui>
       <editor>
-	<positions>
+        <positions>
           <input>-1</input>
           <list>3</list>
           <search>3</search>
-	</positions>
+        </positions>
       </editor>
       <db>
-	<name>rnumber</name>
-	<type key="false" notnull="true" state="persistent">NODE</type>
+        <name>rnumber</name>
+        <type key="false" notnull="true" state="persistent">NODE</type>
       </db>
     </field>
 
     <field>
       <descriptions>
-	<description xml:lang="en">
-	  Directionality of this relation, can be uni or bi-directional (0 or 1)
-	</description>
-	<description xml:lang="nl">
-	  Richting van deze relatie, kan eenricht of tweerichting zijn (0 of 1)
-	</description>
+        <description xml:lang="en">
+          Directionality of this relation, can be uni or bi-directional (0 or 1)
+        </description>
+        <description xml:lang="nl">
+          Richting van deze relatie, kan eenricht of tweerichting zijn (0 of 1)
+        </description>
       </descriptions>
       <gui>
-	<guiname xml:lang="en">Direction</guiname>
-	<guiname xml:lang="nl">Richting</guiname>
-	<guiname xml:lang="eo">Direkto</guiname>
-	<guiname xml:lang="it">Direzione</guiname>
-	<guitype>dirs</guitype>
+        <guiname xml:lang="en">Direction</guiname>
+        <guiname xml:lang="nl">Richting</guiname>
+        <guiname xml:lang="eo">Direkto</guiname>
+        <guiname xml:lang="it">Direzione</guiname>
+        <guitype>dirs</guitype>
       </gui>
       <editor>
-	<positions>
+        <positions>
           <input>-1</input>
           <list>-1</list>
           <search>-1</search>
-	</positions>
+        </positions>
       </editor>
       <db>
-	<name>dir</name>
-	<type key="false" notnull="false" state="persistent">INTEGER</type>
+        <name>dir</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
   </fieldlist>
