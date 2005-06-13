@@ -10,13 +10,13 @@
   If no following sibling is available then all sections needs closing (the 'closeneeded' function).
   
   @author:  Michiel Meeuwissen
-  @version: $Id: kupu2pseudommxf.xslt,v 1.3 2005-06-13 16:56:49 michiel Exp $
+  @version: $Id: kupu2pseudommxf.xslt,v 1.4 2005-06-13 17:07:54 michiel Exp $
   @since:   MMBase-1.8
 -->
 <xsl:stylesheet  
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns="http://www.mmbase.org/mmxf"
+  xmlns="http://www.mmbase.org/xmlns/mmxf"
   version = "1.0"
   exclude-result-prefixes="html"
 >
