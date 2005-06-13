@@ -10,3 +10,7 @@
      <mm:time writer="n" format=":LONG" />
    </mm:write>
 </mm:write>
+<p>
+  <!-- also has an escape attribute -->
+  The current year in roman: <mm:time referid="now" format="yyyy" escape="roman,uppercase" />
+</p>
