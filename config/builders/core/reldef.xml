@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
 <builder extends="object" maintainer="mmbase.org" name="reldef" version="0">
-  <classfile>org.mmbase.module.corebuilders.RelDef</classfile>  
+  <class>org.mmbase.module.corebuilders.RelDef</class>  
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Relation role</singular>
@@ -162,8 +162,8 @@
       <editor>
         <positions>
           <input>2</input>
-<list>2</list>
-<search>2</search>
+          <list>2</list>
+          <search>2</search>
         </positions>
       </editor>
       <db>
