@@ -10,7 +10,7 @@
   If no following sibling is available then all sections needs closing (the 'closeneeded' function).
   
   @author:  Michiel Meeuwissen
-  @version: $Id: kupu2pseudommxf.xslt,v 1.1 2005-06-07 22:00:57 michiel Exp $
+  @version: $Id: kupu2pseudommxf.xslt,v 1.2 2005-06-13 16:08:45 michiel Exp $
   @since:   MMBase-1.8
 -->
 <xsl:stylesheet  
@@ -31,6 +31,13 @@
         <xsl:with-param name="depth" select="0" />
       </xsl:apply-templates>
     </mmxf>
+  </xsl:template>
+
+  <xsl:template match="html:link" mode="siblings"> <!-- help FF -->
+    <xsl:param name="depth">0</xsl:param>
+    <xsl:apply-templates select="following-sibling::*[1]" mode="siblings">
+      <xsl:with-param name="depth" select="$depth" />
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="html:table|html:p" mode="siblings">
