@@ -55,7 +55,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
             };
         String mode = (String) parameters.get("mode");
         if (mode != null) {
-            Config c = (Config)trans.transformers().get("REGEXPS_" + mode);
+            Config c = (Config)trans.transformers().get("REGEXPS_" + mode.toUpperCase());
             if (c == null) c = (Config)trans.transformers().get(mode);
             if (c == null) throw new IllegalArgumentException("" + mode + " cannot be found in " + trans.transformers());
             trans.configure(c.config);
