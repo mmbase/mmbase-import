@@ -23,11 +23,12 @@ Create a build.xml with a DOCTYPE like this:
   <!-- Init                                                                -->
   <!-- =================================================================== -->
   <!-- Read customized values if available -->
+  <property file="build.properties" />
+  <property file="../buildbase.properties" />
   <property name="source.dir"   location="../.." />
   <property file="${source.dir}/build.properties" />
   <property file="${source.dir}/build.properties.version" />
 
-  <property file="build.properties" />
   <property name="build.compiler" value="modern" />
   <property name="optimize"       value="on" />
   <property name="debug"          value="off" />
