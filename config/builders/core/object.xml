@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
 <builder name="object" maintainer="mmbase.org" version="0" >
   <status>active</status>
-  <classfile>Dummy</classfile>
+  <class>Dummy</class>
   <searchage>1000</searchage>
   <names>
     <singular xml:lang="en">Object</singular>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
 <builder extends="object" maintainer="mmbase.org" name="typerel" version="0">
-  <classfile>org.mmbase.module.corebuilders.TypeRel</classfile>
+  <class>org.mmbase.module.corebuilders.TypeRel</class>
 
   <searchage>14</searchage>
   <names>
@@ -119,8 +119,8 @@
       <editor>
         <positions>
           <input>-1</input>
-	  <list>-1</list>
-	  <search>-1</search>
+          <list>-1</list>
+          <search>-1</search>
         </positions>
       </editor>
       <db>
