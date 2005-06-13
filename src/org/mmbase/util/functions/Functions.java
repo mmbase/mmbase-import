@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.4 2005-04-25 14:09:40 michiel Exp $
+ * @version $Id: Functions.java,v 1.5 2005-06-13 08:31:41 michiel Exp $
  */
 public class Functions {
 
@@ -61,6 +61,7 @@ public class Functions {
      * @return List with only simple Parameter's.
      */
     public static List define(DataType[] def, List list) {
+        if (def == null) return list;
         for (int i = 0; i < def.length; i++) {
             if (def[i] instanceof Parameter.Wrapper) {
                 define(((Parameter.Wrapper) def[i]).arguments, list);
