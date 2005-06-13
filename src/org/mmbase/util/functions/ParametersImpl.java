@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.6 2005-05-08 13:31:42 michiel Exp $
+ * @version $Id: ParametersImpl.java,v 1.7 2005-06-13 08:33:20 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
 public class ParametersImpl extends AbstractList implements Parameters {
     private static final Logger log = Logging.getLoggerInstance(ParametersImpl.class);
 
-    private static final DataType[] EMPTY = new DataType[0];
+    static final DataType[] EMPTY = new DataType[0];
     /**
      * The contents of this List are stored in this HashMap.
      */
