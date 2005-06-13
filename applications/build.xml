@@ -138,7 +138,7 @@ Applications build file
   </target>
 
   <target name="clustering" depends="mmbase">
-     <ant dir="clustering"  target="package" inheritAll="false">
+     <ant dir="clustering"  target="dependent.package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
      </ant>
   </target>
