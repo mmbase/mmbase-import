@@ -17,12 +17,12 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.30 2004-10-09 09:38:08 nico Exp $
+ * @version $Id: Version.java,v 1.31 2005-06-13 08:28:32 michiel Exp $
  */
 public class Version {
 
     /**
-     * Returns the 'name' part of the MMBase version. This will normall be 'MMBase'.
+     * Returns the 'name' part of the MMBase version. This will normally be 'MMBase'.
      * @return Name part of version
      * @since MMBase-1.6
      */
