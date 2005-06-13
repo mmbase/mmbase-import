@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.36 2005-05-31 14:45:18 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.37 2005-06-13 08:48:45 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -227,6 +227,14 @@
       Replace 1 or more white space characters by one space, unless, those are the first or last of
       the string.
     </info>	
+  </escaper>
+
+  <escaper id="roman">
+    <class>org.mmbase.util.transformers.RomanTransformer</class>
+    <info>
+      This works on integers only, and converts them to a roman numbers (lowercase, so see also
+      'uppercase'). This works only for natural numbers smaller than 4000.
+    </info>
   </escaper>
 
   <escaper id="rot13">
