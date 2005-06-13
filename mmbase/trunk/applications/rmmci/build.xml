@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <project name="MMBase" default="rmmci" basedir=".">
+  <property file="../build.properties" />
+
+  <property name="source.dir" value="../.."/>
   <property name="project.jar.dir" value="build"/>
   <property name="project.zip.dir" value="${project.jar.dir}"/>
   <property name="project.zip" value="${project.zip.dir}/mmbase-rmmci.zip"/>
-  <property name="build.dir" value="../../build"/>
+  <property name="build.dir" value="${source.dir}/build"/>
   <target name="init">
     <mkdir dir="build/classes"/>
     <available property="dummy" classname="dummy">
