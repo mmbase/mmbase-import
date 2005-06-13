@@ -10,7 +10,7 @@
   If no following sibling is available then all sections needs closing (the 'closeneeded' function).
   
   @author:  Michiel Meeuwissen
-  @version: $Id: kupu2pseudommxf.xslt,v 1.2 2005-06-13 16:08:45 michiel Exp $
+  @version: $Id: kupu2pseudommxf.xslt,v 1.3 2005-06-13 16:56:49 michiel Exp $
   @since:   MMBase-1.8
 -->
 <xsl:stylesheet  
@@ -27,7 +27,7 @@
   </xsl:template>
   <xsl:template match="html:body">
     <mmxf version="1.1">
-      <xsl:apply-templates  select="child::*[1]" mode="siblings">
+      <xsl:apply-templates  select="child::node()[1]" mode="siblings">
         <xsl:with-param name="depth" select="0" />
       </xsl:apply-templates>
     </mmxf>
@@ -35,7 +35,7 @@
 
   <xsl:template match="html:link" mode="siblings"> <!-- help FF -->
     <xsl:param name="depth">0</xsl:param>
-    <xsl:apply-templates select="following-sibling::*[1]" mode="siblings">
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="siblings">
       <xsl:with-param name="depth" select="$depth" />
     </xsl:apply-templates>
   </xsl:template>
@@ -43,9 +43,10 @@
   <xsl:template match="html:table|html:p" mode="siblings">
     <xsl:param name="depth">0</xsl:param>
     <xsl:element name="{name()}">
+      <xsl:copy-of select="@*" />
       <xsl:apply-templates />
     </xsl:element>
-    <xsl:apply-templates select="following-sibling::*[1]" mode="siblings">
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="siblings">
       <xsl:with-param name="depth" select="$depth" />
     </xsl:apply-templates>
     <xsl:apply-templates select="."  mode="closeifneeded">
@@ -58,10 +59,11 @@
     <xsl:param name="depth">0</xsl:param>
     <p>
       <xsl:element name="{name()}">
+        <xsl:copy-of select="@*" />
         <xsl:apply-templates />
       </xsl:element>
     </p>
-    <xsl:apply-templates select="following-sibling::*[1]" mode="siblings">
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="siblings">
       <xsl:with-param name="depth" select="$depth" />
     </xsl:apply-templates>
     <xsl:apply-templates select="."  mode="closeifneeded">
@@ -90,23 +92,37 @@
     <xsl:if test="$depth &lt; $to">
       <xsl:text disable-output-escaping="yes">&lt;section&gt;</xsl:text>
     </xsl:if>
-    <xsl:if test="$depth + 1 &lt; $to">
-      <h></h>
+    <xsl:if test="$depth +1 &lt; $to">
+      <h> </h><!-- nbsp to help IE only -->
       <xsl:call-template name="opensections">
         <xsl:with-param name="depth" select="$depth + 1" />
-        <xsl:with-param name="to" select="$to" />
+        <xsl:with-param name="to"    select="$to" />
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:*" mode="closeifneeded">
+  <xsl:template match="html:*|text()" mode="closeifneeded">
     <xsl:param name="depth">0</xsl:param>
-    <xsl:if  test="not(following-sibling::*)">
+    <xsl:if  test="not(following-sibling::node())">
       <xsl:call-template name="closesections">
         <xsl:with-param name="depth" select="$depth" />
         <xsl:with-param name="to" select="0" />
       </xsl:call-template>
     </xsl:if>
+  </xsl:template>
+
+
+  <xsl:template match="text()" mode="siblings">
+    <xsl:param name="depth">0</xsl:param>
+    <xsl:if test="normalize-space(.) != ''">      
+      <p><xsl:value-of select="." /></p>
+    </xsl:if>
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="siblings">
+      <xsl:with-param name="depth" select="$depth" />
+    </xsl:apply-templates>
+    <xsl:apply-templates select="."  mode="closeifneeded">
+      <xsl:with-param name="depth" select="$depth" />
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="html:h1|html:h2|html:h3|html:h4|html:h5|html:h6|html:h7|html:h8" mode="siblings">
@@ -121,8 +137,18 @@
       <xsl:with-param name="to" select="$thisdepth" />
     </xsl:call-template>
     <h><xsl:value-of select="." /></h>
-    <xsl:apply-templates select="following-sibling::*[1]" mode="siblings">
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="siblings">
       <xsl:with-param name="depth" select="$thisdepth" />
+    </xsl:apply-templates>
+    <xsl:apply-templates select="."  mode="closeifneeded">
+      <xsl:with-param name="depth" select="$depth" />
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="html:br" mode="siblings">
+    <xsl:param name="depth">0</xsl:param>
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="siblings">
+      <xsl:with-param name="depth" select="$depth" />
     </xsl:apply-templates>
     <xsl:apply-templates select="."  mode="closeifneeded">
       <xsl:with-param name="depth" select="$depth" />
@@ -147,7 +173,6 @@
       <xsl:apply-templates />
     </xsl:element>
   </xsl:template>
-
 
 
 </xsl:stylesheet>
