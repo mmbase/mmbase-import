@@ -3,14 +3,14 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.3 2005-06-13 16:56:49 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.4 2005-06-13 17:07:54 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
     xmlns:o="http://www.mmbase.org/objects"
-    xmlns:mmxf="http://www.mmbase.org/mmxf"
+    xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
     exclude-result-prefixes="node mmxf o"
     version="1.0" >
 
