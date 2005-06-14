@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.49 2005-06-13 08:29:24 michiel Exp $
+ * @version $Id: Casting.java,v 1.50 2005-06-14 10:56:38 michiel Exp $
  */
 
 import java.util.*;
@@ -189,6 +189,7 @@ public class Casting {
         if (o == null || o == MMObjectNode.VALUE_NULL) {
             return "";
         }
+
         return toStringBuffer(new StringBuffer(), o).toString();
     }
 
@@ -496,7 +497,7 @@ public class Casting {
         if (i instanceof Node) {
             res = (Node)i;
         } else if (i instanceof MMObjectNode) {
-            org.mmbase.bridge.NodeList list = new org.mmbase.bridge.implementation.BasicNodeList(Collections.singletonList(i),cloud);
+            org.mmbase.bridge.NodeList list = new org.mmbase.bridge.implementation.BasicNodeList(Collections.singletonList(i), cloud);
             res = list.getNode(0);
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
@@ -809,7 +810,7 @@ public class Casting {
             // dont log errors, and try to process as much as possible...
             XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
             documentBuilder.setErrorHandler(errorHandler);
-            documentBuilder.setEntityResolver(new XMLEntityResolver());
+            documentBuilder.setEntityResolver(new XMLEntityResolver(false));
             // ByteArrayInputStream?
             // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
             Document doc = documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
