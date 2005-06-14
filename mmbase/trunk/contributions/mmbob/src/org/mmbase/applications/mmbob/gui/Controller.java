@@ -81,6 +81,7 @@ public class Controller {
                     virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
                     virtual.setValue("lastposternumber",area.getLastPosterNumber());
                     virtual.setValue("lastpostnumber",area.getLastPostNumber());
+                    virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
 	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
        	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
 		   if (mode.equals("stats")) {
