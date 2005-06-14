@@ -14,17 +14,9 @@
       sCurrentNode = sID;
    %>
 </mm:field>
-
-<mm:relatednodes type="metadata">
-   <mm:field name="number" jspvar="sID" vartype="String">
-      <%
-         arliRelated.add(sID);
-      %>
-   </mm:field>
-</mm:relatednodes>
-
 <mm:listnodes type="metastandard" orderby="name">
    <mm:relatednodes type="metadefinition">
+      <mm:field name="number" id="defnumber">
       <mm:field name="type" jspvar="sType" vartype="String">
          <mm:field name="required" jspvar="sReq" vartype="String">
             <mm:field name="minvalues" jspvar="sMin" vartype="String">
@@ -44,22 +36,19 @@
                               boolean bMin = true;
                               boolean bMax = true;
                               %>
-                                 <mm:relatednodes type="metadata">
-                                    <mm:field name="number" jspvar="sID" vartype="String">
-                                       <%
-                                          if (arliRelated.contains(sID))
-                                          {
-                                             %>
-                                                <mm:relatednodes type="metavocabulary">
-                                                   <%
-                                                      iCounter++;
-                                                   %>
-                                                </mm:relatednodes>
+                             
+                                 <mm:list nodes="<%= sCurrentNode %>" path="learnobjects,metadata,metadefinition" constraints="metadefinition.number=$defnumber">
+                                 <mm:field name="metadata.number" id="datanum">
+                                    <mm:node referid="datanum">
+                                          <mm:relatednodes type="metavocabulary">
                                              <%
-                                          }
-                                       %>
-                                    </mm:field>
-                                 </mm:relatednodes>
+                                               iCounter++;
+                                             %>
+                                          </mm:relatednodes>
+                                    </mm:node>
+                                 </mm:field>
+                                 <mm:remove referid="datanum"/>
+                                 </mm:list>
                               <%
 
                               try
@@ -94,22 +83,18 @@
                            {//Required
                               bValid = false;
                               %>
-                                 <mm:relatednodes type="metadata">
-                                    <mm:field name="number" jspvar="sID" vartype="String">
-                                       <%
-                                          if (arliRelated.contains(sID))
-                                          {
-                                             %>
-                                                <mm:relatednodes type="metadate">
-                                                   <%
-                                                      bValid = true;
-                                                   %>
-                                                </mm:relatednodes>
-                                             <%
-                                          }
-                                       %>
-                                    </mm:field>
-                                 </mm:relatednodes>
+                                <mm:list nodes="<%= sCurrentNode %>" path="learnobjects,metadata,metadefinition" constraints="metadefinition.number=$defnumber">
+                                 <mm:field name="metadata.number" id="datanum">
+                                    <mm:node referid="datanum">
+                                       <mm:relatednodes type="metadate">
+                                           <%
+                                              bValid = true;
+                                           %>
+                                        </mm:relatednodes>
+                                    </mm:node>
+                                 </mm:field>
+                                 <mm:remove referid="datanum"/>
+                                 </mm:list>
                               <%
                            }
                         }
@@ -145,22 +130,18 @@
                               bValid = false;
                               int iCounter = 0;
                               %>
-                                 <mm:relatednodes type="metadata">
-                                    <mm:field name="number" jspvar="sID" vartype="String">
-                                       <%
-                                          if (arliRelated.contains(sID))
-                                          {
-                                             %>
-                                                <mm:relatednodes type="metadate">
+                                 <mm:list nodes="<%= sCurrentNode %>" path="learnobjects,metadata,metadefinition" constraints="metadefinition.number=$defnumber">
+                                 <mm:field name="metadata.number" id="datanum">
+                                    <mm:node referid="datanum">
+                                               <mm:relatednodes type="metadate">
                                                    <%
                                                       iCounter++;
                                                    %>
                                                 </mm:relatednodes>
-                                             <%
-                                          }
-                                       %>
+                                    </mm:node>
                                     </mm:field>
-                                 </mm:relatednodes>
+                                    <mm:remove referid="datanum"/>
+                                 </mm:list>
                               <%
                               if (iCounter > 1)
                               {
@@ -174,11 +155,14 @@
             </mm:field>
          </mm:field>
       </mm:field>
+      </mm:field>
    </mm:relatednodes>
 </mm:listnodes>
 
 
 <%
+
+
       if(bValid)
       {
          imageName = "gfx/metavalid.gif";
@@ -189,5 +173,8 @@
          imageName = "gfx/metaerror.gif";
          sAltText = "Metadata is niet correct, bewerk metadata voor dit object";
       }
+
    }
+
+
 %>

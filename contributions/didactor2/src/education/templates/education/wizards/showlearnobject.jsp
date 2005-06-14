@@ -1,5 +1,5 @@
 <mm:node number="<%= learnobjects2_number %>">
-   <%@include file="whichimage.jsp"%>
+   <%@include file="whichimage.jsp"%> 
    <mm:import id="objecttype" reset="true"><mm:nodeinfo type="type" /></mm:import>
 
    <mm:compare referid="objecttype" valueset="couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions" inverse="true">

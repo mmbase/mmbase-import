@@ -855,6 +855,7 @@
 
                         <div id="node_0_0_<%= iLearnblockCounter %>" style="display:none">
                            <mm:treeinclude write="true" page="/education/wizards/learnobject.jsp" objectlist="$includePath" referids="wizardjsp">
+                
                               <mm:param name="startnode"><mm:field name="number" /></mm:param>
                               <mm:param name="depth">10</mm:param>
                               <mm:last>
