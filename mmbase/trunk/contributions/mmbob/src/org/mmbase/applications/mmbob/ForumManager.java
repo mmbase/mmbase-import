@@ -573,4 +573,8 @@ public class ForumManager {
 	return config.getExternalRootUrl();
    }
 
+   public static boolean getReplyOnEachPage() {
+	return config.getReplyOnEachPage();
+   }
+
 }

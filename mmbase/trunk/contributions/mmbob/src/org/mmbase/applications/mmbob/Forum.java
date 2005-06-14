@@ -1483,4 +1483,8 @@ public class Forum {
         return ForumManager.getExternalRootUrl();
    }
 
+   public boolean getReplyOnEachPage() {
+        return ForumManager.getReplyOnEachPage();
+
+   }
 }

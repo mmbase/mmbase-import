@@ -21,6 +21,7 @@ import org.mmbase.bridge.implementation.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.applications.mmbob.*;
+import org.mmbase.applications.mmbob.util.transformers.*;
 
 
 /**
@@ -829,6 +830,7 @@ public class Controller {
                 virtual.setValue("fromaddress",f.getFromEmailAddress());
                 virtual.setValue("headerpath",f.getHeaderPath());
                 virtual.setValue("footerpath",f.getFooterPath());
+        	virtual.setValue("replyoneachpage",f.getReplyOnEachPage());
 
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
@@ -1328,7 +1330,10 @@ public class Controller {
      * @param body Body of the reply
      * @return  Feedback regarding this post action
      */
-    public boolean postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
+    public MMObjectNode postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+
         Forum f = ForumManager.getForum(forumid);
 	int pos = poster.indexOf("(");
 	if (pos!=-1) {
@@ -1344,27 +1349,32 @@ public class Controller {
 		    Poster p=f.getPoster(poster);
                     if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
 			if (body.equals("")) {
-                		//virtual.setValue("error", "no_body");
+                		virtual.setValue("error", "no_body");
 			} else if (p.checkDuplicatePost("",body)) {
-                		//virtual.setValue("error", "duplicate_post");
+                		virtual.setValue("error", "duplicate_post");
 			} else if (checkIllegalHtml(body)) {
-                		//virtual.setValue("error", "illegal_html");
+                		virtual.setValue("error", "illegal_html");
 			} else if (checkSpeedPosting(a,p)) {
-                		//virtual.setValue("error", "speed_posting");
+                		virtual.setValue("error", "speed_posting");
+                		virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
 			} else {
 				body = a.filterContent(body);
-                       	        t.postReply(subject, p, body);
-                		//virtual.setValue("error", "none");
-				p.setLastBody(body);
-				p.setLastPostTime((int)(System.currentTimeMillis()/1000));
+				body = BBCode.decode(body);
+				try {
+                       	        	t.postReply(subject, p, body);
+                			virtual.setValue("error", "none");
+					p.setLastBody(body);
+					p.setLastPostTime((int)(System.currentTimeMillis()/1000));
+				} catch (Exception e) {
+					log.info("Error while posting a reply");
+                			virtual.setValue("error", "illegal_html");
+				}
 			}
-                    } else {
-                        return false;
                     }
                 }
             }
         }
-        return true;
+        return virtual;
     }
 
     /**
