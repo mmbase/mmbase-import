@@ -25,14 +25,14 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.29 2005-06-03 14:08:45 pierre Exp $
+ * @version $Id: Generator.java,v 1.30 2005-06-14 20:13:42 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
 
     private static final Logger log = Logging.getLoggerInstance(Generator.class);
 
-    private final static String NAMESPACE =  "http://www.mmbase.org/objects";
+    private final static String NAMESPACE =  "http://www.mmbase.org/xmlns/objects";
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
 

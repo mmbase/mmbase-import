@@ -10,7 +10,7 @@
   If no following sibling is available then all sections needs closing (the 'closeneeded' function).
   
   @author:  Michiel Meeuwissen
-  @version: $Id: kupu2pseudommxf.xslt,v 1.4 2005-06-13 17:07:54 michiel Exp $
+  @version: $Id: kupu2pseudommxf.xslt,v 1.5 2005-06-14 20:14:21 michiel Exp $
   @since:   MMBase-1.8
 -->
 <xsl:stylesheet  
@@ -166,6 +166,11 @@
       <xsl:apply-templates />
     </em>
   </xsl:template>
+
+  <xsl:template match="html:tbody" >
+    <xsl:apply-templates />
+  </xsl:template>
+
 
   <xsl:template match="html:*" >
     <xsl:element name="{name()}">

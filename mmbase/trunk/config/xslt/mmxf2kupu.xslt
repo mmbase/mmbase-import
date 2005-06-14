@@ -3,19 +3,19 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.3 2005-06-13 17:07:54 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.4 2005-06-14 20:14:21 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
-  xmlns:o="http://www.mmbase.org/objects"
+  xmlns:o="http://www.mmbase.org/xmlns/objects"
   xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
-  xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="node o mmxf"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  exclude-result-prefixes="node o mmxf html"
   version = "1.1"
 >
-  <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
+  <xsl:import href="2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
   <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
 
 
@@ -43,11 +43,18 @@
 
    <!-- how to present a node -->
    <xsl:template match="o:object">
-     <body>
-       <xsl:apply-templates select="o:field[@name='body']" />
-     </body>     
-  </xsl:template>
+     <xsl:apply-templates select="o:field[@name='body']" />
+   </xsl:template>
 
+   <xsl:template match="html:html">
+     <xsl:apply-templates />
+   </xsl:template>
+   <xsl:template match="html:head">
+   </xsl:template>
+   <xsl:template match="html:body">
+     <xsl:copy-of select="." />
+   </xsl:template>
+     
   <!--
   <xsl:template match="mmxf:p">
     <xsl:choose>
@@ -69,9 +76,9 @@
   </xsl:template>
 
   <xsl:template match = "mmxf:mmxf" >
-    <body>
+    <html:body>
       <xsl:apply-templates select = "mmxf:p|mmxf:table|mmxf:section" />
-    </body>
+    </html:body>
   </xsl:template>
 
 

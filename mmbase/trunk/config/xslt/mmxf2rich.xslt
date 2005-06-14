@@ -2,7 +2,7 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.8 2005-06-13 17:07:54 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.9 2005-06-14 20:14:21 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet 
@@ -62,7 +62,12 @@
     <xsl:text>{|&#xA;</xsl:text>
     <xsl:apply-templates select="mmxf:caption" />
     <xsl:apply-templates select="mmxf:tr" />
+    <xsl:apply-templates select="mmxf:tbody" /> <!-- does not exist, but to be on the safe side -->
     <xsl:text>|}&#xA;&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="mmxf:tbody">
+    <xsl:apply-templates select="mmxf:tr" />
   </xsl:template>
 
   <xsl:template match="mmxf:caption">
