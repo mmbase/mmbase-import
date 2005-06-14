@@ -252,6 +252,21 @@ public class PostArea {
         return lastposternumber;
    }
 
+
+    /**
+     * get the last postthread in the postarea
+     * @return last postthreadnumber
+     */
+   public int getLastPostThreadNumber() {
+	if (postthreads==null) readPostThreads();
+	if (postthreads.size()>0) {
+		PostThread pt=(PostThread)postthreads.elementAt(0);
+		return pt.getId();
+	} else {
+		return -1;
+	}
+   }
+
     /**
      * get the last post in the postarea
      * @return postnumber
