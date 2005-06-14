@@ -39,6 +39,7 @@ public class ForumsConfig {
    private String logoutmodetype="open";
    private String guestreadmodetype="open";
    private String guestwritemodetype="open";
+   private boolean replyoneachpage = false;
    private int preloadchangedthreadstime = 0;
    private int swapoutunusedthreadstime = 0;
    private int speedposttime=60;
@@ -223,6 +224,10 @@ public class ForumsConfig {
                         rooturl = getAttributeValue(reader,n,"urls","root");
                         externalrooturl = getAttributeValue(reader,n,"urls","externalroot");
                         fromEmailAddress = getAttributeValue(reader,n,"email","from");
+
+                        if (getAttributeValue(reader,n,"replyoneachpage","value").equals("true")) {
+				replyoneachpage = true;
+			}
 
                         for(Enumeration ns2=reader.getChildElements(n,"layout");ns2.hasMoreElements(); ) {
                             Element n2=(Element)ns2.nextElement();
@@ -610,6 +615,7 @@ public class ForumsConfig {
 	body += "\t\t<postingsoverflowpostarea value=\""+getPostingsOverflowPostarea()+"\"/>\n\n";
 	body += "\t\t<postingsoverflowthreadpage value=\""+getPostingsOverflowThreadpage()+"\"/>\n\n";
 	body += "\t\t<speedposttime value=\""+getSpeedPostTime()+"\"/>\n\n";
+	body += "\t\t<replyoneachpage value=\""+getReplyOnEachPage()+"\"/>\n\n";
 
 	// now loop all the forums
         for (Enumeration forums = ForumManager.getForums(); forums.hasMoreElements();) {
@@ -822,5 +828,9 @@ public class ForumsConfig {
 
    public String getRootUrl() {
 	return rooturl;
+   }
+
+   public boolean getReplyOnEachPage() {
+	return replyoneachpage;
    }
 }
