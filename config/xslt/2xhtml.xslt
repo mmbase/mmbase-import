@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.12 2005-06-14 20:14:21 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.13 2005-06-15 06:44:02 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -67,50 +67,50 @@
   <xsl:template match="o:object" mode="inline">
     <xsl:choose>
       <xsl:when test="@type='images'">
-	<a href="{node:function($cloud, string(./o:field[@name='number'] ), 'servletpath()')}" 
-	   alt="{./o:field[@name='description']}">
-	  <img src="{node:function($cloud, string(./o:field[@name='number'] ), 'servletpath(,cache(s(100x100&gt;)))')}" 
-	       alt="{./o:field[@name='description']}" 
-	       >
-	    <xsl:if test="./o:field[@name='width']">
-	      <xsl:attribute name="height"><xsl:value-of select="./o:field[@name='height']" /></xsl:attribute>
-	      <xsl:attribute name="width"><xsl:value-of select="./o:field[@name='width']" /></xsl:attribute>
-	    </xsl:if>
-	  </img>
-	</a>
-	<!-- Resin's xslt-impl, does not pass 'Nodes', so we limit ourselves to strings. :-( -->
+        <a href="{node:function($cloud, string(./o:field[@name='number'] ), 'servletpath()')}" 
+           alt="{./o:field[@name='description']}">
+          <img src="{node:function($cloud, string(./o:field[@name='number'] ), 'servletpath(,cache(s(100x100&gt;)))')}" 
+               alt="{./o:field[@name='description']}" 
+               >
+            <xsl:if test="./o:field[@name='width']">
+              <xsl:attribute name="height"><xsl:value-of select="./o:field[@name='height']" /></xsl:attribute>
+              <xsl:attribute name="width"><xsl:value-of select="./o:field[@name='width']" /></xsl:attribute>
+            </xsl:if>
+          </img>
+        </a>
+        <!-- Resin's xslt-impl, does not pass 'Nodes', so we limit ourselves to strings. :-( -->
       </xsl:when>
       <xsl:when test="@type='urls'">
-	<a href="{./o:field[@name='url']}">
-	  <xsl:attribute name="alt">
-	    <xsl:choose>
-	      <xsl:when test="./o:field[@name='subtitle']" >
-		<xsl:value-of select="./o:field[@name='subtitle']" />
-	      </xsl:when>
-	      <xsl:when test="./o:field[@name='description']" >
-		<xsl:value-of select="./o:field[@name='description']" />
-	      </xsl:when>
-	      <xsl:otherwise>
-		URL
-	      </xsl:otherwise>
-	    </xsl:choose>
-	  </xsl:attribute>
-	  <xsl:choose>
-	    <xsl:when test="./o:field[@name='title'] != ''" >
-	      <xsl:value-of select="./o:field[@name='title']" />
-	    </xsl:when>
-	    <xsl:when test="./o:field[@name='name'] != ''" >
-	      <xsl:value-of select="./o:field[@name='name']" />
-	    </xsl:when>
-	    <xsl:when test="./o:field[@name='description'] != ''" >
-	      <xsl:value-of select="./o:field[@name='description']" />
-	    </xsl:when>
-	    <xsl:otherwise>
-	      <xsl:value-of select="./o:field[@name='url']" />
-	    </xsl:otherwise>
-	  </xsl:choose>
-	</a>
-
+        <a href="{./o:field[@name='url']}">
+          <xsl:attribute name="alt">
+            <xsl:choose>
+              <xsl:when test="./o:field[@name='subtitle']" >
+                <xsl:value-of select="./o:field[@name='subtitle']" />
+              </xsl:when>
+              <xsl:when test="./o:field[@name='description']" >
+                <xsl:value-of select="./o:field[@name='description']" />
+              </xsl:when>
+              <xsl:otherwise>
+                URL
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:attribute>
+          <xsl:choose>
+            <xsl:when test="./o:field[@name='title'] != ''" >
+              <xsl:value-of select="./o:field[@name='title']" />
+            </xsl:when>
+            <xsl:when test="./o:field[@name='name'] != ''" >
+              <xsl:value-of select="./o:field[@name='name']" />
+            </xsl:when>
+            <xsl:when test="./o:field[@name='description'] != ''" >
+              <xsl:value-of select="./o:field[@name='description']" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="./o:field[@name='url']" />
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+        
       </xsl:when>
     </xsl:choose>
     <xsl:if test="position() &lt; last()">, </xsl:if>
@@ -162,33 +162,33 @@
     <xsl:choose>
       <xsl:when test="not($urls) and not($images)">
         <!-- no relations found, simply ignore the anchor -->
-	<xsl:apply-templates />
+        <xsl:apply-templates />
       </xsl:when>
       <xsl:when test="count($urls) = 1">
         <!-- only one url is related, it is simple to make the body clickable -->
-	<a href="{$urls[1]/o:field[@name='url']}" 
-	   alt="{$urls[1]/o:field[@name='title']}">
-	  <xsl:apply-templates select="$images" mode="inline" />
-	  <xsl:apply-templates  />
-	</a>
+        <a href="{$urls[1]/o:field[@name='url']}" 
+           alt="{$urls[1]/o:field[@name='title']}">
+          <xsl:apply-templates select="$images" mode="inline" />
+          <xsl:apply-templates  />
+        </a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates /> 
-	<xsl:if test="count($relatednodes) &gt; 0">
-	  <!-- more than one url related to this anchor, we add between parentheses a list of links -->
-	  (<xsl:apply-templates select="$relatednodes" mode="inline" />)
-	</xsl:if>
+        <xsl:if test="count($relatednodes) &gt; 0">
+          <!-- more than one url related to this anchor, we add between parentheses a list of links -->
+          (<xsl:apply-templates select="$relatednodes" mode="inline" />)
+        </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="mmxf:section" mode="sub">
     <xsl:param name="relatednodes" />
-    <xsl:apply-templates select="mmxf:section|mmxf:h" />
+    <xsl:apply-templates select="mmxf:h" />
     <xsl:if test="count($relatednodes[@type='images']) &gt; 0">
       <p><xsl:apply-templates select="$relatednodes[@type='images']" mode="inline" /></p>
     </xsl:if>  
-    <xsl:apply-templates select="mmxf:section|mmxf:p" />
+    <xsl:apply-templates select="mmxf:section|mmxf:p|mmxf:table|mmxf:ul|mmxf:ol" />
     <xsl:if test="count($relatednodes[@type='urls']) &gt; 0">
       <p><small><xsl:apply-templates select="$relatednodes[@type='urls']" mode="inline" /></small></p>
     </xsl:if>
