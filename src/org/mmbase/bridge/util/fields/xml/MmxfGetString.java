@@ -26,7 +26,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.2 2005-05-19 13:43:33 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.3 2005-06-15 06:51:25 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -90,7 +90,7 @@ public class MmxfGetString implements  Processor {
                 //
                 log.debug("Generating kupu-compatible XML for" + value);
                 Document xml = getDocument(node, field);
-                java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2kupu.xslt");
+                java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2kupu.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), null);
                 return res.toString();
