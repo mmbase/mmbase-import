@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.6 2005-06-13 08:32:48 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.7 2005-06-15 08:57:58 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -44,7 +44,9 @@ abstract public class AbstractFunction implements Function, Comparable {
      */
     public AbstractFunction(String name, DataType[] def, DataType returnType) {
         this.name = name;
-        this.parameterDefinition = (DataType[]) Functions.define(def, new ArrayList()).toArray(ParametersImpl.EMPTY);
+        if (def != null){
+            this.parameterDefinition = (DataType[]) Functions.define(def, new ArrayList()).toArray(ParametersImpl.EMPTY);
+        }
         this.returnType = returnType;
     }
 
