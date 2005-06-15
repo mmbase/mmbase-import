@@ -24,12 +24,12 @@
         <mm:notpresent referid="loadonly">
           <table>
             <tr>
-              <th># <mm:field name="number" />></th>
-              <th><mm:function name="index" />></th>
+              <th># <mm:field name="number" /></th>
+              <th><mm:function name="index" /></th>
             </tr>
             <tr>
               <td colspan="2">
-                <mm:field name="lastmodifiedby" />&amp;nbsp; <mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field>
+                <mm:field name="lastmodifiedby" />:  <mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field>
               </td>
             </tr>
           </table>

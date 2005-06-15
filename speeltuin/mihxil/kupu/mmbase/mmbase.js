@@ -108,9 +108,9 @@ function getRequest() {
 }
     
 function serialize(request) {
-    return request.responseXML.xml;
+    //return request.responseXML.xml;
     // new sarissa:
-    //return Sarissa.serialize(request.responseXML);
+    return Sarissa.serialize(request.responseXML);
 }
 
 
