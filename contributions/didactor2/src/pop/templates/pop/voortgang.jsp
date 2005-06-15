@@ -41,7 +41,7 @@
 
         <tr style="vertical-align:top;">
           <td class="listItem"><a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids"/>"
-              ><mm:field name="educations.name"/></a><br/> from class <mm:field name="classes.name"/></td>
+              ><mm:field name="educations.name"/></a><br/> <fmt:message key="Class"/>: <mm:field name="classes.name"/></td>
           <td class="listItem" style="text-align:center">
             <mm:compare referid="intake" value="1">
               <img src="<mm:treefile page="/pop/gfx/check.gif" objectlist="$includePath" referids="$popreferids"/>"
