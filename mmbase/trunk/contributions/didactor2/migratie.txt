@@ -1,10 +1,9 @@
 Migratie issues
 
+2005-06-10
+
     alter table mmb_learnblocks add column layout INT(11);
     alter table mmb_learnblocks add column imagelayout INT(11);
-
-
-
 
 2005-06-02
 
