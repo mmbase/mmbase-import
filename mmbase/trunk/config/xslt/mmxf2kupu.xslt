@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.4 2005-06-14 20:14:21 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.5 2005-06-15 06:44:02 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -12,14 +12,11 @@
   xmlns:o="http://www.mmbase.org/xmlns/objects"
   xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
   xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="node o mmxf html"
   version = "1.1"
 >
   <xsl:import href="2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
-  <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
-
-
-  <xsl:param name="formatter_imgdb" />    <!-- this information is needed to correctly construct img.db urls -->
 
   <xsl:output method="xml" 
     omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
@@ -40,45 +37,17 @@
   <xsl:template match="mmxf:h" mode="h8"><xsl:if test=". != ''"><h8><xsl:apply-templates select="node()" /></h8></xsl:if></xsl:template>
 
 
-
-   <!-- how to present a node -->
-   <xsl:template match="o:object">
-     <xsl:apply-templates select="o:field[@name='body']" />
-   </xsl:template>
-
-   <xsl:template match="html:html">
-     <xsl:apply-templates />
-   </xsl:template>
-   <xsl:template match="html:head">
-   </xsl:template>
-   <xsl:template match="html:body">
-     <xsl:copy-of select="." />
-   </xsl:template>
-     
-  <!--
-  <xsl:template match="mmxf:p">
-    <xsl:choose>
-      <xsl:when test="mmxf:ol|mmxf:ul">
-        <xsl:apply-templates select="text()|*" />
-      </xsl:when>
-      <xsl:otherwise>
-        <p>
-          <xsl:copy-of select="@*" />
-          <xsl:apply-templates select="text()|*" />
-        </p>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
--->
-
-  <xsl:template match="o:field[@o:format='xml']">
-    <xsl:apply-templates />
+  <!-- just in case..-->
+  <xsl:template match="html:html">
+    <body>
+      <xsl:apply-templates />
+    </body>
   </xsl:template>
 
   <xsl:template match = "mmxf:mmxf" >
-    <html:body>
-      <xsl:apply-templates select = "mmxf:p|mmxf:table|mmxf:section" />
-    </html:body>
+    <body>
+      <xsl:apply-templates select = "mmxf:p|mmxf:table|mmxf:section|mmxf:ul|mmxf:ol|mmxf:table" />
+    </body>
   </xsl:template>
 
 
