@@ -13,7 +13,7 @@
       <h1>MMBase formatter and XInclude</h1>
       <ol>
         <li>Use Tomcat 5.5.6 (that's what I tested)</li>
-        <li>Place xercesImpl.jar for xerces 2.6.2 in WEB-INF/lib</li>
+        <li>Place xercesImpl.jar of xerces 2.6.2 in WEB-INF/lib</li>
         <li>Place a file WEB-INF/classes/META-INF/services/org.apache.xerces.xni.parser.XMLParserConfiguration containing org.apache.xerces.parsers.XIncludeParserConfiguration</li>
       </ol>
       <p>Should see items A - D</p>
@@ -24,7 +24,23 @@
           <mm:include cite="true" page="test.xml" />
         </test:A>
       </mm:formatter>
-      <hr />
+      <p>Should see items B - D</p>
+      <mm:formatter xslt="test.xsl" escape="none">
+        <test:B
+         xmlns:test="http://www.mmbase.org/test"
+         >
+          <test:value>Root</test:value>
+          <mm:include page="test1.xml" />
+        </test:B>
+      </mm:formatter>
+      <p>Should see items B - D</p>
+      <mm:formatter escape="none">
+        <mm:include page="test.xml" />
+        <mm:xslt>
+          <jsp:directive.include file="test.xsl" />
+        </mm:xslt>
+      </mm:formatter>
+
     </body>
   </mm:content>
 </html>
