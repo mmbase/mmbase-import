@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.4 2005-06-15 06:52:43 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.5 2005-06-15 15:50:18 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -95,7 +95,7 @@ public class MmxfSetString implements  Processor {
     }
 
 
-    private static Pattern copyElement   = Pattern.compile("table|tr|td|th|em|strong|ul|ol|li|p");
+    private static Pattern copyElement   = Pattern.compile("table|tr|td|th|em|strong|ul|ol|li|p|sub|sup");
     private static Pattern ignoreElement = Pattern.compile("tbody|thead");
     private static Pattern ignore        = Pattern.compile("link|#comment");
     private static Pattern hElement      = Pattern.compile("h([1-9])");
