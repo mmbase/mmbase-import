@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2005-06-08 22:46:36 michiel Exp $
+# $Id: Makefile,v 1.5 2005-06-15 06:47:14 michiel Exp $
 
 
 KUPU_HOME=..
@@ -26,7 +26,7 @@ $(I18N):
 .PHONY:
 messages: *.js
 	mkdir -p i18n
-	xgettext --from-code=UTF-8 -L java -k_ -p i18n *.js 
+	xgettext -j --from-code=UTF-8 -L java -k_ -p i18n *.js 
 	for LOCALE in $(LANGS) ; do \
 	   msgmerge --update --backup=off i18n/$${LOCALE}.po i18n/messages.po; \
 	done
