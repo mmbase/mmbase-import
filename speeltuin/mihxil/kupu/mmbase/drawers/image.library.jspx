@@ -15,7 +15,12 @@
         <mm:maxnumber value="$librarysize" />
         <library id="${search}/0">
           <uri><mm:url referids="search,librarysize@max" page="drawers/images.jspx" /></uri>
-          <title>Pagina 1 van ${search}</title>
+          <title>
+            Pagina 1 
+            <mm:isnotempty referid="search">
+              van ${search}
+            </mm:isnotempty>
+          </title>
           <src><mm:url referids="search,librarysize@max" page="drawers/images.jspx" /></src>
           <icon>kupuimages/kupulibrary.png</icon>
         </library>

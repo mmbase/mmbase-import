@@ -14,6 +14,9 @@ function Map() {
     this.get = function(key) {       
         return this[key];
     };
+    this.remove = function(key) {
+        this[key] = undefined;
+    }
 }
 
 /**
@@ -116,7 +119,7 @@ function serialize(request) {
  */
 function saveNode(button, editor) {
     kupu.logMessage(_("Saving body (kupu)") + " " + currentNode);
-    editor.saveDocument(); // kupu-part of save
+    editor.saveDocument(undefined, true); // kupu-part of save
     var content = "";
     var a = xGetElementsByTagName('input', xGetElementById('node'));
     for (i=0; i < a.length; i++) {
@@ -130,12 +133,17 @@ function saveNode(button, editor) {
     }
 
     var request = getRequest();
-    request.open("PUT", "receive.jspx?fields=true", false);
+    request.open("PUT", "receive.jspx?fields=true", true);
     request.setRequestHeader("Content-type", "text/plain");
     request.send(content);
-    kupu.handleSaveResponse(request);
-
-    alert(_("saved") + " " + currentNode);
+    //kupu.handleSaveResponse(request);
+    var node = currentNode;
+    currentNode = undefined;
+    alert(_("saved") + " " + node);
+    kupu.logMessage("Reloading " + node);
+    loadedNodes.remove(node);
+    loadedNodeBodies.remove(node);
+    loadNode(node);
 
 }
 
@@ -154,7 +162,13 @@ function updateTree(nodeNumber, title) {
  * Load one node from server into the 'node' div. Unless that already happened, in which case this
  * result is taken from cache.
  */
-function loadNode(nodeNumber) {    
+function loadNode(nodeNumber) {
+    if (nodeNumber == currentNode) {
+        kupu.logMessage(_("RELOAD"));x
+        loadedNodes.remove(nodeNumber);
+        loadedNodeBodies.remove(nodeNumber);
+        currentNode == undefined;
+    }
     kupu.logMessage(_("Loading node") + " " + nodeNumber);
     var currentA;
     var nodeDiv = document.getElementById('node');
@@ -169,12 +183,14 @@ function loadNode(nodeNumber) {
 
      }
      var nodeXml = loadedNodes.get(nodeNumber);
-     if (nodeXml == null) {					
+     if (nodeXml == null) {
+         kupu.logMessage(_("getting node")); 
          var request = getRequest();
          request.open('GET', 'node.jspx?node=' + nodeNumber, false);
          request.send('');
          nodeXml = serialize(request);
     } else {
+        kupu.logMessage(_("loading node")); 
         var request = getRequest();
         request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
         request.send('');        
@@ -192,7 +208,7 @@ function loadNode(nodeNumber) {
         //alert("Getting node.body.jspx");        
         nodeBodyXml = serialize(request);
     }
-    //alert("received" + nodeBodyXml);
+    //    alert("received" + nodeBodyXml);
     
     kupu.setHTMLBody(nodeBodyXml);
     currentNode = nodeNumber;

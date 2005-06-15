@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mmbase 18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-09 00:40+0200\n"
+"POT-Creation-Date: 2005-06-10 11:49+0200\n"
 "PO-Revision-Date: 2005-06-09 00:42+0200\n"
 "Last-Translator: Michiel Meeuwissen <EMAIL@ADDRESS>\n"
 "Language-Team: German <de@li.org>\n"
@@ -16,18 +16,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mmbase.js:107
+#: mmbase2.js:107
+msgid "aaSaving body (kupu)"
+msgstr ""
+
+#: mmbase2.js:114
+msgid "bbSaving fields (form)"
+msgstr ""
+
+#: mmbase2.js:127
+msgid "ccsaved"
+msgstr ""
+
+#: mmbase2.js:147
+msgid "ddLoading node"
+msgstr ""
+
+#: mmbase.js:118
 msgid "Saving body (kupu)"
 msgstr ""
 
-#: mmbase.js:114
+#: mmbase.js:125
 msgid "Saving fields (form)"
 msgstr ""
 
-#: mmbase.js:127
+#: mmbase.js:138
 msgid "saved"
 msgstr ""
 
-#: mmbase.js:147
+#: mmbase.js:158
 msgid "Loading node"
 msgstr ""

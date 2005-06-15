@@ -7,13 +7,13 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolbar.kupu,v 1.7 2005-06-07 22:02:46 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolbar.kupu,v 1.8 2005-06-15 06:47:14 michiel Exp $</kupu:id>
 
   <!-- lets limit ourselves to 2 ways of emphasis (in stead of 3) -->
   <kupu:part name="buttongroup-basicmarkup">
     <span class="kupu-tb-buttongroup" id="kupu-bg-basicmarkup">
-      <button type="button" class="kupu-bold" id="kupu-bold-button" title="bold: alt-b" i18n:attributes="title" accesskey="b">&#160;</button>
-      <button type="button" class="kupu-italic" id="kupu-italic-button" title="italic: alt-i" i18n:attributes="title" accesskey="i">&#160;</button>
+      <button type="button" class="kupu-bold" id="kupu-bold-button"     title="strong: alt-b" i18n:attributes="title" accesskey="b">&#160;</button>
+      <button type="button" class="kupu-italic" id="kupu-italic-button" title="emphasis: alt-i" i18n:attributes="title" accesskey="i">&#160;</button>
     </span>
   </kupu:part>
 
