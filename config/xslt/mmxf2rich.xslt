@@ -2,7 +2,7 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.9 2005-06-14 20:14:21 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.10 2005-06-15 11:12:33 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet 
@@ -98,6 +98,13 @@
     </xsl:if>
     <xsl:text>|</xsl:text>
     <xsl:apply-templates />
+  </xsl:template>
+
+  <xsl:template match="mmxf:sub">
+    <xsl:text>_</xsl:text><xsl:value-of select="." />
+  </xsl:template>
+  <xsl:template match="mmxf:sup">
+    <xsl:text>^</xsl:text><xsl:value-of select="." />
   </xsl:template>
 
   <xsl:template match="*" mode="rels">
