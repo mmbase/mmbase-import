@@ -5,7 +5,23 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title>POP</title>
@@ -26,7 +42,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="persoonlijk ontwikkelings plan" /> Persoonlijk ontwikkelings plan
+    <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<fmt:message key="POPfull"/>" /> <fmt:message key="POPfull"/>
   </div>		
 </div>
 
@@ -43,12 +59,12 @@
 </mm:compare>
 <mm:compare referid="currentpop" value="-1">
   <div class="contentBody"> 
-    <p>Er is geen POP voor jou aangemaakt. Neem contact op met de systeembeheerder om een POP voor je aan te maken.</p>
+    <p><fmt:message key="MsgForNoPOP"/></p>
   </div>
 </mm:compare>
 <mm:compare referid="currentpop" value="-1" inverse="true">
 <mm:compare referid="currentfolder" value="-1">
-  <div class="contentHeader">Competenties <mm:compare referid="currentprofile" value="-1" inverse="true"
+  <div class="contentHeader"><fmt:message key="Competencies"/> <mm:compare referid="currentprofile" value="-1" inverse="true"
       ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
     <di:hasrole referid="user" role="teacher">
       <mm:node number="$student">
@@ -64,13 +80,15 @@
   </mm:compare>
   <mm:compare referid="command" value="savecomp">
     <%@ include file="savecomp.jsp" %>
-    <% msgString = "Uw zelfbeoordeling is aangemaakt"; %>
+    <mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgSelfGradeDone"/></mm:import>
+    <% msgString = dummy; %>
     <mm:remove referid="command"/>
     <mm:import id="command">no</mm:import>
   </mm:compare>
   <mm:compare referid="command" value="sendinvite">
     <%@ include file="sendinvite.jsp" %>
-    <% msgString = "De uitnodiging voor een beoordeling over deze competentie is verstuurd"; %>
+    <mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgSendInviteDone"/></mm:import>
+    <% msgString = dummy; %>
     <mm:remove referid="command"/>
     <mm:import id="command">editcomp</mm:import>
   </mm:compare>
@@ -110,7 +128,7 @@
   </mm:compare>
 </di:hasrole>
   <mm:compare referid="whatselected" value="student">
-  <div class="contentHeader">Voortgangsmonitor
+  <div class="contentHeader"><fmt:message key="Progressmonitor"/>
     <di:hasrole referid="user" role="teacher">
       <mm:node number="$student">
         : <mm:field name="firstname"/> <mm:field name="lastname"/>
@@ -139,7 +157,7 @@
   </mm:compare>
 </mm:compare>
 <mm:compare referid="currentfolder" value="2">
-  <div class="contentHeader">Persoonlijke taken
+  <div class="contentHeader"><fmt:message key="TodoItems"/>
     <di:hasrole referid="user" role="teacher">
       <mm:node number="$student">
         : <mm:field name="firstname"/> <mm:field name="lastname"/>
@@ -161,12 +179,10 @@
 <di:hasrole referid="user" role="teacher">
 <mm:compare referid="whatselected" value="0">
 <div class="mainContent">
-  <div class="contentHeader">Selecteer een student</div>
+  <div class="contentHeader"><fmt:message key="SelectStudent"/></div>
   <div class="contentBody">
-    <b>Overzicht Persoonlijke Ontwikkelings Plan</b><br/><br/>
-    Gebruik de dropdown velden in linkerpaneel om een klas, werkgroep en student te selecteren. Als er een klas of werkgroep 
-    geselecteerd is kunt u op de Voortgangsmonitor klikken om de toestresultaten van de klas of werkgroep te bekijken. Als een 
-    student geselecteerd is kunt u de POP van de student bekijken.
+    <b><fmt:message key="ExplanatoryTitle"/></b><br/><br/>
+    <fmt:message key="ExplanatoryBody"/>
   </div>
 </div>
 </mm:compare>

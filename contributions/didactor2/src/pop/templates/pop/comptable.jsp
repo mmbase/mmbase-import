@@ -8,7 +8,23 @@
 <%@ include file="getids.jsp" %>
 <% boolean isEmpty = true; %>
 <mm:import externid="msg">-1</mm:import>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
 <div class="contentBody">
     <mm:compare referid="msg" value="-1" inverse="true">
       <mm:write referid="msg"/>
@@ -16,12 +32,12 @@
     <div><table class="poplistTable">
       <tr style="vertical-align:top;">
         <th class="listHeader">&nbsp;</th>
-        <th class="listHeader">Competentie</th>
-        <th class="listHeader">Aan gewerkt door middel van</th>
-        <th class="listHeader">Zelfbeoordeling</th>
-        <th class="listHeader">Score</th>
-        <th class="listHeader">Voornemens</th>
-        <th class="listHeader"><fmt:message key="PORTFOLIO" /></th>
+        <th class="listHeader"><fmt:message key="Competence"/></th>
+        <th class="listHeader"><fmt:message key="CompTableWorkedOn"/></th>
+        <th class="listHeader"><fmt:message key="CompTableSelfAssessment"/></th>
+        <th class="listHeader"><fmt:message key="Score"/></th>
+        <th class="listHeader"><fmt:message key="CompTableTodoItems"/></th>
+        <th class="listHeader"><fmt:message key="Portfolio"/></th>
       </tr>
       <mm:node number="$currentpop">
         <%@ include file="getcompetencies.jsp" %>
@@ -33,7 +49,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/present.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="deze competentie was al aanwezig voor de cursus"/>
+                          alt="<fmt:message key="CompHave"/>"/>
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -49,7 +65,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/developed.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="deze competentie is behaald tijdens de cursus"/>
+                          alt="<fmt:message key="CompDeveloped"/>"/>
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -66,7 +82,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/todevelop.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="deze competentie is nodig"/>
+                          alt="<fmt:message key="CompNeeded"/>"/>
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>

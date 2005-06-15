@@ -1,6 +1,7 @@
 <mm:import externid="addnode"/>
 <mm:node number="$addnode" notfound="skip">
-<% msgString = "Item is toegevoegd"; %>
+<mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgItemAdded"/></mm:import>
+<% msgString = dummy; %>
 <%@ include file="getmyfeedback.jsp" %>
 <% if (isEmpty) { %>
   <mm:remove referid="thisfeedback"/>
