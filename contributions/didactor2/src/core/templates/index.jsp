@@ -93,9 +93,12 @@
     <mm:node number="$provider" notfound="skipbody">
     <mm:treeinclude page="/welcome.jsp" objectlist="$includePath" />
     </mm:node>
-    <p>
-   <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
-    </p>
+    <%-- only show link to public portfolios for guests --%>
+    <mm:compare referid="user" value="0">
+        <p>
+           <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+        </p>
+    </mm:compare>
   </div>
 
   <div class="columnRight">
