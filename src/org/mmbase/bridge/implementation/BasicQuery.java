@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.47 2005-05-27 10:39:06 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.48 2005-06-15 14:54:04 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -494,6 +494,7 @@ public class BasicQuery implements Query  {
     }
 
     public FieldValueConstraint createConstraint(StepField f, int op, Object v) {
+        if (v instanceof Node) v = new Integer(((Node)v).getNumber());
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
