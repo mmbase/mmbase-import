@@ -10,7 +10,8 @@
   </mm:compare>
   <mm:compare referid="command" value="deltodo">
     <%@ include file="deltodo.jsp" %>
-    <% msgString = "De geselecteerde persoonlijke taken zijn verwijdert"; %>
+    <mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgRemoveSelectedTodo"/></mm:import>
+    <% msgString = dummy; %>
     <mm:remove referid="command"/>
     <mm:import id="command">continue</mm:import>
   </mm:compare>

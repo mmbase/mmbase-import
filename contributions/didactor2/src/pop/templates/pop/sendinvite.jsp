@@ -47,15 +47,15 @@
 </mm:node>
 
 <%-- some sending email code--%>
-<mm:import id="subject">Uitnodiging om feedback te geven.</mm:import>
+<mm:import id="subject"><fmt:message key="SendInviteSubject"/></mm:import>
 <mm:import id="body"><HTML>
-Beste <mm:write referid="inviteefname"/><br/>
+<fmt:message key="SendInvitePart1"/> <mm:write referid="inviteefname"/><br/>
 <br/>
-<b><mm:write referid="userfname"/></b> heeft je uitgenodigd om zijn competentie <b><mm:write referid="compname"/></b> te beoordelen.<br/>
+<b><mm:write referid="userfname"/></b> <fmt:message key="SendInvitePart2"/> <b><mm:write referid="compname"/></b> <fmt:message key="SendInvitePart3"/><br/>
 <br/>
 <%= querytext.replaceAll("\\n", "<br/>") %><br/>
 <br/>
-Je kunt je beoordeling geven op <a href="<%= linktofeedback %>">link</a>.<br/>
+<fmt:message key="SendInvitePart4"/> <a href="<%= linktofeedback %>"><fmt:message key="SendInvitePart5"/></a><fmt:message key="SendInvitePart6"/><br/>
 <br/>
-Bij voorbaat dank.</HTML></mm:import>
+<fmt:message key="SendInvitePart7"/></HTML></mm:import>
 <%@include file="sendmail.jsp" %>

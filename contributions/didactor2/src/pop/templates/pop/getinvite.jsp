@@ -10,22 +10,22 @@
             </mm:treefile>" method="post">
         <input type="hidden" name="command" value="sendfeedback">
         <input type="hidden" name="nfeedback" value="<mm:write referid="nfeedback"/>">
-        <p>Onderstaand kunt u uw beoordeling geven over de competentie <b><mm:field name="competencies.name"/></b> van <b><mm:list
+        <p><fmt:message key="GetInviteMessagePart1"/> <b><mm:field name="competencies.name"/></b> <fmt:message key="GetInviteMessagePart2"/> <b><mm:list
             nodes="$nfeedback" path="popfeedback,pop,people"
               ><mm:field name="people.firstname"
                /> <mm:field name="people.lastname"
-            /></mm:list></b></p>
+            /></mm:list></b><fmt:message key="GetInviteMessagePart3"/></p>
         <table class="font" width="90%">
           <tr>
-            <td width="180">Aan samengewerkt door middel van</td>
+            <td width="180"><fmt:message key="CompEditWorkTogetherEtc"/></td>
             <td><input name="feedback1" type="text" class="formInput" size="50" maxlength="255"></td>
           </tr>
           <tr>
-            <td>Beoordeling</td>
+            <td><fmt:message key="CompEditGrade"/></td>
             <td><textarea name="feedback2" cols="50" rows="5"></textarea></td>
           </tr>
           <tr>
-            <td>Score</td>
+            <td><fmt:message key="Score"/></td>
             <td>
               <mm:list path="ratings" orderby="ratings.pos" directions="DOWN">
                 <mm:first><select name="rating"></mm:first>
@@ -35,8 +35,8 @@
             </td>
           </tr>
         </table>
-        <input type="submit" class="formbutton" value="versturen">
-        <input type="submit" class="formbutton" value="terug" onClick="givefeedbackform.command.value='no'">
+        <input type="submit" class="formbutton" value="<fmt:message key="SendButton"/>">
+        <input type="submit" class="formbutton" value="<fmt:message key="BackButtonLC"/>" onClick="givefeedbackform.command.value='no'">
       </form>
     </mm:list>
   </mm:listcontainer>

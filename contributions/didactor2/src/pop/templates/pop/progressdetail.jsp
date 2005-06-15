@@ -15,7 +15,23 @@
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
 
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
   <div class="contentBody">
 
 <mm:node number="$education">
@@ -57,21 +73,18 @@
     <mm:node number="progresstextbackground">
 
     <th>
-
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Voortgang')+rotate(90)"/>">
-
+        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="Progress"/>')+rotate(90)</mm:import>
+        <img src="<mm:image template="$template"/>">
     </th>
 
-     <th>
-
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Keer ingelogd')+rotate(90)"/>">
-
+    <th>
+        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="NumberOfVisits"/>')+rotate(90)</mm:import>
+        <img src="<mm:image template="$template"/>">
     </th>
 
-      <th>
-
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Tijd ingelogd')+rotate(90)"/>">
-
+    <th>
+        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="TimeOfVisits"/>')+rotate(90)</mm:import>
+        <img src="<mm:image template="$template"/>">
     </th>
 
     </mm:node>
@@ -153,7 +166,7 @@
     <mm:param name="startAt"><%= startAt + 15 %></mm:param>
     <mm:param name="command">detail</mm:param>
 
-</mm:treefile>">Volgende 15</a></span>
+</mm:treefile>"><fmt:message key="NextResults"/></a></span>
 
 <% }
 
@@ -164,7 +177,7 @@
     <mm:param name="startAt"><%= startAt - 15 %></mm:param>
     <mm:param name="command">detail</mm:param>
 
-</mm:treefile>">Vorige 15</a>
+</mm:treefile>"><fmt:message key="PrevResults"/></a>
 
 <% } %>
 

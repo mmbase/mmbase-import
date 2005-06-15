@@ -4,10 +4,12 @@
 <mm:import externid="durationmeasure"/>
 <mm:import externid="todocomp">-1</mm:import>
 <mm:import externid="todonumber">-1</mm:import>
-<% msgString = "Persoonlijke taak is bijgewerkt"; %>
+<mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgTodoUpdated"/></mm:import>
+<% msgString = dummy; %>
 <mm:compare referid="todonumber" value="-1">
   <mm:maycreate type="todoitems">
-    <% msgString = "Nieuwe persoonlijke taak is toegevoegd"; %>
+    <mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgTodoCreated"/></mm:import>
+    <% msgString = dummy; %>
     <mm:remove referid="todonumber"/>
     <mm:createnode type="todoitems" id="todonumber">
     </mm:createnode>
