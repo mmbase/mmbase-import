@@ -303,7 +303,7 @@
 <mm:compare referid="education_top_menu" value="filemanagement">
    <% //----------------------- Filemanagement comes from here ----------------------- %>
    <di:hasrole role="filemanager">
-      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>" target="_top"><fmt:message key="filemanagement"/></a></nobr>
+      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>" target="text"><fmt:message key="filemanagement"/></a></nobr>
       <br>
       <div id='filemanagement_0' style='display: none'>
 

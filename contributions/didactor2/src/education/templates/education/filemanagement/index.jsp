@@ -83,6 +83,8 @@
 <html>
 <head>
 <title>File manager</title>
+<link href="<mm:treefile page="/editwizards/style/layout/list.css" objectlist="$includePath" referids="$referids" />"></link>
+<link href="<mm:treefile page="/editwizards/style/color/list.css" objectlist="$includePath" referids="$referids" />" type="text/css" rel="stylesheet">
 </head>
 <body>
 <mm:import externid="deletefile" jspvar="deletefile"/>
