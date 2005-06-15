@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.309 2005-06-11 10:40:43 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.310 2005-06-15 07:26:53 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1660,17 +1660,16 @@ public class MMObjectBuilder extends MMTable {
         int cacheGetCount = 0;
         int cachePutCount = 0;
 
-        ListIterator iResults = results.listIterator();
-        while (iResults.hasNext()) {
-            MMObjectNode node = (MMObjectNode) iResults.next();
-
+        ListIterator resultsIterator = results.listIterator();
+        while (resultsIterator.hasNext()) {
+            MMObjectNode node = (MMObjectNode) resultsIterator.next();
             Integer number = new Integer(node.getNumber());
             if(number.intValue() < 0) {
-                // never happend to me, and never should!
+                // never happened to me, and never should!
                 log.error("invalid node found, node number was invalid:" + node.getNumber()+", storage invalid?");
                 // dont know what to do with this node,...
                 // remove it from the results, continue to the next one!
-                iResults.remove();
+                resultsIterator.remove();
                 continue;
             }
 
@@ -1684,7 +1683,7 @@ public class MMObjectBuilder extends MMTable {
                 MMObjectNode cachedNode = (MMObjectNode) nodeCache.get(number);
                 if(cachedNode != null) {
                     node = cachedNode;
-                    iResults.set(node);
+                    resultsIterator.set(node);
                     fromCache = true;
                     cacheGetCount ++;
                 } else {
@@ -1709,7 +1708,7 @@ public class MMObjectBuilder extends MMTable {
                 // cache..
                 if(!REPLACE_CACHE && oldNode != null) {
                     node = oldNode;
-                    iResults.set(node);
+                    resultsIterator.set(node);
                     fromCache = true;
                     cacheGetCount++;
                 }
@@ -2110,7 +2109,7 @@ public class MMObjectBuilder extends MMTable {
             orderedFields = new ArrayList();
             for (Iterator i = fields.values().iterator(); i.hasNext();) {
                 CoreField field = (CoreField)i.next();
-                // include only fields which have been assigned a valid position
+                // include only fields which have been assigned a valid position, and are 
                 if ((sortorder == CoreField.ORDER_NONE) ||
                     ((sortorder == CoreField.ORDER_CREATE) && (field.getStoragePosition()>-1)) ||
                     ((sortorder == CoreField.ORDER_EDIT) && (field.getEditPosition()>-1)) ||
@@ -3178,7 +3177,7 @@ public class MMObjectBuilder extends MMTable {
         if (retval == null){
             return getDescription();
         }
-    return retval;
+        return retval;
     }
 
     /**
@@ -3905,8 +3904,17 @@ public class MMObjectBuilder extends MMTable {
         /**
          * Implements the function on a certain node.
          */
-        protected abstract Object getFunctionValue(MMObjectNode node, Parameters parameters);
+        protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
+            final org.mmbase.bridge.Cloud cloud   = (org.mmbase.bridge.Cloud)  parameters.get(Parameter.CLOUD);
+            final org.mmbase.bridge.Node node     = cloud.getNode(coreNode.getNumber());
+            return getFunctionValue(node, parameters);
+            
+        }
 
+
+        public  Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+            throw new UnsupportedOperationException("Not supported");
+        }
 
         /**
          * To implement a NodeFunction, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}. 
