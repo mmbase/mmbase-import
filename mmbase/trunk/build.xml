@@ -464,6 +464,8 @@ builddate=${builddate}
         <include name="functions/**/*.xml"/>
         <include name="storage/**/*.xml"/>
         <include name="utils/**/*.xml"/>
+        <include name="xslt/**/*.xsl"/>
+        <include name="xslt/**/*.xslt"/>
         <include name="dtd/**"/>
       </fileset>
     </copy>
