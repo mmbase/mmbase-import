@@ -1,6 +1,6 @@
 <!--
    
-   @version $Id: wire.kupu,v 1.7 2005-06-09 16:18:56 michiel Exp $
+   @version $Id: wire.kupu,v 1.8 2005-06-15 11:11:41 michiel Exp $
    @author Michiel Meeuwissen <michiel.meeuwissen@gmail.com>
 -->
 <kupu:wire
@@ -34,6 +34,7 @@
         <fmt:message key="richtext.editor" />
         <div id="languageSelector">
           <form name="languageform" method="get" action=".">
+	    <input type="hidden" name="node" value="${node}" />
             <select onChange="document.forms['languageform'].submit();" name="language">
               <mm:compare referid="rich_language" value="client">
                 <option value="client" selected="selected"><fmt:message key="default" /></option>
@@ -41,7 +42,7 @@
               <mm:compare referid="rich_language" value="client" inverse="true">
                 <option value="client"><fmt:message key="default" /></option>
               </mm:compare>
-              <mm:import id="languages" vartype="list">en,de,nl,eo</mm:import>
+              <mm:import id="languages" vartype="list">en,nl,de,fr,eo</mm:import>
               <mm:stringlist referid="languages">
                 <mm:locale language="${_}" jspvar="locale">
                   <mm:compare referid2="rich_language">
@@ -94,9 +95,11 @@
     <kupu:insert-part feature="toolbar" part="buttongroup-basicmarkup" />
 
     <!-- let's not do subsuper for the moment, though this is actually sensible -->
-    <!-- kupu:insert-part feature="toolbar" part="buttongroup-subsuper" /-->
-    <!-- kupu:insert-part feature="colorchooser" part="buttons" 
-    <kupu:insert-part feature="toolbar" part="buttongroup-justify" />
+    <kupu:insert-part feature="toolbar" part="buttongroup-subsuper" />
+
+    <!--
+	kupu:insert-part feature="colorchooser" part="buttons"    
+	<kupu:insert-part feature="toolbar" part="buttongroup-justify" />
     -->
     <kupu:insert-part feature="toolbar" part="buttongroup-list" />
 
