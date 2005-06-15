@@ -582,7 +582,7 @@
                </mm:islessthan>
 
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=tests-origin&objectnumber=new' title='<fmt:message key="createNewTestDescription"/>' target="text"><fmt:message key="createNewTest"/></a></nobr></td>
+            <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=tests&objectnumber=new' title='<fmt:message key="createNewTestDescription"/>' target="text"><fmt:message key="createNewTest"/></a></nobr></td>
          </tr>
       </table>
 
