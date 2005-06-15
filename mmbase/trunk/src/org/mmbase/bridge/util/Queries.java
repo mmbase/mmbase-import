@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.52 2005-04-25 13:34:36 pierre Exp $
+ * @version $Id: Queries.java,v 1.53 2005-06-15 07:12:32 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1145,6 +1145,38 @@ abstract public class Queries {
         return query;
     }
 
+    /**
+     * Queries a list of cluster nodes, using a {@link org.mmbase.bridge.NodeQuery} (so al fields of
+     * one step are available), plus some fields of the relation step.  The actual node can be got
+     * from the node cache by doing a {@link org.mmbase.bridge.Node#getNodeValue} with the {@link
+     * org.mmbase.bridge.NodeList#NODE_STEP} property.  The fields of the relation can be got by
+     * prefixing their names by the role and a dot (as normal in multilevel results).
+     * @param node start node
+     * @param otherNodeManager node manager on the other side of the relation
+     * @param role role of the relation
+     * @param direction direction of the relation
+     * @param relationsFields Comma separated string of fields which must be queried from the relation step
+     * @param sortOrders      Comma separated string of fields of sortorders, or the empty string or <code>null</code>
+     *                        So, this methods is targeted at the use of 'posrel' and similar fields, because sorting on other fields isn't possible right now.
+     * @since MMBase-1.8
+     * @todo  EXPERIMENTAL
+     */
+    public static NodeList getRelatedNodes(Node node, NodeManager otherNodeManager, String role, String direction, String relationFields, String sortOrders) {
+        NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
+        List list = StringSplitter.split(relationFields);
+        List orders = StringSplitter.split(sortOrders);
+        Iterator i = list.iterator();
+        Iterator j = orders.iterator();
+        while (i.hasNext()) {
+            String fieldName = (String)i.next();
+            StepField sf = q.addField(role + "." + fieldName);
+            if (j.hasNext()) {
+                String so = (String) j.next();
+                q.addSortOrder(sf, getSortOrder(so));
+            }
+        }
+        return q.getCloud().getList(q);
+    }
 
     /**
      * Add a sortorder (DESCENDING) on al the'number' fields of the query, on which there is not yet a
@@ -1172,5 +1204,7 @@ abstract public class Queries {
         }
         return q;
     }
+
+    
 
 }
