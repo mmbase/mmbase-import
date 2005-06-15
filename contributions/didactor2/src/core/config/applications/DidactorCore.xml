@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCore" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorCore" maintainer="didactor.nl" version="6" auto-deploy="true">
     <requirements>
         <requires name="Resources" maintainer="didactor.nl" version="2" />
     </requirements>  
@@ -36,6 +36,9 @@
     <allowedrelationlist>
         <relation from="providers" to="urls" type="related" />
         <relation from="providers" to="educations" type="related" />
+
+        <relation from="educations" to="people" type="classrel" />
+        
         <relation from="providers" to="flashpages" type="related" />
 
         <!-- People and their fields -->

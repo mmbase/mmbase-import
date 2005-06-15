@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="12" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="13" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -70,13 +70,23 @@
 
     <allowedrelationlist>
         <relation from="educations" to="learnblocks" type="posrel" />
+        <relation from="educations" to="images" type="sizerel" />
+        <relation from="educations" to="audiotapes" type="posrel" />
+        <relation from="educations" to="videotapes" type="posrel" />
+        <relation from="educations" to="urls" type="posrel" />
+        <relation from="educations" to="attachments" type="posrel" />
+ 
         <relation from="learnblocks" to="learnobjects" type="posrel" />
 
         <!-- a learnblock is a learnobject too, but for clarity we
              define this relation explicityly -->
         <relation from="learnblocks" to="learnblocks" type="posrel" />
         <relation from="learnblocks" to="images" type="sizerel" />
-
+        <relation from="learnblocks" to="audiotapes" type="posrel" />
+        <relation from="learnblocks" to="videotapes" type="posrel" />
+        <relation from="learnblocks" to="urls" type="posrel" />
+        <relation from="learnblocks" to="attachments" type="posrel" />
+ 
         <!-- Feedback for answers,questions and tests -->
         <relation from="answers" to="feedback" type="related" /> <!-- ??? -->
         <relation from="questions" to="feedback" type="related" />

@@ -27,16 +27,10 @@
 
 <mm:node number="$edu">
 
-   <mm:field name="showtitle">
-      <mm:compare value="1">
-         <mm:field name="name" jspvar="sTitle" vartype="String" write="false">
-            <h1><%= sTitle %></h1>
-         </mm:field>
-      </mm:compare>
-   </mm:field>
+   <mm:treeinclude page="/education/pages/content.jsp" objectlist="$includePath" referids="$referids">
+        <mm:param name="learnobject"><mm:field name="number"/></mm:param>
+    </mm:treeinclude>
 
-   <mm:field id="intro" name="intro" write="false"/>
-   <mm:write referid="intro" escape="none"/>
 
 
    <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath" referids="$referids">

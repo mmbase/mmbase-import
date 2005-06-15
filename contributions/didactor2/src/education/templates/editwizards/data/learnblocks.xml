@@ -26,6 +26,10 @@
               <relation destination="urls" role="posrel" />
            </object>
         </relation>
+        <relation destination="audiotapes" role="posrel" />
+        <relation destination="videotapes" role="posrel" />
+        <relation destination="attachments" role="posrel" />
+        <relation destination="urls" role="posrel" />
     </action>
 
     <action type="delete" />
@@ -81,6 +85,11 @@
         </field>
 
        <list role="sizerel" extends="list/sizedimages.xml" /> 
+        <list role="posrel" extends="list/attachments-posrel.xml" />
+        <list role="posrel" extends="list/audiotapes-posrel.xml" />
+        <list role="posrel" extends="list/videotapes-posrel.xml" />
+
+        <list destination="urls" role="posrel" extends="list/urls-posrel.xml" />
  
 
         <!--
