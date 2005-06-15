@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.36 2005-06-07 15:40:33 michiel Exp $
+ * @version $Id: XmlField.java,v 1.37 2005-06-15 14:47:44 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -64,6 +64,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
 
 
+    private static boolean isListChar(char c) {
+        return c == '-' || c == '*';
+    }
+    private static String listTag(char c) {
+        return c == '-' ? "ul" : "ol";
+    }
     /**
      * Takes a string object, finds list structures and changes those to XML
      */
@@ -71,18 +77,26 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private static void handleList(StringObject obj) {
         // handle lists
         // make <ul> possible (not yet nested), with -'s on the first char of line.
-        int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy
+        int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy // or even a Stack !
         int pos = 0;
         if (obj.length() < 3) {
             return;
         }
-        if (obj.charAt(0) == '-' && obj.charAt(1) != '-') { // hoo, we even _start_ with a list;
+        char listChar = '-';
+        if (isListChar(obj.charAt(0)) && !isListChar(obj.charAt(1))) { // hoo, we even _start_ with a list;
             obj.insert(0, "\n"); // in the loop \n- is deleted, so it must be there.
+            listChar = obj.charAt(0);
         } else {
             while (true) {
-                pos = obj.indexOf("\n-", pos); // search the first
+                int pos1 = obj.indexOf("\n-", pos); // search the first
+                int pos2 = obj.indexOf("\n*", pos); // search the first
+                
+                pos = (pos1 > 0 && pos1 < pos2) || pos2 < 0 ? pos1 : pos2;
                 if (pos == -1 || obj.length() <= pos + 2) break;
-                if (obj.charAt(pos + 2) != '-') break;
+                if (! isListChar(obj.charAt(pos + 2))) {
+                    listChar = obj.charAt(pos + 1);
+                    break;
+                }
                 pos += 2;
             }
         }
@@ -95,13 +109,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 while (pos < obj.length() && obj.charAt(pos) == ' ') {
                     obj.delete(pos, 1);
                 }
-                obj.insert(pos, "\r<ul>\r<li>"); // insert 10 chars.
+                obj.insert(pos, "\r<" + listTag(listChar) + ">\r<li>"); // insert 10 chars.
                 pos += 10;
 
             } else { // already in list
-                if (obj.charAt(pos + 1) != '-') { // end of list
+                if (obj.charAt(pos + 1) != listChar) { // end of list
                     obj.delete(pos, 1); // delete \n
-                    obj.insert(pos, "</li>\r</ul>\n");
+                    obj.insert(pos, "</li>\r</" + listTag(listChar) + ">\n");
                     pos += 12;
                     inList--;
                 } else { // not yet end
@@ -129,18 +143,24 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                         break listwhile; // nothing to do...
                     }
                 }
-            } else { // search for next list
+            } else { // search for next item
                 while (true) {
-                    pos = obj.indexOf("\n-", pos);
+                    int pos1 = obj.indexOf("\n-", pos); 
+                    int pos2 = obj.indexOf("\n*", pos); 
+                    
+                    pos = (pos1 > 0 && pos1 < pos2) || pos2 < 0 ? pos1 : pos2;
                     if (pos == -1 || obj.length() <= pos + 2) break;
-                    if (obj.charAt(pos + 2) != '-') break; // should not start with two -'s, because this is some seperation line
+                    if (! isListChar(obj.charAt(pos + 2))) {
+                        listChar = obj.charAt(pos + 1);
+                        break; // should not start with two -'s, because this is some seperation line
+                    }
                     pos += 2;
                 }
             }
         }
         // make sure that the list is closed:
         while (inList > 0) { // lists in lists not already supported, but if we will...
-            obj.insert(obj.length(), "</li></ul>\n");
+            obj.insert(obj.length(), "</li></" + listTag(listChar) + "l>\n");
             inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
         }
 
@@ -318,20 +338,35 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         while (obj.length() > 0 && obj.charAt(0) == '\n') {
             obj.delete(0, 1); // delete starting newlines
         }
+        int pos = 0;
         if (surroundingP) {
             obj.insert(0, "<p>");
+            pos += 4;
         }
-        int pos = obj.indexOf("\n\n", 3); // one or more empty lines.
-        while (pos != -1) {
+        while (true) {
+            // one or more empty lines.
+            pos = obj.indexOf("\n", pos + 1); 
+            if (pos == -1) break;
+
+            int skip = 1;
+            int l = obj.length();
+            while(pos + skip < l && Character.isWhitespace(obj.charAt(pos + skip))) {
+                if (obj.charAt(pos + skip ) == '\n') {
+                    break; 
+                }
+                skip++;
+            }
+            if (pos + skip >= l) break;
+            if (obj.charAt(pos + skip) != '\n') continue; // need at least 2!
             // delete the 2 new lines of the p.
-            obj.delete(pos, 2);
+            obj.delete(pos, skip + 1);
 
             if (leaveExtraNewLines) {
-                while (obj.length() > pos && obj.charAt(pos) == '\n') {
+                while (obj.length() > pos && Character.isWhitespace(obj.charAt(pos))) {
                     pos++;
                 }
             } else {
-                while (obj.length() > pos && obj.charAt(pos) == '\n') {
+                while (obj.length() > pos && Character.isWhitespace(obj.charAt(pos))) {
                     obj.delete(pos, 1); // delete the extra new lines too
                 }
             }
@@ -345,7 +380,6 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             obj.insert(pos, "\r<p>");
             pos += 4;
             inParagraph = true;
-            pos = obj.indexOf("\n\n", pos); // search end of next paragraph
         }
         if (inParagraph) { // in current impl. this is always true
 
@@ -362,8 +396,26 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
     }
 
-    /**
+    /**       
      * Wikipedia syntax for tables. (simplified)
+     * <pre>
+     * {|
+     * | a || b || c
+     * |-
+     * | d || e || f
+     * |}
+     * </pre>
+     * or e.g.
+     * <pre>
+     * {|-
+     * |+ caption
+     * ! A !! B !! C
+     * |-
+     * | d
+     * | e
+     * | f
+     * |}
+     * </pre>
      *@since MMBase 1.8
      */
     private static void handleTables(StringObject obj) {        
@@ -371,18 +423,37 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         int pos = 0;
         while (pos != -1) {
             // always at beginning of line when here.
+            int l = obj.length();
+            if (pos + 2 < l && ( obj.charAt(pos) == '{' && obj.charAt(pos + 1) == '|')) {
+                int skip = 2;
+                // allow for starting with {|- as well
+                if (pos + skip < l && obj.charAt(pos + skip) == '-') skip++;
+                // allow some trailing whitespace
+                while(pos + skip < l && Character.isWhitespace(obj.charAt(pos + skip))) {
+                    if (obj.charAt(pos + skip ) == '\n') {
+                        break; 
+                    }
+                    skip++;
+                }
+                if (pos + skip >= l) break;                
+                if (obj.charAt(pos + skip) != '\n') {
+                    pos = obj.indexOf("\n", pos + skip);
+                    continue;
+                }
+                skip ++;
+                log.debug("ok, this is a table!");
+                // don't use l onwards, length of obj will change
 
-            if (pos + 3 < obj.length() && ( obj.charAt(pos) == '{' && obj.charAt(pos + 1) == '|' && obj.charAt(pos + 2) == '\n')) {
-                if (pos > 0 && obj.charAt(pos -1) == '\n') {
-                    obj.delete(pos -1, 1);
+                if (pos > 0 && obj.charAt(pos - 1) == '\n') {
+                    obj.delete(pos - 1, 1);
                     pos --;
                 }
-                if (pos > 0 && obj.charAt(pos -1) == '\n') {
-                    obj.delete(pos -1, 1);
+                if (pos > 0 && obj.charAt(pos - 1) == '\n') {
+                    obj.delete(pos - 1, 1);
                     pos --;
                 }
                 tables ++;
-                obj.delete(pos, 3);
+                obj.delete(pos, skip);
                 obj.insert(pos, "</p><table>");
                 pos += 11;
                 if (obj.charAt(pos) == '|' && obj.charAt(pos + 1) == '+') {
@@ -416,7 +487,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                             obj.insert(pos, "<p>");
                             pos +=3;
                         }
-                        if (pos < obj.length() && obj.charAt(pos) == '\n') obj.delete(pos, 1);
+                        while (pos < obj.length() && obj.charAt(pos) == '\n') obj.delete(pos, 1);
                     } else if (pos + 3 < obj.length() && (obj.charAt(pos) == '\n' && obj.charAt(pos + 1) == '{' && obj.charAt(pos + 2) == '|')) {
                         obj.delete(pos, 3);
                         obj.insert(pos, "<td><table><tr>");
@@ -465,6 +536,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             tables--;
             if (tables == 0) {
                 obj.insert(pos, "<p>");
+                pos += 3;
+                while (pos < obj.length() && obj.charAt(pos) == '\n') obj.delete(pos, 1);
             }
         }
      
