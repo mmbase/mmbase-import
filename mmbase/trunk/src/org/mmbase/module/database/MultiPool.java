@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.54 2004-10-07 17:22:35 pierre Exp $
+ * @version $Id: MultiPool.java,v 1.55 2005-06-15 15:19:47 michiel Exp $
  */
 public class MultiPool {
 
@@ -195,6 +195,7 @@ public class MultiPool {
      * @since MMBase-1.6.2
      */
     public void shutdown() {
+        log.info("Shutting down multipool " + this);
         if (semaphore == null) return; // nothing to shut down
         synchronized (semaphore) {
             try {
@@ -212,6 +213,8 @@ public class MultiPool {
                 log.error(e);
             } finally {
                 conMax = busyPool.size() + pool.size(); // should be 0 now
+                log.info("Having " + conMax + " connections now.");
+                if (conMax != 0) log.error("Still having connections!");
             }
         }
     }
