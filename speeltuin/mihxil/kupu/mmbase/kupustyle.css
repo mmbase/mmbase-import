@@ -1,0 +1,65 @@
+body { 
+  background-color: white;
+  font-size: 12pt;
+}
+h1,h2,h3,h4,h5,h6,h7,h8,th { 
+  font-style: bold;
+  color: #004;
+}
+h1 { 
+  font-size: 15pt;
+}
+h2 { 
+  padding-left: 1em;
+  font-size: 14pt;
+}
+h3 { 
+  padding-left: 2em;
+  font-size: 13pt;
+}
+h4 { 
+  padding-left: 3em;
+  font-size: 12pt;
+}
+
+h5, h6, h7, h8 { 
+  font-style: italic;
+  font-size: 12pt;
+}
+h5 { 
+  padding-left: 4em;
+}
+h6 { 
+  padding-left: 5em;
+}
+h7 { 
+  padding-left: 6em;
+}
+h8 { 
+  padding-left: 7em;
+}
+
+p {
+}
+
+table { 
+  border: 1px black solid;
+  border-spacing: 0px;
+  empty-cels: show;
+  border-collapse: collapse;
+}
+
+td { 
+  border: 1px black solid;
+}
+th { 
+  border: 1px black solid;
+}
+
+img.image-right { 
+  float: right;
+}
+
+img.image-left { 
+  float: left;
+}
