@@ -40,6 +40,10 @@
         </relation>
     </action>
 
+    <lists>
+       <optionlist include="paragraphs/boolean.xml" />
+    </lists>
+
     <steps>
         <step form-schema="step1" />
         <!-- step form-schema="step2" / -->
@@ -59,6 +63,11 @@
         <field name="name" >
             <prompt>Naam van de link</prompt>
             <description>Voer hier een naam in voor deze link of wijzig een bestaande. De naam wordt gebruikt om een link af te beelden.</description>
+        </field>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean"></optionlist>
         </field>
 
         <field name="description" ftype="text" rows="4" >
