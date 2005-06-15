@@ -25,8 +25,8 @@
             }
             node.setStringValue("body", received.toString());
             node.commit();
+            log.info("Saved " + received.toString());
             </jsp:scriptlet>
-            <mm:log><jsp:expression>received</jsp:expression></mm:log>
             <p>
               Received:
           </p>
@@ -62,6 +62,7 @@
                     line = r.readLine();                                                                                     
                 }                                                                                                            
                 node.commit();
+                log.info("Commited");
             </jsp:scriptlet>
           </mm:compare>
         </mm:node>

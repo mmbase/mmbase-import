@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mmbase 18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-09 00:28+0200\n"
+"POT-Creation-Date: 2005-06-10 11:49+0200\n"
 "PO-Revision-Date: 2005-06-09 00:30+0200\n"
 "Last-Translator: Michiel Meeuwissen <mihxil@xs4all.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -16,18 +16,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mmbase.js:107
+#: mmbase2.js:107
+#, fuzzy
+msgid "aaSaving body (kupu)"
+msgstr "Schrijft tekst weg (kupu)"
+
+#: mmbase2.js:114
+#, fuzzy
+msgid "bbSaving fields (form)"
+msgstr "Schrijft velden weg (formulier)"
+
+#: mmbase2.js:127
+#, fuzzy
+msgid "ccsaved"
+msgstr "opgeslagen"
+
+#: mmbase2.js:147
+#, fuzzy
+msgid "ddLoading node"
+msgstr "Haalt node op"
+
+#: mmbase.js:118
 msgid "Saving body (kupu)"
 msgstr "Schrijft tekst weg (kupu)"
 
-#: mmbase.js:114
+#: mmbase.js:125
 msgid "Saving fields (form)"
 msgstr "Schrijft velden weg (formulier)"
 
-#: mmbase.js:127
+#: mmbase.js:138
 msgid "saved"
 msgstr "opgeslagen"
 
-#: mmbase.js:147
+#: mmbase.js:158
 msgid "Loading node"
 msgstr "Haalt node op"

@@ -8,7 +8,7 @@
 <mm:locale language="$rich_language">
 <mm:cloud rank="basic user" >
   <fmt:bundle basename="org.mmbase.jspeditors.editors">
-  <jsp:output omit-xml-declaration="true" />
+    <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" />
   <mm:import externid="loadonly" />
   <mm:notpresent referid="node">
@@ -22,7 +22,17 @@
     <mm:node id="node" referid="node">
       <div class="node" title="${node.number} ${node.title}">
         <mm:notpresent referid="loadonly">
-          <p>node # <mm:field name="number" /></p>
+          <table>
+            <tr>
+              <th># <mm:field name="number" />></th>
+              <th><mm:function name="index" />></th>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <mm:field name="lastmodifiedby" />&amp;nbsp; <mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field>
+              </td>
+            </tr>
+          </table>
           <a class="create" title="New" href="javascript: createSubNode(${node});">
             <mm:link page="/mmbase/style/images/create.gif">
               <img src="${_}" alt="+" title="Creëer subhoofstuk" />
