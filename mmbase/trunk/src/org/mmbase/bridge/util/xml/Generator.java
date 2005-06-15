@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.30 2005-06-14 20:13:42 michiel Exp $
+ * @version $Id: Generator.java,v 1.31 2005-06-15 15:20:59 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -59,6 +59,10 @@ public class Generator {
 
     public Generator(DocumentBuilder documentBuilder) {
         this(documentBuilder, null);
+    }
+
+    public Generator(Document doc) {
+        document = doc;
     }
 
     /**
@@ -161,7 +165,7 @@ public class Generator {
      * @param node An MMbase bridge Node.
      * @param fieldDefinition An MMBase bridge Field.
      */
-    public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
+    public Element add(org.mmbase.bridge.Node node, Field fieldDefinition) {
         getDocument();
         if (cloud == null) {
             cloud = node.getCloud();
@@ -179,7 +183,7 @@ public class Generator {
         if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));
         // when it is filled (allready), we can return
         if (field.getTagName().equals("field")) {
-            return;
+            return field;
         }
 
         // was not filled, so fill it... first remove the unfilled
@@ -214,6 +218,7 @@ public class Generator {
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
         }
         // or do we need more?
+        return field;
     }
 
     /**
