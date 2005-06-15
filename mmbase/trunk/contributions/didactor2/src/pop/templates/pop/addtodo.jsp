@@ -31,23 +31,23 @@
     <input type="hidden" name="myfeedback2" value="<mm:write referid="myfeedback2"/>">
     <table class="font" width="90%">
       <tr>
-        <td width="80">Taak</td>
+        <td width="80"><fmt:message key="TodoTask"/></td>
         <td><input name="todoname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="todoname"/>"></td>
       </tr>
       <tr>
-        <td>Beschrijving</td>
+        <td><fmt:message key="TodoDescription"/></td>
         <td><textarea name="tododesc" class="popFormInput" cols="50" rows="5"><mm:write referid="tododesc"/></textarea></td>
       </tr>
       <tr>
-        <td>Verwachte duur</td>
+        <td><fmt:message key="TodoDuration"/></td>
         <td>
           <input name="durationvalue" class="popDurationFormInput" type="text" size="15" maxlength="15" value="<mm:write referid="durationvalue"/>">
           <select name="durationmeasure" class="popDurationFormSelect">
-            <option value="1"<mm:compare referid="durationmeasure" value="1"> selected</mm:compare>>uur</option>
-            <option value="2"<mm:compare referid="durationmeasure" value="2"> selected</mm:compare>>dag</option>
-            <option value="3"<mm:compare referid="durationmeasure" value="3"> selected</mm:compare>>week</option>
-            <option value="4"<mm:compare referid="durationmeasure" value="4"> selected</mm:compare>>maand</option>
-            <option value="5"<mm:compare referid="durationmeasure" value="5"> selected</mm:compare>>jaar</option>
+            <option value="1"<mm:compare referid="durationmeasure" value="1"> selected</mm:compare>><fmt:message key="TodoHour"/></option>
+            <option value="2"<mm:compare referid="durationmeasure" value="2"> selected</mm:compare>><fmt:message key="TodoDay"/></option>
+            <option value="3"<mm:compare referid="durationmeasure" value="3"> selected</mm:compare>><fmt:message key="TodoWeek"/></option>
+            <option value="4"<mm:compare referid="durationmeasure" value="4"> selected</mm:compare>><fmt:message key="TodoMonth"/></option>
+            <option value="5"<mm:compare referid="durationmeasure" value="5"> selected</mm:compare>><fmt:message key="TodoYear"/></option>
           </select>
         </td>
       </tr>
@@ -74,11 +74,11 @@
       </mm:compare>
     </table>
     <mm:compare referid="todonumber" value="-1">
-      <input type="submit" class="formbutton" value="aanmaken">
+      <input type="submit" class="formbutton" value="<fmt:message key="MakeButton"/>">
     </mm:compare>
     <mm:compare referid="todonumber" value="-1" inverse="true">
-      <input type="submit" class="formbutton" value="opslaan">
+      <input type="submit" class="formbutton" value="<fmt:message key="SaveButton"/>">
     </mm:compare>
-    <input type="submit" class="formbutton" value="terug" onClick="newtodoform.command.value='continue'">
+    <input type="submit" class="formbutton" value="<fmt:message key="BackButtonLC"/>" onClick="newtodoform.command.value='continue'">
   </form>
 </div>

@@ -11,7 +11,7 @@
     <input type="hidden" name="addnode" value="-1">
     <table width="80%" border="0" class="popGreyTableHeader">
       <tr>
-        <td colspan="3">Competentie: <mm:node number="$currentcomp"><mm:field name="name"/></mm:node></td>
+        <td colspan="3"><fmt:message key="Competence"/>: <mm:node number="$currentcomp"><mm:field name="name"/></mm:node></td>
       </tr>
     </table>
 
@@ -19,17 +19,17 @@
     <mm:list nodes="$student" path="people,portfolios,folders,attachments" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
-        Voeg documenten uit je ontwikkelingsgericht portfolio toe<br/>
+        <fmt:message key="PortfolioAddDoc"/><br/>
         <select name="docnumber" class="popcompformselect">
       </mm:first>
         <option value="<mm:field name="attachments.number"/>"><mm:field name="folders.name"/> > <mm:field name="attachments.title"/></option>
       <mm:last>
         </select>
-        <input type="submit" class="formbutton" value="Voeg toe" onClick="newdocform.addnode.value=newdocform.docnumber.value">
+        <input type="submit" class="formbutton" value="<fmt:message key="AddButton"/>" onClick="newdocform.addnode.value=newdocform.docnumber.value">
       </mm:last>
     </mm:list>
     <mm:notpresent referid="listnotempty">
-      Je ontwikkelingsgericht portfolio bevat geen documenten.<br/>
+      <fmt:message key="PortfolioNotContainDoc"/><br/>
     </mm:notpresent>
     <br/>
     <br/>
@@ -37,17 +37,17 @@
     <mm:list nodes="$student" path="people,portfolios,folders" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
-        Voeg mappen uit je ontwikkelingsgericht portfolio toe<br/>
+        <fmt:message key="PortfolioAddFolder"/><br/>
         <select name="foldernumber" class="popcompformselect">
       </mm:first>
         <option value="<mm:field name="folders.number"/>"><mm:field name="folders.name"/></option>
       <mm:last>
         </select>
-        <input type="submit" class="formbutton" value="Voeg toe" onClick="newdocform.addnode.value=newdocform.foldernumber.value">
+        <input type="submit" class="formbutton" value="<fmt:message key="AddButton"/>" onClick="newdocform.addnode.value=newdocform.foldernumber.value">
       </mm:last>
     </mm:list>
     <mm:notpresent referid="listnotempty">
-      Je ontwikkelingsgericht portfolio bevat geen mappen.<br/>
+      <fmt:message key="PortfolioNotContainFolder"/><br/>
     </mm:notpresent>
     <br/>
     <br/>
@@ -55,17 +55,17 @@
     <mm:list nodes="$student" path="people,portfolios,folders,urls" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
-        Voeg url uit je ontwikkelingsgericht portfolio toe<br/>
+        <fmt:message key="PortfolioAddUrl"/><br/>
         <select name="urlnumber" class="popcompformselect">
       </mm:first>
         <option value="<mm:field name="urls.number"/>"><mm:field name="folders.name"/> > <mm:field name="urls.name"/></option>
       <mm:last>
         </select>
-        <input type="submit" class="formbutton" value="Voeg toe" onClick="newdocform.addnode.value=newdocform.urlnumber.value">
+        <input type="submit" class="formbutton" value="<fmt:message key="AddButton"/>" onClick="newdocform.addnode.value=newdocform.urlnumber.value">
       </mm:last>
     </mm:list>
     <mm:notpresent referid="listnotempty">
-      Je ontwikkelingsgericht portfolio bevat geen urls.<br/>
+      <fmt:message key="PortfolioNotContainUrl"/><br/>
     </mm:notpresent>
     <br/>
     <br/>
@@ -73,17 +73,17 @@
     <mm:list nodes="$student" path="people,portfolios,folders,pages" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
-        Voeg page uit je ontwikkelingsgericht portfolio toe<br/>
+        <fmt:message key="PortfolioAddPage"/><br/>
         <select name="pagenumber" class="popcompformselect">
       </mm:first>
         <option value="<mm:field name="pages.number"/>"><mm:field name="folders.name"/> > <mm:field name="pages.name"/></option>
       <mm:last>
         </select>
-        <input type="submit" class="formbutton" value="Voeg toe" onClick="newdocform.addnode.value=newdocform.pagenumber.value">
+        <input type="submit" class="formbutton" value="<fmt:message key="AddButton"/>" onClick="newdocform.addnode.value=newdocform.pagenumber.value">
       </mm:last>
     </mm:list>
     <mm:notpresent referid="listnotempty">
-      Je ontwikkelingsgericht portfolio bevat geen pages.<br/>
+      <fmt:message key="PortfolioNotContainPage"/><br/>
     </mm:notpresent>
     <br/>
     <br/>
@@ -91,20 +91,20 @@
     <mm:list nodes="$student" path="people,portfolios,folders,chatlogs" constraints="portfolios.type='0'">
       <mm:first>
         <mm:import id="listnotempty">1</mm:import>
-        Voeg chatlog uit je ontwikkelingsgericht portfolio toe<br/>
+        <fmt:message key="PortfolioAddChatlog"/><br/>
         <select name="chatlognumber" class="popcompformselect">
       </mm:first>
         <option value="<mm:field name="chatlogs.number"/>"><mm:field name="folders.name"/> > <mm:field name="chatlogs.date"/></option>
       <mm:last>
         </select>
-        <input type="submit" class="formbutton" value="Voeg toe" onClick="newdocform.addnode.value=newdocform.chatlognumber.value">
+        <input type="submit" class="formbutton" value="<fmt:message key="AddButton"/>" onClick="newdocform.addnode.value=newdocform.chatlognumber.value">
       </mm:last>
     </mm:list>
     <mm:notpresent referid="listnotempty">
-      Je ontwikkelingsgericht portfolio bevat geen chatlogs.<br/>
+      <fmt:message key="PortfolioNotContainChatlog"/><br/>
     </mm:notpresent>
     <br/>
     <br/>
-    <input type="submit" class="formbutton" value="terug" onClick="newdocform.command.value='continue'">
+    <input type="submit" class="formbutton" value="<fmt:message key="BackButtonLC"/>" onClick="newdocform.command.value='continue'">
   </form>
 </div>

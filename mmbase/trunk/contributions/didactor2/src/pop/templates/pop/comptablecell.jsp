@@ -24,8 +24,8 @@
               <% } %>
               <% int sumOfRatings = 0;
                  int ratingsNum = 0; 
-                 String sRating = "";
               %>
+              <mm:import id="thisrating" reset="true"></mm:import>
               <mm:list nodes="$currentpop" path="pop,popfeedback,people"
                   constraints="NOT people.number='$student'">
                 <mm:field name="popfeedback.number" jspvar="thisFeedback" vartype="String">
@@ -49,17 +49,17 @@
                   <mm:related path="posrel,ratings">
                     <mm:field name="ratings.pos" jspvar="dummy" vartype="String">
                       <% int compRating = (new Integer(dummy)).intValue();
-                         if (averageRating < compRating) {
-                           sRating = "Goed (+)";
-                         } else {
-                           sRating = "Voldoende (-)";
-                         }
+                         if (averageRating < compRating) { %>
+                           <mm:import id="thisrating" reset="true"><fmt:message key="CompTableGoodRating"/></mm:import>
+                         <% } else { %>
+                           <mm:import id="thisrating" reset="true"><fmt:message key="CompTableNotGoodRating"/></mm:import>
+                         <% }
                       %>
                     </mm:field>
                   </mm:related>
                 </mm:node>
               </mm:list>
-              <td class="listItem"><%= sRating %></td>
+              <td class="listItem"><mm:write referid="thisrating"/></td>
               <% } %>
               <td class="listItem">
                 <mm:list nodes="<%= thisCompetencie %>" path="competencies,todoitems,pop" 

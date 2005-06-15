@@ -8,7 +8,24 @@
 <%@ include file="getids.jsp" %>
 <% boolean isEmpty = true; %>
 <mm:import externid="msg">-1</mm:import>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
+<%= bundlePOP %>
 <div class="contentBody">
   <%@ include file="getmyfeedback.jsp" %>
     <mm:compare referid="msg" value="-1" inverse="true">
@@ -24,23 +41,23 @@
     <input type="hidden" name="returnto" value="editcomp">
     <input type="hidden" name="todonumber" value="-1">
       <tr style="vertical-align:top;">
-        <td width="100" style="vertical-align:top;">Competentie</td>
+        <td width="100" style="vertical-align:top;"><fmt:message key="Competence"/></td>
         <td><b><mm:field name="name"/></b></td>
       </tr>
       <tr style="vertical-align:top;">
-        <td nowrap>Aan gewerkt<br/>door middel van</td>
+        <td nowrap><fmt:message key="CompEditFeedback1"/></td>
         <td><input name="myfeedback1" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="myfeedback1"/>"></td>
       </tr>
       <tr style="vertical-align:top;">
-        <td>Zelfbeoordeling</td>
+        <td><fmt:message key="CompEditFeedback2"/></td>
         <td><textarea name="myfeedback2" class="popFormInput" cols="50" rows="5"><mm:write referid="myfeedback2"/></textarea></td>
       </tr>
   </table>
   <table class="font" width="80%">
     <tr>
       <td>
-        <input type="button" class="formbutton" onClick="editcompform.submit()" value="opslaan">
-        <input type="button" class="formbutton" onClick="editcompform.command.value='no';editcompform.submit()" value="terug">
+        <input type="button" class="formbutton" onClick="editcompform.submit()" value="<fmt:message key="SaveButton"/>">
+        <input type="button" class="formbutton" onClick="editcompform.command.value='no';editcompform.submit()" value="<fmt:message key="BackButtonLC"/>">
       </td>
 
     </tr>
@@ -48,7 +65,7 @@
 <br/>
   <table width="80%" border="0" class="popGreyTableHeader">
     <tr>
-      <td colspan="3">Persoonlijke taken</td>
+      <td colspan="3"><fmt:message key="TodoItems"/></td>
     </tr>
   </table>
           <mm:list nodes="$currentpop" path="pop,todoitems,competencies" orderby="todoitems.number" directions="UP"
@@ -61,26 +78,26 @@
           <br/>
           <a href="#1" onclick="editcompform.command.value='addtodo';editcompform.submit();return false;"
             ><img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="Maak een nieuwe persoonlijke taak aan"/></a>
-          <a href="#1" onclick="if (!window.confirm('Weet u zeker dat u de geselecteerde persoonlijke taken wilt verwijderen?'))
+                border="0" alt="<fmt:message key="CompEditMakeNewTodo"/>"/></a>
+          <a href="#1" onclick="if (!window.confirm('<fmt:message key="AreYouSureDelTodo"/>'))
                 return false;editcompform.command.value='deltodo';editcompform.submit();return false;">
             <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="Verwijder de geselecteerde persoonlijke taken"/></a>
+                border="0" alt="<fmt:message key="CompEditRemoveSelectedTodo"/>"/></a>
 <br/>
 <br/>
     <mm:relatedcontainer path="popfeedback,pop">
       <mm:constraint field="pop.number" referid="currentpop" operator="EQUAL"/>
       <table width="80%" border="0" class="popSpecialTableHeader">
         <tr>
-          <td colspan="3">Beoordelingen</td>
+          <td colspan="3"><fmt:message key="CompEditGrades"/></td>
         </tr>
       </table>
       <div><table class="poplistTable">
         <tr>
-          <th class="listHeader">Door</th>
-          <th class="listHeader">Aan samengewerkt door middel van</th>
-          <th class="listHeader">Score</th>
-          <th class="listHeader">Beoordeling</th>
+          <th class="listHeader"><fmt:message key="CompEditBy"/></th>
+          <th class="listHeader"><fmt:message key="CompEditWorkTogetherEtc"/></th>
+          <th class="listHeader"><fmt:message key="Score"/></th>
+          <th class="listHeader"><fmt:message key="CompEditGrade"/></th>
         </tr>
         <mm:related>
           <mm:node element="popfeedback">
@@ -100,7 +117,7 @@
                         </td>
                         <td class="listItem"><mm:field name="text"/></td>
                       <% } else { %>
-                        <td class="listItem"><i>niet geantwoord</i></td>
+                        <td class="listItem"><i><fmt:message key="NotAnswered"/></i></td>
                         <td class="listItem">&nbsp;</td>
                         <td class="listItem">&nbsp;</td>
                       <% } %>
@@ -115,11 +132,11 @@
     </mm:relatedcontainer>
         <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
           <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$popreferids"/>"
-            border="0" alt="Nodig een collega uit om een feedback te geven op deze competentie"/></a>
+            border="0" alt="<fmt:message key="CompEditInviteColleague"/>"/></a>
     <br/><br/><br/>
     <table width="80%" border="0" class="popGreyTableHeader">
       <tr>
-        <td colspan="3"><fmt:message key="PORTFOLIO" /></td>
+        <td colspan="3"><fmt:message key="Portfolio" /></td>
       </tr>
     </table>
     <mm:compare referid="thisfeedback" value="-1" inverse="true">
@@ -177,13 +194,13 @@
         </mm:relatednodes>
       </mm:node>
       <br/>
-      <a href="#1" onclick="if (!window.confirm('Weet u zeker dat u de geselecteerde documenten wilt verwijderen?'))
+      <a href="#1" onclick="if (!window.confirm('<fmt:message key="AreYouSureDelDoc"/>'))
           return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
         <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-          border="0" alt="Verwijder de geselecteerde documenten"/></a>
+          border="0" alt="<fmt:message key="CompEditRemoveSelectedDoc"/>"/></a>
       <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
         <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
-          border="0" alt="Voeg een document uit je ontwikkelingsgericht portfolio toe"/></a>
+          border="0" alt="<fmt:message key="PortfolioAddDoc"/>"/></a>
     </mm:compare>
   </form>
   </mm:node>

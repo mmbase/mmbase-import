@@ -42,22 +42,23 @@
 <%-- some sending email code--%>
 <mm:import id="ratingmsg"></mm:import>
 <mm:node number="rating" notfound="skip">
-  <mm:import id="ratingmsg" reset="true">Volgens hem/haar score je: <mm:field name="name"/><br/></mm:import>
+  <mm:import id="ratingmsg" reset="true"><fmt:message key="SendFeedbackPart6"/> <mm:field name="name"/><br/></mm:import>
 </mm:node>
 
-<mm:import id="subject">TODO NB</mm:import>
+<mm:import id="subject"><fmt:message key="SendFeedbackSubject"/></mm:import>
 <mm:import id="body"><HTML>
-Beste <b><mm:write referid="userfname"/>,<br/>
+<fmt:message key="SendFeedbackPart1"/> <b><mm:write referid="userfname"/>,<br/>
 <br/>
-Je hebt de volgende beoordeling over <b><mm:write referid="compname"/></b> van <b><mm:write referid="inviteefname"/></b> ontvangen:
+<fmt:message key="SendFeedbackPart2"/> <b><mm:write referid="compname"/></b> <fmt:message key="SendFeedbackPart3"/> <b><mm:write referid="inviteefname"/></b> 
+<fmt:message key="SendFeedbackPart4"/>
 <br/>
-Samengewerkt door middel van: "<%= feedback1.replaceAll("\\n", "<br/>") %>"<br/>
+<fmt:message key="SendFeedbackPart5"/> "<%= feedback1.replaceAll("\\n", "<br/>") %>"<br/>
 <%= feedback2.replaceAll("\\n", "<br/>") %><br/>
 <br/>
 <mm:write referid="ratingmsg"/>
 </HTML></mm:import>
 <%@include file="sendmail.jsp" %>
 
-<p>Je beoordeling over <b><mm:write referid="compname"/></b> is verstuurd <b><mm:write referid="userfname"/></b>.</p>
+<p><fmt:message key="MsgSendFeedbackDonePart1"/> <b><mm:write referid="compname"/></b> <fmt:message key="MsgSendFeedbackDonePart2"/> <b><mm:write referid="userfname"/></b><fmt:message key="MsgSendFeedbackDonePart3"/></p>
 
 <% } %>

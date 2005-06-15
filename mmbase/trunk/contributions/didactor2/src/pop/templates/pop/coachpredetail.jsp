@@ -13,7 +13,23 @@
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
 
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
 
 <% String classrels = ""; %>
 
@@ -50,8 +66,14 @@
       <tr>
         <th></th>
         <mm:node number="progresstextbackground">
-        <th><img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Score')+rotate(90)"/>"></th>
-        <th><img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'As opposed to average')+rotate(90)"/>"></th>
+          <th>
+            <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="TestResultScore"/>')+rotate(90)</mm:import>
+            <img src="<mm:image template="$template"/>">
+          </th>
+          <th>
+            <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="TestResultAsAverage"/>')+rotate(90)</mm:import>
+            <img src="<mm:image template="$template"/>">
+          </th>
         </mm:node>
         <% Iterator questionIterator = questions.iterator();
            while (questionIterator.hasNext()) {

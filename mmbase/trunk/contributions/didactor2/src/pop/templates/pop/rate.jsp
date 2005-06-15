@@ -25,7 +25,23 @@
 
 <mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
 
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$popreferids">
   <mm:param name="extraheader">
@@ -47,7 +63,7 @@
 
 <%-- right section --%>
 <div class="mainContent"> 
-<div class="contentHeader">Voortgangsmonitor
+<div class="contentHeader"><fmt:message key="Progressmonitor"/>
   <di:hasrole referid="user" role="teacher">
     <mm:node number="$student">
       : <mm:field name="firstname"/> <mm:field name="lastname"/>
@@ -304,7 +320,7 @@
 
        </mm:treeinclude>
 
-       <input type="button" class="formbutton" value="<di:translate id="buttontextnext">Volgende</di:translate>" 
+       <input type="button" class="formbutton" value="<fmt:message key="LaterButton"/>" 
 	     onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
              <mm:param name="command">intake</mm:param>
            </mm:treeinclude>'"> 

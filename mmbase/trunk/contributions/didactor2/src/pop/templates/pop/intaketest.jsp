@@ -13,7 +13,23 @@
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
 
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+   <%
+
+      String bundlePOP = null;
+
+   %>
+
+   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
+
+      <%
+
+         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
+
+      %>
+
+   </mm:write>
+
+<fmt:bundle basename="<%= bundlePOP %>">
   <div class="contentBody">
 
   <%
@@ -73,27 +89,22 @@
 
 <mm:compare referid="gatekeeper" value="0">
   <%-- "you failed the test for this education and are not allowed to continue, please contact your teacher / coach for advice" --%>
-  <p>Je hebt de intake-toets voor deze opleiding niet gehaald en kunt daarom niet aan de opleiding beginnen. 
-     Neem contact op met je coach of docent voor advies.</p>
+  <p><fmt:message key="IntakeMsgYouFailedTest"/></p>
 <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>'" value="terug">
 </mm:compare>
 <mm:compare referid="gatekeeper" value="0" inverse="true">
   <mm:compare referid="incompletetestNo" value="-1" inverse="true">
-    <%-- "you now start with test for this education" --%>
-    <p>Om met deze opleiding te beginnen moet je de volgende intake-toets doen.</p>
+    <p><fmt:message key="IntakeMsgYouNowStartWithIntake"/></p>
     <mm:treeinclude page="/pop/buildtest.jsp" objectlist="$includePath" referids="$popreferids">
       <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
     </mm:treeinclude> 
   </mm:compare>
   <mm:compare referid="incompletetestNo" value="-1">
-    <%-- "you passed the test for this education and will now continue with the preassesment for the competencies developed 
-         in this education" --%>
     <%@ include file="getprogress.jsp" %>
     
     <% if (!notpassedIntakes.equals("")) { %>
 
-    <p>Je hebt de intake-toets voor deze opleiding gehaald. Je gaat nu door met de preassesment om te bepalen welke competenties je nog moet
-       ontwikkelen binnen deze opleiding.</p>
+    <p><fmt:message key="IntakeMsgYouPassedAndContinue"/></p>
 
     <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 
@@ -133,9 +144,9 @@
     </form>
 
     <% } else { %>
-      <p>Je bent klaar met de preassesment voor deze opleiding en kunt nu aan de opleiding beginnen</p>
+      <p><fmt:message key="IntakeMsgYouReady"/></p>
       <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
-          </mm:treefile>'" value="start" title="Begin met deze cursus">
+          </mm:treefile>'" value="start" title="<fmt:message key="BeginCourseButton"/>">
     <% } %>
 
   </mm:compare>
