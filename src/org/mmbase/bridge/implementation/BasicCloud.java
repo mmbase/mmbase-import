@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.126 2005-06-03 15:08:10 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.127 2005-06-15 07:17:07 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -597,11 +597,19 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     // javadoc inherited
     public NodeList getList(Query query) {
+        NodeList result;
         if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
-            return getResultNodeList(query);
+            result = getResultNodeList(query);
         } else {
-            return getSecureList(query);
+            result =  getSecureList(query);
         }
+        if (query instanceof NodeQuery) {
+            NodeQuery nq = (NodeQuery) query;
+            String pref = nq.getNodeStep().getAlias();
+            if (pref == null) pref = nq.getNodeStep().getTableName();
+            result.setProperty(NodeList.NODESTEP_PROPERTY, pref);
+        }
+        return result;
     }
 
     /*
