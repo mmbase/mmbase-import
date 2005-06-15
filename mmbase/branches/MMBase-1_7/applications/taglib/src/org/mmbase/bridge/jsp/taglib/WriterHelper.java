@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.47.2.5 2005-03-24 13:19:22 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.47.2.6 2005-06-15 15:46:43 rob Exp $
  */
 
 public class WriterHelper  {
@@ -298,8 +298,8 @@ public class WriterHelper  {
                 if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
                     List l = (List) v;
                     if (l.size() > 0) {
-                        v = l.get(l.size() - 1);
-                        // v = l.get(0);               // first element, allows for 'overriding'.
+                        // v = l.get(l.size() - 1); // last element
+                        v = l.get(0);               // first element, allows for 'overriding'.
                     } else {
                         v = null;
                     }
