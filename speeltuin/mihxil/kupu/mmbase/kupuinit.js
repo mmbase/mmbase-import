@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.10 2005-06-15 06:47:14 michiel Exp $
+// $Id: kupuinit.js,v 1.11 2005-06-15 11:11:41 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -62,7 +62,6 @@ function initKupu(iframe) {
     kupu.registerTool('italicsbutton', italicsbutton);
 
 
-    /*
     var subscriptchecker = ParentWithStyleChecker(new Array('sub'), null, null, 'subscript');
     var subscriptbutton = new KupuStateButton('kupu-subscript-button', execCommand('subscript'), subscriptchecker, 'kupu-subscript', 'kupu-subscript-pressed');
     kupu.registerTool('subscriptbutton', subscriptbutton);
@@ -70,7 +69,6 @@ function initKupu(iframe) {
     var superscriptchecker = ParentWithStyleChecker(new Array('super', 'sup'), null, null, 'superscript');
     var superscriptbutton = new KupuStateButton('kupu-superscript-button', execCommand('superscript'), superscriptchecker, 'kupu-superscript', 'kupu-superscript-pressed');
     kupu.registerTool('superscriptbutton', superscriptbutton);
-    */
 
     var undobutton = new KupuButton('kupu-undo-button', execCommand('undo'));
     kupu.registerTool('undobutton', undobutton);
