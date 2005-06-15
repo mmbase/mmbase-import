@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="educations" maintainer="didactor.nl" version="2" extends="object">
+<builder name="educations" maintainer="didactor.nl" version="3" extends="object">
   <status>active</status>
 
   <classfile>nl.didactor.builders.SmartpathBuilder</classfile>
@@ -156,6 +156,71 @@
         <type key="false" notnull="false" size="150" state="persistent">STRING</type>
       </db>
     </field>
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Layout</description>
+        <description xml:lang="en">Layout</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Layout</guiname>
+        <guiname xml:lang="en">Layout</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>2</input>
+          <!-- position in list area of the editor -->
+          <list>2</list>
+          <!-- position in search area of the editor -->
+          <search>2</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>layout</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Layout afbeeldingen</description>
+        <description xml:lang="en">Images layout</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Layout afbeeldingen</guiname>
+        <guiname xml:lang="en">Images layout</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>2</input>
+          <!-- position in list area of the editor -->
+          <list>2</list>
+          <!-- position in search area of the editor -->
+          <search>2</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>imagelayout</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+
 
   </fieldlist>
 </builder>

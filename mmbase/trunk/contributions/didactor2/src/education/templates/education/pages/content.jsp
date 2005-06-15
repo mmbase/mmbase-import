@@ -32,7 +32,7 @@
 </mm:notpresent>
 
 
-    <mm:import jspvar="text" reset="true"><mm:field name="text" escape="none"/></mm:import>
+    <mm:import jspvar="text" reset="true"><mm:field name="text" escape="none"/><mm:field name="intro" escape="none"/></mm:import>
   
 
   <table width="100%" border="0" class="Font">
