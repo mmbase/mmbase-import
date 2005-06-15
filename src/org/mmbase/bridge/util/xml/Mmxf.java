@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.4 2005-06-10 12:44:11 michiel Exp $
+ * @version $Id: Mmxf.java,v 1.5 2005-06-15 07:24:22 michiel Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */
@@ -41,7 +41,7 @@ public class Mmxf {
      * Defaulting version of {@link #createTree(org.w3c.dom.Node, Relationmanager, int, String, String, StringBuffer}.
      */
     public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, Writer buf) {
-        return createTree(node, relationManager, depth, "title", "body", buf);
+        return createTree(node, null, relationManager, depth, "title", "body", buf);
     }
 
 
@@ -51,7 +51,6 @@ public class Mmxf {
         } else {
             try { 
                 buf.write("ERROR: " + message + '\n');
-                buf.flush();
             } catch (IOException ioe) {
                 IllegalArgumentException e = new IllegalArgumentException(ioe.getMessage() + message);
                 e.initCause(ioe);
@@ -66,7 +65,6 @@ public class Mmxf {
         } else {
             try {
                 buf.write(message + '\n');
-                buf.flush();
             } catch (IOException ioe) {
                 IllegalArgumentException e = new IllegalArgumentException(ioe.getMessage() + message);
                 e.initCause(ioe);
@@ -84,6 +82,7 @@ public class Mmxf {
      * If your MMXF is a Document, you must feed {@link org.w3c.dom.Document#getDocumentElement()}
      * 
      * @param node Source DOM-Node (it's node-name must be 'mmxf' or 'section').
+     * @param root Root node (to be used in index relations) Can be <code>null</code> in which case it will be set equal to the first node created.
      * @param relationManager Describes the object model in which it must be dispatched. Source and
      *        Destinaion must be of the same type, the relation must have a field 'pos'.
      * @param depth How far to dispatch. If -1 then it will be split up until no sections are
@@ -92,7 +91,7 @@ public class Mmxf {
      * @param xmlField   A new mmxf-document is created for the test and written to this field.
      * @param feedBack   A string buffer for feedback (can be e.g. used for logging or presenting on import-jsp).
      */
-    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, String titleField, String xmlField, Writer feedBack) {
+    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, org.mmbase.bridge.Node root,  RelationManager relationManager, int depth, String titleField, String xmlField, Writer feedBack) {
         String nodeName = node.getNodeName();
         if (! (nodeName.equals("section") || nodeName.equals("mmxf"))) {
             exception(feedBack, "dom-Node must be a 'section' or 'mmxf' (but is a " + node.getNodeName() + ")");
@@ -142,15 +141,18 @@ public class Mmxf {
         newNode.commit();
         debug(feedBack, "created node " + newNode.getNumber());
 
+        if (root == null) root = newNode;
+
         int pos = 1;
         while (i < childs.getLength()) {
             org.w3c.dom.Node next = childs.item(i);
             String name = next.getNodeName();
             debug(feedBack, "found  for " + i + " " + name);
             if (name.equals("section")) {
-                org.mmbase.bridge.Node  destination = createTree(next, relationManager, depth > 0 ? depth -1 : depth, titleField, xmlField, feedBack); 
+                org.mmbase.bridge.Node  destination = createTree(next, root, relationManager, depth > 0 ? depth -1 : depth, titleField, xmlField, feedBack); 
                 Relation relation = relationManager.createRelation(newNode, destination);
                 relation.setIntValue("pos", pos);                
+                relation.setNodeValue("root", root);
                 relation.commit();
                 debug(feedBack, "Created relation " + newNode.getNumber() + " --" + pos + " -->" + destination.getNumber());
                 pos++;
@@ -165,7 +167,7 @@ public class Mmxf {
             
     }
 
-    protected static Document createMmxfDocument() {
+    public static Document createMmxfDocument() {
         DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document document = impl.createDocument(NAMESPACE, 
@@ -194,6 +196,7 @@ public class Mmxf {
             RelationManager relationManager = cloud.getRelationManager("segments", "segments", "index");
             Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
             org.mmbase.bridge.Node node = Mmxf.createTree(doc.getDocumentElement(), relationManager, 3, writer);
+            writer.flush();
             System.out.println("Created node " + node.getNumber());
             
             
