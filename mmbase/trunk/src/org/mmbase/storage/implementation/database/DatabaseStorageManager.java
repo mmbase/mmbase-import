@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.97 2005-05-26 19:38:47 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.98 2005-06-15 13:17:50 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -247,6 +247,7 @@ public class DatabaseStorageManager implements StorageManager {
             changes.put(node, change);
         } else {
             factory.getChangeManager().commit(node, change);
+            log.debug("Commited node");
         }
     }
 
@@ -489,7 +490,9 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 if ((result != null) && result.next()) {
                     Blob blob = getBlobValue(result, 1, field, mayShorten);
-                    node.setSize(field.getName(), blob.length());
+                    if (blob != null) {
+                        node.setSize(field.getName(), blob.length());
+                    }
                     return blob;
                 } else {
                     if (result != null) result.close();
