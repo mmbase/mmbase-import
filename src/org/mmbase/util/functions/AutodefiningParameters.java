@@ -13,12 +13,12 @@ package org.mmbase.util.functions;
 import org.mmbase.bridge.DataType;
 
 /**
- * If there is not Parameter definition array available you could try it with this specialization, which does not need one.
+ * If there is no Parameter definition array available you could try it with this specialization, which does not need one.
  * You loose al checking on type and availability. It should only be used as a last fall back and accompanied by warnings.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.6 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.7 2005-06-15 14:46:26 michiel Exp $
  * @see Parameter
  */
 
