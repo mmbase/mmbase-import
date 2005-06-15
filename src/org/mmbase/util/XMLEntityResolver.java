@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.44 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.45 2005-06-15 14:50:11 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -138,17 +138,26 @@ public class XMLEntityResolver implements EntityResolver {
                 }
             }
         }
-
+        log.debug("Get definition stream by public id: " + definitionStream);
         if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
+
+
             //does systemId contain a mmbase-dtd
             if ((systemId == null) || (! systemId.startsWith("http://www.mmbase.org/"))) {
                 if (! validate) {
+                    log.debug("Not validating, cannot resolve,  returning empty resource");
                     return new InputSource(new StringReader(""));
                 }
                 // it's a systemId we can't do anything with,
                 // so let the parser decide what to do
+                
+                if (log.isDebugEnabled()) {
+                    log.debug("Cannot resolve " + systemId + ", but needed for validation leaving to parser.");
+                    log.debug("Find culpit: " + Logging.stackTrace(new Exception()));
+                }
                 return null;
             } else {
+                log.debug("mmbase resource");
                 String mmResource = systemId.substring(22);
                 // first, try MMBase config directory (if initialized)
                 definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
