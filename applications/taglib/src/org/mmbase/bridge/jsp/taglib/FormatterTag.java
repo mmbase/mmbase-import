@@ -39,9 +39,9 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.52 2005-05-18 15:34:32 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.53 2005-06-15 06:49:48 michiel Exp $ 
  */
-public class FormatterTag extends ContextReferrerTag  implements Writer {
+public class FormatterTag extends ContextReferrerTag   {
 
     private static final Logger log = Logging.getLoggerInstance(FormatterTag.class);
 
