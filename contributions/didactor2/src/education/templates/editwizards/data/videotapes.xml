@@ -40,6 +40,10 @@
 
     <action type="delete"/>
 
+    <lists>
+       <optionlist include="paragraphs/boolean.xml" />
+    </lists>
+
     <steps>
         <step form-schema="step1" />
         <!-- step form-schema="step2" / -->
@@ -49,6 +53,11 @@
         <title>Invoeren videofragment</title>
         <field name="title" dttype="string" dtminlength="2" >
             <prompt>Titel</prompt>
+        </field>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean"></optionlist>
         </field>
 
         <field name="subtitle" dttype="string">
