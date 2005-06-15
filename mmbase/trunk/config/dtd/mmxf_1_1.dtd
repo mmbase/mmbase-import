@@ -8,7 +8,7 @@
 <!ENTITY % Block   "(p | table)*">
 <!ENTITY % Lists    "ol | ul">
 <!ENTITY % Content "(p | table)*">
-<!ENTITY % Text    "(#PCDATA | em | a | %Lists;)*">
+<!ENTITY % Text    "(#PCDATA | em | a | sub | sup | %Lists;)*">
 
 
 <!ELEMENT mmxf %Block; section* >
@@ -29,6 +29,10 @@
 <!ELEMENT li ( #PCDATA | em | a)* >
 
 <!ELEMENT em ( #PCDATA )* >
+
+<!ELEMENT sub ( #PCDATA )* >
+<!ELEMENT sup ( #PCDATA )* >
+
 <!ELEMENT a  ( #PCDATA | em )* >
 <!ATTLIST a id  NMTOKEN  #REQUIRED > 
 
