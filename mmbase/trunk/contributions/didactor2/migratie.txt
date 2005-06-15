@@ -1,6 +1,20 @@
 Migratie issues
 
 2005-06-15
+
+    An extra field "showtitle" is added for a number of builders.
+
+    ALTER TABLE mmb_attachments ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_audiotapes ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_images ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_urls ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_videotapes ADD showtitle TINYINT(1);
+
+    Please run /migrate-2005-06-15.jsp to set all titles of images, 
+    attachments, audiotapes, videotapes, urls to visible
+
+
+2005-06-15
     alter table mmb_educations add column layout INT(11);
     alter table mmb_educations add column imagelayout INT(11);
 
