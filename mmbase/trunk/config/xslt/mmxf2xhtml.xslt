@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.13 2005-06-15 06:44:02 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.14 2005-06-15 11:12:33 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -26,7 +26,7 @@
   </xsl:template>
   
   
-  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:em|mmxf:table|mmxf:tr|mmxf:th|mmxf:td|mmxf:caption|mmxf:br">
+  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:em|mmxf:table|mmxf:tr|mmxf:th|mmxf:td|mmxf:caption|mmxf:br|mmxf:sub|mmxf:sup">
     <xsl:element name="{name()}">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
@@ -39,7 +39,7 @@
   
   
   <xsl:template match ="mmxf:section">
-    <xsl:apply-templates select="mmxf:section|mmxf:h|mmxf:p|mmxf:ul|mmxf:ol|mmxf:table" />
+    <xsl:apply-templates select="mmxf:section|mmxf:h|mmxf:p|mmxf:ul|mmxf:ol|mmxf:table|mmxf:sub|mmxf:sup" />
   </xsl:template>
 
   <xsl:template match="mmxf:h" mode="h1"><xsl:if test="string(.)"><h3><xsl:apply-templates select="node()" /></h3></xsl:if></xsl:template>
