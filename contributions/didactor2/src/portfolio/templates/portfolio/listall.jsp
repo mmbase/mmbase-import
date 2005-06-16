@@ -62,7 +62,7 @@
 
   
  <%  if (cvalid) { %>
-  <mm:listnodes type="people" orderby="lastname,firstname" constraints="lastname LIKE '${startChar}%'">
+  <mm:listnodes type="people" orderby="lastname,firstname" constraints="LOWER(lastname) LIKE '${startChar}%'">
     <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type"/></mm:import>
     <mm:compare referid="nodetype" value="contacts" inverse="true">
        <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
@@ -73,7 +73,7 @@
    <% } %>
     <mm:isempty inverse="true" referid="portfolio_query">
     
-    <mm:listnodes type="people" orderby="lastname,firstname" constraints="lastname LIKE '${portfolio_query}%' OR firstname LIKE '%${portfolio_query}%'">
+    <mm:listnodes type="people" orderby="lastname,firstname" constraints="LOWER(lastname) LIKE LOWER('%${portfolio_query}%') OR LOWER(firstname) LIKE LOWER('%${portfolio_query}%')">
     <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type"/></mm:import>
     <mm:compare referid="nodetype" value="contacts" inverse="true">
        <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
