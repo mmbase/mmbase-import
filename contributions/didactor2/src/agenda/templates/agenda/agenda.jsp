@@ -87,6 +87,26 @@
 		               <mm:param name="year"><mm:write referid="year"/></mm:param>
 		             </mm:treefile>">
         </mm:import>
+
+        
+        <mm:relatednodes type="agendas" max="1">
+            <mm:relatednodes type="classes">
+                <mm:import id="agendaname" reset="true">
+                    <fmt:message key="AGENDA_OF"/> <fmt:message key="CLASS"/> <mm:field name="name"/>
+                </mm:import>    
+            </mm:relatednodes>
+            <mm:relatednodes type="workgroups">
+                <mm:import id="agendaname" reset="true">
+                    <fmt:message key="AGENDA_OF"/> <fmt:message key="WORKGROUP"/> <mm:field name="name"/>
+                </mm:import>    
+            </mm:relatednodes>
+            <mm:relatednodes type="people">
+                <mm:import id="agendaname" reset="true">
+                    <fmt:message key="AGENDA_OF"/> <mm:field name="firstname"/> <mm:field name="lastname"/>
+                </mm:import>    
+            </mm:relatednodes>
+        </mm:relatednodes>
+
 	<di:cell>
 	<mm:import id="num" reset="true"><mm:field name="number"/></mm:import>
 	<mm:list nodes="$user" path="people,invitationrel,items" constraints="items.number=$num and invitationrel.status=1" max="1">
@@ -97,7 +117,7 @@
 	</di:cell>
         <di:cell>
           <mm:relatednodes type="agendas" max="1">
-            <mm:write escape="none" referid="link"/><mm:field name="name"/></a>
+            <mm:write escape="none" referid="link"/><mm:write referid="agendaname"/></a>
           </mm:relatednodes>
         </di:cell>
         <di:cell><mm:write escape="none" referid="link"/><mm:field name="title"/></a></di:cell>
