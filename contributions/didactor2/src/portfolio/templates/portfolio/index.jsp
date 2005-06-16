@@ -542,7 +542,7 @@ Mijn gegevens:
     <td>
       <mm:node number="$myuser">
         <mm:relatednodes type="images">
-          <img src="<mm:image template="s(300)"/>"/>
+          <img src="<mm:image template="s(200x180)"/>"/>
         </mm:relatednodes>
       </mm:node>
     </td>
@@ -601,7 +601,7 @@ Mijn gegevens:
     <td>
       <mm:node number="$user">
         <mm:relatednodes type="images">
-          <img src="<mm:image template="s(300)"/>"/>
+          <img src="<mm:image template="s(200x180)"/>"/>
         </mm:relatednodes>
       </mm:node>
     </td>
