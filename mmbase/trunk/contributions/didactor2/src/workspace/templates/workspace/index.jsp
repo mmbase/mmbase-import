@@ -125,9 +125,9 @@
 
 <%-- determine the folders in the used context (my documents or shared documents --%>
 <mm:node referid="myuser" >
-  <mm:relatednodes referid="myworkspaces">
+  <mm:relatednodes type="workspaces">
 
-    <mm:relatednodes referid="myfolders">
+    <mm:relatednodes type="folders">
 
       <mm:import id="currentnumber"><mm:field name="number"/></mm:import>
 
