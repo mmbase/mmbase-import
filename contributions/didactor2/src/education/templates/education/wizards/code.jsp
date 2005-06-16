@@ -43,8 +43,7 @@
    <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" /></mm:import>
    <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" /></mm:import>
    <mm:import id="education_top_menu"><%= session.getAttribute("education_topmenu_mode") %></mm:import>
-
-   <mm:compare referid="showcode" value="true" inverse="true">
+  <mm:compare referid="showcode" value="true" inverse="true">
       <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
          <html>
             <head>
@@ -780,7 +779,7 @@
                         <a href='javascript:clickNode("education_0")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_education_0"/></a>
                      </td>
                      <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
-                     <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /><mm:present referid="pdfurl"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a></nobr></td>
+                     <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /><mm:present referid="pdfurl"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a><mm:node number="component.drm" notfound="skip"> <a target="text" href="<mm:write referid="wizardjsp"/>?wizard=educationslicense&objectnumber=<%= sEducationID %>" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a></mm:node></nobr></td>
                   </tr>
                </table>
 

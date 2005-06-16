@@ -13,7 +13,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.4 2005-06-10 09:07:09 jdiepenmaat Exp $
+    @version $Id: searchlist.xsl,v 1.5 2005-06-16 11:57:10 jdiepenmaat Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -100,7 +100,7 @@
                 type="checkbox"
                 name="{@number}"
                 did="{@number}"
-                id="cb_{@number}" />
+              />
               </td>
               <td width="30%">
                 <xsl:value-of select="util:nodeManagerGUIName($cloud,@number,1)"/>
