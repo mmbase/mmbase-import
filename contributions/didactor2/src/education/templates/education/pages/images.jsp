@@ -9,8 +9,12 @@
    <mm:node number="$imnum">
    
       <td>
-      <mm:field name="title"/>
-      <br/>
+        <mm:field name="showtitle">
+        <mm:compare value="1">
+          <h3> <mm:field name="title"/></h3>
+        </mm:compare>
+        </mm:field>
+    
        <mm:isgreaterthan referid="imwidth" value="0">
        <mm:isgreaterthan referid="imheight" value="0">
        <mm:import id="template" reset="true">s(<mm:write referid="imwidth"/>x<mm:write referid="imheight"/>)</mm:import>
@@ -38,8 +42,11 @@
    <mm:import id="imnum" reset="true"><mm:field name="images.number"/></mm:import>
    <mm:node number="$imnum">
    
-      <mm:field name="title"/>
-      <br/>
+      <mm:field name="showtitle">
+        <mm:compare value="1">
+          <h3> <mm:field name="title"/></h3>
+        </mm:compare>
+      </mm:field>
        <mm:isgreaterthan referid="imwidth" value="0">
        <mm:isgreaterthan referid="imheight" value="0">
        <mm:import id="template" reset="true">s(<mm:write referid="imwidth"/>x<mm:write referid="imheight"/>)</mm:import>
