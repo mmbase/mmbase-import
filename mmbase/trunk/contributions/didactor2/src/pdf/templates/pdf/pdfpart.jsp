@@ -222,13 +222,6 @@
 
 
 
-
-    <mm:compare referid="node_type" value="learnblocks">
-       <%= text %>
-    </mm:compare>
-
-    <mm:compare referid="node_type" value="pages">
-
         <mm:countrelations type="images">
             <mm:isgreaterthan value="0">
                 <mm:field name="imagelayout" id="imagelayout" write="false"/>
@@ -306,8 +299,6 @@
         <br>
         </mm:relatednodes>
 
-
-        </mm:compare>
         <br/>
 
     <% if (level.intValue() < 20) { %>
