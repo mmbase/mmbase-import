@@ -14,10 +14,16 @@ Migratie issues
     attachments, audiotapes, videotapes, urls to visible
 
 
-2005-06-15
+    Layout for educations has changed:
+    
     alter table mmb_educations add column layout INT(11);
     alter table mmb_educations add column imagelayout INT(11);
 
+    Fix for mmb_versions problem:
+
+    alter table mmb_versions drop index name;
+
+    And please run  /fix-workgroup-agendas.jsp
 
 
 2005-06-10
