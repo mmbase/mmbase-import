@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="workgroups" maintainer="didactor.nl" version="2" extends="object">
+<builder name="workgroups" maintainer="didactor.nl" version="3" extends="object">
   <status>active</status>
 
-  <classfile>Dummy</classfile>
+  <!-- signal componentents at object creation -->
+  <classfile>nl.didactor.builders.CreationNotifyBuilder</classfile>
   <searchage>31</searchage>
 
   <names>
