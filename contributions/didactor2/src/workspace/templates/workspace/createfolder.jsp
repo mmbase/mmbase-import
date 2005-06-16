@@ -37,7 +37,7 @@
 
       <mm:compare referid="typeof" value="1">
         <mm:node number="$user">
-          <mm:relatednodes type="workspaces" id="myworkspaces">
+          <mm:relatednodes type="workspaces" id="myworkspaces" max="1">
 
             <mm:createnode type="folders" id="myfolders">
 
@@ -54,7 +54,7 @@
 
       <mm:compare referid="typeof" value="2">
         <mm:node number="$class">
-          <mm:relatednodes type="workspaces" id="myworkspaces">
+          <mm:relatednodes type="workspaces" id="myworkspaces" max="1">
 
             <mm:createnode type="folders" id="myfolders">
 
