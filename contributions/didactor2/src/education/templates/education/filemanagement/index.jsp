@@ -88,8 +88,8 @@
 </head>
 <body>
 <mm:import externid="deletefile" jspvar="deletefile"/>
-<table border="1">
-<tr><th>Naam</th><th>Type</th><th>Grootte</th><th>Bestandsextensie</th></tr>
+<table border="1" class="body">
+<tr class="header"><th>Naam</th><th>Type</th><th>Grootte</th><th>Bestandsextensie</th></tr>
 <%
     File dir = new File(directory);
     File[] farray = dir.listFiles();

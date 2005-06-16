@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title>Pagina Editor</title>
+    <title>Licentie Editor</title>
 
 
     <action type="create">
-       <object type="licencetexts">
+       <object type="licensetexts">
        </object>
     </action>
 
