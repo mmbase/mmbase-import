@@ -5,14 +5,16 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <mm:node referid="education">
-<mm:field name="number" jspvar="educationNo">
-<% 
-    if (session.getAttribute(username+"_has_agreed_to_education_licence_"+educationNo) == null) {
+    <mm:field name="number" jspvar="educationNo">
+    <mm:relatednodes type="licensetexts" max="1">
+    <% 
+        if (session.getAttribute(username+"_has_agreed_to_education_licence_"+educationNo) == null) {
         %>
-        <mm:redirect page="/drm/showlicense.jsp" referids="$referids "/>
-        <%
-    }
-%>
+            <mm:redirect page="/drm/showlicense.jsp" referids="$referids "/>
+            <%
+        }
+    %>
+    </mm:relatednodes>
 </mm:field>
 </mm:node>
 </mm:cloud>
