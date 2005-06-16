@@ -49,12 +49,17 @@ public class DidactorAgenda extends Component {
      * needs to insert objects for this object, it can do so. 
      */
     public boolean notifyCreate(MMObjectNode node) {
+        
         if (node.getBuilder().getTableName().equals("people"))
             return createUser(node);
 
         if (node.getBuilder().getTableName().equals("classes"))
             return createClass(node);
 
+        if (node.getBuilder().getTableName().equals("workgroups")) {
+            return createWorkgroup(node);
+        }
+        
         return true;
     }
 
@@ -95,6 +100,28 @@ public class DidactorAgenda extends Component {
         agendas.insert(username, agenda);
         MMObjectNode relation = insrel.getNewNode(username);
         relation.setValue("snumber", cls.getNumber());
+        relation.setValue("dnumber", agenda.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+
+        return true;
+    }
+
+    /**
+     * Create a workgroup agenda.
+     */
+    private boolean createWorkgroup(MMObjectNode workgroup) {
+        MMBase mmb = workgroup.getBuilder().getMMBase();
+        String username = "system";
+        MMObjectBuilder agendas = mmb.getBuilder("agendas");
+        InsRel insrel = mmb.getInsRel();
+        int related = mmb.getRelDef().getNumberByName("related");
+
+        MMObjectNode agenda = agendas.getNewNode(username);
+        agenda.setValue("name", "Agenda van werkgroep '" + workgroup.getStringValue("name") + "'");
+        agendas.insert(username, agenda);
+        MMObjectNode relation = insrel.getNewNode(username);
+        relation.setValue("snumber", workgroup.getNumber());
         relation.setValue("dnumber", agenda.getNumber());
         relation.setValue("rnumber", related);
         insrel.insert(username, relation);
