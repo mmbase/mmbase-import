@@ -256,47 +256,65 @@
 
 
         <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
-        <p>
-            <b><mm:field name="title"/></b><br>
+          <p>
+            <mm:field name="showtitle">
+              <mm:compare value="1">
+                <b><mm:field name="title"/></b><br>
+              </mm:compare>
+            </mm:field>
             <i><mm:field name="description" escape="inline"/></i>
             <br>
             http://<mm:write referid="providerurl"/>/attachment.db?<mm:field name="number"/>
-        </p>
-        <br>
+          </p>
+          <br>
         </mm:relatednodes>
 
         <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
-        <p><b><mm:field name="title"/></b><br>
-        <i><mm:field name="subtitle"/></i><br>
-        <mm:field name="intro" escape="inline"/>
-        </p>
-        <mm:field name="body" escape="p"/>
-        <p>
-        <mm:field name="url" />
-        </p>
-        <br>
+          <p>
+            <mm:field name="showtitle">
+              <mm:compare value="1">
+                <b><mm:field name="title"/></b><br>
+              </mm:compare>
+            </mm:field>
+            <i><mm:field name="subtitle"/></i><br>
+            <mm:field name="intro" escape="inline"/>
+          </p>
+          <mm:field name="body" escape="p"/>
+          <p>
+            <mm:field name="url" />
+          </p>
+          <br>
         </mm:relatednodes>
 
         <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
-         <p><b><mm:field name="title"/></b><br>
-        <i><mm:field name="subtitle"/></i><br>
-        <mm:field name="intro" escape="inline"/>
-        </p>
-        <mm:field name="body" escape="p"/>
-        <p>
-        <mm:field name="url" />
-        </p>
-       </mm:relatednodes>
+          <p>
+            <mm:field name="showtitle">
+              <mm:compare value="1">
+                <b><mm:field name="title"/></b><br>
+              </mm:compare>
+            </mm:field>
+            <i><mm:field name="subtitle"/></i><br>
+            <mm:field name="intro" escape="inline"/>
+          </p>
+          <mm:field name="body" escape="p"/>
+          <p>
+            <mm:field name="url" />
+          </p>
+        </mm:relatednodes>
 
         <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
-        <br/>
-        <p>
-            <b><mm:field name="name"/></b><br>
+          <br/>
+          <mm:field name="showtitle">
+            <mm:compare value="1">
+              <b><mm:field name="name"/></b><br>
+            </mm:compare>
+          </mm:field>
+          <p>
             <i><mm:field name="description" escape="inline"/></i>
             <br/>
             <mm:field name="url" />
-        </p>
-        <br>
+          </p>
+          <br>
         </mm:relatednodes>
 
         <br/>
