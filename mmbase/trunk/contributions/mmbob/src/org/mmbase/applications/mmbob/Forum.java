@@ -97,6 +97,7 @@ public class Forum {
         readSignatures();
         readThreadObservers();
         readRoles();
+	readFieldaliases();
     }
 
     public void resetConfig() {
@@ -1120,14 +1121,6 @@ public class Forum {
         return lastpostnumber;
    }
 
-   /**
-   * get aliased version of this field
-   */
-   public String getAliased(org.mmbase.bridge.Node node,String key) {
-        String value=ForumManager.getAliased(node,"default."+key);
-        return value;
-   }
-
    public PostAreaConfig getPostAreaConfig(String name) {
        if (config != null) {
        	return config.getPostAreaConfig(name);
@@ -1486,5 +1479,15 @@ public class Forum {
    public boolean getReplyOnEachPage() {
         return ForumManager.getReplyOnEachPage();
 
+   }
+
+    private void readFieldaliases() {
+        if (config != null) {
+            Iterator i = config.getFieldaliases();
+            while (i.hasNext()) {
+		FieldAlias fa = (FieldAlias)i.next();
+		fa.init(this);
+	    }
+	}
    }
 }
