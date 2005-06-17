@@ -42,6 +42,7 @@ public class Poster {
     private int firstlogin = -1;
     private String lasthost = "unknown";
     private String account,firstname, lastname, email, level, location, gender, password;
+    private String a_account,a_firstname, a_lastname, a_email, a_location, a_gender, a_password;
     //private Node node;
     private Forum parent;
     private HashMap mailboxes;
@@ -167,7 +168,6 @@ public class Poster {
      * @return accountname / nick
      */
     public String getAccount() {
-        //return getAliased("account");
 	return account;
     }
 
@@ -223,12 +223,12 @@ public class Poster {
      * @return firstname
      */
     public String getFirstName() {
-        //return getAliased("firstname");
+	if (a_firstname!=null) return a_firstname;
 	return firstname;
     }
 
    public String getPassword() {
-        //return getAliased("password");
+	if (a_password!=null) return a_password;
 	return password;
    }
 
@@ -240,13 +240,24 @@ public class Poster {
    }
 
 
+   public void setAliasedPassword(String a_password) {
+       this.a_password = a_password;
+   }
+
+   public void setAliasedFirstName(String a_firstname) {
+       this.a_firstname = a_firstname;
+   }
+
+   public void setAliasedLastName(String a_lastname) {
+       this.a_lastname = a_lastname;
+   }
     /**
      * get the lastname of the poster
      *
      * @return lastname
      */
     public String getLastName() {
-        //return getAliased("lastname");
+	if (a_lastname!=null) return a_lastname;
         return lastname;
     }
 
@@ -592,23 +603,6 @@ public class Poster {
         return null;
     }
 
-   /** 
-   * get aliases version of this field
-   */
-	/*
-   public String getAliased(String key) {
-        Node node = ForumManager.getCloud().getNode(id);
-        //long start = System.currentTimeMillis();
-        String value = parent.getAliased(node,"posters."+key);
-        if (value==null)  {
-                value=node.getStringValue(key);
-        }
-        //long end = System.currentTimeMillis();
-        //log.info("getAlias Speed = "+(end-start)+"ms");
-        return value;
-   }
-	*/
-
    public boolean isQuotaReached() {
 	if (quotaused<quotanumber) {
 		return true;
@@ -820,7 +814,7 @@ public class Poster {
        	 	headers.put("CC","");
         	headers.put("BCC","");
         	headers.put("Subject", subject);
-		sendmail.sendMail(from, to, body, headers);
+		log.info("sendmail reply code : "+sendmail.sendMail(from, to, body, headers));
 	}
 	}
     }

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  */
 public class ForumConfig {
     private static Logger log = Logging.getLoggerInstance(ForumConfig.class);
-    private HashMap fieldaliases=new HashMap();
+    private ArrayList fieldaliases=new ArrayList();
     private HashMap subs=new HashMap();
     private String defaultaccount, defaultpassword;
     private String accountcreationtype,accountremovaltype;
@@ -209,15 +209,15 @@ public class ForumConfig {
                                         		if (n3!=null) {
                                                 		externkey=n3.getNodeValue();
                                         		}
-							id="default."+object+"."+field;
-							FieldAlias fa=new FieldAlias(id);
+							String kid="default."+object+"."+field;
+							FieldAlias fa=new FieldAlias(kid);
 							fa.setObject(object);
 							fa.setExtern(extern);
 							fa.setField(field);
 							fa.setExternField(externfield);
 							fa.setKey(key);
 							fa.setExternKey(externkey);
-							fieldaliases.put(id,fa);
+							fieldaliases.add(fa);
 						}
 					}
                                         for(Enumeration ns2=reader.getChildElements(n,"postarea");ns2.hasMoreElements(); ) {
@@ -230,8 +230,8 @@ public class ForumConfig {
 		return true;
 	}
 
-	public HashMap getFieldaliases() {
-		return fieldaliases;
+	public Iterator getFieldaliases() {
+		return fieldaliases.iterator();
 	}
 
   

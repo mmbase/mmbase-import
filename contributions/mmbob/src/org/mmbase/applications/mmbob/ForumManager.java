@@ -74,6 +74,7 @@ public class ForumManager {
      *  Initialization
      */
     public static synchronized void init() {
+	if (!running) {
         readConfig();
         cloud = getCloud();
         if (!running) {
@@ -92,6 +93,7 @@ public class ForumManager {
             ForumEmailSender emailsender = new ForumEmailSender();
             running = true;
         }
+	}
     }
 
     /**
@@ -357,17 +359,6 @@ public class ForumManager {
             f.maintainMemoryCaches();
         }
     }
-
-   /**
-   * get aliased version of this field
-   */
-   public static String getAliased(org.mmbase.bridge.Node node,String key) {
-        FieldAlias fa=(FieldAlias)config.getFieldaliases().get(key);
-        if (fa!=null) {
-                return fa.getValue(node);
-        }
-        return null;
-   }
 
    public static void setQuotaMax(String maxs) {
 	config.setQuotaMax(maxs);
