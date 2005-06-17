@@ -43,6 +43,7 @@ public class FieldAlias {
    private String externkey;
 
    public FieldAlias (String id) {
+	log.info("Field alias on : "+id);
 	this.id=id;
    }
   
@@ -75,7 +76,7 @@ public class FieldAlias {
 	// is it a key mapping ?
 	if (key!=null) {
 		String keyvalue=node.getStringValue(key);
-		//log.info("key="+key+" keyvalue="+keyvalue+" object="+object);
+		log.info("key="+key+" keyvalue="+keyvalue+" object="+object);
 		Cloud cloud = ForumManager.getCloud();
                 NodeManager manager=cloud.getNodeManager(extern);
         	NodeQuery query = manager.createQuery();
@@ -90,5 +91,33 @@ public class FieldAlias {
 	}
 	return null;
    }
+
+   public void init(Forum forum) {
+    	NodeManager nodemanager = ForumManager.getCloud().getNodeManager(extern);
+        NodeQuery query = nodemanager.createQuery();
+        org.mmbase.bridge.NodeList result = nodemanager.getList(query);
+        NodeIterator i = result.nodeIterator();
+        while (i.hasNext()) {
+            org.mmbase.bridge.Node node = (org.mmbase.bridge.Node) i.nextNode();
+	    // kind of a weird way but fast result until i think of a better
+	    // way to make this more flexible
+	    if (object.equals("posters")) {
+		// mapping on account field
+		if (key.equals("account")) {
+			Poster po = forum.getPoster(node.getStringValue(externkey));	
+			if (po!=null) {
+				if (field.equals("password")) {
+					po.setAliasedPassword(node.getStringValue(externfield));
+				} else if (field.equals("firstname")) {
+					po.setAliasedFirstName(node.getStringValue(externfield));
+				} else if (field.equals("lastname")) {
+					po.setAliasedLastName(node.getStringValue(externfield));
+				}
+			}
+		}
+	    }
+	}
+   }
+
 
 }
