@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.9 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: GrowingTreeList.java,v 1.10 2005-06-17 13:23:58 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -30,6 +30,7 @@ public  class GrowingTreeList extends TreeList {
 
     protected Constraint cleanConstraint;
     protected NodeQuery  pathElementTemplate;
+    //protected NodeQuery  shiftElementTemplate;
     protected int maxNumberOfSteps;
 
     /**
@@ -46,6 +47,7 @@ public  class GrowingTreeList extends TreeList {
 
         if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         pathElementTemplate = cloud.createNodeQuery();
+        //shiftElementTemplate = cloud.createNodeQuery();
         Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
         pathElementTemplate.setAlias(step, "object0");
         pathElementTemplate.setNodeStep(pathElementTemplate.addRelationStep(nodeManager, role, searchDir).getNext());
@@ -85,7 +87,7 @@ public  class GrowingTreeList extends TreeList {
      * @since MMBase-1.7.1
      */
 
-    public Query getTemplate() {
+    public NodeQuery getTemplate() {
         return pathElementTemplate;
     }
 
@@ -104,6 +106,7 @@ public  class GrowingTreeList extends TreeList {
         }
         return super.getList(queryNumber);
     }
+
 
     /**
      *
