@@ -8,7 +8,6 @@ import org.mmbase.bridge.util.*;
 import org.mmbase.util.transformers.RomanTransformer;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * The index node functions can be assigned to nodes which are connected by an 'index' relation. An
@@ -27,13 +26,10 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.1 2005-06-15 06:42:53 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.2 2005-06-17 12:55:08 nico Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
-    private static final Logger log = Logging.getLoggerInstance(IndexFunction.class);
-    
-
 
     /** 
      * Returns the 'successor' or a string. Which means that e.g. after 'zzz' follows 'aaaa'.
@@ -150,7 +146,7 @@ public class IndexFunction extends FunctionProvider {
                 
                 // now we have to determine the path from node to root.        
                 GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(node), 10, nm, role, "source");
-                NodeQuery template = tree.getTemplate();
+                Query template = tree.getTemplate();
                 if (root != null) {
                     StepField sf = template.addField(role + ".root");
                     template.setConstraint(template.createConstraint(sf, root));
