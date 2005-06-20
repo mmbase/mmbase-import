@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<mm:content 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    type="text/xml" 
+    expires="-1">
+  <mm:import externid="search" />
+  <mm:import externid="page" vartype="integer" >0</mm:import>
+  <mm:import externid="max" vartype="integer">50</mm:import>
+  <collection>
+    <uri>drawers/images.jspx</uri>
+    <icon>kupuimages/kupulibrary.png</icon>
+    <title>MMBase</title>
+    <mm:cloud>
+      <mm:context scope="request" id="drawer">
+	<mm:import id="nodetype">images</mm:import>
+	<mm:listnodescontainer id="query" type="$nodetype">
+	  
+	  <jsp:directive.include file="search.constraints.jspx" />
+	  
+	  <mm:sortorder field="number" direction="down" />
+	  <mm:maxnumber value="$max" />
+	  <mm:offset    value="${page * max}" />
+	  
+	  <mm:include page="${nodetype}.items.jspx" />
+	  
+	</mm:listnodescontainer>
+      </mm:context>
+    </mm:cloud>
+  </collection>
+</mm:content>

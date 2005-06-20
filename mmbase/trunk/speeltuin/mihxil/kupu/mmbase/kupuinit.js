@@ -8,12 +8,13 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.11 2005-06-15 11:11:41 michiel Exp $
+// $Id: kupuinit.js,v 1.12 2005-06-20 09:41:08 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
 //----------------------------------------------------------------------------
 
+// somewhy, IE needs this:
 var kupu;
 
 function initKupu(iframe) {
@@ -109,7 +110,6 @@ function initKupu(iframe) {
         );
     tabletool.registerToolBox('tabletoolbox', tabletoolbox);
 
-
     /*
     var spellchecker = new KupuSpellChecker('kupu-spellchecker-button',
                                             'spellcheck.cgi');
@@ -118,9 +118,7 @@ function initKupu(iframe) {
     /*
     var zoom = new KupuZoomTool('kupu-zoom-button');
     kupu.registerTool('zoomtool', zoom);
-            
     */
-    
     // create some drawers, drawers are some sort of popups that appear when a 
     // toolbar button is clicked
     var drawertool = new DrawerTool();
@@ -176,11 +174,11 @@ function initKupu(iframe) {
 
    var linkdrawer = new LinkDrawer('kupu-linkdrawer', linktool);
    drawertool.registerDrawer('linkdrawer', linkdrawer);
-
+    /*
    var tabledrawerbutton = new KupuButton('kupu-tabledrawer-button',
                                            opendrawer('tabledrawer'));
    kupu.registerTool('tabledrawerbutton', tabledrawerbutton);
-
+    */
    //var tabledrawer = new TableDrawer('kupu-tabledrawer', tabletool);
    // drawertool.registerDrawer('tabledrawer', tabledrawer);   
 
@@ -188,6 +186,5 @@ function initKupu(iframe) {
     // remove tags that aren't in the XHTML DTD
     var nonxhtmltagfilter = new NonXHTMLTagFilter();
     kupu.registerFilter(nonxhtmltagfilter);
-
     return kupu;
 };

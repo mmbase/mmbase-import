@@ -19,8 +19,13 @@ div.kupu-toolbox, div.kupu-toolbox-active{
   border-bottom: 0px;
 
 }
-body.kupu-fulleditor-zoomed { 
-  background-color: green;
+body.kupu-fulleditor-zoomed 
+{ 
+  position: absolute;
+  height: 300px;
+  width: 200px;
+  top: 50px;
+  background-color: yellow;
 }
 form { 
 

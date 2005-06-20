@@ -1,4 +1,3 @@
-//#include <libintl.h>
 /**
  * The node currently being edited
  */
@@ -94,9 +93,8 @@ function mmbaseInit(node) {
             adjustLayout();
         }
     }
-    
-    */
-    winOnLoad();
+    */    
+    winOnLoad();    
     loadNode(node);
 
 }
@@ -164,7 +162,7 @@ function updateTree(nodeNumber, title) {
  */
 function loadNode(nodeNumber) {
     if (nodeNumber == currentNode) {
-        kupu.logMessage(_("RELOAD"));x
+        kupu.logMessage(_("RELOAD"));
         loadedNodes.remove(nodeNumber);
         loadedNodeBodies.remove(nodeNumber);
         currentNode == undefined;
@@ -202,14 +200,20 @@ function loadNode(nodeNumber) {
 
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
     if (nodeBodyXml == null) {
-        var request = getRequest();
-        request.open('GET', 'node.body.jspx', false);
-        request.send('');
-        //alert("Getting node.body.jspx");        
-        nodeBodyXml = serialize(request);
+        var dom = Sarissa.getDomDocument();
+        dom.async = false;
+        dom.load('node.body.jspx');
+        nodeBodyXml = Sarissa.serialize(dom);
+        loadedNodeBodies.add(nodeNumber, nodeBodyXml);
     }
-    //    alert("received" + nodeBodyXml);
-    
+    /*
+    alert("found " + Sarissa.serialize(nodeBodyXml));
+    var text = "";
+    for (i in kupu.document.getDocument()) text += "  " + i;
+    alert("" + text);
+    kupu.document.getDocument().clear();
+    kupu.document.getDocument().appendChild(nodeBodyXml);
+    */
     kupu.setHTMLBody(nodeBodyXml);
     currentNode = nodeNumber;
     currentA = document.getElementById('a_' + currentNode);

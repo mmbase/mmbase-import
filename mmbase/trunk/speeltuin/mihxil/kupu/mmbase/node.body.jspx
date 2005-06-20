@@ -3,37 +3,26 @@
             xmlns="http://www.w3.org/1999/xhtml" 
             xmlns:jsp="http://java.sun.com/JSP/Page" 
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:output omit-xml-declaration="true"
-              doctype-root-element="html"
-              doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
-              />
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
   <mm:import id="kupu_node" externid="node" />
   <mm:import id="node" externid="kupu_node" from="this,session" />
-  <mm:cloud method="pagelogon" logon="admin" pwd="admin2k">
+  <mm:cloud>
     <mm:param name="org.mmbase.xml-mode" value="kupu" />
-    <mm:notpresent referid="node">
-      
+    <mm:notpresent referid="node">      
       <mm:remove referid="node" />
       <mm:import externid="node" from="parameters" />
       <mm:node referid="node" id="node" />
     </mm:notpresent>
     
     <mm:node  number="$node">
-      <html>
-        <head>          
-          <title><mm:field name="title" /></title>
-          <link href="kupustyle.css" rel="stylesheet" type="text/css"></link> 
-        </head>
-        <mm:formatter xslt="xslt/mmxf2kupu.xslt" id="sent" escape="none">
-          <mm:field name="body" />
-          <mm:listrelations type="object" role="idrel" searchdir="destination" >
-            <mm:relatednode />
-          </mm:listrelations>
-        </mm:formatter>
-      </html>
+      <mm:formatter xslt="xslt/mmxf2kupu.xslt" id="sent" escape="none">
+	<mm:field name="body" />
+	<mm:listrelations type="object" role="idrel" searchdir="destination" >
+	  <mm:relatednode />
+	</mm:listrelations>
+      </mm:formatter>
       <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
     </mm:node>
-  </mm:cloud>
-  
+  </mm:cloud>  
 </mm:content>
