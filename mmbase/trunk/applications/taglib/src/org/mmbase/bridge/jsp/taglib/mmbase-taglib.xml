@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.310 2005-06-15 06:49:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.311 2005-06-20 16:03:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5371,10 +5371,11 @@ The 0 is just counter, which starts at 0 on every page.
           `type', then a default postprocessor might be defined.
         </p>
         <p>
-          The following postprocessors can be specified.
+          The following postprocessors can be specified (besides the ones defined with mm:escaper tags).
         </p>
         <document file="resources/taglibcontent.xml" mode="postprocessors" />
       </info>
+      <see tag="escaper" />
     </attribute>
     <attribute>
       <name>escaper</name>
@@ -5391,12 +5392,13 @@ The 0 is just counter, which starts at 0 on every page.
           escape="none").
         </p>
         <p>
-          The following `escapers' can be specified:
+          The following `escapers' can be specified (besides the ones defined with mm:escaper tags):
         </p>
         <document file="resources/taglibcontent.xml" mode="escapers" />
       </info>
       <see tag="writer" attribute="escape" />
       <see tag="function" />
+      <see tag="escaper" />
     </attribute>
   </tag>
   <tag>

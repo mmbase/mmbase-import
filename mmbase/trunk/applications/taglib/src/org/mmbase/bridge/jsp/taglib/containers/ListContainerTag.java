@@ -22,7 +22,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.13 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: ListContainerTag.java,v 1.14 2005-06-20 16:03:38 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -60,6 +60,12 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     public Query getQuery() {
         if (query.isUsed()) query = (Query) query.clone();
         return query;
+    }
+
+    // overridden from CloudReferrer.
+    public Cloud getCloudVar() throws JspTagException {
+        if (query == null) return super.getCloudVar(); // I think that this does not happen.
+        return query.getCloud();
     }
 
 
