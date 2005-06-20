@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<mm:content 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    type="text/xml" 
+    expires="-1">
+  <mm:cloud>
+
+    <mm:import externid="nodetype">images</mm:import>
+    <mm:import id="title">All</mm:import>
+      <libraries>
+	<mm:include referids="nodetype,title" page="library.jspx" />
+      </libraries>
+  </mm:cloud>
+</mm:content>

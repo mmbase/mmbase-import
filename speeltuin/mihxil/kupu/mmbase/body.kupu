@@ -9,7 +9,8 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: body.kupu,v 1.5 2005-06-08 17:32:01 michiel Exp $</kupu:id>
+  <kupu:id>$Id: body.kupu,v 1.6 2005-06-20 09:41:08 michiel Exp $</kupu:id>
+
 
   <kupu:part name="body">
     <mm:import externid="node" />

@@ -7,12 +7,12 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolbar.kupu,v 1.9 2005-06-15 11:11:41 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolbar.kupu,v 1.10 2005-06-20 09:41:08 michiel Exp $</kupu:id>
 
   <!-- lets limit ourselves to 2 ways of emphasis (in stead of 3) -->
   <kupu:part name="buttongroup-basicmarkup">
     <span class="kupu-tb-buttongroup" id="kupu-bg-basicmarkup">
-      <button type="button" class="kupu-bold" id="kupu-bold-button"     title="strong: alt-b" i18n:attributes="title" accesskey="b">&#160;</button>
+      <button type="button" class="kupu-bold"   id="kupu-bold-button"   title="strong: alt-b"   i18n:attributes="title" accesskey="b">&#160;</button>
       <button type="button" class="kupu-italic" id="kupu-italic-button" title="emphasis: alt-i" i18n:attributes="title" accesskey="i">&#160;</button>
     </span>
   </kupu:part>
@@ -21,32 +21,18 @@
   <kupu:part name="select-styles">
     <select id="kupu-tb-styles">
       <option value="P" i18n:translate="">Normal</option>
-      <option value="H1">
-        <span i18n:translate="">Heading 1</span>
-      </option>
-
-
-      <option value="H2">
-        <span i18n:translate="">Heading 2</span>
-      </option>
-      <option value="H3">
-        <span i18n:translate="">Heading 3</span>
-      </option>
-      <option value="H4">
-        <span i18n:translate="">Heading 4</span>
-      </option>
-      <option value="H5">
-        <span i18n:translate="">Heading 5</span>
-      </option>
-      <option value="H6">
-        <span i18n:translate="">Heading 6</span>
-      </option>
+      <option value="H1"><span i18n:translate="">Heading 1</span></option>
+      <option value="H2"><span i18n:translate="">Heading 2</span></option>
+      <option value="H3"><span i18n:translate="">Heading 3</span></option>
+      <option value="H4"><span i18n:translate="">Heading 4</span></option>
+      <option value="H5"><span i18n:translate="">Heading 5</span></option>
+      <option value="H6"><span i18n:translate="">Heading 6</span></option>
     </select>
   </kupu:part>
 
   <kupu:part name="logo">
     <span class="kupu-tb-buttongroup kupu-logo" style="float: right">
-      <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" accesskey="k"
+      <button type="button" class="kupu-logo" title="Kupu SVN/unreleased" 
               id="kupu-logo-button" i18n:attributes="title"
               onclick="window.open('http://kupu.oscom.org');"
               >&#160;</button>

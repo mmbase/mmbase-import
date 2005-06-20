@@ -1,17 +1,8 @@
 <kupu:feature name="mmbase" implementation="mmbase"
               xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+	      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
               xmlns:jsp="http://java.sun.com/JSP/Page"
               xmlns:kupu="http://kupu.oscom.org/namespaces/dist" >
-
-  <kupu:part name="jsincludes">
-    <script type="text/javascript" src="mmbase.js"><jsp:text> </jsp:text></script>
-  </kupu:part>
-
-
-  <kupu:part name="styles">
-    <link href="mmbase.css" rel="stylesheet" type="text/css" />
-  </kupu:part>
-
 
   <kupu:part name="tree-div">
     <div id="tree">
@@ -34,6 +25,55 @@
   <kupu:part name="kupu-div">
     <div id="kupu">
       <kupu:insert-part feature="body" part="fulleditor" />
+    </div>
+  </kupu:part>
+  <kupu:part name="header">
+    <div id="header">
+      <fmt:bundle basename="org.mmbase.jspeditors.editors">
+        <fmt:message key="richtext.editor" />
+        <div id="languageSelector">
+          <form name="languageform" method="get" action=".">
+	    <input type="hidden" name="node" value="${node}" />
+            <select onChange="document.forms['languageform'].submit();" name="language">
+              <mm:compare referid="rich_language" value="client">
+                <option value="client" selected="selected"><fmt:message key="default" /></option>
+              </mm:compare>
+              <mm:compare referid="rich_language" value="client" inverse="true">
+                <option value="client"><fmt:message key="default" /></option>
+              </mm:compare>
+              <mm:import id="languages" vartype="list">en,nl,de,fr,eo</mm:import>
+              <mm:stringlist referid="languages">
+                <mm:locale language="${_}" jspvar="locale">
+                  <mm:compare referid2="rich_language">
+                    <option value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
+                  </mm:compare>
+                  <mm:compare referid2="rich_language" inverse="true">
+                    <option value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
+                  </mm:compare>
+                </mm:locale>
+              </mm:stringlist>
+            </select>
+          </form>
+        </div>
+      </fmt:bundle>
+    </div>
+  </kupu:part>
+
+  <kupu:part name="navigate">
+    <div id="leftColumn">
+      <div id="leftColumnContent">
+        <kupu:insert-part feature="mmbase"     part="tree-div" />
+        <kupu:insert-part feature="mmbase"     part="node-div" />
+        <kupu:insert-part feature="mmbase"     part="preview-div" />
+      </div>
+    </div>
+  </kupu:part>
+
+  <kupu:part name="kupu-edit">
+    <div id="centerColumn">
+      <div id="centerColumnContent">
+        <kupu:insert-part feature="mmbase"     part="kupu-div" />
+      </div>
     </div>
   </kupu:part>
 

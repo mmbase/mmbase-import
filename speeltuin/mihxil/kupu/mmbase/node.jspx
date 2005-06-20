@@ -29,7 +29,8 @@
             </tr>
             <tr>
               <td colspan="2">
-                <mm:field name="lastmodifiedby" />:  <mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field>
+                <mm:field name="lastmodifiedby" />: 
+		<nobr><mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field></nobr>
               </td>
             </tr>
           </table>
