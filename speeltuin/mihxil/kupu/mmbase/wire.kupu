@@ -1,21 +1,17 @@
 <!--
    
-   @version $Id: wire.kupu,v 1.8 2005-06-15 11:11:41 michiel Exp $
+   @version $Id: wire.kupu,v 1.9 2005-06-20 09:41:08 michiel Exp $
    @author Michiel Meeuwissen <michiel.meeuwissen@gmail.com>
 -->
 <kupu:wire
     implementation="mmbase"
-    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
     >
 
   <kupu:fill-slot name="head">
     <kupu:insert-part feature="head"        part="meta" />
     <kupu:insert-part feature="head"        part="styles" />
     <kupu:insert-part feature="drawers"     part="styles" />
-    <kupu:insert-part feature="mmbase"      part="styles" />
     <kupu:insert-part feature="head"        part="jsincludes" />
     <kupu:insert-part feature="contextmenu" part="jsincludes" />
     <kupu:insert-part feature="head"        part="bootstrap-editor" />
@@ -23,53 +19,18 @@
     <!-- kupu:insert-part feature="sourceedit"  part="jsincludes" /-->
     <!-- kupu:insert-part feature="spellchecker" part="jsincludes" /-->
     <kupu:insert-part feature="drawers"     part="jsincludes" />
-
-    <kupu:insert-part feature="mmbase"      part="jsincludes" />
   </kupu:fill-slot>
 
   <kupu:fill-slot name="body">
     <kupu:insert-part feature="xmlconfig"  part="xmlconfig" />
-    <div id="header">
-      <fmt:bundle basename="org.mmbase.jspeditors.editors">
-        <fmt:message key="richtext.editor" />
-        <div id="languageSelector">
-          <form name="languageform" method="get" action=".">
-	    <input type="hidden" name="node" value="${node}" />
-            <select onChange="document.forms['languageform'].submit();" name="language">
-              <mm:compare referid="rich_language" value="client">
-                <option value="client" selected="selected"><fmt:message key="default" /></option>
-              </mm:compare>
-              <mm:compare referid="rich_language" value="client" inverse="true">
-                <option value="client"><fmt:message key="default" /></option>
-              </mm:compare>
-              <mm:import id="languages" vartype="list">en,nl,de,fr,eo</mm:import>
-              <mm:stringlist referid="languages">
-                <mm:locale language="${_}" jspvar="locale">
-                  <mm:compare referid2="rich_language">
-                    <option value="${_}" selected="selected"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
-                  </mm:compare>
-                  <mm:compare referid2="rich_language" inverse="true">
-                    <option value="${_}"><jsp:expression>locale.getDisplayName(locale)</jsp:expression></option>
-                  </mm:compare>
-                </mm:locale>
-              </mm:stringlist>
-            </select>
-          </form>
-        </div>
-      </fmt:bundle>
-    </div>
-    <div id="leftColumn">
-      <div id="leftColumnContent">
-        <kupu:insert-part feature="mmbase"     part="tree-div" />
-        <kupu:insert-part feature="mmbase"     part="node-div" />
-        <kupu:insert-part feature="mmbase"     part="preview-div" />
-      </div>
-    </div>
-    <div id="centerColumn">
-      <div id="centerColumnContent">
-        <kupu:insert-part feature="mmbase"     part="kupu-div" />
-      </div>
-    </div>
+
+    <kupu:insert-part feature="mmbase"  part="header" />
+    <kupu:insert-part feature="mmbase"  part="navigate" />
+    <kupu:insert-part feature="mmbase"  part="kupu-edit" />
+
+    <!--
+    <kupu:insert-part feature="body"       part="fulleditor" />
+    -->
   </kupu:fill-slot>
 
   <kupu:fill-slot name="fulleditor">
@@ -88,7 +49,7 @@
   </kupu:fill-slot>
 
   <kupu:fill-slot name="toolbar-buttons">
-    <!-- kupu:insert-part feature="toolbar" part="zoom" /-->
+    <kupu:insert-part feature="toolbar" part="zoom" />
     <kupu:insert-part feature="toolbar" part="logo" />
     <kupu:insert-part feature="toolbar" part="select-styles" />
     <kupu:insert-part feature="save" part="buttons" />

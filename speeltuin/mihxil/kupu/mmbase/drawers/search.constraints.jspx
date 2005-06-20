@@ -1,4 +1,13 @@
-<mm:isnotempty referid="search">
+<!-- 
+     This xml can be jsp:directive.include-d inside a node-container.
+     It need two variables to exist:
+     search:    string to search on
+     nodetype:  fields of which node-type must be considered
+     $Id: search.constraints.jspx,v 1.1 2005-06-20 09:41:08 michiel Exp $
+-->
+<mm:isnotempty 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    referid="search">
   <mm:composite operator="OR">
     <mm:fieldlist type="search" nodetype="$nodetype">
       <mm:fieldinfo type="typedescription">

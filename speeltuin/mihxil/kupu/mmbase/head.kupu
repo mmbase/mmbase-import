@@ -7,7 +7,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.7 2005-06-08 17:32:01 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.8 2005-06-20 09:41:08 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
     <title>MMBase Richtext Editor</title>
@@ -15,12 +15,12 @@
       <link rel="icon"          href="${_}" type="image/x-icon" />
       <link rel="shortcut icon" href="${_}" type="image/x-icon" />
     </mm:link>
-
     <mm:import id="kupu_common">../common</mm:import>
   </kupu:part>
 
   <kupu:part name="jsincludes">
     <script type="text/javascript" src="${kupu_common}/sarissa.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/sarissa_ieemu_xpath.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupuhelpers.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupueditor.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupubasetools.js"><jsp:text> </jsp:text></script>
@@ -46,10 +46,12 @@
     <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbytagname.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbyclassname.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="layout.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="mmbase.js"><jsp:text> </jsp:text></script>
   </kupu:part>
 
   <kupu:part name="styles">
     <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> <!-- fills image buttons and so on -->
+    <link href="mmbase.css" rel="stylesheet" type="text/css" />
   </kupu:part>
 
 

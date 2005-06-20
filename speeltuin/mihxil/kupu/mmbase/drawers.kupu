@@ -8,7 +8,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.6 2005-06-08 22:21:44 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.7 2005-06-20 09:41:08 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -22,19 +22,25 @@
   <kupu:part name="buttons">
     <span class="kupu-tb-buttongroup">
       <button type="button" class="kupu-image"        id="kupu-imagelibdrawer-button"  title="image" i18n:attributes="title">&#160;</button>
+      <!--
       <button type="button" class="kupu-inthyperlink" id="kupu-linklibdrawer-button"   title="link"  i18n:attributes="title">&#160;</button>
       <button type="button" class="kupu-table"        id="kupu-tabledrawer-button"     title="table" i18n:attributes="title">&#160;</button>
+      -->
     </span>
   </kupu:part>
 
   <kupu:part name="xmlconfig">
+
     <image_xsl_uri>drawers/drawer.xsl</image_xsl_uri>
     <link_xsl_uri>drawers/drawer.xsl</link_xsl_uri>
-    <image_libraries_uri>drawers/image.library.jspx</image_libraries_uri>
-    <link_libraries_uri>drawers/link.library.jspx</link_libraries_uri>
-    <search_images_uri>drawers/image.library.jspx?search=</search_images_uri>
-    <search_links_uri> drawers/link.library.jspx?search=</search_links_uri>
+    
+    <image_libraries_uri>drawers/libraries.jspx?nodetype=images</image_libraries_uri>
+    <link_libraries_uri>drawers/libraries.jspx?nodetype=urls</link_libraries_uri>
+
+    <search_images_uri>drawers/library.jspx?nodetype=images&amp;amp;search=</search_images_uri>
+    <search_links_uri> drawers/library.jspx?nodetype=urls&amp;amp;search=</search_links_uri>
   </kupu:part>
+
 
 
   <kupu:part name="linkdrawer">
@@ -50,7 +56,7 @@
         <input class="kupu-toolbox-st kupu-linkdrawer-input" type="text" />
         </td><td class="kupu-preview-button">
         <button type="button" onclick="drawertool.current_drawer.preview()"
-                i18n:translate="">Preview</button>
+		i18n:translate="">Preview</button>
         </td></tr>
         <tr><td colspan="2" align="center">
         <iframe frameborder="1" scrolling="auto" width="440" height="198"
