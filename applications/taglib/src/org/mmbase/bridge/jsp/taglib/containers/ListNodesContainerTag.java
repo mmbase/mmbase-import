@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.16 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.17 2005-06-20 16:03:38 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -72,6 +72,12 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         return query;
     }
 
+    // overridden from CloudReferrer.
+    public Cloud getCloudVar() throws JspTagException {
+        if (query == null) return super.getCloudVar(); // I think that this does not happen.
+        return query.getCloud();
+    }
+
     public int doStartTag() throws JspTagException {
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
@@ -80,13 +86,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             }
         } else {
             if (nodeManager != Attribute.NULL) {
-                query = getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery();
+                query = super.getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery();
                 if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
 
-                query = getCloudVar().createNodeQuery();
+                query = super.getCloudVar().createNodeQuery();
                 Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 if (element != Attribute.NULL) {

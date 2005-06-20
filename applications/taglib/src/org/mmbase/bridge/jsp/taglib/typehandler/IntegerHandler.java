@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.25 2004-08-05 14:14:16 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.26 2005-06-20 16:03:38 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -79,14 +79,14 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all node managers.
-            org.mmbase.bridge.Cloud cloud = tag.getCloudVar();
-            org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
-            org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
+            Cloud cloud = node != null ? node.getCloud() : tag.getCloudVar();
+            NodeManager typedef = cloud.getNodeManager("typedef");
+            NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
             //java.util.Collections.sort(l);
             while (i.hasNext()) {
                 Node nmNode = i.nextNode();
                 try {
-                    org.mmbase.bridge.NodeManager nm = cloud.getNodeManager(nmNode.getStringValue("name"));
+                    NodeManager nm = cloud.getNodeManager(nmNode.getStringValue("name"));
                     int listvalue = nmNode.getNumber();
                     buffer.append("<option value=\"");
                     buffer.append(listvalue);
@@ -99,7 +99,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                     buffer.append(">");
                     buffer.append(nm.getGUIName());
                     buffer.append("</option>\n");
-                } catch (org.mmbase.bridge.BridgeException e) {
+                } catch (BridgeException e) {
                     // ignore possible errors.
                 }
             }
@@ -122,9 +122,9 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all roles
-            org.mmbase.bridge.Cloud cloud = tag.getCloudVar();
-            org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
-            org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
+            Cloud cloud = node != null ? node.getCloud() : tag.getCloudVar();
+            NodeManager typedef = cloud.getNodeManager("reldef");
+            NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
 
             //java.util.Collections.sort(l);
             while (i.hasNext()) {
