@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.21 2005-05-25 09:36:30 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.22 2005-06-20 16:03:38 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -83,7 +83,6 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
     }
-
 
     /**
      * Lists do implement ContextProvider

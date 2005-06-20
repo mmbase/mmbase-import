@@ -23,7 +23,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.13 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.14 2005-06-20 16:03:38 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -58,18 +58,20 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
     }
 
 
+
     public int doStartTag() throws JspTagException {
         if (path == Attribute.NULL) {
             throw new JspTagException("Path attribute is mandatory");
         }
-        Cloud cloud = getCloudVar();
+        Node node = getNode();
+        Cloud cloud = node.getCloud();
         query = cloud.createQuery();
 
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
-        Node node = getNode();
+
         Step step = query.addStep(node.getNodeManager());
         query.setAlias(step, node.getNodeManager().getName() + "0");
         query.addNode(step, node);

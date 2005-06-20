@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * given).
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderTEI.java,v 1.12 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: NodeProviderTEI.java,v 1.13 2005-06-20 16:03:38 michiel Exp $ 
  */
 
 public class NodeProviderTEI extends TagExtraInfo {
@@ -29,10 +29,10 @@ public class NodeProviderTEI extends TagExtraInfo {
     }
 
     /**
-    * implementation of TagExtraInfo return values declared here
-    * should be filled at one point, currently function fillVars is responsible for
-    * that and gets called before every iteration
-    **/
+     * implementation of TagExtraInfo return values declared here
+     * should be filled at one point, currently function fillVars is responsible for
+     * that and gets called before every iteration
+     **/
     public VariableInfo[] getVariableInfo(TagData data){
         //this method is called /before/ the values are set
         //so we can not use the data members in this class

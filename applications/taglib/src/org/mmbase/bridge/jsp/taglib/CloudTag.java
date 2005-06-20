@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.122 2005-05-31 15:36:40 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.123 2005-06-20 16:03:38 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -66,6 +66,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private static final String DEFAULT_CLOUD_NAME = "mmbase";
 
     private static final String REALM = "realm_";
+
+    public static final String SESSIONNAME_PROPERTY = "org.mmbase.taglib.sessionname";
 
     private String jspVar;
 
@@ -106,7 +108,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     /**
      * @return the default cloud context
      **/
-    public CloudContext getDefaultCloudContext() throws JspTagException {
+    public  CloudContext getDefaultCloudContext() throws JspTagException {
         if (cloudContext == null) {
             cloudContext = ContextProvider.getCloudContext(cloudURI.getString(this));
         }
@@ -485,7 +487,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             Object was = pageContext.getAttribute(jspVar);
             if (was != null && ! was.equals(cloud)) {
                 throw new JspTagException("Jsp-var '" + jspVar + "' already in pagecontext! (" + was + "), can't write " + cloud + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-            }
+            }            
             pageContext.setAttribute(jspVar, cloud);
         }
 
@@ -531,7 +533,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 if (session == null) {
                     throw new JspTagException("No session, cannot store cloud in session");
                 }
-                session.setAttribute(getSessionName(), cloud);
+                String sn = getSessionName();
+                cloud.setProperty(SESSIONNAME_PROPERTY, sn);
+                session.setAttribute(sn, cloud);
             }
             return true;
         }
@@ -1189,7 +1193,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return SKIP_BODY;
         } else {
             if (session != null && sessionCloud) {
-                session.setAttribute(getSessionName(), cloud);
+                String sn = getSessionName();
+                cloud.setProperty(SESSIONNAME_PROPERTY, sn);
+                session.setAttribute(sn, cloud);
             }
         }
         return EVAL_BODY;

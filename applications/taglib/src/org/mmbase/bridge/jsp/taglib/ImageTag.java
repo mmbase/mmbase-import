@@ -25,16 +25,21 @@ import org.mmbase.module.builders.Images;
 
 import org.mmbase.security.Rank;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Produces an url to the image servlet mapping. Using this tag makes
  * your pages more portable to other system, and hopefully less
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.54 2005-05-04 11:03:12 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.55 2005-06-20 16:03:38 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
+
+    private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
 
     private static final int MODE_URL = 0;
     private static final int MODE_HTML_ATTRIBUTES = 1;
@@ -86,24 +91,23 @@ public class ImageTag extends FieldTag {
          */
         String sessionName = "";
 
-        if(! getCloudVar().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
+        Cloud cloud = node.getCloud();
+
+        if(! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
             // the user is not anonymous!
             // Need to check if node is readable by anonymous.
             // in that case URLs can be simpler
-            CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
-            if (ct != null) {
-                CloudContext cc = ct.getDefaultCloudContext();
-                try {
-                    Cloud anonymousCloud = cc.getCloud(ct.getName());
-                    anonymousCloud.getNode(node.getNumber());
-                } catch (org.mmbase.security.SecurityException se) {
-                    // two situations are anticipated:
-                    // - node not readable by anonymous
-                    // - no anonymous user defined
-                    sessionName = ct.getSessionName();
+            // two situations are anticipated:
+            // - node not readable by anonymous
+            // - no anonymous user defined
+            try{
+                Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloud.getName());
+                if (! anonymousCloud.mayRead(node.getNumber())) {
+                    sessionName = (String) cloud.getProperty(CloudTag.SESSIONNAME_PROPERTY);
                 }
-            } else {
-                // how can this happen?
+            } catch (org.mmbase.security.SecurityException se) {
+                log.debug(se.getMessage());
+                sessionName = (String) cloud.getProperty(CloudTag.SESSIONNAME_PROPERTY);
             }
         }
 
