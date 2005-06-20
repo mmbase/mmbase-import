@@ -161,6 +161,9 @@ function updateTree(nodeNumber, title) {
  * result is taken from cache.
  */
 function loadNode(nodeNumber) {
+    
+    var nodeDiv = document.getElementById('nodefields');
+
     if (nodeNumber == currentNode) {
         kupu.logMessage(_("RELOAD"));
         loadedNodes.remove(nodeNumber);
@@ -169,7 +172,7 @@ function loadNode(nodeNumber) {
     }
     kupu.logMessage(_("Loading node") + " " + nodeNumber);
     var currentA;
-    var nodeDiv = document.getElementById('node');
+
     if (currentNode != undefined) {
         // store corrent values in loaded-values maps.
         loadedNodes.add(currentNode, nodeDiv.innerHTML);
@@ -179,25 +182,24 @@ function loadNode(nodeNumber) {
             currentA.className = "";
         }
 
-     }
-     var nodeXml = loadedNodes.get(nodeNumber);
-     if (nodeXml == null) {
-         kupu.logMessage(_("getting node")); 
-         var request = getRequest();
-         request.open('GET', 'node.jspx?node=' + nodeNumber, false);
-         request.send('');
-         nodeXml = serialize(request);
+    }
+    var nodeXml = loadedNodes.get(nodeNumber);
+    if (nodeXml == null) {
+        kupu.logMessage(_("getting node")); 
+        var dom = Sarissa.getDomDocument();
+        dom.async = false;
+        dom.load('node.jspx?node=' + nodeNumber);
+        nodeXml = Sarissa.serialize(dom);
+        loadedNodes.add(nodeNumber, nodeXml);
     } else {
         kupu.logMessage(_("loading node")); 
         var request = getRequest();
         request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
         request.send('');        
     }
-        
+    
     nodeDiv.innerHTML = nodeXml;
-    //alert("" + nodeDiv.title);
-    //document.getElementById("header").innerHTML = nodeDiv.title;
-
+    
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
     if (nodeBodyXml == null) {
         var dom = Sarissa.getDomDocument();
@@ -236,6 +238,7 @@ function loadRelated(nodeNumber) {
     }
     var related = document.getElementById('node_' + nodeNumber);
     unloadedTrees.add(nodeNumber, related.innerHTML);
+
     related.innerHTML = treeXml;
     uncollapsedNodes['node' + nodeNumber] = true;
 }

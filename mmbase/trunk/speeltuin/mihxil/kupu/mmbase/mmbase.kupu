@@ -11,7 +11,7 @@
   </kupu:part>
 
   <kupu:part name="node-div">
-    <div id="node">
+    <div id="nodefields">
       <mm:include page="node.jspx" />
     </div>
   </kupu:part>

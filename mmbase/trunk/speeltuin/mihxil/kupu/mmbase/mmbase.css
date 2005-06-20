@@ -29,12 +29,12 @@ img {
 }
 
 
-#node a:hover { 
+#nodefields a:hover { 
    background-color: #527d94;
 }
 
 
-#node {   
+#nodefields {   
   background-color: #76a2b6;
   overflow: hidden;
   padding-right: 0px;
@@ -48,13 +48,13 @@ img {
 } 
 
 
-#node td {
+#nodefields td {
   vertical-align: top;
 }
-#node p { 
+#nodefields p { 
   margin: 0px;
 }
-#node input {
+#nodefields input {
   user-input: enabled;
 }
 

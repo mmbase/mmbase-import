@@ -64,7 +64,7 @@ function adjustLayout() {
 
     adjustToolBoxesLayout();
 
-    var nodeHeight = xHeight('node');
+    var nodeHeight = xHeight('nodefields');
 
     xHeight("tree", maxHeight - nodeHeight - 1);
 
