@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * 
  */
-public class FieldAlias {
+public class FieldAlias implements MMBaseObserver {
  
    // logger
    static private Logger log = Logging.getLoggerInstance(FieldAlias.class); 
@@ -41,9 +41,10 @@ public class FieldAlias {
    private String externfield;
    private String key;
    private String externkey;
+   private Forum forum;
 
    public FieldAlias (String id) {
-	log.info("Field alias on : "+id);
+	//log.info("Field alias on : "+id);
 	this.id=id;
    }
   
@@ -76,7 +77,7 @@ public class FieldAlias {
 	// is it a key mapping ?
 	if (key!=null) {
 		String keyvalue=node.getStringValue(key);
-		log.info("key="+key+" keyvalue="+keyvalue+" object="+object);
+		//log.info("key="+key+" keyvalue="+keyvalue+" object="+object);
 		Cloud cloud = ForumManager.getCloud();
                 NodeManager manager=cloud.getNodeManager(extern);
         	NodeQuery query = manager.createQuery();
@@ -93,7 +94,9 @@ public class FieldAlias {
    }
 
    public void init(Forum forum) {
+	this.forum = forum;
     	NodeManager nodemanager = ForumManager.getCloud().getNodeManager(extern);
+	MMBase.getMMBase().addLocalObserver(extern, this);
         NodeQuery query = nodemanager.createQuery();
         org.mmbase.bridge.NodeList result = nodemanager.getList(query);
         NodeIterator i = result.nodeIterator();
@@ -119,5 +122,35 @@ public class FieldAlias {
 	}
    }
 
+    public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+	//log.info("c="+ctype+" b="+builder+" number="+number);
+	if (builder.equals(extern) && ctype.equals("c")) {
+            org.mmbase.bridge.Node node = ForumManager.getCloud().getNode(number);
+	    if (object.equals("posters")) {
+		// mapping on account field
+		if (key.equals("account")) {
+			Poster po = forum.getPoster(node.getStringValue(externkey));	
+			if (po!=null) {
+				if (field.equals("password")) {
+					po.setAliasedPassword(node.getStringValue(externfield));
+				} else if (field.equals("firstname")) {
+					po.setAliasedFirstName(node.getStringValue(externfield));
+				} else if (field.equals("lastname")) {
+					po.setAliasedLastName(node.getStringValue(externfield));
+				}
+			}
+		}
+	    }
+        }
+	return true;
+    }
+
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+	return nodeChanged(machine,number,builder,ctype);
+    }
+
+    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+	return nodeChanged(machine,number,builder,ctype);
+     }
 
 }
