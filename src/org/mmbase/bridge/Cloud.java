@@ -21,11 +21,13 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.52 2005-04-25 11:11:54 michiel Exp $
+ * @version $Id: Cloud.java,v 1.53 2005-06-21 19:14:04 michiel Exp $
  */
 public interface Cloud {
 
-    public static final String PROP_XMLMODE = "org.mmbase.xml-mode";
+    public static final String PROP_XMLMODE     = "org.mmbase.xml-mode";
+
+    public static final String PROP_SESSIONNAME = "org.mmbase.cloud.sessionname";
 
     /**
      * Returns the node with the specified number from this cloud. The returned
