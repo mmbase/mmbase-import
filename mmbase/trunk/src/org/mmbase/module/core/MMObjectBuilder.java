@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.311 2005-06-21 15:40:24 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.312 2005-06-21 19:22:52 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -303,7 +303,7 @@ public class MMObjectBuilder extends MMTable {
             }
             protected Object getFunctionValue(Set functions, Parameters parameters) {
                 String function = (String) parameters.get("function");
-                if (function == null) {
+                if (function == null || function.equals("")) {
                     Map info = new HashMap();
                     Iterator i = functions.iterator();
                     while (i.hasNext()) {
@@ -313,6 +313,7 @@ public class MMObjectBuilder extends MMTable {
                     return info;
                 } else {
                     Function func = getFunction(function);
+                    if (func == null) return "No such function " + function;
                     return func.getDescription();
                 }
             }
