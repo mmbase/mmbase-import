@@ -1,5 +1,9 @@
 Migratie issues
 
+2005-06-21
+    please run /migrate-2005-06-21.jsp
+    to make all layouts for educations and learnblocks visible
+
 2005-06-15
 
     An extra field "showtitle" is added for a number of builders.
