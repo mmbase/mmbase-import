@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.47 2005-05-12 17:42:54 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.48 2005-06-21 06:09:55 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -291,8 +291,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             log.debug("date: '" + date + "'");
         }
 
-        if (date == null) { // don't know if it can come here, but if it does, an exception must be thrown!
-            throw new JspTagException("Could not evaluate time " + useTime);
+        if (date == null) { // date fields can be null.
+            date = new Date(0);
         }
 
         // Calculate the offset
