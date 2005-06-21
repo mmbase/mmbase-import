@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.5 2005-06-21 15:39:41 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.6 2005-06-21 19:23:30 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.function.BeanFunction
@@ -44,10 +44,14 @@ public abstract class NodeFunction extends AbstractFunction {
     }
 
     /**
-     * Implements the function on a certain node.
+     * Implements the function on a certain node. Override this method <em>or</em> it's bridge
+     * counter-part {@link #getFunctionValue(org.mmbase.bridge.Node, Parameters)}.  Overriding the
+     * bridge version has two advantages. It's easier, and mmbase security will be honoured.
      */
     protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
+        if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
         final org.mmbase.bridge.Cloud cloud   = (org.mmbase.bridge.Cloud)  parameters.get(Parameter.CLOUD);
+        if (cloud == null) throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!");
         final org.mmbase.bridge.Node node     = cloud.getNode(coreNode.getNumber());
         return getFunctionValue(node, parameters);
             
