@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectCloudContextUser.java,v 1.1 2005-03-16 20:04:04 michiel Exp $
+ * @version $Id: ASelectCloudContextUser.java,v 1.2 2005-06-21 07:36:37 michiel Exp $
  * @since  MMBase-1.8
  * @see ASelectAuthentication
  */
@@ -38,10 +38,22 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
         super(node, number, app);
     }
 
+    private String rank = null;
     // constructor, perhaps needs more argumetns
-    protected ASelectCloudContextUser(String userName, long number, String app) {
+    protected ASelectCloudContextUser(String userName, long number, String app, String rank) {
         super(getUser(userName), number, app);
+        this.rank = rank;
     }
+
+        // javadoc inherited
+    public Rank getRank() throws SecurityException {
+        if (rank != null) {
+            return Rank.getRank(rank);
+        } else {
+            return super.getRank();
+        }
+    }
+
 
     protected static MMObjectNode getUser(String userName) {
         if (userName == null) return null;
