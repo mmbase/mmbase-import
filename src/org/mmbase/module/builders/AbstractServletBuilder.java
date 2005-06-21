@@ -13,10 +13,13 @@ import java.util.*;
 
 import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.servlet.BridgeServlet;
+import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.security.Rank;
 
 /**
  * Some builders are associated with a servlet. Think of images and attachments.
@@ -25,7 +28,7 @@ import org.mmbase.util.functions.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.23 2005-05-09 10:02:18 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.24 2005-06-21 19:18:50 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -45,12 +48,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     };
 
 
-    public final static Parameter[] SERVLETPATH_PARAMETERS = {
-        new Parameter("session",  String.class), // For read-protection
-        new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-        new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-        new Parameter("argument", String.class) // Parameter to use for the argument, overrides 'field'
-    };
     public final static Parameter[] FORMAT_PARAMETERS   = {};
     public final static Parameter[] MIMETYPE_PARAMETERS = {};
 
@@ -316,6 +313,107 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return getSGUIIndicator(node, new ParametersImpl(GUI_PARAMETERS).set("field", field));
     }
 
+    {
+        // you can of course even implement it anonymously.
+        addFunction(new NodeFunction("servletpath", 
+                                         new Parameter[] {
+                                             new Parameter("session",  String.class), // For read-protection
+                                             new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+                                             new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+                                             new Parameter("argument", String.class), // Parameter to use for the argument, overrides 'field'
+                                             Parameter.REQUEST,
+                                             Parameter.CLOUD
+                                         },
+                                         ReturnType.STRING) {
+                {
+                    setDescription("Returns the path associated with this builder or node.");
+                }
+
+                protected StringBuffer getServletPath(Parameters a) {
+                    StringBuffer servlet = new StringBuffer();
+                    // third argument, the servlet context, can use a relative path here, as an argument
+                    String context             = (String) a.get("context");
+
+                    if (context == null) {
+                        // no path to context-root specified explitiely, try to determin:
+                        HttpServletRequest request = (HttpServletRequest) a.get(Parameter.REQUEST);
+                        if (request == null) {
+                            // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
+                            servlet.append(AbstractServletBuilder.this.getServletPath()); // use 'absolute' path (starting with /)
+                        } else {
+                            servlet.append(AbstractServletBuilder.this.getServletPath(request.getContextPath()));
+                        }
+                    } else {
+                        // explicitely specified the path!
+                        servlet.append(AbstractServletBuilder.this.getServletPath(context));
+                    }
+                    return servlet;
+                }
+
+                public Object getFunctionValue(MMObjectNode node, Parameters a) {
+                    StringBuffer servlet = getServletPath(a);
+
+                    String session = (String) a.get("session");
+                    if (session == null) {
+                        Cloud cloud = (Cloud) a.get(Parameter.CLOUD);
+                        
+                        if(cloud != null && ! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
+                            // the user is not anonymous!
+                            // Need to check if node is readable by anonymous.
+                            // in that case URLs can be simpler
+                            // two situations are anticipated:
+                            // - node not readable by anonymous
+                            // - no anonymous user defined
+                            try{
+                                Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloud.getName());
+                                if (! anonymousCloud.mayRead(node.getNumber())) {
+                                    session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
+                                }
+                            } catch (org.mmbase.security.SecurityException se) {
+                                log.debug(se.getMessage());
+                                session = (String) cloud.getProperty(Cloud.PROP_SESSIONNAME);
+                            }
+                        }
+                        if (session == null) session = "";
+                    }
+                    
+                    String argument = (String) a.get("argument");
+                    // argument representint the node-number
+                    
+                    if (argument == null) {
+                        String fieldName   = (String) a.get("field");
+                        if (fieldName == null) {
+                            argument = node.getStringValue("number");
+                        } else {
+                            if (log.isDebugEnabled()) log.debug("Getting 'field' '" + fieldName + "'");
+                            argument = node.getStringValue(fieldName);
+                        }
+                    }
+                    
+                    String fileName = node.getStringValue("filename");
+                    boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
+                    
+                    if (usesBridgeServlet && ! session.equals("")) {
+                        servlet.append("session=" + session + "+");
+                    }
+                    
+                    if (! addFileName) {
+                        return servlet.append(argument).toString();
+                    } else {
+                        StringObject fn = new StringObject(fileName);
+                        fn.replace(" ", "_");
+                        servlet.append(argument).append('/').append(fn.toString());
+                        return servlet.toString();
+                    }
+                }
+
+                public Object getFunctionValue(Parameters a) {
+                    return getServletPath(a).toString();
+                }
+            });    
+
+    }
+        
     /**
      * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
      * associated with this builder. The field can optionally be the number field to obtain a full
@@ -329,7 +427,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("servletpath", "" + SERVLETPATH_PARAMETERS + " Returns the path to a the servlet presenting this node. All arguments are optional");
             info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
             info.put("mimetype", "Returns the mimetype associated with this object");
@@ -341,58 +438,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (function.equals("servletpath")) {
-            if (log.isDebugEnabled()) {
-                log.debug("getting servletpath with args " + args);
-            }
-            // wrap the argument List into an 'Parameters', which makes
-            // it easier to deal with.
-            Parameters a;
-            if (args instanceof Parameters) {
-                a = (Parameters) args;
-            } else {
-                a = new ParametersImpl(SERVLETPATH_PARAMETERS, args);
-            }
-            // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
-            String session = a.getString("session");
 
-            String argument = (String) a.get("argument");
-            // argument represents the node-number
-
-            if (argument == null) {
-                // second argument, which field to use, can for example be 'number' (the default)
-                String fieldName   = (String) a.get("field");
-                if (fieldName == null) {
-                    argument = node.getStringValue("number");
-                } else {
-                    if (log.isDebugEnabled()) log.debug("Getting 'field' '" + fieldName + "'");
-                    argument = node.getStringValue(fieldName);
-                }
-            }
-            // third argument, the servlet context, can use a relative path here, as an argument
-            String context = (String) a.get("context");
-
-            // ok, make the path.
-            StringBuffer servlet = new StringBuffer();
-            if (context == null) {
-                servlet.append(getServletPath()); // use 'absolute' path (starting with /)
-            } else {
-                servlet.append(getServletPath(context));
-            }
-            String fileName = node.getStringValue("filename");
-            boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
-
-            if (usesBridgeServlet && ! session.equals("")) {
-                servlet.append("session=" + session + "+");
-            }
-
-            if (! addFileName) {
-                return servlet.append(argument).toString();
-            } else {
-                StringObject fn = new StringObject(fileName);
-                fn.replace(" ", "_");
-                servlet.append(argument).append('/').append(fn.toString());
-                return servlet.toString();
-            }
         } else if (function.equals("servletpathof")) {
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
             return getServletPathWithAssociation((String) args.get(0), MMBaseContext.getHtmlRootUrlPath());
