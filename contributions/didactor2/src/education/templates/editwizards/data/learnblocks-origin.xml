@@ -6,7 +6,7 @@
 
     <action type="create">
        <object type="learnblocks">
-          <relation destination="$origin" role="posrel" createdir="source"/>
+         <relation destination="$origin" role="posrel" createdir="source"/>
        </object>
     </action>
 
@@ -19,13 +19,18 @@
         <relation destination="competencies" role="developcomp" />
         <relation destination="preassessments" role="related" />
         <relation destination="postassessments" role="related" />
-        <relation destination="paragraphs" role="posrel">
+        <relation destination="images" role="sizerel" />
+       <relation destination="paragraphs" role="posrel">
            <object>
               <relation destination="attachments" role="posrel" />
               <relation destination="images" role="pos2rel" />
               <relation destination="urls" role="posrel" />
            </object>
         </relation>
+        <relation destination="audiotapes" role="posrel" />
+        <relation destination="videotapes" role="posrel" />
+        <relation destination="attachments" role="posrel" />
+        <relation destination="urls" role="posrel" />
     </action>
 
     <action type="delete" />
@@ -33,7 +38,18 @@
     <lists>
        <optionlist include="paragraphs/images_position.xml" />
        <optionlist include="paragraphs/boolean.xml" />
-    </lists>
+      <optionlist name="layout">
+        <option id="0">Tekst boven</option>
+        <option id="1">Tekst onder</option>
+        <option id="2">Tekst links</option>
+        <option id="3">Tekst rechts</option>
+      </optionlist>
+
+      <optionlist name="imagelayout">
+        <option id="0">Hozontaal</option>
+        <option id="1">Verticaal</option>
+      </optionlist>
+   </lists>
 
 
     <steps>
@@ -49,9 +65,33 @@
             <prompt>Naam</prompt>
         </field>
 
+      <field name="showtitle" ftype="enum">
+         <prompt xml:lang="nl">Titel laten zien</prompt>
+         <prompt xml:lang="en">Show title</prompt>
+         <optionlist select="boolean"></optionlist>
+      </field>
+ 
+
         <field name="intro" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
+
+        <field name="layout" ftype="enum">
+            <prompt>Layout</prompt>
+            <optionlist select="layout" />
+        </field>
+         <field name="imagelayout" ftype="enum">
+            <prompt>Layout afbeeldingen</prompt>
+            <optionlist select="imagelayout" />
+        </field>
+
+       <list role="sizerel" extends="list/sizedimages.xml" /> 
+        <list role="posrel" extends="list/attachments-posrel.xml" />
+        <list role="posrel" extends="list/audiotapes-posrel.xml" />
+        <list role="posrel" extends="list/videotapes-posrel.xml" />
+
+        <list destination="urls" role="posrel" extends="list/urls-posrel.xml" />
+ 
 
         <!--
            We want to list learnobjects, but there are objects that extend learnobject that we want to show.
@@ -64,7 +104,7 @@
            Note: the 'wizard.xsl' file depends on the title being "Bijbehorende leerobjecten" in order to
            select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
         -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" 
             fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
             <title>Bijbehorende leerobjecten</title>
             <item>
