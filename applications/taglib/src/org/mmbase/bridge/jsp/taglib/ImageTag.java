@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.55 2005-06-20 16:03:38 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.56 2005-06-21 19:27:11 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -77,6 +77,7 @@ public class ImageTag extends FieldTag {
         }
     }
 
+
     public int doStartTag() throws JspTagException {
         node = null;
         getNodeVar();
@@ -84,34 +85,10 @@ public class ImageTag extends FieldTag {
             throw new JspTagException("Found parent node '" + node.getNumber() + "' of type " + node.getNodeManager().getName() + " does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
 
-        // some servlet implementation's 'init' cannot determin this theirselves, help them a little:
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
 
-        /* perhaps 'getSessionName' should be added to CloudProvider
-         */
-        String sessionName = "";
+        String servletArgument; // can be the node-number or a template (if that is configured to be allowed).
 
-        Cloud cloud = node.getCloud();
-
-        if(! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
-            // the user is not anonymous!
-            // Need to check if node is readable by anonymous.
-            // in that case URLs can be simpler
-            // two situations are anticipated:
-            // - node not readable by anonymous
-            // - no anonymous user defined
-            try{
-                Cloud anonymousCloud = cloud.getCloudContext().getCloud(cloud.getName());
-                if (! anonymousCloud.mayRead(node.getNumber())) {
-                    sessionName = (String) cloud.getProperty(CloudTag.SESSIONNAME_PROPERTY);
-                }
-            } catch (org.mmbase.security.SecurityException se) {
-                log.debug(se.getMessage());
-                sessionName = (String) cloud.getProperty(CloudTag.SESSIONNAME_PROPERTY);
-            }
-        }
-
-        String servletArgument;
         String t = template.getString(this);
         if ("".equals(t)) {
             // the node/image itself
@@ -132,16 +109,13 @@ public class ImageTag extends FieldTag {
 
 
         String servletPath;
-        {
-            Parameters args = new ParametersImpl(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
-                .set("session",  sessionName)
-                .set("context",  makeRelative.booleanValue() ?
-                     UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath()
-                     )
-                .set("argument", servletArgument)
-                ;
-            servletPath = node.getFunctionValue("servletpath", args).toString();
-        }
+        Function servletPathFunction = node.getFunction("servletpath");        
+        Parameters args = servletPathFunction.createParameters();
+        args.set("context",  makeRelative.booleanValue() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
+            .set("argument", servletArgument)
+            ;
+        fillStandardParameters(args);
+        servletPath = servletPathFunction.getFunctionValue( args).toString();
 
         helper.useEscaper(false);
         prevDimension = pageContext.getAttribute("dimension");
