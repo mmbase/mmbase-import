@@ -11,6 +11,7 @@
   <searchqueryhandler classname="org.mmbase.storage.search.implementation.database.MySqlSqlHandler" />
 
   <attributes>
+
     <!-- MySQL does not default support transactions, but it's Metadata object claims that it does
              So set support to false.
     -->
@@ -18,6 +19,7 @@
 
     <!-- Explictly encode text when storing it in the database  -->
     <option name="database-force-encode-text" />
+
 
     <!-- Use Blobs  -->
     <option name="database-supports-blob" />
@@ -83,6 +85,7 @@
     <disallowed-field name="type" replacement="m_type"/>
     <disallowed-field name="use" replacement="m_use"/>
     <disallowed-field name="write" replacement="m_write"/> <!-- standard SQL keyword -->
+    <disallowed-field name="show" replacement="m_show"/> 
   </disallowed-fields>
 
 </storage>
