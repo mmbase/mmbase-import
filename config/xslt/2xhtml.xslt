@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.13 2005-06-15 06:44:02 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.14 2005-06-21 09:29:12 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -11,7 +11,6 @@
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
-    xmlns="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="node mmxf o"
     version="1.0" >
 
@@ -149,12 +148,12 @@
       <xsl:apply-templates select="$relatednodes[@type='images']" mode="inline" />
       <xsl:apply-templates />
       <xsl:if test="count($relatednodes[@type='urls'])">
-	<br />
-	<xsl:apply-templates select="$relatednodes[@type='urls']" mode="inline" />
+        <br />
+        <xsl:apply-templates select="$relatednodes[@type='urls']" mode="inline" />
       </xsl:if>
     </xsl:element>
   </xsl:template>
-
+  
   <xsl:template match="mmxf:a" mode="sub">
     <xsl:param name="relatednodes" />
     <xsl:variable name="urls"   select="$relatednodes[@type='urls']" />
