@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.10 2005-05-04 23:34:18 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.11 2005-06-21 15:00:47 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataType {
@@ -76,6 +76,10 @@ public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataTyp
      * The return type of a function that returns a Set.
      */
     public static final ReturnType SET = new ReturnType(Set.class, "Set");
+    /**
+     * The return type of a function that returns a Map.
+     */
+    public static final ReturnType MAP = new ReturnType(Map.class, "Map");
 
     /**
      * The return type of a function is unknown.
