@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.123 2005-06-20 16:03:38 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.124 2005-06-21 19:16:39 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -67,7 +67,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private static final String REALM = "realm_";
 
-    public static final String SESSIONNAME_PROPERTY = "org.mmbase.taglib.sessionname";
 
     private String jspVar;
 
@@ -473,7 +472,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private int evalBody() throws JspTagException {
-
+        
         if (getId() != null) { // writeclou to context.
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
@@ -481,6 +480,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (cloud == null) {
             return SKIP_BODY;
         }
+        cloud.setProperty("request", request);
 
         if (jspVar != null) {
             log.debug("Setting jspVar " + jspVar);
@@ -534,7 +534,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                     throw new JspTagException("No session, cannot store cloud in session");
                 }
                 String sn = getSessionName();
-                cloud.setProperty(SESSIONNAME_PROPERTY, sn);
+                cloud.setProperty(Cloud.PROP_SESSIONNAME, sn);
                 session.setAttribute(sn, cloud);
             }
             return true;
@@ -1194,7 +1194,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         } else {
             if (session != null && sessionCloud) {
                 String sn = getSessionName();
-                cloud.setProperty(SESSIONNAME_PROPERTY, sn);
+                cloud.setProperty(Cloud.PROP_SESSIONNAME, sn);
                 session.setAttribute(sn, cloud);
             }
         }
