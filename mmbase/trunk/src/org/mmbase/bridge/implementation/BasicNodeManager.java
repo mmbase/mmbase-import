@@ -24,6 +24,7 @@ import org.mmbase.security.Operation;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.NodeFunction;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
 
@@ -38,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.94 2005-06-08 11:47:25 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.95 2005-06-21 15:36:58 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -303,7 +304,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
             if (resultList == null) {
                 resultList = mmb.getSearchQueryHandler().getNodes(query, builder);
-                builder.processSearchResults(resultList);
+                builder.processSearchResults(resultList);                
                 nodeListCache.put(query, resultList);
             }
 
@@ -499,12 +500,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Set getFunctions() {
-        Set functions = builder.getFunctions();
+        Collection functions = builder.getFunctions();
         // wrap functions
         Set functionSet = new HashSet();
         for (Iterator i = functions.iterator(); i.hasNext(); ) {
             Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this,fun));
+            functionSet.add(new BasicFunction(getCloud(), fun));
         }
         return functionSet;
     }
@@ -512,18 +513,21 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public Function getFunction(String functionName) {
         // first try the functions of this builder itself:
         Function function = builder != null ? builder.getFunction(functionName) : null;
-
-        // We are not very interested in NodeFunction, because those would logically be requested
-        // from a node, not a nodemanager.
-        // so, node-functions from typedef take preference.
-        if (function == null || function instanceof MMObjectBuilder.NodeFunction) {
+        if (function == null) {
+            // it may be a node-function on the type-def node then
             Function typedefFunction = getNode().getFunction(functionName);
-            if (typedefFunction != null) function = typedefFunction;
+            if (typedefFunction != null) {
+                function = new BasicFunction(this, typedefFunction);
+            }
+        } else {
+            // specify cloud rather then node, otherwise it will be called as function on type-def node.
+            function = new BasicFunction(getCloud(), function);
         }
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist.");
         }
-        return new BasicFunction(this, function);
+        return function;
+
     }
 
 }
