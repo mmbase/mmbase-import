@@ -13,6 +13,6 @@ public static class MyClass {
 }
 %>
 <mm:functioncontainer>
-   <mm:param name="MyParameter">Kloink</mm:param>
+   <mm:param name="myParameter">Kloink</mm:param>
    <mm:function  classname="MyClass" name="myfunction" />
 </mm:functioncontainer>
