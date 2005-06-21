@@ -86,6 +86,7 @@
     <disallowed-field name="use" replacement="m_use"/>
     <disallowed-field name="write" replacement="m_write"/> <!-- standard SQL keyword -->
     <disallowed-field name="show" replacement="m_show"/> 
+    <disallowed-field name="index" replacement="m_index"/> 
   </disallowed-fields>
 
 </storage>
