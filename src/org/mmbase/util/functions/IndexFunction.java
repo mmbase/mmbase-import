@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.2 2005-06-17 12:55:08 nico Exp $
+ * @version $Id: IndexFunction.java,v 1.3 2005-06-21 15:39:41 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -109,7 +109,7 @@ public class IndexFunction extends FunctionProvider {
         return buf.toString();
     }
 
-    private static Parameter[] ARGS = new Parameter[] {
+    private static Parameter[] INDEX_ARGS = new Parameter[] {
         Parameter.CLOUD,
         new Parameter("root", Node.class, false),
         new Parameter("separator", String.class, "\\."),
@@ -118,8 +118,14 @@ public class IndexFunction extends FunctionProvider {
         new Parameter("role", String.class, "index")
     };
 
+    private static Parameter[] MOVE_ARGS = new Parameter[] {
+        Parameter.CLOUD,
+        new Parameter("root",    Node.class, false),
+        new Parameter("newroot", Node.class, false)
+    };
 
-    protected static MMObjectBuilder.NodeFunction index = new MMObjectBuilder.NodeFunction("index", ARGS, ReturnType.STRING) {
+
+    protected static NodeFunction index = new NodeFunction("index", INDEX_ARGS, ReturnType.STRING) {
             
             {
                 setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
@@ -146,7 +152,7 @@ public class IndexFunction extends FunctionProvider {
                 
                 // now we have to determine the path from node to root.        
                 GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(node), 10, nm, role, "source");
-                Query template = tree.getTemplate();
+                NodeQuery template = tree.getTemplate();
                 if (root != null) {
                     StepField sf = template.addField(role + ".root");
                     template.setConstraint(template.createConstraint(sf, root));
