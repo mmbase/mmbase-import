@@ -15,6 +15,7 @@ import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Cloud;
 
 /**
  * A tag which is a 'NodeReferrerTag's can be the child of a
@@ -23,7 +24,7 @@ import org.mmbase.bridge.Node;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.20 2005-05-11 09:47:31 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.21 2005-06-21 19:28:23 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
@@ -69,10 +70,12 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         NodeProvider np = findNodeProvider(false);
-        if (np != null && p.containsParameter(Parameter.NODE)) {
-            if (p.get(Parameter.NODE) == null) {
-                p.set(Parameter.NODE, np.getNodeVar());
-            }
+        if (np != null) {
+            Node node = np.getNodeVar();
+            Cloud cloud = node.getCloud();
+            p.setIfDefined(Parameter.CLOUD, cloud);
+            p.setIfDefined(Parameter.USER, cloud.getUser());
+            
         }
     }
 
