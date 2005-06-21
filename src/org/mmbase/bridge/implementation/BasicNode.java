@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.145 2005-06-21 12:17:05 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.146 2005-06-21 19:17:42 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1286,13 +1286,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public FieldValue getFunctionValue(String functionName, List parameters) {
-        Function function = getNode().getFunction(functionName);
-        if (function == null) throw new BridgeException("No such function '" + functionName + "' on " + this);
+        Function function = getFunction(functionName);
         Parameters params = function.createParameters();
         params.setIfDefined(Parameter.NODE, getNode());
         params.setAll(parameters);
-        Function basicFunction =  new BasicFunction(this, function);
-        return (FieldValue) basicFunction.getFunctionValue(params);
+        return (FieldValue) function.getFunctionValue(params);
     }
 
 }
