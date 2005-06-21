@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.18 2005-03-16 10:56:36 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.19 2005-06-21 19:20:27 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -45,7 +45,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * It is a digit optionially followed by +.* (used in ImageServlet for url-triggered icache production)
      */
 
-    private static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?"); 
+    public static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?"); 
     // some example captured by this regexp:
     //   /mmbase/images/session=mmbasesession+1234+s(100)/image.jpg
     //   /mmbase/images/1234+s(100)/image.jpg
@@ -94,30 +94,58 @@ public abstract class BridgeServlet extends  MMBaseServlet {
 
         String q = req.getQueryString();
         
-        String query;
         String fileNamePart;
         if (q == null) { 
-            // also possible to use /attachments/[session=abc+]<number>/filename.pdf
+            // also possible to use /attachments/[session=abc+]<number>/filename.pdf            
             if (contextPathLength == -1) {
                 contextPathLength = req.getContextPath().length(); 
             }
             String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
-            Matcher m = FILE_PATTERN.matcher(reqString);
-            if (! m.matches()) {
-                if (res != null) {
-                    res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
-                }
-                return null;
+
+            qp = readServletPath(reqString);            
+            if (qp == null && res != null) {
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+            } else {
+                log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
             }
-            query = m.group(1);
-            fileNamePart = m.group(2);
-            
         } else {
-            // attachment.db?[session=abc+]number
-            query = q;
-            fileNamePart = null;
+            // attachment.db?[session=abc+]number       
+            qp = readQuery(q);
+            if (qp == null && res != null) {
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: No node number found after session.");
+            }
+
         }
         
+        if (qp == null) return null;
+
+        qp.setRequest(req);
+        qp.setResponse(res);
+               
+        req.setAttribute("org.mmbase.servlet.BridgeServlet$QueryParts", qp);
+        return qp;
+    }
+
+
+    /**
+     * 
+     * @since MMBase-1.8
+     */
+    public static QueryParts readServletPath(String servletPath) {
+        Matcher m = FILE_PATTERN.matcher(servletPath);
+        if (! m.matches()) {
+            return null;
+        }
+        QueryParts qp = readQuery(m.group(1));
+        qp.setFileName(m.group(2));
+        return qp;
+    }
+
+    /**
+     * 
+     * @since MMBase-1.8
+     */
+    public static QueryParts readQuery(String query) {
         String sessionName = null; // "cloud_" + getCloudName();
         String nodeIdentifier;
         if (query.startsWith("session=")) { 
@@ -125,19 +153,17 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             
             int plus = query.indexOf("+", 8);
             if (plus == -1) {
-                if (res != null) {
-                    res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: No node number found after session.");
-                }
-                return null;
+                sessionName = "";
+                nodeIdentifier = query;
+            } else {
+                sessionName = query.substring(8, plus);
+                nodeIdentifier  = query.substring(plus + 1);
             }
-            sessionName = query.substring(8, plus);
-            nodeIdentifier  = query.substring(plus + 1);
         } else {
             nodeIdentifier  = query;
         }
-        qp = new QueryParts(sessionName, nodeIdentifier, req, res, fileNamePart);
-        req.setAttribute("org.mmbase.servlet.BridgeServlet$QueryParts", qp);
-        return qp;
+        return new QueryParts(sessionName, nodeIdentifier);
+
     }
 
 
@@ -234,7 +260,6 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                     return n;
                 }
             }
-
             
             Cloud c = getAnonymousCloud(); // first try anonymously always, because then session has not to be used
 
@@ -317,7 +342,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     /**
      * Keeps track of determined information, to avoid redetermining it.
      */
-    final static class QueryParts {
+    final static public  class QueryParts {
         private String sessionName;
         private String nodeIdentifier;
         private HttpServletRequest req;
@@ -325,12 +350,9 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         private Node node;
         private Node servedNode;
         private String fileName;
-        QueryParts(String sessionName, String nodeIdentifier, HttpServletRequest req, HttpServletResponse res, String fileNamePart) throws IOException {
-            this.req = req;
-            this.res = res;
+        QueryParts(String sessionName, String nodeIdentifier) {
             this.sessionName = sessionName;
             this.nodeIdentifier = nodeIdentifier;
-            this.fileName = fileNamePart;
             
         }
         void setNode(Node node) {
@@ -345,17 +367,28 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         Node getServedNode() {
             return servedNode;
         }
-        String getFileName() {
+        void setFileName(String fn) {
+            fileName = fn;
+        }
+        public String getFileName() {
             return fileName;
         }
-        String getSessionName() { return sessionName; }
-        String getNodeNumber() { 
+        public String getSessionName() { 
+            return sessionName; 
+        }
+        public String getNodeNumber() { 
             int i = nodeIdentifier.indexOf('+');            
             if (i > 0) {
                 return nodeIdentifier.substring(0, i);
             } else {
                 return nodeIdentifier;
             }
+        }
+        void setRequest(HttpServletRequest req) {
+            this.req = req;
+        }
+        void setResponse(HttpServletResponse res) {
+            this.res = res;
         }
             
         HttpServletRequest getRequest() {
@@ -364,13 +397,13 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         HttpServletResponse getResponse() {
             return res;
         }
-        void setResponse(HttpServletResponse r) {
-            res = r;
-        }
+
         /**           
          * @since MMBase-1.8
          */
-        String getNodeIdentifier() { return nodeIdentifier; }
+        public String getNodeIdentifier() { 
+            return nodeIdentifier; 
+        }
 
         public  String toString() {
             return sessionName == null ? nodeIdentifier : "session=" + sessionName + "+" + nodeIdentifier;
