@@ -12,15 +12,16 @@
   <mm:import externid="rich_language" from="parameters,session">client</mm:import>
   <mm:locale language="$rich_language">
     <fmt:bundle basename="org.mmbase.jspeditors.editors">
-      <html><jsp:text>&#xA;</jsp:text>
-        <head><jsp:text>&#xA;</jsp:text>
-          <title>Kup text area</title><jsp:text>&#xA;</jsp:text>
-	  <link href="kupustyle.css" rel="stylesheet" type="text/css" /><jsp:text>&#xA;</jsp:text>
-	  </head><jsp:text>&#xA;</jsp:text>
-	  <body>
-	    <p><fmt:message key="richtext.nonode" /></p>
-	  </body>
+      <html>       
+        <head>
+          <title>Kupu text area</title>
+          <link href="kupustyle.css" rel="stylesheet" type="text/css" />
+        </head>
+        <body>
+          <p><fmt:message key="richtext.nonode" /></p>
+        </body>
       </html>
     </fmt:bundle>
   </mm:locale>
 </mm:content>
+  
