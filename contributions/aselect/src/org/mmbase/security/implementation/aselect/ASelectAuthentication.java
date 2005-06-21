@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.2 2005-03-16 23:47:05 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.3 2005-06-21 07:36:37 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -297,18 +297,19 @@ public class ASelectAuthentication extends Authentication {
             } else {
                 log.info("Using aselect-server " + aselectServerId + " on " + aselectServer + " with protocol " + communicator);
             }
+            configWatcher.add("accounts.properties");
+            InputStream accounts =  MMBaseCopConfig.securityLoader.getResourceAsStream("accounts.properties");
+            log.service("Reading resource security/accounts.properties");
+            knownUsers = new Properties();
+            if (accounts != null) {
+                knownUsers.load(accounts);
+            }
+            log.service("Found " + knownUsers.size() + " known accounts (unknown accounts will be considered 'basic user')");
+            
             if (useCloudContext) {
                 log.info("Detected cloud context authorization, will supply compatible User objects (associated with 'mmbaseusers' MMBase object).");
             } else {
                 log.info("Using dumb user objects (can be used with Owner authorization)");
-                configWatcher.add("accounts.properties");
-                InputStream accounts =  MMBaseCopConfig.securityLoader.getResourceAsStream("accounts.properties");
-                log.service("Reading resource security/accounts.properties");
-                knownUsers = new Properties();
-                if (accounts != null) {
-                    knownUsers.load(accounts);
-                }
-                log.service("Found " + knownUsers.size() + " known accounts (unknown accounts will be considered 'basic user')");
 
                 configWatcher.add("ranks.properties");
                 InputStream ranks =  MMBaseCopConfig.securityLoader.getResourceAsStream("ranks.properties");
@@ -419,7 +420,7 @@ public class ASelectAuthentication extends Authentication {
             }
             String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
             if (useCloudContext) {
-                return new ASelectCloudContextUser(userName, uniqueNumber, "class");
+                return new ASelectCloudContextUser(userName, uniqueNumber, "class", knownUsers.getProperty(userName));
             } else {
                 return new ASelectUser(userName, getRank(userName), uniqueNumber, "class");
             }
@@ -452,7 +453,7 @@ public class ASelectAuthentication extends Authentication {
             if (authentication(request, response, application, requestedUser)) {
                 String userName = getASelectUserId(request);
                 if (useCloudContext) {
-                    newUser = new ASelectCloudContextUser(userName, uniqueNumber, application);
+                    newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, knownUsers.getProperty(userName));
                 } else {
                     Rank rank = getRank(userName);
                     newUser = new ASelectUser(userName, rank, uniqueNumber, application);
@@ -484,7 +485,7 @@ public class ASelectAuthentication extends Authentication {
                         return null;
                     }
                     if (useCloudContext) {
-                        newUser = new ASelectCloudContextUser(userName, uniqueNumber, application);
+                        newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, knownUsers.getProperty(userName));
                     } else {
                         Rank rank = getRank(userName);
                         newUser = new ASelectUser(userName, rank, uniqueNumber, application);
