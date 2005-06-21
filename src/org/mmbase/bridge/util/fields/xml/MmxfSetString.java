@@ -14,12 +14,14 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.util.xml.Mmxf;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.transformers.XmlField;
 import java.util.*;
 import java.util.regex.*;
 import java.util.regex.Matcher;
+import javax.servlet.http.HttpServletRequest;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.dom.DOMSource;
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.5 2005-06-15 15:50:18 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.6 2005-06-21 19:21:31 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -258,6 +260,14 @@ public class MmxfSetString implements  Processor {
         return result;
     }
 
+
+    protected String normalizeURL(HttpServletRequest request, String url) {
+        if (url.startsWith("http:") || url.startsWith("https")) {
+            
+        }
+        return url;
+    }
+
     private Document parseKupu(Node editedNode, Document document) {
         if (log.isDebugEnabled()) {
             log.debug("Handeling kupu-input" + XMLWriter.write(document, false));
@@ -276,8 +286,14 @@ public class MmxfSetString implements  Processor {
             log.warn("Node node given, cannot handle cross-links!!");
         } else {
             Cloud cloud = editedNode.getCloud();
-            NodeManager images = cloud.getNodeManager("images");
-            NodeManager urls   = cloud.getNodeManager("urls");
+            NodeManager images      = cloud.getNodeManager("images");
+            NodeManager icaches     = cloud.getNodeManager("icaches");
+            NodeManager attachments = cloud.getNodeManager("attachments");
+            NodeManager urls        = cloud.getNodeManager("urls");
+
+            String imageServlet      = images.getFunctionValue("servletpath", null).toString();
+            String attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
+
             NodeList relatedImages        = Queries.getRelatedNodes(editedNode, images, "idrel", "destination", "id", null);
             NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
             //log.info("Found related urls " + relatedUrls);
@@ -286,28 +302,62 @@ public class MmxfSetString implements  Processor {
             while (linkIterator.hasNext()) {
                 Element a = (Element) linkIterator.next();
                 String href = a.getAttribute("href");
-                NodeList linkedUrls = get(cloud, relatedUrls, "url", href);
-                String id;
-                if (linkedUrls.isEmpty()) {
-                    // no such related url found!
-                    // create it!
-                    Node newUrl = cloud.getNodeManager("urls").createNode();
-                    newUrl.setStringValue("url", href);
-                    newUrl.setStringValue("title", a.getAttribute("alt"));
-                    newUrl.commit();
-                    RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), newUrl.getNodeManager(), "idrel");
-                    Relation newIdRel = rm.createRelation(editedNode, newUrl);
-                    id = "_" + indexCounter++;
-                    newIdRel.setStringValue("id", id);
-                    newIdRel.commit();
-                    
-                } else {
-                    // found!
-                    // set id to correct value
-                    id = linkedUrls.getNode(0).getStringValue("idrel.id");
+                if ("".equals(href)) {
+                    href  = a.getAttribute("src");
                 }
+                // IE Tends to make URL's absolute (http://localhost:8070/mm18/mmbase/images/1234)
+                // FF Tends to make URL's relative (../../../../mmbase/images/1234)
+                // What we want is absolute on server (/mm18/mmbase/images/1234), because that is how URL was probably given in the first place.
+
+                href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
+                String klass = a.getAttribute("class");
+                String id = "";
+
+                if (href.startsWith(imageServlet)) { // found an image!
+                    String q = "/images/" + href.substring(imageServlet.length());
+                    BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
+                    String nodeNumber = qp.getNodeNumber();
+                    Node image = cloud.getNode(nodeNumber);
+                    if (image.getNodeManager().equals(icaches)) {
+                        image = image.getNodeValue("id");
+                    }
+                    if (relatedImages.contains(image)) {
+                        //
+                    } else {
+                        RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), images, "idrel");
+                        Relation newIdRel = rm.createRelation(editedNode, image);
+                        id = "_" + indexCounter++;
+                        newIdRel.setStringValue("id", id);
+                        newIdRel.setStringValue("class", klass);
+                        newIdRel.commit();                        
+                    }
+                } else if (href.startsWith(attachmentServlet)) { // an attachment
+                } else { // must have been really an URL
+                
+                    NodeList linkedUrls = get(cloud, relatedUrls, "url", href);
+                    if (linkedUrls.isEmpty()) {
+                        // no such related url found!
+                        // create it!
+                        Node newUrl = cloud.getNodeManager("urls").createNode();
+                        newUrl.setStringValue("url", href);
+                        newUrl.setStringValue("title", a.getAttribute("alt"));
+                        newUrl.commit();
+                        RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), newUrl.getNodeManager(), "idrel");
+                        Relation newIdRel = rm.createRelation(editedNode, newUrl);
+                        id = "_" + indexCounter++;
+                        newIdRel.setStringValue("id", id);
+                        newIdRel.setStringValue("class", klass);
+                        newIdRel.commit();                        
+                    } else {
+                        // found!
+                        // set id to correct value
+                        id = linkedUrls.getNode(0).getStringValue("idrel.id");
+                    }
+                }
+
                 a.setAttribute("id", id);
                 a.removeAttribute("href");
+                a.removeAttribute("src");
             }
         }
         
@@ -358,7 +408,7 @@ public class MmxfSetString implements  Processor {
      */
     public static void main(String[] argv) {
         if (System.getProperty("mmbase.config") == null) {
-            System.err.println("Please start up with -Dmmbase.config=<mmbase configuration directory> (needed to find the XSL's)");
+            System.err.println("Please start up with -Dmmbase.defaultcloudcontext=rmi://127.0.0.1:1111/remotecontext -Dmmbase.config=<mmbase configuration directory> (needed to find the XSL's)");
             return;
         }
         try {
