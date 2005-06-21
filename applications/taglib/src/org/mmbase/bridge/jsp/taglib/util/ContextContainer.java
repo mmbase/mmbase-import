@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.39 2005-06-05 08:31:36 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.40 2005-06-21 04:52:05 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -117,6 +117,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return getBacking().entrySet();
     }
 
+
     private   final String id;
     protected final ContextContainer parent;
     protected final PageContext pageContext;
@@ -187,7 +188,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      *
      */
 
-    private Pair getPair(String key, boolean checkParent) throws JspTagException {
+    protected Pair getPair(String key, boolean checkParent) throws JspTagException {
         // checking if key contains a 'dot'.
         int dotpos = key.indexOf('.');
         if (dotpos > 0) {
@@ -248,7 +249,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
-    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
+    protected Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
         Object result =  getBacking().getOriginal(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
@@ -725,7 +726,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Container class, to store results of 'getPair' function.
      */
 
-    private class Pair {
+    protected class Pair {
         ContextContainer context;
         String           restKey;
         boolean          wentDown;

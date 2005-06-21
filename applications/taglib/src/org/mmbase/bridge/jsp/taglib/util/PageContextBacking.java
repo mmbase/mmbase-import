@@ -17,6 +17,8 @@ import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.ContentTag;
 import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A basic implementation for the backing, using the PageContext itself. It can also store nulls, in
@@ -24,10 +26,12 @@ import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.5 2005-06-05 08:31:36 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.6 2005-06-21 04:52:05 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
+
+    private static final Logger log = Logging.getLoggerInstance(PageContextBacking.class);
 
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
@@ -62,7 +66,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
 
     public Set entrySet() {
         return new AbstractSet() {                            
-                List names = Collections.list(pageContext.getAttributeNamesInScope(SCOPE));
+                Collection names = unwrapped.keySet();
                 public Iterator iterator() {
                     return new Iterator() {
                             Iterator back = names.iterator();
@@ -114,6 +118,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
                 }
             };
     }
+    
     
     public Object put(Object key, Object value) {
         if (value == null) {
