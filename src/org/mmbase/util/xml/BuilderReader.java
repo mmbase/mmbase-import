@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.16 2005-06-09 21:31:31 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.17 2005-06-21 15:41:13 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -380,13 +380,13 @@ public class BuilderReader extends XMLBasicReader {
                             }
                         };
                 }
-                if (! (function instanceof MMObjectBuilder.NodeFunction)) {
+                if (! (function instanceof NodeFunction)) {
                     // if it contains a 'node' parameter, it can be wrapped into a node-function,
                     // and be available on nodes of this builder.
                     Parameters test = function.createParameters();
                     if (test.containsParameter(Parameter.NODE)) {
                         final Function f = function;
-                        function = new MMObjectBuilder.NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
+                        function = new NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
                                 protected Object getFunctionValue(org.mmbase.module.core.MMObjectNode node, Parameters parameters) {
                                     parameters.set(Parameter.NODE, node);
                                     return f.getFunctionValue(parameters);
