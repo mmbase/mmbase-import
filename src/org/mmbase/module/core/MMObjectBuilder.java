@@ -53,7 +53,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.310 2005-06-15 07:26:53 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.311 2005-06-21 15:40:24 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -264,6 +264,35 @@ public class MMObjectBuilder extends MMTable {
             }
         };
 
+
+
+
+
+    /**
+     * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
+     * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction     
+     * @since MMBase-1.8
+     */
+    protected Function getFunctions = new NodeFunction("getFunctions", Parameter.EMPTY, ReturnType.SET) {
+            {
+                setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
+            }            
+            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                return MMObjectBuilder.this.getFunctions(node);
+            }
+            public Object getFunctionValue(Parameters parameters) {
+                MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
+                if (node == null) {
+                    return MMObjectBuilder.this.getFunctions();
+                } else {
+                    return MMObjectBuilder.this.getFunctions(node);
+                }
+            }
+        };
+    {
+        addFunction(getFunctions);
+    }
+
     /**
      * The info-function is a node-function and a builder-function. Therefore it is defined as a node-function, but also overidesd getFunctionValue(Parameters).
      * @since MMBase-1.8
@@ -273,17 +302,18 @@ public class MMObjectBuilder extends MMTable {
                 setDescription("Returns information about available functions");
             }
             protected Object getFunctionValue(Set functions, Parameters parameters) {
-                Map info = new HashMap();
-                Iterator i = functions.iterator();
-                while (i.hasNext()) {
-                    Function f = (Function) i.next();
-                    info.put(f.getName(), f.getDescription());
-                }
                 String function = (String) parameters.get("function");
                 if (function == null) {
+                    Map info = new HashMap();
+                    Iterator i = functions.iterator();
+                    while (i.hasNext()) {
+                        Function f = (Function) i.next();
+                        info.put(f.getName(), f.getDescription());
+                    }
                     return info;
                 } else {
-                    return info.get(function);
+                    Function func = getFunction(function);
+                    return func.getDescription();
                 }
             }
             public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
@@ -301,6 +331,9 @@ public class MMObjectBuilder extends MMTable {
     {
         addFunction(infoFunction);
     }
+
+
+
     
     // contains the builder's field definitions
     protected Map fields;
@@ -3881,83 +3914,6 @@ public class MMObjectBuilder extends MMTable {
 
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
-    }
-
-    /**
-     * A NodeFunction represents a function on a node instances of this builder. This means
-     * that it always has one implicit node argument. This node-argument needs not be mentioned in
-     * the Parameter array of the constructor.
-     */
-    public static abstract class NodeFunction extends AbstractFunction {
-
-        public NodeFunction(String name, org.mmbase.bridge.DataType[] def, org.mmbase.bridge.DataType returnType) {
-            super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType);
-        }
-
-        /**
-         * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
-         */
-        final Function newInstance(MMObjectNode node) {
-            return new NodeInstanceFunction(node);
-        }
-
-        /**
-         * Implements the function on a certain node.
-         */
-        protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
-            final org.mmbase.bridge.Cloud cloud   = (org.mmbase.bridge.Cloud)  parameters.get(Parameter.CLOUD);
-            final org.mmbase.bridge.Node node     = cloud.getNode(coreNode.getNumber());
-            return getFunctionValue(node, parameters);
-            
-        }
-
-
-        public  Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
-            throw new UnsupportedOperationException("Not supported");
-        }
-
-        /**
-         * To implement a NodeFunction, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}. 
-         * This one can be overriden if the same function must <em>also</em> be a builder function.
-         */
-        public Object getFunctionValue(Parameters parameters) {
-            if (! parameters.containsParameter(Parameter.NODE)) {
-                throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
-            }
-            MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
-            if (node == null) {
-                throw new IllegalArgumentException("The node argument of  " + getClass() + " " + toString() + " must not be null "); 
-            }
-            Object o = getFunctionValue(node, parameters);
-            if (log.isDebugEnabled()) {
-                log.debug("" + this + " " + parameters + " --> " + o);
-            }
-            return o;
-        }
-
-        /**
-         * This represents the function on one specific Node. This is instantiated when new Istance
-         * if called on a NodeFunction.
-         */
-        private class NodeInstanceFunction extends WrappedFunction {
-
-            protected MMObjectNode node;
-
-            public NodeInstanceFunction(MMObjectNode node) {
-                super(NodeFunction.this);
-                this.node = node;
-            }
-            //javadoc inherited
-            public final Object getFunctionValue(Parameters parameters) {
-                return NodeFunction.this.getFunctionValue(node, parameters);
-
-            }
-
-            public String toString() {
-                return NodeFunction.this.toString() + " for node " + node.getNumber();
-            }
-        }
-
     }
 
 }
