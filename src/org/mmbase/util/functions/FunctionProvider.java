@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.7 2005-06-09 18:29:37 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.8 2005-06-21 15:39:00 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
@@ -68,7 +68,10 @@ public abstract class FunctionProvider {
      * provider, to make it provide this function too.
      */
     public void addFunction(Function function) {
-        functions.put(function.getName(), function);
+        Object oldValue = functions.put(function.getName(), function);
+        if (oldValue != null) {
+            log.debug("Replaced " + oldValue + " by " + function);
+        }
     }
 
     /**
@@ -106,12 +109,11 @@ public abstract class FunctionProvider {
     }
 
     /**
-     * Return a Set of all functions currently provided by the FunctionProvider.
+     * Return a Map of all functions currently provided by the FunctionProvider.
      */
     public Set getFunctions() {
-        // return new UnmodifiableSet(functions.values());
-        Set set = new HashSet(functions.values());
-        set.remove(null); // remove null values --> WHY?
-        return set;
+        Set result = new HashSet(functions.values());
+        return result;
     }
+
 }
