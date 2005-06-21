@@ -3,9 +3,11 @@ package org.mmbase.util.functions;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.SortOrder;
 import org.mmbase.util.logging.*;
+
 
 /**
  * Example builder implementation implementing functions. Lots of people are sooner or earlier
@@ -29,7 +31,8 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.9 2005-06-09 17:59:38 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.10 2005-06-21 19:19:32 michiel Exp $
+ * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
@@ -126,6 +129,40 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
             });    
     }
 
+    {
+        // an example of a function which is both node-function and builder-function
+        // it also demonstrate that you may use bridge to implement a node-function.
 
+        addFunction(new NodeFunction("predecessor",
+                                     new Parameter[] {
+                                         Parameter.CLOUD // makes it possible to implement by bridge.
+                                     },
+                                     ReturnType.NODE) {
+                {
+                    setDescription("Returns the node older then the current node, or null if this node is the oldest (if called on node), or the newest node of this type, or null of there are no nodes of this type (if called on builder)");
+                }
+                public Object getFunctionValue(Node node, Parameters parameters) {
+                    NodeManager nm = node.getNodeManager();
+                    NodeQuery q = nm.createQuery();
+                    StepField field = q.getStepField(nm.getField("number"));
+                    q.setConstraint(q.createConstraint(field, FieldCompareConstraint.LESS, new Integer(node.getNumber())));
+                    q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
+                    q.setMaxNumber(1);
+                    NodeIterator i = nm.getList(q).nodeIterator();
+                    return i.hasNext() ? i.nextNode() : null; 
+                }
+
+                public Object getFunctionValue(Parameters parameters) {
+                    Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                    NodeManager nm = cloud.getNodeManager(ExampleBuilder.this.getTableName());
+                    NodeQuery q = nm.createQuery();
+                    StepField field = q.getStepField(nm.getField("number"));
+                    q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
+                    q.setMaxNumber(1);
+                    NodeIterator i = nm.getList(q).nodeIterator();
+                    return i.hasNext() ? i.nextNode() : null; 
+                }
+            });
+    }
 
 }
