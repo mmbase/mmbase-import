@@ -18,9 +18,10 @@ import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.transformers.XmlField;
+import java.net.*;
 import java.util.*;
 import java.util.regex.*;
-import java.util.regex.Matcher;
+import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.6 2005-06-21 19:21:31 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.7 2005-06-22 23:29:19 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -261,11 +262,34 @@ public class MmxfSetString implements  Processor {
     }
 
 
+
+    final Pattern ABSOLUTE_URL = Pattern.compile("http[s]?://[^/]+(.*)");
     protected String normalizeURL(HttpServletRequest request, String url) {
-        if (url.startsWith("http:") || url.startsWith("https")) {
-            
+
+        if (url.startsWith("/")) {
+            return url;
         }
-        return url;
+        if (url.startsWith(".")) {
+            if (request == null) {
+                log.warn("Did not receive a request, don't know how to normalize '" + url + "'");
+                return url;
+            }
+            // based on the request as viewed by the client.
+            try {
+                url = new URL(new URL(request.getRequestURL().toString()), url).toString();            
+            } catch (java.net.MalformedURLException mfe) {
+                log.warn("" + mfe); // should not happen
+                return url;
+            }
+        }
+        Matcher matcher = ABSOLUTE_URL.matcher(url);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        } else {
+            log.warn("Could not normalize url " + url);
+            return url;
+        }
+
     }
 
     private Document parseKupu(Node editedNode, Document document) {
