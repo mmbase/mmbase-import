@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.6 2005-06-22 14:34:22 keesj Exp $
+ * @version $Id: RemoteMMCI.java,v 1.7 2005-06-22 15:23:52 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -32,7 +32,7 @@ public class RemoteMMCI extends ProcessorModule {
     private Registry registry;
 
     //get an instance and initialize the logger
-    private static Logger log = Logging.getLoggerInstance(RemoteMMCI.class);
+    private static final Logger log = Logging.getLoggerInstance(RemoteMMCI.class);
 
     /**
      * DEFAULT_RMIREGISTRY_PORT = 1111
@@ -156,12 +156,20 @@ public class RemoteMMCI extends ProcessorModule {
                         log.warn(Logging.stackTrace(e1));
                     }
                 }
-                UnicastRemoteObject.unexportObject(registry,true);
+                if (!UnicastRemoteObject.unexportObject(registry, true)) {
+                    log.warn("Could not unexport " + registry);
+                } else {
+                    log.warn("Unexported " + registry);
+                }
             } catch (AccessException e) {
                 log.warn(Logging.stackTrace(e));
             } catch (RemoteException e) {
                 log.warn(Logging.stackTrace(e));
             }
+            registry = null;
+            // Explicitely calling the garbage collector here helps tomcat to stop faster.
+            // It can take several minutes otherwise for the RMI Reaper thread to stop.
+            Runtime.getRuntime().gc();
         }
         super.shutdown();
     }
