@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 import org.mmbase.bridge.jsp.taglib.ContextProvider;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.15 2005-06-22 17:24:01 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.16 2005-06-22 19:24:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
@@ -79,9 +80,9 @@ public class  ContextCollector extends StandaloneContextContainer {
         clear();
     }
 
-    public void release() {
+    public void release(PageContext pc, ContextContainer p) {
         parentCheckedKeys.clear();
-        super.release();
+        super.release(pc, p);
     }
 
 }

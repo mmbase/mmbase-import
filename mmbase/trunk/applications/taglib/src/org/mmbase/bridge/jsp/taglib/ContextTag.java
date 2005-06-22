@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.81 2005-06-22 17:24:01 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.82 2005-06-22 19:24:40 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -309,7 +309,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        container.release(getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
+        container.release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {

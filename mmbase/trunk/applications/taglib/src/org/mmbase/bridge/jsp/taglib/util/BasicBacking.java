@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.5 2005-06-22 17:24:01 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.6 2005-06-22 19:24:40 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -40,8 +40,6 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     private int uniqueNumber = ++uniqueNumbers;
-
-    private List pageContextStack;
 
     protected Map originalPageContextValues;
     private final Map b = new HashMap(); // the actual backing.
@@ -57,7 +55,7 @@ public  class BasicBacking extends AbstractMap  implements Backing {
         isELIgnored = pc == null || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (! isELIgnored) {
             originalPageContextValues = new HashMap();
-            if (pageContext != null) pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
+            pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         } else {
             originalPageContextValues = null;
         }
@@ -66,10 +64,13 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     public void pushPageContext(PageContext pc) {
         if (isELIgnored) return; // never mind
         log.debug("Pushing page-context for backing " + uniqueNumber + " for " + pc);
-        if (pageContextStack == null) pageContextStack = new ArrayList();
-        pageContextStack.add(0, pageContext);
         PageContext origPageContext = pageContext;
         pageContext = pc;
+        originalPageContextValues = (Map) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
+        if (originalPageContextValues == null) {
+            originalPageContextValues = new HashMap();
+            pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
+        }
         if (! origPageContext.equals(pageContext)) {
             Iterator i = b.entrySet().iterator();
             while (i.hasNext()) {
@@ -78,10 +79,13 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             }
         }
     }
-    public void pullPageContext() {
-        if (isELIgnored || pageContextStack == null || pageContextStack.size() == 0) return;
-        pageContext = (PageContext) pageContextStack.remove(0);
+    public void pullPageContext(PageContext pc) {
+        if (isELIgnored || pc == null) return;
+        pageContext = pc;
         originalPageContextValues = (Map) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
+        if (originalPageContextValues == null) {
+            log.warn("OIE " + Logging.stackTrace(10));
+        }
     }
     
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
@@ -176,7 +180,6 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             }
             originalPageContextValues.clear();
         }
-        pullPageContext();
     }
 
     public String toString() {
