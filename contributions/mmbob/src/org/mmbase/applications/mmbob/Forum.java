@@ -1271,6 +1271,18 @@ public class Forum {
         return ForumManager.getAvatarsGalleryEnabled();
     }
 
+    public String getAvatarsGalleryEnabled() {
+        if (config != null) {
+            String tmp = config.getAvatarsGalleryEnabled();
+            if (tmp != null) {
+                log.debug("config.getAvatarsGalleryEnabled() on "+getId()+ ": " + tmp);                
+                return tmp;
+                
+            }
+        }
+        return ForumManager.getAvatarsGalleryEnabled();
+    }
+
 
     public String getHeaderPath() {
         if (config != null) {
