@@ -17,6 +17,7 @@ import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.jsp.taglib.ContentTag;
 import org.mmbase.bridge.jsp.taglib.WriterHelper;
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -27,16 +28,26 @@ import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.4 2005-06-05 08:31:36 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.5 2005-06-22 17:24:01 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
+    private static final Logger log = Logging.getLoggerInstance(BasicBacking.class);
 
+    private static final String PAGECONTEXT_KEY = "org.mmbase.taglib.basicbacking$";
+
+    private static int uniqueNumbers = 0;
     private static final int SCOPE = PageContext.PAGE_SCOPE;
-    protected final Map originalPageContextValues;
-    private final Map b = new HashMap();
+
+    private int uniqueNumber = ++uniqueNumbers;
+
+    private List pageContextStack;
+
+    protected Map originalPageContextValues;
+    private final Map b = new HashMap(); // the actual backing.
+
     private final boolean isELIgnored;
-    private final PageContext pageContext;
+    private  PageContext pageContext;
 
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
@@ -46,10 +57,33 @@ public  class BasicBacking extends AbstractMap  implements Backing {
         isELIgnored = pc == null || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (! isELIgnored) {
             originalPageContextValues = new HashMap();
+            if (pageContext != null) pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         } else {
             originalPageContextValues = null;
         }
     }
+
+    public void pushPageContext(PageContext pc) {
+        if (isELIgnored) return; // never mind
+        log.debug("Pushing page-context for backing " + uniqueNumber + " for " + pc);
+        if (pageContextStack == null) pageContextStack = new ArrayList();
+        pageContextStack.add(0, pageContext);
+        PageContext origPageContext = pageContext;
+        pageContext = pc;
+        if (! origPageContext.equals(pageContext)) {
+            Iterator i = b.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                mirrorPut(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+    public void pullPageContext() {
+        if (isELIgnored || pageContextStack == null || pageContextStack.size() == 0) return;
+        pageContext = (PageContext) pageContextStack.remove(0);
+        originalPageContextValues = (Map) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
+    }
+    
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
         if (value == null) return;
@@ -65,7 +99,6 @@ public  class BasicBacking extends AbstractMap  implements Backing {
 
     }
 
-    // contains the values originally in the pageContext, so that they can be restored.
     public Set entrySet() {
         return new AbstractSet() {
                 public int size() {
@@ -96,19 +129,22 @@ public  class BasicBacking extends AbstractMap  implements Backing {
                 }
             };
     }
-    public Object put(Object key, Object value) {
-        if (! isELIgnored) {
-            if (! originalPageContextValues.containsKey(key)) {
-                // log.debug("Storing pageContext key " + key);
-                originalPageContextValues.put((String) key, pageContext.getAttribute((String) key, SCOPE));
-            }
 
-            if (value != null) {
-                pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
-            } else {
-                pageContext.removeAttribute((String) key, SCOPE);
-            }
+    protected void mirrorPut(Object key, Object value) {
+        if (isELIgnored) return;
+        if (! originalPageContextValues.containsKey(key)) {
+            // log.debug("Storing pageContext key " + key);
+            originalPageContextValues.put((String) key, pageContext.getAttribute((String) key, SCOPE));
         }
+        
+        if (value != null) {
+            pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+        } else {
+            pageContext.removeAttribute((String) key, SCOPE);
+        }
+    }
+    public Object put(Object key, Object value) {
+        mirrorPut(key, value);
         return b.put(key, value);
     }
 
@@ -140,6 +176,7 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             }
             originalPageContextValues.clear();
         }
+        pullPageContext();
     }
 
     public String toString() {

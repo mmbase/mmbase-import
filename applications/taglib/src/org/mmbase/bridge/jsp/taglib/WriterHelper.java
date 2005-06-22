@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.74 2005-06-02 21:32:07 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.75 2005-06-22 17:24:01 michiel Exp $
  */
 
 public class WriterHelper {
@@ -410,7 +410,7 @@ public class WriterHelper {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
 
-        thisTag.getContextProvider().getContextContainer().setJspVar(jspvar, vartype, value);
+        thisTag.getContextProvider().getContextContainer().setJspVar(thisTag.getPageContext(), jspvar, vartype, value);
     }
 
 
