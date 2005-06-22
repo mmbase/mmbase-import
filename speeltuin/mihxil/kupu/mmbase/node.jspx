@@ -24,7 +24,7 @@
 	      <mm:notpresent referid="loadonly">
 		<table>
 		  <tr>
-		    <th># <mm:field name="number" /></th>
+		    <th><a href="javascript:reloadTree();">#</a> <mm:field name="number" /></th>
 		    <th><mm:function name="index" /></th>
 		  </tr>
 		  <tr>
