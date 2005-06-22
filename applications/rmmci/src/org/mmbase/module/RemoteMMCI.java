@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.7 2005-06-22 15:23:52 michiel Exp $
+ * @version $Id: RemoteMMCI.java,v 1.8 2005-06-22 15:52:38 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -159,7 +159,7 @@ public class RemoteMMCI extends ProcessorModule {
                 if (!UnicastRemoteObject.unexportObject(registry, true)) {
                     log.warn("Could not unexport " + registry);
                 } else {
-                    log.warn("Unexported " + registry);
+                    log.service("Unexported " + registry);
                 }
             } catch (AccessException e) {
                 log.warn(Logging.stackTrace(e));
