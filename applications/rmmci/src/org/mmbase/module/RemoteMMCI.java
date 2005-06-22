@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.5 2005-03-01 14:32:07 michiel Exp $
+ * @version $Id: RemoteMMCI.java,v 1.6 2005-06-22 14:34:22 keesj Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -141,11 +141,11 @@ public class RemoteMMCI extends ProcessorModule {
     
     /**
      * unbinds the object bound to the registry in order to try to stop the registry
-     * this usualy fails(the regsitry keeps running and prevents the webapp to shuwdown)
+     * this usualy fails(the regsitry keeps running and prevents the webapp to shutdown)
      */
     protected void shutdown() {
         if (registry != null) {
-            log.info("Stoping the RMI registry");
+            log.info("Stopping the RMI registry");
             try {
                 String[] names = registry.list();
                 for (int x = 0; x < names.length; x++) {
