@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.50 2005-06-14 10:56:38 michiel Exp $
+ * @version $Id: Casting.java,v 1.51 2005-06-22 14:09:28 michiel Exp $
  */
 
 import java.util.*;
@@ -405,7 +405,7 @@ public class Casting {
      * @since MMBase-1.6
      */
     static public Document toXML(Object o) {
-        if (o == null || o == MMObjectNode.VALUE_NULL) return null;
+        if (o == null || o.equals("") || o == MMObjectNode.VALUE_NULL) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on service.
@@ -413,10 +413,10 @@ public class Casting {
             String xmltext = toString(o);
             if (log.isServiceEnabled()) {
                 String msg = xmltext;
-                if (msg.length() > 20) {
-                    msg = msg.substring(0, 20);
+                if (msg.length() > 84) {
+                    msg = msg.substring(0, 80) + "...";
                 }
-                log.service("Object " + msg + "... is not a Document, but a " + o.getClass().getName());
+                log.service("Object '" + msg + "' is not a Document, but a " + o.getClass().getName() + "");
             }
             return convertStringToXML(xmltext);
         }
