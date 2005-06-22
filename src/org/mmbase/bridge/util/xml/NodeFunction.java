@@ -12,8 +12,10 @@ package org.mmbase.bridge.util.xml;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.xpath.XPathAPI;
+//import org.w3c.xsl.XSLTContext;  where's the damn thing?
 
 /**
  * Nodes of the bridge can have `virtual fields', which are in fact
@@ -46,7 +48,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.9 2004-10-09 09:37:31 nico Exp $
+ * @version $Id: NodeFunction.java,v 1.10 2005-06-22 22:52:41 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -74,12 +76,32 @@ public  class NodeFunction {
      * @return The result of the function (as a String)
      */
     public static String function(String cloudName, String number, String function) {
-        log.debug("calling base");
+        log.debug("calling base for cloud " + cloudName);
         try {
             Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName);
             return function(cloud, number, function);
-        } catch (BridgeException e) {
+        } catch (Exception e) {
             return "could not execute '" + function + "' on node '" + number + "' (" + e.toString() + ")";
+        }
+    }
+
+    
+    public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function) {
+        // it only want to work withh a NodeList. I think by book sais that it should also work with
+        // Element, but not..
+
+        try {
+            Node node = cloud.getNode(number);
+            Generator gen = new Generator(destination.item(0).getOwnerDocument());
+            Node resultNode = node.getNodeValue(function);
+            org.w3c.dom.Element element = gen.add(resultNode);
+            if (log.isDebugEnabled()) {
+                log.debug("Returning " + org.mmbase.util.xml.XMLWriter.write(element, false));
+            }
+            return element;
+        } catch (Exception e) {
+            log.error("" + e + " " + Logging.stackTrace(e));
+            return null;
         }
     }
 
@@ -97,7 +119,7 @@ public  class NodeFunction {
     }
 
     public static String function(Cloud cloud, String number, String function) {
-        log.debug("calling base");
+        log.debug("calling base on " + number + " for " + function);
         try {
             Node node = cloud.getNode(number);
             node.getStringValue(function);
