@@ -97,7 +97,6 @@ public class Forum {
         readSignatures();
         readThreadObservers();
         readRoles();
-	readFieldaliases();
     }
 
     public void resetConfig() {
@@ -1121,6 +1120,14 @@ public class Forum {
         return lastpostnumber;
    }
 
+   /**
+   * get aliased version of this field
+   */
+   public String getAliased(org.mmbase.bridge.Node node,String key) {
+        String value=ForumManager.getAliased(node,"default."+key);
+        return value;
+   }
+
    public PostAreaConfig getPostAreaConfig(String name) {
        if (config != null) {
        	return config.getPostAreaConfig(name);
@@ -1188,7 +1195,7 @@ public class Forum {
 
 
    public String getGuestReadModeType() {
-	if (checkConfig()) {
+	if (config != null) {
 		String tmp = config.getGuestReadModeType();
         	if (tmp != null) {
                	 	return tmp;
@@ -1233,13 +1240,12 @@ public class Forum {
 
     public String getAvatarsDisabled() {
         if (getAvatarsUploadEnabled().equals("true") || getAvatarsGalleryEnabled().equals("true")) {
-            log.debug ("avatars are completly disabled");
+            log.debug ("avatars are not disabled");
             return "false";
         }
-        log.debug ("avatars are not disabled");
+        log.debug ("avatars are disabled");
         return "true";
     }
-
 
 
     public String getAvatarsUploadEnabled() {
@@ -1250,8 +1256,20 @@ public class Forum {
                 return tmp;
 	    }
         }
-        return ForumManager.getAvatarsGalleryEnabled();
+        return ForumManager.getAvatarsUploadEnabled();
    }
+
+    public String getAvatarsGalleryEnabled() {
+        if (config != null) {
+            String tmp = config.getAvatarsGalleryEnabled();
+            if (tmp != null) {
+                log.debug("config.getAvatarsGalleryEnabled() on "+getId()+ ": " + tmp);                
+                return tmp;
+                
+            }
+        }
+        return ForumManager.getAvatarsGalleryEnabled();
+    }
 
 
     public String getHeaderPath() {
@@ -1306,18 +1324,6 @@ public class Forum {
             }
         }
         return ForumManager.getXSLTPostingsEven();
-    }
-
-    public String getAvatarsGalleryEnabled() {
-        if (config != null) {
-            String tmp = config.getAvatarsGalleryEnabled();
-            if (tmp != null) {
-                log.debug("config.getAvatarsGalleryEnabled() on "+getId()+ ": " + tmp);                
-                return tmp;
-                
-            }
-        }
-        return ForumManager.getAvatarsGalleryEnabled();
     }
 
 
@@ -1480,15 +1486,4 @@ public class Forum {
         return ForumManager.getReplyOnEachPage();
 
    }
-
-    private void readFieldaliases() {
-        if (config != null) {
-            Iterator i = config.getFieldaliases();
-            while (i.hasNext()) {
-		FieldAlias fa = (FieldAlias)i.next();
-		fa.init(this);
-	    }
-	}
-   }
-
 }
