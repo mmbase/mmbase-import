@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.79 2005-06-09 20:57:42 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.80 2005-06-22 11:22:54 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -129,7 +129,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         searchedParent = false;
 
         int s = getScope();
-        if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
+        if (referid != Attribute.NULL || 
+            (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
             if (s == PageContext.PAGE_SCOPE) {
                 o = getObject(referid.getString(this));
@@ -148,6 +149,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
+                container.setParent(getContextProvider().getContextContainer());
             }
         } else {
             createContainer(getContextProvider().getContextContainer());
