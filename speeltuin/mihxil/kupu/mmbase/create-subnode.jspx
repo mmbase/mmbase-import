@@ -20,11 +20,6 @@
     
     <mm:createnode id="segment" type="segments">
       <mm:setfield name="title">Nieuwe titel</mm:setfield>
-      <mm:setfield name="body">
-	<mmxf xmlns="http://www.mmbase.org/mmxf">
-	  <p>Zie ook <a href="http://www.google.com">google.</a></p>
-	</mmxf>
-      </mm:setfield>
     </mm:createnode>
 
     <mm:createrelation source="node" destination="segment" role="index">

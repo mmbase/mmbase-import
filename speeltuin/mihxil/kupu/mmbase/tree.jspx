@@ -26,7 +26,6 @@
   </div>                                                            -->        
   <jsp:output omit-xml-declaration="true" />
 
-  <mm:import externid="trunk" />
   <mm:param name="org.mmbase.xml-mode" value="kupu" />
   <mm:node number="pol_default" id="root" />
   <mm:param name="org.mmbase.index-root" referid="root" />

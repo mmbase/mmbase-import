@@ -12,8 +12,9 @@
     <icon>kupuimages/kupulibrary.png</icon>
     <title>MMBase</title>
     <mm:cloud>
+      <mm:import externid="nodetype">images</mm:import>
+
       <mm:context scope="request" id="drawer">
-	<mm:import id="nodetype">images</mm:import>
 	<mm:listnodescontainer id="query" type="$nodetype">
 	  
 	  <jsp:directive.include file="search.constraints.jspx" />
