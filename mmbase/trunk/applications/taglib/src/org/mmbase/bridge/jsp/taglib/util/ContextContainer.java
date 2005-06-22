@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.41 2005-06-22 11:22:54 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.42 2005-06-22 17:24:01 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -107,10 +107,14 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      *
      * @since MMBase-1.8
      */
-    protected  abstract Backing getBacking();
+    protected abstract Backing getBacking();
 
 
-    public abstract void release();
+    public void release(ContextContainer p) {
+        getBacking().pullPageContext();
+        // restore also the parent.xb
+        parent = p;
+    }
 
 
     public Set entrySet() {
@@ -120,7 +124,6 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
     private   final String id;
     protected ContextContainer parent;
-    protected final PageContext pageContext;
 
 
     /**
@@ -129,24 +132,21 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * has an id.
      */
 
-    public ContextContainer(PageContext pc, String i, ContextContainer p) {        
+    public ContextContainer(String i, ContextContainer p) {        
         id = i;
         parent = p;
-        pageContext = pc;
     }
 
+    public String getId() {
+        return id;
+    }
 
     /**
      * @since MMBase-1.8
      */
-    public void setParent(ContextContainer p) {
+    public void setParent(PageContext pc, ContextContainer p) {
+        getBacking().pushPageContext(pc);
         parent = p;
-    }
-
-
-
-    public String getId() {
-        return id;
     }
 
     /**
@@ -707,7 +707,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * @since MMBase-1.8
      */
-    public void setJspVar(String jspvar, int type,  Object value) {
+    public void setJspVar(PageContext pageContext, String jspvar, int type,  Object value) {
         getBacking().setJspVar(pageContext, jspvar, type, value);
     }
 

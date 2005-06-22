@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.80 2005-06-22 11:22:54 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.81 2005-06-22 17:24:01 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -149,7 +149,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
-                container.setParent(getContextProvider().getContextContainer());
+                container.setParent(pageContext, getContextProvider().getContextContainer());
             }
         } else {
             createContainer(getContextProvider().getContextContainer());
@@ -309,7 +309,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        container.release(); // remove the vars from 'page-context' again if necessary.
+        container.release(getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {

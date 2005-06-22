@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.8 2005-06-08 13:14:18 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.9 2005-06-22 17:24:01 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -106,7 +106,7 @@ public class NodeProviderHelper implements NodeProvider {
             cc.registerNode(getId(), node);
         }
         if (jspvar != null && node != null) {
-            cc.setJspVar(jspvar, WriterHelper.TYPE_NODE, node);
+            cc.setJspVar(thisTag.getPageContext(), jspvar, WriterHelper.TYPE_NODE, node);
         }
     }
                
