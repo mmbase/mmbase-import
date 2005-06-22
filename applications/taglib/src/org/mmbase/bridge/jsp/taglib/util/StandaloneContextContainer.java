@@ -16,7 +16,7 @@ import java.util.Map;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.10 2005-06-22 17:24:01 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.11 2005-06-22 19:24:40 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -44,7 +44,8 @@ public class StandaloneContextContainer extends ContextContainer {
         return backing;        
     }
 
-    public void release() {
+    public void release(PageContext pc, ContextContainer p) {
+        super.release(pc, p);
         backing.release();
     }
 

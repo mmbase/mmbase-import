@@ -23,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.ContentTag;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.4 2005-06-22 17:24:01 michiel Exp $
+ * @version $Id: Backing.java,v 1.5 2005-06-22 19:24:40 michiel Exp $
  */
 
 public interface Backing extends Map {
@@ -52,5 +52,5 @@ public interface Backing extends Map {
     /**
      * @see #pushPageContext(PageContext)
      */
-    public void pullPageContext();
+    public void pullPageContext(PageContext pc);
 }
