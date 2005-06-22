@@ -39,9 +39,9 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.53 2005-06-15 06:49:48 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.54 2005-06-22 23:20:35 michiel Exp $ 
  */
-public class FormatterTag extends ContextReferrerTag   {
+public class FormatterTag extends CloudReferrerTag   {
 
     private static final Logger log = Logging.getLoggerInstance(FormatterTag.class);
 
@@ -485,8 +485,11 @@ public class FormatterTag extends ContextReferrerTag   {
             locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
         }          
         params.put("formatter_language", locale.getLanguage());
-
         params.put("formatter_counter", counter.toString());
+        CloudProvider cp = findCloudProvider(false);
+        if (cp != null) {
+            params.put("cloud", cp.getCloudVar());
+        }
 
         //other options
         // a=b,c=d,e=f
