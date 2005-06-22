@@ -127,11 +127,12 @@ function saveNode(button, editor) {
     }
     kupu.logMessage(_("Saving fields (form)") + " " + currentNode);
     var boundary = "----------__________----------";
-    a = xGetElementsByTagName('textarea', xGetElementById('node'));
+    a = xGetElementsByTagName('textarea', xGetElementById('nodefields'));
     for (i=0; i < a.length; i++) {
         content += a[i].name + ":" + boundary + "\n" + a[i].value + "\n" + boundary + "\n";
     }
 
+    //alert("putting " + content);
     var request = getRequest();
     request.open("PUT", "receive.jspx?fields=true", true);
     request.setRequestHeader("Content-type", "text/plain");
