@@ -38,7 +38,7 @@ import org.apache.xml.serialize.*;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.29 2005-05-18 22:08:32 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.30 2005-06-22 23:30:34 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -361,9 +361,9 @@ public class XSLTransformer {
                 } else {
                     log.debug("" + in + " does not exist, interpreting it as a node, connecting using RMMCI");
                     Result result = getResult(argv);
-                    log.info("RMMCI");
                     String nodeNumber = argv[1];
-                    Cloud cloud = ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext").getCloud("mmbase", "anonymous", null);
+                    CloudContext cc = ContextProvider.getDefaultCloudContext();
+                    Cloud cloud = cc.getCloud("mmbase", "anonymous", null);
                     params.put("cloud", cloud);
                     Node node = cloud.getNode(nodeNumber);
                     DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
@@ -372,10 +372,10 @@ public class XSLTransformer {
                     generator.add(node, node.getNodeManager().getField("body"));
                     //generator.add(node);
                     //log.info("" + node.getXMLValue("body").getDocumentElement().getNamespaceURI());
-                    generator.add(node.getRelations());
-                    NodeList relatedNodes = node.getRelatedNodes();
+                    generator.add(node.getRelations("idrel"));
+                    NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "both");
                     generator.add(relatedNodes);
-                    log.info("transforming");
+                    log.debug("transforming");
                     if (argv[0].equals("SER")) {
                         XMLSerializer serializer = new XMLSerializer();
                         serializer.setNamespaces(true);
