@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.7 2005-06-22 17:24:01 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.8 2005-06-22 19:24:40 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -52,7 +52,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
         
     }
 
-    public void pullPageContext() {
+    public void pullPageContext(PageContext pc) {
 
     }
 
