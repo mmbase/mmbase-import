@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.5 2005-06-15 06:44:02 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.6 2005-06-22 23:23:29 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -12,9 +12,9 @@
   xmlns:o="http://www.mmbase.org/xmlns/objects"
   xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
   xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns=""
   exclude-result-prefixes="node o mmxf html"
-  version = "1.1"
+  version = "1.0"
 >
   <xsl:import href="2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
 
@@ -37,18 +37,50 @@
   <xsl:template match="mmxf:h" mode="h8"><xsl:if test=". != ''"><h8><xsl:apply-templates select="node()" /></h8></xsl:if></xsl:template>
 
 
-  <!-- just in case..-->
-  <xsl:template match="html:html">
-    <body>
-      <xsl:apply-templates />
-    </body>
+  <xsl:template match="/o:objects">
+    <xsl:apply-templates select="o:object[1]" />
   </xsl:template>
+
+
+  <!-- how to present a node -->
+  <xsl:template match="o:object">
+    <xsl:choose>
+      <xsl:when test="o:field[@format='xml'][1]/mmxf:mmxf">
+	<xsl:apply-templates select="o:field[@format='xml'][1]/mmxf:mmxf" />
+      </xsl:when>
+      <xsl:otherwise><!-- should present _something_, FF may hang otherwise -->
+	<body>
+	  <xsl:apply-templates />
+	</body>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
 
   <xsl:template match = "mmxf:mmxf" >
     <body>
-      <xsl:apply-templates select = "mmxf:p|mmxf:table|mmxf:section|mmxf:ul|mmxf:ol|mmxf:table" />
+      <xsl:text>&#xA;</xsl:text>
+      <xsl:apply-templates select="mmxf:p|mmxf:table|mmxf:section|mmxf:ul|mmxf:ol|mmxf:table" />
+      <xsl:text>&#xA;</xsl:text>
     </body>
+    <xsl:text>&#xA;</xsl:text>
   </xsl:template>
+
+  <!-- don't want clickable images, and hope the id can survive in the title -->
+  <xsl:template match="o:object[@type = 'images']" mode="inline">
+    <xsl:param name="relation" />
+    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./o:field[@name='number']), 'cachednode(s(100x100&gt;))')" />
+    <img src="{node:function($cloud, string($icache/@id ), 'servletpath()')}" >
+      <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="$relation/o:field[@name='id']"  /></xsl:attribute>
+      <xsl:if test="$icache/o:field[@name='width']">
+	<xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
+	<xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
+      </xsl:if>
+    </img> 
+  </xsl:template>   
 
 
 </xsl:stylesheet>
