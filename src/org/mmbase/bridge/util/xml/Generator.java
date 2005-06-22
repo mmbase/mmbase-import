@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.31 2005-06-15 15:20:59 michiel Exp $
+ * @version $Id: Generator.java,v 1.32 2005-06-22 22:52:41 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -63,6 +63,7 @@ public class Generator {
 
     public Generator(Document doc) {
         document = doc;
+        namespaceAware = document.getDocumentElement().getNamespaceURI() != null;
     }
 
     /**
@@ -225,7 +226,7 @@ public class Generator {
      * Adds one Node to a DOM Document.
      * @param node An MMBase bridge Node.
      */
-    public void add(org.mmbase.bridge.Node node) {
+    public Element add(org.mmbase.bridge.Node node) {
         // process all the fields..
         NodeManager nm = node.getNodeManager();
         FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator();
@@ -235,14 +236,15 @@ public class Generator {
                 add(node, field);
             }
         }
+        return getNode(node);
     }
 
     /**
      * Adds one Relation to a DOM Document.
      * @param relation An MMBase bridge Node.
      */
-    public void add(Relation relation) {
-        add((org.mmbase.bridge.Node)relation);
+    public Element add(Relation relation) {
+        return add((org.mmbase.bridge.Node)relation);
 
     }
 
