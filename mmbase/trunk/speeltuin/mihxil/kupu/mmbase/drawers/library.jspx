@@ -1,13 +1,12 @@
-<!-- 
-     
-     $Id: library.jspx,v 1.1 2005-06-20 09:41:08 michiel Exp $
+<!--      
+     $Id: library.jspx,v 1.2 2005-06-22 10:34:19 michiel Exp $
 -->
 <mm:content 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
     type="text/xml" 
     expires="-1">
-
+  
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:cloud>
@@ -30,7 +29,7 @@
 	
 	<library id="${search}_${page}">
 	  <uri><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
-	  <title>Pagina ${search}</title>
+	  <title><mm:nodeinfo nodetype="$nodetype" type="guitype" /></title>
 	  <icon>kupuimages/kupulibrary.png</icon>	
 
 	  <mm:notpresent referid="search">
@@ -46,4 +45,3 @@
     </mm:context>
   </mm:cloud>
 </mm:content>
-  

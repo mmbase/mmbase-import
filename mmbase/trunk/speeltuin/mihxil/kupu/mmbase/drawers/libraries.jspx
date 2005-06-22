@@ -6,10 +6,12 @@
     expires="-1">
   <mm:cloud>
 
-    <mm:import externid="nodetype">images</mm:import>
+    <mm:import id="nodetypes" vartype="list">images,attachments</mm:import>
     <mm:import id="title">All</mm:import>
       <libraries>
-	<mm:include referids="nodetype,title" page="library.jspx" />
+	<mm:stringlist referid="nodetypes" id="nodetype">
+	  <mm:include referids="nodetype,title" page="library.jspx" />
+	</mm:stringlist>
       </libraries>
   </mm:cloud>
 </mm:content>
