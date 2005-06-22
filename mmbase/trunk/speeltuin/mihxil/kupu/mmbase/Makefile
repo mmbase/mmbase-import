@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2005-06-15 06:47:14 michiel Exp $
+# $Id: Makefile,v 1.6 2005-06-22 23:25:17 michiel Exp $
 
 
 KUPU_HOME=..
@@ -17,7 +17,7 @@ LANGS=nl de fr it eo
 all: index.jspx
 
 
-index.jspx: mmbase-kupu-i18n.jar dist-mmbase.kupu *.kupu $(KUPU_HOME)/default/*.kupu $(XSLJSPX_FILE) $(XSL_FILE) $(I18N)
+index.jspx: mmbase-kupu-i18n.jar dist-mmbase.kupu 
 	$(XSLTPROC) $(XSLTPROC_PARAMS) -o $@  $(XSLJSPX_FILE) dist-mmbase.kupu
 
 $(I18N):

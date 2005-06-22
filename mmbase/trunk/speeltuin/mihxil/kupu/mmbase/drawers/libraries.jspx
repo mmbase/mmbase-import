@@ -5,13 +5,15 @@
     type="text/xml" 
     expires="-1">
   <mm:cloud>
-
+    
     <mm:import id="nodetypes" vartype="list">images,attachments</mm:import>
-    <mm:import id="title">All</mm:import>
-      <libraries>
-	<mm:stringlist referid="nodetypes" id="nodetype">
-	  <mm:include referids="nodetype,title" page="library.jspx" />
-	</mm:stringlist>
-      </libraries>
+    <libraries>
+      <mm:stringlist referid="nodetypes" id="nodetype">
+	<mm:context scope="request" id="drawer">	  
+	  <mm:import from="parent" externid="nodetype" reset="true" />
+	  <mm:include page="library.jspx" />
+	</mm:context>
+      </mm:stringlist>
+    </libraries>
   </mm:cloud>
 </mm:content>

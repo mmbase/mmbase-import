@@ -2,6 +2,7 @@
  * The node currently being edited
  */
 var currentNode;
+var trunkNode;
 
 // any object can be used as map in javascript, but make it look a bit nicer.
 function Map() {
@@ -95,6 +96,7 @@ function mmbaseInit(node) {
     }
     */    
     winOnLoad();    
+    trunkNumber = node;
     loadNode(node);
 
 }
@@ -119,7 +121,7 @@ function saveNode(button, editor) {
     kupu.logMessage(_("Saving body (kupu)") + " " + currentNode);
     editor.saveDocument(undefined, true); // kupu-part of save
     var content = "";
-    var a = xGetElementsByTagName('input', xGetElementById('node'));
+    var a = xGetElementsByTagName('input', xGetElementById('nodefields'));
     for (i=0; i < a.length; i++) {
         content += a[i].name + ':' + a[i].value + "\n";
     }
@@ -240,7 +242,7 @@ function loadRelated(nodeNumber) {
     unloadedTrees.add(nodeNumber, related.innerHTML);
 
     related.innerHTML = treeXml;
-    uncollapsedNodes['node' + nodeNumber] = true;
+    uncollapsedNodes['node' + nodeNumber] = nodeNumber;
 }
 
 /**
@@ -262,11 +264,21 @@ function unloadRelated(nodeNumber) {
 
 function reloadTree() {
     var request = getRequest();
-    request.open('GET', 'tree.jspx?trunk=true', false);    
+    request.open('GET', 'tree.jspx?node=' + trunkNumber, false);    
     request.send('');
     var tree = serialize(request);
-    document.getElementById('tree').innerHTML = tree;
-    // alert(" " + uncollapsedNodes.length + " " + uncollapsedNodes);
+    document.getElementById('tree').innerHTML = tree;    
+    for (var i in uncollapsedNodes) {
+        if (i.indexOf("node") == 0) {
+            loadRelated(uncollapsedNodes[i]);
+        }
+    }
+    // trick to make current node active again
+    var node = currentNode;
+    currentNode = undefined; // otherwise it will be relaoded from the server
+    
+    loadNode(node);
+
 }
 
 /**
@@ -277,7 +289,8 @@ function createSubNode(nodeNumber) {
     request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);    
     request.send('');
     var result = serialize(request);
-    alert(result);          
+    alert(result);
+    loadedTrees = new Map();
     reloadTree();
 
 }
