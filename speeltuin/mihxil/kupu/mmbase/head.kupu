@@ -7,7 +7,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.8 2005-06-20 09:41:08 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.9 2005-06-23 22:32:00 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
     <title>MMBase Richtext Editor</title>
@@ -25,6 +25,7 @@
     <script type="text/javascript" src="${kupu_common}/kupueditor.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupubasetools.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupuloggers.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${kupu_common}/kupuspellchecker.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupunoi18n.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="../i18n.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="${kupu_common}/kupucleanupexpressions.js"><jsp:text> </jsp:text></script>

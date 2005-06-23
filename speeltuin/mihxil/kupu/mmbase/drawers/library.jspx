@@ -4,7 +4,7 @@
     type="text/xml" 
     expires="-1">
   <!--      
-       $Id: library.jspx,v 1.4 2005-06-23 13:44:51 michiel Exp $
+       $Id: library.jspx,v 1.5 2005-06-23 22:32:00 michiel Exp $
   -->  
   <jsp:output omit-xml-declaration="yes" />
 
@@ -28,7 +28,7 @@
 	
 	<library id="${nodetype}_${search}">
 	  <uri><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
-	  <title><mm:nodeinfo nodetype="$nodetype" type="guitype" /></title>
+	  <title><mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" /></title>
 	  <icon>kupuimages/kupulibrary.png</icon>	
 
 	  <mm:notpresent referid="search">

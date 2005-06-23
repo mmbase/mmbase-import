@@ -1,0 +1,24 @@
+<!--
+    Produces: 'items' for images
+    Needs: a request context 'drawer', containing a listcontainer 'query'.
+-->
+<mm:context
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    id="drawer" scope="request">
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:listnodescontainer referid="query">
+    <items>
+       <mm:node number="polonline">
+         <mm:tree id="psegment" maxdepth="40" type="segments" role="index" orderby="index.pos" searchdir="destination">
+	   <resource id="${segment.number}">          
+	     <uri><mm:url page="/mmbase/segments/${segment.number}" /></uri>
+	     <title><mm:function name="index" /></title>
+	     <description><mm:field name="title" /></description>
+	     <icon>boi</icon>
+	   </resource>	   
+	 </mm:tree>
+       </mm:node>
+    </items>
+  </mm:listnodescontainer>
+</mm:context>
