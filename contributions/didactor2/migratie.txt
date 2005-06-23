@@ -1,6 +1,6 @@
 Migratie issues
 
-2005-06-13
+2005-06-23
 
     An extra field "showtitle" is added for builder "questions".
 
@@ -14,7 +14,7 @@ Migratie issues
     ALTER TABLE mmb_reusequestions ADD showtitle TINYINT(1);
     ALTER TABLE mmb_valuequestions ADD showtitle TINYINT(1);
 
-    Please run /migrate-2005-06-13.jsp to set all titles of questions to visible
+    Please run /migrate-2005-06-23.jsp to set all titles of questions to visible
 
 
 2005-06-21
