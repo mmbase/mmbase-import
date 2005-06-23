@@ -193,15 +193,15 @@
             ></mm:related><mm:write referid="foldername"/> > <mm:field name="date"/></a><br/>
         </mm:relatednodes>
       </mm:node>
-      <br/>
-      <a href="#1" onclick="if (!window.confirm('<fmt:message key="AreYouSureDelDoc"/>'))
-          return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
-        <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-          border="0" alt="<fmt:message key="CompEditRemoveSelectedDoc"/>"/></a>
-      <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
-        <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
-          border="0" alt="<fmt:message key="PortfolioAddDoc"/>"/></a>
     </mm:compare>
+    <br/>
+    <a href="#1" onclick="if (!window.confirm('<fmt:message key="AreYouSureDelDoc"/>'))
+        return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
+      <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
+        border="0" alt="<fmt:message key="CompEditRemoveSelectedDoc"/>"/></a>
+    <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
+      <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
+        border="0" alt="<fmt:message key="PortfolioAddDoc"/>"/></a>
   </form>
   </mm:node>
 </div>
