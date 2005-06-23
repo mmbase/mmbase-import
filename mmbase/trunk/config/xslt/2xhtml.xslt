@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.15 2005-06-22 23:23:29 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.16 2005-06-23 13:46:11 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -63,6 +63,16 @@
   </xsl:template>
 
 
+  <xsl:template match="o:object[@type = 'images' or @type ='attachments']" mode="url">
+    <xsl:value-of select="node:function($cloud, string(@id), 'servletpath()')" />
+  </xsl:template>
+
+
+  <xsl:template match="o:object[@type = 'urls']" mode="url">
+    <xsl:value-of select="./o:field[@name='url']" />
+  </xsl:template>
+
+
   <!-- 
        Produces one img-tag for an o:object of type images.
        params: relation, position, last
@@ -89,7 +99,8 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    <a href="{node:function($cloud, string(@id), 'servletpath()')}" >
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:apply-templates select="." mode="img">
 	<xsl:with-param name="relation" select="$relation" />
 	<xsl:with-param name="position" select="$position"  />
@@ -108,8 +119,9 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    <a href="{node:function($cloud, string(./o:field[@name='number'] ), 'servletpath()')}"  
-       alt="{./o:field[@name='title']}">
+    <a>
+      <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>    
     <xsl:if test="$position != $last">,</xsl:if>
@@ -123,11 +135,22 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    <a href="{./o:field[@name='url']}">
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>    
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
+
+  <xsl:template match="o:object[@type = 'urls']" mode="inline_body">
+    <xsl:param name="relation" />
+    <xsl:param name="body" />
+    <xsl:element name="a">
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:apply-templates select="$body" />
+    </xsl:element>
+  </xsl:template>
+
 
 
   <!-- 
@@ -204,14 +227,27 @@
   </xsl:template>
 
   <!--
-      Presents an mmxf:p with relations.
+      Presents an mmxf:a with relations.
       Does p specific stuff and jumps 'relations' mode which is a more generic template to handle inline relations.
   -->
   <xsl:template match="mmxf:a" mode="with_relations">
     <xsl:param name="relations" />
-    <xsl:apply-templates select="." mode="relations">
-      <xsl:with-param name="relations" select="$relations" />
-    </xsl:apply-templates>
+    <xsl:choose>
+      <!-- it has body, and precisely one relation, make body clickable -->
+      <xsl:when test="node() and count($relations) = 1">
+	<xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
+	<xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline_body">
+	  <xsl:with-param name="relation" select="$relations[1]" />
+	  <xsl:with-param name="body" select="node()" />
+	</xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates select="node()" />
+	<xsl:apply-templates select="." mode="relations">
+	  <xsl:with-param name="relations" select="$relations" />
+	</xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 
@@ -237,6 +273,7 @@
       </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
+
 
 
 
