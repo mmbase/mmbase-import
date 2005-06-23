@@ -24,6 +24,7 @@
 
 
     <lists>
+        <optionlist include="paragraphs/boolean.xml" />
         <optionlist name="mctypes">
             <option id="0">Een van de gegeven antwoorden kan worden geselecteerd</option>
             <option id="1">Meerdere antwoorden kunnen worden geselecteerd</option>
@@ -53,6 +54,11 @@
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean"></optionlist>
+        </field> 
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
@@ -92,30 +98,30 @@
                     <!-<object type="mcanswers">
                         <field name="text" />
                     </object>->
-                </relation>
-            </action>-->
-
-            <command name="search" nodepath="mcanswers" fields="text" age="-1" orderby="number" directions="down">
-                <prompt>Zoeken naar Antwoorden</prompt>
-                <search-filter>
-                    <name>Tekst bevat</name>
-                    <search-fields>text</search-fields>
-                </search-filter>
-            </command>
+                <command>
+                <prompt name="search" nodepath="mcanswers" fields="text" age="-1" orderby="number" directions="down">
+                >Tekst bevat
+                    text</prompt>--<search-filter role="related" extends="list/feedback.xml" />
+    <name name="startwizard" inline="true" wizardname="mcanswers" objectnumber="new" id="step2">
+        </name>
+    <search-fields name="name" ftype="data" extends="list/needcompetencies.xml" extends="list/developcompetencies.xml"/>
 
 
-            <command name="startwizard" inline="true" wizardname="mcanswers" objectnumber="new">
+</search-fields>
+        </search-filter>
+</command>
+            <command>
                 <prompt>Nieuwe Multiple Choice antwoord</prompt>
             </command>
 
         </list>
-        <list role="related" extends="list/feedback.xml" />
+        <list>
     </form-schema>
-    <form-schema id="step2">
+    <form-schema>
         <title>Competenties invoeren</title>
-        <field name="name" ftype="data"/>
-        <list extends="list/needcompetencies.xml"/>
-        <list extends="list/developcompetencies.xml"/>
+        <field>
+        <list>
+        <list>
     </form-schema>
 
 
