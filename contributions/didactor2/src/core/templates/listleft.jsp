@@ -33,18 +33,20 @@
                      sConstraints = "people.number=" + sUserID;
                   %>
                   <%// the person has connected to the education directly %>
-                  <mm:relatednodes type="people" constraints="<%= sConstraints %>">
-                     <%
-                        String[] arrstrTemp = new String[3];
-                        arrstrTemp[0] = sEducationID;
-                        arrstrTemp[1] = sEducationName;
-                        arrstrTemp[2] = null;
-                        arliEducations.add(arrstrTemp);
-                     %>
-                  </mm:relatednodes>
+                  <mm:related path="classrel,people" constraints="<%= sConstraints %>">
+                     <mm:node element="people">
+                        <%
+                           String[] arrstrTemp = new String[3];
+                           arrstrTemp[0] = sEducationID;
+                           arrstrTemp[1] = sEducationName;
+                           arrstrTemp[2] = null;
+                           arliEducations.add(arrstrTemp);
+                        %>
+                     </mm:node>
+                  </mm:related>
 
                   <%// the person has connected to the education throw the class %>
-                  <mm:related path="classes,people" constraints="<%= sConstraints %>">
+                  <mm:related path="related,classes,classrel,people" constraints="<%= sConstraints %>">
                      <mm:node element="classes" jspvar="nodeClass">
                         <%
                            String[] arrstrTemp = new String[3];
