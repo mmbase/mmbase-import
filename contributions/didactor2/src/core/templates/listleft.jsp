@@ -81,12 +81,12 @@
                                  String sClassName = (String) nodeClass.getValue("name");
                                  if(sClassName.length() > 7)
                                  {
-                                    out.println(sClassName.substring(0, 7));
+                                    out.print(sClassName.substring(0, 7));
                                     %>...<%
                                  }
                                  else
                                  {
-                                    out.println(sClassName);
+                                    out.print(sClassName);
                                  }
                               %>)
                            </mm:node>
