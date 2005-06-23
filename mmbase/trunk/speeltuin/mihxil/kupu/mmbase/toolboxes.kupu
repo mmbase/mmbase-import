@@ -7,7 +7,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolboxes.kupu,v 1.1 2005-06-23 13:47:22 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolboxes.kupu,v 1.2 2005-06-23 14:02:43 michiel Exp $</kupu:id>
 
   <kupu:part name="images">
     <div class="kupu-toolbox" id="kupu-toolbox-images">
@@ -24,7 +24,21 @@
 	<option value="paragraph" i18n:translate="">Paragraph</option>
 	<option value="section" i18n:translate="">Section</option>
       </select>
-      
+      <div style="display: none;">
+	<div class="kupu-toolbox-label">
+	  <span i18n:translate="">Insert image at the following URL:</span>
+	</div>
+	<input id="kupu-image-input"
+	       value="kupuimages/kupu_icon.gif"
+	       class="wide"
+	       type="text" />
+	
+	<div class="kupu-toolbox-buttons">
+	  <button type="button" id="kupu-image-addbutton"
+		  class="kupu-toolbox-action" i18n:translate=""
+		  >Insert Image</button>
+	</div>
+      </div>
     </div>
   </kupu:part>
 
