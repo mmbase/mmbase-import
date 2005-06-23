@@ -18,7 +18,7 @@
     </action>
 
     <action type="add">
-        <relation destinationtype="peope" role="classrel">
+        <relation destinationtype="people" role="classrel">
             <object type="people">
             </object>
         </relation>
