@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.32 2005-06-22 22:52:41 michiel Exp $
+ * @version $Id: Generator.java,v 1.33 2005-06-23 22:28:55 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -175,6 +175,10 @@ public class Generator {
 
         Element object = getNode(node);
 
+        if (! (object.getFirstChild() instanceof Element)) {
+            log.warn("Cannot find first field of " + XMLWriter.write(object, false));
+            return object;
+        }
         // get the field...
         Element field = (Element)object.getFirstChild();
         while (field != null && !fieldDefinition.getName().equals(getAttribute(field, "name"))) {
