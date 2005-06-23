@@ -2,8 +2,12 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
-<%@ page import = "java.util.HashMap" %>
+<%@ page import = "java.util.ArrayList" %>
 <%@ page import = "java.util.Iterator" %>
+<%@ page import = "java.util.HashMap" %>
+<%@ page import = "java.util.HashSet" %>
+<%@ page import = "java.util.SortedMap" %>
+<%@ page import = "java.util.TreeMap" %>
 
 <%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 
@@ -47,58 +51,20 @@
     </div>
 
     <div class="ListLeft">
-      <%
-         HashMap hmapEducations = new HashMap();
-      %>
-      <mm:node number="$user" jspvar="nodeUser">
-         <mm:related path="classrel,classes">
-            <mm:node element="classes">
-               <mm:field name="number" jspvar="sClassID" vartype="String">
-                  <mm:relatednodes type="educations">
-                     <mm:field name="number" jspvar="sEducationID" vartype="String">
-                        <%
-                           hmapEducations.put(sEducationID, sClassID);
-                        %>
-                     </mm:field>
-                  </mm:relatednodes>
-               </mm:field>
-            </mm:node>
-         </mm:related>
-         <%
-            for(Iterator it = educationPeopleConnector.relatedEducations("" + nodeUser.getNumber()).iterator(); it.hasNext(); )
-            {
-               String sEducationID = (String) it.next();
-               if(!hmapEducations.containsKey(sEducationID)) hmapEducations.put(sEducationID, null);
-            }
-         %>
-      </mm:node>
-
-      <%
-         for(Iterator it = hmapEducations.keySet().iterator(); it.hasNext();)
-         {
-            String sEducation = (String) it.next();
-            %>
-               <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
-               <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
-                 <mm:param name="education"><%= sEducation %></mm:param>
-                 <mm:param name="class"><%= (String) hmapEducations.get(sEducation) %></mm:param>
-               </mm:treefile>" class="users" /><mm:node number="<%= sEducation %>"><mm:field name="name"/></mm:node></a> <br />
-            <%
-         }
-      %>
+       <%@include file="listleft.jsp"%>
     </div>
   </div>
 
   <div class="columnMiddle">
-    <mm:node number="$provider" notfound="skipbody">
-    <mm:treeinclude page="/welcome.jsp" objectlist="$includePath" />
-    </mm:node>
-    <%-- only show link to public portfolios for guests --%>
-    <mm:compare referid="user" value="0">
+     <mm:node number="$provider" notfound="skipbody">
+        <mm:treeinclude page="/welcome.jsp" objectlist="$includePath" />
+     </mm:node>
+     <%-- only show link to public portfolios for guests --%>
+     <mm:compare referid="user" value="0">
         <p>
            <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
         </p>
-    </mm:compare>
+     </mm:compare>
   </div>
 
   <div class="columnRight">
