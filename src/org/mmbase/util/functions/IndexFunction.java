@@ -15,18 +15,18 @@ import org.mmbase.storage.search.*;
  * used to calcaluate the 'number' of the connected nodes. The 'pos' field only serves to fix the order.
  *
  * The index field can be empty in which case the node with the lowest pos gets number 1, the
- * following number 2 and so on. But on any one of the index relations the index can be states
+ * following number 2 and so on. But on any one of the index relations the index can be stated
  * explicitely. If e.g. the index is specified 'a' then the following node will be 'b'. You can also
  * arrange for 'i', 'ii', 'iii', 'iv' and so on.
  *
- * The root field (a node-type fiulds) specifies to which tree the relations belong. So principaly
- * the same 'chapter' can exists with several differnent chapter numbers. Also, it is used to define
+ * The root field (a node-type field) specifies to which tree the relations belong. So principaly
+ * the same 'chapter' can exists with several different chapter numbers. Also, it is used to define
  * where counting must starts, because the complete number of a chapter consists of a chain of
  * numbers (like 2.3.4.iii).
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.3 2005-06-21 15:39:41 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.4 2005-06-23 22:27:45 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -131,12 +131,6 @@ public class IndexFunction extends FunctionProvider {
                 setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
             }
             
-            protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
-                final Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
-                final Node node     = cloud.getNode(coreNode.getNumber());
-                return getFunctionValue(node, parameters);
-                
-            }
             /**
              * complete bridge version of {@link #getFunctionValue}
              */
@@ -168,7 +162,7 @@ public class IndexFunction extends FunctionProvider {
                         stack.add(0, n);
                         depth = it.currentDepth();
                     }
-                    if (root == null) root = n.getNodeValue(role + ".root");
+                    //if (root == null) root = n.getNodeValue(role + ".root");
                     if (root != null && n.getNumber() == root.getNumber()) break;
                 }
                 
