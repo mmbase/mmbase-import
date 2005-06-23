@@ -63,3 +63,13 @@ img.image-right {
 img.image-left { 
   float: left;
 }
+
+strong, b 
+{ 
+  color: green;
+  font-style: bold, underline;
+}
+
+em, i { 
+  font-style: italic;
+}

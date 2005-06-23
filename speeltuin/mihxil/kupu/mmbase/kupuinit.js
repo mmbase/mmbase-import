@@ -1,5 +1,4 @@
-/*****************************************************************************
- *
+/*
  * Copyright (c) 2003-2005 Kupu Contributors. All rights reserved.
  *
  * This software is distributed under the terms of the Kupu
@@ -8,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.14 2005-06-23 14:02:43 michiel Exp $
+// $Id: kupuinit.js,v 1.15 2005-06-23 22:32:00 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -111,12 +110,13 @@ function initKupu(iframe) {
         );
     tabletool.registerToolBox('tabletoolbox', tabletoolbox);
 
-    /*
+
     var spellchecker = new KupuSpellChecker('kupu-spellchecker-button',
-                                            'spellcheck.cgi');
+                                            'spellcheck.jspx');
     kupu.registerTool('spellchecker', spellchecker);
-    */
-    /*
+
+    /* // like the zoom tool, but it doens' realy work.
+
     var zoom = new KupuZoomTool('kupu-zoom-button');
     kupu.registerTool('zoomtool', zoom);
     */
@@ -129,6 +129,8 @@ function initKupu(iframe) {
    var sourceedittool = new SourceEditTool('kupu-source-button', 'kupu-editor-textarea');
    kupu.registerTool('sourceedittool', sourceedittool);
    */
+
+
    // Drawers...
 
    // Function that returns function to open a drawer
@@ -140,6 +142,15 @@ function initKupu(iframe) {
 
    var imagelibdrawerbutton = new KupuButton('kupu-imagelibdrawer-button', opendrawer('imagelibdrawer'));
    kupu.registerTool('imagelibdrawerbutton', imagelibdrawerbutton);
+
+   var linklibdrawerbutton = new KupuButton('kupu-linklibdrawer-button',
+                                            opendrawer('linklibdrawer'));
+   kupu.registerTool('linklibdrawerbutton', linklibdrawerbutton);
+   
+   var linkdrawerbutton = new KupuButton('kupu-linkdrawer-button',
+                                         opendrawer('linkdrawer'));
+   kupu.registerTool('linkdrawerbutton', linkdrawerbutton);
+   
 
    // create some drawers, drawers are some sort of popups that appear when a 
    // toolbar button is clicked
@@ -158,7 +169,7 @@ function initKupu(iframe) {
                                                  conf['link_libraries_uri'],
                                                  conf['link_images_uri']);
        drawertool.registerDrawer('linklibdrawer', linklibdrawer);
-
+       
        var imagelibdrawer = new ImageLibraryDrawer(imagetool, 
                                                    conf['image_xsl_uri'],
                                                    conf['image_libraries_uri'],

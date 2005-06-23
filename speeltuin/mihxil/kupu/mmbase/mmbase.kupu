@@ -30,6 +30,13 @@
   <kupu:part name="header">
     <div id="header">
       <fmt:bundle basename="org.mmbase.jspeditors.editors">
+	<div id="back">
+	  <a href="javascript:history.back()">
+	    <mm:link page="/mmbase/style/images/previous.gif">
+	      <img src="${_}" alt="&amp;lt;" />
+	    </mm:link>
+	  </a>
+	</div>
         <fmt:message key="richtext.editor" />
         <div id="languageSelector">
           <form name="languageform" method="get" action=".">

@@ -108,6 +108,17 @@ textarea.kupu-editor-textarea {
    
 }
 
+#back { 
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: inline;
+  height: 18px;
+  overflow: hidden;
+  background-color: white;
+   
+}
+
 .tree { 
   white-space: nowrap;
 }

@@ -8,7 +8,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.8 2005-06-21 18:58:09 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.9 2005-06-23 22:32:00 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -22,8 +22,9 @@
   <kupu:part name="buttons">
     <span class="kupu-tb-buttongroup">
       <button type="button" class="kupu-image"        id="kupu-imagelibdrawer-button"  title="image" i18n:attributes="title">&#160;</button>
-      <!--
       <button type="button" class="kupu-inthyperlink" id="kupu-linklibdrawer-button"   title="link"  i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-exthyperlink" id="kupu-linkdrawer-button" title="external link" i18n:attributes="title">&#160;</button>
+      <!--
       <button type="button" class="kupu-table"        id="kupu-tabledrawer-button"     title="table" i18n:attributes="title">&#160;</button>
       -->
     </span>
@@ -34,11 +35,11 @@
     <image_xsl_uri>drawers/drawer.xsl</image_xsl_uri>
     <link_xsl_uri>drawers/drawer.xsl</link_xsl_uri>
     
-    <image_libraries_uri>drawers/libraries.jspx?nodetype=images</image_libraries_uri>
-    <link_libraries_uri>drawers/libraries.jspx?nodetype=urls</link_libraries_uri>
+    <image_libraries_uri>drawers/libraries.jspx?nodetypes=images</image_libraries_uri>
+    <link_libraries_uri>drawers/libraries.jspx?nodetypes=urls,segments,attachments</link_libraries_uri>
 
     <search_images_uri>drawers/library.jspx?nodetype=images&amp;amp;amp;search=</search_images_uri>
-    <search_links_uri> drawers/library.jspx?nodetype=urls&amp;amp;amp;search=</search_links_uri>
+    <search_links_uri> drawers/library.jspx?nodetype=current&amp;amp;amp;search=</search_links_uri>
   </kupu:part>
 
 
