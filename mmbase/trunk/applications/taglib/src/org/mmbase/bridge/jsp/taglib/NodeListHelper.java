@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.15 2005-06-22 19:24:40 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.16 2005-06-23 22:26:57 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -338,7 +338,9 @@ public class NodeListHelper implements ListProvider {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
                 String[] fa = listOrder.trim().split("\\s*,\\s*");
-                String value = "" + next.getValue(fa[0]); // cannot cast  to String, since it can also be e.g. Integer.
+                int i = 0;
+                while(i < fa.length && ! next.getNodeManager().hasField(fa[i])) i++;
+                String value = i < fa.length ? "" + next.getValue(fa[i]) : ""; // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue != null) {
                     if (value.equals(previousValue)) {
                         changed = false;
