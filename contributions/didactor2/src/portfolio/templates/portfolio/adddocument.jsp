@@ -149,7 +149,7 @@
     <mm:node number="$currentfolder" id="mycurrentfolder"/>
     
     <%-- create attachment node --%>
-    <mm:createnode type="attachments" id="myattachements">
+    <mm:createnode type="attachments" id="currentitem">
       <mm:setfield name="title"><mm:write referid="_title"/></mm:setfield>
       <mm:setfield name="description"><mm:write referid="_description"/></mm:setfield>
       <mm:setfield name="filename"><mm:write referid="_handle_name"/></mm:setfield>
@@ -166,17 +166,18 @@
 
     <%-- create permissions --%>
     <mm:createnode type="portfoliopermissions" id="permissions">
-         <mm:fieldlist fields="readrights,allowreactions">
+         <%@include file="notifyteachers.jsp"%>
+        <mm:fieldlist fields="readrights,allowreactions">
             <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
     </mm:createnode>
 
-    <mm:createrelation source="myattachements" destination="permissions" role="related"/>
+    <mm:createrelation source="currentitem" destination="permissions" role="related"/>
 
 
     
     <%-- related uploaded attachment to the current folder --%>
-    <mm:createrelation role="related" source="mycurrentfolder" destination="myattachements"/>
+    <mm:createrelation role="related" source="mycurrentfolder" destination="currentitem"/>
 
     <%-- go back to the previous page --%>
     <mm:redirect referids="$referids,currentfolder,typeof,contact?" page="$callerpage"/>

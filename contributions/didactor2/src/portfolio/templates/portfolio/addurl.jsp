@@ -36,7 +36,7 @@
 
       <mm:field name="name"/>
 
-      <mm:createnode type="urls" id="myurls">
+      <mm:createnode type="urls" id="currentitem">
 
         <mm:fieldlist type="all" fields="url,name,description">
 		  <mm:fieldinfo type="useinput" />
@@ -46,16 +46,17 @@
 
     <%-- create permissions --%>
     <mm:createnode type="portfoliopermissions" id="permissions">
-         <mm:fieldlist fields="readrights,allowreactions">
+        <%@include file="notifyteachers.jsp"%>
+        <mm:fieldlist fields="readrights,allowreactions">
             <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
     </mm:createnode>
 
-    <mm:createrelation source="myurls" destination="permissions" role="related"/>
+    <mm:createrelation source="currentitem" destination="permissions" role="related"/>
 
 
       
-      <mm:createrelation role="related" source="mycurrentfolder" destination="myurls"/>
+      <mm:createrelation role="related" source="mycurrentfolder" destination="currentitem"/>
 
     </mm:node>
 
