@@ -8,7 +8,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.12 2005-06-20 09:41:08 michiel Exp $
+// $Id: kupuinit.js,v 1.13 2005-06-23 13:44:51 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -94,7 +94,12 @@ function initKupu(iframe) {
 
     var imagetool = new ImageTool();
     kupu.registerTool('imagetool', imagetool);
-    var imagetoolbox = new ImageToolBox('kupu-image-input', 'kupu-image-addbutton', 'kupu-image-float-select', 'kupu-toolbox-images',  'kupu-toolbox', 'kupu-toolbox-active');
+    var imagetoolbox = new ImageToolBox(undefined, undefined, 'kupu-image-float-select', 'kupu-toolbox-images',  'kupu-toolbox', 'kupu-toolbox-active');
+    imagetoolbox.initialize = function(tool, editor) {
+        imagetoolbox.tool = tool;
+        imagetoolbox.editor = editor;
+        addEventHandler(imagetoolbox.classselect, "change", imagetoolbox.setImageClass, imagetoolbox);
+    };
     imagetool.registerToolBox('imagetoolbox', imagetoolbox);
 
 

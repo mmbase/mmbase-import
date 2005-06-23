@@ -11,6 +11,7 @@
   <xi:include href="xmlconfig.kupu" />
   <xi:include href="drawers.kupu" />
   <xi:include href="toolbar.kupu" />
+  <xi:include href="toolboxes.kupu" />
   <xi:include href="saveonpart.kupu" />
   <xi:include href="contextmenu.kupu" />
   <xi:include href="mmbase.kupu" />
