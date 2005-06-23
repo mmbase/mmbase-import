@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.51 2005-06-22 14:09:28 michiel Exp $
+ * @version $Id: Casting.java,v 1.52 2005-06-23 22:24:56 michiel Exp $
  */
 
 import java.util.*;
@@ -788,6 +788,23 @@ public class Casting {
         return date;
     }
 
+
+    static final XMLErrorHandler ERRORHANDLER = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+    static DocumentBuilder DOCUMENTBUILDER;
+    static {
+        try {
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            dfactory.setValidating(false);
+            dfactory.setNamespaceAware(true);
+            DOCUMENTBUILDER = dfactory.newDocumentBuilder();
+            // dont log errors, and try to process as much as possible...
+            
+            DOCUMENTBUILDER.setErrorHandler(ERRORHANDLER);
+            DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
+        } catch (ParserConfigurationException pce) {
+            log.error("[sax parser]: " + pce.toString() + "\n" + Logging.stackTrace(pce));            
+        }
+    }
     /**
      * Convert a String value to a Document
      * @param value The current value (can be null)
@@ -801,28 +818,20 @@ public class Casting {
         if (log.isDebugEnabled()) {
             log.trace("using xml string:\n" + value);
         }
-
         try {
-            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-            dfactory.setValidating(false);
-            dfactory.setNamespaceAware(true);
-            DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-            // dont log errors, and try to process as much as possible...
-            XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
-            documentBuilder.setErrorHandler(errorHandler);
-            documentBuilder.setEntityResolver(new XMLEntityResolver(false));
-            // ByteArrayInputStream?
-            // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
-            Document doc = documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
-            if (log.isDebugEnabled()) {
-                log.trace("parsed: " + convertXmlToString(null, doc));
-            }
-            if (!errorHandler.foundNothing()) {
-                throw new IllegalArgumentException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
+            Document doc;
+            synchronized(ERRORHANDLER) {
+                // ByteArrayInputStream?
+                // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
+                doc = DOCUMENTBUILDER.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
+                if (log.isDebugEnabled()) {
+                    log.trace("parsed: " + convertXmlToString(null, doc));
+                }
+                if (!ERRORHANDLER.foundNothing()) {
+                    throw new IllegalArgumentException("xml invalid:\n" + ERRORHANDLER.getMessageBuffer() + "for xml:\n" + value);
+                }
             }
             return doc;
-        } catch (ParserConfigurationException pce) {
-            throw new IllegalArgumentException("[sax parser] not well formed xml: " + pce.toString() + "\n" + Logging.stackTrace(pce));
         } catch (org.xml.sax.SAXException se) {
             log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
             return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
