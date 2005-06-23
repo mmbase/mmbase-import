@@ -6,7 +6,7 @@
     expires="-1">
   <mm:cloud>
     
-    <mm:import id="nodetypes" vartype="list">images,attachments</mm:import>
+    <mm:import id="nodetypes" vartype="list">images,attachments,segments,urls</mm:import>
     <libraries>
       <mm:stringlist referid="nodetypes" id="nodetype">
 	<mm:context scope="request" id="drawer">	  
