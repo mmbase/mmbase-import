@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.6 2005-06-22 23:23:29 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.7 2005-06-23 13:46:11 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -71,16 +71,44 @@
   <xsl:template match="o:object[@type = 'images']" mode="inline">
     <xsl:param name="relation" />
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./o:field[@name='number']), 'cachednode(s(100x100&gt;))')" />
-    <img src="{node:function($cloud, string($icache/@id ), 'servletpath()')}" >
+    <img>
+      <xsl:attribute name="src"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
-      <xsl:attribute name="title"><xsl:value-of select="$relation/o:field[@name='id']"  /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name='id']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
 	<xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
 	<xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
       </xsl:if>
     </img> 
   </xsl:template>   
+
+  <!-- 
+       Produces output for one o:object of type urls
+       params: relation, position, last
+  -->
+  <xsl:template match="o:object[@type = 'urls']" mode="inline">
+    <xsl:param name="relation" />
+    <xsl:param name="position" />
+    <xsl:param name="last" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/@id" /></xsl:attribute>
+      <xsl:apply-templates select="." mode="title" />
+    </a>    
+    <xsl:if test="$position != $last">,</xsl:if>
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'urls']" mode="inline_body">
+    <xsl:param name="relation" />
+    <xsl:param name="body" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/@id" /></xsl:attribute>
+      <xsl:apply-templates select="$body"  />
+    </a>    
+  </xsl:template>
+
 
 
 </xsl:stylesheet>
