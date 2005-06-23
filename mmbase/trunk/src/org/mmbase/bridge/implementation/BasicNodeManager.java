@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.95 2005-06-21 15:36:58 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.96 2005-06-23 00:53:14 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -209,7 +209,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public String getName() {
-        if (builder!=null) {
+        if (builder != null) {
             return builder.getTableName();
         } else {
             return getStringValue("name");
@@ -511,20 +511,21 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Function getFunction(String functionName) {
-        // first try the functions of this builder itself:
-        Function function = builder != null ? builder.getFunction(functionName) : null;
-        if (function == null) {
-            // it may be a node-function on the type-def node then
-            Function typedefFunction = getNode().getFunction(functionName);
-            if (typedefFunction != null) {
-                function = new BasicFunction(this, typedefFunction);
+        log.info("Getting function '" + functionName + "' for " + this);
+
+        // it may be a node-function on the type-def node then
+        // it may be gui on a typedef node or so.
+        Function function = getNode().getFunction(functionName);
+        if (function != null && !functionName.equals("info") && !functionName.equals("getFunctions")) {
+            function = new BasicFunction(this, function);
+        }  else {
+            function = builder != null ? builder.getFunction(functionName) : null;                    
+            if (function != null) {
+                function = new BasicFunction(getCloud(), function);
             }
-        } else {
-            // specify cloud rather then node, otherwise it will be called as function on type-def node.
-            function = new BasicFunction(getCloud(), function);
         }
         if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist.");
+            throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
         }
         return function;
 
