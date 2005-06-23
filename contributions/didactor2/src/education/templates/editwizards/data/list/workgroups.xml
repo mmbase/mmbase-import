@@ -10,12 +10,12 @@
     </item>
 
     <action type="create">
-        <relation destinationtype="classes" role="related">
+        <relation destinationtype="workgroups" role="related">
         </relation>
     </action>
 
     <action type="add">
-        <relation destinationtype="classes" role="related">
+        <relation destinationtype="workgroups" role="related">
         </relation>
     </action>
 
