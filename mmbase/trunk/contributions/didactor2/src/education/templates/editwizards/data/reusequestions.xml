@@ -44,6 +44,10 @@
 
     <action type="delete" />
 
+    <lists>
+       <optionlist include="paragraphs/boolean.xml" />
+    </lists>
+
     <steps>
         <step form-schema="step1" />
         <!-- step form-schema="step2" / -->
@@ -54,6 +58,11 @@
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean"></optionlist>
+        </field> 
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>

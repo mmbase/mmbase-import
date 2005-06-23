@@ -1,5 +1,22 @@
 Migratie issues
 
+2005-06-13
+
+    An extra field "showtitle" is added for builder "questions".
+
+    ALTER TABLE mmb_couplingquestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_dropquestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_hotspotquestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_mcquestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_openquestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_questions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_rankingquestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_reusequestions ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_valuequestions ADD showtitle TINYINT(1);
+
+    Please run /migrate-2005-06-13.jsp to set all titles of questions to visible
+
+
 2005-06-21
     please run /migrate-2005-06-21.jsp
     to make all layouts for educations and learnblocks visible
