@@ -54,7 +54,7 @@
       </mm:fieldinfo>
     </mm:fieldlist>
 
-  <mm:nodeinfo type="gui" />:
+    <div style="width: 30em; overflow: hidden;"><mm:nodeinfo type="gui" /></div>:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
 

@@ -10,9 +10,9 @@
     <mm:import externid="node_number" required="true" />
     <mm:formatter format="xhtml">
       <mm:node referid="node_number">
-	<mm:listrelations>
-	  <mm:relatednode />
-	</mm:listrelations>
+        <mm:listrelations>
+          <mm:relatednode />
+        </mm:listrelations>
       </mm:node>
     </mm:formatter>
   </body>

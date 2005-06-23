@@ -9,7 +9,7 @@
 <mm:import externid="function_name" />
 <mm:node number="$node_number" jspvar="node">
   <h1><mm:nodeinfo type="gui" /> (<mm:nodeinfo type="guinodemanager" />)
-        <a href="<mm:url referids="node_number,node_number@push,nopush?" page="change_node.jsp"/>">
+        <a href="<mm:url referids="node_number,node_number" page="change_node.jsp"/>">
            <span class="change"></span><span class="alt">[change]</span>  
          </a>
 
@@ -26,22 +26,18 @@
 	<%
 	List params = Arrays.asList(function.getParameterDefinition());
 	if (params.contains(Parameter.NODE)) {;
-	Parameters arguments = function.createParameters();
-	arguments.setAutoCasting(true);
+
 	%>
 	<tr>
 	<th colspan="2"><%=function.getName()%></th>
 	<td><%=function.getReturnType()%></td>
 	<td><mm:write value="<%=function.getDescription()%>" /></td>
 	</tr>
-	<% Iterator i = params.iterator();
-	while (i.hasNext()) {
-	Parameter param = (Parameter) i.next();
-	if (param.equals(Parameter.NODE)) {
-	  arguments.set(Parameter.NODE, node);
-	  continue;
-	}
-	%>	
+  <mm:functioncontainer>
+
+    <% Iterator i = params.iterator();
+     while(i.hasNext()) {
+     Parameter param = (Parameter)i.next(); %>
 	<tr>
 	  <td />
 	  <td><%=param.getName()%><%=param.isRequired() ? " *" : ""%></td>
@@ -52,26 +48,24 @@
 		if (v == null) v = param.getDefaultValue();
 		%>
 		<input name="<%=function.getName()%>_<%=param.getName()%>" value="<mm:write value="<%=Casting.toString(v)%>" />" />
-		<%
-		arguments.set(param, v);
-		 } %>
-	    
+    <mm:param name="<%=param.getName()%>" value="<%=Casting.toString(v)%>" />
+    <% } %>
 	  </td>
 	</tr>
-	<% 
-	} %>
+  <% } %>
 	<tr>
 	  <td />
 	  <td><input type="submit" name="call" value="execute" /></td>
 	  <td colspan="<%=params.size()%>">
 	  <mm:compare referid="function_name" value="<%=function.getName()%>">
-	  <mm:write value="<%=Casting.toString(function.getFunctionValue(arguments))%>" />
+
+      <mm:function name="<%=function.getName()%>" />
+
 	  </mm:compare>
 	  
 	  </td>
 	</tr>
-
-
+  </mm:functioncontainer>
 	<%
 	} %>
 	</form>
