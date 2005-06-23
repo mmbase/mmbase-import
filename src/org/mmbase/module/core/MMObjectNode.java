@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.139 2005-05-04 18:29:31 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.140 2005-06-23 22:21:21 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -489,27 +489,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             blobs.remove(blobs.getKey(getNumber(), fieldName));
         }
 
-        // if we have an XML-dbtype field, we always have to store it inside an Element.
-        // note that if the value is null we store it as a null value
-        if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && fieldValue != VALUE_NULL && !(fieldValue instanceof Document)) {
-//            if (fieldValue == null && parent.getField(fieldName).getDBNotNull()) {
-//                throw new RuntimeException("field with name '" + fieldName + "' may not be null");
-//            }
-            String value = Casting.toString(fieldValue);
-            value = value.trim();
-//            if(value.length()==0 && parent.getField(fieldName).getDBNotNull()) {
-//                throw new RuntimeException("field with name '" + fieldName + "' may not be empty");
-//            }
-//            if(value.length()==0) {
-//                fieldValue = VALUE_NULL;
-//            } else {
-                Document doc = toXML(value, fieldName);
-                if(doc != null) {
-                    // store the document inside the field.. much faster...
-                    fieldValue = doc;
-//                }
-            }
-        }
         if (log.isDebugEnabled()) {
             String string;
             if (fieldValue instanceof byte[]) {
@@ -756,6 +735,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     throw new UnsupportedOperationException("Found shorted value for type " + type);
                 }
                 blobs.put(key, value);
+            }
+        }
+
+        // if we have an XML-dbtype field, we always have to return a Document (or null).
+        // note that if the value is null we store it as a null value
+        if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML &&
+           value != null && value != VALUE_NULL && !(value instanceof Document)) {
+            String string = Casting.toString(value).trim();
+            Document doc = toXML(string, fieldName);
+            if(doc != null) {
+                // store the document inside the field.. much faster...
+                value = doc;
+                values.put(fieldName, value);
             }
         }
 
