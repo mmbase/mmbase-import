@@ -83,6 +83,12 @@
 
 <%--<h1>mayread: <mm:write referid="mayread"/>, user: <mm:write referid="user"/></h1>--%>
 
+<mm:compare referid="mayread" value="false">
+    <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+       <h1> U heeft geen rechten om dit bestand te bekijken. </h1>
+    </mm:cloud>
+</mm:compare>
+
 <mm:compare referid="mayread" value="true">
 
 <%-- Check if the back button is pressed --%>
@@ -127,10 +133,12 @@
     </mm:compare>
 
     <mm:relatednodes type="portfoliopermissions" max="1">
+        <%@include file="notifyteachers.jsp"%>
+    
         <mm:fieldlist fields="readrights,allowreactions">
             <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
-    </mm:relatednodes>
+   </mm:relatednodes>
 
     </mm:node>
     </mm:compare>
@@ -252,8 +260,13 @@
                             <mm:fieldinfo type="guivalue" escape="p"/>
                         </mm:compare>
                     </mm:compare>
-                </mm:compare>
-            </mm:fieldinfo>
+                    <mm:compare referid="mayeditthis" value="true">
+                        <mm:compare value="url">
+                            <br><mm:fieldinfo type="guivalue"/>
+                        </mm:compare>
+                    </mm:compare>
+               </mm:compare>
+           </mm:fieldinfo>
           </td>
           </tr>
         </mm:fieldlist>
