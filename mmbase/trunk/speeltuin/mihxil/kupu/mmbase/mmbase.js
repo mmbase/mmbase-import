@@ -140,11 +140,11 @@ function saveNode(button, editor) {
     //kupu.handleSaveResponse(request);
     var node = currentNode;
     currentNode = undefined;
-    alert(_("saved") + " " + node);
     kupu.logMessage("Reloading " + node);
     loadedNodes.remove(node);
     loadedNodeBodies.remove(node);
     loadNode(node);
+    alert(_("saved") + " " + node);
 
 }
 
