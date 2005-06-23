@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.16 2005-06-23 13:46:11 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.17 2005-06-23 22:30:55 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -20,7 +20,7 @@
   <xsl:output method="xml" omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
   <xsl:param name="cloud">mmbase</xsl:param>
-  
+  <xsl:param name="formatter_requestcontext">/</xsl:param>
 
   <xsl:variable name="newstype">xmlnews</xsl:variable>
   <!-- I had an 'xmlnews' type... Can easily switch beteen them like
@@ -70,6 +70,10 @@
 
   <xsl:template match="o:object[@type = 'urls']" mode="url">
     <xsl:value-of select="./o:field[@name='url']" />
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'segments']" mode="url">
+    <xsl:text>{$formatter_requestcontext}pol/?maintopic=pol_default&amp;amp;template=segment.div.jspx&amp;amp;segment={@id}</xsl:text>
   </xsl:template>
 
 
@@ -131,7 +135,7 @@
        Produces output for one o:object of type urls
        params: relation, position, last
   -->
-  <xsl:template match="o:object[@type = 'urls']" mode="inline">
+  <xsl:template match="o:object[@type = 'urls' or @type = 'segments']" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
@@ -142,7 +146,7 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'urls']" mode="inline_body">
+  <xsl:template match="o:object[@type = 'urls' or @type = 'segments']" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
     <xsl:element name="a">
@@ -176,7 +180,9 @@
     </xsl:choose>    
   </xsl:template>
 
-
+  <xsl:template match="o:object[@type = 'segments']" mode="title">
+    <xsl:value-of select="node:function($cloud, string(@id), 'index()')" />
+  </xsl:template>
 
 
   <!-- 

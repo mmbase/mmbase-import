@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.7 2005-06-23 13:46:11 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.8 2005-06-23 22:30:55 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -87,26 +87,30 @@
        Produces output for one o:object of type urls
        params: relation, position, last
   -->
-  <xsl:template match="o:object[@type = 'urls']" mode="inline">
+  <xsl:template match="o:object[@type = 'urls' or @type='segments']" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="$relation/@id" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>    
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'urls']" mode="inline_body">
+  <xsl:template match="o:object[@type = 'urls' or @type='segments']" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="$relation/@id" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:apply-templates select="$body"  />
     </a>    
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'segments']" mode="url">
+      <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/segments/</xsl:text><xsl:value-of select="@id" />
   </xsl:template>
 
 
