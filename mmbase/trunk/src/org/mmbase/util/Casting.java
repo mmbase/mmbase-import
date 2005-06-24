@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.52 2005-06-23 22:24:56 michiel Exp $
+ * @version $Id: Casting.java,v 1.53 2005-06-24 17:19:53 michiel Exp $
  */
 
 import java.util.*;
@@ -789,7 +789,6 @@ public class Casting {
     }
 
 
-    static final XMLErrorHandler ERRORHANDLER = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
     static DocumentBuilder DOCUMENTBUILDER;
     static {
         try {
@@ -797,9 +796,6 @@ public class Casting {
             dfactory.setValidating(false);
             dfactory.setNamespaceAware(true);
             DOCUMENTBUILDER = dfactory.newDocumentBuilder();
-            // dont log errors, and try to process as much as possible...
-            
-            DOCUMENTBUILDER.setErrorHandler(ERRORHANDLER);
             DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
         } catch (ParserConfigurationException pce) {
             log.error("[sax parser]: " + pce.toString() + "\n" + Logging.stackTrace(pce));            
@@ -820,16 +816,19 @@ public class Casting {
         }
         try {
             Document doc;
-            synchronized(ERRORHANDLER) {
+            final XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+            synchronized(DOCUMENTBUILDER) {
+                // dont log errors, and try to process as much as possible...                
+                DOCUMENTBUILDER.setErrorHandler(errorHandler);
                 // ByteArrayInputStream?
                 // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
                 doc = DOCUMENTBUILDER.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
-                if (log.isDebugEnabled()) {
-                    log.trace("parsed: " + convertXmlToString(null, doc));
-                }
-                if (!ERRORHANDLER.foundNothing()) {
-                    throw new IllegalArgumentException("xml invalid:\n" + ERRORHANDLER.getMessageBuffer() + "for xml:\n" + value);
-                }
+            }
+            if (log.isDebugEnabled()) {
+                log.trace("parsed: " + convertXmlToString(null, doc));
+            }
+            if (!errorHandler.foundNothing()) {
+                throw new IllegalArgumentException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
             }
             return doc;
         } catch (org.xml.sax.SAXException se) {
