@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html" expires="0">
 <%@page import="org.mmbase.bridge.*" %>
@@ -36,11 +37,11 @@
            String[] steps= {
             "Resources",
             "MyNews",
-            "Community",
+        /*    "Community", app, not included in distribution */
             "Codings",
             "RichText",
             "MyCompany",
-            "MyUsers",
+        /*    "MyUsers", scan, not included in distribution */
             "MyYahoo"
           };
            boolean first=true;
