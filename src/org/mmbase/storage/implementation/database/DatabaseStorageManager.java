@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.98 2005-06-15 13:17:50 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.99 2005-06-26 18:02:32 nico Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -567,11 +567,25 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 InputStream inStream = result.getBinaryStream(index);
                 if (result.wasNull()) {
-                    inStream.close();
+                    if (inStream != null) {
+                        try {
+                            inStream.close();
+                        }
+                        catch (RuntimeException e) {
+                            log.debug("", e);
+                        }
+                    }
                     return null;
                 }
                 if (mayShorten && shorten(field)) {
-                    inStream.close();
+                    if (inStream != null) {
+                        try {
+                            inStream.close();
+                        }
+                        catch (RuntimeException e) {
+                            log.debug("", e);
+                        }
+                    }
                     return BLOB_SHORTED;
                 }
                 return new InputStreamBlob(inStream);
