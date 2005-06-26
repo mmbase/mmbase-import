@@ -6,10 +6,10 @@
       can store a reference to a tag id in it.
       
       @since   MMBase-1.6
-      @version $Id: idrel.xml,v 1.3 2005-05-18 13:45:34 michiel Exp $
+      @version $Id: idrel.xml,v 1.4 2005-06-26 13:49:50 nico Exp $
   -->
-  <classfile>org.mmbase.module.builders.IdRel</classfile>
   <status>active</status>
+  <classfile>org.mmbase.module.builders.IdRel</classfile>
   
   <names>
     <singular xml:lang="en">ID relation</singular>
