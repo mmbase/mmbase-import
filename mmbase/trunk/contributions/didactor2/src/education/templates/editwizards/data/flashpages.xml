@@ -19,6 +19,7 @@
     <action type="delete" />
 
     <lists>
+       <optionlist include="paragraphs/images_position.xml" />
       <optionlist name="layout">
         <option id="-1">Geen tekst tonen</option>
         <option id="0">Tekst boven</option>
@@ -38,9 +39,18 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
+
+      <field name="showtitle" ftype="enum">
+         <prompt xml:lang="nl">Titel laten zien</prompt>
+         <prompt xml:lang="en">Show title</prompt>
+         <optionlist select="boolean"></optionlist>
+      </field>
+ 
+
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
+
         <field name="layout" ftype="enum">
             <prompt>Layout</prompt>
             <optionlist select="layout" />
