@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.146 2005-06-21 19:17:42 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.147 2005-06-27 12:42:12 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1289,6 +1289,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Function function = getFunction(functionName);
         Parameters params = function.createParameters();
         params.setIfDefined(Parameter.NODE, getNode());
+        params.setIfDefined(Parameter.CLOUD, getCloud());
         params.setAll(parameters);
         return (FieldValue) function.getFunctionValue(params);
     }
