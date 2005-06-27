@@ -45,6 +45,7 @@
 
     <action type="delete" />
 
+
     <lists>
         <optionlist include="paragraphs/boolean.xml" />
         <optionlist name="correctlist">
@@ -64,12 +65,12 @@
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
-         <field name="showtitle" ftype="enum">
+        <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean"></optionlist>
         </field> 
-       <field name="text" ftype="html" dtminlength="0">
+        <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
         <list destination="hotspotanswers" role="related" ordertype="number" orderby="x1">
