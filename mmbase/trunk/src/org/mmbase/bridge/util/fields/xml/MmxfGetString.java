@@ -18,6 +18,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.parsers.*;
 
+import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
 
@@ -26,7 +27,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.3 2005-06-15 06:51:25 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.4 2005-06-27 17:01:21 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -74,6 +75,13 @@ public class MmxfGetString implements  Processor {
            
            generator.add(node.getRelatedNodes("urls", "idrel", "both"));
            generator.add(node.getRelations("idrel", "urls"));
+
+
+           generator.add(node.getRelatedNodes("segments", "idrel", "both"));
+           generator.add(node.getRelations("idrel", "segments"));
+
+           generator.add(node.getRelatedNodes("attachments", "idrel", "both"));
+           generator.add(node.getRelations("idrel", "attachments"));
            
            return generator.getDocument();
         } catch (ParserConfigurationException pce) {
@@ -92,7 +100,10 @@ public class MmxfGetString implements  Processor {
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2kupu.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
-                XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), null);
+                // TODO: XSL transformation parameter stuff must be generalized (not only cloud, but only e.g. request specific stuff must be dealt with).
+                Map params = new HashMap();
+                params.put("cloud", node.getCloud());
+                XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
             }
             case MODE_WIKI: {
@@ -100,7 +111,9 @@ public class MmxfGetString implements  Processor {
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2rich.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
-                XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), null);
+                Map params = new HashMap();
+                params.put("cloud", node.getCloud());
+                XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
             }
             case MODE_FLAT: {
@@ -108,7 +121,9 @@ public class MmxfGetString implements  Processor {
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2rich.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();
-                XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), null);
+                Map params = new HashMap();
+                params.put("cloud", node.getCloud());
+                XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
             }
             case MODE_PRETTYXML: {
