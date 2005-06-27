@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.20 2004-10-25 08:08:36 pierre Exp $
+ * @version $Id: AnnotRel.java,v 1.21 2005-06-27 17:02:49 michiel Exp $
  */
 public class AnnotRel extends InsRel {
 
@@ -39,7 +39,7 @@ public class AnnotRel extends InsRel {
         public final static int COLS    = 9;
     */
     // logger
-    private static Logger log = Logging.getLoggerInstance(AnnotRel.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AnnotRel.class);
 
     /**
      * Sets defaults for a node.
