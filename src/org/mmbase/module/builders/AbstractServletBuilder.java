@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.24 2005-06-21 19:18:50 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.25 2005-06-27 17:02:49 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -390,7 +390,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         }
                     }
                     
-                    String fileName = node.getStringValue("filename");
+                    String fileName = getField(FIELD_FILENAME) != null ? node.getStringValue("filename") : "";
                     boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
                     
                     if (usesBridgeServlet && ! session.equals("")) {
@@ -413,6 +413,54 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             });    
 
     }
+
+
+
+    {
+        /**
+         * @since MMBase-1.8
+         */
+        addFunction(new NodeFunction("iconurl",
+                                     new Parameter[] {
+                                         Parameter.REQUEST,
+                                         new Parameter("iconroot", String.class, "/mmbase/style/icons/")
+                                     },
+                                     ReturnType.STRING) {
+                {
+                    setDescription("Returns an URL for an icon for this blob");
+                }
+                public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                    String mimeType = AbstractServletBuilder.this.getMimeType(node);
+                    ResourceLoader webRoot = ResourceLoader.getWebRoot();
+                    HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    String root;
+                    if (request != null) {
+                        root = request.getContextPath();
+                    } else {
+                        root = MMBaseContext.getHtmlRootUrlPath();
+                    }
+
+                    String iconRoot = (String) parameters.get("iconroot");
+                    if (root.endsWith("/") && iconRoot.startsWith("/")) iconRoot = iconRoot.substring(1);
+
+                    if (! iconRoot.endsWith("/")) iconRoot = iconRoot + '/';
+                    
+                    String resource = iconRoot + mimeType + ".gif";
+                    try {
+                        if (! webRoot.getResource(resource).openConnection().getDoInput()) {
+                            resource = iconRoot + "application/octet-stream.gif";
+                        }
+                    } catch (java.io.IOException ioe) {
+                        log.warn(ioe.getMessage(), ioe);
+                        resource = iconRoot + "application/octet-stream.gif";
+                    }
+                    return root + resource;
+                }
+
+            });
+    }
+
+
         
     /**
      * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
