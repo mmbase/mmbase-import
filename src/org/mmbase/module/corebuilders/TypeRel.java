@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.51 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: TypeRel.java,v 1.52 2005-06-27 09:17:38 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -596,8 +596,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             addField(new FieldDefs("rnumber","integer", -1,-1,"rnumber",FieldDefs.TYPE_INTEGER));
             mmb       = t.mmb;
             tableName = "virtual_typerel";
+            virtual   = true;
         }
-        public boolean isVirtual() { return true; }
         static VirtualTypeRel getVirtualTypeRel(TypeRel t) {
             if (virtualTypeRel == null) virtualTypeRel = new VirtualTypeRel(t);
             return virtualTypeRel;
