@@ -51,7 +51,7 @@
             </di:headercell>
             <di:headercell><fmt:message key="TodoTask"/></di:headercell>
             <di:headercell><fmt:message key="TodoDuration"/></di:headercell>
-            <di:headercell><fmt:message key="TodoDescription"/></di:headercell>
+            <di:headercell><fmt:message key="Description"/></di:headercell>
             <di:headercell><fmt:message key="Competence"/></di:headercell>
           </di:row>
 

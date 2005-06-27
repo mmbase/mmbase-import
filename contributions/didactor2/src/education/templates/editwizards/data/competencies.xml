@@ -34,7 +34,12 @@
 
 <form-schema id="edit_competencies">
    <field name="name" dtminlength="0" dtmaxlength="255">
-   <prompt>naam</prompt></field>
+      <prompt>naam</prompt>
+   </field>
+
+   <field name="description" ftype="text" rows="8">
+      <prompt>Omschrijving</prompt>
+   </field>
 
    <list role="comprel" destination="tests" minoccurs="0" maxoccurs="*" ordertype="number">
       <title>Bijbehorende testen</title>
