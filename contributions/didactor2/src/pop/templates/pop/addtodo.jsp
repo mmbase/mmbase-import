@@ -35,7 +35,7 @@
         <td><input name="todoname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="todoname"/>"></td>
       </tr>
       <tr>
-        <td><fmt:message key="TodoDescription"/></td>
+        <td><fmt:message key="Description"/></td>
         <td><textarea name="tododesc" class="popFormInput" cols="50" rows="5"><mm:write referid="tododesc"/></textarea></td>
       </tr>
       <tr>

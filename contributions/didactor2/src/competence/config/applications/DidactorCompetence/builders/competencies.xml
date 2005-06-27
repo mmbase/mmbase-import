@@ -43,11 +43,11 @@
       <editor>
         <positions>
           <!-- position in the input area of the editor -->
-          <input>1</input>
+          <input>3</input>
           <!-- position in list area of the editor -->
-          <list>1</list>
+          <list>3</list>
           <!-- position in search area of the editor -->
-          <search>1</search>
+          <search>3</search>
         </positions>
       </editor>
       <!-- database related  -->
@@ -71,14 +71,46 @@
       </gui>
       <editor>
         <positions>
-          <input>2</input>
-          <list>2</list>
-          <search>2</search>
+          <input>4</input>
+          <list>4</list>
+          <search>4</search>
         </positions>
       </editor>
       <db>
         <name>value</name>
         <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl"></description>
+        <description xml:lang="en"></description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="en">Description</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>5</input>
+          <!-- position in list area of the editor -->
+          <list>5</list>
+          <!-- position in search area of the editor -->
+          <search>5</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>description</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="65535" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
