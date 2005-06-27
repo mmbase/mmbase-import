@@ -98,30 +98,30 @@
                     <!-<object type="mcanswers">
                         <field name="text" />
                     </object>->
-                <command>
-                <prompt name="search" nodepath="mcanswers" fields="text" age="-1" orderby="number" directions="down">
-                >Tekst bevat
-                    text</prompt>--<search-filter role="related" extends="list/feedback.xml" />
-    <name name="startwizard" inline="true" wizardname="mcanswers" objectnumber="new" id="step2">
-        </name>
-    <search-fields name="name" ftype="data" extends="list/needcompetencies.xml" extends="list/developcompetencies.xml"/>
+                </relation>
+            </action>-->
+
+            <command name="search" nodepath="mcanswers" fields="text" age="-1" orderby="number" directions="down">
+                <prompt>Zoeken naar Antwoorden</prompt>
+                <search-filter>
+                    <name>Tekst bevat</name>
+                    <search-fields>text</search-fields>
+                </search-filter>
+            </command>
 
 
-</search-fields>
-        </search-filter>
-</command>
-            <command>
+            <command name="startwizard" inline="true" wizardname="mcanswers" objectnumber="new">
                 <prompt>Nieuwe Multiple Choice antwoord</prompt>
             </command>
 
         </list>
-        <list>
+        <list role="related" extends="list/feedback.xml" />
     </form-schema>
-    <form-schema>
+    <form-schema id="step2">
         <title>Competenties invoeren</title>
-        <field>
-        <list>
-        <list>
+        <field name="name" ftype="data"/>
+        <list extends="list/needcompetencies.xml"/>
+        <list extends="list/developcompetencies.xml"/>
     </form-schema>
 
 
