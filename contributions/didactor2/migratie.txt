@@ -1,5 +1,17 @@
 Migratie issues
 
+2005-06-27
+
+    An extra field "showtitle" is added for builder "learnobjects".
+
+    ALTER TABLE mmb_flashpages ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_learnobjects ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_tests ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_preassessments ADD showtitle TINYINT(1);
+    ALTER TABLE mmb_postassessments ADD showtitle TINYINT(1);
+
+    Please run /migrate-2005-06-27.jsp to set all titles of learnobjects to visible
+
 2005-06-23
 
     An extra field "showtitle" is added for builder "questions".

@@ -122,38 +122,5 @@
       </db>
     </field>
 
-    <field>
-      <!-- field descriptions (help texts) -->
-      <descriptions>
-        <description xml:lang="nl">Titel laten zien van het artikel</description>
-        <description xml:lang="en">Show the title of the article</description>
-      </descriptions>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="nl">ToonTitel</guiname>
-        <guiname xml:lang="en">ShowTitle</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>2</input>
-          <!-- position in the list area of the editor -->
-          <list>2</list>
-          <!-- position in the search area of the editor -->
-          <search>2</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>showtitle</name>
-        <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="false" size="150" state="persistent">STRING</type>
-      </db>
-    </field>
-
-
   </fieldlist>
 </builder>
