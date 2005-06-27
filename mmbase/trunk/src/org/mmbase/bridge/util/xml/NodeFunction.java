@@ -48,12 +48,14 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.10 2005-06-22 22:52:41 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.11 2005-06-27 12:30:32 michiel Exp $
  * @since   MMBase-1.6
  */
 
 public  class NodeFunction {
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
+
+
 
     /**
      * Supposes the default cloud 'mmbase'.
@@ -86,14 +88,17 @@ public  class NodeFunction {
     }
 
     
-    public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function) {
+    /**
+     * @since MMBase-1.8
+     */
+    public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function, String arguments) {
         // it only want to work withh a NodeList. I think by book sais that it should also work with
         // Element, but not..
 
         try {
             Node node = cloud.getNode(number);
             Generator gen = new Generator(destination.item(0).getOwnerDocument());
-            Node resultNode = node.getNodeValue(function);
+            Node resultNode = node.getFunctionValue(function, org.mmbase.util.StringSplitter.splitFunctions(arguments)).getNode();
             org.w3c.dom.Element element = gen.add(resultNode);
             if (log.isDebugEnabled()) {
                 log.debug("Returning " + org.mmbase.util.xml.XMLWriter.write(element, false));
@@ -122,8 +127,7 @@ public  class NodeFunction {
         log.debug("calling base on " + number + " for " + function);
         try {
             Node node = cloud.getNode(number);
-            node.getStringValue(function);
-            return node.getStringValue(function);
+            return org.mmbase.util.functions.NodeFunction.getFunctionValue(node, function).toString();
         } catch (BridgeException e) {
             if (log.isDebugEnabled()) {
                 log.debug("could not execute '" + function + "' on node '" + number + "'");
