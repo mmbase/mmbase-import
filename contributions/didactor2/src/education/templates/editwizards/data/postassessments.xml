@@ -18,6 +18,7 @@
       </relation>
    </action>
    <lists>
+       <optionlist include="paragraphs/boolean.xml" />
    </lists>
    <steps>
       <step form-schema="edit_postassessments"/>
@@ -26,6 +27,12 @@
 <form-schema id="edit_postassessments">
    <field name="name" dtminlength="0" dtmaxlength="255">
    <prompt>naam</prompt></field>
+
+      <field name="showtitle" ftype="enum">
+         <prompt xml:lang="nl">Titel laten zien</prompt>
+         <prompt xml:lang="en">Show title</prompt>
+         <optionlist select="boolean"></optionlist>
+      </field>
 
    <list role="related" destination="tests" minoccurs="0" maxoccurs="*" ordertype="number">
       <title>Bijbehorende testen</title>

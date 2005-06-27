@@ -4,12 +4,12 @@
     <title>Toets Editor</title>
 
     <action type="create">
-        <object type="tests">
+       <object type="tests">
           <field name="maychange">0</field>
           <field name="mayview">0</field>
           <field name="questionsperpage">0</field>
           <field name="feedbackpage">0</field>
-        </object>
+       </object>
     </action>
 
     <action type="load">
@@ -23,6 +23,7 @@
     <action type="delete" />
 
   <lists>
+       <optionlist include="paragraphs/boolean.xml" />
       <optionlist name="maychange">
           <option id="0">Nee</option>
           <option id="1">Ja</option>
@@ -45,12 +46,21 @@
         <step form-schema="step1" />
         <step form-schema="step2" />
     </steps>
+
     <form-schema id="step1">
         <title>Toets invoeren</title>
 
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
+
+      <field name="showtitle" ftype="enum">
+         <prompt xml:lang="nl">Titel laten zien</prompt>
+         <prompt xml:lang="en">Show title</prompt>
+         <optionlist select="boolean"></optionlist>
+      </field>
+ 
+
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>

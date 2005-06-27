@@ -28,10 +28,11 @@
         </relation>
     </action>
 
-
     <action type="delete" />
 
     <lists>
+       <optionlist include="paragraphs/images_position.xml" />
+       <optionlist include="paragraphs/boolean.xml" />
       <optionlist name="layout">
         <option id="0">Tekst boven</option>
         <option id="1">Tekst onder</option>
@@ -43,11 +44,7 @@
         <option id="0">Hozontaal</option>
         <option id="1">Verticaal</option>
       </optionlist>
-
-       <optionlist include="paragraphs/images_position.xml" />
-       <optionlist include="paragraphs/boolean.xml" />
     </lists>
-
 
 
     <steps>
@@ -61,6 +58,7 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
+
       <field name="showtitle" ftype="enum">
          <prompt xml:lang="nl">Titel laten zien</prompt>
          <prompt xml:lang="en">Show title</prompt>
@@ -71,6 +69,7 @@
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
+
         <field name="layout" ftype="enum">
             <prompt>Layout</prompt>
             <optionlist select="layout" />
@@ -88,6 +87,7 @@
         <list role="related" extends="list/online.xml" />
     </form-schema>
 
+
     <form-schema id="step2">
         <title>Alineas invoeren</title>
         <field name="name" ftype="data"/>
@@ -99,6 +99,7 @@
         <list extends="paragraphs/add_paragraphs_posrel.xml"/>
     </form-schema>
 
+
     <form-schema id="step3">
         <title>Competenties invoeren</title>
         <field name="name" ftype="data"/>
@@ -107,4 +108,3 @@
     </form-schema>
 
 </wizard-schema>
-

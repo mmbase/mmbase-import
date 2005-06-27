@@ -132,37 +132,5 @@
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
-    <!-- POS 6 : <field> 'showtitle'  -->
-    <field>
-      <!-- field descriptions (help texts) -->
-      <descriptions>
-        <description xml:lang="nl">Titel laten zien van vraag</description>
-        <description xml:lang="en">Show the title of question</description>
-      </descriptions>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="nl">ToonTitel</guiname>
-        <guiname xml:lang="en">ShowTitle</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>4</input>
-          <!-- position in the list area of the editor -->
-          <list>-1</list>
-          <!-- position in the search area of the editor -->
-          <search>-1</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>showtitle</name>
-        <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
-      </db>
-    </field>
   </fieldlist>
 </builder>
