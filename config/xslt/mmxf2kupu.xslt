@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.8 2005-06-23 22:30:55 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.9 2005-06-27 22:03:05 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  
@@ -46,12 +46,12 @@
   <xsl:template match="o:object">
     <xsl:choose>
       <xsl:when test="o:field[@format='xml'][1]/mmxf:mmxf">
-	<xsl:apply-templates select="o:field[@format='xml'][1]/mmxf:mmxf" />
+        <xsl:apply-templates select="o:field[@format='xml'][1]/mmxf:mmxf" />
       </xsl:when>
       <xsl:otherwise><!-- should present _something_, FF may hang otherwise -->
-	<body>
-	  <xsl:apply-templates />
-	</body>
+        <body>
+          <xsl:apply-templates />
+        </body>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -70,15 +70,15 @@
   <!-- don't want clickable images, and hope the id can survive in the title -->
   <xsl:template match="o:object[@type = 'images']" mode="inline">
     <xsl:param name="relation" />
-    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./o:field[@name='number']), 'cachednode(s(100x100&gt;))')" />
+    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./o:field[@name='number']), 'cachednode', 's(100x100&gt;)')" />
     <img>
       <xsl:attribute name="src"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name='id']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
-	<xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
-	<xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
+        <xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
+        <xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
       </xsl:if>
     </img> 
   </xsl:template>   
@@ -94,10 +94,30 @@
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:attribute name="class">generated</xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>    
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
+
+
+  <xsl:template match="o:object[@type = 'attachments']" mode="inline">
+    <xsl:param name="relation" />
+    <xsl:param name="position" />
+    <xsl:param name="last" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:attribute name="class">generated</xsl:attribute>
+      <xsl:text>[</xsl:text>
+      <xsl:value-of select="./o:field[@name='mimetype']" />
+      <xsl:text>:</xsl:text>
+      <xsl:apply-templates select="." mode="title" />
+      <xsl:text>]</xsl:text>
+    </a>    
+    <xsl:if test="$position != $last">,</xsl:if>
+  </xsl:template>
+
 
   <xsl:template match="o:object[@type = 'urls' or @type='segments']" mode="inline_body">
     <xsl:param name="relation" />
@@ -105,13 +125,17 @@
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:if test="$body = ''">
+        <xsl:attribute name="class">generated</xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates select="$body"  />
     </a>    
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="url">
-      <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/segments/</xsl:text><xsl:value-of select="@id" />
+    <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/segments/</xsl:text><xsl:value-of select="@id" />
   </xsl:template>
+
 
 
 
