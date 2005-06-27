@@ -48,7 +48,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.11 2005-06-27 12:30:32 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.12 2005-06-27 13:01:44 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -98,7 +98,11 @@ public  class NodeFunction {
         try {
             Node node = cloud.getNode(number);
             Generator gen = new Generator(destination.item(0).getOwnerDocument());
-            Node resultNode = node.getFunctionValue(function, org.mmbase.util.StringSplitter.splitFunctions(arguments)).getNode();
+            java.util.List args = org.mmbase.util.StringSplitter.splitFunctions(arguments);
+            if (log.isDebugEnabled()) {
+                log.debug("Executing " + function+ " " + args + " on " + node.getNumber());
+            }
+            Node resultNode = node.getFunctionValue(function, args).toNode();
             org.w3c.dom.Element element = gen.add(resultNode);
             if (log.isDebugEnabled()) {
                 log.debug("Returning " + org.mmbase.util.xml.XMLWriter.write(element, false));
