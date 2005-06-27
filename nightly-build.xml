@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.23 2004-12-06 12:52:45 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.24 2005-06-27 21:23:44 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -129,7 +129,7 @@ nightly-build.xml                           Used to generate all this with ant. 
   <target name="build.jar" depends="cvs">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="jar" />
     <ant antfile="${applicationsscript}" dir="${applicationsscript.dir}" target="all" />
-	</target>
+  </target>
 
   <target name="build.distro">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="bindist" />
@@ -151,9 +151,9 @@ nightly-build.xml                           Used to generate all this with ant. 
   
 
   <target name="storejavadocs" depends="javadocs">
-		<!-- the java docs -->
-		<copy todir="${destination.dir}">
-			<fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs"/>
+    <!-- the java docs -->
+    <copy todir="${destination.dir}">
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs"/>
     </copy>
   </target>
 
@@ -196,11 +196,13 @@ nightly-build.xml                           Used to generate all this with ant. 
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="clean" />
     <ant antfile="${applicationsscript}" dir="${applicationsscript.dir}" target="clean" />
     <ant antfile="${testsscript}" dir="${testsscript.dir}" target="clean" />
+    <ant  dir="${source.dir}"    target="clean" />
     <mkdir dir="${build.dir}" /><!-- i hate ant -->
     <delete>
     	<fileset dir="${build.dir}">
-        <include name="**/*.zip"/>	  
-      </fileset>
+	  <include name="**/*.zip"/>	  
+	  <include name="**/*.jar"/>	  
+	</fileset>
     </delete>
   </target>
 
