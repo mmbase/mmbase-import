@@ -12,6 +12,12 @@ Migratie issues
 
     Please run /migrate-2005-06-27.jsp to set all titles of learnobjects to visible
 
+
+    An extra field "description" is added for builder "competencies".
+
+    ALTER TABLE mmb_competencies ADD description BLOB DEFAULT NULL; 
+
+
 2005-06-23
 
     An extra field "showtitle" is added for builder "questions".

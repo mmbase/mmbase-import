@@ -45,6 +45,10 @@
         <td><b><mm:field name="name"/></b></td>
       </tr>
       <tr style="vertical-align:top;">
+        <td width="100" style="vertical-align:top;"><fmt:message key="Description"/></td>
+        <td><b><mm:field name="description"/></b></td>
+      </tr>
+      <tr style="vertical-align:top;">
         <td nowrap><fmt:message key="CompEditFeedback1"/></td>
         <td><input name="myfeedback1" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="myfeedback1"/>"></td>
       </tr>
