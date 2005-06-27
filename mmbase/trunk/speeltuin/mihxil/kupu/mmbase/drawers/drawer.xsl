@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.3 2005-06-08 22:21:44 michiel Exp $
+$Id: drawer.xsl,v 1.4 2005-06-27 10:44:29 michiel Exp $
 -->
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -23,7 +23,7 @@ $Id: drawer.xsl,v 1.3 2005-06-08 22:21:44 michiel Exp $
   <xsl:param name="drawertype">image</xsl:param>
   <xsl:param name="drawertitle">Image Drawer</xsl:param>
   <xsl:variable name="showupload">yes</xsl:variable>
-  <xsl:param name="usecaptions">yes</xsl:param>
+  <xsl:param name="usecaptions">no</xsl:param>
   <xsl:variable name="titlelength" select="20"/>
   <xsl:template match="/libraries">
     <html>
