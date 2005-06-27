@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.36 2005-05-09 10:02:18 michiel Exp $
+ * @version $Id: Attachments.java,v 1.37 2005-06-27 15:24:56 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -108,6 +108,51 @@ public class Attachments extends AbstractServletBuilder {
                 node.setValue(FIELD_SIZE, node.getByteValue(FIELD_HANDLE).length);
             }
         }
+    }
+
+    {
+        /**
+         * @since MMBase-1.8
+         */
+        addFunction(new NodeFunction("iconurl",
+                                     new Parameter[] {
+                                         Parameter.CLOUD, // makes it possible to implement by bridge.
+                                         Parameter.REQUEST,
+                                         new Parameter("iconroot", String.class, "/mmbase/style/icons/")
+                                     },
+                                     ReturnType.STRING) {
+                {
+                    setDescription("Returns an URL for an icon for this attachment");
+                }
+                public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+                    String mimeType = node.getStringValue(FIELD_MIMETYPE);
+                    ResourceLoader webRoot = ResourceLoader.getWebRoot();
+                    HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    String root;
+                    if (request != null) {
+                        root = request.getContextPath();
+                    } else {
+                        root = MMBaseContext.getHtmlRootUrlPath();
+                    }
+
+                    String iconRoot = (String) parameters.get("iconroot");
+                    if (root.endsWith("/") && iconRoot.startsWith("/")) iconRoot = iconRoot.substring(1);
+
+                    if (! iconRoot.endsWith("/")) iconRoot = iconRoot + '/';
+                    
+                    String resource = iconRoot + mimeType + ".gif";
+                    try {
+                        if (! webRoot.getResource(resource).openConnection().getDoInput()) {
+                            resource = iconRoot + "application/octet-stream.gif";
+                        }
+                    } catch (java.io.IOException ioe) {
+                        log.warn(ioe.getMessage(), ioe);
+                        resource = iconRoot + "application/octet-stream.gif";
+                    }
+                    return root + resource;
+                }
+
+            });
     }
 
 
