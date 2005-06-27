@@ -4,7 +4,7 @@
     type="text/xml" 
     expires="-1">
   <!--      
-       $Id: library.jspx,v 1.5 2005-06-23 22:32:00 michiel Exp $
+       $Id: library.jspx,v 1.6 2005-06-27 17:00:00 michiel Exp $
   -->  
   <jsp:output omit-xml-declaration="yes" />
 
@@ -20,26 +20,27 @@
     <mm:context id="drawer" scope="request">
       <mm:remove referid="query" />
       <mm:listnodescontainer id="query" type="$nodetype">
-	<jsp:directive.include file="search.constraints.jspx" />
-		
-	<mm:sortorder field="number" direction="down" />
-	<mm:maxnumber value="$librarysize" />
-	<mm:offset    value="${librarysize * page}" />
-	
-	<library id="${nodetype}_${search}">
-	  <uri><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
-	  <title><mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" /></title>
-	  <icon>kupuimages/kupulibrary.png</icon>	
-
-	  <mm:notpresent referid="search">
-	    <src><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></src>
-	  </mm:notpresent>
-	  <mm:present referid="search">
-	    <mm:include page="${nodetype}.items.jspx" />
-	  </mm:present>
-
-	</library>
-
+        <jsp:directive.include file="search.constraints.jspx" />
+        
+        <mm:sortorder field="number" direction="down" />
+        <mm:maxnumber value="$librarysize" />
+        <mm:offset    value="${librarysize * page}" />
+        
+        <library id="${nodetype}_${search}">
+          <uri><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
+          <title>
+            <mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" /> <mm:write referid="search"> <mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
+          </title>
+          <icon>kupuimages/kupulibrary.png</icon>	
+          
+          <mm:notpresent referid="search">
+            <src><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></src>
+          </mm:notpresent>
+          <mm:present referid="search">
+            <mm:include page="${nodetype}.items.jspx" />
+          </mm:present>
+          
+        </library>        
 	
       </mm:listnodescontainer>
     </mm:context>

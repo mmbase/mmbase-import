@@ -17,10 +17,10 @@
     
     <mm:node  number="$node">
       <mm:formatter xslt="xslt/mmxf2kupu.xslt" id="sent" escape="none">
-	<mm:field name="body" />
-	<mm:listrelations type="object" role="idrel" searchdir="destination" >
-	  <mm:relatednode />
-	</mm:listrelations>
+        <mm:field name="body" />
+        <mm:listrelations type="object" role="idrel" searchdir="destination" >
+          <mm:relatednode />
+        </mm:listrelations>
       </mm:formatter>
       <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
     </mm:node>
