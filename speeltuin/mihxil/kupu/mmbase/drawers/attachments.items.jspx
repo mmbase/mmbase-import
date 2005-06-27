@@ -10,12 +10,12 @@
   <mm:listnodescontainer referid="query">
     <items>
       <mm:listnodes id="attachment">
-	<resource id="${attachment.number}">          
-	  <uri><mm:attachment /> /></uri>
-	  <title><mm:field name="title" /></title>
-	  <size><mm:field name="filesize" />b</size>
-	  <icon>oj</icon>
-	</resource>
+        <resource id="${attachment.number}">          
+          <uri><mm:attachment /> </uri>
+          <title>[<mm:field name="mimetype" />: <mm:field name="title" />]</title>
+          <size><mm:field name="size" />b</size>
+          <icon><mm:function name="iconurl" /></icon>
+        </resource>
       </mm:listnodes>
     </items>
   </mm:listnodescontainer>

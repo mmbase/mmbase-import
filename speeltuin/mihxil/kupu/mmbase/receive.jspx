@@ -19,13 +19,13 @@
               StringBuffer received = new StringBuffer();
               BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
               String line = r.readLine();
-            while (line != null) {
-            received.append(line).append("\n");
-            line = r.readLine();             
-            }
-            node.setStringValue("body", received.toString());
-            node.commit();
-            log.info("Saved " + received.toString());
+              while (line != null) {
+                 received.append(line).append("\n");
+                 line = r.readLine();             
+              }
+              node.setStringValue("body", received.toString());
+              node.commit();
+              log.info("Saved " + received.toString());
             </jsp:scriptlet>
             <p>
               Received:

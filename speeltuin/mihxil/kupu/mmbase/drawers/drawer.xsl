@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.4 2005-06-27 10:44:29 michiel Exp $
+$Id: drawer.xsl,v 1.5 2005-06-27 17:00:00 michiel Exp $
 -->
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -212,20 +212,6 @@ $Id: drawer.xsl,v 1.4 2005-06-27 10:44:29 michiel Exp $
             <strong>Description</strong>
             <br/>
             <xsl:value-of select="description"/>
-          </td>
-        </tr>
-        <tr class="kupu-linkdrawer-name-row">
-          <td>
-            <strong>Name</strong>
-            <br/>
-            <input type="text" id="link_name" size="10"/>
-          </td>
-        </tr>
-        <tr class="kupu-linkdrawer-target-row">
-          <td>
-            <strong>Target</strong>
-            <br/>
-            <input type="text" id="link_target" value="_self" size="10"/>
           </td>
         </tr>
       </table>

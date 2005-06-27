@@ -8,7 +8,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.9 2005-06-23 22:32:00 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.10 2005-06-27 17:00:00 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -38,7 +38,7 @@
     <image_libraries_uri>drawers/libraries.jspx?nodetypes=images</image_libraries_uri>
     <link_libraries_uri>drawers/libraries.jspx?nodetypes=urls,segments,attachments</link_libraries_uri>
 
-    <search_images_uri>drawers/library.jspx?nodetype=images&amp;amp;amp;search=</search_images_uri>
+    <search_images_uri>drawers/collection.jspx?nodetype=images&amp;amp;amp;search=</search_images_uri>
     <search_links_uri> drawers/library.jspx?nodetype=current&amp;amp;amp;search=</search_links_uri>
   </kupu:part>
 
@@ -56,8 +56,7 @@
 
         <input class="kupu-toolbox-st kupu-linkdrawer-input" type="text" />
         </td><td class="kupu-preview-button">
-        <button type="button" onclick="drawertool.current_drawer.preview()"
-		i18n:translate="">Preview</button>
+        <button type="button" onclick="drawertool.current_drawer.preview()" i18n:translate="">Preview</button>
         </td></tr>
         <tr><td colspan="2" align="center">
         <iframe frameborder="1" scrolling="auto" width="440" height="198"

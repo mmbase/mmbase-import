@@ -8,24 +8,24 @@
   <mm:import externid="page" vartype="integer" >0</mm:import>
   <mm:import externid="max" vartype="integer">50</mm:import>
   <collection>
-    <uri>drawers/images.jspx</uri>
+    <uri>drawers/collection.jspx?search=${search}</uri>
     <icon>kupuimages/kupulibrary.png</icon>
     <title>MMBase</title>
     <mm:cloud>
       <mm:import externid="nodetype">images</mm:import>
 
       <mm:context scope="request" id="drawer">
-	<mm:listnodescontainer id="query" type="$nodetype">
-	  
-	  <jsp:directive.include file="search.constraints.jspx" />
-	  
-	  <mm:sortorder field="number" direction="down" />
-	  <mm:maxnumber value="$max" />
-	  <mm:offset    value="${page * max}" />
-	  
-	  <mm:include page="${nodetype}.items.jspx" />
-	  
-	</mm:listnodescontainer>
+        <mm:listnodescontainer id="query" type="$nodetype">
+          
+          <jsp:directive.include file="search.constraints.jspx" />
+          
+          <mm:sortorder field="number" direction="down" />
+          <mm:maxnumber value="$max" />
+          <mm:offset    value="${page * max}" />
+          
+          <mm:include page="${nodetype}.items.jspx" />
+          
+        </mm:listnodescontainer>
       </mm:context>
     </mm:cloud>
   </collection>
