@@ -9,16 +9,14 @@
   <jsp:output omit-xml-declaration="yes" />
   <mm:listnodescontainer referid="query">
     <items>
-       <mm:node number="polonline">
-         <mm:tree id="psegment" maxdepth="40" type="segments" role="index" orderby="index.pos" searchdir="destination">
-	   <resource id="${segment.number}">          
-	     <uri><mm:url page="/mmbase/segments/${segment.number}" /></uri>
-	     <title><mm:function name="index" /></title>
-	     <description><mm:field name="title" /></description>
-	     <icon>boi</icon>
-	   </resource>	   
-	 </mm:tree>
-       </mm:node>
+      <mm:listnodes id="segment">
+	<resource id="${segment.number}">          
+	  <uri><mm:url page="/mmbase/segments/${segment.number}" /></uri>
+	  <title><mm:function name="index" />&lt;span style="display:none;" &gt;GENERATED&lt;/span&gt;</title>
+	  <description><mm:field name="title" /></description>
+	  <icon>boi</icon>
+	</resource>
+      </mm:listnodes>
     </items>
   </mm:listnodescontainer>
 </mm:context>
