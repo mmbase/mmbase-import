@@ -82,7 +82,7 @@
                     <prompt>Correct</prompt>
                     <optionlist select="correctlist" />
                 </field>
-      <field wizardname="mcanswers" ftype="startwizard"/>
+                <field wizardname="mcanswers" ftype="startwizard"/>
             </item>
 
             <action type="create">

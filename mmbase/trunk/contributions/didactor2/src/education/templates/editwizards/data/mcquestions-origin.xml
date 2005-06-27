@@ -25,6 +25,7 @@
 
 
     <lists>
+        <optionlist include="paragraphs/boolean.xml" />
         <optionlist name="mctypes">
             <option id="0">Een van de gegeven antwoorden kan worden geselecteerd</option>
             <option id="1">Meerdere antwoorden kunnen worden geselecteerd</option>
@@ -54,6 +55,11 @@
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean"></optionlist>
+        </field> 
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
