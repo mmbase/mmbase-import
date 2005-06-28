@@ -20,7 +20,7 @@ import org.mmbase.bridge.implementation.datatypes.*;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.2 2005-06-28 15:26:14 michiel Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -30,18 +30,18 @@ public class DataTypes {
 
     public static Class getTypeAsClass(int type) {
         switch (type) {
-            case MMBaseType.TYPE_STRING : return String.class;
-            case MMBaseType.TYPE_INTEGER : return Integer.class;
-            case MMBaseType.TYPE_BINARY: return byte[].class;
-            case MMBaseType.TYPE_FLOAT: return Float.class;
-            case MMBaseType.TYPE_DOUBLE: return Double.class;
-            case MMBaseType.TYPE_LONG: return Long.class;
-            case MMBaseType.TYPE_XML: return org.w3c.dom.Document.class;
-            case MMBaseType.TYPE_NODE: return org.mmbase.bridge.Node.class;
-            case MMBaseType.TYPE_DATETIME: return java.util.Date.class;
-            case MMBaseType.TYPE_BOOLEAN: return Boolean.class;
-            case MMBaseType.TYPE_LIST: return List.class;
-            default: return null;
+        case MMBaseType.TYPE_STRING : return String.class;
+        case MMBaseType.TYPE_INTEGER : return Integer.class;
+        case MMBaseType.TYPE_BINARY: return byte[].class;
+        case MMBaseType.TYPE_FLOAT: return Float.class;
+        case MMBaseType.TYPE_DOUBLE: return Double.class;
+        case MMBaseType.TYPE_LONG: return Long.class;
+        case MMBaseType.TYPE_XML: return org.w3c.dom.Document.class;
+        case MMBaseType.TYPE_NODE: return org.mmbase.bridge.Node.class;
+        case MMBaseType.TYPE_DATETIME: return java.util.Date.class;
+        case MMBaseType.TYPE_BOOLEAN: return Boolean.class;
+        case MMBaseType.TYPE_LIST: return List.class;
+        default: return null;
         }
     }
 
@@ -51,19 +51,20 @@ public class DataTypes {
     public static AbstractDataType createDataType(String name, int type) {
         AbstractDataType dataType = null;
         switch (type) {
-            case MMBaseType.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
-            case MMBaseType.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
-            case MMBaseType.TYPE_LONG : dataType = new BasicLongDataType(name); break;
-            case MMBaseType.TYPE_DOUBLE : dataType = new BasicDoubleDataType(name); break;
-            case MMBaseType.TYPE_FLOAT : dataType = new BasicFloatDataType(name); break;
-            case MMBaseType.TYPE_STRING : dataType = new BasicStringDataType(name); break;
-            case MMBaseType.TYPE_NODE : dataType = new BasicNodeDataType(name); break;
-            case MMBaseType.TYPE_DATETIME : dataType = new BasicDateTimeDataType(name); break;
-            case MMBaseType.TYPE_BOOLEAN : dataType = new BasicBooleanDataType(name); break;
-            case MMBaseType.TYPE_LIST : dataType = new BasicListDataType(name); break;
-            default: {
-                dataType = new BasicDataType(name);
-            }
+        case MMBaseType.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
+        case MMBaseType.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
+        case MMBaseType.TYPE_LONG : dataType = new BasicLongDataType(name); break;
+        case MMBaseType.TYPE_DOUBLE : dataType = new BasicDoubleDataType(name); break;
+        case MMBaseType.TYPE_FLOAT : dataType = new BasicFloatDataType(name); break;
+        case MMBaseType.TYPE_STRING : dataType = new BasicStringDataType(name); break;
+        case MMBaseType.TYPE_XML: dataType = new BasicXmlDataType(name); break;
+        case MMBaseType.TYPE_NODE : dataType = new BasicNodeDataType(name); break;
+        case MMBaseType.TYPE_DATETIME : dataType = new BasicDateTimeDataType(name); break;
+        case MMBaseType.TYPE_BOOLEAN : dataType = new BasicBooleanDataType(name); break;
+        case MMBaseType.TYPE_LIST : dataType = new BasicListDataType(name); break;
+        default: {
+            dataType = new BasicDataType(name);
+        }
         }
         return dataType;
     }
@@ -87,6 +88,8 @@ public class DataTypes {
             dataType = new BasicFloatDataType(name);
         } else if (type == String.class) {
             dataType = new BasicStringDataType(name);
+        } else if (type == org.w3c.dom.Document.class) {
+            dataType = new BasicXmlDataType(name);
         } else if (type == Node.class) {
             dataType = new BasicNodeDataType(name);
         } else if (type == Date.class) {
