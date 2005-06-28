@@ -19,10 +19,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.8 2005-06-21 15:39:00 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.9 2005-06-28 19:09:21 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
+
+    protected Map functions = Collections.synchronizedMap(new HashMap());
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
@@ -34,8 +36,10 @@ public abstract class FunctionProvider {
                 return getFunctions();
             }
         };
+    {
+        addFunction(getFunctions);
+    }
 
-    protected Map functions = Collections.synchronizedMap(new HashMap());
 
     /**
      * The constructor of an FunctionProvider two things. It adds the 'getFunction' function, and it
@@ -55,7 +59,6 @@ public abstract class FunctionProvider {
         } catch (UnsupportedOperationException uoo) {
             log.warn("Found parameter definition array in " + this.getClass() + " but newFunctionInstance was not implemented for that");
         }
-        addFunction(getFunctions);
     }
 
     protected  Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
