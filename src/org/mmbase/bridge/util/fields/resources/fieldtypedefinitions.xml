@@ -9,7 +9,7 @@
   It could define default values, possible values, default sort orders etc etc.
 
   @author Michiel Meeuwissen
-  @version $Id: fieldtypedefinitions.xml,v 1.4 2005-05-18 22:06:28 michiel Exp $
+  @version $Id: fieldtypedefinitions.xml,v 1.5 2005-06-28 08:16:20 michiel Exp $
 -->
 
 
@@ -31,6 +31,15 @@
         <class>org.mmbase.bridge.util.fields.xml.HtmlGetString</class>
       </getprocessor>
     </specialization>
+
+    <specialization id="field">
+      <setprocessor>
+        <class>org.mmbase.bridge.util.fields.xml.FieldSetString</class>
+      </setprocessor>
+      <getprocessor>
+        <class>org.mmbase.bridge.util.fields.xml.FieldGetString</class>
+      </getprocessor>
+    </specialization>
   </fieldtype>
 
   
@@ -40,6 +49,7 @@
         <class>org.mmbase.bridge.util.fields.LastModifier</class>
       </commitprocessor>
       <setprocessor>
+        <!-- only makes it unmodifiable -->
         <class>org.mmbase.bridge.util.fields.LastModifier</class>
       </setprocessor>
     </specialization>
@@ -48,7 +58,10 @@
         <class>org.mmbase.util.transformers.MD5</class>
       </setprocessor>
     </specialization>
-    <specialization id="lowercaseuppercase"><!-- silly example to test -->
+    <specialization id="lowercaseuppercase">
+      <!-- silly example to test 
+	   Strings are stored all lowercase, but showed all uppercase
+	-->
       <setprocessor>
         <class>org.mmbase.util.transformers.LowerCaser</class>
       </setprocessor>
@@ -71,6 +84,14 @@
       <setprocessor>
         <class>org.mmbase.bridge.util.fields.LastModified</class>
       </setprocessor>
+    </specialization>
+  </fieldtype>
+
+  <fieldtype id="byte">
+    <specialization id="checksum">
+      <commitprocessor>
+        <class>org.mmbase.util.transformers.ChecksumFactory</class>
+      </commitprocessor>
     </specialization>
   </fieldtype>
 
