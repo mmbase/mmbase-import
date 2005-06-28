@@ -1,11 +1,15 @@
 <%@ include file="settings.jsp"
 %><mm:content postprocessor="none" type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud">
+<mm:import externid="xmlmode" />
+<mm:present referid="xmlmode">
+  <mm:param name="org.mmbase.xml-mode" value="$xmlmode" />
+</mm:present>
 <mm:log jspvar="log"><%
     /**
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.25 2004-11-17 15:17:33 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.26 2005-06-28 14:20:32 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
