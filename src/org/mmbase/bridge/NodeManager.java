@@ -25,39 +25,34 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.36 2005-05-18 09:02:08 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.37 2005-06-28 20:14:53 michiel Exp $
  */
 public interface NodeManager extends Node {
 
     /**
      * A constant for use with {@link #getFields(int)}, meaning `all fields, even those which are
      * not stored.
-     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
      */
     public final static int ORDER_NONE = -1;
     /**
      * A constant for use with {@link #getFields(int)}, meaning `all fields, in storage order (so
      * which are in storage'.
-     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
      */
     public final static int ORDER_CREATE = 0;
     /**
      * A constant for use with {@link #getFields(int)}, meaning all fields which a user may want to
      * fill when creating or editing this node. That are normally all nodes without the `automatic'
      * ones like `number' and `otype'.
-     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
      */
     public final static int ORDER_EDIT = 1;
     /**
      * A constant for use with {@link #getFields(int)}. When presenting a Node in some list overview
      * then less essential fields can be left out, to get a more concise presentation of the node.
-     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
      */
     public final static int ORDER_LIST = 2;
     /**
      * A constant for use with {@link #getFields(int)} On some fields, like binary fields (e.g. images) it makes no sense searching. These are left
      * out among the `search' fields.
-     * @todo constant is currently also in {@link org.mmbase.core.CoreField}.
      */
     public final static int ORDER_SEARCH = 3;
 
