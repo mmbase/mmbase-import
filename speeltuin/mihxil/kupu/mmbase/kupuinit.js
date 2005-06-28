@@ -7,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.15 2005-06-23 22:32:00 michiel Exp $
+// $Id: kupuinit.js,v 1.16 2005-06-28 12:33:20 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -167,7 +167,7 @@ function initKupu(iframe) {
        var linklibdrawer = new LinkLibraryDrawer(linktool, 
                                                  conf['link_xsl_uri'],
                                                  conf['link_libraries_uri'],
-                                                 conf['link_images_uri']);
+                                                 conf['search_links_uri']);
        drawertool.registerDrawer('linklibdrawer', linklibdrawer);
        
        var imagelibdrawer = new ImageLibraryDrawer(imagetool, 

@@ -9,7 +9,7 @@
   <mm:import externid="max" vartype="integer">50</mm:import>
   <collection>
     <uri>drawers/collection.jspx?search=${search}</uri>
-    <icon>kupuimages/kupulibrary.png</icon>
+    <icon>icons/map.gif</icon>
     <title>MMBase</title>
     <mm:cloud>
       <mm:import externid="nodetype">images</mm:import>
