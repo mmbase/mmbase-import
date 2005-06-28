@@ -9,7 +9,7 @@
   It could define default values, possible values, default sort orders etc etc.
 
   @author Michiel Meeuwissen
-  @version $Id: fieldtypedefinitions.xml,v 1.5 2005-06-28 08:16:20 michiel Exp $
+  @version $Id: fieldtypedefinitions.xml,v 1.6 2005-06-28 12:34:44 michiel Exp $
 -->
 
 
@@ -33,7 +33,7 @@
     </specialization>
 
     <specialization id="field">
-      <setprocessor>
+      <setprocessor type="string">
         <class>org.mmbase.bridge.util.fields.xml.FieldSetString</class>
       </setprocessor>
       <getprocessor>
