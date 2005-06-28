@@ -27,36 +27,13 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.4 2005-06-27 17:01:21 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.5 2005-06-28 14:19:54 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfGetString.class);
 
-    public static final int MODE_XML   = 0;
-    public static final int MODE_PRETTYXML   = 1;
-    public static final int MODE_FLAT  = 2;
-    public static final int MODE_WIKI  = 3;
-    public static final int MODE_KUPU  = 4;
-    
-
-    public static int getMode(Object mode) {
-        if ("xml".equals(mode)) {
-            return MODE_XML;
-        } else if ("prettyxml".equals(mode)) {
-            return MODE_PRETTYXML;
-        } else if ("flat".equals(mode)) {
-            return MODE_FLAT;
-        } else if ("wiki".equals(mode)) {
-            return MODE_WIKI;
-        } else if ("kupu".equals(mode)) {
-            return MODE_KUPU;
-        } else {
-            log.warn("Unknown mode " + mode);
-            return MODE_XML;
-        }
-    }
 
 
     public static Document getDocument(Node node, Field field)  {
@@ -93,8 +70,8 @@ public class MmxfGetString implements  Processor {
         log.info("Getting " + field + " from " + node + " as a String");
         
         try {
-            switch(getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
-            case MODE_KUPU: {
+            switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
+            case Modes.KUPU: {
                 //
                 log.debug("Generating kupu-compatible XML for" + value);
                 Document xml = getDocument(node, field);
@@ -106,7 +83,7 @@ public class MmxfGetString implements  Processor {
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
             }
-            case MODE_WIKI: {
+            case Modes.WIKI: {
                 log.debug("Generating 'wiki'  for" + value);
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2rich.xslt");
@@ -116,7 +93,7 @@ public class MmxfGetString implements  Processor {
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
             }
-            case MODE_FLAT: {
+            case Modes.FLAT: {
                 log.debug("Generating 'flat'  for" + value);
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2rich.xslt");
@@ -126,7 +103,7 @@ public class MmxfGetString implements  Processor {
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
             }
-            case MODE_PRETTYXML: {
+            case Modes.PRETTYXML: {
                 // get the XML from this thing....
                 // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
                 // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
@@ -139,7 +116,7 @@ public class MmxfGetString implements  Processor {
                 return "";
                 
             }                
-            case MODE_XML:
+            case Modes.XML:
             default:
                 Document xml = node.getXMLValue(field.getName());
                 
