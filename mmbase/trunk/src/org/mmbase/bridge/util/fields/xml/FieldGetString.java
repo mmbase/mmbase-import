@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.3 2005-06-28 14:19:54 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.4 2005-06-28 21:30:21 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -35,7 +35,7 @@ public class FieldGetString implements  Processor {
 
 
         if (! (realValue  instanceof Document)) {
-            throw new RuntimeException("FieldGetString should only be defined for XML fields. " + node.getNumber() + "/" + field.getName() + " returned a " + realValue.getClass());
+            throw new RuntimeException("FieldGetString should only be defined for XML fields. " + node.getNumber() + "/" + field.getName() + " returned a " + realValue.getClass() + "'" + realValue + "'");
         }
         Document document = (Document) realValue;
 
