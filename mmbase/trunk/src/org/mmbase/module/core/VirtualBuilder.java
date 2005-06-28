@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.corebuilders.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mmbase.module.corebuilders.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.13 2005-05-09 14:21:07 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.14 2005-06-28 14:01:41 pierre Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -121,7 +122,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @return <code>DBSTATE_VIRTUAL</code>
      */
     public int getDBState(String fieldName) {
-        return FieldDefs.DBSTATE_VIRTUAL;
+        return Field.STATE_VIRTUAL;
     }
 
     /**

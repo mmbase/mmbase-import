@@ -12,8 +12,12 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
@@ -35,7 +39,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.131 2005-06-09 21:33:03 michiel Exp $
+ * @version $Id: MMBase.java,v 1.132 2005-06-28 14:01:41 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -590,6 +594,28 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
+     * Returns an instance of a CoreField based on the type, and initializes it with the given values.
+     */
+    public CoreField createField(String name, int type, int state) {
+        CoreField field = Fields.createField(name, type);
+        field.setState(state);
+        return field;
+    }
+
+    /**
+     * Returns an instance of a CoreField based on the type, and initializes it with the gieven values.
+     */
+    public CoreField createField(String name, int type, int state, String guiName, String guiType, int searchPosition, int listPosition, int editPosition) {
+        CoreField field = createField(name, type, state);
+        // should be keep guitypes or not?
+        field.setGUIType(guiType);
+        field.setSearchPosition(searchPosition);
+        field.setListPosition(listPosition);
+        field.setEditPosition(editPosition);
+        return field;
+    }
+
+    /**
      * Returns a reference to the Object builder.
      * The Object builder is the builder from which all other builders eventually extend.
      * If the builder is not defined in the MMbase configuration, the system creates one.
@@ -605,23 +631,29 @@ public class MMBase extends ProcessorModule {
             rootBuilder.setTableName("object");
             List fields = new ArrayList();
             // number field  (note: state = 'system')
-            FieldDefs def = new FieldDefs("Object", "integer", 10, 10, "number", FieldDefs.TYPE_INTEGER, 1, FieldDefs.STATE_SYSTEM);
-            def.setDBPos(1);
-            def.setDBNotNull(true);
+            CoreField def = createField("number",MMBaseType.TYPE_INTEGER, Field.STATE_SYSTEM,
+                                     "Object", "integer", 10, 10, 1);
+            def.setStoragePosition(1);
+            def.getDataType().setRequired(true);
             def.setParent(rootBuilder);
+            def.finish();
             fields.add(def);
             // otype field
-            def = new FieldDefs("Type", "integer", -1, -1, "otype", FieldDefs.TYPE_INTEGER, -1, FieldDefs.STATE_SYSTEM);
-            def.setDBPos(2);
-            def.setDBNotNull(true);
+            def = createField("otype",MMBaseType.TYPE_INTEGER, Field.STATE_SYSTEM,
+                           "Type", "integer", -1, -1, -1);
+            def.setStoragePosition(2);
+            def.getDataType().setRequired(true);
             def.setParent(rootBuilder);
+            def.finish();
             fields.add(def);
             // owner field
-            def = new FieldDefs("Owner", "string", 11, 11, "owner", FieldDefs.TYPE_STRING, -1, FieldDefs.STATE_SYSTEM);
-            def.setDBSize(12);
-            def.setDBPos(3);
-            def.setDBNotNull(true);
+            def = createField("owner",MMBaseType.TYPE_STRING, Field.STATE_SYSTEM,
+                           "Owner", "string", 11, 11, -1);
+            def.setSize(12);
+            def.setStoragePosition(3);
+            def.getDataType().setRequired(true);
             def.setParent(rootBuilder);
+            def.finish();
             fields.add(def);
             rootBuilder.setFields(fields);
         }

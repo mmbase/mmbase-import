@@ -13,7 +13,8 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.cache.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
@@ -33,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.140 2005-06-23 22:21:21 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.141 2005-06-28 14:01:41 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -346,7 +347,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return contexts;
 /*
             NodeSearchQuery query = new NodeSearchQuery(parent);
-            FieldDefs fieldDefs = parent.getField("owner");
+            CoreField fieldDefs = parent.getField("owner");
             StepField field = query.getField(fieldDefs);
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, getContext(user));
             query.setMaxNumber(1);
@@ -514,7 +515,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         setUpdate(fieldName);
         return true;
     }
-    
+
     /**
      * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
      * fill using an InputStream.
@@ -604,19 +605,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
      */
     public boolean setValue(String fieldName, int type, String value) {
-        if (type==FieldDefs.TYPE_UNKNOWN) {
+        if (type==MMBaseType.TYPE_UNKNOWN) {
             log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
             return false;
         }
         switch (type) {
-        case FieldDefs.TYPE_XML:
+        case MMBaseType.TYPE_XML:
             setValue(fieldName, toXML(value, fieldName));
             break;
-        case FieldDefs.TYPE_STRING:
+        case MMBaseType.TYPE_STRING:
             setValue(fieldName, value);
             break;
-        case FieldDefs.TYPE_NODE:
-        case FieldDefs.TYPE_INTEGER:
+        case MMBaseType.TYPE_NODE:
+        case MMBaseType.TYPE_INTEGER:
             Integer i;
             try {
                 i = new Integer(value);
@@ -626,7 +627,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             setValue(fieldName, i);
             break;
-        case FieldDefs.TYPE_FLOAT:
+        case MMBaseType.TYPE_FLOAT:
             Float f;
             try {
                 f = new Float(value);
@@ -636,7 +637,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             setValue(fieldName, f);
             break;
-        case FieldDefs.TYPE_LONG:
+        case MMBaseType.TYPE_LONG:
             Long l;
             try {
                 l = new Long(value);
@@ -646,7 +647,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             setValue(fieldName, l);
             break;
-        case FieldDefs.TYPE_DOUBLE:
+        case MMBaseType.TYPE_DOUBLE:
             Double d;
             try {
                 d = new Double(value);
@@ -671,7 +672,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (! initializing && !changed.contains(fieldName) && state == FieldDefs.DBSTATE_PERSISTENT) {
+        if (! initializing && !changed.contains(fieldName) && state == Field.STATE_PERSISTENT) {
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
@@ -725,11 +726,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             if (value == null) {
                 int type = getDBType(fieldName);
                 switch (type) {
-                case FieldDefs.TYPE_BYTE: 
-                    value = parent.getShortedByte(fieldName, this); 
+                case MMBaseType.TYPE_BINARY:
+                    value = parent.getShortedByte(fieldName, this);
                     break;
-                case FieldDefs.TYPE_STRING:
-                    value = parent.getShortedText(fieldName, this); 
+                case MMBaseType.TYPE_STRING:
+                    value = parent.getShortedText(fieldName, this);
                     break;
                 default:
                     throw new UnsupportedOperationException("Found shorted value for type " + type);
@@ -740,8 +741,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // if we have an XML-dbtype field, we always have to return a Document (or null).
         // note that if the value is null we store it as a null value
-        if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML &&
-           value != null && value != VALUE_NULL && !(value instanceof Document)) {
+        if (parent != null && value != null && value != VALUE_NULL && !(value instanceof Document) &&
+            getDBType(fieldName) == MMBaseType.TYPE_XML) {
             String string = Casting.toString(value).trim();
             Document doc = toXML(string, fieldName);
             if(doc != null) {
@@ -755,7 +756,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-        if (value == null) return parent.getValue(this, fieldName);
+        if (value == null) value = parent.getValue(this, fieldName);
 
         // return the found object
         return value;
@@ -818,7 +819,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public Document getXMLValue(String fieldName) {
         Document o =  toXML(getValue(fieldName), fieldName);
-        if(o != null && getDBType(fieldName) == FieldDefs.TYPE_XML) {
+        if(o != null && getDBType(fieldName) == MMBaseType.TYPE_XML) {
             storeValue(fieldName, o);
         }
         return o;
@@ -853,7 +854,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return b;
         } else {
             byte[] b;
-            if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
+            if (getDBType(fieldName) == MMBaseType.TYPE_STRING) {
                 String s = getStringValue(fieldName);
                 try {
                     b = s.getBytes(parent.getMMBase().getEncoding());
@@ -896,7 +897,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 } else {
                     log.debug("Too big for cache, requesting InputStream directly from storage");
                     return parent.mmb.getStorageManager().getInputStreamValue(this, parent.getField(fieldName));
-                }                
+                }
             } else {
                 log.debug("Found in blob cache " + fieldName);
             }
@@ -1061,7 +1062,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         if (parent!=null)    {
             return parent.getDBState(fieldName);
         } else {
-            return FieldDefs.DBSTATE_UNKNOWN;
+            return Field.STATE_UNKNOWN;
         }
     }
 

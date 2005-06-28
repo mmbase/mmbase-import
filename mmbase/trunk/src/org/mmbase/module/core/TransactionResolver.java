@@ -10,12 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.15 2004-06-23 12:30:33 pierre Exp $
+ * @version $Id: TransactionResolver.java,v 1.16 2005-06-28 14:01:41 pierre Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
@@ -36,18 +39,18 @@ public class TransactionResolver {
             MMObjectNode node = (MMObjectNode)i.next();
             MMObjectBuilder bul = mmbase.getMMObject(node.getName());
             log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
-            for (Enumeration f=bul.getFields().elements();f.hasMoreElements();) {
-                FieldDefs fd = (FieldDefs)f.nextElement();
-                int dbtype = fd.getDBType();
-                log.debug("TransactionResolver - type " + dbtype + "," + fd.getDBName() + "," + fd.getDBState());
-                if ((dbtype == FieldDefs.TYPE_INTEGER)||
-                    (dbtype == FieldDefs.TYPE_NODE)) {
-                    int state = fd.getDBState();
-                    if (state == FieldDefs.DBSTATE_PERSISTENT || state == FieldDefs.DBSTATE_SYSTEM) {
+            for (Enumeration f = bul.getFields().elements();f.hasMoreElements();) {
+                CoreField fd = (CoreField)f.nextElement();
+                int dbtype = fd.getDataType().getType();
+                log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
+                if ((dbtype == MMBaseType.TYPE_INTEGER)||
+                    (dbtype == MMBaseType.TYPE_NODE)) {
+                    int state = fd.getState();
+                    if (state == Field.STATE_PERSISTENT || state == Field.STATE_SYSTEM) {
                         // Database field of type integer
-                        String field = fd.getDBName();
+                        String field = fd.getName();
                         String tmpfield = "_" + field;
-                        if (node.getDBState(tmpfield) == FieldDefs.DBSTATE_VIRTUAL) {
+                        if (node.getDBState(tmpfield) == Field.STATE_VIRTUAL) {
                             int ikey = node.getIntValue(field);
                             if (ikey < 0) {
                                 // Key is not set
@@ -125,11 +128,11 @@ public class TransactionResolver {
             MMObjectNode node = (MMObjectNode)i.next();
             MMObjectBuilder bul=mmbase.getMMObject(node.getName());
             for (Iterator j = bul.getFields().iterator();j.hasNext();) {
-                FieldDefs fd = (FieldDefs)j.next();
-                int dbtype = fd.getDBType();
-                if ((dbtype == FieldDefs.TYPE_INTEGER)||
-                    (dbtype == FieldDefs.TYPE_NODE)) {
-                    String field = fd.getDBName();
+                CoreField fd = (CoreField)j.next();
+                int dbtype = fd.getDataType().getType();
+                if ((dbtype == MMBaseType.TYPE_INTEGER)||
+                    (dbtype == MMBaseType.TYPE_NODE)) {
+                    String field = fd.getName();
                     int number = node.getIntValue(field);
                     if (number == -1) {
                         String tmpfield = "_"+field;

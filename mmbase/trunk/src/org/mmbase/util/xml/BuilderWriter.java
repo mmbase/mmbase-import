@@ -11,6 +11,7 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 
@@ -25,7 +26,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.18 2005-05-10 22:56:16 michiel Exp $
+ * @version $Id: BuilderWriter.java,v 1.19 2005-06-28 14:01:42 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -151,7 +152,7 @@ public class BuilderWriter extends DocumentWriter  {
         addComment("builder.fieldlist",root);
         root.appendChild(fieldlist);
         // obtain all fields defined in the builder
-        List fields=builder.getFields(CoreField.ORDER_CREATE);
+        List fields=builder.getFields(NodeManager.ORDER_CREATE);
         for (Iterator f=fields.iterator(); f.hasNext();) {
             CoreField fielddef=(CoreField)f.next();
             // skip otype, cannot occur in a builder xml file (doh)

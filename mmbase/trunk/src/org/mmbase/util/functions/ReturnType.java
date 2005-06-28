@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.11 2005-06-21 15:00:47 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.12 2005-06-28 14:01:42 pierre Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataType {
@@ -102,14 +102,6 @@ public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataTyp
     public  ReturnType(Class type, String description) {
         super("RETURN_VALUE", type);
         setDescription(description, null);
-    }
-
-    public Object getDefaultValue() {
-        return null;
-    }
-
-    public void setDefaultValue(Object def) {
-        throw new UnsupportedOperationException("You cannot define a default value for a return type");
     }
 
     public boolean isRequired() {

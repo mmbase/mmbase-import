@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.45 2005-06-15 14:50:11 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.46 2005-06-28 14:01:42 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -66,13 +66,14 @@ public class XMLEntityResolver implements EntityResolver {
 
     static {
         // ask known (core) xml readers to register their public ids and dtds
-        // the advantage of doing it this soon, is that the DTD are know as early as possible.
+        // the advantage of doing it this soon, is that the 1DTD are know as early as possible.
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
         XMLApplicationReader.registerPublicIDs();
         XMLModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
+        org.mmbase.bridge.util.xml.query.QueryReader.registerPublicIDs();
     }
 
     /**
@@ -125,15 +126,16 @@ public class XMLEntityResolver implements EntityResolver {
         }
 
         InputStream definitionStream = null;
-        // first try with publicID
+
+        // first try with publicID or namespace
         if (publicId != null) {
             Resource res = (Resource) publicIDtoResource.get(publicId);
             if (res != null) {
                 definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
-                if (definitionStream == null) { 
+                if (definitionStream == null) {
                     definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xsd/" + res.getFileName());
                 }
-                if (definitionStream == null) { 
+                if (definitionStream == null) {
                     definitionStream = res.getAsStream();
                 }
             }
@@ -165,7 +167,7 @@ public class XMLEntityResolver implements EntityResolver {
                     Class base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
                     if (base != null) {
-                        res = new Resource(base, mmResource.substring(4));
+                        res = new Resource(base, mmResource.substring(4));  // dtd of xsd
                     }
                     if (res != null) {
                         definitionStream = res.getAsStream();

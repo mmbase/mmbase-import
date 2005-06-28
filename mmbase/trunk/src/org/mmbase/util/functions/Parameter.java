@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.bridge.DataType;
+import org.mmbase.bridge.implementation.datatypes.*;
 import java.util.*;
 
 /**
@@ -22,7 +23,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.16 2005-05-08 13:31:42 michiel Exp $
+ * @version $Id: Parameter.java,v 1.17 2005-06-28 14:01:42 pierre Exp $
  * @see Parameters
  */
 
@@ -31,40 +32,27 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     /**
      * Parameters which might be needed in lots of Parameter definition arrays.
      */
-    public static final Parameter LANGUAGE = new Parameter("language", String.class);
-    public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
-    public static final Parameter USER     = new Parameter("user",     org.mmbase.security.UserContext.class);
-    public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
-    public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
-    public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
-    public static final Parameter NODE     = new Parameter("node",     org.mmbase.module.core.MMObjectNode.class);
-
-    public static final String STRINGS = "org.mmbase.util.functions.resources.parameters";
-
-
-    static {
-        try {
-            LANGUAGE.setBundle(STRINGS);
-            LOCALE.setBundle(STRINGS);
-            USER.setBundle(STRINGS);
-            REQUEST.setBundle(STRINGS);
-            RESPONSE.setBundle(STRINGS);
-            CLOUD.setBundle(STRINGS);
-        } catch (Exception e) {
-            // should not happen
-        }
-    }
+    public static final Parameter LANGUAGE = (Parameter) DataType.LANGUAGE;
+    public static final Parameter LOCALE   = (Parameter) DataType.LOCALE;
+    public static final Parameter USER     = (Parameter) DataType.USER;
+    public static final Parameter RESPONSE = (Parameter) DataType.RESPONSE;
+    public static final Parameter REQUEST  = (Parameter) DataType.REQUEST;
+    public static final Parameter CLOUD    = (Parameter) DataType.CLOUD;
+    public static final Parameter NODE     = (Parameter) DataType.NODE;
 
     /**
      * An empty Parameter array.
      */
     public static final Parameter[] EMPTY  = new Parameter[0];
 
-    // package for Parameters (direct access avoids function calls)
-    Object defaultValue = null;
-    boolean required  = false;
-
-    protected Parameter() {}
+    /**
+     * Create a Parameter object
+     * @param name the name of the parameter
+     * @param type the class of the parameter's possible value
+     */
+    public Parameter(String name, int type) {
+        super(name, type);
+    }
 
     /**
      * Create a Parameter object
@@ -78,69 +66,52 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     /**
      * Create a Parameter object
      * @param name the name of the parameter
-     * @param type the class of the parameter's possible value
-     * @param required whether the parameter requires a value (default is <code>false</code>)
+     * @param dataType the parent datatype whose properties to inherit
      */
-    public Parameter(String name, Class type, boolean required) {
-        super(name, type);
-        this.required = required;
+    public Parameter(String name, DataType dataType) {
+        super(name, dataType);
     }
 
     /**
      * Create a Parameter object
      * @param name the name of the parameter
      * @param type the class of the parameter's possible value
-     * @param defaultValue the value to use if the parameter has no value set (default is <code>null</code>)
+     * @param required whether the parameter requires a value
+     */
+    public Parameter(String name, Class type, boolean required) {
+        super(name, type);
+        setRequired(required);
+    }
+
+    /**
+     * Create a Parameter object
+     * @param name the name of the parameter
+     * @param type the class of the parameter's possible value
+     * @param defaultValue the value to use if the parameter has no value set
      */
     public Parameter(String name, Class type, Object defaultValue) {
         super(name, type);
-        this.defaultValue = defaultValue;
+        setDefaultValue(defaultValue);
     }
-
 
     /**
      * Copy-constructor, just to copy it with different requiredness
+     * @param dataType the parent datatype whose properties to inherit
+     * @param required whether the parameter requires a value
      */
-    public Parameter(DataType p, boolean required) {
-        super(p.getName(), p.getTypeAsClass());
-        this.required = required;
-        if (! required) { // otherwise it makes no sense
-            this.defaultValue = p.getDefaultValue();
-        }
+    public Parameter(DataType dataType, boolean required) {
+        super(dataType.getName(), dataType);
+        setRequired(required);
     }
-
 
     /**
      * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
+     * @param dataType the parent datatype whose properties to inherit
+     * @param defaultValue the value to use if the parameter has no value set
      */
-    public Parameter(DataType p, Object defaultValue) {
-        super(p.getName(), p.getTypeAsClass());
-        this.defaultValue = defaultValue;
-        // not need to copy 'required', it should be 'false'.
-    }
-
-    /**
-     * Returns the default value of this parameter.
-     * @return the default value
-     */
-    public Object getDefaultValue() {
-        return defaultValue;
-    }
-
-    /**
-     * Sets the default value of this parameter.
-     * @param def the default value
-     */
-    public void setDefaultValue(Object def) {
-        defaultValue = def;
-    }
-
-    /**
-     * Returns whether the parameter requires a value.
-     * @return <code>true</code> if a value is required
-     */
-    public boolean isRequired() {
-        return required;
+    public Parameter(DataType dataType, Object defaultValue) {
+        super(dataType.getName(), dataType);
+        setDefaultValue(defaultValue);
     }
 
     /**
@@ -156,7 +127,7 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
             super("[ARRAYWRAPPER]", Parameter[].class);
             arguments = arg;
         }
-        
+
         // this toString makes the wrapping invisible in the toString of a wrapping Parameter[]
         public String toString() {
             StringBuffer buf = new StringBuffer();

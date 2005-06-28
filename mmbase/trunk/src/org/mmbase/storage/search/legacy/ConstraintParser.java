@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.legacy;
 
 import java.util.*;
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -110,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.23 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: ConstraintParser.java,v 1.24 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -157,9 +159,9 @@ public class ConstraintParser {
              }
 
             int fieldType = field.getType();
-            if (fieldType == FieldDefs.TYPE_BYTE || fieldType == FieldDefs.TYPE_DOUBLE ||
-                fieldType == FieldDefs.TYPE_FLOAT || fieldType == FieldDefs.TYPE_INTEGER ||
-                fieldType == FieldDefs.TYPE_LONG || fieldType == FieldDefs.TYPE_NODE) {
+            if (fieldType == MMBaseType.TYPE_BINARY || fieldType == MMBaseType.TYPE_DOUBLE ||
+                fieldType == MMBaseType.TYPE_FLOAT || fieldType == MMBaseType.TYPE_INTEGER ||
+                fieldType == MMBaseType.TYPE_LONG || fieldType == MMBaseType.TYPE_NODE) {
                 // String represents a numerical value.
                 result = new Double((String) result);
             }
@@ -294,18 +296,18 @@ public class ConstraintParser {
             fieldName = token.substring(idx + 1, token.length() - bracketOffset);
         }
 
-        FieldDefs fieldDefs = builder.getField(fieldName);
-        if (fieldDefs == null) {
-            // maybe the fielddef was already escaped with getAllowedField
-            // otherwise it will definitely fail!
-            // not supported, so skip for now...
-            // fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
-        }
-        if (fieldDefs == null) {
+        CoreField coreField = builder.getField(fieldName);
+        // maybe the field was already escaped with getAllowedField
+        // otherwise it will definitely fail!
+        // not supported, so skip for now...
+        // if (coreField == null) {
+        //     field = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
+        // }
+        if (coreField == null) {
             throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName()
                                                + "): \"" + fieldName + "\"");
         }
-        BasicStepField field = new BasicStepField(step, fieldDefs);
+        BasicStepField field = new BasicStepField(step, coreField);
         return field;
     }
 
@@ -333,8 +335,8 @@ public class ConstraintParser {
         throw new IllegalArgumentException("Unknown table alias: \"" + alias + "\"");
     }
 
-    /** Creates a new instance of ConstraintParser 
-     * @param query  
+    /** Creates a new instance of ConstraintParser
+     * @param query
      */
     public ConstraintParser(SearchQuery query) {
         this.query = query;

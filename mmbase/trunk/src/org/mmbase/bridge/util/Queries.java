@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.53 2005-06-15 07:12:32 michiel Exp $
+ * @version $Id: Queries.java,v 1.54 2005-06-28 14:01:41 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -484,23 +484,23 @@ abstract public class Queries {
             return set;
         }  else {
             switch(fieldType) {
-            case Field.TYPE_INTEGER:
-            case Field.TYPE_FLOAT:
-            case Field.TYPE_LONG:
-            case Field.TYPE_DOUBLE:
-            case Field.TYPE_NODE:
+            case MMBaseType.TYPE_INTEGER:
+            case MMBaseType.TYPE_FLOAT:
+            case MMBaseType.TYPE_LONG:
+            case MMBaseType.TYPE_DOUBLE:
+            case MMBaseType.TYPE_NODE:
                 if (value instanceof Number) {
                     return value;
                 } else {
                     return getNumberValue(Casting.toString(value));
                 }
-            case Field.TYPE_DATETIME:
+            case MMBaseType.TYPE_DATETIME:
                 if (datePart > -1) {
                     return Casting.toInteger(value);
                 } else {
                     return Casting.toDate(value);
                 }
-            case Field.TYPE_BOOLEAN:
+            case MMBaseType.TYPE_BOOLEAN:
                 return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
             default:
                 return value;
@@ -567,7 +567,7 @@ abstract public class Queries {
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
 
-            if (fieldName.equals("number") || fieldType == Field.TYPE_NODE) {
+            if (fieldName.equals("number") || fieldType == MMBaseType.TYPE_NODE) {
                 if (value instanceof String) { // it might be an alias!
                     if (cloud.hasNode((String) value)) {
                         Node node = cloud.getNode((String)value);
@@ -601,13 +601,13 @@ abstract public class Queries {
             Object compareValue = getCompareValue(fieldType, operator, value, datePart);
 
             if (operator > 0 && operator < OPERATOR_IN) {
-                if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
+                if (fieldType == MMBaseType.TYPE_DATETIME && datePart> -1) {
                     newConstraint = query.createConstraint(stepField, operator, compareValue, datePart);
                 } else {
                     newConstraint = query.createConstraint(stepField, operator, compareValue);
                 }
             } else {
-                if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
+                if (fieldType == MMBaseType.TYPE_DATETIME && datePart> -1) {
                     throw new RuntimeException("Cannot apply IN or BETWEEN to a partial date field");
                 }
                 switch (operator) {
@@ -699,16 +699,16 @@ abstract public class Queries {
             while (k.hasNext()) {
                 Object value = k.next();
                 switch(type) {
-                case Field.TYPE_INTEGER:
-                case Field.TYPE_LONG:
-                case Field.TYPE_NODE:
+                case MMBaseType.TYPE_INTEGER:
+                case MMBaseType.TYPE_LONG:
+                case MMBaseType.TYPE_NODE:
                     value = new Long((String) value);
                     break;
-                case Field.TYPE_FLOAT:
-                case Field.TYPE_DOUBLE:
+                case MMBaseType.TYPE_FLOAT:
+                case MMBaseType.TYPE_DOUBLE:
                     value = new Double((String) value);
                     break;
-                case Field.TYPE_DATETIME:
+                case MMBaseType.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));
                     break;
                 default:

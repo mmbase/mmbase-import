@@ -85,7 +85,7 @@ When you want to place a configuration file then you have several options, wich 
   </li>
 </ol>
  * <p>
- *   Resources which do not reside in the MMBase configuration repository, can also be handled. Those can be resolved relatively to the web root, using {@link #getWebRoot()}. 
+ *   Resources which do not reside in the MMBase configuration repository, can also be handled. Those can be resolved relatively to the web root, using {@link #getWebRoot()}.
  * </p>
  *
  * <p>Resources can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.18 2005-06-07 16:52:35 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.19 2005-06-28 14:01:42 pierre Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -123,7 +123,7 @@ public class ResourceLoader extends ClassLoader {
      * Protocol prefix used by URL objects in this class.
      */
     public static final URL NODE_URL_CONTEXT;
-    
+
     static {
         URL temp = null;
         try {
@@ -331,7 +331,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Singleton that returns the ResourceLoader for loading from the file-system, relative from
      * current working directory and falling back to the file system roots. This can be used in
-     * command-line tools and such. In a servlet environment you should use either 
+     * command-line tools and such. In a servlet environment you should use either
      * {@link  #getConfigurationRoot} or {@link #getWebRoot}.
      */
     public static synchronized ResourceLoader getSystemRoot() {
@@ -342,7 +342,7 @@ public class ResourceLoader extends ClassLoader {
             for (int i = 0; i <roots.length; i++) {
                 systemRoot.roots.add(systemRoot.new FileURLStreamHandler(roots[i], true));
             }
-            
+
         }
         return systemRoot;
     }
@@ -445,7 +445,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used. 
+     * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used.
      *
      * Otherwise the name is resolved relatively. (For the root ResourceLoader that is the same as starting with /)
      *
@@ -476,15 +476,15 @@ public class ResourceLoader extends ClassLoader {
         return new Enumeration() {
                 private Enumeration current = null;
                 private Enumeration next;
-                { 
+                {
                     current = getNext();
                     next = getNext();
                 }
 
                 protected Enumeration getNext() {
                     if (i.hasNext()) {
-                        try {                            
-                            PathURLStreamHandler ush = (PathURLStreamHandler) i.next(); 
+                        try {
+                            PathURLStreamHandler ush = (PathURLStreamHandler) i.next();
                             Enumeration e = ush.getResources(name);
                             return e;
                         } catch (IOException io) {
@@ -495,14 +495,14 @@ public class ResourceLoader extends ClassLoader {
                         return current;
                     }
                 }
-                
+
                 public boolean hasMoreElements() {
                     return current.hasMoreElements() || next.hasMoreElements();
                 }
                 public Object nextElement() {
                     if (! current.hasMoreElements()) {
                         current = next;
-                        next = getNext();                        
+                        next = getNext();
                     }
                     return current.nextElement();
                 }
@@ -548,8 +548,8 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param context a context relative to the current resource loader
      * @returns a new 'child' ResourceLoader or the parent ResourceLoader if the context is ".."
      * @see #ResourceLoader(ResourceLoader, String)
@@ -648,7 +648,6 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-
     /**
      * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
      * configuration in in XML.
@@ -656,13 +655,29 @@ public class ResourceLoader extends ClassLoader {
      * @param name The name of the resource to be loaded
      * @return The Document if succesful, <code>null</code> if there is no such resource.
      * @throws SAXException If the resource does not present parseable XML.
-     * @throws IOException 
+     * @throws IOException
      */
     public Document getDocument(String name) throws org.xml.sax.SAXException, IOException  {
+        return getDocument(name, true, false, null);
+    }
+
+    /**
+     * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
+     * configuration in in XML.
+     *
+     * @param name The name of the resource to be loaded
+     * @param validation If <code>true</code>, validate the xml
+     * @param xsd If <code>true</code>, (and validation is <code>true</code>, validate using an xml-schema
+     * @param baseClass If validation is <code>true</code>, the base calss to serach for the validating xsd or dtd
+     * @return The Document if succesful, <code>null</code> if there is no such resource.
+     * @throws SAXException If the resource does not present parseable XML.
+     * @throws IOException
+     */
+    public Document getDocument(String name, boolean validation, boolean xsd, Class baseClass) throws org.xml.sax.SAXException, IOException  {
         InputSource source = getInputSource(name);
         if (source == null) return null;
-        XMLEntityResolver resolver = new XMLEntityResolver(true, null);
-        DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, null/* no error handler */, resolver);
+        XMLEntityResolver resolver = new XMLEntityResolver(true, baseClass);
+        DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd, null/* no error handler */, resolver);
         if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
         if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
         Document doc = dbuilder.parse(source);
@@ -800,7 +815,7 @@ public class ResourceLoader extends ClassLoader {
      */
     public List/*<File>*/ getFiles(String name) {
 
-        
+
         List result = new ArrayList();
         Iterator i = roots.iterator();
         while (i.hasNext()) {
@@ -937,7 +952,7 @@ public class ResourceLoader extends ClassLoader {
         /**
          * We need an openConnection by name only, and public.
          */
-        abstract public URLConnection openConnection(String name);        
+        abstract public URLConnection openConnection(String name);
 
         /**
          * When a URL has been created, in {@link #openConnection(String)}, this method can make a 'name' of it again.
@@ -945,7 +960,7 @@ public class ResourceLoader extends ClassLoader {
         abstract protected String getName(URL u);
 
         /**
-         * Returns a List of URL's with the same name. Defaults to one URL. 
+         * Returns a List of URL's with the same name. Defaults to one URL.
          */
         Enumeration getResources(final String name) throws IOException {
             return new Enumeration() {
@@ -955,7 +970,7 @@ public class ResourceLoader extends ClassLoader {
                         hasMore = false;
                         return openConnection(name).getURL();
                     }
-                    
+
                 };
         }
 
@@ -973,7 +988,7 @@ public class ResourceLoader extends ClassLoader {
         FileURLStreamHandler(File root, boolean w) {
             fileRoot = root;
             writeable = w;
-            
+
         }
         FileURLStreamHandler(FileURLStreamHandler f) {
             fileRoot  = f.fileRoot;
@@ -987,7 +1002,7 @@ public class ResourceLoader extends ClassLoader {
                 } catch (URISyntaxException use) {
                     log.warn(use);
                 }
-            } 
+            }
             String fileName = fileRoot + ResourceLoader.this.context.getPath() + (name == null ? "" : name);
             if (! File.separator.equals("/")) { // windows compatibility
                 fileName = fileName.replace('/', File.separator.charAt(0)); // er
@@ -1190,7 +1205,7 @@ public class ResourceLoader extends ClassLoader {
 
     }
 
-    /** 
+    /**
      * A URLConnection based on an MMBase node.
      * @see FileConnection
      */
@@ -1429,7 +1444,7 @@ public class ResourceLoader extends ClassLoader {
             return res;
         }
 
-        Enumeration getResources(final String name) throws IOException {        
+        Enumeration getResources(final String name) throws IOException {
             return getClassLoader().getResources(getClassResourceName(name));
         }
         public URLConnection openConnection(String name) {
@@ -1474,7 +1489,7 @@ public class ResourceLoader extends ClassLoader {
                             reader.close();
                         }
                     } else {
-                        
+
                     }
                 }
             } catch (IOException ioe) {
@@ -1511,7 +1526,7 @@ public class ResourceLoader extends ClassLoader {
             protected String getName(URL u) {
                 return u.getPath().substring(NOT_FOUND.length());
             }
-            
+
             public URLConnection openConnection(String name) {
                 URL u;
                 try {
@@ -1521,16 +1536,16 @@ public class ResourceLoader extends ClassLoader {
                 }
                 return new NotAvailableConnection(u, name);
             }
-            
+
             public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
                 return new HashSet();
             }
         };
-    
+
 
 
     /**
-     * A connection which can neither do input, nor output. 
+     * A connection which can neither do input, nor output.
      */
     private class NotAvailableConnection extends URLConnection {
 
@@ -1750,9 +1765,9 @@ public class ResourceLoader extends ClassLoader {
                     return;
                 }
                 System.out.println("-------------------- resolved " + resourceLoader.getResourceList(arg) + " with " + resourceLoader + ": ");
-                
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
-                
+
                 while(true) {
                     String line = reader.readLine();
                     if (line == null) break;

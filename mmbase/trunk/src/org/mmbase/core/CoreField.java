@@ -10,98 +10,81 @@ See http://www.MMBase.org/license
 package org.mmbase.core;
 
 import java.util.*;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.Storable;
 
 
 /**
-
  * @since MMBase-1.8
  */
-public interface CoreField extends FieldType, Storable {
-
-
-    
-    /*
-     * @see org.mmbase.bridge.NodeManager#ORDER_NONE
-     */
-    final static int ORDER_NONE   = -1;
-    /*
-     * @see org.mmbase.bridge.NodeManager#ORDER_CREATE
-     */
-    final static int ORDER_CREATE = 0;
-    /*
-     * @see org.mmbase.bridge.NodeManager#ORDER_EDIT
-     */
-    final static int ORDER_EDIT   = 1;
-    /*
-     * @see org.mmbase.bridge.NodeManager#ORDER_LIST
-     */
-    final static int ORDER_LIST   = 2;
-    /*
-     * @see org.mmbase.bridge.NodeManager#ORDER_SEARCH
-     */
-    final static int ORDER_SEARCH = 3;
-
-
-
-    org.mmbase.util.LocalizedString getLocalizedDescription();
-    org.mmbase.util.LocalizedString getLocalizedGUIName();
-
-    /**
-     * Retrieve the position of the field when searching.
-     * A value of -1 indicates the field is unavailable during search.
-     */
-    int getSearchPosition();
-
-    void setSearchPosition(int i);
-    
-    /**
-     * Retrieve the position of the field when listing.
-     * A value of -1 indicates the field is unavailable in a list.
-     */
-    int getListPosition();
-
-    void setListPosition(int i);
-    
-    /**
-     * Retrieve the position of the field when editing.
-     * A value of -1 indicates the field cannot be edited.
-     */
-    int getEditPosition();
-
-    void setEditPosition(int i);
-
-    /**
-     * Retrieve the position of the field in the database table.
-     */
-    int getStoragePosition();
-
-    void setStoragePosition(int i);
-
+public interface CoreField extends Field, Storable {
 
     /**
      * Retrieves the parent builder for this field
      */
-    MMObjectBuilder getParent();
+    public MMObjectBuilder getParent();
 
     /**
      * Set the parent builder for this field
      * @param parent the fielddefs parent
      */
-    void setParent(MMObjectBuilder parent);
-    
+    public void setParent(MMObjectBuilder parent);
 
+    /**
+     * Set the position of the field when searching.
+     * @see #getSearchPosition
+     */
+    public void setSearchPosition(int position);
 
-    void setGUIType(String g);
-    void setGUIName(String g, Locale locale);
+    /**
+     * Set the position of the field when listing.
+     * @see #getListPosition
+     */
+    public void setListPosition(int position);
 
-    void setMaxLength(int i);
+    /**
+     * Set the position of the field when editing.
+     * @see #getEditPosition
+     */
+    public void setEditPosition(int position);
 
-    void setType(int i);
-    void setState(int i);
-    void setUnique(boolean b);
-    void setRequired(boolean b);
+    /**
+     * Set the position of the field in the database table.
+     */
+    public void setStoragePosition(int position);
 
-    boolean storageEquals(CoreField field);
+    /**
+     * Returns the (maximum) size of this field, as determined by the storage layer.
+     * For example if a field contains characters the size indicates the
+     * maximum number of characters it can contain.
+     * If the field is a numeric field (such as an integer), the result is -1.
+     *
+     * @return  the maximum size of data this field can contain
+     */
+    public int getSize();
+
+    public void setSize(int i);
+
+    public void setType(int i);
+
+    public void setState(int i);
+
+    public void setUnique(boolean b);
+
+    public boolean storageEquals(CoreField field);
+
+    public void finish();
+
+    public void rewrite();
+
+    public CoreField copy(String name);
+
+    /**
+     * Returns the GUI name for the data type this field contains.
+     * @deprecated use {@link #getDataType } and {@link DataType.getName}
+     * @see #getDataType
+     */
+    public void setGUIType(String type);
+
 }

@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.storage.search.implementation.*;
@@ -41,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.30 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: Jumpers.java,v 1.31 2005-06-28 14:01:41 pierre Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -144,10 +143,8 @@ public class Jumpers extends MMObjectBuilder {
 
     protected String getJumpByField(String fieldName, String key) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        FieldDefs fieldDefs = getField("name");
-        StepField field = query.getField(fieldDefs);
-        FieldDefs numberFieldDefs = getField("number");
-        StepField numberField = query.getField(numberFieldDefs);
+        StepField field = query.getField(getField("name"));
+        StepField numberField = query.getField(getField(FIELD_NUMBER));
         query.addSortOrder(numberField); // use 'oldest' jumper
         BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
         query.setConstraint(cons);

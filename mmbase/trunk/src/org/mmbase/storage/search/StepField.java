@@ -16,7 +16,7 @@ package org.mmbase.storage.search;
  * This corresponds to a prefixed fieldname in a SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: StepField.java,v 1.3 2003-03-10 11:50:52 pierre Exp $
+ * @version $Id: StepField.java,v 1.4 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public interface StepField {
@@ -30,44 +30,44 @@ public interface StepField {
     /**
      * Gets the alias for the associated field.
      * <p>
-     * This corresponds to the field alias in SQL SELECT-syntax. 
+     * This corresponds to the field alias in SQL SELECT-syntax.
      */
     String getAlias();
 
     /**
-     * Gets the step associated with this fieldstep. 
+     * Gets the step associated with this fieldstep.
      */
     Step getStep();
 
     /**
-     * Gets the type of the associated field. 
-     * This is one of the values defined in {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}.
+     * Gets the type of the associated field.
+     * This is one of the values defined in {@link org.mmbase.bridge.MMBaseType MMBaseType}.
      */
     int getType();
 
     /**
-     * Compares this stepfield to the specified object. The result is 
-     * <code>true</code> if and only if the argument is a non-null 
+     * Compares this stepfield to the specified object. The result is
+     * <code>true</code> if and only if the argument is a non-null
      * StepField object associated with the same field, using the same alias.
-     * 
+     *
      * @param obj The object to compare with.
-     * @return <code>true</code> if the objects are equal, 
+     * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
     public boolean equals(Object obj);
-    
+
     // javadoc is inherited
     public int hashCode();
 
     /**
-     * Returns a string representation of this StepField. 
-     * The string representation has the form 
+     * Returns a string representation of this StepField.
+     * The string representation has the form
      * "StepField(step:&lt;step&gt;, fieldname:&lt;fieldname&gt;, alias:&lt;alias&gt;)"
-     * where 
+     * where
      * <ul>
-     * <li><em>&lt;step&gt;</em> is the step alias returned by 
-     *     <code>getStep().getAlias()</code> or, 
-     *     when the step alias is <code>null</code>, the step tablename 
+     * <li><em>&lt;step&gt;</em> is the step alias returned by
+     *     <code>getStep().getAlias()</code> or,
+     *     when the step alias is <code>null</code>, the step tablename
      *     returned by <code>getStep().getTableName()</code>.
      * <li><em>&lt;fieldname&gt;</em> is the fieldname returned by
      *     {@link #getFieldName getFieldName()}
@@ -77,8 +77,8 @@ public interface StepField {
      * @return A string representation of this StepField.
      */
     public String toString();
-    
-    /** @link dependency 
+
+    /** @link dependency
      * @clientRole **/
     /*# Step lnkStep;*/
 }

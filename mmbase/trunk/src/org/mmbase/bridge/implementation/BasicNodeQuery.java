@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.20 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.21 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -92,7 +92,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     public StepField getStepField(Field field) {
         if (query instanceof NodeSearchQuery) {
-            BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField) field).field);
+            BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField)field).coreField);
             return stepField;
         } else {
             Iterator fields = query.getFields().iterator();
@@ -125,7 +125,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
             BasicStepField sf = (BasicStepField) i.next();
             Step addedStep = sf.getStep();
             if (addedStep.equals(step)) continue; // these are among the node-fields already
-            query.addField(addedStep, sf.getFieldDefs());
+            query.addField(addedStep, sf.getField());
         }
     }
 

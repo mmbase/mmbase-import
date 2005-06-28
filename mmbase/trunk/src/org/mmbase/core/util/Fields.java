@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.core.util;
 
-import org.mmbase.core.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.core.CoreField;
 import java.util.*;
-
 
 /**
 
@@ -27,9 +28,17 @@ public class Fields {
     public final static int TYPE_MINVALUE    = 1;
     public final static int TYPE_MAXVALUE    = 12;
     private final static String[] TYPES = {
-        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST"
+        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BINARY" /* BYTE */, "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST"
     };
 
+    /**
+     * Returns an instance of a CoreField based on the type.
+     */
+    public static CoreField createField(String name, int type) {
+        DataType dataType = DataTypes.createDataType(null,type);
+        CoreField field = new org.mmbase.module.corebuilders.FieldDefs(name, dataType);
+        return field;
+    }
 
     /**
      * Provide a description for the specified type.
@@ -66,12 +75,12 @@ public class Fields {
      * @return the id of the state.
      */
     public static int getState(String state) {
-        if (state == null) return FieldType.STATE_UNKNOWN;
+        if (state == null) return Field.STATE_UNKNOWN;
         state = state.toLowerCase();
-        if (state.equals("persistent"))  return FieldType.STATE_PERSISTENT;
-        if (state.equals("virtual"))     return FieldType.STATE_VIRTUAL;
-        if (state.equals("system"))      return FieldType.STATE_SYSTEM;
-        return FieldType.STATE_UNKNOWN;
+        if (state.equals("persistent"))  return Field.STATE_PERSISTENT;
+        if (state.equals("virtual"))     return Field.STATE_VIRTUAL;
+        if (state.equals("system"))      return Field.STATE_SYSTEM;
+        return Field.STATE_UNKNOWN;
     }
 
     /**
@@ -80,22 +89,23 @@ public class Fields {
      * @return the id of the type.
      */
     public static int getType(String type) {
-        if (type == null) return FieldType.TYPE_UNKNOWN;
+        if (type == null) return MMBaseType.TYPE_UNKNOWN;
         // XXX: deprecated VARCHAR
         type = type.toUpperCase();
-        if (type.equals("VARCHAR")) return FieldType.TYPE_STRING;
-        if (type.equals("STRING"))  return FieldType.TYPE_STRING;
-        if (type.equals("XML"))     return FieldType.TYPE_XML;
-        if (type.equals("INTEGER")) return FieldType.TYPE_INTEGER;
-        if (type.equals("BYTE"))    return FieldType.TYPE_BYTE;
-        if (type.equals("FLOAT"))   return FieldType.TYPE_FLOAT;
-        if (type.equals("DOUBLE"))  return FieldType.TYPE_DOUBLE;
-        if (type.equals("LONG"))    return FieldType.TYPE_LONG;
-        if (type.equals("NODE"))    return FieldType.TYPE_NODE;
-        if (type.equals("DATETIME"))return FieldType.TYPE_DATETIME;
-        if (type.equals("BOOLEAN")) return FieldType.TYPE_BOOLEAN;
-        if (type.startsWith("LIST"))    return FieldType.TYPE_LIST;
-        return FieldType.TYPE_UNKNOWN;
+        if (type.equals("VARCHAR")) return MMBaseType.TYPE_STRING;
+        if (type.equals("STRING"))  return MMBaseType.TYPE_STRING;
+        if (type.equals("XML"))     return MMBaseType.TYPE_XML;
+        if (type.equals("INTEGER")) return MMBaseType.TYPE_INTEGER;
+        if (type.equals("BYTE"))    return MMBaseType.TYPE_BINARY;
+        if (type.equals("BINARY"))    return MMBaseType.TYPE_BINARY;
+        if (type.equals("FLOAT"))   return MMBaseType.TYPE_FLOAT;
+        if (type.equals("DOUBLE"))  return MMBaseType.TYPE_DOUBLE;
+        if (type.equals("LONG"))    return MMBaseType.TYPE_LONG;
+        if (type.equals("NODE"))    return MMBaseType.TYPE_NODE;
+        if (type.equals("DATETIME"))return MMBaseType.TYPE_DATETIME;
+        if (type.equals("BOOLEAN")) return MMBaseType.TYPE_BOOLEAN;
+        if (type.startsWith("LIST"))    return MMBaseType.TYPE_LIST;
+        return MMBaseType.TYPE_UNKNOWN;
     }
 
     public static void sort(List fields, int order) {
@@ -104,34 +114,33 @@ public class Fields {
 
 
     /**
-     * Comparator to sort Fielddefs by creation order, or by position
+     * Comparator to sort CoreFields by creation order, or by position
      * specified in one of the GUIPos fields.
      */
     private static class FieldComparator implements Comparator {
 
-        private int order = CoreField.ORDER_CREATE;
+        private int order = NodeManager.ORDER_CREATE;
 
         /**
          * Constrcuts a comparator to sort fields on teh specifie dorder
-         * @param order one of CoreField.ORDER_CREATE, CoreField.ORDER_EDIT, CoreField.ORDER_LIST,CoreField.ORDER_SEARCH
+         * @param order one of NodeManager.ORDER_CREATE, NodeManager.ORDER_EDIT, NodeManager.ORDER_LIST, NodeManager.ORDER_SEARCH
          */
         FieldComparator (int order) {
             this.order = order;
         }
 
         /**
-         * retrieve the postion fo a FieldDefs object
-         * according to the order to sort on
+         * Retrieve the postion of a CoreField object according to the order to sort on
          */
         private int getPos(CoreField o) {
             switch (order) {
-            case CoreField.ORDER_EDIT: {
+            case NodeManager.ORDER_EDIT: {
                 return o.getEditPosition();
             }
-            case CoreField.ORDER_LIST: {
+            case NodeManager.ORDER_LIST: {
                 return o.getListPosition();
             }
-            case CoreField.ORDER_SEARCH: {
+            case NodeManager.ORDER_SEARCH: {
                 return o.getSearchPosition();
             }
             default : {
@@ -139,9 +148,9 @@ public class Fields {
             }
             }
         }
-        
+
         /**
-         * Compare two objects (should be FieldDefs)
+         * Compare two objects (should be CoreFields)
          */
         public int compare(Object o1, Object o2) {
             int pos1 = getPos((CoreField)o1);
