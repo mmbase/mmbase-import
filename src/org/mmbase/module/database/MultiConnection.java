@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.38 2004-08-26 12:39:42 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.39 2005-06-28 11:00:01 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -380,6 +380,13 @@ public class MultiConnection implements Connection {
      */
     public int getUsage() {
         return usage;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    void resetUsage() {
+        usage = 0;
     }
     
     /**

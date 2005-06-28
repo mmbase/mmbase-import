@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.55 2005-06-15 15:19:47 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.56 2005-06-28 11:00:01 michiel Exp $
  */
 public class MultiPool {
 
@@ -466,6 +466,9 @@ public class MultiPool {
 
                 if (gotNew) { // a new conection has successfully created, the old one can be closed
                     new ConnectionCloser(oldCon);
+                } else { // use the old one another cycle
+                    log.service("Will continue use original connection");
+                    con.resetUsage();
                 }
             }
 
