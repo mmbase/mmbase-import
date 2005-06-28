@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.141 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.142 2005-06-28 21:17:54 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -749,6 +749,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 // store the document inside the field.. much faster...
                 value = doc;
                 values.put(fieldName, value);
+            } else {
+                values.put(fieldName, VALUE_NULL);
             }
         }
 
