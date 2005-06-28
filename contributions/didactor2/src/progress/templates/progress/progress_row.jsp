@@ -48,8 +48,7 @@
 
          <% //direct relation people-classrel-educations %>
          <mm:compare referid="direct_connection" value="true">
-            <%// Because there is a bug with relations. Constraints will be fixed. %>
-            <mm:list fields="classrel.number" path="people,classrel,educations" constraints="">
+            <mm:list fields="classrel.number" path="people,classrel,educations" constraints="people.number=$student and educations.number=$education">
                <mm:field name="classrel.number" id="classrel" write="false"/>
             </mm:list>
          </mm:compare>
