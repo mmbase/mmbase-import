@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.19 2005-06-28 08:23:40 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.20 2005-06-28 21:24:34 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -73,7 +73,7 @@
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="url">
-    <xsl:text>{$formatter_requestcontext}pol/?maintopic=pol_default&amp;amp;template=segment.div.jspx&amp;amp;segment={@id}</xsl:text>
+    <xsl:value-of select="node:function($cloud, string(@id ), 'url')" />
   </xsl:template>
 
 
@@ -126,7 +126,7 @@
     <a>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <img width="16" height="16">
+      <img width="16" height="16" class="icon">
         <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
         <xsl:attribute name="src"><xsl:value-of select="node:function($cloud, string(@id), 'iconurl')" /></xsl:attribute>
       </img>
@@ -155,6 +155,7 @@
     <xsl:param name="body" />
     <xsl:element name="a">
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:apply-templates select="$body" />
     </xsl:element>
   </xsl:template>
