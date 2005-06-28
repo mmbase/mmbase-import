@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.33 2005-06-23 22:28:55 michiel Exp $
+ * @version $Id: Generator.java,v 1.34 2005-06-28 14:01:41 pierre Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -203,7 +203,7 @@ public class Generator {
         setAttribute(field, "format", getFieldFormat(fieldDefinition));
         // the value
         switch (fieldDefinition.getType()) {
-        case Field.TYPE_XML :
+        case MMBaseType.TYPE_XML :
             Document doc = node.getXMLValue(fieldDefinition.getName());
             // only fill the field, if field has a value..
             if (doc != null) {
@@ -211,11 +211,11 @@ public class Generator {
                 field.appendChild(importDocument(field, doc));
             }
             break;
-        case Field.TYPE_BYTE :
+        case MMBaseType.TYPE_BINARY :
             org.mmbase.util.transformers.Base64 transformer = new org.mmbase.util.transformers.Base64();
             field.appendChild(document.createTextNode(transformer.transform(node.getByteValue(fieldDefinition.getName()))));
             break;
-        case Field.TYPE_DATETIME :
+        case MMBaseType.TYPE_DATETIME :
             // shoudlw e use ISO_8601_LOOSE here or ISO_8601_UTC?
             field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
             break;
@@ -236,7 +236,7 @@ public class Generator {
         FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator();
         while (i.hasNext()) {
             Field field = i.nextField();
-            if (field.getType() != Field.TYPE_BYTE) {
+            if (field.getType() != MMBaseType.TYPE_BINARY) {
                 add(node, field);
             }
         }
@@ -377,14 +377,14 @@ public class Generator {
 
     private String getFieldFormat(Field field) {
         switch (field.getType()) {
-        case Field.TYPE_XML :
+        case MMBaseType.TYPE_XML :
             return "xml";
-        case Field.TYPE_STRING :
+        case MMBaseType.TYPE_STRING :
             return "string";
-        case Field.TYPE_NODE :
+        case MMBaseType.TYPE_NODE :
             return "object"; // better would be "node" ?
-        case Field.TYPE_INTEGER :
-        case Field.TYPE_LONG :
+        case MMBaseType.TYPE_INTEGER :
+        case MMBaseType.TYPE_LONG :
             // was it a builder?
             String fieldName = field.getName();
             String guiType = field.getGUIType();
@@ -402,16 +402,16 @@ public class Generator {
             if (guiType.equals("eventtime")) {
                 return "date";
             }
-        case Field.TYPE_FLOAT :
-        case Field.TYPE_DOUBLE :
+        case MMBaseType.TYPE_FLOAT :
+        case MMBaseType.TYPE_DOUBLE :
             return "numeric";
-        case Field.TYPE_BYTE :
+        case MMBaseType.TYPE_BINARY :
             return "bytes";
-        case Field.TYPE_DATETIME:
+        case MMBaseType.TYPE_DATETIME:
             return "datetime";
-        case Field.TYPE_BOOLEAN:
+        case MMBaseType.TYPE_BOOLEAN:
             return "boolean";
-        case Field.TYPE_LIST:
+        case MMBaseType.TYPE_LIST:
             return "list";
         default :
             throw new RuntimeException("could not find field-type for:" + field.getType() + " for field: " + field);

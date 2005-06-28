@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
+import java.util.*;
+
+import org.mmbase.bridge.Field;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import java.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -27,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.44 2004-11-09 13:57:40 pierre Exp $
+ * @version $Id: InsRel.java,v 1.45 2005-06-28 14:01:41 pierre Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -102,8 +105,8 @@ public class InsRel extends MMObjectBuilder {
      * @see #usesdir
      */
     public boolean init() {
-        FieldDefs dirField = getField(FIELD_DIRECTIONALITY);
-        boolean hasDirField = dirField!=null && dirField.getDBState() == FieldDefs.DBSTATE_PERSISTENT;
+        CoreField dirField = getField(FIELD_DIRECTIONALITY);
+        boolean hasDirField = dirField!=null && dirField.getState() == Field.STATE_PERSISTENT;
         if (!created()) {
             // check whether directionality is in use, and whether a dir field is present.
             // if a non-dir supporting builder is attempted to be used, a fatal error is logged.

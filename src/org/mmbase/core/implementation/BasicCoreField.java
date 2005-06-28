@@ -11,182 +11,88 @@ package org.mmbase.core.implementation;
 
 import java.util.*;
 
+import org.mmbase.bridge.DataType;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.datatypes.*;
+import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.core.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 
 /**
- * The core-implementation of a field-type. This is experimental. The package name will probably
- * change. FieldDefs (its extension) will be deprecated and removed.
- *
- * @todo There must perhaps be a new interface:
-  interface org.mmbase.core.CoreField (with much of the methods of this class)
- 
-  interface org.mmbase.core.AdminField extends CoreField {
-   // the setMethods (now still in FieldDefs)
-  }
-  interface org.mmbase.bridge.Field extends CoreField {
-     NodeManager getNodeManager();
-  }
-  org.mmbase.core.implementation BasicCoreField implements AdminField {
-  // this class + the set-methods.
-  }
-
+ * The core-implementation of a field-type.
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCoreField.java,v 1.1 2005-05-10 22:44:59 michiel Exp $
+ * @version $Id: BasicCoreField.java,v 1.2 2005-06-28 14:01:41 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
  */
-public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDataType implements org.mmbase.core.CoreField, Storable, Comparable {
+public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractField implements CoreField {
 
-    protected LocalizedString guiName     = null;
-
+    // Logger routine
+    private static final Logger log = Logging.getLoggerInstance(BasicCoreField.class);
 
     private static final int NO_POSITION = -1;
+
     private String guiType;
-    private int    searchPosition   = NO_POSITION;
-    private int    listPosition     = NO_POSITION;
-    private int    editPosition     = NO_POSITION;
-    private int    maxLength        = NO_POSITION;
+    private int storageType; // JDBC type of this field
+    private int searchPosition = NO_POSITION;
+    private int listPosition = NO_POSITION;
+    private int editPosition = NO_POSITION;
+    private int size = NO_POSITION;
+    private int state = STATE_UNKNOWN;
 
-    private int     typeInt  = TYPE_UNKNOWN;
-    private int     state   = STATE_UNKNOWN;
-
-    private boolean required = false;
-    private boolean unique   = false;
+    private boolean unique = false;
 
     private MMObjectBuilder parent = null;
-    private int    storagePosition  = -1;
-    private Object  storageIdentifier = null;
-    private int     storageType = TYPE_UNKNOWN;
+    private int storagePosition = -1;
+    private Object storageIdentifier = null;
 
-    private Object defaultValue = null;
-
-    protected BasicCoreField() {
+    /**
+     * Create a core object
+     * @param name the name of the data type
+     * @param dataType the data type for this field
+     */
+    protected BasicCoreField(String name, DataType dataType) {
+        super(name,dataType);
+        // guitype should be datatype name ???
+        setGUIType(dataType.getName());
     }
 
     /**
-     * Constructor for default FieldDefs.
+     * Create a core object
+     * @param name the name of the data type
+     * @param type the class of the data type's possible value
      */
-    public BasicCoreField(String name) {
-        key = name;
-        this.guiName     = new LocalizedString(key);
-        this.description = new LocalizedString(key);
+    protected BasicCoreField(String name, CoreField coreField) {
+        super(name,coreField, true);
+        setState(coreField.getState());
+        setSearchPosition(coreField.getSearchPosition());
+        setEditPosition(coreField.getEditPosition());
+        setListPosition(coreField.getListPosition());
+        setStoragePosition(coreField.getStoragePosition());
+        setParent(coreField.getParent());
+        setSize(coreField.getSize());
+        // deprecated methods?
+        setGUIType(coreField.getGUIType());
+        setUnique(coreField.isUnique());
     }
 
-    /**
-     * Constructor for FieldDefs with partially initialized fields.
-     * @param guiName the default GUIName for a field
-     * @param guiType  the GUI type (i.e. "integer' or 'field')
-     * @param searchPosition position in the editor for this field when searching
-     * @param listPosition position in the editor for this field when listing
-     * @param name the actual name of the field in the database
-     * @param type the basic MMBase type of the field
-     */
-    public BasicCoreField(String guiName, String guiType, int search, int list, String name, int type) {
-        this(guiName, guiType, search, list, name, type, 2, STATE_PERSISTENT);
+    public NodeManager getNodeManager() {
+        throw new UnsupportedOperationException("Core fields currently do not support calls to getNodeManager.");
     }
 
-    /**
-     * Constructor for FieldDefs with partially initialized fields.
-     * @param guiName the default GUIName for a field
-     * @param guiType  the GUI type (i.e. "integer' or 'field')
-     * @param searchPosition position in the editor for this field when searching
-     * @param listPosition position in the editor for this field when listing
-     * @param name the actual name of the field in the database
-     * @param type the basic MMBase type of the field
-     * @param editPosition position in the editor for this field when editing
-     * @param state the state of the field (persistent, virtual, etc.)
-     */
-    public BasicCoreField(String guiName, String guiType, int searchPosition, int listPosition, String name, int type, int editPosition, int state) {
-        this.key = name;
-        this.state = state;
-        this.typeInt = type;
-        this.guiType = guiType;
-        this.guiName     = new LocalizedString(key);
-        this.description = new LocalizedString(key);
-        this.searchPosition = searchPosition;
-        this.listPosition = listPosition;
-        this.editPosition  = editPosition;
-    }
-
-
-    /**
-     * Retrieve the GUI name of the field depending on specified langauge.
-     * If the language is not available, the "en" value is returned instead.
-     * If that one is unavailable the internal fieldname is returned.
-     * @return the GUI Name
-     */
-    public String getGUIName(Locale locale) {
-        return guiName.get(locale);
-    }
-    public void setGUIName(String g, Locale locale) {
-        guiName.set(g, locale);
-    }
-    public LocalizedString getLocalizedGUIName() {
-        return guiName;
-    }
-
-    /**
-     * Retrieve the GUI name of the field.
-     * If possible, the "en" value is returned.
-     * If that one is unavailable the internal fieldname is returned.
-     * @return the GUI Name
-     */
-    public String getGUIName() {
-        return guiName.get(null);
-    }
-
-
-    /**
-     * Retrieve the GUI type of the field.
-     */
-    public String getGUIType() {
-        return guiType;
-    }
-
-    public void setGUIType(String g) {
-        guiType = g;
-    }
-
-    /**
-     * Retrieves the basic MMBase type of the field.
-     *
-     * @return The type, this is one of the values defined in this class.
-     */
-    public int getType() {
-        return typeInt;
-    }
-
-    public void setType(int i) {
-        typeInt = i;
-    }
-    /**
-     * Retrieve whether the field can be left blank.
-     */
-    public boolean isRequired() {
-        return required;
-    }
-    public void setRequired(boolean b) {
-        required = b;
-    }
-
-    /**
-     * Retrieve whether the field is a key and thus need be unique.
-     */
-    public boolean isUnique() {
-        return unique;
-    }
-    public void setUnique(boolean b) {
-        unique = b;
+    public CoreField copy(String name) {
+         return new BasicCoreField(name,this);
     }
 
     /**
@@ -196,6 +102,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
     public int getSearchPosition() {
         return searchPosition;
     }
+
     public void setSearchPosition(int i) {
         searchPosition = i;
     }
@@ -207,6 +114,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
     public int getListPosition() {
         return listPosition;
     }
+
     public void setListPosition(int i) {
         listPosition = i;
     }
@@ -218,6 +126,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
     public int getEditPosition() {
         return editPosition;
     }
+
     public void setEditPosition(int i) {
         editPosition = i;
     }
@@ -228,44 +137,57 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
     public int getStoragePosition() {
         return storagePosition;
     }
+
     public void setStoragePosition(int i) {
         storagePosition = i;
     }
 
-    public void setDefaultValue(Object def) {
-        defaultValue = def;
-    }
-    public Object getDefaultValue() {
-        return defaultValue;
-    }
-
-    public String getDescription() {
-        return getDescription(null);
-    }
-    public LocalizedString getLocalizedDescription() {
-        return description;
-    }
-    /**
     /**
      * Retrieves the parent builder for this field
      */
     public MMObjectBuilder getParent() {
         return parent;
     }
+
     /**
      * Set the parent builder for this field
-     * @param parent the fielddefs parent
+     * @param parent the parent builder
      */
     public void setParent(MMObjectBuilder parent) {
         this.parent = parent;
     }
 
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int i) {
+        state = i;
+    }
 
     /**
      * Returns a description for this field.
      */
     public String toString() {
-        return Fields.getTypeDescription(typeInt) + "/" + guiType + " " + key;
+
+        return getName() + "(" + getDataType() + " /  " + getGUIType() + ")";
+    }
+
+    /**
+     * Whether this CoreField is equal to another for storage purposes (so, ignoring gui and documentation fields)
+     * @since MMBase-1.7
+     */
+    public boolean storageEquals(CoreField f) {
+        return
+            getName().equals(f.getName())
+            && state == f.getState()
+            && getDataType().isRequired() == f.getDataType().isRequired()
+            && unique  == f.isUnique()
+            && size == f.getSize()
+            && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
+            && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
+            && getStorageType() == f.getStorageType() // implues equal MMBase types
+            && storagePosition == f.getStoragePosition();
     }
 
     /**
@@ -277,8 +199,8 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
             BasicCoreField f = (BasicCoreField) o;
             return
                 storageEquals(f)
-                && description.equals(f.description)
-                && guiName.equals(f.guiName)
+                && getLocalizedDescription().equals(f.getLocalizedDescription())
+                && getLocalizedGUIName().equals(f.getLocalizedGUIName())
                 && guiType.equals(f.guiType)
                 && searchPosition == f.searchPosition
                 && listPosition  ==  f.listPosition
@@ -289,64 +211,45 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
         }
     }
 
-    public int getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(int i) {
-        maxLength = i;
-    }
-
-
-    public boolean hasIndex() {
-        return (typeInt == TYPE_NODE) || key.equals("number");
-    }
-
-    public int getState() {
-        return state;
-    }
-    public void setState(int i) {
-        state = i;
-    }
-
-
-    
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
         int result = 0;
-        result = HashCodeUtil.hashCode(result, key);
-        result = HashCodeUtil.hashCode(result, typeInt);
+        result = HashCodeUtil.hashCode(result, getName());
+        result = HashCodeUtil.hashCode(result, getDataType().getType());
         result = HashCodeUtil.hashCode(result, state);
-        result = HashCodeUtil.hashCode(result, required);
+        result = HashCodeUtil.hashCode(result, getDataType().isRequired());
         result = HashCodeUtil.hashCode(result, unique);
         result = HashCodeUtil.hashCode(result, parent);
-        result = HashCodeUtil.hashCode(result, storageType);
         result = HashCodeUtil.hashCode(result, storagePosition);
         return result;
     }
-    
+
     /**
-     * Whether this FieldDefs object is equal to another for storage purposes (so, ignoring gui and documentation fields)
-     * @since MMBase-1.7
+     * Compare this object to the supplied one (should be a CoreField)
+     * @param the object to compare to
+     * @return -1,1, or 0 according to wether this object is smaller, greater, or equal
+     *         to the supplied one.
      */
-    public boolean storageEquals(CoreField f) {
-        return
-            key.equals(f.getName())
-            && typeInt == f.getType()
-            && state == f.getState()
-            && required == f.isRequired()
-            && unique  == f.isUnique()
-            && maxLength == f.getMaxLength()
-            && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
-            && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
-            && storageType == f.getStorageType()
-            && storagePosition == f.getStoragePosition();
+    public int compareTo(Object o) {
+        int pos1 = getStoragePosition();
+        int pos2 = ((CoreField)o).getStoragePosition();
+        if (pos1 < pos2) {
+            return -1;
+        } else if (pos1 > pos2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    // should this be possible?
+    public void setType(int type) {
+        dataType = DataTypes.createDataType(guiType,type);
     }
 
     // Storable interfaces
-
     /**
      * {@inheritDoc}
      * @since MMBase 1.7
@@ -367,40 +270,67 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractDat
         return (state == STATE_PERSISTENT || state == STATE_SYSTEM);
     }
 
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
     public int getStorageType() {
         return storageType;
     }
 
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public void setStorageType(int value) {
-        storageType = value;
+    public void setStorageType(int type) {
+        storageType = type;
     }
 
-
-
-    /**
-     * Compare this object to the supplied one (should be a FieldDefs)
-     * @param the object to compare to
-     * @return -1,1, or 0 according to wether this object is smaller, greater, or equals
-     *         to the supplied one.
-     */
-    public int compareTo(Object o) {
-        int pos1 = getStoragePosition();
-        int pos2 = ((CoreField)o).getStoragePosition();
-        if (pos1 < pos2) {
-            return -1;
-        } else if (pos1 > pos2) {
-            return 1;
-        } else {
-            return 0;
+    public void finish() {
+        if (dataType instanceof AbstractDataType) {
+            ((AbstractDataType)dataType).finish(this);
         }
     }
+
+    public void rewrite() {
+        if (dataType instanceof AbstractDataType) {
+            ((AbstractDataType)dataType).rewrite(this);
+        }
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int i) {
+        size = i;
+        if (dataType instanceof StringDataType) {
+            ((StringDataType)dataType).setMaxLength(size);
+        } else if (dataType instanceof BinaryDataType) {
+            ((BinaryDataType)dataType).setMaxLength(size);
+        } else if (dataType instanceof ListDataType) {
+            ((ListDataType)dataType).setMaxSize(size);
+        }
+    }
+
+    // deprecated methods
+    /**
+     * Retrieve the GUI type of the field.
+     */
+    public String getGUIType() {
+        return guiType;  // should return datatype name ???
+    }
+
+    public void setGUIType(String g) {
+        guiType = g;
+    }
+
+    /**
+     * Retrieve whether the field is a key and thus need be unique.
+     */
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean b) {
+        unique = b;
+    }
+
+    public int getMaxLength() {
+        return getSize();
+    }
+
 
 }

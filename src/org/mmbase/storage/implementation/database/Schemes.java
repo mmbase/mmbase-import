@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.12 2004-09-17 09:39:10 michiel Exp $
+ * @version $Id: Schemes.java,v 1.13 2005-06-28 14:01:41 pierre Exp $
  */
 public final class Schemes {
 
@@ -202,7 +202,7 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to delete the node from (MMObjectBuilder), or the builder table name (String)</li>
-     *    <li>{2} the 'number' field (FieldDefs), or the database field name (String)</li>
+     *    <li>{2} the 'number' field (CoreField), or the database field name (String)</li>
      *    <li>{3} the number of the object to update (Integer)</li>
      *  </ul>
      */
@@ -244,8 +244,8 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to delete the node from (MMObjectBuilder), or the builder table name (String)</li>
-     *    <li>{2} the binary field (FieldDefs), or the binary field name (String)</li>
-     *    <li>{3} the 'number' field (FieldDefs), or the database field name (String)</li>
+     *    <li>{2} the binary field (CoreField), or the binary field name (String)</li>
+     *    <li>{3} the 'number' field (CoreField), or the database field name (String)</li>
      *    <li>{4} the number of the object to update (Integer)</li>
      *  </ul>
      */
@@ -277,8 +277,8 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to delete the node from (MMObjectBuilder), or the builder table name (String)</li>
-     *    <li>{2} the text field (FieldDefs), or the text field name (String)</li>
-     *    <li>{3} the 'number' field (FieldDefs), or the database field name (String)</li>
+     *    <li>{2} the text field (CoreField), or the text field name (String)</li>
+     *    <li>{3} the 'number' field (CoreField), or the database field name (String)</li>
      *    <li>{4} the number of the object to update (Integer)</li>
      *  </ul>
      */
@@ -312,7 +312,7 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to query (MMObjectBuilder), or the builder table name (String)</li>
-     *    <li>{2} the 'number' field (FieldDefs), or the database field name (String)</li>
+     *    <li>{2} the 'number' field (CoreField), or the database field name (String)</li>
      *    <li>{3} the number to locate (Integer)</li>
      *  </ul>
      */
@@ -329,7 +329,7 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the MMBase module (MMBase), or the object table name (String)</li>
-     *    <li>{2} the 'number' field (FieldDefs), or the database field name (String)</li>
+     *    <li>{2} the 'number' field (CoreField), or the database field name (String)</li>
      *    <li>{3} the number to locate (Integer)</li>
      *  </ul>
      */
@@ -347,7 +347,7 @@ public final class Schemes {
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to update (MMObjectBuilder), or the builder table name (String)</li>
      *    <li>{2} A comma-separated list of fields to update, in the format 'fieldname = ?'</li>
-     *    <li>{3} the 'number' field (FieldDefs), or the database field name (String)</li>
+     *    <li>{3} the 'number' field (CoreField), or the database field name (String)</li>
      *    <li>{4} the number of the object to update (Integer)</li>
      *  </ul>
      */

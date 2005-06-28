@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation.database.informix.excalibur;
 
 import java.io.*;
 import java.util.*;
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.StorageManagerFactory;
@@ -35,7 +36,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.2 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.3 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -211,8 +212,8 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      */
     public boolean hasEtxIndex(StepField field) {
         boolean result = false;
-        if (field.getType() == FieldDefs.TYPE_STRING
-        || field.getType() == FieldDefs.TYPE_XML) {
+        if (field.getType() == MMBaseType.TYPE_STRING
+        || field.getType() == MMBaseType.TYPE_XML) {
             result = indexedFields.contains(
             field.getStep().getTableName() + "." + field.getFieldName());
         }

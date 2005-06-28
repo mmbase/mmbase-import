@@ -17,7 +17,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.5 2003-09-10 09:57:11 pierre Exp $
+ * @version $Id: Storable.java,v 1.6 2005-06-28 14:01:41 pierre Exp $
  */
 public interface Storable {
 
@@ -28,7 +28,7 @@ public interface Storable {
      *  <li>For MMBase: the object storage element identifier as a String (i.e. fully expanded table name)</li>
      *  <li>For MMObjectBuilder: the builder storage element identifier as a String (i.e. fully expanded table name)</li>
      *  <li>For MMObjectNode: the object number as a Integer</li>
-     *  <li>For FieldDefs: a storage-compatible field name as a String (if no such name exists a StorageException is thrown)</li>
+     *  <li>For CoreField: a storage-compatible field name as a String (if no such name exists a StorageException is thrown)</li>
      * </ul>
      * A Storable object (except for MMObjectNode) should retrieve its storage identifier using
      * {@link StorageManagerFactory#getStorageIdentifier()} when it is first instantiated.

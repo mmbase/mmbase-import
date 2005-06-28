@@ -14,24 +14,24 @@ import java.text.MessageFormat;
 import org.mmbase.storage.*;
 
 /**
- * This is a specialised version of the MessageFormat class, with some awareness of 
+ * This is a specialised version of the MessageFormat class, with some awareness of
  * MMBase objects. You can pass MMBase objects to Scheme when formatting a pattern.
  * The Scheme automatically resolves the object to a value it can use in the pattern.
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.4 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Scheme.java,v 1.5 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public final class Scheme extends MessageFormat {
-    
+
     /**
      * The factory this scheme belongs to.
      */
     private StorageManagerFactory factory;
 
     private String orgpattern;
-    
+
     /**
      * Instantiate the Scheme
      * @param factory The factory this scheme belongs to.
@@ -50,11 +50,11 @@ public final class Scheme extends MessageFormat {
      *  <li>For MMBase: the object storage element identifier as a String (fully expanded table name)</li>
      *  <li>For MMObjectBuilder: the builder storage element identifier as a String (fully expanded table name)</li>
      *  <li>For MMObjectNode: the object number as an Integer</li>
-     *  <li>For FieldDefs: a storage-compatible field name as a String (if no such name exists a StorageException is thrown)</li>
+     *  <li>For CoreField: a storage-compatible field name as a String (if no such name exists a StorageException is thrown)</li>
      * </ul>
      * Other object types are returned as is, leaving them to be handled by MessageFormat's formatting code.
      *
-     * @todo MMBase, FieldDefs, MMObjectNode, and MMObjectBuilder should be enriched with a Storable interface, which
+     * @todo MMBase, MMObjectNode, and MMObjectBuilder should be enriched with a Storable interface, which
      *       can be used instead
      * @param param the object to resolve
      * @return the resolved value
@@ -69,7 +69,7 @@ public final class Scheme extends MessageFormat {
             return factory.getStorageIdentifier(param);
         }
     }
-    
+
     /**
      * Applies the parameters to the scheme's pattern.
      * @param params an array of parameters to apply to the pattern
@@ -86,6 +86,6 @@ public final class Scheme extends MessageFormat {
     public String toString() {
         return orgpattern;
     }
-    
+
 }
 

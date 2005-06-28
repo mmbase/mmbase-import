@@ -15,11 +15,15 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import org.mmbase.cache.*;
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NodeManager;
 
+import org.mmbase.cache.*;
 
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.*;
+
 import org.mmbase.core.*;
 import org.mmbase.core.util.Fields;
 
@@ -53,7 +57,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.312 2005-06-21 19:22:52 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.313 2005-06-28 14:01:41 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -68,7 +72,7 @@ public class MMObjectBuilder extends MMTable {
 
     /** Default (system) owner name for the owner field. */
     public static final String SYSTEM_OWNER   = "system";
-    
+
     /** Max size of the object type cache */
     public final static int OBJ2TYPE_MAX_SIZE = 20000;
 
@@ -115,7 +119,7 @@ public class MMObjectBuilder extends MMTable {
     protected static NodeListCache listCache = NodeListCache.getCache();
 
     /**
-     * The cache for all blobs.	
+     * The cache for all blobs.
      * @since 1.8.0
      */
     protected static BlobCache genericBlobCache = new BlobCache(200) {
@@ -270,13 +274,13 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
-     * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction     
+     * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction
      * @since MMBase-1.8
      */
     protected Function getFunctions = new NodeFunction("getFunctions", Parameter.EMPTY, ReturnType.SET) {
             {
                 setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
-            }            
+            }
             public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
                 return MMObjectBuilder.this.getFunctions(node);
             }
@@ -335,7 +339,7 @@ public class MMObjectBuilder extends MMTable {
 
 
 
-    
+
     // contains the builder's field definitions
     protected Map fields;
 
@@ -784,7 +788,7 @@ public class MMObjectBuilder extends MMTable {
             // prevent from making storage inconsistent(say remove nodes from inactive builder)
             // the builder we are in is not the actual builder!!
             // ? why not an node.remove()
-            throw new RuntimeException("Builder with name: " + getTableName() + "(otype " + oType + ") is not the actual builder of the node that is to be deleted: " + 
+            throw new RuntimeException("Builder with name: " + getTableName() + "(otype " + oType + ") is not the actual builder of the node that is to be deleted: " +
                                        node.getNumber() + " (otype: " + node.getOType() + ")");
         }
 
@@ -1233,16 +1237,18 @@ public class MMObjectBuilder extends MMTable {
      * @return true if the field was added, false if it already existed.
      */
     public boolean checkAddTmpField(String field) {
-        if (getDBState(field) == FieldType.STATE_UNKNOWN) { // means that field is not yet defined.
-            FieldDefs fd = new FieldDefs(field, "string", -1, -1, field,FieldType.TYPE_STRING, -1, FieldType.STATE_VIRTUAL);
+        if (getDBState(field) == Field.STATE_UNKNOWN) { // means that field is not yet defined.
+            CoreField fd = mmb.createField(field,MMBaseType.TYPE_STRING, Field.STATE_VIRTUAL,
+                                        field, "string", -1,-1,-1);
             if (! field.startsWith("_")) {
-                fd.setDBPos(1000);
+                fd.setStoragePosition(1000);
                 log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
             } else {
                 log.debug("Adding tmp (virtual) field '" + field + "' to builder '" + getTableName() + "'");
             }
 
             fd.setParent(this);
+            fd.finish();
 
             addField(fd);
             // added field, so update version
@@ -1321,9 +1327,9 @@ public class MMObjectBuilder extends MMTable {
         // Wrap in modifiable query, replace fields by one count field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
         Step step = (Step) query.getSteps().get(0);
-        FieldDefs numberFieldDefs = getField(FIELD_NUMBER);
+        CoreField numberField = getField(FIELD_NUMBER);
         AggregatedField field = new BasicAggregatedField(
-            step, numberFieldDefs, AggregatedField.AGGREGATION_TYPE_COUNT);
+            step, numberField, AggregatedField.AGGREGATION_TYPE_COUNT);
         List newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
@@ -1575,13 +1581,13 @@ public class MMObjectBuilder extends MMTable {
         String direction = "UP";
         while (sortedTokenizer.hasMoreElements()) {
             String fieldName = sortedTokenizer.nextToken().trim();
-            FieldDefs fieldDefs = getField(fieldName);
-            if (fieldDefs == null) {
+            CoreField coreField = getField(fieldName);
+            if (coreField == null) {
                 throw new IllegalArgumentException(
                 "Not a known field of builder " + getTableName()
                 + ": '" + fieldName + "'");
             }
-            StepField field = query.getField(fieldDefs);
+            StepField field = query.getField(coreField);
             BasicSortOrder sortOrder = query.addSortOrder(field);
             if (directionsTokenizer.hasMoreElements()) {
                 direction = directionsTokenizer.nextToken().trim();
@@ -1863,7 +1869,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return a copy of the list  of field definitions of this table.
-     * @return A new  <code>Vector</code> with the tables fields (FieldDefs)
+     * @return A new  <code>Vector</code> with the tables fields
      */
     public Vector getFields() {
         return new Vector(fields.values());
@@ -1884,8 +1890,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>FieldDefs</code> belonging with the indicated field
      */
     public FieldDefs getField(String fieldName) {
-        FieldDefs fielddefs = (FieldDefs) fields.get(fieldName);
-        return fielddefs;
+        return (FieldDefs) fields.get(fieldName);
     }
 
     /**
@@ -1913,14 +1918,14 @@ public class MMObjectBuilder extends MMTable {
      * @param fieldName the name of the field to remove
      */
     public void removeField(String fieldName) {
-        FieldDefs def = getField(fieldName);
-        int dbpos = def.getDBPos();
+        CoreField def = getField(fieldName);
+        int dbpos = def.getStoragePosition();
         fields.remove(fieldName);
         // move them all up one place
         for (Iterator e = fields.values().iterator(); e.hasNext();) {
-            def = (FieldDefs) e.next();
-            int curpos = def.getDBPos();
-            if (curpos >= dbpos) def.setDBPos(curpos - 1);
+            def = (CoreField) e.next();
+            int curpos = def.getStoragePosition();
+            if (curpos >= dbpos) def.setStoragePosition(curpos - 1);
         }
         updateFields();
     }
@@ -1928,10 +1933,10 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return a field's storage type. The returned value is one of the following values
-     * declared in FieldDefs:
+     * declared in MMBaseType:
      * TYPE_STRING,
      * TYPE_INTEGER,
-     * TYPE_BYTE,
+     *.TYPE_BINARY,
      * TYPE_FLOAT,
      * TYPE_DOUBLE,
      * TYPE_LONG,
@@ -1942,11 +1947,11 @@ public class MMObjectBuilder extends MMTable {
      */
     public int getDBType(String fieldName) {
         if (fields == null) {
-            log.error("getDBType(): fielddefs are null on object : "+tableName);
-            return FieldType.TYPE_UNKNOWN;
+            log.error("getDBType(): fields are null on object : "+tableName);
+            return MMBaseType.TYPE_UNKNOWN;
         }
-        FieldDefs fieldDefs = getField(fieldName);
-        if (fieldDefs == null) {
+        Field field = getField(fieldName);
+        if (field == null) {
             //perhaps prefixed with own tableName[0-9]? (allowed since MMBase-1.7)
             int dot = fieldName.indexOf('.');
             if (dot > 0) {
@@ -1954,38 +1959,38 @@ public class MMObjectBuilder extends MMTable {
                     if (tableName.length() <= dot  ||
                         Character.isDigit(fieldName.charAt(dot - 1))) {
                         fieldName = fieldName.substring(dot + 1);
-                        fieldDefs = getField(fieldName);
+                        field = getField(fieldName);
                     }
                 }
             }
         }
 
-        if (fieldDefs == null) {
+        if (field == null) {
 
             // log warning, except for virtual builders
             if (!virtual) { // should getDBType not be overridden in Virtual Builder then?
-                log.warn("getDBType(): Can't find fielddef on field '" + fieldName + "' of builder " + tableName);
+                log.warn("getDBType(): Can't find definition on field '" + fieldName + "' of builder " + tableName);
                 log.debug(Logging.stackTrace());
             }
-            return FieldType.TYPE_UNKNOWN;
+            return MMBaseType.TYPE_UNKNOWN;
         }
-        return fieldDefs.getDBType();
+        return field.getType();
     }
 
     /**
      * Return a field's storage state. The returned value is one of the following values
-     * declared in FieldDefs:
-     * DBSTATE_VIRTUAL,
-     * DBSTATE_PERSISTENT,
-     * DBSTATE_SYSTEM,
-     * DBSTATE_UNKNOWN
+     * declared in Field:
+     * STATE_VIRTUAL,
+     * STATE_PERSISTENT,
+     * STATE_SYSTEM,
+     * STATE_UNKNOWN
      * @param fieldName the requested field's name
-     * @return the field's type.
+     * @return the field's state.
      */
     public int getDBState(String fieldName) {
-        if (fields == null) return FieldType.STATE_UNKNOWN;
-        FieldDefs field = getField(fieldName);
-        if (field == null) return FieldType.STATE_UNKNOWN;
+        if (fields == null) return Field.STATE_UNKNOWN;
+        Field field = getField(fieldName);
+        if (field == null) return Field.STATE_UNKNOWN;
         return field.getState();
     }
 
@@ -1994,8 +1999,6 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.8
      */
     protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
-
-
         Locale locale   = (Locale) pars.get(Parameter.LOCALE);
         String language = (String) pars.get(Parameter.LANGUAGE);
         if (locale == null) {
@@ -2032,11 +2035,11 @@ public class MMObjectBuilder extends MMTable {
 
 
         if (rtn == null) {
-            FieldDefs fdef = getField(field);
-            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getDBType() == FieldType.TYPE_DATETIME)) { // do something reasonable for this
+            CoreField fdef = getField(field);
+            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == MMBaseType.TYPE_DATETIME)) { // do something reasonable for this
 
                 Date date;
-                if (fdef.getDBType() == FieldType.TYPE_DATETIME) {
+                if (fdef.getType() == MMBaseType.TYPE_DATETIME) {
                     date = node.getDateValue(field);
                 } else {
                     date = new Date(node.getLongValue(field) * 1000);
@@ -2067,9 +2070,9 @@ public class MMObjectBuilder extends MMTable {
         // do the best we can because this method was not implemeted
         // we get the first field in the object and try to make it
         // to a string we can return
-        List list = getFields(CoreField.ORDER_LIST);
+        List list = getFields(NodeManager.ORDER_LIST);
         if (list.size() > 0) {
-            String fname = ((FieldDefs) list.get(0)).getDBName();
+            String fname = ((CoreField) list.get(0)).getName();
             String str = node.getStringValue( fname );
             if (str.length() > 128) {
                 return str.substring(0, 128) + "...";
@@ -2089,18 +2092,18 @@ public class MMObjectBuilder extends MMTable {
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        FieldDefs fieldDef = getField(field);
-        if (fieldDef.getDBType() == FieldType.TYPE_NODE && ! field.equals(FIELD_NUMBER)) {
+    public String getGUIIndicator(String fieldName, MMObjectNode node) {
+        CoreField field = getField(fieldName);
+        if (field.getType() == MMBaseType.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
             try {
-                MMObjectNode otherNode = node.getNodeValue(field);
+                MMObjectNode otherNode = node.getNodeValue(fieldName);
                 if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
                     return "";
                 } else {
                     return otherNode.parent.getGUIIndicator(otherNode);
                 }
             } catch (RuntimeException rte) {
-                log.warn("Cannot load node from field " + field +" in node " + node.getNumber() + ":" +rte);
+                log.warn("Cannot load node from field " + fieldName +" in node " + node.getNumber() + ":" +rte);
                 return "invalid";
             }
         } else {
@@ -2134,7 +2137,7 @@ public class MMObjectBuilder extends MMTable {
      * This method makes an explicit sort (it does not use a cached list).
      *
      * @param sortorder One of the sortorders defined in
-     *        {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}
+     *        {@link org.mmbase.core.CoreField CoreField}
      * @return The ordered list of field definitions.
      */
     public List getFields(int sortorder) {
@@ -2143,13 +2146,13 @@ public class MMObjectBuilder extends MMTable {
             orderedFields = new ArrayList();
             for (Iterator i = fields.values().iterator(); i.hasNext();) {
                 CoreField field = (CoreField)i.next();
-                // include only fields which have been assigned a valid position, and are 
-                if ((sortorder == CoreField.ORDER_NONE) ||
-                    ((sortorder == CoreField.ORDER_CREATE) && (field.getStoragePosition()>-1)) ||
-                    ((sortorder == CoreField.ORDER_EDIT) && (field.getEditPosition()>-1)) ||
-                    ((sortorder == CoreField.ORDER_SEARCH) && (field.getSearchPosition()>-1)) ||
-                    ((sortorder == CoreField.ORDER_LIST) && (field.getListPosition()>-1))
-                    ) { 
+                // include only fields which have been assigned a valid position, and are
+                if ((sortorder == NodeManager.ORDER_NONE) ||
+                    ((sortorder == NodeManager.ORDER_CREATE) && (field.getStoragePosition()>-1)) ||
+                    ((sortorder == NodeManager.ORDER_EDIT) && (field.getEditPosition()>-1)) ||
+                    ((sortorder == NodeManager.ORDER_SEARCH) && (field.getSearchPosition()>-1)) ||
+                    ((sortorder == NodeManager.ORDER_LIST) && (field.getListPosition()>-1))
+                    ) {
                     orderedFields.add(field);
                 }
             }
@@ -2163,41 +2166,41 @@ public class MMObjectBuilder extends MMTable {
      * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
      * Used for creating search-forms.
      * @deprecated use getFields() with sortorder ORDER_SEARCH
-     * @return a vector with FieldDefs
+     * @return a vector with CoreField objects
      */
     public Vector getEditFields() {
-        return (Vector)getFields(CoreField.ORDER_SEARCH);
+        return (Vector)getFields(NodeManager.ORDER_SEARCH);
     }
 
     /**
      * Get the field definitions for the editor, sorted accoring to it's GUIList property (as set in the builder xml file).
      * Used for creating list-forms (tables).
      * @deprecated use getFields() with sortorder ORDER_LIST
-     * @return a vector with FieldDefs
+     * @return a vector with CoreField objects
      */
     public Vector getSortedListFields() {
-        return (Vector)getFields(CoreField.ORDER_LIST);
+        return (Vector)getFields(NodeManager.ORDER_LIST);
     }
 
     /**
      * Get the field definitions for the editor, sorted according to it's GUIPos property (as set in the builder xml file).
      * Used for creating edit-forms.
      * @deprecated use getFields() with sortorder ORDER_EDIT
-     * @return a vector with FieldDefs
+     * @return a vector with CoreField objects
      */
     public Vector getSortedFields() {
-        return (Vector)getFields(CoreField.ORDER_EDIT);
+        return (Vector)getFields(NodeManager.ORDER_EDIT);
     }
 
     /**
      * Returns the next field as defined by its sortorder, according to the specified order.
      */
     public FieldDefs getNextField(String currentfield, int sortorder) {
-        FieldDefs cdef=getField(currentfield);
-        List sortedFields=getFields(sortorder);
-        int pos=sortedFields.indexOf(cdef);
-        if (pos!=-1  && (pos+1)<sortedFields.size()) {
-            return (FieldDefs)sortedFields.get(pos+1);
+        CoreField cdef = getField(currentfield);
+        List sortedFields = getFields(sortorder);
+        int pos = sortedFields.indexOf(cdef);
+        if (pos != -1  && (pos+1) < sortedFields.size()) {
+            return (FieldDefs) sortedFields.get(pos+1);
         }
         return null;
     }
@@ -2208,7 +2211,7 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated use getNextField() with sortorder ORDER_EDIT
      */
     public FieldDefs getNextField(String currentfield) {
-        return getNextField(currentfield,CoreField.ORDER_EDIT);
+        return getNextField(currentfield,NodeManager.ORDER_EDIT);
     }
 
     /**
@@ -2223,10 +2226,10 @@ public class MMObjectBuilder extends MMTable {
         Iterator i = getFields().iterator();
         int result = 0;
         while (i.hasNext()) {
-            FieldDefs fieldDef = (FieldDefs) i.next();
-            String field = fieldDef.getDBName();
-            BlobCache cache = getBlobCache(field);
-            String key = cache.getKey(nodeNumber,field);
+            CoreField field = (CoreField) i.next();
+            String fieldName = field.getName();
+            BlobCache cache = getBlobCache(fieldName);
+            String key = cache.getKey(nodeNumber,fieldName);
             if (cache.remove(key) != null) result++;
         }
         return result;
@@ -2402,14 +2405,14 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * 
+     *
      * @inheritDoc
      * @since MMBase-1.8
      */
     protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         return new NodeFunction(name, parameters, returnType) {
                 public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                    return MMObjectBuilder.this.executeFunction(node, name, 
+                    return MMObjectBuilder.this.executeFunction(node, name,
                                                                 parameters.subList(0, parameters.size() - 1) // removes the node-argument, some legacy impl. get confused
                                                                 );
                 }
@@ -3029,14 +3032,14 @@ public class MMObjectBuilder extends MMTable {
                 String value = fieldExpression.substring(pos + 2);
 
                 // Add corresponding constraint to constraints.
-                FieldDefs fieldDefs = getField(fieldName);
-                if (fieldDefs == null) {
+                CoreField field = getField(fieldName);
+                if (field == null) {
                     throw new IllegalArgumentException(
                         "Invalid MMNODE expression: " + expr);
                 }
-                StepField field = query.getField(fieldDefs);
+                StepField stepField = query.getField(field);
                 BasicConstraint constraint
-                    = parseFieldPart(field, comparison, value);
+                    = parseFieldPart(stepField, comparison, value);
                 constraints.addChild(constraint);
 
                 // Set to inverse if preceded by a logical operator that is
@@ -3083,9 +3086,9 @@ public class MMObjectBuilder extends MMTable {
         Object value = strValue;
 
         // For numberical fields, convert string representation to Double.
-        if (field.getType() != FieldType.TYPE_STRING &&
-            field.getType() != FieldType.TYPE_XML &&
-            field.getType() != FieldType.TYPE_UNKNOWN) {
+        if (field.getType() != MMBaseType.TYPE_STRING &&
+            field.getType() != MMBaseType.TYPE_XML &&
+            field.getType() != MMBaseType.TYPE_UNKNOWN) {
                 // backwards comp fix. This is needed for the scan editors.
                 int length = strValue.length();
                 if (strValue.charAt(0) == '*' && strValue.charAt(length - 1) == '*') {
@@ -3101,8 +3104,8 @@ public class MMObjectBuilder extends MMTable {
             case '=':
             case 'E':
                 // EQUAL (string field)
-                if (field.getType() == FieldType.TYPE_STRING ||
-                    field.getType() == FieldType.TYPE_XML) {
+                if (field.getType() == MMBaseType.TYPE_STRING ||
+                    field.getType() == MMBaseType.TYPE_XML) {
                     // Strip first and last character of value, when
                     // equal to '*'.
                     String str = (String) value;
@@ -3318,9 +3321,9 @@ public class MMObjectBuilder extends MMTable {
 
         int type=getDBType(fieldName);
         String value="";
-        if ((type==FieldType.TYPE_INTEGER) || (type==FieldType.TYPE_NODE)) {
+        if ((type==MMBaseType.TYPE_INTEGER) || (type==MMBaseType.TYPE_NODE)) {
             value=""+node.getIntValue(fieldName);
-        } else if (type==FieldType.TYPE_STRING) {
+        } else if (type==MMBaseType.TYPE_STRING) {
             value=node.getStringValue(fieldName);
         } else {
             // should be mapped to the builder
@@ -3357,14 +3360,14 @@ public class MMObjectBuilder extends MMTable {
         body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmb.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
         body.append("<" + tableName + ">\n");
         body.append("<number>" + node.getNumber() + "</number>\n");
-        for (Iterator i = getFields(CoreField.ORDER_CREATE).iterator(); i.hasNext();) {
-            FieldDefs field = (FieldDefs)i.next();
-            int type = field.getDBType();
-            String name = field.getDBName();
+        for (Iterator i = getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
+            CoreField field = (CoreField)i.next();
+            int type = field.getType();
+            String name = field.getName();
             body.append('<').append(name).append('>');
-            if ((type == FieldType.TYPE_INTEGER)|| (type == FieldType.TYPE_NODE)) {
+            if ((type == MMBaseType.TYPE_INTEGER)|| (type == MMBaseType.TYPE_NODE)) {
                 body.append(node.getIntValue(name));
-            } else if (type == FieldType.TYPE_BYTE) {
+            } else if (type == MMBaseType.TYPE_BINARY) {
                 body.append(node.getByteValue(name));
             } else {
                 body.append(node.getStringValue(name));
@@ -3632,10 +3635,11 @@ public class MMObjectBuilder extends MMTable {
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
-            CoreField def = new org.mmbase.module.corebuilders.FieldDefs("Type", "integer", -1, -1, FIELD_OBJECT_TYPE, FieldType.TYPE_INTEGER, -1, 3);
+            CoreField def = mmb.createField(FIELD_OBJECT_TYPE, MMBaseType.TYPE_INTEGER, Field.STATE_SYSTEM,
+                                         "Type", "integer", -1, -1, -1);
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setStoragePosition(2);
-            def.setRequired(true);
+            def.getDataType().setRequired(true);
             i = f.iterator();
             while (i.hasNext()) {
                 CoreField field = (CoreField) i.next();
@@ -3643,6 +3647,7 @@ public class MMObjectBuilder extends MMTable {
                 if (pos > 1) field.setStoragePosition(pos + 1);
             }
             def.setParent(this);
+            def.finish();
             fields.put(FIELD_OBJECT_TYPE, def);
         }
         updateFields();

@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.core.CoreField;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -18,13 +18,13 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.17 2005-05-10 22:58:58 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.18 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
 
     /** Associated field definition. */
-    private CoreField fieldDefs = null;
+    private CoreField field = null;
 
     /** Associated step. */
     private Step step = null;
@@ -51,30 +51,30 @@ public class BasicStepField implements StepField {
         // Test for compatible type.
         boolean ok;
         switch (type) {
-        case CoreField.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
+        case MMBaseType.TYPE_BINARY: //(keesj:) byte in mmbase stands for byte array
             //I'm not shure a byte array is numerical
 
             // Numerical types.
-        case CoreField.TYPE_INTEGER:
-        case CoreField.TYPE_FLOAT:
-        case CoreField.TYPE_DOUBLE:
-        case CoreField.TYPE_LONG:
-        case CoreField.TYPE_NODE:
+        case MMBaseType.TYPE_INTEGER:
+        case MMBaseType.TYPE_FLOAT:
+        case MMBaseType.TYPE_DOUBLE:
+        case MMBaseType.TYPE_LONG:
+        case MMBaseType.TYPE_NODE:
             ok = value instanceof Number;
             break;
 
             // String types.
-        case CoreField.TYPE_STRING:
-        case CoreField.TYPE_XML:
+        case MMBaseType.TYPE_STRING:
+        case MMBaseType.TYPE_XML:
             ok = value instanceof String;
             break;
-        case CoreField.TYPE_BOOLEAN:
+        case MMBaseType.TYPE_BOOLEAN:
             ok = value instanceof Boolean;
             break;
-        case CoreField.TYPE_DATETIME:
+        case MMBaseType.TYPE_DATETIME:
             ok = value instanceof java.util.Date || value instanceof Number;
             break;
-        case CoreField.TYPE_LIST:
+        case MMBaseType.TYPE_LIST:
             ok = value instanceof java.util.List;
             break;
 
@@ -119,28 +119,28 @@ public class BasicStepField implements StepField {
      * Constructor.
      *
      * @param step The associated step.
-     * @param fieldDefs The associated fieldDefs.
+     * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStepField(Step step, CoreField fieldDefs) {
+    public BasicStepField(Step step, CoreField field) {
         if (step == null) {
             throw new IllegalArgumentException(
             "Invalid step value: " + step);
         }
         this.step = step;
 
-        if (fieldDefs == null) {
+        if (field == null) {
             throw new IllegalArgumentException(
-            "Invalid fieldDefs value: " + fieldDefs);
+            "Invalid field value: " + field);
         }
-        // Check fieldDefs belongs to step
-        if (!step.getTableName().equals(fieldDefs.getParent().getTableName())) {
+        // Check field belongs to step
+        if (!step.getTableName().equals(field.getParent().getTableName())) {
             throw new IllegalArgumentException(
-            "Invalid fieldDefs value, belongs to step " + fieldDefs.getParent().getTableName()
+            "Invalid field value, belongs to step " + field.getParent().getTableName()
             + " instead of step " +  step.getTableName() + ": "
-            + fieldDefs);
+            + field);
         }
-        this.fieldDefs = fieldDefs;
+        this.field = field;
     }
 
     /**
@@ -160,23 +160,17 @@ public class BasicStepField implements StepField {
     }
 
     /**
-     * Gets the associated fieldDefs.
+     * Gets the associated field.
      *
-     * @return The fieldDefs.
+     * @return The field.
      */
     public CoreField getField() {
-        return fieldDefs;
-    }
-    /**
-     * @deprecated
-     */
-    public FieldDefs getFieldDefs() {
-        return (FieldDefs) fieldDefs;
+        return field;
     }
 
     // javadoc is inherited
     public String getFieldName() {
-        return fieldDefs.getName();
+        return field.getName();
     }
 
     // javadoc is inherited
@@ -191,7 +185,7 @@ public class BasicStepField implements StepField {
 
     // javadoc in inherited
     public int getType() {
-        return fieldDefs.getType();
+        return field.getType();
     }
 
     // javadoc is inherited

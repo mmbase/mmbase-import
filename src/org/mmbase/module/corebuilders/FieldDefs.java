@@ -11,7 +11,11 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 
+import org.mmbase.bridge.DataType;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.module.core.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.storage.*;
 import org.mmbase.util.HashCodeUtil;
@@ -23,7 +27,7 @@ import org.mmbase.util.HashCodeUtil;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.45 2005-05-10 22:45:42 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.46 2005-06-28 14:01:41 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -36,50 +40,66 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
     public final static int DBSTATE_UNKNOWN     = -1;
 
 
+    public final static int ORDER_CREATE = NodeManager.ORDER_CREATE;
+    public final static int ORDER_EDIT   = NodeManager.ORDER_EDIT;
+    public final static int ORDER_LIST   = NodeManager.ORDER_LIST;
+    public final static int ORDER_SEARCH = NodeManager.ORDER_SEARCH;
 
-    /**
-     * Constructor for default FieldDefs.
-     */
+    /*
     public FieldDefs() {
     }
 
     public FieldDefs(String name) {
         super(name);
     }
-    /**
-     * Constructor for FieldDefs with partially initialized fields.
-     * @param guiName the default GUIName for a field
-     * @param guiType  the GUI type (i.e. "integer' or 'field')
-     * @param guiSearch position in the editor for this field when searching
-     * @param guiList position in the editor for this field when listing
-     * @param name the actual name of the field in the database
-     * @param type the basic MMBase type of the field
-     */
-    public FieldDefs(String guiName, String guiType, int search, int list, String name, int type) {
-        super(guiName, guiType, search, list, name, type);
+    */
+
+    public FieldDefs(String name, FieldDefs parentFieldDef ) {
+        super(name, parentFieldDef);
+    }
+
+    public FieldDefs(String name, DataType dataType ) {
+        super(name, dataType);
     }
 
     /**
      * Constructor for FieldDefs with partially initialized fields.
      * @param guiName the default GUIName for a field
      * @param guiType  the GUI type (i.e. "integer' or 'field')
-     * @param guiSearch position in the editor for this field when searching
-     * @param guiList position in the editor for this field when listing
+     * @param searchPos position in the editor for this field when searching
+     * @param listPos position in the editor for this field when listing
+     * @param name the actual name of the field in the database
+     * @param type the basic MMBase type of the field
+     */
+    public FieldDefs(String guiName, String guiType, int searchPos, int listPos, String name, int type) {
+        this(guiName, guiType, searchPos, listPos, name, type, -1, STATE_PERSISTENT);
+    }
+
+    /**
+     * Constructor for FieldDefs with partially initialized fields.
+     * @param guiName the default GUIName for a field
+     * @param guiType  the GUI type (i.e. "integer' or 'field')
+     * @param searchPos position in the editor for this field when searching
+     * @param listPos position in the editor for this field when listing
      * @param name the actual name of the field in the database
      * @param type the basic MMBase type of the field
      * @param guiPos position in the editor for this field when editing
      * @param state the state of the field (persistent, virtual, etc.)
      */
-    public FieldDefs(String guiName, String guiType, int guiSearch, int guiList, String name, int type, int guiPos, int state) {
-        super(guiName, guiType, guiSearch, guiList, name, type, guiPos, state);
+    public FieldDefs(String guiName, String guiType, int searchPos, int listPos, String name, int type, int guiPos, int state) {
+        super(name,DataTypes.createDataType(null,type));
+        setState(state);
+        setGUIName(guiName);
+        setGUIType(guiType);
+        setSearchPosition(searchPos);
+        setEditPosition(guiPos);
+        setListPosition(listPos);
     }
-
-
 
     /**
      * Retrieve the database name of the field.
      * @deprecated use {@link #getName}
-     */   
+     */
     public String getDBName() {
         return getName();
     }
@@ -88,19 +108,19 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * Retrieves the basic MMBase type of the field.
      *
      * @return The type, this is one of the values defined in this class.
-     * @deprecated use {@link #getType}
+     * @deprecated to access type constraints, use {@link #getDataType}
      */
     public int getDBType() {
-        return getType();
+        return getDataType().getType();
     }
 
     /**
      * Retrieve size of the field.
      * This may not be specified for some field types.
-     * @deprecated Use {@link #getMaxLength}
+     * @deprecated Use {@link #getSize}
      */
     public int getDBSize() {
-        return getMaxLength();
+        return getSize();
     }
 
     /**
@@ -108,7 +128,7 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * @deprecated use {@link #isRequired}
      */
     public boolean getDBNotNull() {
-        return isRequired();
+        return getDataType().isRequired();
     }
 
     /**
@@ -153,7 +173,7 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
                                                 return entry.setValue(o);
                                             }
                                         };
-                                    
+
                                 }
                             };
                     }
@@ -165,45 +185,58 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
     }
 
     /**
-     * @deprecated
+     * @deprecated use {@link #getGUIName(Locale locale)}
      */
     public String getGUIName(String lang) {
         return getGUIName(new Locale(lang, ""));
     }
     /**
-     * @deprecated
+     * @deprecated use {@link #getGUIName()}
      */
     public Map getGUINames() {
-        return new LocaleToStringMap(guiName.asMap());
+        return new LocaleToStringMap(getLocalizedGUIName().asMap());
     }
-    public Map getDescriptions() {
-        return new LocaleToStringMap(description.asMap());
-    }
+
     /**
-     * @deprecated
+     * @deprecated use {@link #getDescription()}
+     */
+    public Map getDescriptions() {
+        return new LocaleToStringMap(getLocalizedDescription().asMap());
+    }
+
+    /**
+     * @deprecated use {@link #getDescription(Locale locale)}
      */
     public String getDescription(String lang) {
         return getDescription(new Locale(lang, ""));
     }
+
     /**
-     * @deprecated
+     * @deprecated use {@link #getState}
      */
     public int getDBState() {
         return getState();
     }
+
+    /**
+     * @deprecated should not be called, name need be specified in the constructor
+     */
+    /*
     public void setDBName(String name) {
         key = name;
-        description = new org.mmbase.util.LocalizedString(key);
-        guiName = new org.mmbase.util.LocalizedString(key);
+        setLocalizedDescription(new org.mmbase.util.LocalizedString(key));
+        setLocalizedGUIName(new org.mmbase.util.LocalizedString(key));
     }
+    */
 
     /**
      * SetUI the GUI name of the field for a specified langauge.
      * @param lang the language to set the name for
      * @param value the value to set
+     * @deprecated to access type constraints, use {@link #getDataType}
      */
     public void setGUIName(String lang, String value) {
-        guiName.set(value, new Locale(lang, ""));
+        setGUIName(value, new Locale(lang, ""));
     }
 
     /**
@@ -213,54 +246,69 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * @deprecated use {@link #setDescription(Locale, value)}
      */
     public void setDescription(String lang, String value) {
-        description.set(value, new Locale(lang, ""));
+        setDescription(value, new Locale(lang, ""));
     }
 
     /**
      * Set size of the field.
      * @param value the value to set
+     * @deprecated use {@link #setSize}
      */
     public void setDBSize(int value) {
-        setMaxLength(value);
+        setSize(value);
     }
 
     /**
      * Set the basic MMBase type of the field.
      * @param value the id of the type
+     * @deprecated use {@link #setType}
      */
+    /*
     public void setDBType(int value) {
         setType(value);
     }
+    */
 
     /**
      * Set the basic MMBase type of the field, using the type description
      * @param value the name of the type
+     * @deprecated use {@link #setType}
      */
+    /*
     public void setDBType(String value) {
         setType(Fields.getType(value));
     }
+    */
 
     /**
      * Set the position of the field in the database table.
      * @param value the value to set
+     * @deprecated use {@link #setStoragePosition}
      */
     public void setDBPos(int value) {
         setStoragePosition(value);
     }
+
+    /**
+     * @deprecated use {@link #getStoragePosition}
+     */
     public int getDBPos() {
         return getStoragePosition();
     }
-
-
 
     /**
      * Set the position of the field when listing.
      * A value of -1 indicates teh field is unavailable in a list.
      * @param value the value to set
+     * @deprecated use {@link #setListPosition}
      */
     public void setGUIList(int value) {
         setListPosition(value);
     }
+
+    /**
+     * @deprecated use {@link #getListPosition}
+     */
     public int getGUIList() {
         return getListPosition();
     }
@@ -269,11 +317,15 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * Set the position of the field when editing.
      * A value of -1 indicates the field cannot be edited.
      * @param value the value to set
+     * @deprecated use {@link #setEditPosition}
      */
     public void setGUIPos(int value) {
         setEditPosition(value);
     }
 
+    /**
+     * @deprecated use {@link #getEditPosition}
+     */
     public int getGUIPos() {
         return getEditPosition();
     }
@@ -281,23 +333,31 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * Set the position of the field when searching.
      * A value of -1 indicates teh field is unavailable during search.
      * @param value the value to set
+     * @deprecated use {@link #setSearchPosition}
      */
     public void setGUISearch(int value) {
         setSearchPosition(value);
     }
+
+    /**
+     * @deprecated use {@link #getSearchPosition}
+     */
     public int getGUISearch() {
         return getSearchPosition();
     }
 
-
-
     /**
      * Set the basic MMBase state of the field, using the state description
      * @param value the name of the state
+     * @deprecated use {@link #setState}
      */
-    public void setDBState(String value) {       
+    public void setDBState(String value) {
         setState(Fields.getState(value));
     }
+
+    /**
+     * @deprecated use {@link #getState}
+     */
     public void setDBState(int i) {
         setState(i);
     }
@@ -305,6 +365,7 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
     /**
      * Set whether the field is a key and thus need be unique.
      * @param value the value to set
+     * @deprecated use {@link #setUnique}
      */
     public void setDBKey(boolean value) {
         setUnique(value);
@@ -312,16 +373,17 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
 
     /**
      * Set whether the field can be left blank.
-     * @param value the value to set     
+     * @param value the value to set
+     * @deprecated to access type constraints, use {@link #getDataType}
      */
     public void setDBNotNull(boolean value) {
-        setRequired(value);
+        getDataType().setRequired(value);
     }
-
 
     /**
      * Sorts a list with FieldDefs objects, using the default order (ORDER_CREATE)
      * @param fielddefs the list to sort
+     * @deprecated use Collections.sort
      */
     public static void sort(List fielddefs) {
         Collections.sort(fielddefs);
@@ -331,9 +393,14 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * Sorts a list with FieldDefs objects, using the specified order
      * @param fielddefs the list to sort
      * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
+     * @deprecated use {@link Fields.sort}
      */
     public static void sort(List fielddefs, int order) {
         Fields.sort(fielddefs, order);
+    }
+
+    public CoreField copy(String name) {
+         return new FieldDefs(name,this);
     }
 
 }

@@ -13,11 +13,13 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.core.implementation.BasicCoreField;
 
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.XMLEntityResolver;
@@ -33,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.17 2005-06-21 15:41:13 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.18 2005-06-28 14:01:42 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -171,12 +173,12 @@ public class BuilderReader extends XMLBasicReader {
                 parentBuilder = mmbase.getBuilder(buildername);
                 inheritanceResolved = (parentBuilder != null);
                 if (inheritanceResolved) { // fill inputPositions, searchPositions
-                    Iterator fields = parentBuilder.getFields(CoreField.ORDER_EDIT).iterator();
+                    Iterator fields = parentBuilder.getFields(NodeManager.ORDER_EDIT).iterator();
                     while (fields.hasNext()) {
                         CoreField def = (CoreField) fields.next();
                         inputPositions.add(new Integer(def.getEditPosition()));
                     }
-                    fields = parentBuilder.getFields(CoreField.ORDER_SEARCH).iterator();
+                    fields = parentBuilder.getFields(NodeManager.ORDER_SEARCH).iterator();
                     while (fields.hasNext()) {
                         CoreField def = (CoreField) fields.next();
                         searchPositions.add(new Integer(def.getSearchPosition()));
@@ -251,10 +253,10 @@ public class BuilderReader extends XMLBasicReader {
      */
     public String getClassName() {
         String val = getElementValue("builder.class");
-        if (val.equals("")) { 
+        if (val.equals("")) {
             val = getElementValue("builder.classfile");// deprecated!! (makes no sense, it is no file)
         }
-        
+
         if (val.equals("")) {
             if (parentBuilder!=null) {
                 return parentBuilder.getClass().getName();
@@ -292,32 +294,14 @@ public class BuilderReader extends XMLBasicReader {
         Map oldset = new HashMap();
         int pos = 1;
         if (parentBuilder != null) {
-            List parentfields = parentBuilder.getFields(CoreField.ORDER_CREATE);
+            List parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
             if (parentfields != null) {
                 // have to clone the parent fields...
                 // need clone()!
                 for (Iterator i = parentfields.iterator();i.hasNext();) {
                     CoreField f = (CoreField)i.next();
-                    CoreField newfield=
-                      new org.mmbase.module.corebuilders.FieldDefs(f.getGUIName(), f.getGUIType(),
-                                    f.getSearchPosition(), f.getListPosition(),
-                                    f.getName(), f.getType(), f.getEditPosition(),
-                                    f.getState());
-                    newfield.setRequired(f.isRequired());
-                    newfield.setUnique(f.isUnique());
-                    newfield.setMaxLength(f.getMaxLength());
-                    newfield.setStoragePosition(pos++);
-                    // also inherit the gui names
-                    Iterator guinames = f.getLocalizedGUIName().asMap().entrySet().iterator();
-                    while(guinames.hasNext()) {
-                        Map.Entry p = (Map.Entry) guinames.next();
-                        newfield.setGUIName((String)p.getValue(), (Locale)p.getKey()); 
-                    }
-                    Iterator descriptions = f.getLocalizedDescription().asMap().entrySet().iterator();
-                    while(descriptions.hasNext()) {
-                        Map.Entry p = (Map.Entry) descriptions.next();
-                        newfield.setDescription((String)p.getValue(), (Locale)p.getKey());
-                    }
+                    CoreField newfield = (CoreField)f.copy(f.getName());
+                    f.finish();
                     results.add(newfield);
                     oldset.put(newfield.getName(),newfield);
                 }
@@ -325,15 +309,19 @@ public class BuilderReader extends XMLBasicReader {
         }
         for(Enumeration ns = getChildElements("builder.fieldlist","field"); ns.hasMoreElements(); ) {
             Element field = (Element)ns.nextElement();
-            CoreField def=(CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
+            CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
             if (def != null) {
+                def.rewrite();
                 decodeFieldDef(field, def);
+                def.finish();
             } else {
                 def = decodeFieldDef(field);
                 def.setStoragePosition(pos++);
+                def.finish();
                 results.add(def);
             }
         }
+
         return results;
     }
 
@@ -348,7 +336,7 @@ public class BuilderReader extends XMLBasicReader {
                 final String functionName = functionElement.getAttribute("name");
                 String providerKey        = functionElement.getAttribute("key");
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
-                
+
                 Function function;
                 Class claz = Class.forName(functionClass);
                 if (Function.class.isAssignableFrom(claz)) {
@@ -395,7 +383,7 @@ public class BuilderReader extends XMLBasicReader {
                     }
                 }
 
-                results.add(function);                                    
+                results.add(function);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -450,7 +438,7 @@ public class BuilderReader extends XMLBasicReader {
         if (descriptions!=null) {
             for (enumeration = getChildElements(descriptions,"description"); enumeration.hasMoreElements(); ) {
                 tmp = (Element)enumeration.nextElement();
-                lang = getElementAttributeValue(tmp,"xml:lang");                     
+                lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setDescription(getElementValue(tmp), getLocale(lang));
             }
         }
@@ -507,8 +495,8 @@ public class BuilderReader extends XMLBasicReader {
             def.setSearchPosition(searchPos);
         } else {
             // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
-            if (def.getType() != CoreField.TYPE_BYTE
-                && def.getState() == CoreField.STATE_PERSISTENT  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
+            if (def.getType() != MMBaseType.TYPE_BINARY
+                && def.getState() == Field.STATE_PERSISTENT  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
                 ) {
                 int i = 1;
                 while (searchPositions.contains(new Integer(i))) {
@@ -532,39 +520,31 @@ public class BuilderReader extends XMLBasicReader {
      */
     private CoreField decodeFieldDef(Element field) {
         // create a new CoreField we need to fill
-        // DB
         Element db = getElementByPath(field,"field.db");
-        CoreField def = new org.mmbase.module.corebuilders.FieldDefs(getElementValue(getElementByPath(db,"db.name")));
+        String fieldName = getElementValue(getElementByPath(db,"db.name"));
+        Element dbtype = getElementByPath(db,"db.type");
+        int type = Fields.getType(getElementValue(dbtype));
+        int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        // def.setDBType(getType(getElementByPath(db,"db.type"),def));
-        getType(getElementByPath(db,"db.type"), def);
+        CoreField def = mmbase.createField(fieldName, type, state);
+
+        String size = getElementAttributeValue(dbtype,"size");
+        if (size!=null && !size.equals("")) {
+            try {
+                def.setSize(Integer.parseInt(size));
+            } catch (NumberFormatException e) {
+                log.warn("invalid value for size : " + size);
+            }
+        }
+        String notnull = getElementAttributeValue(dbtype,"notnull");
+        def.getDataType().setRequired(notnull != null && notnull.equalsIgnoreCase("true"));
+        String key = getElementAttributeValue(dbtype,"key");
+        def.setUnique(key != null && key.equalsIgnoreCase("true"));
+
         decodeFieldDef(field, def);
 
         return def;
     }
-
-    /**
-     * Set database type information for a specified, named FieldDef object
-     * using information obtained from the buidder configuration.
-     * @param elm The element containing the field type information acc. to the buidler xml format
-     * @param def The field definition to set the type for
-     */
-    private int getType(Element dbtype, CoreField def) {
-        String val = getElementValue(dbtype);
-        def.setType(Fields.getType(val));
-        String size = getElementAttributeValue(dbtype,"size");
-        try {
-            def.setMaxLength(Integer.parseInt(size));
-        } catch (Exception e) {}
-        String notnull = getElementAttributeValue(dbtype,"notnull");
-        def.setRequired(notnull != null && notnull.equalsIgnoreCase("true"));
-        String key = getElementAttributeValue(dbtype,"key");
-        def.setUnique(key != null && key.equalsIgnoreCase("true"));
-        String state = getElementAttributeValue(dbtype,"state");
-        def.setState(Fields.getState(state));
-        return def.getType();
-    }
-
 
     /**
      * Get the properties of this builder

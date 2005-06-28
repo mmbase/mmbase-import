@@ -11,8 +11,10 @@ package org.mmbase.util;
 
 import java.io.*;
 import java.util.*;
-import org.mmbase.module.core.*;
 
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.core.CoreField;
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.23 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.24 2005-06-28 14:01:42 pierre Exp $
  */
 public class NodeWriter{
 
@@ -132,9 +134,9 @@ public class NodeWriter{
         MMObjectBuilder bul=node.parent;
         Enumeration nd=bul.getFields().elements();
         while (nd.hasMoreElements()) {
-            FieldDefs def=(FieldDefs)nd.nextElement();
+            CoreField def = (CoreField)nd.nextElement();
             if (def.inStorage()) {
-                String key=def.getDBName();
+                String key = def.getName();
                 if (isRelationNode) {
                     // note that the routine below assumes
                     // fields in a relation node cannot contain binary blobs
@@ -143,7 +145,7 @@ public class NodeWriter{
                             && !key.equals("otype")
                             && !key.equals("snumber") && !key.equals("dnumber")
                             && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
-                        write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
+                        write("\t\t<" + key + ">" + node.getValue(key) + "</" + key + ">\n");
                     }
                 } else {
                     //due to current tcp implementation sometimes nodeField are created
@@ -205,7 +207,7 @@ public class NodeWriter{
             // this is a bad way of doing it imho
             int type=node.getDBType(key);
             String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
-            if (type==FieldDefs.TYPE_BYTE) {
+            if (type==MMBaseType.TYPE_BINARY) {
                 String body="\t\t<"+key+" file=\""+stype+"/"+node.getIntValue("number")+"."+key+"\" />\n";
                 File file = new File(targetpath+stype);
                 try {

@@ -12,7 +12,7 @@
 -->
 
   <field type="xml">
-    <class>org.mmbase.module.core.FieldDefs</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
 
     <setprocessor>
       <class>org.mmbase.core.processors.MMXFValidate</class>
@@ -40,7 +40,7 @@
 
   
   <fieldtype id="string">
-    <class>org.mmbase.module.core.FieldDefs</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
     <specialization id="field">
       <legacy />
     </specialization>
@@ -51,7 +51,7 @@
 
   
   <fieldtype id="integer">
-    <class>org.mmbase.module.core.FieldDefs</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
     <specialization id="eventtime">
       <legacy />
     </specialization>
@@ -61,7 +61,7 @@
   </fieldtype>
 
   <field type="long">
-    <class>org.mmbase.module.core.FieldDefs ??</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
     <specialization id="eventtime">
       <legacy />
     </specialization>
@@ -69,15 +69,15 @@
 
 
   <fieldtype id="float">
-    <class>org.mmbase.module.core.FieldDefs</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
   </fieldtype>
 
   <fieldtype id="double">
-    <class>org.mmbase.module.core.FieldDefs</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
   </fieldtype>
 
   <fieldtype id="node">
-    <class>org.mmbase.module.core.FieldDefs</class>
+    <class>org.mmbase.module.corebuilders.FieldDefs</class>
     <specialization id="eventtime">
       <legacy />
     </specialization>

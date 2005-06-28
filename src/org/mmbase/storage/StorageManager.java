@@ -20,7 +20,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.5 2005-05-10 22:58:27 michiel Exp $
+ * @version $Id: StorageManager.java,v 1.6 2005-06-28 14:01:41 pierre Exp $
  */
 public interface StorageManager {
 
@@ -86,7 +86,7 @@ public interface StorageManager {
      * Retrieve a large binary object (byte array) for a specified object field.
      * Implement this method to allow for optimization of storing and retrieving binary objects.
      * @param node the node to retrieve the byte array from
-     * @param field the FieldDefs of the field to retrieve
+     * @param field the CoreField of the field to retrieve
      * @return the retrieved byte array
      * @throws StorageException if an error occurred while retrieving the binary value
      */
@@ -198,19 +198,19 @@ public interface StorageManager {
 
     /**
      * Creates a field and adds it to the storage of this builder.
-     * @param field the FieldDefs of the field to add
+     * @param field the CoreField of the field to add
      */
     public void create(CoreField field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
-     * @param field the FieldDefs of the field to change
+     * @param field the CoreField of the field to change
      */
     public void change(CoreField field) throws StorageException;
 
     /**
      * Deletes a field from the storage of this builder.
-     * @param field the FieldDefs of the field to delete
+     * @param field the CoreField of the field to delete
      */
     public void delete(CoreField field) throws StorageException;
 

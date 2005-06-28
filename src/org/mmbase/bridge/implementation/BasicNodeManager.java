@@ -17,6 +17,7 @@ import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -39,7 +40,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.96 2005-06-23 00:53:14 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.97 2005-06-28 14:01:41 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -152,9 +153,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             if (fields != null) { // when is it null?
                 fieldTypes.clear();
                 for(Iterator i = fields.iterator(); i.hasNext();){
-                    FieldDefs f = (FieldDefs) i.next();
+                    CoreField f = (CoreField) i.next();
                     Field ft = new BasicField(f, this);
-                    if (f.getDBPos() > 0) {
+                    if (f.getStoragePosition() > 0) {
                         fieldTypes.put(ft.getName(),ft);
                     }
                 }
@@ -163,7 +164,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     /**
-     * Returns the fieldlist of this nodemanager afetr making sure the manager is synced with the builder.
+     * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      */
     protected Map getFieldTypes() {
         sync();
@@ -304,7 +305,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
             if (resultList == null) {
                 resultList = mmb.getSearchQueryHandler().getNodes(query, builder);
-                builder.processSearchResults(resultList);                
+                builder.processSearchResults(resultList);
                 nodeListCache.put(query, resultList);
             }
 

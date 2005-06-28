@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.48 2005-06-15 14:54:04 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.49 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -364,7 +364,7 @@ public class BasicQuery implements Query  {
         while (i.hasNext()) {
             BasicStepField sf = (BasicStepField) i.next();
             Step addedStep = sf.getStep();
-            query.addField(addedStep, sf.getFieldDefs());
+            query.addField(addedStep, sf.getField());
         }
 
     }
@@ -372,7 +372,7 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        BasicStepField sf = query.addField(step, ((BasicField) field).field);
+        BasicStepField sf = query.addField(step, ((BasicField)field).coreField);
         explicitFields.add(sf);
         implicitFields.remove(sf); // it's explicitly added now
         return sf;
@@ -397,13 +397,13 @@ public class BasicQuery implements Query  {
     protected void addFieldImplicit(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         if (! query.isDistinct()) {
-            BasicStepField sf = query.addField(step, ((BasicField) field).field);
+            BasicStepField sf = query.addField(step, ((BasicField)field).coreField);
             implicitFields.add(sf);
         }
     }
 
     public StepField createStepField(Step step, Field field) {
-        return new BasicStepField(step, ((BasicField) field).field);
+        return new BasicStepField(step, ((BasicField)field).coreField);
     }
 
     public StepField createStepField(Step step, String fieldName) {
@@ -431,7 +431,7 @@ public class BasicQuery implements Query  {
 
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
-        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField) field).field, aggregationType);
+        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField)field).coreField, aggregationType);
         // aggregatedField.setAlias(field.getName());
 
         if (this instanceof NodeQuery) {
@@ -457,7 +457,7 @@ public class BasicQuery implements Query  {
             Iterator i = explicitFields.iterator();
             while (i.hasNext()) {
                 BasicStepField sf = (BasicStepField) i.next();
-                query.addField(sf.getStep(), sf.getFieldDefs());
+                query.addField(sf.getStep(), sf.getField());
             }
         }
         return this;

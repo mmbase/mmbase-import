@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.17 2005-05-10 22:59:47 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.18 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -47,7 +47,7 @@ public class ValueIntercepter {
 
     public final static int TYPE_STRING  = 1;
     public final static int TYPE_INTEGER = 2;
-    public final static int TYPE_BYTE    = 4;
+    public final static int.TYPE_BINARY    = 4;
     public final static int TYPE_FLOAT   = 5;
     public final static int TYPE_DOUBLE  = 6;
     public final static int TYPE_LONG    = 7;
@@ -166,7 +166,7 @@ public class ValueIntercepter {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FIELD_TYPE_DEFINITIONS, DTD_FIELD_TYPE_DEFINITIONS, ValueIntercepter.class);
         // read the XML
         try {
-            readFieldTypeDefinitions();
+            readFieldDefinitions();
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
@@ -224,15 +224,15 @@ public class ValueIntercepter {
     /**
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
-    private static void readFieldTypeDefinitions() {
+    private static void readFieldDefinitions() {
         InputSource fieldTypes = new InputSource(ValueIntercepter.class.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
-        readFieldTypeDefinitions(fieldTypes);
+        readFieldDefinitions(fieldTypes);
 
     }
 
     /**
      * Obtains a map in an array. If the map is not present, a map is instantiated and added.
-     * @param processorMaps Maps an array of maps. The index of the array is a fieldtype, such as {@link Field.TYPE_STRING}
+     * @param processorMaps Maps an array of maps. The index of the array is a fieldtype, such as {@link MMBaseType.TYPE_STRING}
      * @param fieldType the index in the array
      */
     private static Map getProcessorMap(Map[] processorMaps, int fieldType) {
@@ -246,7 +246,7 @@ public class ValueIntercepter {
      * Adds a processor for a gui type to the maps in a fieldtype-index array, depending on the type passed.
      * Creates new maps if needed.
      * @param processor the processor to add
-     * @param processor Maps an array of maps. The index of the array is a fieldtype, such as {@link Field.TYPE_STRING}
+     * @param processor Maps an array of maps. The index of the array is a fieldtype, such as {@link MMBaseType.TYPE_STRING}
      * @param guiType the gui type that serves as the key to the processor when adding it to a map
      * @param type the type of field to which this processor should be added.
      *                this is either a type name (i.e. "STRING"), an empty string (""), or a wildcard ("*").
@@ -260,17 +260,17 @@ public class ValueIntercepter {
                 getProcessorMap(processorMaps, 0).put(guiType, processor);
             }
             // set for all except 'object'.
-            getProcessorMap(processorMaps, Field.TYPE_STRING).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_INTEGER).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_BYTE).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_FLOAT).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_DOUBLE).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_LONG).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_XML).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_NODE).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_DATETIME).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_BOOLEAN).put(guiType, processor);
-            getProcessorMap(processorMaps, Field.TYPE_LIST).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_STRING).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_INTEGER).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_BINARY).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_FLOAT).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_DOUBLE).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_LONG).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_XML).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_NODE).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_DATETIME).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_BOOLEAN).put(guiType, processor);
+            getProcessorMap(processorMaps, MMBaseType.TYPE_LIST).put(guiType, processor);
         } else {
             getProcessorMap(processorMaps, getType(type)).put(guiType, processor);
         }
@@ -293,17 +293,17 @@ public class ValueIntercepter {
                 processors[0] = processor;
             }
             // set for all except 'object'.
-            processors[Field.TYPE_STRING] = processor;
-            processors[Field.TYPE_INTEGER] = processor;
-            processors[Field.TYPE_BYTE] = processor;
-            processors[Field.TYPE_FLOAT] = processor;
-            processors[Field.TYPE_DOUBLE] = processor;
-            processors[Field.TYPE_LONG] = processor;
-            processors[Field.TYPE_XML] = processor;
-            processors[Field.TYPE_NODE] = processor;
-            processors[Field.TYPE_DATETIME] = processor;
-            processors[Field.TYPE_BOOLEAN] = processor;
-            processors[Field.TYPE_LIST] = processor;
+            processors[MMBaseType.TYPE_STRING] = processor;
+            processors[MMBaseType.TYPE_INTEGER] = processor;
+            processors[MMBaseType.TYPE_BINARY] = processor;
+            processors[MMBaseType.TYPE_FLOAT] = processor;
+            processors[MMBaseType.TYPE_DOUBLE] = processor;
+            processors[MMBaseType.TYPE_LONG] = processor;
+            processors[MMBaseType.TYPE_XML] = processor;
+            processors[MMBaseType.TYPE_NODE] = processor;
+            processors[MMBaseType.TYPE_DATETIME] = processor;
+            processors[MMBaseType.TYPE_BOOLEAN] = processor;
+            processors[MMBaseType.TYPE_LIST] = processor;
         } else {
             processors[getType(type)] = processor;
         }
@@ -313,7 +313,7 @@ public class ValueIntercepter {
      * Initialize the type handlers default supported by the system.
      * @since MMBase-1.8
      */
-    private static void readFieldTypeDefinitions(InputSource fieldTypes) {
+    private static void readFieldDefinitions(InputSource fieldTypes) {
         if (fieldTypes.getSystemId() == null) {
             String name = ValueIntercepter.class.getName();
             int dot = name.lastIndexOf('.');
@@ -431,7 +431,7 @@ public class ValueIntercepter {
         }
         int type = field.getType();
 
-        if (type == Field.TYPE_UNKNOWN) {
+        if (type == MMBaseType.TYPE_UNKNOWN) {
             if (node.getNumber() != -1) {
                 log.warn("TYPE UNKNOWN commit " + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
             }
@@ -459,7 +459,7 @@ public class ValueIntercepter {
 
     public static final Object processSet(final int setType, final Node node, final Field field, final  Object value) {
         int type = field.getType();
-        if (type == Field.TYPE_UNKNOWN) {
+        if (type == MMBaseType.TYPE_UNKNOWN) {
             if (node.getNumber() != -1) {
                 log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
             }
@@ -491,7 +491,7 @@ public class ValueIntercepter {
 
         int type = field.getType();
 
-        if (type == Field.TYPE_UNKNOWN) {
+        if (type == MMBaseType.TYPE_UNKNOWN) {
             if (node.getNumber() != -1) {
                 log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
             }
