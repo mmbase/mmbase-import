@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.18 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.19 2005-06-28 20:30:17 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -300,10 +300,11 @@ public class BuilderReader extends XMLBasicReader {
                 // need clone()!
                 for (Iterator i = parentfields.iterator();i.hasNext();) {
                     CoreField f = (CoreField)i.next();
-                    CoreField newfield = (CoreField)f.copy(f.getName());
-                    f.finish();
-                    results.add(newfield);
-                    oldset.put(newfield.getName(),newfield);
+                    CoreField newField = (CoreField) f.copy(f.getName());
+                    while(newField.getStoragePosition() >= pos) pos++;
+                    newField.finish(); 
+                    results.add(newField);
+                    oldset.put(newField.getName(), newField);
                 }
             }
         }
