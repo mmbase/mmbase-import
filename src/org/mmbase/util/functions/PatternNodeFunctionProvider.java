@@ -10,17 +10,17 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * This Function provider creates function objects , which can create a String function base on a
- * pattern. Three kind of pattern are recognized. {PARAM.abc} creates a parameter 'abc' and puts the
+ * pattern. Several kind of patterns are recognized. {PARAM.abc} creates a parameter 'abc' and puts the
  * value of it on that place in the result. {NODE.title}, puts the title field of the node on which
  * the function was applied on that place, and {REQUEST.getContextPath} applies that method to the
- * request parameter (and that parameter is added).
+ * request parameter (and that parameter is added). {INITPARAM.xyz} access the servletcontext init parameters xyz.
  *
  * The functions which are created have silly names like string0, string1 etc, do you want to wrap
  * them in a function with a reasonable name (this is done when specifying this thing in the builder
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.1 2005-06-28 19:09:21 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.2 2005-06-28 19:37:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -42,6 +42,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
     private static final Pattern fieldsPattern   = Pattern.compile("\\{NODE\\.(.+?)\\}");
     private static final Pattern requestPattern  = Pattern.compile("\\{REQUEST\\.(.+?)\\}");
     private static final Pattern paramPattern    = Pattern.compile("\\{PARAM\\.(.+?)\\}");
+    private static final Pattern initParamPattern    = Pattern.compile("\\{INITPARAM\\.(.+?)\\}");
 
     private static int counter = 0;
 
@@ -118,19 +119,24 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 }
                 request.appendTail(sb);
             }
-            log.info("Matching " + paramPattern + " on " + sb);
             Matcher params = paramPattern.matcher(sb);
             if (params.find()) {
                 params.reset();
-                log.info("Matcheds!!");
                 sb = new StringBuffer();
                 while(params.find()) {
-                    log.info("using " + params.group(1));
                     params.appendReplacement(sb, (String) parameters.get(params.group(1)));
                 }
                 params.appendTail(sb);
-            } else {
-                log.info("Didn't match!");
+            }
+
+            Matcher initParams = initParamPattern.matcher(sb);
+            if (initParams.find()) {
+                initParams.reset();
+                sb = new StringBuffer();
+                while(initParams.find()) {
+                    initParams.appendReplacement(sb, org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1)));
+                }
+                initParams.appendTail(sb);
             }
             return sb.toString();
             
