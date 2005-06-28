@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.9 2005-06-27 17:01:21 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.10 2005-06-28 08:15:07 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -352,7 +352,7 @@ public class MmxfSetString implements  Processor {
 
             String imageServlet      = images.getFunctionValue("servletpath", null).toString();
             String attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
-            String segmentsServlet = "/mm18/mmbase/segments/";
+            String segmentsServlet = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/segments/";
 
             NodeList relatedImages        = Queries.getRelatedNodes(editedNode, images, "idrel", "destination", "id", null);
             NodeList usedImages           = cloud.getCloudContext().createNodeList();
@@ -389,6 +389,7 @@ public class MmxfSetString implements  Processor {
                     a.setAttribute("id", id);
                 }
 
+                log.debug("Segments " + segmentsServlet);
                 if (href.startsWith(imageServlet)) { // found an image!
                     String q = "/images/" + href.substring(imageServlet.length());
                     BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
