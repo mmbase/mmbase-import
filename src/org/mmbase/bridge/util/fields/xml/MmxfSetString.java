@@ -15,6 +15,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.util.xml.Mmxf;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.servlet.BridgeServlet;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.transformers.XmlField;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.11 2005-06-28 14:19:54 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.12 2005-06-28 21:30:21 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -284,6 +285,9 @@ public class MmxfSetString implements  Processor {
 
 
     final Pattern ABSOLUTE_URL = Pattern.compile("(http[s]?://[^/]+)(.*)");
+    /**
+     * Normalizes URL to absolute on server
+     */
     protected String normalizeURL(HttpServletRequest request, String url) {
 
         if (url.startsWith("/")) {
@@ -320,11 +324,25 @@ public class MmxfSetString implements  Processor {
                 return url; // don't know anything better then this.
             }
         } else {
-            log.warn("Could not normalize url " + url);
+            log.debug("Could not normalize url " + url);
             return url;
         }
 
     }
+    
+    final Pattern OK_URL = Pattern.compile("[a-z]+:.*");
+    /**
+     * Adds missing protocol
+     */
+    protected String normalizeURL(String url) {
+        if (OK_URL.matcher(url).matches()) {
+            return url;
+        } else {
+            return "http://" + url;
+        }
+    }
+
+
 
     private Document parseKupu(Node editedNode, Document document) {
         if (log.isDebugEnabled()) {
@@ -377,11 +395,11 @@ public class MmxfSetString implements  Processor {
                 if ("".equals(href)) {
                     href  = a.getAttribute("src");
                 }
+                href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
                 // IE Tends to make URL's absolute (http://localhost:8070/mm18/mmbase/images/1234)
                 // FF Tends to make URL's relative (../../../../mmbase/images/1234)
                 // What we want is absolute on server (/mm18/mmbase/images/1234), because that is how URL was probably given in the first place.
 
-                href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
                 String klass = a.getAttribute("class");
                 String id = a.getAttribute("id");
                 if (id.equals("")) {
@@ -492,24 +510,35 @@ public class MmxfSetString implements  Processor {
                     if (!idLinkedUrls.isEmpty()) {
                         Node url   = idLinkedUrls.getNode(0).getNodeValue("urls");
                         Node idrel = idLinkedUrls.getNode(0).getNodeValue("idrel");
-                        log.info("" + url + " url already correctly related, nothing needs to be done");
+                        log.service("" + url + " url already correctly related, nothing needs to be done");
                         usedUrls.add(url);
                         if (!idrel.getStringValue("class").equals(klass)) {
                             idrel.setStringValue("class", klass);
                             idrel.commit();
                         }
                     } else {
-                        NodeList nodeLinkedUrls = get(cloud, relatedUrls, "url", href); // perhaps
-                                                                                        // search in
-                                                                                        // entire cloud?
+                        String u = normalizeURL(href);
+                        NodeList nodeLinkedUrls = get(cloud, relatedUrls, "url", u);
+
                         Node url;
                         if (nodeLinkedUrls.isEmpty()) {
                             // no such related url found!
-                            // create it!
-                            url = cloud.getNodeManager("urls").createNode();
-                            url.setStringValue("url", href);
-                            url.setStringValue("title", a.getAttribute("alt"));
-                            url.commit();
+                            // search entire cloud, too..
+                            NodeQuery q = urls.createQuery();
+                            StepField urlStepField = q.getStepField(urls.getField("url"));
+                            Constraint c = q.createConstraint(urlStepField, u);
+                            q.setConstraint(c);
+                            NodeList ul = urls.getList(q);
+                            if (ul.size() > 0) {
+                                url = ul.getNode(0);
+                                log.service("linking to exsting URL from cloud " + url); 
+                            } else {                            
+                                // not found, create it!
+                                url = cloud.getNodeManager("urls").createNode();
+                                url.setStringValue("url", u);
+                                url.setStringValue("title", a.getAttribute("alt"));
+                                url.commit();
+                            }
                         } else {
                             url = nodeLinkedUrls.getNode(0).getNodeValue("urls");
                         }
