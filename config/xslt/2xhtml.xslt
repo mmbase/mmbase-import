@@ -3,10 +3,10 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.18 2005-06-27 22:03:05 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.19 2005-06-28 08:23:40 michiel Exp $
   @since:   MMBase-1.6
 -->
-<xsl:stylesheet  
+<xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
@@ -77,7 +77,7 @@
   </xsl:template>
 
 
-  <!-- 
+  <!--
        Produces one img-tag for an o:object of type images.
        params: relation, position, last
   -->
@@ -91,30 +91,30 @@
         <xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
         <xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
       </xsl:if>
-    </img>    
+    </img>
   </xsl:template>
 
 
-  <!-- 
+  <!--
        Produces output for one o:object of type images.
        params: relation, position, last
-  -->  
+  -->
   <xsl:template match="o:object[@type = 'images']" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
     <a>
-      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>      
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:apply-templates select="." mode="img">
         <xsl:with-param name="relation" select="$relation" />
         <xsl:with-param name="position" select="$position"  />
         <xsl:with-param name="last"  select="$last"  />
       </xsl:apply-templates>
-    </a>    
+    </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
-  <!-- 
+  <!--
        Produces output for one o:object of type attachments
        params: relation, position, last
   -->
@@ -126,16 +126,16 @@
     <a>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <img width="16" height="16"> 
+      <img width="16" height="16">
         <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
         <xsl:attribute name="src"><xsl:value-of select="node:function($cloud, string(@id), 'iconurl')" /></xsl:attribute>
       </img>
-    </a>    
+    </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
 
-  <!-- 
+  <!--
        Produces output for one o:object of type urls
        params: relation, position, last
   -->
@@ -146,7 +146,7 @@
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
-    </a>    
+    </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
@@ -161,7 +161,7 @@
 
 
 
-  <!-- 
+  <!--
        Produces at title for one o:object
   -->
   <xsl:template match="o:object" mode="title">
@@ -181,7 +181,7 @@
       <xsl:otherwise>
 	<xsl:value-of select="./o:field[@name='url']" />
       </xsl:otherwise>
-    </xsl:choose>    
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="title">
@@ -189,7 +189,7 @@
   </xsl:template>
 
 
-  <!-- 
+  <!--
        Template to override mmxf tags with an 'id', we support links to it here This contains code
        to determine the relations and calls jumps to with_relations mode, where the 'relations'
        parameter becomes available (all relations pointing to this element).
@@ -197,7 +197,7 @@
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <!-- store all 'relation' nodes of this node for convenience in $rels:-->
     <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
-    
+
     <!-- also for conveniences: all related nodes to this node-->
     <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
 
@@ -259,7 +259,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
 
   <!--
     Presents only relations. Iterates over all given relations, and applies the 'inline' mode template on every related node.
