@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -23,7 +24,7 @@ import org.mmbase.module.corebuilders.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.22 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.23 2005-06-28 14:01:41 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
 
@@ -38,7 +39,7 @@ public class VirtualNodeManager extends BasicNodeManager {
     VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
         this(cloud);
         // determine fields and field types
-        
+
         synchronized(node.values) {
             Iterator i = node.values.entrySet().iterator();
             while (i.hasNext()) {
@@ -46,25 +47,27 @@ public class VirtualNodeManager extends BasicNodeManager {
                 String fieldName= (String) entry.getKey();
                 Object value     = entry.getValue();
                 if (value == MMObjectNode.VALUE_NULL) continue;
-                int fieldType = Field.TYPE_UNKNOWN;
+                int fieldType = MMBaseType.TYPE_UNKNOWN;
                 if (value instanceof MMObjectNode) {
-                    fieldType = Field.TYPE_NODE;
+                    fieldType = MMBaseType.TYPE_NODE;
                 } else if (value instanceof String) {
-                    fieldType = Field.TYPE_STRING;
+                    fieldType = MMBaseType.TYPE_STRING;
                 } else if (value instanceof Integer) {
-                    fieldType = Field.TYPE_INTEGER;
+                    fieldType = MMBaseType.TYPE_INTEGER;
                 } else if (value instanceof  byte[]) {
-                    fieldType = Field.TYPE_BYTE;
+                    fieldType = MMBaseType.TYPE_BINARY;
                 } else if (value instanceof  Float) {
-                    fieldType = Field.TYPE_FLOAT;
+                    fieldType = MMBaseType.TYPE_FLOAT;
                 } else if (value instanceof  Double) {
-                    fieldType = Field.TYPE_DOUBLE;
+                    fieldType = MMBaseType.TYPE_DOUBLE;
                 } else if (value instanceof  Long) {
-                    fieldType = Field.TYPE_LONG;
+                    fieldType = MMBaseType.TYPE_LONG;
                 } else if (value instanceof  org.w3c.dom.Node) {
-                    fieldType = Field.TYPE_XML;
+                    fieldType = MMBaseType.TYPE_XML;
                 }
-                FieldDefs fd = new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL);
+                CoreField fd = BasicCloudContext.mmb.createField(fieldName, fieldType, Field.STATE_VIRTUAL,
+                                               fieldName, "field", -1, -1, -1);
+                fd.finish();
                 Field ft = new BasicField(fd, this);
                 fieldTypes.put(fieldName, ft);
             }

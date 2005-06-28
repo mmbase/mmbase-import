@@ -12,7 +12,6 @@ package org.mmbase.module.builders;
 import java.util.*;
 import java.text.DateFormat;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.40 2005-03-07 10:01:33 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.41 2005-06-28 14:01:41 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -73,8 +72,7 @@ public class DayMarkers extends MMObjectBuilder {
 
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
-            FieldDefs fieldDefs = getField(FIELD_NUMBER);
-            StepField field = query.getField(fieldDefs);
+            StepField field = query.getField(getField(FIELD_NUMBER));
             query.addSortOrder(field);
             query.setMaxNumber(1);
             List resultList = getNodes(query);
@@ -182,12 +180,10 @@ public class DayMarkers extends MMObjectBuilder {
 
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
-            FieldDefs dayCountFieldDefs = getField(FIELD_DAYCOUNT);
-            StepField dayCount = query.getField(dayCountFieldDefs);
+            StepField dayCount = query.getField(getField(FIELD_DAYCOUNT));
             BasicSortOrder sortOrder = query.addSortOrder(dayCount);
             sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
-            FieldDefs markFieldDefs = getField(FIELD_MARK);
-            StepField markField = query.getField(markFieldDefs);
+            StepField markField = query.getField(getField(FIELD_MARK));
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(markField, new Integer(nodeNumber));
             cons.setOperator(FieldCompareConstraint.LESS);
             query.setConstraint(cons);
@@ -215,8 +211,7 @@ public class DayMarkers extends MMObjectBuilder {
                 log.service("daycount could not be found for node " + node.getNumber());
                 // determining the oldest daycount:
                 query = new NodeSearchQuery(this);
-                FieldDefs numberFieldDefs = getField(FIELD_NUMBER);
-                StepField number = query.getField(numberFieldDefs);
+                StepField number = query.getField(getField(FIELD_NUMBER));
                 sortOrder = query.addSortOrder(number);
                 sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
                 query.setMaxNumber(1);

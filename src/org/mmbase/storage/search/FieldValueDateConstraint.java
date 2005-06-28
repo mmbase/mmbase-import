@@ -9,37 +9,49 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search;
 
+import java.util.Calendar;
+
 /**
  * @javadoc
  * @author Michiel Meeuwissen
- * @version $Id: FieldValueDateConstraint.java,v 1.3 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: FieldValueDateConstraint.java,v 1.4 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.8
  */
 public interface FieldValueDateConstraint extends FieldValueConstraint {
 
+    // Try to match the part constants available in most datetime constraints to the Calendar constants.
+    // This does not work everywhere, as some values are not supported by Calendar, and vice versa.
+
     /** Date part: 'century' */
-    static final int CENTURY      = 0;
+    static final int CENTURY      = 0;                     // note: does not exist in Calendar
+                                                           // (0 is Calendar.ERA)
     /** Date part: 'year' */
-    static final int YEAR         = 1;
+    static final int YEAR         = Calendar.YEAR;         // 1
     /** Date part: 'month' */
-    static final int MONTH        = 2;
-    /** Date part: 'quarter' */
-    static final int QUARTER      = 3;
+    static final int MONTH        = Calendar.MONTH;        // 2
     /** Date part: 'week' */
-    static final int WEEK         = 4;
-    /** Date part: 'day of year' */
-    static final int DAY_OF_YEAR  = 5;
+    static final int WEEK         = Calendar.WEEK_OF_YEAR; // 3
+    /** Date part: 'quarter' */
+    static final int QUARTER      = 4;                     // note: does not exist in Calendar
+                                                           // (4 is Calendar.WEEK_OF_MONTH)
     /** Date part: 'day of month' */
-    static final int DAY_OF_MONTH = 6;
+    static final int DAY_OF_MONTH = Calendar.DAY_OF_MONTH; // 5
+    /** Date part: 'day of year' */
+    static final int DAY_OF_YEAR  = Calendar.DAY_OF_YEAR;  // 6
     /** Date part: 'day of week' */
-    static final int DAY_OF_WEEK  = 7;
+    static final int DAY_OF_WEEK  = Calendar.DAY_OF_WEEK;  // 7
+
+    // 8 (Calendar.DAY_OF_WEEK_IN_MONTH) and 9 (Calendar.AM_PM) are not used
 
     /** Time part: 'hour' */
-    static final int HOUR         = 8;
+    static final int HOUR         = Calendar.HOUR;         // 10
+
+    // 11 (Calendar.HOUR_OF_DAY) is not used
+
     /** Time part: 'minute' */
-    static final int MINUTE       = 9;
+    static final int MINUTE       = Calendar.MINUTE;       // 12
     /** Time part: 'second' */
-    static final int SECOND       = 10;
+    static final int SECOND       = Calendar.SECOND;       // 13
 
     /**
      * Part descriptions corresponding to the date and time part values:
@@ -48,9 +60,13 @@ public interface FieldValueDateConstraint extends FieldValueConstraint {
      * {@link #HOUR}, {@link #MINUTE}, and {@link #SECOND}
      */
     public final static String[] PART_DESCRIPTIONS = new String[] {
-         "century", "year", "month", "quarter",
-         "weel", "day of year", "day of month", "day of week",
-         "hour", "minute", "second"
+         "century", "year", "month", "week",
+         "quarter",
+         "day of month", "day of year", "day of week",
+         "","",
+         "hour",
+         "",
+         "minute", "second"
     };
 
     /**

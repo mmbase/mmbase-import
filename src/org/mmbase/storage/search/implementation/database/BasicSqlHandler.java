@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -22,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.46 2005-05-27 10:48:30 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.47 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -88,8 +89,8 @@ public class BasicSqlHandler implements SqlHandler {
      */
     private static boolean isRelevantCaseInsensitive(FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
-        && (constraint.getField().getType() == FieldDefs.TYPE_STRING
-        || constraint.getField().getType() == FieldDefs.TYPE_XML);
+        && (constraint.getField().getType() == MMBaseType.TYPE_STRING
+        || constraint.getField().getType() == MMBaseType.TYPE_XML);
     }
 
     /**
@@ -125,7 +126,7 @@ public class BasicSqlHandler implements SqlHandler {
      */
     // TODO: elaborate javadoc, add to SqlHandler interface?
     public void appendFieldValue(StringBuffer sb, Object value, boolean toLowerCase, int fieldType) {
-        if (fieldType == FieldDefs.TYPE_STRING || fieldType == FieldDefs.TYPE_XML) {
+        if (fieldType == MMBaseType.TYPE_STRING || fieldType == MMBaseType.TYPE_XML) {
             // escape single quotes in string
             String stringValue = toSqlString((String) value);
             // to lowercase when case insensitive
@@ -135,7 +136,7 @@ public class BasicSqlHandler implements SqlHandler {
             sb.append("'").
             append(stringValue).
             append("'");
-        } else if (fieldType == FieldDefs.TYPE_DATETIME) {
+        } else if (fieldType == MMBaseType.TYPE_DATETIME) {
             if (value instanceof Integer) {
                 sb.append(((Integer) value).intValue());
             } else {
@@ -143,7 +144,7 @@ public class BasicSqlHandler implements SqlHandler {
                 appendDateValue(sb, (Date) value);
                 sb.append("'");
             }
-        } else if (fieldType == FieldDefs.TYPE_BOOLEAN) {
+        } else if (fieldType == MMBaseType.TYPE_BOOLEAN) {
             boolean isTrue = ((Boolean) value).booleanValue();
             if (isTrue) {
                 sb.append("TRUE");
@@ -549,7 +550,7 @@ public class BasicSqlHandler implements SqlHandler {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
 
                 boolean uppered = false;
-                if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == FieldDefs.TYPE_STRING) {
+                if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == MMBaseType.TYPE_STRING) {
                     sb.append("UPPER(");
                     uppered = true;
                 }
@@ -567,11 +568,11 @@ public class BasicSqlHandler implements SqlHandler {
                 case SortOrder.ORDER_ASCENDING:
                     sb.append(" ASC");
                     break;
-                    
+
                 case SortOrder.ORDER_DESCENDING:
                     sb.append(" DESC");
                     break;
-                    
+
                 default: // Invalid direction value.
                     throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
                 }

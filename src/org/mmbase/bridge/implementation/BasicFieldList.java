@@ -12,13 +12,14 @@ package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
 import org.mmbase.bridge.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.*;
 
 /**
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.14 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicFieldList.java,v 1.15 2005-06-28 14:01:41 pierre Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
 
@@ -34,16 +35,16 @@ public class BasicFieldList extends BasicList implements FieldList {
     }
 
     public Object convert(Object o, int index) {
-        if (o instanceof Field) {
+        if (o instanceof BasicField) {
             return o;
         }
-        Field f = new BasicField((FieldDefs)o,nodemanager);
+        Field f = new BasicField((CoreField)o,nodemanager);
         set(index, f);
         return f;
     }
 
     protected Object validate(Object o) throws ClassCastException {
-        if (o instanceof FieldDefs) {
+        if (o instanceof CoreField) {
             return o;
         } else {
             return (Field)o;

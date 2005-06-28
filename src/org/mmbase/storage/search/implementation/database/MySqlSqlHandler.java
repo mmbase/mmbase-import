@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database;
 
 import java.util.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.11 2005-05-27 10:48:30 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.12 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -143,7 +143,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
 
                 boolean uppered = false;
-                if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == FieldDefs.TYPE_STRING) {
+                if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == MMBaseType.TYPE_STRING) {
                     sb.append("BINARY ");
                 }
                 // Fieldname.
@@ -155,11 +155,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
                 case SortOrder.ORDER_ASCENDING:
                     sb.append(" ASC");
                     break;
-                    
+
                 case SortOrder.ORDER_DESCENDING:
                     sb.append(" DESC");
                     break;
-                    
+
                 default: // Invalid direction value.
                     throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
                 }

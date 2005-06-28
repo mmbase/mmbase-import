@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.24 2005-05-10 22:58:58 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.25 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -206,7 +207,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             }
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
-        }               
+        }
     }
 
     /**
@@ -225,7 +226,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /**
      * Used by copy-constructor. Constraints have to be done recursively.
      */
-    protected static Constraint copyConstraint(SearchQuery q, Constraint c) {        
+    protected static Constraint copyConstraint(SearchQuery q, Constraint c) {
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
             BasicCompositeConstraint newConstraint = new BasicCompositeConstraint(constraint.getLogicalOperator());
@@ -406,7 +407,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             CoreField field = (CoreField) iFields.next();
-            if (field.getType() != FieldDefs.TYPE_BYTE 
+            if (field.getType() != MMBaseType.TYPE_BINARY
                 && field.inStorage()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);

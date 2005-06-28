@@ -12,8 +12,9 @@ import java.sql.*;
 import java.util.*;
 import javax.sql.DataSource;
 
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.implementation.database.Attributes;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.storage.search.*;
@@ -30,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.37 2005-05-11 14:31:34 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.38 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -215,7 +216,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             // Use tablename as alias when no alias is specified.
                             alias = step.getTableName();
                         }
-                        FieldDefs field = builder.getField(alias +  '.' + fieldName);
+                        CoreField field = builder.getField(alias +  '.' + fieldName);
                         Object value = storageManager.getValue(rs, i + 1, field, false);
                         node.setValue(alias +  '.' + fieldName, value);
                     }
@@ -252,7 +253,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         if (fieldName == null) {
                             fieldName = fields[i].getFieldName();
                         }
-                        FieldDefs field = builder.getField(fieldName);
+                        CoreField field = builder.getField(fieldName);
                         Object value = storageManager.getValue(rs, i + 1, field, false);
                         node.setValue(fieldName, value);
                     }
@@ -284,7 +285,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         for (int i = 0; i < fields.length; i++) {
             if (fields[i].getStep() == nodeStep) {
                 String fieldName =  fields[i].getFieldName();
-                FieldDefs field = builder.getField(fieldName);
+                CoreField field = builder.getField(fieldName);
                 if (field != null) {
                     fieldIndices.put(field, new Integer(i + 1));
                 }
@@ -297,12 +298,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 try {
                     MMObjectNode node = new MMObjectNode(builder);
                     node.start();
-                    for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext(); ) {
-                        FieldDefs field = (FieldDefs)i.next();
+                    for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext(); ) {
+                        CoreField field = (CoreField)i.next();
                         if (! field.inStorage()) continue;
                         Integer index = (Integer) fieldIndices.get(field);
                         Object value;
-                        String fieldName = field.getDBName();
+                        String fieldName = field.getName();
                         if (index != null) {
                             value = storageManager.getValue(rs, index.intValue(), field, true);
                         } else {

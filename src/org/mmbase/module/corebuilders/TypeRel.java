@@ -11,8 +11,11 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
+import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.implementation.BasicRelationStep;
 import org.mmbase.storage.search.RelationStep;
 
@@ -33,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.52 2005-06-27 09:17:38 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.53 2005-06-28 14:01:41 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -591,10 +594,19 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         static VirtualTypeRel virtualTypeRel = null;
         VirtualTypeRel(TypeRel t) {
             fields = new Hashtable();
-            addField(new FieldDefs("snumber","integer", -1,-1,"snumber",FieldDefs.TYPE_INTEGER));
-            addField(new FieldDefs("dnumber","integer", -1,-1,"dnumber",FieldDefs.TYPE_INTEGER));
-            addField(new FieldDefs("rnumber","integer", -1,-1,"rnumber",FieldDefs.TYPE_INTEGER));
-            mmb       = t.mmb;
+            mmb = t.mmb;
+            CoreField field = mmb.createField("snumber",MMBaseType.TYPE_INTEGER,Field.STATE_PERSISTENT,
+                                     "snumber","integer", -1,-1, 2);
+            field.finish();
+            addField(field);
+            field = mmb.createField("dnumber",MMBaseType.TYPE_INTEGER,Field.STATE_PERSISTENT,
+                                     "dnumber","integer", -1,-1, 2);
+            field.finish();
+            addField(field);
+            field = mmb.createField("rnumber",MMBaseType.TYPE_INTEGER,Field.STATE_PERSISTENT,
+                                     "rnumber","integer", -1,-1, 2);
+            field.finish();
+            addField(field);
             tableName = "virtual_typerel";
             virtual   = true;
         }
