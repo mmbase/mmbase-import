@@ -467,6 +467,7 @@ builddate=${builddate}
         <include name="xslt/**/*.xsl"/>
         <include name="xslt/**/*.xslt"/>
         <include name="dtd/**"/>
+        <include name="xsd/**"/>
       </fileset>
     </copy>
     <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
