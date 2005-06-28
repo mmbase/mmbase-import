@@ -83,6 +83,7 @@ public class RemoteGenerator {
         sb.append("import java.rmi.*;\n");
         sb.append("import org.mmbase.security.*;\n");
         sb.append("import org.mmbase.cache.*;\n");
+        sb.append("import org.mmbase.util.LocalizedString;\n");
         sb.append("\n");
 
         sb.append("/**\n");
@@ -195,7 +196,7 @@ public class RemoteGenerator {
         sb.append("package org.mmbase.bridge.remote.rmi;\n");
         sb.append("\n");
         sb.append("import org.mmbase.bridge.*;\n");
-        sb.append("import org.mmbase.core.FieldType;\n");
+        sb.append("import org.mmbase.bridge.datatypes.*;\n");
         sb.append("import org.mmbase.security.*;\n");
         sb.append("import org.mmbase.storage.search.*;\n");
         sb.append("import org.mmbase.util.functions.*;\n");
@@ -402,7 +403,7 @@ public class RemoteGenerator {
         sb.append("\n");
         sb.append("import java.util.*;\n");
         sb.append("import org.mmbase.bridge.*;\n");
-        sb.append("import org.mmbase.core.FieldType;\n");
+        sb.append("import org.mmbase.bridge.datatypes.*;\n");
         sb.append("import org.mmbase.storage.search.*;\n");
         sb.append("import org.mmbase.util.functions.*;\n");
         sb.append("import org.mmbase.bridge.remote.*;\n");
@@ -578,7 +579,7 @@ public class RemoteGenerator {
         helper.append("import java.util.Vector;\n");
 
         helper.append("import org.mmbase.bridge.*;\n");
-        helper.append("import org.mmbase.core.FieldType;\n");
+        helper.append("import org.mmbase.bridge.datatypes.*;\n");
         helper.append("import org.mmbase.security.*;\n");
         helper.append("import org.mmbase.bridge.remote.*;\n");
         helper.append("import org.mmbase.bridge.remote.rmi.*;\n");
