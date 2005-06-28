@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.7 2005-06-27 12:29:06 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.8 2005-06-28 19:09:21 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.function.BeanFunction
@@ -37,6 +37,10 @@ public abstract class NodeFunction extends AbstractFunction {
      * Utility function, for easy call of function on node by one string.
      */
     public static FieldValue getFunctionValue(Node node, String function) {
+        if(node == null) {
+            log.warn("Tried to execute node-function on null!");
+            return null;
+        }
         java.util.List args = null;
         String functionName = function;
         int pos1 = function.indexOf('(');
@@ -47,13 +51,24 @@ public abstract class NodeFunction extends AbstractFunction {
                 args = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
+        }
+
         return node.getFunctionValue(functionName, args);
     }
 
 
 
     public NodeFunction(String name, DataType[] def, DataType returnType) {
-        super(name, new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE}, returnType);
+        super(name, getNodeParameterDef(def), returnType);
+    }
+    protected static DataType[] getNodeParameterDef(DataType[] def) {
+        if (java.util.Arrays.asList(def).contains(Parameter.NODE)) {
+            return def;
+        } else {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE};
+        }
     }
 
     /**
@@ -66,7 +81,8 @@ public abstract class NodeFunction extends AbstractFunction {
     /**
      * Implements the function on a certain node. Override this method <em>or</em> it's bridge
      * counter-part {@link #getFunctionValue(org.mmbase.bridge.Node, Parameters)}.  Overriding the
-     * bridge version has two advantages. It's easier, and mmbase security will be honoured.
+     * bridge version has two advantages. It's easier, and mmbase security will be honoured. That
+     * last thing is of course not necesary if you are not going to use other nodes.
      * 
      */
     protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
