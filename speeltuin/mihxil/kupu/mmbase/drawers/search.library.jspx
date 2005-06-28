@@ -1,0 +1,44 @@
+<mm:content 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    type="text/xml" 
+    expires="-1">
+  <!--      
+       $Id: search.library.jspx,v 1.1 2005-06-28 12:33:20 michiel Exp $
+  -->  
+  <jsp:output omit-xml-declaration="yes" />
+
+  <mm:cloud>
+    <mm:import id="search" externid="SearchableText" required="true" />
+
+    <mm:import externid="librarysize">50</mm:import>
+    <mm:import externid="page">0</mm:import>
+    <mm:import vartype="list" externid="nodetypes">images</mm:import>
+
+
+    <library id="${nodetypes}_${search}">
+      <uri><mm:url referids="search,librarysize@max,nodetypes" page="drawers/collection.jspx" /></uri>
+      <title>"<mm:write referid="search" />"</title>
+      <icon>icons/map.gif</icon>	
+      
+      <mm:stringlist referid="nodetypes">        
+        <mm:context id="drawer" scope="request">
+          <mm:remove referid="nodetype" />
+          <mm:write id="nodetype" write="false" />
+          <mm:remove referid="query" />
+          <mm:listnodescontainer id="query" type="$nodetype">          
+            <jsp:directive.include file="search.constraints.jspx" />
+          
+            <mm:sortorder field="number" direction="down" />
+            <mm:maxnumber value="$librarysize" />
+            <mm:offset    value="${librarysize * page}" />
+            
+            <mm:include page="${nodetype}.items.jspx" />
+            
+          </mm:listnodescontainer>
+        </mm:context>
+      </mm:stringlist>
+
+    </library>            
+  </mm:cloud>
+</mm:content>
