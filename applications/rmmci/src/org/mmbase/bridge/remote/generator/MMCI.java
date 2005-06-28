@@ -81,10 +81,12 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Descriptor", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldValue",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.MMBaseType", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Module",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleList",doc));
@@ -105,8 +107,16 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
-        // 'core' classes
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.core.FieldType", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BinaryDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BooleanDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.DateTimeDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.DoubleDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.FloatDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.IntegerDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.ListDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.LongDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.NodeDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.StringDataType",doc));
         // storage interfaces
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
@@ -133,6 +143,7 @@ public class MMCI {
         // function classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.LocalizedString", doc));
     }
 
     public static void main(String [] argv) throws Exception{
