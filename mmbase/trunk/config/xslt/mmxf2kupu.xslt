@@ -3,10 +3,10 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.9 2005-06-27 22:03:05 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.10 2005-06-28 08:23:40 michiel Exp $
   @since:   MMBase-1.6
 -->
-<xsl:stylesheet  
+<xsl:stylesheet
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
   xmlns:o="http://www.mmbase.org/xmlns/objects"
@@ -18,7 +18,7 @@
 >
   <xsl:import href="2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
 
-  <xsl:output method="xml" 
+  <xsl:output method="xml"
     omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
 
 
@@ -80,10 +80,10 @@
         <xsl:attribute name="height"><xsl:value-of select="$icache/o:field[@name='height']" /></xsl:attribute>
         <xsl:attribute name="width"><xsl:value-of select="$icache/o:field[@name='width']" /></xsl:attribute>
       </xsl:if>
-    </img> 
-  </xsl:template>   
+    </img>
+  </xsl:template>
 
-  <!-- 
+  <!--
        Produces output for one o:object of type urls
        params: relation, position, last
   -->
@@ -96,7 +96,7 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="class">generated</xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
-    </a>    
+    </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
@@ -114,7 +114,7 @@
       <xsl:text>:</xsl:text>
       <xsl:apply-templates select="." mode="title" />
       <xsl:text>]</xsl:text>
-    </a>    
+    </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
@@ -129,7 +129,7 @@
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="$body"  />
-    </a>    
+    </a>
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="url">
