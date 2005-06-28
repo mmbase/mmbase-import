@@ -3,15 +3,14 @@
      It need two variables to exist:
      search:    string to search on
      nodetype:  fields of which node-type must be considered
-     $Id: search.constraints.jspx,v 1.1 2005-06-20 09:41:08 michiel Exp $
+     $Id: search.constraints.jspx,v 1.2 2005-06-28 12:33:20 michiel Exp $
 -->
-<mm:isnotempty 
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+<mm:isnotempty  xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     referid="search">
   <mm:composite operator="OR">
     <mm:fieldlist type="search" nodetype="$nodetype">
       <mm:fieldinfo type="typedescription">
-        <mm:compare valueset="string,xml">
+        <mm:compare valueset="STRING,XML">
           <mm:fieldinfo type="name">
             <mm:constraint field="$_" operator="LIKE" value="%$search%" />
           </mm:fieldinfo>

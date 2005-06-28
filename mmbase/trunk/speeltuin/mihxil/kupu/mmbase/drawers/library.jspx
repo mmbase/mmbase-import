@@ -4,45 +4,32 @@
     type="text/xml" 
     expires="-1">
   <!--      
-       $Id: library.jspx,v 1.6 2005-06-27 17:00:00 michiel Exp $
+       $Id: library.jspx,v 1.7 2005-06-28 12:33:20 michiel Exp $
   -->  
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:cloud>
-    <mm:import id="search" externid="SearchableText" />
-    <mm:import externid="title"><mm:write referid="search" /></mm:import>
-
     <mm:import externid="librarysize">50</mm:import>
     <mm:import externid="page">0</mm:import>
     <mm:import externid="nodetype">images</mm:import>
 
-
-    <mm:context id="drawer" scope="request">
-      <mm:remove referid="query" />
-      <mm:listnodescontainer id="query" type="$nodetype">
-        <jsp:directive.include file="search.constraints.jspx" />
-        
-        <mm:sortorder field="number" direction="down" />
-        <mm:maxnumber value="$librarysize" />
-        <mm:offset    value="${librarysize * page}" />
-        
-        <library id="${nodetype}_${search}">
-          <uri><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
-          <title>
-            <mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" /> <mm:write referid="search"> <mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
-          </title>
-          <icon>kupuimages/kupulibrary.png</icon>	
+    <mm:context scope="request" id="drawer">
+      <library id="${nodetype}">
+        <uri><mm:url referids="librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
+        <title>
+          <mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" />
+        </title>
+        <icon>icons/map.gif</icon>	
+        <mm:remove referid="query" />
+        <mm:listnodescontainer id="query" type="$nodetype">          
           
-          <mm:notpresent referid="search">
-            <src><mm:url referids="search,librarysize@max,nodetype" page="drawers/collection.jspx" /></src>
-          </mm:notpresent>
-          <mm:present referid="search">
-            <mm:include page="${nodetype}.items.jspx" />
-          </mm:present>
-          
-        </library>        
-	
-      </mm:listnodescontainer>
+          <mm:sortorder field="number" direction="down" />
+          <mm:maxnumber value="$librarysize" />
+          <mm:offset    value="${librarysize * page}" />          
+          <src><mm:url referids="librarysize@max,nodetype" page="drawers/collection.jspx" /></src>
+        
+        </mm:listnodescontainer>
+      </library>            
     </mm:context>
   </mm:cloud>
 </mm:content>
