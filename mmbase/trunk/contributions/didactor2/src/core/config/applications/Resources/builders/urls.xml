@@ -101,8 +101,8 @@ a key/value system. Its a optional tag.
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Naam</guiname>
-            <guiname xml:lang="nl">Name</guiname>
+            <guiname xml:lang="en">Name</guiname>
+            <guiname xml:lang="nl">Naam</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
