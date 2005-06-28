@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.1 2005-06-28 08:15:36 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.2 2005-06-28 12:34:04 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -29,23 +29,37 @@ public class FieldGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(FieldGetString.class);
 
     public Object process(Node node, Field field, Object value) {
-        if (! (value instanceof Document)) {
-            String s = Casting.toString(value);
-            value = Casting.toXML(s);
+        
+        Object realValue =  node.getObjectValue(field.getName());
+        if (realValue == null || value == null) return null;
+
+
+        if (! (realValue  instanceof Document)) {
+            throw new RuntimeException("FieldGetString should only be defined for XML fields. " + node.getNumber() + "/" + field.getName() + " returned a " + realValue.getClass());
         }
+        Document document = (Document) realValue;
+
+        
         if (value instanceof Document) {
+            // requested XML, give it!
+            return document;
+        } else {
+            // request something else.
+
+            // unXMLize first, then cast back to wanted type.
+            String string;
             try {
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/text.xslt");
                 java.io.StringWriter res = new java.io.StringWriter();            
-                XSLTransformer.transform(new DOMSource((Document) value), u, new StreamResult(res), null);
-                value = res.toString();
+                XSLTransformer.transform(new DOMSource((Document) realValue), u, new StreamResult(res), null);
+                string = res.toString();
             } catch (Exception e) {
                 log.warn(e);
+                string = e.getMessage();
             }
+            return Casting.toType(value.getClass(), string);
 
         }
-        String s = Casting.toString(value);
 
-        return s;        
     }
 }
