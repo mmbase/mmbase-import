@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.2 2005-06-28 12:34:04 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.3 2005-06-28 14:19:54 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -44,22 +44,35 @@ public class FieldGetString implements  Processor {
             // requested XML, give it!
             return document;
         } else {
-            // request something else.
-
-            // unXMLize first, then cast back to wanted type.
-            String string;
+            // requested something else, String, probably
             try {
-                java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/text.xslt");
-                java.io.StringWriter res = new java.io.StringWriter();            
-                XSLTransformer.transform(new DOMSource((Document) realValue), u, new StreamResult(res), null);
-                string = res.toString();
+                switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
+                case Modes.WIKI:
+                case Modes.KUPU:
+                case Modes.FLAT: {
+                    // unXMLize first, then cast back to wanted type.
+                    String string;
+                    try {
+                        java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/text.xslt");
+                        java.io.StringWriter res = new java.io.StringWriter();            
+                        XSLTransformer.transform(new DOMSource((Document) realValue), u, new StreamResult(res), null);
+                        string = res.toString();
+                    } catch (Exception e) {
+                        log.warn(e);
+                        string = e.getMessage();
+                    }
+                    return Casting.toType(value.getClass(), string);
+                    
+                }                    
+                default: {
+                    return value;
+                } 
+                    
+                }
             } catch (Exception e) {
-                log.warn(e);
-                string = e.getMessage();
+                log.error(e.getMessage(), e);
+                return value;
             }
-            return Casting.toType(value.getClass(), string);
-
         }
-
     }
 }

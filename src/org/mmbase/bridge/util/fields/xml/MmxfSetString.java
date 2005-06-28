@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.10 2005-06-28 08:15:07 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.11 2005-06-28 14:19:54 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -560,18 +560,17 @@ public class MmxfSetString implements  Processor {
     
     public Object process(Node node, Field field, Object value) {
         
-
         try {
-            switch(MmxfGetString.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
-            case MmxfGetString.MODE_KUPU: {
+            switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
+            case Modes.KUPU: {
                 log.debug("Handeling kupu-input: " + value);
                 return parseKupu(node, parse("" + value));
             }
-            case MmxfGetString.MODE_WIKI: {
+            case Modes.WIKI: {
                 log.debug("Handling wiki-input: " + value);
                 return  parse(xmlField.transformBack("" + value));
             }
-            case MmxfGetString.MODE_FLAT: {
+            case Modes.FLAT: {
                 return parse(xmlField.transformBack("" + value));
             }
             default: {
