@@ -154,9 +154,6 @@ function saveNode(button, editor) {
 function updateTree(nodeNumber, title) {
     var nodeA = document.getElementById('a_' + nodeNumber);
     nodeA.innerHTML = title;
-    var nodeXML = document.getElementById('node').innerHTML;
-    //alert ("node is now" + nodeXML);
-    loadedNodes.add(nodeNumber, nodeXML);
 }
 
 /**
@@ -171,9 +168,8 @@ function loadNode(nodeNumber) {
         kupu.logMessage(_("RELOAD"));
         loadedNodes.remove(nodeNumber);
         loadedNodeBodies.remove(nodeNumber);
-        currentNode == undefined;
+        currentNode = undefined;
     }
-    kupu.logMessage(_("Loading node") + " " + nodeNumber);
     var currentA;
 
     if (currentNode != undefined) {
@@ -188,14 +184,14 @@ function loadNode(nodeNumber) {
     }
     var nodeXml = loadedNodes.get(nodeNumber);
     if (nodeXml == null) {
-        kupu.logMessage(_("getting node")); 
+        kupu.logMessage(_("Getting node fields for ") + nodeNumber); 
         var dom = Sarissa.getDomDocument();
         dom.async = false;
         dom.load('node.jspx?node=' + nodeNumber);
         nodeXml = Sarissa.serialize(dom);
         loadedNodes.add(nodeNumber, nodeXml);
     } else {
-        kupu.logMessage(_("loading node")); 
+        kupu.logMessage(_("Loading node fields for ") + nodeNumber); 
         var request = getRequest();
         request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
         request.send('');        
@@ -205,12 +201,16 @@ function loadNode(nodeNumber) {
     
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
     if (nodeBodyXml == null) {
+        kupu.logMessage(_("Getting node body ") + " " + nodeNumber);
         var dom = Sarissa.getDomDocument();
         dom.async = false;
         dom.load('node.body.jspx');
         nodeBodyXml = Sarissa.serialize(dom);
         loadedNodeBodies.add(nodeNumber, nodeBodyXml);
+    } else {
+        kupu.logMessage(_("Loading node body ") + " " + nodeNumber);
     }
+    
     /*
     alert("found " + Sarissa.serialize(nodeBodyXml));
     var text = "";

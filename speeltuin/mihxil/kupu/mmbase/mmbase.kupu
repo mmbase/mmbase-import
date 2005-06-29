@@ -1,6 +1,6 @@
 <kupu:feature name="mmbase" implementation="mmbase"
               xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-	      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+              xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
               xmlns:jsp="http://java.sun.com/JSP/Page"
               xmlns:kupu="http://kupu.oscom.org/namespaces/dist" >
 
@@ -29,18 +29,18 @@
   </kupu:part>
   <kupu:part name="header">
     <div id="header">
-      <fmt:bundle basename="org.mmbase.jspeditors.editors">
-	<div id="back">
-	  <a href="javascript:history.back()">
-	    <mm:link page="/mmbase/style/images/previous.gif">
-	      <img src="${_}" alt="&amp;lt;" />
-	    </mm:link>
-	  </a>
-	</div>
-        <fmt:message key="richtext.editor" />
+      <fmt:bundle basename="org.mmbase.kupu.Messages">
+        <div id="back">
+          <a href="javascript:history.back()">
+            <mm:link page="/mmbase/style/images/previous.gif">
+              <img src="${_}" alt="&amp;lt;" />
+            </mm:link>
+          </a>
+        </div>
+        <fmt:message key="Richtext editor" />
         <div id="languageSelector">
           <form name="languageform" method="get" action=".">
-	    <input type="hidden" name="node" value="${node}" />
+            <input type="hidden" name="node" value="${node}" />
             <select onChange="document.forms['languageform'].submit();" name="language">
               <mm:compare referid="rich_language" value="client">
                 <option value="client" selected="selected"><fmt:message key="default" /></option>

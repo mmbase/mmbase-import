@@ -2,6 +2,7 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
   <jsp:directive.page import="java.util.*" contentType="text/plain" />
   <jsp:scriptlet>
+    try {
     String language = request.getParameter("language");
     ResourceBundle bundle = ResourceBundle.getBundle("org.mmbase.kupu.Messages", language == null ? request.getLocale() : new Locale(language));
     Enumeration keys = bundle.getKeys();
@@ -15,5 +16,22 @@
   </message>
   <jsp:scriptlet>
     }
+    } catch (Exception e) {}
   </jsp:scriptlet>
+  <message>
+    <msgid>Divs</msgid>
+    <msgstr>Blokken</msgstr>
+  </message>
+  <message>
+    <msgid>Divs class:</msgid>
+    <msgstr>Soort</msgstr>
+  </message>
+  <message>
+    <msgid>Image caption</msgid>
+    <msgstr>Plaatje</msgstr>
+  </message>
+  <message>
+    <msgid>Insert div</msgid>
+    <msgstr>Creeer blok</msgstr>
+  </message>
 </jsp:root>
