@@ -7,7 +7,7 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolbar.kupu,v 1.10 2005-06-20 09:41:08 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolbar.kupu,v 1.11 2005-06-29 21:10:33 michiel Exp $</kupu:id>
 
   <!-- lets limit ourselves to 2 ways of emphasis (in stead of 3) -->
   <kupu:part name="buttongroup-basicmarkup">
@@ -41,4 +41,19 @@
               >&#160;</button>
     </span>
   </kupu:part>
+
+  <kupu:part name="buttongroup-remove">
+    <span class="kupu-tb-buttongroup" id="kupu-bg-remove">
+      <button type="button" class="kupu-removeimage invisible"
+              id="kupu-removeimage-button" title="Remove image"
+              i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-removelink invisible"
+              id="kupu-removelink-button" title="Remove link"
+              i18n:attributes="title">&#160;</button>
+      <button type="button" class="kupu-removediv invisible"
+              id="kupu-removediv-button" title="Remove block"
+              i18n:attributes="title">&#160;</button>
+    </span>
+  </kupu:part>
+
 </kupu:feature>

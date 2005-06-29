@@ -25,6 +25,8 @@ function adjustToolBoxesLayout() {
     toolbox += xHeight("kupu-toolbox-images") + spacing;
     xTop("kupu-toolbox-tables", toolbox);
     toolbox += xHeight("kupu-toolbox-tables") + spacing;
+    xTop("kupu-toolbox-divs", toolbox);
+    toolbox += xHeight("kupu-toolbox-divs") + spacing;
     xTop("kupu-toolbox-debug", toolbox);
 
 }

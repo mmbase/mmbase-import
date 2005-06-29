@@ -8,59 +8,6 @@
 
   <mm:import externid="text" />
   <mm:locale language="$rich_language">
-    <mm:cloud rank="basic user" >
-      <fmt:bundle basename="org.mmbase.jspeditors.editors">
-	<mm:import externid="node" />
-	<mm:import externid="loadonly" />
-	<mm:notpresent referid="node">
-	  <div class="node" title="No Node">
-	    <p><fmt:message key="richtext.nonode" /></p>
-	  </div>
-	</mm:notpresent>
-	<mm:present referid="node">
-	  
-	  <mm:param name="org.mmbase.xml-mode" value="kupu" />
-	  <mm:node id="node" referid="node">
-	    <div class="node" title="${node.number} ${node.title}">
-	      <mm:notpresent referid="loadonly">
-		<table>
-		  <tr>
-		    <th><a href="javascript:reloadTree();">#</a> <mm:field name="number" /></th>
-		    <th><mm:function name="index" /></th>
-		  </tr>
-		  <tr>
-		    <td colspan="2">
-		      <mm:field name="lastmodifiedby" />: 
-		      <nobr><mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field></nobr>
-		    </td>
-		  </tr>
-		</table>
-		<a class="create" title="New" href="javascript: createSubNode(${node});">
-		  <mm:link page="/mmbase/style/images/create.gif">
-		    <img src="${_}" alt="+" title="Creëer subhoofstuk" />
-		  </mm:link>
-		</a>
-		<form>
-		  <mm:fieldlist id="field" fields="title,subtitle,intro">              
-		    <p>
-		      <mm:fieldinfo type="guiname" />
-		      <mm:fieldinfo type="name">
-			<mm:compare value="title">
-			  <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value);'" type="input" />
-			</mm:compare>
-			<mm:compare value="title" inverse="true">
-			  <mm:fieldinfo  options="noempty" type="input" />
-			</mm:compare>
-		      </mm:fieldinfo>
-		    </p>
-		  </mm:fieldlist>
-		</form>
-	      </mm:notpresent>
-	    </div>
-	  </mm:node>
-	  <mm:write session="kupu_node" referid="node" />
-	</mm:present>  
-      </fmt:bundle>
-    </mm:cloud>
+
   </mm:locale>
 </mm:content>

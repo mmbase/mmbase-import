@@ -7,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.16 2005-06-28 12:33:20 michiel Exp $
+// $Id: kupuinit.js,v 1.17 2005-06-29 21:10:33 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -81,6 +81,9 @@ function initKupu(iframe) {
     var removelinkbutton = new KupuRemoveElementButton('kupu-removelink-button', 'a', 'kupu-removelink');
     kupu.registerTool('removelinkbutton', removelinkbutton);
 
+    var removedivbutton = new KupuRemoveElementButton('kupu-removediv-button', 'div', 'kupu-removediv');
+    kupu.registerTool('removedivbutton', removedivbutton);
+
     var listtool = new ListTool('kupu-list-ul-addbutton', 'kupu-list-ol-addbutton', 'kupu-ulstyles', 'kupu-olstyles');
     kupu.registerTool('listtool', listtool);
 
@@ -109,6 +112,14 @@ function initKupu(iframe) {
         'kupu-toolbox', 'kupu-toolbox-active'
         );
     tabletool.registerToolBox('tabletoolbox', tabletoolbox);
+
+    var divstool = new DivsTool();
+    kupu.registerTool('divstool', divstool);
+
+    var divstoolbox = new DivsToolBox('kupu-div-addbutton', 
+                                       'kupu-divs-float-select', 'kupu-toolbox-divs',  'kupu-toolbox', 'kupu-toolbox-active');
+    divstool.registerToolBox('divstoolbox', divstoolbox);
+
 
 
     var spellchecker = new KupuSpellChecker('kupu-spellchecker-button',

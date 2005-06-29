@@ -4,41 +4,68 @@
     implementation="mmbase"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns="http://www.w3.org/1999/xhtml"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolboxes.kupu,v 1.2 2005-06-23 14:02:43 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolboxes.kupu,v 1.3 2005-06-29 21:10:33 michiel Exp $</kupu:id>
 
   <kupu:part name="images">
     <div class="kupu-toolbox" id="kupu-toolbox-images">
       <h1 i18n:translate="">Images</h1>
       
       <div class="kupu-toolbox-label">
-	<span i18n:translate="">Image class:</span>
+        <span i18n:translate="">Image class:</span>
       </div>
       <select class="wide" id="kupu-image-float-select">
-	<option value="image-inline" i18n:translate="">Inline</option>
-	<option value="image-left" i18n:translate="">Left</option>
-	<option value="image-right" i18n:translate="">Right</option>
-
-	<option value="paragraph" i18n:translate="">Paragraph</option>
-	<option value="section" i18n:translate="">Section</option>
+        <option value="image-inline" i18n:translate="">Inline</option>
+        <option value="image-left" i18n:translate="">Left</option>
+        <option value="image-right" i18n:translate="">Right</option>
+        
+        <option value="paragraph" i18n:translate="">Paragraph</option>
+        <option value="section" i18n:translate="">Section</option>
       </select>
       <div style="display: none;">
-	<div class="kupu-toolbox-label">
-	  <span i18n:translate="">Insert image at the following URL:</span>
-	</div>
-	<input id="kupu-image-input"
-	       value="kupuimages/kupu_icon.gif"
-	       class="wide"
-	       type="text" />
-	
-	<div class="kupu-toolbox-buttons">
-	  <button type="button" id="kupu-image-addbutton"
-		  class="kupu-toolbox-action" i18n:translate=""
-		  >Insert Image</button>
-	</div>
+        <div class="kupu-toolbox-label">
+          <span i18n:translate="">Insert image at the following URL:</span>
+        </div>
+        <input id="kupu-image-input"
+               value="kupuimages/kupu_icon.gif"
+               class="wide"
+               type="text" />
+        
+        <div class="kupu-toolbox-buttons">
+          <button type="button" id="kupu-image-addbutton"
+                  class="kupu-toolbox-action" i18n:translate=""
+                  >Insert Image</button>
+        </div>
       </div>
+    </div>
+  </kupu:part>
+
+  <kupu:part name="divs">
+    <div class="kupu-toolbox" id="kupu-toolbox-divs">
+      <fmt:bundle basename="org.mmbase.kupu.Messages">
+        <h1><fmt:message key="Block" /></h1>
+        
+        <div class="kupu-toolbox-label">
+          <span><fmt:message key="Block class" /></span>
+        </div>
+        <select class="float wide" id="kupu-divs-float-select">
+          <option value="float note left"><fmt:message key="Note left" /></option>
+          <option value="float note right"><fmt:message key="Note right" /></option>
+          <option value="float intermezzo">Intermezzo</option>
+          <option value="float image-caption left">Image caption left</option>
+          <option value="float image-caption right">Image caption right</option>
+        </select>
+        <div class="kupu-toolbox-label">
+          <span><fmt:message key="Insert block" /></span>
+        </div>
+        <div class="kupu-toolbox-buttons">
+          <button type="button" id="kupu-div-addbutton"
+                  class="kupu-toolbox-action"><fmt:message key="Insert block" /></button>
+        </div>
+      </fmt:bundle>
     </div>
   </kupu:part>
 

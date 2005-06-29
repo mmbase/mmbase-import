@@ -1,6 +1,6 @@
 <!--
    
-   @version $Id: wire.kupu,v 1.9 2005-06-20 09:41:08 michiel Exp $
+   @version $Id: wire.kupu,v 1.10 2005-06-29 21:10:33 michiel Exp $
    @author Michiel Meeuwissen <michiel.meeuwissen@gmail.com>
 -->
 <kupu:wire
@@ -45,6 +45,7 @@
     <kupu:insert-part feature="toolboxes" part="links" />
     <kupu:insert-part feature="toolboxes" part="images" />
     <kupu:insert-part feature="toolboxes" part="tables" />
+    <kupu:insert-part feature="toolboxes" part="divs" />
     <kupu:insert-part feature="toolboxes" part="debug" />
   </kupu:fill-slot>
 
