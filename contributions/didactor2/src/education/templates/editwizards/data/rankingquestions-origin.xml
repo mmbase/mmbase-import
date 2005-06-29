@@ -7,6 +7,7 @@
     <action type="create">
        <object type="rankingquestions">
           <relation destination="$origin" role="posrel" createdir="source"/>
+          <field name="showtitle">1</field>
           <field name="layout">0</field>
        </object>
     </action>
@@ -49,7 +50,7 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="paragraphs/boolean.xml" />
+       <optionlist include="option_lists/boolean.xml" />
     </lists>
 
     <steps>
@@ -66,7 +67,7 @@
          <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
-           <optionlist select="boolean"></optionlist>
+           <optionlist select="boolean" />
         </field> 
        <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>

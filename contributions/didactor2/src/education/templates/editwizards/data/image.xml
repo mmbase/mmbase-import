@@ -5,6 +5,7 @@
 
     <action type="create">
         <object type="images">
+            <field name="showtitle">1</field>
         </object>
     </action>
     
@@ -44,7 +45,7 @@
     </action>
 
     <lists>
-       <optionlist include="paragraphs/boolean.xml" />
+       <optionlist include="option_lists/boolean.xml" />
     </lists>
 
     <steps>
@@ -60,7 +61,7 @@
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
-           <optionlist select="boolean"></optionlist>
+           <optionlist select="boolean" />
         </field>
         <field name="description"  rows="8">
             <prompt>Omschrijving</prompt>

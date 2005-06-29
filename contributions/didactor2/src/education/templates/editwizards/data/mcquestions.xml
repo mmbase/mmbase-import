@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="mcquestions">
+          <field name="showtitle">1</field>
           <field name="layout">0</field>
           <field name="type">0</field>
        </object>
@@ -24,7 +25,7 @@
 
 
     <lists>
-        <optionlist include="paragraphs/boolean.xml" />
+        <optionlist include="option_lists/boolean.xml" />
         <optionlist name="mctypes">
             <option id="0">Een van de gegeven antwoorden kan worden geselecteerd</option>
             <option id="1">Meerdere antwoorden kunnen worden geselecteerd</option>
@@ -38,10 +39,7 @@
             <option id="4">Alle antwoorden naast elkaar (vaste volgorde)</option>
             <option id="5">Pulldown menu (vaste volgorde)</option>
         </optionlist>
-        <optionlist name="correctlist">
-            <option id="0">Nee</option>
-            <option id="1">Ja</option>
-        </optionlist>
+        <optionlist include="option_lists/boolean_inverse.xml" />
     </lists>
 
     <steps>
@@ -57,7 +55,7 @@
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
-           <optionlist select="boolean"></optionlist>
+           <optionlist select="boolean" />
         </field> 
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
@@ -71,7 +69,8 @@
             <optionlist select="layout" />
         </field>
 
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">             <title>Bijbehorende Multiple-Choice antwoorden</title>
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">
+            <title>Bijbehorende Multiple-Choice antwoorden</title>
             <item>
                 <field name="text" ftype="line">
                     <prompt>Tekst</prompt>
@@ -80,7 +79,7 @@
                 <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
                 <field name="correct" ftype="enum">
                     <prompt>Correct</prompt>
-                    <optionlist select="correctlist" />
+                    <optionlist select="boolean_inverse" />
                 </field>
                 <field wizardname="mcanswers" ftype="startwizard"/>
             </item>

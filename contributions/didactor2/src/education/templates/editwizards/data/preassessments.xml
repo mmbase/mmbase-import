@@ -4,6 +4,7 @@
    <title>Preassessment editor</title>
    <action type="create">
       <object type="preassessments">
+          <field name="showtitle">1</field>
       </object>
    </action>
    <action type="delete">
@@ -18,7 +19,7 @@
       </relation>
    </action>
    <lists>
-       <optionlist include="paragraphs/boolean.xml" />
+       <optionlist include="option_lists/boolean.xml" />
    </lists>
    <steps>
       <step form-schema="edit_preassessments"/>
@@ -31,7 +32,7 @@
       <field name="showtitle" ftype="enum">
          <prompt xml:lang="nl">Titel laten zien</prompt>
          <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
+         <optionlist select="boolean" />
       </field>
 
    <list role="related" destination="tests" minoccurs="0" maxoccurs="*" ordertype="number">

@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="flashpages">
+           <field name="showtitle">1</field>
        </object>
     </action>
 
@@ -19,14 +20,8 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="paragraphs/images_position.xml" />
-      <optionlist name="layout">
-        <option id="-1">Geen tekst tonen</option>
-        <option id="0">Tekst boven</option>
-        <option id="1">Tekst onder</option>
-        <option id="2">Tekst links</option>
-        <option id="3">Tekst rechts</option>
-      </optionlist>
+      <optionlist include="option_lists/images_position.xml" />
+      <optionlist include="option_lists/layout_ext.xml" />
     </lists>
 
     <steps>
@@ -43,7 +38,7 @@
       <field name="showtitle" ftype="enum">
          <prompt xml:lang="nl">Titel laten zien</prompt>
          <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
+         <optionlist select="boolean" />
       </field>
  
 
@@ -53,7 +48,7 @@
 
         <field name="layout" ftype="enum">
             <prompt>Layout</prompt>
-            <optionlist select="layout" />
+            <optionlist select="layout_ext" />
         </field>
 
         <list role="related" extends="list/online.xml" />

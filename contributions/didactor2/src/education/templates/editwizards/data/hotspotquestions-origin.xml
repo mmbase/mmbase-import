@@ -5,8 +5,9 @@
 
     <action type="create">
        <object type="hotspotquestions">
-            <relation destination="$origin" role="posrel" createdir="source"/>
-            <field name="layout">0</field>
+          <relation destination="$origin" role="posrel" createdir="source"/>
+          <field name="showtitle">1</field>
+          <field name="layout">0</field>
         </object>
     </action>
 
@@ -48,11 +49,8 @@
 
 
     <lists>
-        <optionlist include="paragraphs/boolean.xml" />
-        <optionlist name="correctlist">
-            <option id="0">Nee</option>
-            <option id="1">Ja</option>
-       </optionlist>
+        <optionlist include="option_lists/boolean.xml" />
+        <optionlist include="option_lists/boolean_inverse.xml" />
     </lists>
 
 
@@ -69,7 +67,7 @@
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
-           <optionlist select="boolean"></optionlist>
+           <optionlist select="boolean" />
         </field> 
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
@@ -98,7 +96,7 @@
                 </field>
       <field name="correct" ftype="enum">
           <prompt>Correct</prompt>
-          <optionlist select="correctlist" />
+          <optionlist select="boolean_inverse" />
       </field>
        </item>
 

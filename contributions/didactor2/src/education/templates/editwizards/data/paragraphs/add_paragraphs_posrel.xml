@@ -13,7 +13,7 @@
       <field name="showtitle" ftype="enum">
          <prompt xml:lang="nl">Titel laten zien</prompt>
          <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
+         <optionlist select="boolean" />
       </field>
       <field name="body" ftype="html" rows="10">
          <prompt xml:lang="nl">Alinea tekst</prompt>

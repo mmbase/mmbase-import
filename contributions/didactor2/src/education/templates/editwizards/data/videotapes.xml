@@ -4,7 +4,9 @@
     <title>Videofragment editor</title>
 
     <action type="create">
-        <object type="videotapes"/>
+        <object type="videotapes">
+            <field name="showtitle">1</field>
+        </object>
     </action>
     
     <action type="load">
@@ -41,7 +43,7 @@
     <action type="delete"/>
 
     <lists>
-       <optionlist include="paragraphs/boolean.xml" />
+       <optionlist include="option_lists/boolean.xml" />
     </lists>
 
     <steps>
@@ -57,7 +59,7 @@
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
-           <optionlist select="boolean"></optionlist>
+           <optionlist select="boolean" />
         </field>
 
         <field name="subtitle" dttype="string">
