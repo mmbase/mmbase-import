@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="tests">
+          <field name="showtitle">1</field>
           <field name="maychange">0</field>
           <field name="mayview">0</field>
           <field name="questionsperpage">0</field>
@@ -23,15 +24,8 @@
     <action type="delete" />
 
   <lists>
-       <optionlist include="paragraphs/boolean.xml" />
-      <optionlist name="maychange">
-          <option id="0">Nee</option>
-          <option id="1">Ja</option>
-      </optionlist>
-      <optionlist name="mayview">
-          <option id="0">Nee</option>
-          <option id="1">Ja</option>
-      </optionlist>
+      <optionlist include="option_lists/boolean.xml" />
+      <optionlist include="option_lists/boolean_inverse.xml" /> 
       <optionlist name="questionsperpage">
           <option id="0">Alle vragen op 1 pagina</option>
           <option id="1">1 vraag per pagina</option>
@@ -57,7 +51,7 @@
       <field name="showtitle" ftype="enum">
          <prompt xml:lang="nl">Titel laten zien</prompt>
          <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
+         <optionlist select="boolean" />
       </field>
  
 
@@ -75,12 +69,12 @@
 
       <field name="maychange" ftype="enum">
           <prompt>Mag de student deze toets opnieuw maken?</prompt>
-          <optionlist select="maychange" />
+          <optionlist select="boolean_inverse" />
       </field>
 
       <field name="mayview" ftype="enum">
           <prompt>Mag de student deze toets bekijken na het maken?</prompt>
-          <optionlist select="mayview" />
+          <optionlist select="boolean_inverse" />
       </field>
 
       <field name="questionsperpage" ftype="enum">

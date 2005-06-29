@@ -3,12 +3,12 @@
 <wizard-schema id="empty">
    <title xml:lang="nl">Alinea</title>
    <title xml:lang="en">Paragraph</title>
-   <action include="paragraphs\create_paragraphs.xml" />
-   <action include="paragraphs\delete_paragraphs.xml" />
-   <action include="paragraphs\load_paragraphs.xml" />
+   <action include="paragraphs/create_paragraphs.xml" />
+   <action include="paragraphs/delete_paragraphs.xml" />
+   <action include="paragraphs/load_paragraphs.xml" />
    <lists>
-      <optionlist include="paragraphs\images_position.xml" />
-      <optionlist include="paragraphs\boolean.xml" />
+      <optionlist include="option_lists/images_position.xml" />
+      <optionlist include="option_lists/boolean.xml" />
    </lists>
    <steps>
       <step form-schema="edit_paragraphs" />
@@ -21,14 +21,14 @@
       <field name="showtitle" ftype="enum">
          <prompt xml:lang="nl">Titel laten zien</prompt>
          <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
+         <optionlist select="boolean" />
       </field>
       <field name="body" ftype="html" rows="10">
          <prompt xml:lang="nl">Alinea tekst</prompt>
          <prompt xml:lang="en">Paragraph body</prompt>
       </field>
-      <list include="paragraphs\add_images_pos2rel_position.xml" />
-      <list include="paragraphs\add_attachments_posrel.xml" />
-      <list include="paragraphs\add_exturls_posrel.xml" />
+      <list include="paragraphs/add_images_pos2rel_position.xml" />
+      <list include="paragraphs/add_attachments_posrel.xml" />
+      <list include="paragraphs/add_exturls_posrel.xml" />
    </form-schema>
 </wizard-schema>

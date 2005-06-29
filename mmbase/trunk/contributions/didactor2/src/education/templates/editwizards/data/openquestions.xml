@@ -6,6 +6,7 @@
 
     <action type="create">
        <object type="openquestions">
+          <field name="showtitle">1</field>
           <field name="layout">0</field>
        </object>
     </action>
@@ -48,7 +49,7 @@
 
 
     <lists>
-        <optionlist include="paragraphs/boolean.xml" />
+        <optionlist include="option_lists/boolean.xml" />
         <optionlist name="layout">
             <option id="0">Groot veld</option>
             <option id="1">Klein veld</option>
@@ -68,7 +69,7 @@
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
-           <optionlist select="boolean"></optionlist>
+           <optionlist select="boolean" />
         </field> 
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
