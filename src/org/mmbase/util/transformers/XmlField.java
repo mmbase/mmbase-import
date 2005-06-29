@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.39 2005-06-29 09:58:50 michiel Exp $
+ * @version $Id: XmlField.java,v 1.40 2005-06-29 21:12:49 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -590,8 +590,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     private static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
         // the order _is_ important!
-        handleTables(obj);
         handleList(obj);
+        handleTables(obj);
         handleParagraphs(obj, leaveExtraNewLines, surroundingP);
         if (sections) {
             handleHeaders(obj);
