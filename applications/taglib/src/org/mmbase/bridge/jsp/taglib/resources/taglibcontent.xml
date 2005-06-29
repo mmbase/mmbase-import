@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.20.2.5 2005-02-14 13:45:21 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.20.2.6 2005-06-29 11:55:51 andre Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -218,6 +218,13 @@
     <class>org.mmbase.util.transformers.Perl</class>
     <info>
       Interpret the complete body as a perl program, and write the result.
+    </info>
+  </postprocessor>
+  <postprocessor id="sitestat">
+    <class>org.mmbase.util.transformers.Sitestat</class>
+    <info>
+      Rewrites the input to the characters which are alowed in Sitestat keys for 
+      page statistics, being: "A-Z, a-z, 0-9, - . _".
     </info>
   </postprocessor>
 
