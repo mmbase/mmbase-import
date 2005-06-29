@@ -20,6 +20,7 @@ import org.w3c.dom.Document;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.bridge.util.xml.Generator;
 
@@ -39,7 +40,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.54 2005-06-22 23:20:35 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.55 2005-06-29 13:11:06 michiel Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag   {
 
@@ -55,8 +56,8 @@ public class FormatterTag extends CloudReferrerTag   {
 
     protected Source   xsltSource = null;
 
-    private static javax.xml.parsers.DocumentBuilder documentBuilder;
-    private static javax.xml.parsers.DocumentBuilder documentBuilderNS;
+    private static DocumentBuilder documentBuilder;
+    private static DocumentBuilder documentBuilderNS;
     private URL cwd;
 
     private static final class Counter {
@@ -196,7 +197,7 @@ public class FormatterTag extends CloudReferrerTag   {
         }         
     }
 
-    public void setNamespaceware(String n) throws JspTagException {
+    public void setNamespaceaware(String n) throws JspTagException {
         namespaceAware = getAttribute(n);
     }
 
@@ -306,7 +307,8 @@ public class FormatterTag extends CloudReferrerTag   {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
                     javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
+                    DocumentBuilder db =  namespaceAware.getBoolean(this, true) ? documentBuilderNS : documentBuilder;
+                    doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
                                                 pageContext.getServletContext().getResource(request.getServletPath()).toString()
                                                 );
                 } catch (Exception e) {
