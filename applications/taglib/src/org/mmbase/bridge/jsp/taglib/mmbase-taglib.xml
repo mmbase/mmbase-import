@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.311 2005-06-20 16:03:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.312 2005-06-29 13:11:06 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4912,12 +4912,12 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </possiblevalue>
     </attribute>
     <attribute>
-      <name>namespaceware</name>
+      <name>namespaceaware</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	Whether the generated DOM (if that happens) must be created with the namespace
-	http://www.mmbase.org/objects. Defaults to true.
+        Whether the generated DOM (if that happens) must be created with the namespace
+        http://www.mmbase.org/objects. Defaults to true.
       </info>
       <since>MMBase-1.8</since>
     </attribute>
