@@ -21,7 +21,7 @@
       <field fdatapath="field[@name='pos2']" ftype="enum">
             <prompt xml:lang="nl">Popup</prompt>
             <prompt xml:lang="en">Popup</prompt>
-            <optionlist select="boolean"></optionlist>
+            <optionlist select="boolean" />
       </field>
       <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="image">
             <prompt></prompt>

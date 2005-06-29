@@ -15,10 +15,7 @@
     <action type="delete" />
     
     <lists>
-        <optionlist name="correctlist">
-            <option id="0">Nee</option>
-            <option id="1">Ja</option>
-        </optionlist>
+        <optionlist include="option_lists/boolean_inverse.xml" />
     </lists>
 
     <steps>
@@ -33,7 +30,7 @@
         </field>
         <field name="correct" ftype="enum">
             <prompt>Correct</prompt>
-            <optionlist select="correctlist" />
+            <optionlist select="boolean_inverse" />
         </field>
         <list role="related" extends="list/images.xml" />
         <list role="related" extends="list/feedback.xml" />
