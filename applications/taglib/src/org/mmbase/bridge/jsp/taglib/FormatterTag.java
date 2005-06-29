@@ -40,7 +40,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.55 2005-06-29 13:11:06 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.56 2005-06-29 13:40:33 michiel Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag   {
 
@@ -302,6 +302,7 @@ public class FormatterTag extends CloudReferrerTag   {
                     doc = xmlGenerator.getDocument();
                 }                
             } else {
+                if (body == null || body.equals("")) body = "<mmxf />"; // something random that will at least parse.
                 if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");                               
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
@@ -312,7 +313,7 @@ public class FormatterTag extends CloudReferrerTag   {
                                                 pageContext.getServletContext().getResource(request.getServletPath()).toString()
                                                 );
                 } catch (Exception e) {
-                    throw new TaglibException(e.getMessage() + body, e);
+                    throw new TaglibException(e.getMessage() + "when parsing '" + body + "'", e);
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("created an element: " + doc.getDocumentElement().getTagName());
