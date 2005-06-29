@@ -3,11 +3,14 @@ package org.mmbase.util.functions;
 import java.util.*;
 import java.util.regex.*;
 
+import org.mmbase.cache.Cache;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.transformers.RomanTransformer;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The index node functions can be assigned to nodes which are connected by an 'index' relation. An
@@ -26,10 +29,44 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.4 2005-06-23 22:27:45 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.5 2005-06-29 16:43:54 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
+
+    private static final Logger log = Logging.getLoggerInstance(IndexFunction.class);
+
+    protected static Cache indexCache = new Cache(400) {
+            public  String getName() {
+                return "IndexNumberCache";
+            }
+            public String getDescription() {
+                return "rootNumber/objectNumber -> Index";
+            }
+            
+        };
+
+    static {
+        indexCache.putCache();
+        MMBaseObserver observer = new MMBaseObserver() {
+                public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+                    return nodeChanged(machine, number, builder, ctype);
+                }
+                public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+                    return nodeChanged(machine, number, builder, ctype);
+                }
+                public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+                    log.info("Received change " + machine + "/" + number + "/" +  builder + "/" + ctype);
+                    indexCache.clear(); // this could be done smarter.
+                    return true;
+                }
+                
+
+            };
+        MMObjectBuilder indexRelation = MMBase.getMMBase().getBuilder("indexrel");
+        indexRelation.addLocalObserver(observer);
+        indexRelation.addRemoteObserver(observer);
+    }
 
     /** 
      * Returns the 'successor' or a string. Which means that e.g. after 'zzz' follows 'aaaa'.
@@ -141,6 +178,12 @@ public class IndexFunction extends FunctionProvider {
                 final String separator   = (String) parameters.get("separator");
                 final Pattern indexPattern = Pattern.compile("(.+)" + separator + "(.+)");
                 final boolean roman   = ((Boolean) parameters.get("roman")).booleanValue();
+
+                final String key = "" + node.getNumber() + "/" + (root == null ? "NULL" : "" + root.getNumber()) + "/" + role + "/" + join + "/" + separator  + "/" + roman;
+
+                String result = (String) indexCache.get(key);
+                if (result != null) return result;
+
                 final NodeManager nm = node.getNodeManager();
                 
                 
@@ -166,7 +209,10 @@ public class IndexFunction extends FunctionProvider {
                     if (root != null && n.getNumber() == root.getNumber()) break;
                 }
                 
-                if (stack.isEmpty()) return "???";
+                if (stack.isEmpty()) {
+                    indexCache.put(key, "???");
+                    return "???";
+                }
                 StringBuffer buf = new StringBuffer();
                 Node n = (Node) stack.remove(0);
                 String j = "";
@@ -206,8 +252,9 @@ public class IndexFunction extends FunctionProvider {
                     buf.append(j).append("???");
                     break;
                 }
-                
-                return buf.toString();
+                String r = buf.toString();
+                indexCache.put(key, r);
+                return r;
             }
         };
     {
