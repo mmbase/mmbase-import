@@ -20,11 +20,19 @@ h3 {
 h4 { 
   padding-left: 3em;
   font-size: 12pt;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 h5, h6, h7, h8 { 
   font-style: italic;
   font-size: 12pt;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 h5 { 
   padding-left: 4em;
@@ -37,6 +45,10 @@ h7 {
 }
 h8 { 
   padding-left: 7em;
+}
+
+h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child, h7:first-child, h8:first-child { 
+  margin-top: 0px;
 }
 
 p {
@@ -73,3 +85,22 @@ strong, b
 em, i { 
   font-style: italic;
 }
+
+
+div.float { 
+  display: block;
+  float: left;
+  width: 200px;
+  background-color: #ffc;
+  padding: 5px;
+  margin: 1ex;
+  border: solid black 1px;
+}
+div.right { 
+  margin-right: 0px;
+  float: right;
+
+}
+div.left { 
+  margin-left: 0px;
+} 

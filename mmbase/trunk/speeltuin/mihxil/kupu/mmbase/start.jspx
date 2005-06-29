@@ -11,14 +11,14 @@
               />
   <mm:import externid="rich_language" from="parameters,session">client</mm:import>
   <mm:locale language="$rich_language">
-    <fmt:bundle basename="org.mmbase.jspeditors.editors">
+    <fmt:bundle basename="org.mmbase.kupu.Messages">
       <html>       
         <head>
           <title>Kupu text area</title>
           <link href="kupustyle.css" rel="stylesheet" type="text/css" />
         </head>
         <body>
-          <p><fmt:message key="richtext.nonode" /></p>
+          <p><fmt:message key="No node" /></p>
         </body>
       </html>
     </fmt:bundle>
