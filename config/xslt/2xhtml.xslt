@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.20 2005-06-28 21:24:34 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.21 2005-06-29 21:31:40 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -134,6 +134,19 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
+  <!--
+       Produces output for one o:object of type attachments
+       params: relation
+  -->
+  <xsl:template match="o:object[@type = 'blocks']" mode="inline">
+    <xsl:param name="relation" />
+    <div>
+      <xsl:attribute name="id"><xsl:value-of select="@id" /><xsl:text>_</xsl:text><xsl:value-of select="$relation/o:field[@name='id']" /></xsl:attribute>
+      <xsl:attribute name="class">float <xsl:value-of select="$relation/o:field[@name='class']" /></xsl:attribute>
+      <xsl:apply-templates select="o:field[@name = 'body']" />
+    </div>
+  </xsl:template>
+
 
   <!--
        Produces output for one o:object of type urls
@@ -230,7 +243,7 @@
     <xsl:param name="relations" />
     <xsl:element name="{name()}">
       <xsl:apply-templates select="." mode="relations">
-	<xsl:with-param name="relations" select="$relations" />
+        <xsl:with-param name="relations" select="$relations" />
       </xsl:apply-templates>
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
