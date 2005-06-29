@@ -30,6 +30,7 @@
            </object>
         </relation>
         <relation destination="people" role="classrel"/>
+        <relation destination="images" role="sizerel" />
         <relation destination="audiotapes" role="posrel" />
         <relation destination="videotapes" role="posrel" />
         <relation destination="attachments" role="posrel" />
