@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.38 2005-06-28 23:09:12 michiel Exp $
+ * @version $Id: XmlField.java,v 1.39 2005-06-29 09:58:50 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -168,19 +168,24 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     /**
      * If you want to add a _ in your text, that should be possible too...
      * Should be done last, because no tags can appear in <em>
+
+     * @param ch This is '_' or e.g. '*'
+     * @param tag The tag to produce, e.g. "em" or "strong"
      */
     // test cases:
     // I cite _m_pos_! -> <mmxf><p>I cite <em>m_pos</em>!</p></mmxf>
 
-    private static void handleEmph(StringObject obj) {
+    private static void handleEmph(StringObject obj, char ch, String tag) {
 
-        obj.replace("__", "&#95;"); // makes it possible to escape underscores
+        obj.replace("" + ch + ch, "&#95;"); // makes it possible to escape underscores (or what you choose)
 
         // Emphasizing. This is perhaps also asking for trouble, because
         // people will try to use it like <font> or other evil
         // things. But basicly emphasizion is content, isn't it?
 
-        int posEmphOpen = obj.indexOf("_", 0);
+        String sch = "" + ch;
+
+        int posEmphOpen = obj.indexOf(sch, 0);
         int posTagOpen = obj.indexOf("<", 0); // must be closed before next tag opens.
 
 
@@ -191,7 +196,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 posTagOpen < posEmphOpen) { // ensure that we are not inside existing tags
                 int posTagClose = obj.indexOf(">", posTagOpen);
                 if (posTagClose == -1) break;
-                posEmphOpen = obj.indexOf("_", posTagClose);
+                posEmphOpen = obj.indexOf(sch, posTagClose);
                 posTagOpen  = obj.indexOf("<", posTagClose);
                 continue;
             }
@@ -202,39 +207,39 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 (! Character.isLetterOrDigit(obj.charAt(posEmphOpen + 1)))) {
                 // _ is inside a word, ignore that.
                 // or not starting a word
-                posEmphOpen = obj.indexOf("_", posEmphOpen + 1);
+                posEmphOpen = obj.indexOf(sch, posEmphOpen + 1);
                 continue;
             }
 
             // now find closing _.
-            int posEmphClose = obj.indexOf("_", posEmphOpen + 1);
+            int posEmphClose = obj.indexOf(sch, posEmphOpen + 1);
             if (posEmphClose == -1) break;
             while((posEmphClose + 1) < obj.length() &&
                   (Character.isLetterOrDigit(obj.charAt(posEmphClose + 1)))
                   ) {
-                posEmphClose = obj.indexOf("_", posEmphClose + 1);
+                posEmphClose = obj.indexOf(sch, posEmphClose + 1);
                 if (posEmphClose == -1) break OUTER;
             }
 
             if (posTagOpen > 0
                 && posEmphClose > posTagOpen) {
-                posEmphOpen = obj.indexOf("_", posTagOpen); // a tag opened before emphasis close, ignore then too, and re-search
+                posEmphOpen = obj.indexOf(sch, posTagOpen); // a tag opened before emphasis close, ignore then too, and re-search
                 continue;
             }
 
             // realy do replacing now
             obj.delete(posEmphClose, 1);
-            obj.insert(posEmphClose,"</em>");
+            obj.insert(posEmphClose,"</" + tag + ">");
             obj.delete(posEmphOpen, 1);
-            obj.insert(posEmphOpen, "<em>");
+            obj.insert(posEmphOpen, "<" + tag + ">");
             posEmphClose += 7;
 
-            posEmphOpen = obj.indexOf("_", posEmphClose);
+            posEmphOpen = obj.indexOf(sch, posEmphClose);
             posTagOpen  = obj.indexOf("<", posEmphClose);
 
         }
 
-        obj.replace("&#95;", "_");
+        obj.replace("&#95;", sch);
     }
 
     /**
@@ -591,7 +596,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         if (sections) {
             handleHeaders(obj);
         }
-        handleEmph(obj);
+        handleEmph(obj, '_', "em");
+        handleEmph(obj, '*', "strong");
     }
 
     private static void handleNewlines(StringObject obj) {
@@ -702,7 +708,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         StringObject obj = prepareData(data);
         // don't add newlines.
         handleFormat(obj, false);
-        handleEmph(obj);
+        handleEmph(obj, '_', "em");
+        handleEmph(obj, '*', "strong");
         return obj.toString();
     }
 
