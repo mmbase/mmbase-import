@@ -20,6 +20,7 @@
 <mm:import externid="field"/><%-- submit selected email addresses to mail/write.jsp --%>
 <mm:import externid="mailid"/>
 
+<mm:import externid="addtoworkgroup"/>  
 
 <div class="rows">
 
@@ -43,7 +44,7 @@
       <mm:relatednodes type="addressbooks" max="1">
             <mm:import id="addressbook"><mm:field name="number"/></mm:import>
             <mm:notpresent referid="addr_class"><b></mm:notpresent>
-     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?">
                  <mm:param name="addressbook"><mm:field name="number"/></mm:param>
                  <mm:present referid="field">
                     <mm:param name="field"><mm:write referid="field"/></mm:param>
@@ -59,7 +60,7 @@
       <mm:relatednodes type="classes" orderby="name">
       <mm:import id="thisclass" reset="true"><mm:field name="number"/></mm:import>
      <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
-     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?">
                   <mm:present referid="field">
                     <mm:param name="field"><mm:write referid="field"/></mm:param>
                  </mm:present>
@@ -75,7 +76,7 @@
       <mm:relatednodes type="workgroups" orderby="name">
       <mm:import id="thisclass" reset="true"><mm:field name="number"/></mm:import>
      <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
-     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids,addtoworkgroup?">
                   <mm:present referid="field">
                     <mm:param name="field"><mm:write referid="field"/></mm:param>
                  </mm:present>
@@ -251,9 +252,12 @@
     <mm:present referid="field">
         <mm:import id="checkboxes" reset="true">1</mm:import>
     </mm:present>
+    <mm:present referid="addtoworkgroup">
+        <mm:import id="checkboxes" reset="true">1</mm:import>
+    </mm:present>
 
 
-      
+
       
       </div>
 </div>
@@ -264,15 +268,23 @@
   </div>
 
   <mm:notpresent referid="field">
+    <mm:notpresent referid="addtoworkgroup">
+    
   <form action="<mm:treefile page="/address/deletecontacts.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
    <input type="hidden" name="callerpage" value="/address/index.jsp?sf=lastname,firstname&so=up,up">
    <input type="hidden" name="addressbook" value="<mm:write referid="addressbook"/>"> 
   </mm:notpresent>
+</mm:notpresent>
   
   <mm:present referid="field"><%-- refer to email/write.jsp --%>
   <form action="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
   <input type="hidden" name="id" value="<mm:write referid="mailid"/>">
   <input type="hidden" name="field" value="<mm:write referid="field"/>">
+  </mm:present>
+ 
+  <mm:present referid="addtoworkgroup">
+  <form action="<mm:treefile page="/projectgroup/index.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
+  <input type="hidden" name="addcontact" value="1">
   </mm:present>
   
   
@@ -415,6 +427,11 @@
       </mm:listnodescontainer>
 
     <mm:present referid="field">
+    <input type="submit" value="Ok">
+    </mm:present>
+     <mm:present referid="addtoworkgroup">
+    <input type="hidden" name="addtoworkgroup" value="1">
+    
     <input type="submit" value="Ok">
     </mm:present>
       

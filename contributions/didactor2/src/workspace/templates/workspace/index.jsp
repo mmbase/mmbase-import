@@ -60,7 +60,7 @@
 <mm:compare referid="typeof" value="3">
   <mm:node number="$user" notfound="skip">
     <!-- listing workgroups for user -->
-    <mm:relatednodes type="workgroups" id="myuser">
+    <mm:relatednodes type="workgroups" id="myuser" orderby="name">
         <!-- found workgroup -->
         <mm:relatednodes type="workspaces" id="myworkspaces">
           <mm:relatednodes type="folders" orderby="name" id="myfolders">

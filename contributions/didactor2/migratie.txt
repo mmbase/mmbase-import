@@ -5,6 +5,11 @@ Migratie issues
     Made a new relation between workgroups and people, so workgroups 
     are independent of classes.
 
+    ALTER TABLE mmb_workgroups ADD protected INT(1);
+    UPDATE mmb_workgroups SET protected = 1;
+
+    Please run /migrate-2005-06-30.jsp
+
 2005-06-27
 
     An extra field "showtitle" is added for builder "learnobjects".
