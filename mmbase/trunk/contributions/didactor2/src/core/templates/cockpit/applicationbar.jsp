@@ -26,7 +26,7 @@
 		<div class="menuSeperatorApplicationMenubar"></div>
 		
 		<div class="menuItemApplicationMenubar">
-			<a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/admin/" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
+			<a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/portfolio/index.jsp?edit=true" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
 		</div>
 
                 <div class="menuSeperatorApplicationMenubar"></div>

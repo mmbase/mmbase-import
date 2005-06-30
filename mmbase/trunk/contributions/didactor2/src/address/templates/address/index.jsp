@@ -72,6 +72,22 @@
              <br/>
       </mm:relatednodes>
 
+      <mm:relatednodes type="workgroups" orderby="name">
+      <mm:import id="thisclass" reset="true"><mm:field name="number"/></mm:import>
+     <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
+     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+                  <mm:present referid="field">
+                    <mm:param name="field"><mm:write referid="field"/></mm:param>
+                 </mm:present>
+                  <mm:present referid="mailid">
+                    <mm:param name="mailid"><mm:write referid="mailid"/></mm:param>
+                 </mm:present>
+                 <mm:param name="addr_class"><mm:field name="number"/></mm:param>
+              </mm:treefile>"><mm:field name="name"/></a>
+             <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
+             <br/>
+      </mm:relatednodes>
+
 
 
 
@@ -157,6 +173,44 @@
       </mm:relatednodescontainer>
       </mm:present>
 
+     <%-- Get all people of workgroups except yourself --%>
+      <mm:present referid="list_class">
+      <mm:relatednodescontainer path="workgroups">
+        <mm:present referid="addr_class">
+            <mm:constraint field="number" value="$addr_class"/>
+        </mm:present>
+        <mm:relatednodes>
+        <mm:relatednodescontainer path="people">
+          <mm:constraint field="number" value="$user" inverse="true"/>
+          <mm:present referid="addr_search">
+           <mm:composite operator="OR">
+          <%
+            StringTokenizer st = new StringTokenizer(addr_search);
+            while (st.hasMoreTokens()) {
+                %><mm:import id="addr_search_word" reset="true"><%= st.nextToken() %></mm:import>
+                    <mm:constraint field="people.firstname" value="%$addr_search_word%" operator="LIKE"/>
+                    <mm:constraint field="people.lastname" value="%$addr_search_word%" operator="LIKE"/>
+                    <mm:constraint field="people.email" value="%$addr_search_word%" operator="LIKE"/>
+         <% } %>
+            </mm:composite>
+          </mm:present>
+                
+                
+          <mm:relatednodes>
+            <mm:remove referid="peoplenumber"/>
+            <mm:import id="peoplenumber" jspvar="peoplenumber"><mm:field name="number"/></mm:import>
+            <%
+              if ( !linkedlist.contains( new Integer( peoplenumber ) ) ) {
+                linkedlist.add( peoplenumber );
+              }
+             %>
+          </mm:relatednodes>
+
+        </mm:relatednodescontainer>
+      </mm:relatednodes>
+      </mm:relatednodescontainer>
+      </mm:present>
+      
       <%-- Get all contacts --%>
       <mm:present referid="list_book">
       <mm:relatednodes type="addressbooks">
