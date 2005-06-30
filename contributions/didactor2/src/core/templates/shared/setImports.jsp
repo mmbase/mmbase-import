@@ -66,9 +66,10 @@
 
   <mm:import id="includePath"><mm:write referid="provider" /></mm:import>
   <mm:remove referid="provider_size" />
-  <mm:import id="referids">provider?,education?,class?</mm:import>
+  <mm:import id="referids">provider?,education?,class?,workgroup?</mm:import>
   <mm:import externid="education" />
   <mm:import externid="class" />
+  <mm:import externid="workgroup"/>
 </mm:listnodescontainer>
 
 

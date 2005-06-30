@@ -17,7 +17,7 @@
 
 <div class="providerMenubar" style="white-space: nowrap">
 <mm:isgreaterthan referid="user" value="0">
-  <mm:import id="providerbaritems" vartype="list">search,pop,address,agenda,portfolio,email,education</mm:import>
+  <mm:import id="providerbaritems" vartype="list">search,pop,address,agenda,portfolio,email,workspace,education</mm:import>
   
   <%-- first show all the items in a predefined order --%>
   <mm:stringlist referid="providerbaritems">

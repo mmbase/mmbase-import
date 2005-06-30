@@ -148,6 +148,11 @@
       <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />" />
 	  <fmt:message key="SHAREDDOCUMENTS" />
     </mm:compare>
+    <mm:compare referid="typeof" value="3">
+      <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />" />
+	  <fmt:message key="WORKGROUPDOCUMENTS" />
+    </mm:compare>
+
   </div>
 </div>
 
@@ -186,17 +191,32 @@
               </mm:relatednodes>
             </mm:relatednodescontainer>
           </mm:relatednodes>
+            <mm:relatednodes type="workgroups">
+                <mm:field name="name" id="workgroupname">
+                  <mm:relatednodes type="workspaces">
+                    <mm:relatednodescontainer type="folders">
+                      <mm:relatednodes>
+                        <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
+                        <option value="<mm:field name="number"/>"><mm:write referid="workgroupname"/> &gt; <mm:field name="name"/></option>
+                      </mm:relatednodes>
+                    </mm:relatednodescontainer>
+                  </mm:relatednodes>
+                </mm:field>
+             </mm:relatednodes>
         </mm:node>
         <mm:present referid="class">
           <mm:node number="$class">
+            <mm:field name="name" id="classname">
+            
             <mm:relatednodes type="workspaces">
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                  <option value="<mm:field name="number"/>"><fmt:message key="SHAREDDOCUMENTS" /> &gt; <mm:field name="name"/></option>
+                  <option value="<mm:field name="number"/>"><mm:write referid="classname"/> &gt; <mm:field name="name"/></option>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
+            </mm:field>
           </mm:node>
         </mm:present>
         <fmt:bundle basename="nl.didactor.component.portfolio.PortfolioMessageBundle">
