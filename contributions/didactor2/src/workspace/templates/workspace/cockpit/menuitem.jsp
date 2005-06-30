@@ -15,8 +15,6 @@
     <div class="menuItem" id="menuWorkspace">
       <a href="<mm:treefile page="/workspace/index.jsp?typeof=2" objectlist="$includePath" referids="$referids" />" class="menubar"><fmt:message key="SHAREDDOCUMENTSMENUITEM" /></a>
     </div>
-</mm:compare>
-<mm:compare referid="scope" value="provider">
    <mm:node number="$user" notfound="skip">
         <mm:relatednodes type="workgroups" max="1">
         <div class="menuSeperator"> </div>
