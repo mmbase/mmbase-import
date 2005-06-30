@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.63 2005-05-19 12:07:37 michiel Exp $
+ * @version $Id: Module.java,v 1.64 2005-06-30 11:55:07 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -172,6 +172,12 @@ public abstract class Module extends FunctionProvider {
             if (value == null) {
                 key = key.toLowerCase();
                 value = (String)properties.get(key);
+                // try the system property, set on the JVM commandline
+                // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
+                // -Dmmbaseroot.machinename=myname
+                if (value == null) {
+                    value = System.getProperty(moduleName+"."+key);
+                }
             }
             return value;
         } else {
