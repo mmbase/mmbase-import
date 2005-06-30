@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.21 2005-06-29 21:31:40 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.22 2005-06-30 17:13:42 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -141,10 +141,17 @@
   <xsl:template match="o:object[@type = 'blocks']" mode="inline">
     <xsl:param name="relation" />
     <div>
-      <xsl:attribute name="id"><xsl:value-of select="@id" /><xsl:text>_</xsl:text><xsl:value-of select="$relation/o:field[@name='id']" /></xsl:attribute>
-      <xsl:attribute name="class">float <xsl:value-of select="$relation/o:field[@name='class']" /></xsl:attribute>
+      <xsl:attribute name="id">
+        <xsl:apply-templates select="." mode="id">
+          <xsl:with-param name="relation" select="$relation" />
+        </xsl:apply-templates>
+      </xsl:attribute>
+      <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']" /></xsl:attribute>
       <xsl:apply-templates select="o:field[@name = 'body']" />
     </div>
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'blocks']" mode="id">
   </xsl:template>
 
 
