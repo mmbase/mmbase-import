@@ -129,9 +129,9 @@
 <%-- determine the folders in the used context (my documents or shared documents --%>
 <mm:listnodes referid="myuser" >
    <!-- listing workspaces for '<mm:field name="name"/>' -->
+    <b><mm:field name="name"/><mm:field name="firstname"/> <mm:field name="lastname"/></b><br>
   <mm:relatednodes type="workspaces" id="workspace">
 
-    <b><mm:field name="name"/></b><br>
 
 <a href="<mm:treefile page="/workspace/createfolder.jsp" objectlist="$includePath" referids="$referids">
 	   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
