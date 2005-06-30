@@ -311,6 +311,17 @@
 </mm:compare>
 </fmt:bundle>
 
+<fmt:bundle basename="<%= bundleEducation %>">
+<mm:compare referid="education_top_menu" value="workgroups">
+   <% //----------------------- Workgroups comes from here ----------------------- %>
+      <a href='javascript:clickNode("workgroups_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_workgroups_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/editwizards/jsp/list.jsp?wizard=workgroups&nodepath=workgroups&orderby=name" objectlist="$includePath" />' title="<fmt:message key="workgroups"/>" target="text"><fmt:message key="workgroups"/></a></nobr>
+      <br>
+      <div id='workgroups_0' style='display: none'>
+
+      </div>
+</mm:compare>
+</fmt:bundle>
+
 
 
 <fmt:bundle basename="<%= bundleCompetence %>">
