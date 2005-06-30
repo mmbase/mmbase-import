@@ -7,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.17 2005-06-29 21:10:33 michiel Exp $
+// $Id: kupuinit.js,v 1.18 2005-06-30 17:11:44 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -126,11 +126,11 @@ function initKupu(iframe) {
                                             'spellcheck.jspx');
     kupu.registerTool('spellchecker', spellchecker);
 
-    /* // like the zoom tool, but it doens' realy work.
+    // like the zoom tool, but it doens' realy work.
 
     var zoom = new KupuZoomTool('kupu-zoom-button');
     kupu.registerTool('zoomtool', zoom);
-    */
+
     // create some drawers, drawers are some sort of popups that appear when a 
     // toolbar button is clicked
     var drawertool = new DrawerTool();

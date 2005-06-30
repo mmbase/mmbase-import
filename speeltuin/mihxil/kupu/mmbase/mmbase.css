@@ -89,14 +89,13 @@ a.current  {
 }
 
 #kupu { 
-  background-color: yellow;
   z-index: 1;
 }
 #kupu-tb-buttons {
 }
 
 textarea#kupu-editor-textarea {
-  display: block;
+  display: none
   background-color: white;
 }
 
@@ -107,6 +106,16 @@ textarea#kupu-editor-textarea {
   background-color: green;
   float: none;
   width: auto;
+}
+
+div.kupu-fulleditor-zoomed div.kupu-toolboxes {
+  display: block;
+}
+div.kupu-fulleditor-zoomed div.kupu-toolbox {
+  display: none;
+}
+div.kupu-fulleditor-zoomed div.kupu-toolbox-active {
+  display: none;
 }
 
 #kupu-editor { 
@@ -120,7 +129,7 @@ textarea#kupu-editor-textarea {
 div.kupu-toolbox, div.kupu-toolbox-active { 
   position: absolute;
   width: 200px;
-  right: 10px;
+  right: 2px;
   display: block;
   background-color: #527d94;
 }

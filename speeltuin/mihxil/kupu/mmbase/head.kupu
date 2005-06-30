@@ -7,7 +7,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.10 2005-06-29 21:10:33 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.11 2005-06-30 17:11:44 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
     <title>MMBase Richtext Editor</title>
@@ -52,7 +52,8 @@
   </kupu:part>
 
   <kupu:part name="styles">
-    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> <!-- fills image buttons and so on -->
+    <link href="${kupu_common}/kupustyles.css" rel="stylesheet" type="text/css"><jsp:text> </jsp:text></link> 
+    <!-- fills image buttons and so on -->
     <link href="mmbase.css" rel="stylesheet" type="text/css" />
   </kupu:part>
 

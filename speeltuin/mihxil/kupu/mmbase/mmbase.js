@@ -81,20 +81,20 @@ function startKupu(language) {
 
 
 function mmbaseInit(node) {
-    /*
+
     KupuZoomTool.prototype.origcommandfunc  = KupuZoomTool.prototype.commandfunc;
     KupuZoomTool.prototype.commandfunc = function(button, editor) {
         this.origcommandfunc(button, editor);
         if (this.zoomed == true) {
             xGetElementById("leftColumn").style.display = "none";
-            xGetElementById("header").style.display = "none";
+            //xGetElementById("header").style.display = "none";
         } else {
             xGetElementById("leftColumn").style.display = "block";
-            xGetElementById("header").style.display = "block";
+            //xGetElementById("header").style.display = "block";
             adjustLayout();
         }
     }
-    */    
+
     winOnLoad();    
     trunkNumber = node;
     loadNode(node);
