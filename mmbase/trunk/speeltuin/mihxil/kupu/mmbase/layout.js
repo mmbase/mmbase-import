@@ -4,8 +4,7 @@ if (document.getElementById || document.all) { // minimum dhtml support required
   document.write("<"+"style type='text/css'>#footer{visibility:hidden;}<"+"/style>");
   window.onload = winOnLoad;
 }
-function winOnLoad()
-{
+function winOnLoad() {
   var ele = xGetElementById('leftColumn');
   if (ele && xDef(ele.style, ele.offsetHeight)) { // another compatibility check
     adjustLayout();
@@ -16,10 +15,12 @@ function winOnResize() {
   adjustLayout();
 }
 
-function adjustToolBoxesLayout() {
+function adjustToolBoxesLayout() {   
     var toolbox = 40;
     var spacing = 5;
+    var toolboxRight = 2;
     xTop("kupu-toolbox-links", toolbox);
+    //xRight("kupu-toolbox-links", 2);
     toolbox += xHeight("kupu-toolbox-links") + spacing;
     xTop("kupu-toolbox-images", toolbox);
     toolbox += xHeight("kupu-toolbox-images") + spacing;
@@ -31,7 +32,9 @@ function adjustToolBoxesLayout() {
 
 }
 function adjustLayout() {
-    
+    var zoomTool = kupu.getTool("zoomtool");
+    if (zoomTool && zoomTool.zoomed) return;
+
     var leftColumnWidth = 150;
     var maxHeight = xClientHeight() - 20;
     var maxWidth  = xClientWidth() - leftColumnWidth - 4;
@@ -62,7 +65,7 @@ function adjustLayout() {
 
     xHeight("toolboxes", maxHeight);
     xHeight("kupu-editor", maxHeightArea - 3);
-    xWidth("kupu-editor", maxWidth - 210);
+    xWidth("kupu-editor", maxWidth - 201);
 
     adjustToolBoxesLayout();
 
