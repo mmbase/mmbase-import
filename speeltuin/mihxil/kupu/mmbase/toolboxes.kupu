@@ -8,7 +8,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolboxes.kupu,v 1.3 2005-06-29 21:10:33 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolboxes.kupu,v 1.4 2005-06-30 17:11:44 michiel Exp $</kupu:id>
 
   <kupu:part name="images">
     <div class="kupu-toolbox" id="kupu-toolbox-images">
@@ -36,8 +36,7 @@
         
         <div class="kupu-toolbox-buttons">
           <button type="button" id="kupu-image-addbutton"
-                  class="kupu-toolbox-action" i18n:translate=""
-                  >Insert Image</button>
+                  class="kupu-toolbox-action" i18n:translate="">Insert Image</button>
         </div>
       </div>
     </div>
@@ -46,8 +45,7 @@
   <kupu:part name="divs">
     <div class="kupu-toolbox" id="kupu-toolbox-divs">
       <fmt:bundle basename="org.mmbase.kupu.Messages">
-        <h1><fmt:message key="Block" /></h1>
-        
+        <h1><fmt:message key="Block" /></h1>        
         <div class="kupu-toolbox-label">
           <span><fmt:message key="Block class" /></span>
         </div>
@@ -58,9 +56,6 @@
           <option value="float image-caption left">Image caption left</option>
           <option value="float image-caption right">Image caption right</option>
         </select>
-        <div class="kupu-toolbox-label">
-          <span><fmt:message key="Insert block" /></span>
-        </div>
         <div class="kupu-toolbox-buttons">
           <button type="button" id="kupu-div-addbutton"
                   class="kupu-toolbox-action"><fmt:message key="Insert block" /></button>
