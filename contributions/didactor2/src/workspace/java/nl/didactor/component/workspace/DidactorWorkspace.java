@@ -55,6 +55,9 @@ public class DidactorWorkspace extends Component {
         if (node.getBuilder().getTableName().equals("classes"))
             return createClass(node);
 
+        if (node.getBuilder().getTableName().equals("workgroups"))
+            return createWorkgroup(node);
+
         return true;
     }
 
@@ -92,6 +95,28 @@ public class DidactorWorkspace extends Component {
 
         MMObjectNode workspace = workspaces.getNewNode(username);
         workspace.setValue("name", "Werkruimte van klas '" + cls.getStringValue("name") + "'");
+        workspaces.insert(username, workspace);
+        MMObjectNode relation = insrel.getNewNode(username);
+        relation.setValue("snumber", cls.getNumber());
+        relation.setValue("dnumber", workspace.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+
+        return true;
+    }
+
+    /**
+     * Create a workgroup workspace.
+     */
+    private boolean createWorkgroup(MMObjectNode cls) {
+        MMBase mmb = cls.getBuilder().getMMBase();
+        String username = "system";
+        MMObjectBuilder workspaces = mmb.getBuilder("workspaces");
+        InsRel insrel = mmb.getInsRel();
+        int related = mmb.getRelDef().getNumberByName("related");
+
+        MMObjectNode workspace = workspaces.getNewNode(username);
+        workspace.setValue("name", "Werkruimte van werkgroep '" + cls.getStringValue("name") + "'");
         workspaces.insert(username, workspace);
         MMObjectNode relation = insrel.getNewNode(username);
         relation.setValue("snumber", cls.getNumber());

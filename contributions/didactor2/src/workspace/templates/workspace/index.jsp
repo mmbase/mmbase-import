@@ -22,7 +22,7 @@
 
 <%-- jsp started as my documents --%>
 <mm:compare referid="typeof" value="1">
-  <mm:node number="$user" notfound="skip" id="myuser" >
+  <mm:listnodes type="people" constraints="number=$user" id="myuser" >
     <mm:relatednodes type="workspaces" id="myworkspaces">
       <mm:relatednodes type="folders" orderby="name" id="myfolders">
         <mm:first>
@@ -35,12 +35,12 @@
         </mm:first>
       </mm:relatednodes>
     </mm:relatednodes>
-  </mm:node>
+  </mm:listnodes>
 </mm:compare>
 
 <%-- jsp started as shared documents --%>
 <mm:compare referid="typeof" value="2">
-  <mm:node number="$class" notfound="skip" id="myuser" >
+  <mm:listnodes constraints="number=$class" type="classes" id="myuser" >
     <mm:relatednodes type="workspaces" id="myworkspaces">
       <mm:relatednodes type="folders" orderby="name" id="myfolders">
         <mm:first>
@@ -53,8 +53,31 @@
         </mm:first>
       </mm:relatednodes>
     </mm:relatednodes>
+  </mm:listnodes>
+</mm:compare>
+
+<%-- jsp started as workgroup documents --%>
+<mm:compare referid="typeof" value="3">
+  <mm:node number="$user" notfound="skip">
+    <!-- listing workgroups for user -->
+    <mm:relatednodes type="workgroups" id="myuser">
+        <!-- found workgroup -->
+        <mm:relatednodes type="workspaces" id="myworkspaces">
+          <mm:relatednodes type="folders" orderby="name" id="myfolders">
+            <mm:first>
+              <mm:compare referid="currentfolder" value="-1">
+
+                <mm:remove referid="currentfolder"/>
+                <mm:import id="currentfolder"><mm:field name="number"/></mm:import>
+
+              </mm:compare>
+            </mm:first>
+          </mm:relatednodes>
+        </mm:relatednodes>
+    </mm:relatednodes>
   </mm:node>
 </mm:compare>
+
 
 
 <mm:import externid="action_delete.x" id="action_delete" from="parameters"/>
@@ -87,6 +110,11 @@
   <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />"/>
       <fmt:message key="SHAREDDOCUMENTS" />
 </mm:compare>
+<mm:compare referid="typeof" value="3">
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />"/>
+      <fmt:message key="WORKGROUPDOCUMENTS" />
+</mm:compare>
+
 </div>
 </div>
 
@@ -98,9 +126,17 @@
 
 <div class="folderBody">
 
+<%-- determine the folders in the used context (my documents or shared documents --%>
+<mm:listnodes referid="myuser" >
+   <!-- listing workspaces for '<mm:field name="name"/>' -->
+  <mm:relatednodes type="workspaces" id="workspace">
+
+    <b><mm:field name="name"/></b><br>
+
 <a href="<mm:treefile page="/workspace/createfolder.jsp" objectlist="$includePath" referids="$referids">
 	   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-	   <mm:param name="callerpage">/workspace/index.jsp</mm:param>
+	   <mm:param name="workspace"><mm:write referid="workspace"/></mm:param>
+           <mm:param name="callerpage">/workspace/index.jsp</mm:param>
 	   <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 	 </mm:treefile>">
   <img src="<mm:treefile page="/workspace/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEFOLDER" />" /></a>
@@ -121,11 +157,7 @@
 	   </mm:treefile>">
     <img src="<mm:treefile page="/workspace/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETEFOLDER" />" /></a>
 </mm:isgreaterthan>
-    <br /><br />
-
-<%-- determine the folders in the used context (my documents or shared documents --%>
-<mm:node referid="myuser" >
-  <mm:relatednodes type="workspaces">
+    <br clear="all"/>
 
     <mm:relatednodes type="folders">
 
@@ -149,8 +181,9 @@
       </a><br />
 
     </mm:relatednodes>
+    <br/>
   </mm:relatednodes>
-</mm:node>
+</mm:listnodes>
 
 </div>
 

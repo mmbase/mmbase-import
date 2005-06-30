@@ -83,6 +83,13 @@
     <mm:compare referid="typeof" value="2">
       <mm:import id="titletext"><fmt:message key="SHAREDDOCUMENTS" /></mm:import>
     </mm:compare>
+     <mm:compare referid="typeof" value="3">
+        <mm:import id="titletext"><fmt:message key="WORKGROUPDOCUMENTS" /></mm:import>
+    </mm:compare>
+
+
+
+
     <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
     <mm:write referid="titletext"/>
   </div>

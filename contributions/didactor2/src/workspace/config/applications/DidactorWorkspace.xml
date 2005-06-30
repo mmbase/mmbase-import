@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorWorkspace" maintainer="didactor.nl" version="2" auto-deploy="true">
+<application name="DidactorWorkspace" maintainer="didactor.nl" version="3" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -23,6 +23,7 @@
     <allowedrelationlist>
         <relation from="people" to="workspaces" type="related" />
         <relation from="classes" to="workspaces" type="related" />
+        <relation from="workgroups" to="workspaces" type="related" />
         <relation from="workspaces" to="folders" type="related" />
         <relation from="folders" to="attachments" type="related" />
         

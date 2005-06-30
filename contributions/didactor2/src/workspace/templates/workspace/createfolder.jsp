@@ -21,6 +21,7 @@
 <mm:import externid="action2"/>
 <mm:import externid="detectclicks" from="parameters"/>
 <mm:import externid="oldclicks" from="session"/>
+<mm:import externid="workspace" required="true"/>
 
 <mm:present referid="detectclicks">
     <mm:compare referid="detectclicks" value="$oldclicks">
@@ -34,46 +35,20 @@
     <%-- check if a foldername is given --%>
     <mm:import id="foldername" externid="_name"/>
     <mm:compare referid="foldername" value="" inverse="true">
+        <mm:createnode type="folders" id="myfolders">
+           <mm:fieldlist type="all" fields="name,type">
+               <mm:fieldinfo type="useinput" />
+            </mm:fieldlist>
+        </mm:createnode>
 
-      <mm:compare referid="typeof" value="1">
-        <mm:node number="$user">
-          <mm:relatednodes type="workspaces" id="myworkspaces" max="1">
-
-            <mm:createnode type="folders" id="myfolders">
-
-              <mm:fieldlist type="all" fields="name,type">
-	            <mm:fieldinfo type="useinput" />
-	          </mm:fieldlist>
-            </mm:createnode>
-
-            <mm:createrelation role="related" source="myworkspaces" destination="myfolders"/>
-
-          </mm:relatednodes>
-        </mm:node>
-      </mm:compare>
-
-      <mm:compare referid="typeof" value="2">
-        <mm:node number="$class">
-          <mm:relatednodes type="workspaces" id="myworkspaces" max="1">
-
-            <mm:createnode type="folders" id="myfolders">
-
-              <mm:fieldlist type="all" fields="name">
-	            <mm:fieldinfo type="useinput" />
-	          </mm:fieldlist>
-            </mm:createnode>
-
-            <mm:createrelation role="related" source="myworkspaces" destination="myfolders"/>
-
-          </mm:relatednodes>
-        </mm:node>
-      </mm:compare>
-
-      <mm:redirect referids="$referids,currentfolder,typeof" page="$callerpage"/>
+        <mm:createrelation role="related" source="workspace" destination="myfolders"/>
+        <mm:redirect referids="$referids,currentfolder,typeof" page="$callerpage"/>
     </mm:compare>
+
+    
     <mm:compare referid="foldername" value="">
 	  <mm:import id="error">1</mm:import>
-	</mm:compare>
+    </mm:compare>
 
 
 </mm:notpresent>
@@ -132,6 +107,7 @@
 	document.forms['createfolder'].elements['_name'].focus();
     </script>
       <input type="hidden" name="detectclicks" value="<%= System.currentTimeMillis() %>">
+      <input type="hidden" name="workspace" value="<mm:write referid="workspace"/>">
       <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>"/>
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
       <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>

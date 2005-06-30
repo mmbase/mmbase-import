@@ -211,7 +211,17 @@
                   <option value="<mm:field name="number"/>"><fmt:message key="DEVELOPMENTPORTFOLIO" /> &gt; <mm:field name="name"/></option>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
-            </mm:relatednodes>
+           </mm:relatednodes>
+              <mm:relatednodes type="workgroups">
+                <mm:field name="name" id="workgroupname">
+                    <mm:relatednodes type="workspaces">
+                        <mm:relatednodes type="folders">
+                            <option value="<mm:field name="number"/>"><mm:write referid="workgroupname"/> &gt; <mm:field name="name"/></option>
+                        </mm:relatednodes>
+                    </mm:relatednodes>
+                </mm:field>
+              </mm:relatednodes>
+ 
             <di:hasrole role="teacher">
                 <mm:relatednodes type="portfolios" constraints="m_type = 1">
                   <mm:relatednodescontainer type="folders">
