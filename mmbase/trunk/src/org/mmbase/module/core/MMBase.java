@@ -39,7 +39,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.132 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: MMBase.java,v 1.133 2005-06-30 11:55:07 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -306,7 +306,32 @@ public class MMBase extends ProcessorModule {
             cookieDomain = tmp;
         }
 
-        machineName = getInitParameter("MACHINENAME");
+        // default machine name is the current user name
+        try {
+            machineName = java.net.InetAddress.getLocalHost().getHostName();
+        } catch (java.net.UnknownHostException uhe) {
+            machineName = "UNKNOWN";
+        }
+
+        String machineNameParam = getInitParameter("MACHINENAME");
+        if (machineNameParam != null) {
+            // try to incorporate the hostname (if needed)
+            int pos = machineNameParam.indexOf("${HOST}");
+            if (pos!=-1) {
+                machineNameParam = machineNameParam.substring(0,pos) +
+                    machineName +
+                    machineNameParam.substring(pos+7);
+            }
+            // you may also try to incorporate the username in the machine name
+            pos = machineNameParam.indexOf("${USER}");
+            if (pos!=-1) {
+                machineNameParam = machineNameParam.substring(0,pos) +
+                    System.getProperty("user.name") +
+                    machineNameParam.substring(pos+7);
+            }
+            machineName = machineNameParam;
+        }
+        log.service("MMBase machine name used for clustering:" + machineName);
 
         log.debug("Starting JDBC module");
 
