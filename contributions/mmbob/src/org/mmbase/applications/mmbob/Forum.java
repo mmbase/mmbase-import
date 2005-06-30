@@ -97,6 +97,7 @@ public class Forum {
         readSignatures();
         readThreadObservers();
         readRoles();
+        readFieldaliases();
     }
 
     public void resetConfig() {
