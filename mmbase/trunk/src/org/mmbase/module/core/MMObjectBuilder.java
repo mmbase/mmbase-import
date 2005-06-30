@@ -57,7 +57,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.313 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.314 2005-06-30 11:02:28 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -723,6 +723,13 @@ public class MMObjectBuilder extends MMTable {
      * @param node The node to set the defaults of.
      */
     public void setDefaults(MMObjectNode node) {
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+            CoreField field = (CoreField) i.next();
+            Object defaultValue = field.getDataType().getDefaultValue();
+            if (defaultValue != null) {
+                node.setValue(field.getName(), defaultValue);
+            }
+        }
     }
 
     /**
