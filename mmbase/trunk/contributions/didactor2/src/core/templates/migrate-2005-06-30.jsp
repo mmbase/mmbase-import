@@ -8,6 +8,7 @@
 
 creating workspaces for workgroups...<br/>
 <mm:listnodes type="workgroups">
+    <mm:remove referid="workgroup"/>
     <mm:field name="number" id="workgroup">
         <mm:field name="name" id="workgroupname">
             <mm:countrelations type="workspaces">
@@ -21,7 +22,7 @@ creating workspaces for workgroups...<br/>
         </mm:field>
     </mm:field>
 </mm:listnodes>
-<br>
+
 Done.
 </mm:cloud>
 </mm:content>
