@@ -98,9 +98,11 @@ public class Mailbox {
      */
     public boolean remove() {
         try {
+	    node.deleteRelations();
             node.delete();
             return true;
         } catch (Exception e) {
+	    e.printStackTrace();
             return false;
         }
     }
