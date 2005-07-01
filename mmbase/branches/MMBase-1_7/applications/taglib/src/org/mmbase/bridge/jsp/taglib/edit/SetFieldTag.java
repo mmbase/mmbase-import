@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.29 2004-01-14 22:02:25 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.29.2.1 2005-07-01 14:54:23 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -30,6 +30,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         return s;
     }
 
+    String body = "";
     public int doStartTag() throws JspTagException {
         node = null;
         setFieldVar(name.getString(this));
@@ -37,14 +38,14 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
     }
 
 
-    public int doEndTag() throws JspTagException {
-        return EVAL_PAGE;
+    public int doAfterBody() throws JspTagException {
+        if (bodyContent != null) body = bodyContent.getString();
+        return SKIP_BODY;
     }
-
     /**
      * Set the value of the field.
      */
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         setFieldVar();
         String body = "";
         if (bodyContent != null) body = bodyContent.getString();
@@ -110,6 +111,6 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         }
         findNodeProvider().setModified();
 
-        return SKIP_BODY;
+        return EVAL_PAGE;
     }
 }
