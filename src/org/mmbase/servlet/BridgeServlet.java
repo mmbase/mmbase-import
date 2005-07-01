@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.19 2005-06-21 19:20:27 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.20 2005-07-01 11:50:38 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -103,10 +103,12 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
 
             qp = readServletPath(reqString);            
-            if (qp == null && res != null) {
-                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
-            } else {
-                log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+            if (qp == null) {
+                if(res != null) {
+                    res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                } else {
+                    log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                }
             }
         } else {
             // attachment.db?[session=abc+]number       
