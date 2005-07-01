@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.5 2005-06-29 16:43:54 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.6 2005-07-01 13:13:20 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -161,6 +161,24 @@ public class IndexFunction extends FunctionProvider {
         new Parameter("newroot", Node.class, false)
     };
 
+    private static String getKey(final Node node, final Parameters parameters) {
+        Node root     = (Node)   parameters.get("root");
+        final String role   = (String) parameters.get("role");
+        final String join   = (String) parameters.get("joiner");
+        final String separator   = (String) parameters.get("separator");
+        final boolean roman   = ((Boolean) parameters.get("roman")).booleanValue();
+        return "" + node.getNumber() + "/" + (root == null ? "NULL" : "" + root.getNumber()) + "/" + role + "/" + join + "/" + separator  + "/" + roman;
+    }
+
+
+    protected static class Stack extends ArrayList {
+        public void push(Object o) {
+            add(0, o);
+        }
+        public Object pull() {
+            return remove(0);
+        }
+    }
 
     protected static NodeFunction index = new NodeFunction("index", INDEX_ARGS, ReturnType.STRING) {
             
@@ -179,7 +197,7 @@ public class IndexFunction extends FunctionProvider {
                 final Pattern indexPattern = Pattern.compile("(.+)" + separator + "(.+)");
                 final boolean roman   = ((Boolean) parameters.get("roman")).booleanValue();
 
-                final String key = "" + node.getNumber() + "/" + (root == null ? "NULL" : "" + root.getNumber()) + "/" + role + "/" + join + "/" + separator  + "/" + roman;
+                final String key = getKey(node, parameters);
 
                 String result = (String) indexCache.get(key);
                 if (result != null) return result;
@@ -188,6 +206,7 @@ public class IndexFunction extends FunctionProvider {
                 
                 
                 // now we have to determine the path from node to root.        
+
                 GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(node), 10, nm, role, "source");
                 NodeQuery template = tree.getTemplate();
                 if (root != null) {
@@ -196,29 +215,43 @@ public class IndexFunction extends FunctionProvider {
                     
                 }
                 
-                List stack = new ArrayList();
+                Stack stack = new Stack();
                 TreeIterator it = tree.treeIterator();
                 int depth = it.currentDepth();
                 while (it.hasNext()) {
                     Node n = it.nextNode();
                     if (it.currentDepth() > depth) {
-                        stack.add(0, n);
+                        stack.push(n);
                         depth = it.currentDepth();
+                    }
+                    if (indexCache.contains(getKey(n, parameters))) {
+                        log.debug("Index for " + n.getNumber() + " is known already!, breaking");
+                        break;
+                    }
+
+                    if (it.currentDepth() < depth) {
+                        break;
                     }
                     //if (root == null) root = n.getNodeValue(role + ".root");
                     if (root != null && n.getNumber() == root.getNumber()) break;
                 }
                 
                 if (stack.isEmpty()) {
-                    indexCache.put(key, "???");
-                    return "???";
+                    indexCache.put(key, "");
+                    return "";
                 }
-                StringBuffer buf = new StringBuffer();
-                Node n = (Node) stack.remove(0);
-                String j = "";
+
+                Node n = (Node) stack.pull(); // this is root, or at least _its_ index is known
+                StringBuffer buf;
+                if (! n.equals(node)) {
+                    buf = new StringBuffer(n.getFunctionValue("index", parameters).toString());
+                } else {
+                    buf = new StringBuffer();
+                }
+                String j = buf.length() == 0 ? "" : join;
                 OUTER:
                 while(! stack.isEmpty()) {
-                    Node search = (Node) stack.remove(0);
+                    Node search = (Node) stack.pull();
                     NodeQuery q = Queries.createRelatedNodesQuery(n, nm, role, "destination");
                     StepField sf = q.addField(role + ".pos");
                     q.addSortOrder(sf, SortOrder.ORDER_ASCENDING);
@@ -236,8 +269,8 @@ public class IndexFunction extends FunctionProvider {
                         if (matcher.matches()) {
                             buf = new StringBuffer(matcher.group(1));
                             i = matcher.group(2);
-                            doRoman = roman && RomanTransformer.ROMAN.matcher(i).matches();
                         }
+                        doRoman = doRoman && RomanTransformer.ROMAN.matcher(i).matches();
                         
                         if (found.getNumber() == search.getNumber()) {
                             // found!
@@ -247,9 +280,11 @@ public class IndexFunction extends FunctionProvider {
                             continue OUTER;
                         }               
                         index = successor(i, separator, join, doRoman);
+                        // can as well cache this one too.                      
+                        indexCache.put(getKey(found, parameters), buf.toString() + j + i);
                     }
                     // not found
-                    buf.append(j).append("???");
+                    buf.append(j).append("???");                    
                     break;
                 }
                 String r = buf.toString();
