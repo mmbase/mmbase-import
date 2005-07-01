@@ -189,18 +189,7 @@
                      </tr>
 
                      <%-- find copybook --%>
-                     <mm:import id="copybookNo"/>
-                     <mm:relatedcontainer path="classrel,classes">
-                        <mm:constraint field="classes.number" value="$class"/>
-                        <mm:related>
-                           <mm:node element="classrel">
-                              <mm:relatednodes type="copybooks">
-                                 <mm:remove referid="copybookNo"/>
-                                 <mm:field id="copybookNo" name="number" write="false"/>
-                              </mm:relatednodes>
-                           </mm:node>
-                        </mm:related>
-                     </mm:relatedcontainer>
+                     <%@include file="find_copybook.jsp"%>
 
 
                      <mm:node number="$education">
