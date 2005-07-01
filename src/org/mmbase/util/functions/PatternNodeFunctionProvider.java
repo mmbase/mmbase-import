@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.2 2005-06-28 19:37:25 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.3 2005-07-01 13:13:47 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -134,7 +134,9 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 initParams.reset();
                 sb = new StringBuffer();
                 while(initParams.find()) {
-                    initParams.appendReplacement(sb, org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1)));
+                    String s = org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1));
+                    if (s == null) s = "";
+                    initParams.appendReplacement(sb, s);
                 }
                 initParams.appendTail(sb);
             }
