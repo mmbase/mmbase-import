@@ -115,7 +115,7 @@
 
        <mm:node number="<%= testNum %>">
           <mm:field name="name" jspvar="name" vartype="String">
-             <% name  = name.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
+             <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
              <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<%= name %>")+rotate(90)</mm:import>
           </mm:field>
 
