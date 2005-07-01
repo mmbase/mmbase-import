@@ -73,7 +73,9 @@
       <fmt:message key="TEACHERHEADER" />
     </div>
     <div class="ListTeachers">
-      <mm:treeinclude write="true" page="/users/teach_sel.jsp" objectlist="$includePath" referids="$referids" />
+      <mm:treeinclude write="true" page="/users/users.jsp" objectlist="$includePath" referids="$referids">
+         <mm:param name="mode">teachers</mm:param>
+      </mm:treeinclude>
 <%--
        <img src="<mm:treefile write="true" page="/gfx/icon_offline.gif" objectlist="$includePath" />" width="6" height="12" alt="offline" />
       <a href="" class="users">Beheerder (test)</a><br />
@@ -84,7 +86,9 @@
       <fmt:message key="STUDENTHEADER" />
     </div>
     <div class="ListStudents">
-      <mm:treeinclude write="true" page="/users/stud_sel.jsp" objectlist="$includePath" referids="$referids" />
+      <mm:treeinclude write="true" page="/users/users.jsp" objectlist="$includePath" referids="$referids">
+         <mm:param name="mode">students</mm:param>
+      </mm:treeinclude>
     </div>
   </div>
 </div>
