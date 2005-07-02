@@ -125,7 +125,7 @@
                      <mm:node number="<%= sCoreTaskID %>">
                         <mm:field name="name" jspvar="sName" vartype="String">
                            <mm:node number="progresstextbackground">
-                              <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName %>)+rotate(270)</mm:import>
+                              <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName.replaceAll("\\s+","_").replaceAll("\"","''") %>)+rotate(270)</mm:import>
                               <td style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=coretasks&objectnumber=<%= sCoreTaskID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
                            </mm:node>
                         </mm:field>
@@ -151,7 +151,7 @@
                      <mm:node number="<%= sCoreAssignmentID %>">
                         <mm:field name="name" jspvar="sName" vartype="String">
                            <mm:node number="progresstextbackground">
-                              <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName %>)+rotate(270)</mm:import>
+                              <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName.replaceAll("\\s+","_").replaceAll("\"","''") %>)+rotate(270)</mm:import>
                               <td style="border-color:#000000; border-right:0px; border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=coreassignments&objectnumber=<%= sCoreAssignmentID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
                            </mm:node>
                         </mm:field>
