@@ -11,6 +11,7 @@
        <relation destination="coretasks" role="posrel"/>
        <relation destination="coreassignments" role="posrel"/>
        <relation destination="ratings" role="posrel"/>
+       <relation destination="priorities" role="posrel"/>
     </action>
 
     <action type="delete" />
@@ -97,6 +98,32 @@
 
            <action type="create">
               <relation destinationtype="ratings" role="posrel"/>
+           </action>
+        </list>
+
+
+        <list role="posrel" destinationtype="priorities" minoccurs="0" maxoccurs="*" ordertype="number">
+           <title xml:lang="nl">Prioriteiten</title>
+           <title xml:lang="en">Priorities</title>
+           <item>
+              <field name="name" ftype="data"/>
+              <field ftype="startwizard" wizardname="priorities" />
+           </item>
+
+           <command name="search" nodepath="priorities" fields="name" age="-1" orderby="number" directions="down">
+              <search-filter>
+                 <name>Naam bevat</name>
+                 <search-fields>name</search-fields>
+              </search-filter>
+           </command>
+
+           <command name="startwizard" inline="true" wizardname="priorities" objectnumber="new">
+              <prompt xml:lang="nl">Nieuw</prompt>
+              <prompt xml:lang="en">New</prompt>
+           </command>
+
+           <action type="create">
+              <relation destinationtype="priorities" role="posrel"/>
            </action>
         </list>
 
