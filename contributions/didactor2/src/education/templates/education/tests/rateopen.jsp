@@ -81,7 +81,11 @@
 
 <mm:node number="$testNo">
 
-  <h1><mm:field name="name"/></h1>
+  <mm:field name="showtitle">
+    <mm:compare value="1">
+      <h1><mm:field name="name"/></h1>
+    </mm:compare>
+  </mm:field>
 
 <%-- Get all the questions of the test --%>
 

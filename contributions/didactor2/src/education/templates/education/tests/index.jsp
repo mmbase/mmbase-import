@@ -64,8 +64,11 @@
 <div class="learnenvironment">
 
 
-
-        <h1><mm:field name="name"/></h1>
+        <mm:field name="showtitle">
+          <mm:compare value="1">
+            <h1><mm:field name="name"/></h1>
+          </mm:compare>
+        </mm:field>
 
         <mm:field id="maychange" name="maychange" write="false"/>
 
