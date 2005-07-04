@@ -25,18 +25,33 @@
   for each node in your cluster. This is not the machines dns name
   (as defined by host as name or ip number).
 
-  You can add the string ${HOST} to include the name of the host running the application server (obtained using InetAddress.getLocalHost().getHostName() ).
+  You can add the string ${HOST} to include the name of the host
+  running the application server (obtained using
+  InetAddress.getLocalHost().getHostName() ).
 
-  You can add the string ${USER} to include the name of the user running the application server (obtained using System.getProperty("user.name") ).
+  You can add the string ${USER} to include the name of the user
+  running the application server (obtained using
+  System.getProperty("user.name") ).
 
-  This can be useful if you share a web-app over various servers (useful for loadbalancing). If you run these servers with different user names, you can then use the same configuration for both, and still have unique machine
-  names, which you will need to have MMBase's clustering system to work properly.
+  This can be useful if you share a web-app over various servers
+  (useful for loadbalancing). If you run these servers with different
+  user names, you can then use the same configuration for both, and
+  still have unique machine names, which you will need to have
+  MMBase's clustering system to work properly.
 
-  If you do not specify a machine name, the system falls back to the name of the host running the application server.
+  If you do not specify a machine name, the system falls back to the
+  name of the host running the application server, combined with the
+  'context' path. This will suffice in most, if not any, cases, so the
+  advice is to not add this setting if you don't know excactly what
+  you are doing.
 
-  Note that you can also specify this property name as a system property by specifying it on the java commandline, using:  -Dmmbaseroot.mmbasename=myname
+  Note that you can also specify this property name as a system
+  property by specifying it on the java commandline, using:
+  -Dmmbaseroot.mmbasename=myname
   -->
+  <!--
   <property name="machinename">MMBaseserver</property>
+  -->
 
   <!--
   name="storagemanagerfactory" defines what factory to use for accessing the storage devices.
