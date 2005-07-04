@@ -21,7 +21,12 @@
          </mm:islessthan>
     </mm:countrelations>
     <mm:relatednodes type="flashpages" jspvar="flash">
-        <h1><mm:field name="name"/></h1>
+      <mm:field name="showtitle">
+        <mm:compare value="1">
+          <h1><mm:field name="name"/></h1>
+        </mm:compare>
+      </mm:field>
+
     <% 
         int layout = flash.getIntValue("layout");
         int width = 520;

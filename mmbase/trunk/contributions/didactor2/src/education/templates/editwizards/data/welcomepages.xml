@@ -5,6 +5,7 @@
 
     <action type="create">
        <object type="flashpages">
+           <field name="showtitle">1</field>
        </object>
     </action>
 
@@ -28,6 +29,14 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
+
+      <field name="showtitle" ftype="enum">
+         <prompt xml:lang="nl">Titel laten zien</prompt>
+         <prompt xml:lang="en">Show title</prompt>
+         <optionlist select="boolean" />
+      </field>
+ 
+
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>

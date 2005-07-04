@@ -111,7 +111,11 @@
 
 <mm:node number="$learnobject">
 
-  <h1><mm:field name="name"/></h1>
+  <mm:field name="showtitle">
+    <mm:compare value="1">
+      <h1><mm:field name="name"/></h1>
+    </mm:compare>
+  </mm:field>
 
 
 

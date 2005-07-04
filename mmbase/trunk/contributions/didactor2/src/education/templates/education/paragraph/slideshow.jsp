@@ -28,13 +28,10 @@
             <tr valign="top">
                <td style="padding-bottom:10px;">
                   <center>
-                     <mm:field name="title" jspvar="images_title" vartype="String" write="false">
-                        <%
-                           if(!images_title.equals("")&&images_title.indexOf("#NZ#")==-1)
-                           {
-                              %><b><%= images_title %></b><br /><%
-                           }
-                        %>
+                     <mm:field name="showtitle">
+                        <mm:compare value="1">
+                           <b><mm:field name="title"/></b><br/>
+                        </mm:compare>
                      </mm:field>
                      <mm:field name="description" />
                   </center>

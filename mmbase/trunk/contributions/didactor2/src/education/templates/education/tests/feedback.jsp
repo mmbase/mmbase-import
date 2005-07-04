@@ -32,8 +32,11 @@
       <mm:import id="questionamount"><mm:size/></mm:import>
    </mm:relatednodes>
 
-
-   <h1><mm:field id="test_name" name="name"/></h1>
+   <mm:field name="showtitle">
+      <mm:compare value="1">
+         <h1><mm:field id="test_name" name="name"/></h1>
+      </mm:compare>
+   </mm:field>
 
    <%-- Which type of feedback: standard page or feedback per question --%>
    <mm:import id="feedback"><mm:field name="feedbackpage"/></mm:import>
