@@ -15,6 +15,8 @@
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
 
+<mm:import externid="direct_connection" reset="true">false</mm:import>
+
    <%
 
       String bundlePOP = null;
@@ -146,14 +148,10 @@
 <% } %>
 
     <mm:node number="$student">
-
          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$popreferids,startAt">
-
                 <mm:param name="user"><mm:field name="number"/></mm:param>
-                <mm:param name="direct_connection">false</mm:param>
-
+                <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
          </mm:treeinclude>
-
     </mm:node>
 
 
@@ -166,6 +164,7 @@
 
     <mm:param name="startAt"><%= startAt + 15 %></mm:param>
     <mm:param name="command">detail</mm:param>
+    <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
 
 </mm:treefile>"><fmt:message key="NextResults"/></a></span>
 
@@ -177,6 +176,7 @@
 
     <mm:param name="startAt"><%= startAt - 15 %></mm:param>
     <mm:param name="command">detail</mm:param>
+    <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
 
 </mm:treefile>"><fmt:message key="PrevResults"/></a>
 
