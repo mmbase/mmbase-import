@@ -2,31 +2,9 @@
 
 <mm:import externid="student" id="student" reset="true"><mm:write referid="user"/></mm:import>
 
-<%-- find user's copybook --%>
-
-<mm:import id="copybookNo" reset="true" />
-
+<%-- find student's copybook --%>
 <mm:node number="$student" notfound="skip">
-
-  <mm:relatedcontainer path="classrel,classes">
-
-    <mm:related>
-
-      <mm:node element="classrel">
-
-        <mm:relatednodes type="copybooks">
-
-          <mm:remove referid="copybookNo"/>
-
-          <mm:field id="copybookNo" name="number" write="false"/>
-
-        </mm:relatednodes>
-
-      </mm:node>
-
-    </mm:related>  
-
-  </mm:relatedcontainer>
+   <%@include file="find_copybook.jsp"%>
 
 
 <%	String neededCompetencies = "";

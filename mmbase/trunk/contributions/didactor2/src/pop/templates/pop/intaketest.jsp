@@ -3,13 +3,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <mm:content postprocessor="reducespace" expires="0">
-
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 
 
 <%@include file="/shared/setImports.jsp" %>
-
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
 
@@ -41,36 +39,11 @@
 	String notpassedIntakes = ""; 
 %>
 
-
-<%-- find student's copybook --%>
-
-<mm:import id="copybookNo"/>
-
+<%-- find user's copybook --%>
 <mm:node number="$student">
+   <%@include file="find_copybook.jsp"%>
+</mm:node>
 
-  <mm:relatedcontainer path="classrel,classes">
-
-    <mm:constraint field="classes.number" value="$class"/>
-
-    <mm:related>
-
-      <mm:node element="classrel">
-
-        <mm:relatednodes type="copybooks">
-
-          <mm:remove referid="copybookNo"/>
-
-          <mm:field id="copybookNo" name="number" write="false"/>
-
-        </mm:relatednodes>
-
-      </mm:node>
-
-    </mm:related>  
-
-  </mm:relatedcontainer>
-
-</mm:node> 
 
 <mm:import id="gatekeeper" reset="true">1</mm:import>
 <mm:import id="incompletetestNo" reset="true">-1</mm:import>

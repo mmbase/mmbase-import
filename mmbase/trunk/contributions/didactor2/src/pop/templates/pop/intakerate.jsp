@@ -9,8 +9,9 @@
 
 
 <%@include file="/shared/setImports.jsp" %>
-
 <%@include file="/education/tests/definitions.jsp" %>
+
+<mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
 
    <%
 
@@ -30,57 +31,30 @@
 
 <fmt:bundle basename="<%= bundlePOP %>">
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$popreferids">
-  <mm:param name="extraheader">
-    <title>POP</title>
-    <link rel="stylesheet" type="text/css" href="css/pop.css" />
-  </mm:param>
-</mm:treeinclude>
+  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="extraheader">
+      <title>POP</title>
+      <link rel="stylesheet" type="text/css" href="css/pop.css" />
+    </mm:param>
+  </mm:treeinclude>
 
-<!-- TODO where are the different roles described -->
-<!-- TODO different things to do with different roles? -->
+  <% boolean isEmpty = true; 
+     String msgString = "";
+  %>
 
-<% boolean isEmpty = true; 
-   String msgString = "";
-%>
+  <%@ include file="getids.jsp" %>
 
-<%@ include file="getids.jsp" %>
-
-<%@ include file="leftpanel.jsp" %>
+  <div class="rows">
+    <%@ include file="leftpanel.jsp" %>
 
 <%-- find student's copybook --%>
-
-<mm:import id="copybookNo"/>
-
 <mm:node number="$student">
-
-  <mm:relatedcontainer path="classrel,classes">
-
-    <mm:constraint field="classes.number" value="$class"/>
-
-    <mm:related>
-
-      <mm:node element="classrel">
-
-        <mm:relatednodes type="copybooks">
-
-          <mm:remove referid="copybookNo"/>
-
-          <mm:field id="copybookNo" name="number" write="false"/>
-
-        </mm:relatednodes>
-
-      </mm:node>
-
-    </mm:related>  
-
-  </mm:relatedcontainer>
-
-</mm:node> 
+   <%@include file="find_copybook.jsp"%>
+</mm:node>
 
 
-<%-- right section --%>
-<div class="mainContent"> 
+    <%-- right section --%>
+    <div class="mainContent">
 <div class="contentHeader"><fmt:message key="Progressmonitor"/>
   <di:hasrole referid="user" role="teacher">
     <mm:node number="$student">
@@ -191,7 +165,7 @@
       </mm:treefile>'" value="start" title="<fmt:message key="BeginCourseButton"/>">
   </div>
 </div>
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
+  <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
 </fmt:bundle>
 </mm:cloud>
 </mm:content>

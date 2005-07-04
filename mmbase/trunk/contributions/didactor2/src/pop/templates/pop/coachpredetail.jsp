@@ -43,7 +43,7 @@
 
 <mm:compare referid="whatselected" value="wgroup">
   <mm:import externid="wgroup"/>
-  <mm:list nodes="$wgroup" path="classes,classrel,people">
+  <mm:list nodes="$wgroup" path="workgroups,related,people,classrel,classes">
     <mm:field name="classrel.number" jspvar="classrelNum" vartype="String">
       <% classrels += classrelNum + ","; %>
     </mm:field>
