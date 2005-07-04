@@ -8,6 +8,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@page import ="java.util.Iterator" %>
+<%@page import ="java.util.HashSet" %>
 <%@page import ="java.util.SortedSet" %>
 <%@page import ="java.util.TreeSet" %>
 
@@ -21,9 +22,101 @@
    <mm:import externid="mode"/>
 
    <%
-      SortedSet sortsetUsers = new TreeSet(new PeopleComparator());
+//      SortedSet sortsetUsers = new TreeSet(new PeopleComparator());
+      SortedSet sortsetEducations = new TreeSet(new PeopleComparator());
    %>
 
+   <mm:list path="people,classrel,educations" constraints="people.number=$user">
+      <mm:node element="educations" jspvar="nodeEducation">
+         <%
+            String[] arrstrEducation = new String[3];
+            arrstrEducation[0] = "" + nodeEducation.getNumber();
+            arrstrEducation[1] = (String) nodeEducation.getValue("name");
+            arrstrEducation[2] = "";
+            sortsetEducations.add(arrstrEducation);
+         %>
+      </mm:node>
+   </mm:list>
+   <mm:list path="people,classrel,classes,related,educations" constraints="people.number=$user">
+      <mm:node element="educations" jspvar="nodeEducation">
+         <%
+            String[] arrstrEducation = new String[3];
+            arrstrEducation[0] = "" + nodeEducation.getNumber();
+            arrstrEducation[1] = (String) nodeEducation.getValue("name");
+            arrstrEducation[2] = "";
+            sortsetEducations.add(arrstrEducation);
+         %>
+      </mm:node>
+   </mm:list>
+
+   <%
+      for(Iterator it = sortsetEducations.iterator(); it.hasNext();)
+      {
+         String[] arrstrEducation = (String[]) it.next();
+         %>
+      <mm:node number="<%= arrstrEducation[0] %>">
+         <%// Do check: is anybody online for this education %>
+         <mm:import id="show_this_item" reset="true">false</mm:import>
+         <mm:related path="classrel,people">
+            <%@include file="online_check.jsp"%>
+         </mm:related>
+         <mm:related path="related,classes,classrel,people">
+            <%@include file="online_check.jsp"%>
+         </mm:related>
+         <mm:compare referid="show_this_item" value="true">
+            EDUCATION:<b><mm:field name="name"/></b>
+            <br/>
+            <mm:related path="classrel,people">
+               <%@include file="add_person.jsp"%>
+            </mm:related>
+
+
+
+            <mm:related path="related,classes" orderby="classes.name">
+               <mm:node element="classes" jspvar="nodeClass">
+
+                  <mm:import id="show_this_item" reset="true">false</mm:import>
+                  <mm:related path="classrel,people">
+                     <%@include file="online_check.jsp"%>
+                  </mm:related>
+                  <mm:compare referid="show_this_item" value="true">
+                     class:<b><mm:field name="name"/></b>
+                     <br/>
+                     <mm:related path="classrel,people">
+                        <%@include file="add_person.jsp"%>
+                     </mm:related>
+                  </mm:compare>
+               </mm:node>
+            </mm:related>
+         </mm:compare>
+      </mm:node>
+         <%
+      }
+   %>
+
+<%--
+   <mm:list path="people,classrel,classes" constraints="people.number=$user" orderby="classes.name">
+      <mm:node element="classes" jspvar="nodeClass">
+         <%
+            if(!hsetClasses.contains("" + nodeClass.getNumber()))
+            {
+               %>
+                  <mm:import id="show_this_item" reset="true">false</mm:import>
+
+                  <mm:compare referid="show_this_item" value="true">
+                     class:<b><mm:field name="name"/></b>
+                     <br/>
+                     <mm:related path="classrel,people">
+                        <%@include file="add_person.jsp"%>
+                     </mm:related>
+                  </mm:compare>
+               <%
+            }
+         %>
+      </mm:node>
+   </mm:list>
+--%>
+<%--
    <mm:node referid="user">
       <mm:related path="classrel,educations">
          <mm:node element="educations">
@@ -47,8 +140,10 @@
          </mm:node>
       </mm:related>
    </mm:node>
+--%>
 
    <%
+/*
       for(Iterator it = sortsetUsers.iterator(); it.hasNext(); )
       {
          String[] arrstr = (String[]) it.next();
@@ -72,6 +167,7 @@
             </mm:node>
          <%
       }
+*/
    %>
 
 </mm:cloud>
