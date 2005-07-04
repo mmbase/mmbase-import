@@ -23,17 +23,42 @@
   <property name="tests.source.dir"   location="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
   <property name="tests.work.dir"    value="${tests.source.dir}/work" />
+  <property name="tests.database.dir"    value="${tests.work.dir}/database" />
 
   <property name="tests.lib"       value="${tests.build.dir}/lib" />
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
 
-  <target name="init" depends="mmbase,expand.junit">
+  <target name="start.database" depends="init">
+    <delete dir="${tests.database.dir}"/>
+    <mkdir dir="${tests.database.dir}"/>
+    <java classname="org.hsqldb.Server" fork="true" >
+      <arg value="-database.0" />
+      <arg value ="${tests.database.dir}/test" />
+      <arg value="-dbname.0" />
+      <arg value="test" />
+      <classpath>
+        <pathelement path="${tests.lib}/hsqldb.jar" />
+      </classpath>
+    </java>
+  </target>
+  <target name="stop.database" depends="init">
+    <echo message="Stopping database" />
+    <java 
+      classname="org.mmbase.tests.ShutdownHsql"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+    </java>
+  </target>
+
+  <target name="init" depends="expand.junit">
     <mkdir dir="${tests.work.dir}"/>
+    
     <copy file="${junit.jar}" todir="${tests.lib}" />
-    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
-    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci-server.jar" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" />
+    <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
         <include name="*.jar"/>
@@ -228,10 +253,10 @@ Build-compiler: ${build.compiler}
 
   <target name="run.bridge" depends="jar,init">
     <java 
-      classname="${ui.class}"
-      fork="true"
-      classpathref="run.classpath"      
-      >
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"      
+        >
       <arg value="org.mmbase.bridge.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
@@ -273,10 +298,10 @@ Build-compiler: ${build.compiler}
 
   <target name="run.dbsq" depends="jar,init">
     <java 
-      classname="${ui.class}"
-      fork="true"
-      classpathref="run.classpath"      
-      >
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"      
+        >
       <arg value="BaseSuite" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
     </java>
@@ -304,6 +329,18 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
+
+  <target name="run.clustering" depends="init">
+    <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
+    <parallel>
+      <antcall target="start.database" />
+      <sequential>        
+        <sleep seconds="2" />
+        <echo message="${tests.source.dir}/config" />
+        <antcall target="stop.database" />
+      </sequential>
+    </parallel>
+  </target>
 
 
   <!-- =================================================================== -->
