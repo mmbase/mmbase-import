@@ -5,22 +5,18 @@
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
+
+
 <mm:import externid="tests" required="true"/>
-
 <mm:import externid="learnobject" required="true"/>
-
 <mm:import externid="thismadetest" required="true"/>
-
 <mm:import externid="questionsshowed" jspvar="questionsShowed" required="true"/>
-
 <mm:import externid="pagecounter" jspvar="pageCounter" vartype="Integer"/>
-
 <mm:import externid="questionamount" jspvar="questionAmount" vartype="Integer"/>
 
 
 
 <%@include file="/shared/setImports.jsp" %>
-
 <%@include file="/education/tests/definitions.jsp" %>
 
 <mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
@@ -43,26 +39,24 @@
 
 <fmt:bundle basename="<%= bundlePOP %>">
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$popreferids">
-  <mm:param name="extraheader">
-    <title>POP</title>
-    <link rel="stylesheet" type="text/css" href="css/pop.css" />
-  </mm:param>
-</mm:treeinclude>
+  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="extraheader">
+      <title>POP</title>
+      <link rel="stylesheet" type="text/css" href="css/pop.css" />
+    </mm:param>
+  </mm:treeinclude>
 
-<!-- TODO where are the different roles described -->
-<!-- TODO different things to do with different roles? -->
+  <% boolean isEmpty = true; 
+     String msgString = "";
+  %>
 
-<% boolean isEmpty = true; 
-   String msgString = "";
-%>
+  <%@ include file="getids.jsp" %>
 
-<%@ include file="getids.jsp" %>
+  <div class="rows">
+    <%@ include file="leftpanel.jsp" %>
 
-<%@ include file="leftpanel.jsp" %>
-
-<%-- right section --%>
-<div class="mainContent"> 
+    <%-- right section --%>
+    <div class="mainContent">
 <div class="contentHeader"><fmt:message key="Progressmonitor"/>
   <di:hasrole referid="user" role="teacher">
     <mm:node number="$student">
@@ -74,56 +68,50 @@
 
 <mm:node number="$tests" id="my_tests">
 
-   
-
   <%-- Only the first time a madetests object is created --%>
-
   <mm:compare referid="thismadetest" value="">
 
-
-
     <%-- Save testresults --%>
-
     <mm:createnode type="madetests" id="madetest">
-
-
-
       <% long currentDate = System.currentTimeMillis() / 1000; %>
-
       <mm:setfield name="date"><%=currentDate%></mm:setfield>
-
       <mm:setfield name="score"><mm:write referid="TESTSCORE_INCOMPLETE"/></mm:setfield>
-
     </mm:createnode>
 
     <mm:createrelation role="related" source="my_tests" destination="madetest"/>
 
 
 
-    <%-- Make relation between copybooks instance and the madetest --%>
+   <%// Make relation between copybooks instance and the madetest %>
+   <%// Direct relation people->classrel->education %>
+   <mm:compare referid="class" value="null">
+      <mm:node number="$student">
+         <mm:relatedcontainer path="classrel,educations">
+            <mm:constraint field="educations.number" value="$education"/>
+            <mm:related>
+               <mm:node element="classrel">
+                  <mm:relatednodes type="copybooks" id="copybookID">
+                  </mm:relatednodes>
+               </mm:node>
+            </mm:related>
+         </mm:relatedcontainer>
+      </mm:node>
+   </mm:compare>
 
-    <mm:node number="$student">
-
-      <mm:relatedcontainer path="classrel,classes">
-
-        <mm:constraint field="classes.number" value="$class"/>
-
-        <mm:related>
-
-          <mm:node element="classrel">
-
-            <mm:relatednodes type="copybooks" id="copybookID">
-
-            </mm:relatednodes>
-
-          </mm:node>
-
-        </mm:related>  
-
-      </mm:relatedcontainer>
-
-    </mm:node>
-
+   <%// people->classrel->class->related->education %>
+   <mm:compare referid="class" value="null" inverse="true">
+      <mm:node number="$student">
+         <mm:relatedcontainer path="classrel,classes">
+            <mm:constraint field="classes.number" value="$class"/>
+            <mm:related>
+               <mm:node element="classrel">
+                  <mm:relatednodes type="copybooks" id="copybookID">
+                  </mm:relatednodes>
+               </mm:node>
+            </mm:related>
+         </mm:relatedcontainer>
+      </mm:node>
+   </mm:compare>
 
 
     <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
@@ -161,36 +149,38 @@
 
 
     <%-- Make relation between copybooks instance and the madetest --%>
-
     <mm:node number="$student">
-
-      <mm:relatedcontainer path="classrel,classes">
-
-        <mm:constraint field="classes.number" value="$class"/>
-
-        <mm:related>
-
-          <mm:node element="classrel">
-
-            <mm:relatednodes type="copybooks" id="my_copybook">
-
-              <mm:createrelation role="related" source="my_copybook" destination="madetest"/>
-
-            </mm:relatednodes>
-
-          </mm:node>
-
-        </mm:related>  
-
-      </mm:relatedcontainer>
-
+       <mm:compare referid="class" value="null">
+          <mm:relatedcontainer path="classrel,educations">
+             <mm:constraint field="educations.number" value="$education"/>
+             <mm:related>
+                <mm:node element="classrel">
+                   <mm:relatednodes type="copybooks" id="my_copybook">
+                      <mm:createrelation role="related" source="my_copybook" destination="madetest"/>
+                   </mm:relatednodes>
+                </mm:node>
+             </mm:related>
+          </mm:relatedcontainer>
+       </mm:compare>
+       <mm:compare referid="class" value="null" inverse="true">
+          <mm:relatedcontainer path="classrel,classes">
+             <mm:constraint field="classes.number" value="$class"/>
+             <mm:related>
+                <mm:node element="classrel">
+                   <mm:relatednodes type="copybooks" id="my_copybook">
+                      <mm:createrelation role="related" source="my_copybook" destination="madetest"/>
+                   </mm:relatednodes>
+                </mm:node>
+             </mm:related>
+          </mm:relatedcontainer>
+       </mm:compare>
     </mm:node>
 
-    
+
 
   </mm:compare>
 
-  
+
 
   <%-- Reuse the madetests object --%>
 
@@ -208,7 +198,7 @@
 
   <mm:import id="list" jspvar="list" vartype="List"><mm:write referid="questionsshowed"/></mm:import>
 
- 
+
 
   <%
 
@@ -248,7 +238,7 @@
 
     <mm:import externid="$question" id="shownquestion" reset="true"/>
 
-    
+
 
     <mm:import id="possiblequestion" reset="true"><mm:field name="number"/></mm:import>
 
@@ -290,7 +280,7 @@
 
 
 
-    <mm:remove referid="possiblequestion"/>    
+    <mm:remove referid="possiblequestion"/>
 
     <mm:remove referid="page"/>
 
@@ -306,7 +296,7 @@
 
   <%-- If all questions are answerd then show the feedback else show next question set --%>
 
-  <% 
+  <%
 
      if ( list.size() == questionAmount.intValue() ) {
 
@@ -355,7 +345,7 @@
 
   </div>
 </div>
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
+  <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
 </fmt:bundle>
 </mm:cloud>
 </mm:content>

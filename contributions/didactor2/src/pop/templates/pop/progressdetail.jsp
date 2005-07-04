@@ -150,6 +150,7 @@
          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$popreferids,startAt">
 
                 <mm:param name="user"><mm:field name="number"/></mm:param>
+                <mm:param name="direct_connection">false</mm:param>
 
          </mm:treeinclude>
 
