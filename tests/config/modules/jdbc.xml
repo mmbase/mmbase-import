@@ -5,8 +5,8 @@
   <classfile>org.mmbase.module.database.JDBC</classfile>
   <properties>
     <property name="driver">org.hsqldb.jdbcDriver</property>
-    <property name="url">jdbc:hsqldb:$DBM</property>
-    <property name="database">.</property><!-- in memory -->
+    <property name="url">jdbc:hsqldb:hsql://$HOST/$DBM</property>
+    <property name="database">test</property>
     <property name="user">sa</property>
     <property name="password"></property>
 
@@ -15,7 +15,7 @@
     <property name="connections">1</property>
 
     <property name="host">localhost</property>
-    <property name="port">0</property>
+    <property name="port">9001</property>
     <property name="queries">10000</property>
     <property name="probetime">3000</property>
   </properties>
