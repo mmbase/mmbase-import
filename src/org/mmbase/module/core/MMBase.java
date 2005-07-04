@@ -39,7 +39,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.133 2005-06-30 11:55:07 pierre Exp $
+ * @version $Id: MMBase.java,v 1.134 2005-07-04 14:43:48 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -306,9 +306,10 @@ public class MMBase extends ProcessorModule {
             cookieDomain = tmp;
         }
 
-        // default machine name is the current user name
+        // default machine name is the local host name plus context-path.
+        // We suppose that that is sufficiently unique in most cases
         try {
-            machineName = java.net.InetAddress.getLocalHost().getHostName();
+            machineName = java.net.InetAddress.getLocalHost().getHostName() + MMBaseContext.getHtmlRootUrlPath();
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
         }
