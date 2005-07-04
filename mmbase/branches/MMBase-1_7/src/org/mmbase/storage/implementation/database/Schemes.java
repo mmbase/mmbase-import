@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.11 2004-03-16 14:08:41 pierre Exp $
+ * @version $Id: Schemes.java,v 1.11.2.1 2005-07-04 14:17:18 michiel Exp $
  */
 public final class Schemes {
 
@@ -194,7 +194,7 @@ public final class Schemes {
     /**
      *  The default scheme for selecting a node type.
      */
-    public static final String CREATE_FOREIGN_KEY_DEFAULT = "CONSTRAINT {2}_foreign FOREIGN KEY ({2}) REFERENCES {3} ({4})";
+    public static final String CREATE_FOREIGN_KEY_DEFAULT = "CONSTRAINT {1}_{2}_foreign FOREIGN KEY ({2}) REFERENCES {3} ({4})";
 
     /**
      *  Name of the scheme for selecting a node type.
