@@ -10,9 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.tests;
 import junit.framework.TestCase;
 
+import java.io.File;
+import java.sql.*;
+import org.hsqldb.Server;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.Module;
+import org.mmbase.module.core.*;
 import org.mmbase.module.tools.MMAdmin;
 
 /**
@@ -33,17 +37,45 @@ public abstract class MMBaseTest extends TestCase {
      * If your test needs a running MMBase. Call this.
      */
     static public void startMMBase() throws Exception {
-        org.mmbase.module.core.MMBaseContext.init();
-        org.mmbase.module.core.MMBase.getMMBase();
+        startDatabase();
+        MMBaseContext.init();
+        MMBase.getMMBase();
         
         MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
         while (! mmadmin.getState()) {
             Thread.sleep(1000);
         }
-
-
-        
+        System.out.println("Starting test");        
     }
+
+    static public void startDatabase() {
+        // first try if it is running already
+        try {
+            Class.forName("org.hsqldb.jdbcDriver" );
+        } catch (Exception e) {
+            System.err.println("ERROR: failed to load HSQLDB JDBC driver." + e.getMessage());
+            return;
+        }
+        while(true) {
+            try {
+                Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/test", "sa", "");
+                // ok!, elaredy running one.
+                return;
+            } catch (SQLException sqe) {
+                Server server = new Server();
+                server.setDatabasePath(0, System.getProperty("user.dir") + File.separator + "database" + File.separator + "test");
+                server.setDatabaseName(0, "test");
+                server.setSilent(true);
+                server.start();
+                try {
+                    Thread.sleep(10000);
+                } catch (Exception e) {
+                    // I hate java
+                }
+            }
+        }
+    }
+
     /**
      * If no running MMBase is needed, then you probably want at least to initialize logging.
      */
