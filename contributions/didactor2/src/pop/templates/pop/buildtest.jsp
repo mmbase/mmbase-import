@@ -34,37 +34,12 @@
 
 
 <%-- remove old results --%>
-
 <mm:present referid="madetest" inverse="true">
 
+
 <%-- find student's copybook --%>
-
-<mm:import id="copybookNo"/>
-
 <mm:node number="$student">
-
-  <mm:relatedcontainer path="classrel,classes">
-
-    <mm:constraint field="classes.number" value="$class"/>
-
-    <mm:related>
-
-      <mm:node element="classrel">
-
-        <mm:relatednodes type="copybooks">
-
-          <mm:remove referid="copybookNo"/>
-
-          <mm:field id="copybookNo" name="number" write="false"/>
-
-        </mm:relatednodes>
-
-      </mm:node>
-
-    </mm:related>  
-
-  </mm:relatedcontainer>
-
+   <%@include file="find_copybook.jsp"%>
 </mm:node>
 
 
@@ -103,7 +78,7 @@
 
     </mm:relatednodes>
 
-    
+
 
   </mm:relatednodescontainer>
 
@@ -139,7 +114,11 @@
 
 <mm:node number="$learnobject">
 
-  <h1><mm:field name="name"/></h1>
+  <mm:field name="showtitle">
+    <mm:compare value="1">
+      <h1><mm:field name="name"/></h1>
+    </mm:compare>
+  </mm:field>
 
 
 
@@ -211,7 +190,7 @@
 
       <mm:import id="questionperpageamount"><mm:write referid="questionamount"/></mm:import>
 
-     </mm:islessthan>	
+     </mm:islessthan>
 
   </mm:write>
 
@@ -225,7 +204,7 @@
 
       <mm:import id="questionperpageamount">1</mm:import>
 
-     </mm:islessthan>	
+     </mm:islessthan>
 
   </mm:write>
 
@@ -235,7 +214,7 @@
 
 
 
-  
+
 
   <%-- Determine pages to show --%>
 
