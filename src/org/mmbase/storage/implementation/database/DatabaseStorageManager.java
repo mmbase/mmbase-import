@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.100 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.101 2005-07-04 21:27:03 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1652,35 +1652,40 @@ public class DatabaseStorageManager implements StorageManager {
             tableScheme = factory.getScheme(Schemes.CREATE_TABLE, Schemes.CREATE_TABLE_DEFAULT);
         }
         for (Iterator f = fields.iterator(); f.hasNext();) {
-            CoreField field = (CoreField)f.next();
-            // convert a fielddef to a field SQL createdefinition
-            if (isPartOfBuilderDefinition(field)) {
-                String fieldDef = getFieldDefinition(field);
-                if (createFields.length() > 0) {
-                    createFields.append(", ");
+            try {
+                CoreField field = (CoreField)f.next();
+                // convert a fielddef to a field SQL createdefinition
+                if (isPartOfBuilderDefinition(field)) {
+                    String fieldDef = getFieldDefinition(field);
+                    if (createFields.length() > 0) {
+                        createFields.append(", ");
+                    }
+                    createFields.append(fieldDef);
+                    // test on other indices
+                    String constraintDef = getConstraintDefinition(field);
+                    if (constraintDef != null) {
+                        // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
+                        // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
+                        // and the comma should not be prefixed.
+                        if (rowtypeScheme == null || createIndices.length() > 0) {
+                            createIndices.append(", ");
+                        }
+                        
+                        createIndices.append(constraintDef);
+                        if (createFieldsAndIndices.length() > 0) {
+                            createFieldsAndIndices.append(", ");
+                        }
+                        createFieldsAndIndices.append(fieldDef + ", " + constraintDef);
+                    } else {
+                        if (createFieldsAndIndices.length() > 0) {
+                            createFieldsAndIndices.append(", ");
+                        }
+                        createFieldsAndIndices.append(fieldDef);
+                    }
                 }
-                createFields.append(fieldDef);
-                // test on other indices
-                String constraintDef = getConstraintDefinition(field);
-                if (constraintDef != null) {
-                    // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
-                    // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
-                    // and the comma should not be prefixed.
-                    if (rowtypeScheme == null || createIndices.length() > 0) {
-                        createIndices.append(", ");
-                    }
-
-                    createIndices.append(constraintDef);
-                    if (createFieldsAndIndices.length() > 0) {
-                        createFieldsAndIndices.append(", ");
-                    }
-                    createFieldsAndIndices.append(fieldDef + ", " + constraintDef);
-                } else {
-                    if (createFieldsAndIndices.length() > 0) {
-                        createFieldsAndIndices.append(", ");
-                    }
-                    createFieldsAndIndices.append(fieldDef);
-                }
+            } catch (StorageException se) {
+                // if something wrong with one field, don't fail the complete table.
+                log.error("" + se.getMessage(), se);
             }
         }
         //  composite constraints
