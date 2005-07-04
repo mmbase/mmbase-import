@@ -17,7 +17,7 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.20 2005-06-28 14:01:40 pierre Exp $
+ * @version $Id: Field.java,v 1.21 2005-07-04 16:52:00 michiel Exp $
  */
 public interface Field extends Descriptor, MMBaseType {
 
@@ -101,19 +101,11 @@ public interface Field extends Descriptor, MMBaseType {
      */
     public int getStoragePosition();
 
-    // methods and constants below are now in the MMBaseType or DataType interfaces.
-    // They are maintained for backward compatibility but likely should become deprecated
-
-    public final static int TYPE_STRING  = MMBaseType.TYPE_STRING;
-    public final static int TYPE_INTEGER = MMBaseType.TYPE_INTEGER;
-    public final static int TYPE_BINARY  = MMBaseType.TYPE_BINARY;
+    /**
+     * @deprecated Use {@link org.mmbase.bridge.MMBaseType.TYPE_BINARY}
+     */
     public final static int TYPE_BYTE    = MMBaseType.TYPE_BINARY;
-    public final static int TYPE_FLOAT   = MMBaseType.TYPE_FLOAT;
-    public final static int TYPE_DOUBLE  = MMBaseType.TYPE_DOUBLE;
-    public final static int TYPE_LONG    = MMBaseType.TYPE_LONG;
-    public final static int TYPE_XML     = MMBaseType.TYPE_XML;
-    public final static int TYPE_NODE    = MMBaseType.TYPE_NODE;
-    public final static int TYPE_UNKNOWN = MMBaseType.TYPE_UNKNOWN;
+
 
     /**
      * Returns the GUI name for the data type this field contains.
