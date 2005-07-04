@@ -39,6 +39,23 @@
   <property name="machinename">MMBaseserver</property>
 
   <!--
+      If you use several MMBase's in a cluster, you need to specify how cache-invalidating
+      messages are sent between the several instances.
+
+     You specify a fully qualified class name.
+    
+     e.g.:
+     <property name="sharedstorage">org.mmbase.module.core.change.Multicast</property>
+     <property name="sharedstorage">org.mmbase.module.core.change.Unicast</property>
+
+   This will change in 1.8 in 'clustering'.
+-->
+  <!--
+  <property name="sharedstorage">org.mmbase.module.core.change.Multicast</property>
+  -->
+
+
+  <!--
   name="storagemanagerfactory" defines what factory to use for accessing the storage devices.
   Currently. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices using JDBC.
   Comment this property to use the old database support classes (which are deprecated).
