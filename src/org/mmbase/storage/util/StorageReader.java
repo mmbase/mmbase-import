@@ -16,14 +16,17 @@ import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.9 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: StorageReader.java,v 1.10 2005-07-04 21:25:26 michiel Exp $
  * @since MMBase-1.7
  */
 public class StorageReader extends DocumentReader  {
+
+    private static final Logger log = Logging.getLoggerInstance(StorageReader.class);
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_STORAGE_1_0 = "-//MMBase//DTD storage config 1.0//EN";
@@ -35,11 +38,7 @@ public class StorageReader extends DocumentReader  {
     /** DTD resource filename of the most Database DTD */
     public static final String DTD_STORAGE = DTD_STORAGE_1_0;
 
-    /**
-     * Register the Public Ids for DTDs used by StorageReader
-     * This method is called by XMLEntityResolver.
-     */
-    public static void registerPublicIDs() {
+    static {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_STORAGE_1_0, DTD_STORAGE_1_0, StorageReader.class);
     }
 
@@ -279,6 +278,10 @@ public class StorageReader extends DocumentReader  {
                     // get the type to convert to
                     typeMapping.type = typeMappingTag.getAttribute("type");
                     typeMappings.add(typeMapping);
+                    if (typeMapping.name.equals("BYTE")) {
+                        log.warn("In " + this + " deprecated mapping for 'BYTE' is specified. This must be changed to 'BINARY'");
+                        typeMapping.name = "BINARY";
+                    }
                 }
             }
         }
