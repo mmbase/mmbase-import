@@ -60,9 +60,7 @@
 
         <mm:node number="$dragimage">
 
-          <mm:import id="dragtitle" reset="true"><%= dragCounter %><mm:field name="showtitle"><mm:compare value="1"
-                                                                     >. <mm:field name="title"
-                                                                   /></mm:compare></mm:field></mm:import>
+          <mm:import id="dragtitle" reset="true"><%= dragCounter %>. <mm:field name="title" /></mm:import>
 
         </mm:node>
 
@@ -72,9 +70,7 @@
 
         <mm:list nodes="$question" path="dropquestions,dropimagerel,images" constraints="dropimagerel.pos=$givenanswer">
 
-            <mm:import id="droptitle" reset="true"><mm:write referid="givenanswer"/><mm:field name="images.showtitle"><mm:compare value="1"
-                                                                     >. <mm:field name="images.title"
-                                                                   /></mm:compare></mm:field></mm:import>
+            <mm:import id="droptitle" reset="true"><mm:write referid="givenanswer"/>. <mm:field name="images.title"/></mm:import>
 
         </mm:list>
 
