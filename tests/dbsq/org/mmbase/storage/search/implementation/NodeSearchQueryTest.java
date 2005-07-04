@@ -3,7 +3,7 @@ package org.mmbase.storage.search.implementation;
 import junit.framework.*;
 import java.util.*;
 
-import org.mmbase.core.FieldType;
+import org.mmbase.bridge.MMBaseType;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -12,7 +12,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -80,7 +80,7 @@ public class NodeSearchQueryTest extends TestCase {
             StepField stepField = (StepField) iStepFields.next();
             FieldDefs field = images.getField(stepField.getFieldName());
             assertTrue(fields.contains(field));
-            assertTrue(field.getDBType() != FieldType.TYPE_BYTE &&
+            assertTrue(field.getDBType() != MMBaseType.TYPE_BINARY &&
                 (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM));
         }
@@ -88,7 +88,7 @@ public class NodeSearchQueryTest extends TestCase {
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != FieldType.TYPE_BYTE &&
+            if (field.getDBType() != MMBaseType.TYPE_BINARY &&
                 (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 assertTrue(instance.getField(field) != null);
@@ -103,7 +103,7 @@ public class NodeSearchQueryTest extends TestCase {
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != FieldType.TYPE_BYTE &&
+            if (field.getDBType() != MMBaseType.TYPE_BINARY &&
                 (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 StepField stepField = instance.getField(field);

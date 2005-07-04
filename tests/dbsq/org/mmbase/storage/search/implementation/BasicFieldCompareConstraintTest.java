@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicFieldCompareConstraintTest extends TestCase {
     
@@ -95,11 +95,11 @@ public class BasicFieldCompareConstraintTest extends TestCase {
             fail("Invalid operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
-            instance1.setOperator(8);
+            instance1.setOperator(100);
             fail("Invalid operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
-            instance2.setOperator(8);
+            instance2.setOperator(100);
             fail("Invalid operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
