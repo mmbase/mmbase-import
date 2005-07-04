@@ -394,6 +394,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.documentation" depends="documentation" if="documentation.available">
+    <mkdir dir="${project.build.dir}/documentation" /> <!-- i HATE ant!, it would give error if dir not exists.... -->
     <copy todir="${mmdocs.dir}">
       <fileset dir="${project.build.dir}/documentation">
       </fileset>      
