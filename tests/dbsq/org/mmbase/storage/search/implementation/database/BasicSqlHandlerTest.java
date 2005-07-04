@@ -2,18 +2,19 @@ package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
 
-import org.mmbase.core.FieldType;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.bridge.MMBaseType;
 import java.util.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class BasicSqlHandlerTest extends TestCase {
 
@@ -1552,33 +1553,33 @@ public class BasicSqlHandlerTest extends TestCase {
     /** Test of appendFieldValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendFieldValue() {
         StringBuffer sb = new StringBuffer();
-        instance.appendFieldValue(sb, "asd EFG", false, FieldType.TYPE_STRING);
+        instance.appendFieldValue(sb, "asd EFG", false, MMBaseType.TYPE_STRING);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd EFG'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "asd EFG", true, FieldType.TYPE_STRING);
+        instance.appendFieldValue(sb, "asd EFG", true, MMBaseType.TYPE_STRING);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd efg'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "asd EFG", false, FieldType.TYPE_XML);
+        instance.appendFieldValue(sb, "asd EFG", false, MMBaseType.TYPE_XML);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd EFG'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "asd EFG", true, FieldType.TYPE_XML);
+        instance.appendFieldValue(sb, "asd EFG", true, MMBaseType.TYPE_XML);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("'asd efg'"));
 
         sb.setLength(0);
-        instance.appendFieldValue(sb, "123.0", true, FieldType.TYPE_DOUBLE);
+        instance.appendFieldValue(sb, "123.0", true, MMBaseType.TYPE_DOUBLE);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("123.0"));
 
         sb.setLength(0);
         instance.appendFieldValue(sb, new Double(123.45), false,
-            FieldType.TYPE_DOUBLE);
+            MMBaseType.TYPE_DOUBLE);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("123.45"));
 
         sb.setLength(0);
         instance.appendFieldValue(sb, new Double(123.0), false,
-            FieldType.TYPE_DOUBLE);
+            MMBaseType.TYPE_DOUBLE);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("123"));
     }
 
