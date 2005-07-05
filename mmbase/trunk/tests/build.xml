@@ -33,6 +33,8 @@
   <target name="clean.database">
     <mkdir dir="${tests.database.dir}"/>
     <delete dir="${tests.database.dir}"/>
+    <delete dir="${tests.source.dir}/config/builders/applications"/>
+    <mkdir dir="${tests.source.dir}/config/builders/applications"/>
   </target>
   <target name="start.database" depends="init">
     <java classname="org.hsqldb.Server" fork="true" >
@@ -337,7 +339,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.clustering" depends="jar,init">
+  <target name="run.clustering" depends="jar,init,clean.database">
     <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
     <parallel>
       <echo message="${tests.source.dir}/config" />
@@ -348,17 +350,23 @@ Build-compiler: ${build.compiler}
             fork="true"
             classpathref="run.classpath"
             >
+          <arg value="nostartdb" />
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Drmmci.port=1221" />
         </java>
-        <java
-            classname="org.mmbase.tests.MMBaseTest"
-            fork="true"
-            classpathref="run.classpath"
-            >
-          <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-          <jvmarg value="-Drmmci.port=1222" />
-        </java>
+        <sequential>
+          <!-- this should not be necessary, but MMBase's get a bit confused if they both at same time start to make the same tables -->
+          <sleep seconds="10" />
+          <java
+              classname="org.mmbase.tests.MMBaseTest"
+              fork="true"
+              classpathref="run.classpath"
+              >
+            <arg value="nostartdb" />
+            <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+            <jvmarg value="-Drmmci.port=1222" />
+          </java>
+        </sequential>
       </daemons>
       <java
           classname="${ui.class}"
@@ -375,7 +383,7 @@ Build-compiler: ${build.compiler}
   <!-- Run the tests -->
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util">
+          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util,run.clustering">
 
   </target>
 

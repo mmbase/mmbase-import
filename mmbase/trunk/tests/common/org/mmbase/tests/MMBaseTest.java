@@ -37,7 +37,6 @@ public abstract class MMBaseTest extends TestCase {
      * If your test needs a running MMBase. Call this.
      */
     static public void startMMBase() throws Exception {
-        startDatabase();
         MMBaseContext.init();
         MMBase.getMMBase();
         
@@ -94,6 +93,9 @@ public abstract class MMBaseTest extends TestCase {
      */
     public static void main(String[] args) {
         try {
+            if (! (args.length > 0 && args[0].equals("nostartdb"))) {
+                startDatabase();
+            }
             startMMBase();
             while(true) {
                 
