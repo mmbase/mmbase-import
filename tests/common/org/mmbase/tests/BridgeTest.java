@@ -26,23 +26,16 @@ public abstract class BridgeTest extends MMBaseTest {
         super(name);
     }
 
-    protected Map getNamePassword() {
-        Map user = new HashMap();
-        user.put("username", "admin");
-        user.put("password", "admin2k");
-        return user;
-    }
-
     protected Cloud getCloud() {
         return getLocalCloud();
     }
 
-    protected Cloud getLocalCloud() {    
-        return  ContextProvider.getDefaultCloudContext().getCloud("mmbase", "name/password", getNamePassword());
+    protected Cloud getLocalCloud() {
+        return  ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
     }
 
     protected Cloud getRemoteCloud() {
-        return  ContextProvider.getCloudContext("rmi://127.0.0.1:1221/remotecontext").getCloud("mmbase","name/password", getNamePassword());
+        return  ContextProvider.getCloudContext("rmi://127.0.0.1:1221/remotecontext").getCloud("mmbase", "class", null);
     }
 
 }
