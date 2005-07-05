@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.naming.*;
 import javax.sql.DataSource;
+import java.io.File;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
@@ -37,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.20 2005-02-09 22:37:23 eduard Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.21 2005-07-05 10:36:09 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -277,11 +278,19 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         if (basePath == null) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
-                basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
+                if (MMBaseContext.getServletContext() != null) {
+                    basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
+                } else {
+                    basePath = System.getProperty("user.dir") + File.separator + "data";
+                }
             } else {
                 java.io.File baseFile = new java.io.File(basePath);
                 if (! baseFile.isAbsolute()) {
-                    basePath = MMBaseContext.getServletContext().getRealPath("/") + java.io.File.separator + basePath;
+                    if (MMBaseContext.getServletContext() != null) {
+                        basePath = MMBaseContext.getServletContext().getRealPath("/") + File.separator + basePath;
+                    } else {
+                        basePath = System.getProperty("user.dir") + File.separator + basePath;
+                    }
                 }
             }
         }
