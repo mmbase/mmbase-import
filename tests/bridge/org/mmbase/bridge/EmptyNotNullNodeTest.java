@@ -22,6 +22,8 @@ import org.w3c.dom.Document;
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
+    private static final String EMPTY_XML = "<p/>\n";
+
     public EmptyNotNullNodeTest(String name) {
         super(name);
     }
@@ -29,8 +31,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
     public void testGetValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Object value = node.getValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field did return null, but the field is marked 'notnull'",
-                value != null);
+            assertTrue("Empty " + fieldTypes[i] + " field did return null, but the field is marked 'notnull'", value != null);
         }
     }
 
@@ -144,9 +145,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + dateValue + "\", but \"" + value +"\"",
                     dateValue.equals(value));
             } else if (fieldTypes[i].equals("xml")) {
-                // not-null 'empty' xml values return <mmxf><p/></mmxf>
-                assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"<mmxf>\n<p/>\n</mmxf>\n\", but \"" + value +"\"",
-                    "<mmxf>\n<p/>\n</mmxf>\n".equals(value));
+                // not-null 'empty' xml values return <p/>
+                assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + EMPTY_XML + "\", but \"" + value +"\"",
+                           EMPTY_XML.equals(value));
             } else {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but \"" + value +"\"",
                     "".equals(value));
