@@ -40,7 +40,7 @@
        <optionlist include="option_lists/images_position.xml" />
        <optionlist include="option_lists/boolean.xml" />
        <optionlist include="option_lists/layout.xml" />
-       <optionlist include="imagelayout.xml" />
+       <optionlist include="option_lists/imagelayout.xml" />
    </lists>
 
 
