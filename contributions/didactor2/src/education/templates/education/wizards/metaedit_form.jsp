@@ -39,7 +39,26 @@
 <mm:content postprocessor="reducespace">
    <mm:cloud>
 
-      <%// Get languages list %>
+      <%-- Get languages list
+      
+        *** 
+            somebody fix these constructs to do something like
+            
+            <mm:list path="metastandard,metadefinition,metavocabulary" constraints="metadefinition.handler='taal'">
+            ....
+            </mm:list>
+
+            walking though all possible nodes and then comparing a field with
+            a single value is hideously inefficient. the database should take
+            care of this, not some convoluted java construct.
+            
+            this page allocates about 40 mb of data on a single run - and it 
+            doesn't seem to release much either
+
+            Joost.
+        ***
+      
+      --%>
       <mm:listnodes type="metastandard">
          <mm:relatednodes type="metadefinition">
             <mm:field name="handler" jspvar="sHandler" vartype="String" write="false">
