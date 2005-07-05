@@ -163,6 +163,7 @@
       </db>
     </field>
 
+    <!--
     <field>
       <gui>
         <guiname xml:lang="en">ListField</guiname>
@@ -173,6 +174,7 @@
         <type key="false" notnull="true" state="persistent">LIST[BOOLEAN]</type>
       </db>
     </field>
+    -->
 
   </fieldlist>
 
