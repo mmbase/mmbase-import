@@ -30,9 +30,11 @@
   <property name="ui.class" value="junit.textui.TestRunner" />
 
 
-  <target name="start.database" depends="init">
-    <delete dir="${tests.database.dir}"/>
+  <target name="clean.database">
     <mkdir dir="${tests.database.dir}"/>
+    <delete dir="${tests.database.dir}"/>
+  </target>
+  <target name="start.database" depends="init">
     <java classname="org.hsqldb.Server" fork="true" >
       <arg value="-database.0" />
       <arg value ="${tests.database.dir}/test" />
@@ -45,20 +47,21 @@
   </target>
   <target name="stop.database" depends="init">
     <echo message="Stopping database" />
-    <java 
+    <java
       classname="org.mmbase.tests.ShutdownHsql"
       fork="true"
-      classpathref="run.classpath"      
+      classpathref="run.classpath"
       >
     </java>
   </target>
 
   <target name="init" depends="expand.junit">
     <mkdir dir="${tests.work.dir}"/>
-    
+
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}" />
+    <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
         <include name="*.jar"/>
@@ -75,23 +78,25 @@
           <include name="*.zip"/>
         </fileset>
       </classpath>
-      
-      
+
+
       <classpath id="run.classpath">
         <fileset dir="${tests.lib}">
           <include name="*.jar"/>
           <include name="*.zip"/>
         </fileset>
       </classpath>
-    </available>  
+    </available>
   </target>
 
   <target name="mmbase">
-    <ant dir="${source.dir}" target="jar" />
+    <ant dir="${source.dir}" target="jar">
+      <property name="build.documentation" value="false" />
+    </ant>
     <ant dir="${source.dir}" target="lib.compile" />
     <!--<ant dir="${source.dir}" target="expand.hsqldb" />-->
   </target>
-  
+
   <!-- =================================================================== -->
   <!-- Clean the JUnit test environment                                    -->
   <!-- =================================================================== -->
@@ -105,7 +110,7 @@
     <property name="junit.version" value="junit3.8.1"/>
     <property name="junit.url" value="http://www.mmbase.org/download/jars/junit/${junit.version}.zip"/>
     <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
-    <available property="junit.present" 
+    <available property="junit.present"
       file="${download.dir}/${junit.version}.zip"/>
     <available property="junit.expanded"
                file="${expand.dir}/${junit.version}"/>
@@ -186,7 +191,7 @@
 
     <echo message="compiling" />
 
-    <javac 
+    <javac
       destdir="${tests.build.dir}/classes"
       debug="true"
       optimize="false"
@@ -199,6 +204,7 @@
       <src path="${tests.source.dir}/dbsq"/>
       <src path="${tests.source.dir}/common"/>
       <src path="${tests.source.dir}/util"/>
+      <src path="${tests.source.dir}/clustering"/>
       <include name="**/*.java"/>
     </javac>
   </target>
@@ -207,13 +213,13 @@
   <target name="jar.uptodatecheck">
     <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
       <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**" />
-    </uptodate>   
+    </uptodate>
   </target>
 
   <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
     <echo message="${mmbasetest.jar} is up-to-date" />
   </target>
-    
+
 
   <target name="jar" description="Create the MMBase testjar file"
           depends="jar.check" unless="jar.uptodate">
@@ -240,10 +246,10 @@ Build-compiler: ${build.compiler}
 
 
   <target name="run.typerel" depends="jar,init">
-    <java 
+    <java
       classname="${ui.class}"
       fork="true"
-      classpathref="run.classpath"      
+      classpathref="run.classpath"
       >
       <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -251,11 +257,11 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge" depends="jar,init">
-    <java 
+  <target name="run.bridge" depends="jar,init,clean.database,mmbase">
+    <java
         classname="${ui.class}"
         fork="true"
-        classpathref="run.classpath"      
+        classpathref="run.classpath"
         >
       <arg value="org.mmbase.bridge.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -263,17 +269,17 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <!-- 
-  Test for rmmci, this tests is not 100% since both 
+  <!--
+  Test for rmmci, this tests is not 100% since both
   the client and server run in the same classloader/jvm.
-  errors when bridge code call the core directely are not 
+  errors when bridge code call the core directely are not
   detected
   -->
   <target name="run.bridge.rmmci" depends="jar,init">
-    <java 
+    <java
       classname="${ui.class}"
       fork="true"
-      classpathref="run.classpath"      
+      classpathref="run.classpath"
       >
       <arg value="org.mmbase.bridge.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -284,10 +290,10 @@ Build-compiler: ${build.compiler}
 
 
   <target name="run.convertimage" depends="jar,init">
-    <java 
+    <java
       classname="${ui.class}"
       fork="true"
-      classpathref="run.classpath"      
+      classpathref="run.classpath"
       >
       <arg value="org.mmbase.bridge.tests.ConvertImageTest" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
@@ -297,10 +303,10 @@ Build-compiler: ${build.compiler}
 
 
   <target name="run.dbsq" depends="jar,init">
-    <java 
+    <java
         classname="${ui.class}"
         fork="true"
-        classpathref="run.classpath"      
+        classpathref="run.classpath"
         >
       <arg value="BaseSuite" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -308,7 +314,7 @@ Build-compiler: ${build.compiler}
   </target>
 
   <target name="run.util" depends="jar,init">
-    <java 
+    <java
     	classname="${ui.class}"
         fork="true"
         classpathref="run.classpath">
@@ -320,25 +326,47 @@ Build-compiler: ${build.compiler}
   <!-- ================================================================== -->
 
   <target name="standalone" depends="jar,init">
-    <java 
+    <java
       classname="org.mmbase.tests.MMBaseTest"
       fork="true"
-      classpathref="run.classpath"      
+      classpathref="run.classpath"
       >
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Dmmbase.machinename=remotecontext" />
     </java>
   </target>
 
 
-  <target name="run.clustering" depends="init">
+  <target name="run.clustering" depends="jar,init">
     <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
     <parallel>
-      <antcall target="start.database" />
-      <sequential>        
-        <sleep seconds="2" />
-        <echo message="${tests.source.dir}/config" />
-        <antcall target="stop.database" />
-      </sequential>
+      <echo message="${tests.source.dir}/config" />
+      <daemons>
+        <antcall target="start.database" />
+        <java
+            classname="org.mmbase.tests.MMBaseTest"
+            fork="true"
+            classpathref="run.classpath"
+            >
+          <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+          <jvmarg value="-Drmmci.port=1221" />
+        </java>
+        <java
+            classname="org.mmbase.tests.MMBaseTest"
+            fork="true"
+            classpathref="run.classpath"
+            >
+          <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+          <jvmarg value="-Drmmci.port=1222" />
+        </java>
+      </daemons>
+      <java
+          classname="${ui.class}"
+          fork="true"
+          classpathref="run.classpath">
+        <arg value="org.mmbase.tests.Clustering" />
+        <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      </java>
     </parallel>
   </target>
 
