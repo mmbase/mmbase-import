@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.142 2005-06-28 21:17:54 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.143 2005-07-05 19:26:54 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -467,7 +467,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
 
     protected Document toXML(Object value, String fieldName) {
-        return Casting.toXML(value);
+        Document doc = Casting.toXML(value);
+        if (doc == null && parent.getField(fieldName).isRequired()) doc = Casting.toXML("<p/>");
+        return doc;
     }
 
     /**
