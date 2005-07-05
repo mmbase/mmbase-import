@@ -8,6 +8,7 @@
   <loginmodules>
     <module name="anonymous" class="org.mmbase.security.implementation.context.AnonymousLogin" />
     <module name="name/password" class="org.mmbase.security.implementation.context.PasswordLogin" />
+    <module name="class" class="org.mmbase.security.implementation.context.ClassLogin" />
   </loginmodules>
 
   <accounts>
