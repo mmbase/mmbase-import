@@ -4,11 +4,11 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BaseSuite extends org.mmbase.tests.MMBaseTest {
     
-    public BaseSuite(java.lang.String testName) {
+    public BaseSuite(String testName) {
         super(testName);
     }
     
