@@ -59,7 +59,7 @@
       </editor>
       <db>
         <name>bytefield</name>
-        <type key="false" notnull="false" state="persistent">BYTE</type>
+        <type key="false" notnull="false" state="persistent">BINARY</type>
       </db>
     </field>
 
@@ -163,6 +163,7 @@
       </db>
     </field>
 
+    <!--
     <field>
       <gui>
         <guiname xml:lang="en">ListField</guiname>
@@ -173,7 +174,7 @@
         <type key="false" notnull="false" state="persistent">LIST[BOOLEAN]</type>
       </db>
     </field>
-
+    -->
    
   </fieldlist>
 </builder>

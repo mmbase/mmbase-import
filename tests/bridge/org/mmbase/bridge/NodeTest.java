@@ -21,7 +21,7 @@ import org.mmbase.tests.*;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected static String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean", "list"};
+    protected static String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean"}; //, "list"};
 
     public NodeTest(String name) {
         super(name);
