@@ -6,11 +6,10 @@
   <properties>
     <property name="machinename">MMBaseserver</property>
     <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
-    <property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
-    <property name="multicastport">16080</property>
+    <property name="clustering">org.mmbase.clustering.multicast.Multicast</property>
     <property name="host">127.0.0.1</property>
-    <property name="basename">install</property>
-    <property name="language">en</property>
+    <property name="basename">mmbasetests</property>
+    <property name="language">zh</property>
     <property name="encoding">UTF-8</property>
   </properties>
 </module>
