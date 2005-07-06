@@ -42,6 +42,7 @@
       <operation type="link">          <grant group="users" />        </operation>
       <operation type="delete">        <grant group="administrators" />        </operation>
       <operation type="change context"><grant group="administrators" /></operation>
+      <operation type="create"><grant group="administrators" /></operation>
       <!--
       When the rights change of the object of this context,
       it can get the following rights..
