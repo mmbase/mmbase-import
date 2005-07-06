@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.53 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.54 2005-07-06 16:04:11 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -141,8 +141,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
 
             TypeDef typeDef = mmb.getTypeDef();
-            MMObjectBuilder sourceBuilder      = mmb.getBuilder(typeDef.getValue(typeRel.getIntValue("snumber")));
-            MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typeRel.getIntValue("dnumber")));
+
+            String sourceBuilderName = typeDef.getValue(typeRel.getIntValue("snumber"));
+            MMObjectBuilder sourceBuilder      = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
+
+            String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
+            MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
 
 
             if (sourceBuilder == null) {
@@ -571,9 +575,15 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             int dnumber = n.getIntValue("dnumber");
             int rnumber = n.getIntValue("rnumber");
 
+            String sourceName = mmb.getTypeDef().getValue(snumber);
+            String destName   = mmb.getTypeDef().getValue(dnumber);
+
+            if (sourceName == null) sourceName = "unknown builder '" + snumber + "'";
+            if (destName   == null) destName = "unknown builder '" + dnumber + "'";
+
             // unfilled should only happen during creation of the node.
-            String source      = snumber > -1 ? mmb.getTypeDef().getValue(snumber) : "[unfilled]";
-            String destination = dnumber > -1 ? mmb.getTypeDef().getValue(dnumber) : "[unfilled]";
+            String source      = snumber > -1 ? sourceName : "[unfilled]";
+            String destination = dnumber > -1 ? destName : "[unfilled]";
             MMObjectNode role  = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
             return source + "->"+ destination + " (" + (role != null ? role.getStringValue("sname")  : "???" ) +")";
         } catch (Exception e) {
