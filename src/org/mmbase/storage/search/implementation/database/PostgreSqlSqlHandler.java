@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.11 2005-05-24 14:00:39 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.12 2005-07-06 09:14:03 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -54,20 +54,20 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
-            case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-
-            case SearchQueryHandler.FEATURE_OFFSET:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-                /*
-            case SearchQueryHandler.FEATURE_REGEXP:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-                */
-            default:
-                result = super.getSupportLevel(feature, query);
+        case SearchQueryHandler.FEATURE_MAX_NUMBER:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            
+        case SearchQueryHandler.FEATURE_OFFSET:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            /*
+              case SearchQueryHandler.FEATURE_REGEXP:
+              result = SearchQueryHandler.SUPPORT_OPTIMAL;
+              break;
+            */
+        default:
+            result = super.getSupportLevel(feature, query);
         }
         return result;
     }
