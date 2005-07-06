@@ -4,9 +4,9 @@
   <status>active</status>
   <classfile>org.mmbase.module.core.MMBase</classfile>
   <properties>
-    <property name="machinename">MMBaseserver</property>
     <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
     <property name="clustering">org.mmbase.clustering.multicast.Multicast</property>
+
     <property name="host">127.0.0.1</property>
     <property name="basename">mmbasetests</property>
     <property name="language">zh</property>
