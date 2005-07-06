@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.18 2005-04-12 14:11:18 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.19 2005-07-06 13:47:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -186,9 +186,16 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
         }
 
+        boolean storesAsFile = org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator iFields = lFields.iterator();
+        boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
+            if (field.getType() == org.mmbase.bridge.MMBaseType.TYPE_BINARY && storesAsFile) continue; 
+            if (appended) {
+                sb.append(',');
+            }
+            appended = true;
 
             // Fieldname prefixed by table alias.
             Step step = field.getStep();
@@ -251,9 +258,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         .append(getAllowedValue(fieldAlias));
             }
 
-            if (iFields.hasNext()) {
-                sb.append(",");
-            }
         }
 
         log.trace("Base field part of query : " + sb);
