@@ -360,6 +360,7 @@ Build-compiler: ${build.compiler}
             >
           <jvmarg value="-Dnostartdb=" />
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+          <jvmarg value="-Dmmbaseroot.machinename=mmbase1" />
           <jvmarg value="-Drmmci.port=1221" />
         </java>
         <sequential>
@@ -372,6 +373,7 @@ Build-compiler: ${build.compiler}
               >
             <jvmarg value="-Dnostartdb=" />
             <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+            <jvmarg value="-Dmmbaseroot.machinename=mmbase2" />
             <jvmarg value="-Drmmci.port=1222" />
           </java>
         </sequential>
