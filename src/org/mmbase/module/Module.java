@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.64 2005-06-30 11:55:07 pierre Exp $
+ * @version $Id: Module.java,v 1.65 2005-07-06 11:22:53 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -352,6 +352,7 @@ public abstract class Module extends FunctionProvider {
             }
             return obj;
         } else {
+            log.warn("The module '" + name + "' could not be found!");
             return null;
         }
     }
