@@ -463,6 +463,7 @@ builddate=${builddate}
         <include name="builders/INDEX" />
         <include name="functions/**/*.xml"/>
         <include name="storage/**/*.xml"/>
+        <include name="modules/mmbaseroot.xml"/>
         <include name="utils/**/*.xml"/>
         <include name="xslt/**/*.xsl"/>
         <include name="xslt/**/*.xslt"/>
@@ -473,9 +474,12 @@ builddate=${builddate}
     <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
 Basics.xml
     </echo>
+    <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
+mmbaseroot.xml
+    </echo>
   </target>
 
-  <target name="compile" description="Compile the source directory" depends="init.compile">
+  <target name="compile" description="Compile the source directory"  depends="init.compile">
 
     <echo message="java version: ${ant.java.version}" />
 
@@ -540,7 +544,7 @@ Basics.xml
 
 
   <target name="jar" description="Create the MMBase jar file"
-          depends="init,jar.check" unless="jar.uptodate">
+          depends="init,lib.compile,jar.check" unless="jar.uptodate">
     <antcall target="compile" />
     <antcall target="resources" />
 
