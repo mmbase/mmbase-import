@@ -20,37 +20,25 @@ import org.w3c.dom.Document;
 
  * @author Michiel Meeuwissen
  */
-public class Clustering extends TestCase {
+public class Clustering extends BridgeTest {
 
-    int tryCount = 0;
     protected Cloud cloud1;
     protected Cloud cloud2;
     protected NodeList aa2list;
     protected NodeList bb2related;
     protected Node     nodea1;
     public void setUp() {
-        while(true) {
-            try {
-                cloud1 =   ContextProvider.getCloudContext("rmi://127.0.0.1:1221/remotecontext").getCloud("mmbase", "class", null);
-                cloud2 =   ContextProvider.getCloudContext("rmi://127.0.0.1:1222/remotecontext").getCloud("mmbase", "class", null);
-                NodeManager aa2 = cloud2.getNodeManager("aa");
-                NodeManager aa1 = cloud1.getNodeManager("aa");
-                NodeManager bb2 = cloud2.getNodeManager("bb");
-                aa2list = aa2.getList(null, null, null); // cache list result
-                nodea1 = aa1.createNode();
-                nodea1.commit();
-                NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, "related", "both");
-                bb2related = bb2.getList(nq);
-                break;
-            } catch (BridgeException be) {
-                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds");
-                try {
-                    tryCount ++;
-                    if (tryCount > 25) break;
-                    Thread.sleep(5000);
-                } catch (Exception ie) {}
-            }
-        }
+        cloud1 =   getRemoteCloud("rmi://127.0.0.1:1221/remotecontext");
+        cloud2 =   getRemoteCloud("rmi://127.0.0.1:1222/remotecontext");
+
+        NodeManager aa2 = cloud2.getNodeManager("aa");
+        NodeManager aa1 = cloud1.getNodeManager("aa");
+        NodeManager bb2 = cloud2.getNodeManager("bb");
+        aa2list = aa2.getList(null, null, null); // cache list result
+        nodea1 = aa1.createNode();
+        nodea1.commit();
+        NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, "related", "both");
+        bb2related = bb2.getList(nq);
     }
 
     public void fieldEquals(Node n1, Node n2) {
@@ -122,7 +110,7 @@ public class Clustering extends TestCase {
         Node zz = typedef.createNode();
         zz.setStringValue("name", "zz");
         Document builderXML = Casting.toXML("<?xml version='1.0' encoding='UTF-8'?>\n" + 
-                                            "<!DOCTYPE builder PUBLIC '-//MMBase//builder config 1.1//EN' 'http://www.mmbase.org/dtd/builder_1_1.dtd'>\n" + 
+                                            "<!DOCTYPE builder PUBLIC \"-//MMBase//builder config 1.1//EN\" \"http://www.mmbase.org/dtd/builder_1_1.dtd\">\n" + 
                                             "<builder extends='object' maintainer='mmbase.org' name='zz' version='0'></builder>");
         System.out.println("Using builder XML " + org.mmbase.util.xml.XMLWriter.write(builderXML, true));
         zz.setXMLValue("config", builderXML);
