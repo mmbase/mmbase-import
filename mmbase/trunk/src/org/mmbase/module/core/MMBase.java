@@ -39,7 +39,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.134 2005-07-04 14:43:48 michiel Exp $
+ * @version $Id: MMBase.java,v 1.135 2005-07-06 09:10:56 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -621,6 +621,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Returns an instance of a CoreField based on the type, and initializes it with the given values.
+     * @since MMBase-1.8
      */
     public CoreField createField(String name, int type, int state) {
         CoreField field = Fields.createField(name, type);
@@ -630,6 +631,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Returns an instance of a CoreField based on the type, and initializes it with the gieven values.
+     * @since MMBase-1.8
      */
     public CoreField createField(String name, int type, int state, String guiName, String guiType, int searchPosition, int listPosition, int editPosition) {
         CoreField field = createField(name, type, state);
