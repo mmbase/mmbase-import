@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.144 2005-07-06 11:41:28 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.145 2005-07-06 16:33:48 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1586,42 +1586,52 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         while(i.hasNext()) {
             node    = (MMObjectNode)i.next();
             otype   = node.getIntValue(type + ".otype");
+
             // convert the nodes of type ootype to real numbers
             if(otype != ootype) {
-            // if we have nodes return real values
-            if(ootype != -1) {
-                result.addAll(getRealNodesFromBuilder(list, ootype));
-                list = new ArrayList();
+                // if we have nodes return real values
+                if(ootype != -1) {
+                    result.addAll(getRealNodesFromBuilder(list, ootype));
+                    list = new ArrayList();
+                }
+                ootype  = otype;
             }
-            ootype  = otype;
+            // convert current node type.number and type.otype to number and otype
+            String builderName = parent.mmb.getTypeDef().getValue(otype);
+            if (builderName == null) {
+                log.warn("Could not find builder of node " + node.getNumber() + " taking 'object'");
+                builderName = "object";
+                otype = parent.mmb.getBuilder(builderName).getObjectType();
+            }
+
+
+            convert = new MMObjectNode(parent.mmb.getBuilder(builderName));
+            // parent needs to be set or else mmbase does nag nag nag on a setValue()
+            convert.setValue("number", node.getValue(type + ".number"));
+            convert.setValue("otype", ootype);
+            list.add(convert);
+            // first and only list or last list, return real values
+            if(!i.hasNext()) {
+                // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
+                result.addAll(getRealNodesFromBuilder(list, otype));
+            }
         }
-        // convert current node type.number and type.otype to number and otype
-        convert = new MMObjectNode(parent.mmb.getMMObject(parent.mmb.getTypeDef().getValue(otype)));
-        // parent needs to be set or else mmbase does nag nag nag on a setValue()
-        convert.setValue("number", node.getValue(type + ".number"));
-        convert.setValue("otype", otype);
-        list.add(convert);
-        // first and only list or last list, return real values
-        if(!i.hasNext()) {
-        // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
-            result.addAll(getRealNodesFromBuilder(list, otype));
+
+        // check that we didnt loose any nodes
+
+        // Java 1.4
+        // assert(virtuals.size() == result.size());
+
+        // Below Java 1.4
+        if(virtuals.size() != result.size()) {
+            log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
         }
-    }
 
-    // check that we didnt loose any nodes
-
-    // Java 1.4
-    // assert(virtuals.size() == result.size());
-
-    // Below Java 1.4
-    if(virtuals.size() != result.size()) {
-        log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
-    }
-
-    return result;
+        return result;
     }
 
     /**
+     * Upgrade a certain list of MMObectNodes to the right type.
      * @since MMBase-1.6.2
      */
     private List getRealNodesFromBuilder(List list, int otype) {
@@ -1632,10 +1642,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             if(rparent != null) {
                 result.addAll(rparent.getNodes(list));
             } else {
-                log.error("This otype("+otype+") does not denote a valid typedef-name("+name+")!");
+                log.error("This otype(" + otype + ") does not denote a valid typedef-name(" + name + ")!");
             }
         } else {
-            log.error("This otype("+otype+") gives no name("+name+") from typedef!");
+            log.error("This otype(" + otype + ") gives no name(" + name + ") from typedef!");
         }
         return result;
     }
