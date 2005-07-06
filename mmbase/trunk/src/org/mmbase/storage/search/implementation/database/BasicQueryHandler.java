@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.39 2005-07-06 13:38:38 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.40 2005-07-06 14:14:02 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -202,7 +202,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results = new ArrayList();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
-        
+        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // Truncate results to provide weak support for maxnumber.
         try {
             while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
@@ -210,9 +210,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     ClusterNode node = new ClusterNode(builder, numberOfSteps);
                     node.start();
 
+                    int j = 1;
                     // make use of Node-cache to fill fields
                     // especially XML-fields can be heavy, otherwise (Documnents must be instantiated)
-                    
                     for (int i = 0; i < fields.length; i++) {
                         String fieldName = fields[i].getFieldName(); // why not getAlias first?
                         Step step = fields[i].getStep();
@@ -222,7 +222,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             alias = step.getTableName();
                         }
                         CoreField field = builder.getField(alias +  '.' + fieldName);
-                        Object value = storageManager.getValue(rs, i + 1, field, false);
+                        if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+                        Object value = storageManager.getValue(rs, j++, field, false);
                         node.setValue(alias +  '.' + fieldName, value);
                     }
                     node.clearChanged();
@@ -230,7 +231,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     results.add(node);
                 } catch (Exception e) {
                     // log error, but continue with other nodes
-                    log.error(e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (SQLException sqe) {
@@ -247,19 +248,22 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results = new ArrayList();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
+        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // Truncate results to provide weak support for maxnumber.
         try {
             while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
                 try {
                     ResultNode node = new ResultNode(builder);
                     node.start();
+                    int j = 1;
                     for (int i = 0; i < fields.length; i++) {
                         String fieldName = fields[i].getAlias();
                         if (fieldName == null) {
                             fieldName = fields[i].getFieldName();
                         }
                         CoreField field = builder.getField(fieldName);
-                        Object value = storageManager.getValue(rs, i + 1, field, false);
+                        if (field != null && field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+                        Object value = storageManager.getValue(rs, j++, field, false);
                         node.setValue(fieldName, value);
                     }
                     node.clearChanged();
@@ -267,7 +271,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     results.add(node);
                 } catch (Exception e) {
                     // log error, but continue with other nodes
-                    log.error(e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (SQLException sqe) {
