@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.25 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.26 2005-07-06 13:27:04 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -403,12 +403,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      */
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
+        MMObjectBuilder builder = mmb.getBuilder(step.getTableName()); 
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             CoreField field = (CoreField) iFields.next();
-            if (field.getType() != MMBaseType.TYPE_BINARY
-                && field.inStorage()) {
+            if (field.inStorage()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
             }
