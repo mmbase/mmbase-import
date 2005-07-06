@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.38 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.39 2005-07-06 13:38:38 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -202,12 +202,17 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results = new ArrayList();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
+        
         // Truncate results to provide weak support for maxnumber.
         try {
             while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
                 try {
                     ClusterNode node = new ClusterNode(builder, numberOfSteps);
                     node.start();
+
+                    // make use of Node-cache to fill fields
+                    // especially XML-fields can be heavy, otherwise (Documnents must be instantiated)
+                    
                     for (int i = 0; i < fields.length; i++) {
                         String fieldName = fields[i].getFieldName(); // why not getAlias first?
                         Step step = fields[i].getStep();
@@ -279,16 +284,18 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results= new ArrayList();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
+        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // determine indices of queried fields
         Map fieldIndices = new HashMap();
         Step nodeStep = fields[0].getStep();
+        int j = 1;
         for (int i = 0; i < fields.length; i++) {
             if (fields[i].getStep() == nodeStep) {
                 String fieldName =  fields[i].getFieldName();
                 CoreField field = builder.getField(fieldName);
-                if (field != null) {
-                    fieldIndices.put(field, new Integer(i + 1));
-                }
+                if (field == null) continue;
+                if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+                fieldIndices.put(field, new Integer(j++));
             }
         }
 
@@ -307,7 +314,17 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         if (index != null) {
                             value = storageManager.getValue(rs, index.intValue(), field, true);
                         } else {
-                            java.sql.Blob b = storageManager.getBlobValue(node, field, true);
+                            java.sql.Blob b;
+                            if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) {
+                                log.debug("No index found for '" + fieldName + "', supposing it on disk");
+                                // must have been a explicitely specified 'blob' field
+                                b = storageManager.getBlobValue(node, field, true);
+                            } else {
+                                // could even throw RuntimeException here, because this should not
+                                // happen!
+                                log.error("No index found for '" + fieldName + "'");
+                                b = null;
+                            }
                             if (b == null) {
                                 value = MMObjectNode.VALUE_NULL;
                             } else {
