@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.47 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.48 2005-07-06 13:41:44 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -247,11 +247,17 @@ public class BasicSqlHandler implements SqlHandler {
             }
         }
 
+        boolean storesAsFile = MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator iFields = lFields.iterator();
+        boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-
-            // Fieldname prefixed by table alias.
+            if (field.getType() == MMBaseType.TYPE_BINARY && storesAsFile) continue; 
+            if (appended) {
+                sb.append(',');
+            }
+            appended = true;
+            // fieldname prefixed by table alias.
             Step step = field.getStep();
             String fieldName = field.getFieldName();
             String fieldAlias = field.getAlias();
@@ -311,9 +317,6 @@ public class BasicSqlHandler implements SqlHandler {
                 .append(getAllowedValue(fieldAlias));
             }
 
-            if (iFields.hasNext()) {
-                sb.append(",");
-            }
         }
 
         // Tables
