@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.54 2005-05-02 08:27:40 michiel Exp $
+ * @version $Id: Node.java,v 1.55 2005-07-06 09:07:54 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -430,6 +430,7 @@ public interface Node extends Comparable {
     * this node using the set methods will be made visible to the cloud.
     * This action fails if the current node is not in edit mode.
     * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+    * @throws BridgeException
     */
     public void commit();
 
@@ -779,7 +780,7 @@ public interface Node extends Comparable {
     public boolean mayChangeContext();
 
     /**
-     * Returns all the Function objects of this Module.
+     * Returns all the Function objects of this Node
      *
      * @since MMBase-1.8
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
