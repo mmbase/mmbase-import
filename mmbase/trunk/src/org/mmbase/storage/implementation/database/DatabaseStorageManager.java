@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.101 2005-07-04 21:27:03 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.102 2005-07-06 09:15:08 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -500,7 +500,7 @@ public class DatabaseStorageManager implements StorageManager {
                 } else {
                     if (result != null) result.close();
                     s.close();
-                    throw new StorageException("Node with number " + node.getNumber() + " not found.");
+                    throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found.");
                 }
             } finally {
                 result.close();
