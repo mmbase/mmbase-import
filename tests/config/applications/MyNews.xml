@@ -28,20 +28,9 @@
     <relation from="people" to="images"   type="related" />
   </allowedrelationlist>
 
-  <datasourcelist>
-    <datasource builder="mags"     path="MyNews/mags.xml" />
-    <datasource builder="news"     path="MyNews/news.xml" />
-    <datasource builder="people"   path="MyNews/people.xml" />
-    <datasource builder="urls"     path="MyNews/urls.xml" />
-    <datasource builder="attachments"  path="MyNews/attachments.xml" />
-    <datasource builder="images"   path="MyNews/images.xml" />
-    <datasource builder="mmevents" path="MyNews/mmevents.xml" />
-   </datasourcelist>
+  <datasourcelist/>
 
-   <relationsourcelist>
-     <relationsource builder="insrel" path="MyNews/insrel.xml" />
-     <relationsource builder="posrel" path="MyNews/posrel.xml" />
-   </relationsourcelist>
+   <relationsourcelist />
 
    <contextsourcelist>
      <contextsource path="MyNews/backup.xml" type="depth" goal="backup"/>

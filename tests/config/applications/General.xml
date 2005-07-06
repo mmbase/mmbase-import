@@ -17,14 +17,8 @@
     <relation from="pools"   to="images"   type="related" />
   </allowedrelationlist>
 
-  <datasourcelist>
-    <datasource builder="images"     path="General/images.xml" />
-    <datasource builder="pools"     path="General/pools.xml" />
-   </datasourcelist>
-
-   <relationsourcelist>
-     <relationsource builder="insrel" path="General/insrel.xml" />
-   </relationsourcelist>
+  <datasourcelist />
+   <relationsourcelist />
 
    <contextsourcelist>
      <contextsource path="backup.xml" type="depth" goal="backup"/>

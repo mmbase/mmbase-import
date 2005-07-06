@@ -29,7 +29,6 @@
 
   <relationsourcelist>
     <relationsource builder="insrel" path="BridgeTest/insrel.xml" />
-    <relationsource builder="posrel" path="BridgeTest/posrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>
