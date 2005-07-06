@@ -30,12 +30,12 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.4 2005-05-20 10:53:49 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.5 2005-07-06 16:36:45 michiel Exp $
  */
 public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
-    
+
     /** Followup number of message */
     protected int follownr = 1;
     /** Number of processed messages */
@@ -229,10 +229,11 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
         // check if MMBase is 100% up and running, if not eat event
         if (!mmbase.getState()) return true;
 
-        MMObjectBuilder bul = mmbase.getMMObject(tb);
+        MMObjectBuilder bul = mmbase.getBuilder(tb);
         if (bul == null) {
-            log.error("Unknown builder=" + tb);
-            return false;
+            log.warn("Unknown builder=" + tb);
+            tb = "object";
+            bul = mmbase.getBuilder(tb);
         }
         if (machine.equals(mmbase.getMachineName())) {
             if (bul != null) {
