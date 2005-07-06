@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.143 2005-07-05 19:26:54 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.144 2005-07-06 11:41:28 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -687,7 +687,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the number of the node
      */
     public int getNumber() {
-        return getIntValue("number");
+        return Casting.toInt(values.get("number"));
     }
 
     /**
