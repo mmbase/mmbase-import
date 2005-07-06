@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.101 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.102 2005-07-06 14:51:25 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -963,7 +963,9 @@ public class MMAdmin extends ProcessorModule {
           MMObjectNode n2 = (MMObjectNode) b.nextElement();
           localNumber = n2.getIntValue("localnumber");
       }
-      importedNode.setValue(fieldname, localNumber);
+      if (localNumber != -1) { // leave it unset in that case, because foreign keys whine otherwise (so, if you have foreign keys (e.g. hsql), the field _must not_ be required).
+          importedNode.setValue(fieldname, localNumber);
+      }
    }
 
    /**
