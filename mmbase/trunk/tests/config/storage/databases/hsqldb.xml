@@ -14,13 +14,16 @@
 	<storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
 
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.HSqlSqlHandler" />
-
 	<attributes>
 		<!-- Automatically prefix reserved words with "m_" -->
 		<attribute name="default-storage-identifier-prefix">m</attribute>
 
 		<!-- HSQLdb expects table and field names to be uppercase -->
 		<attribute name="storage-identifier-case">upper</attribute>
+
+    <!--   This needs testing too!
+    <option name="database-stores-binary-as-file" />
+    -->
 
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
@@ -43,7 +46,7 @@
 		<type-mapping name="NODE" type="INTEGER" />
 		<type-mapping name="STRING" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
 		<type-mapping name="XML" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
-		<type-mapping name="BYTE" min-size="1" max-size="16777216" type="BINARY" />
+		<type-mapping name="BINARY" min-size="1" max-size="16777216" type="BINARY" />
 		<type-mapping name="DATETIME" type="DATETIME" />
 		<type-mapping name="BOOLEAN"  type="BIT" />
     <type-mapping name="LIST[FLOAT]"   type="OTHER" />
@@ -58,14 +61,6 @@
 	</type-mappings>
 
 	<!-- HSQLdb disallowed fields are retrieved from the database -->
-	<disallowed-fields >
-          <disallowed-field name="number" replacement="m_number" />
-          <disallowed-field name="snumber" replacement="m_snumber" />
-          <disallowed-field name="dnumber" replacement="m_dnumber" />
-          <disallowed-field name="title" replacement="m_title" />
-          <disallowed-field name="images" replacement="m_images" />
-          <disallowed-field name="imageTitle" replacement="m_imageTitle" />
-          <disallowed-field name="i" replacement="m_i" />
-	</disallowed-fields>
+	<disallowed-fields />
 
 </storage>
