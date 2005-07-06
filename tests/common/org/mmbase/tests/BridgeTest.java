@@ -26,16 +26,52 @@ public abstract class BridgeTest extends MMBaseTest {
         super(name);
     }
 
-    protected Cloud getCloud() {
-        return getLocalCloud();
-    }
+    int tryCount = 0;
 
-    protected Cloud getLocalCloud() {
-        return  ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+    protected Cloud getCloud() {
+        Cloud c = null;
+        while(true) {
+            CloudContext cc = null;
+            try {
+                cc = ContextProvider.getDefaultCloudContext();        
+                c = cc.getCloud("mmbase", "class", null);
+                break;
+            } catch (BridgeException be) {
+                if (cc instanceof LocalContext) {
+                    throw be;
+                }
+                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds");
+                try {
+                    tryCount ++;
+                    if (tryCount > 25) throw be;
+                    Thread.sleep(5000);
+                } catch (Exception ie) {}
+            }
+        }
+        return c;
     }
 
     protected Cloud getRemoteCloud() {
-        return  ContextProvider.getCloudContext("rmi://127.0.0.1:1221/remotecontext").getCloud("mmbase", "class", null);
+        return getRemoteCloud("rmi://127.0.0.1:1221/remotecontext");
+    }
+
+    protected Cloud getRemoteCloud(String uri) {
+        Cloud c = null;
+        while(true) {
+            try {
+                c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
+                break;
+            } catch (BridgeException be) {
+                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds");
+                try {
+                    tryCount ++;
+                    if (tryCount > 25) throw be;
+                    Thread.sleep(5000);
+                } catch (Exception ie) {}
+            }
+        }
+        return c;
+
     }
 
 }
