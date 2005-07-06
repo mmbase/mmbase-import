@@ -39,7 +39,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.135 2005-07-06 09:10:56 michiel Exp $
+ * @version $Id: MMBase.java,v 1.136 2005-07-06 11:28:41 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -559,6 +559,9 @@ public class MMBase extends ProcessorModule {
     public static MMBase getMMBase() {
         if (mmbaseroot == null) {
             mmbaseroot = (MMBase) getModule("mmbaseroot", true);
+            if (mmbaseroot == null) {
+                log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?");
+            }
         }
         return mmbaseroot;
     }
