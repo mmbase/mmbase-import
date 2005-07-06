@@ -27,7 +27,7 @@
         <field name="initials" >
             <prompt>Initialen</prompt>
         </field>
-        <field name="suffix" >
+        <field name="suffix" ftype="line">
             <prompt>Tussenvoegsel</prompt>
         </field>
         <field name="lastname" >
@@ -42,19 +42,19 @@
         <field name="city" >
             <prompt>Plaats</prompt>
         </field>
-        <field name="country" >
+        <field name="country" ftype="line">
             <prompt>Land</prompt>
         </field>
         <field name="telephone" >
             <prompt>Telefoonnummer</prompt>
         </field>
-        <field name="mobile" >
+        <field name="mobile" ftype="line">
             <prompt>Mobiel</prompt>
         </field>
         <field name="email" >
             <prompt>E-mail adres</prompt>
         </field>
-        <field name="website" >
+        <field name="website" ftype="line">
             <prompt>Website</prompt>
         </field>
         <field name="dayofbirth" >
@@ -66,11 +66,11 @@
         <field name="password" >
             <prompt>Wachtwoord</prompt>
         </field>
-        <field name="description" >
-            <prompt>Omschrijving</prompt>
-        </field>
-        <field name="remarks" >
+        <field name="remarks" ftype="line">
             <prompt>Opmerkingen</prompt>
+        </field>
+        <field name="description" ftype="text">
+            <prompt>Omschrijving</prompt>
         </field>
 
         <list extends="list/roles.xml" />
