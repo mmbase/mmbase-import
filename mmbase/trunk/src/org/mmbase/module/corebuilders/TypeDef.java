@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.55 2005-06-08 12:58:58 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.56 2005-07-06 11:42:23 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -350,7 +350,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public Object getValue(MMObjectNode node, String field) {
         if (log.isDebugEnabled()) {
-            log.debug("node:" + node + " field: " + field);
+            log.debug("node:" + node.getNumber() + " field: " + field);
         }
         // return the Document from the config file..
         if (field.equals("config")) {
