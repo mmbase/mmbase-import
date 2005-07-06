@@ -4,7 +4,7 @@
   <properties>
     <property name="spawnthreads">true</property>
     <property name="multicasthost">224.0.0.1</property>
-    <property name="multicastport">16080</property>
+    <property name="multicastport">16088</property>
     <property name="multicastTTL">1</property>
     <property name="dpsize">65536</property>
   </properties>
