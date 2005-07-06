@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.37 2005-03-16 16:05:33 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.38 2005-07-06 11:04:38 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -113,25 +113,25 @@ public class ContextAuthorization extends Authorization {
 
     public void create(UserContext user, int nodeNumber) throws SecurityException {
         // notify, well actually we only have to set the context to the default of the user...
-        log.info("create on node #"+nodeNumber+" by user: " +user);
+        log.service("create on node #"+nodeNumber+" by user: " +user);
         String defaultContext = getDefaultContext(user);
         setContext(user, nodeNumber, defaultContext);
     }
 
     public void update(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
-        log.info("update on node #"+nodeNumber+" by user: " +user);
+        log.service("update on node #"+nodeNumber+" by user: " +user);
     }
 
     public void remove(UserContext user, int nodeNumber) throws SecurityException{
         // notify the log
-        log.info("remove on node #"+nodeNumber+" by user: " +user);
+        log.service("remove on node #"+nodeNumber+" by user: " +user);
     }
 
     public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
         // notify the log
         if (log.isDebugEnabled()) {
-            log.info("set context on node #"+nodeNumber+" by user: " +user + " to " + context );
+            log.debug("set context on node #"+nodeNumber+" by user: " +user + " to " + context );
         }
         // don't even bother if the context was already set.
         MMObjectNode node = getMMNode(nodeNumber);
@@ -152,13 +152,15 @@ public class ContextAuthorization extends Authorization {
         node.setValue("owner", context);
         node.commit();
         if (log.isDebugEnabled()) {
-            log.info("changed context settings of node #"+nodeNumber+" to context: "+context+ " by user: " +user);
+            log.debug("changed context settings of node #"+nodeNumber+" to context: "+context+ " by user: " +user);
         }
     }
 
     public String getContext(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
-        if (log.isDebugEnabled()) log.debug("get context on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) {
+            log.debug("get context on node #"+nodeNumber+" by user: " +user);
+        }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
         verify(user, nodeNumber, Operation.READ);
@@ -190,7 +192,7 @@ public class ContextAuthorization extends Authorization {
 
     public Set getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
-        log.info("get possible context on node #"+nodeNumber+" by user: " +user);
+        log.service("get possible context on node #"+nodeNumber+" by user: " +user);
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
         // TODO: research if we maybe better could use WRITE or CHANGE_CONTEXT as rights for this operation...
@@ -381,7 +383,9 @@ public class ContextAuthorization extends Authorization {
 
         if (log.isDebugEnabled()) {
             Iterator di = groups.iterator();
-            while (di.hasNext() ) log.debug("\t -> group : "+di.next());
+            while (di.hasNext()) {
+                log.debug("\t -> group : " + di.next());
+            }
         }
 
         Iterator i = groups.iterator();
