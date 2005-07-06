@@ -229,7 +229,7 @@
       <gui>
         <guiname xml:lang="en">Checksum</guiname>
         <guiname xml:lang="nl">Checksum</guiname>
-        <guitype config="handle">checksum</guitype>
+        <guitype>checksum</guitype>
       </gui>
 
       <editor>
