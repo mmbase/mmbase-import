@@ -63,6 +63,7 @@
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}" />
+    <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
@@ -247,7 +248,8 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.typerel" depends="jar,init">
+  <target name="run.typerel" depends="jar,init,mmbase">
+    <antcall target="clean.database" />
     <java
       classname="${ui.class}"
       fork="true"
@@ -259,7 +261,8 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge" depends="jar,init,clean.database,mmbase">
+  <target name="run.bridge" depends="mmbase,jar,init">
+    <antcall target="clean.database" />
     <java
         classname="${ui.class}"
         fork="true"
@@ -271,23 +274,39 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <!--
-  Test for rmmci, this tests is not 100% since both
-  the client and server run in the same classloader/jvm.
-  errors when bridge code call the core directely are not
-  detected
-  -->
-  <target name="run.bridge.rmmci" depends="jar,init">
-    <java
-      classname="${ui.class}"
-      fork="true"
-      classpathref="run.classpath"
-      >
-      <arg value="org.mmbase.bridge.AllTests" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
-    </java>
+
+  <target name="run.bridge.rmmci" depends="jar,init,mmbase">
+    <antcall target="clean.database" />
+    <parallel>
+      <daemons>
+        <java
+            classname="org.mmbase.tests.MMBaseTest"
+            fork="true"
+            classpathref="run.classpath"
+            >
+          <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+          <jvmarg value="-Drmmci.port=1221" />
+        </java>
+      </daemons>
+      <echo message="${tests.lib}/mmbase-rmmci.jar" />
+      <java
+          classname="${ui.class}"
+          fork="true"
+          >
+        <arg value="org.mmbase.bridge.AllTests" />
+        <jvmarg value="-Dnostartmmbase=" />
+        <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
+        <classpath>
+          <pathelement location="${tests.lib}/junit.jar" />
+          <pathelement location="${tests.lib}/mmbasetest.jar" />
+          <pathelement location="${tests.lib}/mmbase-rmmci.jar" />
+          <!-- I don't understand it, it gives very many NoClassDefFoundError
+               mmbase.jar must be gone from path here!
+          -->
+          <pathelement location="${tests.lib}/mmbase.jar" />
+        </classpath>
+      </java>
+    </parallel>
   </target>
 
 
@@ -304,7 +323,8 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.dbsq" depends="jar,init">
+  <target name="run.dbsq" depends="jar,init,mmbase">
+    <antcall target="clean.database" />
     <java
         classname="${ui.class}"
         fork="true"
@@ -325,22 +345,10 @@ Build-compiler: ${build.compiler}
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
   </target>
-  <!-- ================================================================== -->
 
-  <target name="standalone" depends="jar,init">
-    <java
-      classname="org.mmbase.tests.MMBaseTest"
-      fork="true"
-      classpathref="run.classpath"
-      >
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Dmmbase.machinename=remotecontext" />
-    </java>
-  </target>
-
-
-  <target name="run.clustering" depends="jar,init,clean.database">
+  <target name="run.clustering" depends="jar,init,mmbase">
     <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
+    <antcall target="clean.database" />
     <parallel>
       <echo message="${tests.source.dir}/config" />
       <daemons>
@@ -350,7 +358,7 @@ Build-compiler: ${build.compiler}
             fork="true"
             classpathref="run.classpath"
             >
-          <arg value="nostartdb" />
+          <jvmarg value="-Dnostartdb=" />
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Drmmci.port=1221" />
         </java>
@@ -362,7 +370,7 @@ Build-compiler: ${build.compiler}
               fork="true"
               classpathref="run.classpath"
               >
-            <arg value="nostartdb" />
+            <jvmarg value="-Dnostartdb=" />
             <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
             <jvmarg value="-Drmmci.port=1222" />
           </java>
@@ -377,6 +385,21 @@ Build-compiler: ${build.compiler}
       </java>
     </parallel>
   </target>
+
+
+  <!-- ================================================================== -->
+
+  <target name="standalone" depends="jar,init">
+    <java
+      classname="org.mmbase.tests.MMBaseTest"
+      fork="true"
+      classpathref="run.classpath"
+      >
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Dmmbase.machinename=remotecontext" />
+    </java>
+  </target>
+
 
 
   <!-- =================================================================== -->
