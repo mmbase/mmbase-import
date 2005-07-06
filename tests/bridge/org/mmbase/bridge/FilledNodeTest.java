@@ -61,7 +61,7 @@ public class FilledNodeTest extends NodeTest {
         List list = new ArrayList();
         list.add(Boolean.TRUE);
         list.add(Boolean.TRUE);
-        node.setValue("listfield", list);
+        //node.setValue("listfield", list);
         node.commit();
     }
 
