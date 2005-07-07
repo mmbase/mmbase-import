@@ -35,20 +35,16 @@ public class AllTests {
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");
         //suite.addTestSuite(CloudContextTest.class);
-        /*
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
         suite.addTestSuite(EmptiedNodeTest.class);
         suite.addTestSuite(EmptyNotNullNodeTest.class); 
-        */
         suite.addTestSuite(EmptyNotNullNodeTestTransaction.class);
-        /*
         suite.addTestSuite(FilledNodeTest.class); 
         suite.addTestSuite(FilledNodeTestTransaction.class);
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
         suite.addTestSuite(RelationTest.class);
-        */
         return suite;
     }
 	
