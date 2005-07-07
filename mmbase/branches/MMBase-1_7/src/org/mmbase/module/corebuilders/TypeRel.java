@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.47.2.1 2005-07-06 16:07:41 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.47.2.2 2005-07-07 11:48:57 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -130,10 +130,10 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         inheritance:
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
 
-            String sourceBuilderName = typeDef.getValue(typeRel.getIntValue("snumber"));
+            String sourceBuilderName = typeDef.getValue(typerel.getIntValue("snumber"));
             MMObjectBuilder sourceBuilder      = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
 
-            String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
+            String destinationBuilderName = typeDef.getValue(typerel.getIntValue("dnumber"));
             MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
 
             if (sourceBuilder == null) {
