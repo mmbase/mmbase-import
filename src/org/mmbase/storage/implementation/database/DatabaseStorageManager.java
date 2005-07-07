@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.103 2005-07-07 12:29:50 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.104 2005-07-07 17:02:13 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -711,11 +711,10 @@ public class DatabaseStorageManager implements StorageManager {
                 if (legacy == null) {
                     if (!binaryFile.getParentFile().exists()) {
                         log.warn("The file '" + binaryFile + "' does not exist, " + desc, new Exception());
-                        log.info(
-                            "If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
-                                + factory.getBinaryFileBasePath()
-                                + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
-
+                        log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
+                                 + factory.getBinaryFileBasePath()
+                                 + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
+                        
                     } else if (log.isDebugEnabled()) {
                         log.debug("The file '" + binaryFile + "' does not exist. Probably the blob field is simply 'null'");
                     }
@@ -787,6 +786,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during creation
      */
+    private static final org.mmbase.util.transformers.CharTransformer uni = new org.mmbase.util.transformers.UnicodeEscaper();
     protected void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // Create a String that represents the fields and values to be used in the insert.
         StringBuffer fieldNames = null;
@@ -825,6 +825,7 @@ public class DatabaseStorageManager implements StorageManager {
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
+                log.error(se.getMessage() + "during creation of " + uni.transform(node.toString()));
                 throw new StorageException(se);
             } finally {
                 releaseActiveConnection();
@@ -898,7 +899,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected void executeUpdate(String query, MMObjectNode node, List fields) throws SQLException {
         PreparedStatement ps = activeConnection.prepareStatement(query);
         for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-            CoreField field = (CoreField)fields.get(fieldNumber);
+            CoreField field = (CoreField) fields.get(fieldNumber);
             setValue(ps, fieldNumber + 1, node, field);
         }
         logQuery(query);
@@ -1227,10 +1228,11 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
+        log.warn("Setting inputstream bytes into field " + field);
         if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) {
+            log.warn("Didn't set null");
             InputStream stream = Casting.toInputStream(objectValue);
             long size = node.getSize(field.getName());
-            log.info("Setting inputstream bytes into field " + field);
             try {
                 statement.setBinaryStream(index, stream, (int) size);
                 stream.close();
@@ -1283,23 +1285,23 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException(ie);
             }
         } else {
-             String setValue = value;
-             if (factory.hasOption(Attributes.LIE_CP1252)) {
-                 try {
-                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
-                         log.info("Lying CP-1252");
-                         encoding = "CP1252";
-                         setValue = new String(value.getBytes("CP1252"), "ISO-8859-1");
-                     } else {
-                     }
-                 } catch(java.io.UnsupportedEncodingException uee) {
-                     // cannot happen
-                 }
-             } else {
-             }
-
+            String setValue = value;
+            if (factory.hasOption(Attributes.LIE_CP1252)) {
+                try {
+                    if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                        log.info("Lying CP-1252");
+                        encoding = "CP1252";
+                        setValue = new String(value.getBytes("CP1252"), "ISO-8859-1");
+                    } else {
+                    }
+                } catch(java.io.UnsupportedEncodingException uee) {
+                    // cannot happen
+                }
+            } else {
+            }
+            
             statement.setString(index, setValue);
-
+            
         }
         if (value != null) {
             if (! encoding.equalsIgnoreCase("UTF-8")) {
@@ -1331,11 +1333,17 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @since MMBase-1.7.1
      */
-    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
-        if (objectValue == null && field.isRequired()) objectValue = "";
-        org.w3c.dom.Document xml = node.getXMLValue(field.getName());
-        objectValue = org.mmbase.util.xml.XMLWriter.write(xml, false, true);
-        node.storeValue(field.getName(), objectValue); // to make sure that it is the same as in the database
+    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {        
+        if (objectValue == null || objectValue == MMObjectNode.VALUE_NULL) {
+            if(field.isRequired()) { 
+                objectValue = "<p/>";
+            }
+        }
+        objectValue = Casting.toXML(objectValue);
+        if (objectValue != null) {
+            objectValue = org.mmbase.util.xml.XMLWriter.write((org.w3c.dom.Document) objectValue, false, true);
+        }
+        node.storeValue(field.getName(), objectValue);
         setStringValue(statement, index, objectValue, field, node);
     }
 
