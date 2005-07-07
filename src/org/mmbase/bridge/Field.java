@@ -17,7 +17,7 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.21 2005-07-04 16:52:00 michiel Exp $
+ * @version $Id: Field.java,v 1.22 2005-07-07 09:49:00 michiel Exp $
  */
 public interface Field extends Descriptor, MMBaseType {
 
@@ -52,6 +52,7 @@ public interface Field extends Descriptor, MMBaseType {
      * Returns the data type this field contains.
      *
      * @return  a <code>DataType</code>  object describing the constraints on this field.
+     * @since MMBase-1.8
      */
     public DataType getDataType();
 
