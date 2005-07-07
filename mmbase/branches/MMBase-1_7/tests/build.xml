@@ -33,7 +33,9 @@
     <mkdir dir="${tests.work.dir}"/>
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
+    <!--
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci.jar" todir="${tests.lib}" />
+    -->
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci-server.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
