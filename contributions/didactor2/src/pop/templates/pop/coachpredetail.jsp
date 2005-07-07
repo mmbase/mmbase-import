@@ -81,7 +81,7 @@
         %>
                <mm:node number="<%= questionNum %>">
                  <mm:field name="title" jspvar="title" vartype="String">
-                   <% title  = title.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
+                   <% title  = title.replaceAll("\\s+","_").replaceAll("\"","''"); %>
                    <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= title %>")+rotate(90)</mm:import>
                  </mm:field>
                  <mm:node number="progresstextbackground">
