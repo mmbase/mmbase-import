@@ -131,7 +131,7 @@
 
         <mm:field name="name" jspvar="name" vartype="String">
 
-            <% name  = name.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
+            <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
 
          <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= name %>")+rotate(90)</mm:import>
 
