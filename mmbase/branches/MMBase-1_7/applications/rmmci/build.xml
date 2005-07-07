@@ -103,8 +103,6 @@
 <!-- =================================================================== -->
   <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
-    <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
-    <unjar src="${build.dir}/lib/xml-apis.jar" dest="build/rmmcitmp"/>
     <echo file="build/rmmcitmp/manifest.mf">
 Name: org/mmbase
 Vendor: MMBase Community
@@ -133,13 +131,6 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/bridge/*"/>
         <include name="org/mmbase/storage/search/*"/>
         <include name="org/mmbase/util/logging/**"/>
-        <include name="org/w3c/dom/Document.class"/>
-        <include name="org/w3c/dom/Node.class"/>
-        <include name="org/w3c/dom/Element.class"/>
-        <include name="javax/servlet/ServletRequest.class"/>
-        <include name="javax/servlet/ServletResponse.class"/>
-        <include name="javax/servlet/http/HttpServletRequest.class"/>
-        <include name="javax/servlet/http/HttpServletResponse.class"/>
       </fileset>
     </jar>
     <delete dir="build/rmmcitmp"/>
