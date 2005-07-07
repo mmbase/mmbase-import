@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.102 2005-07-06 09:15:08 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.103 2005-07-07 12:29:50 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -255,7 +255,9 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     public int createKey() throws StorageException {
+        log.debug("Creating key");
         synchronized (sequenceKeys) {
+            log.debug("Acquired lock");
             // if sequenceKeys conatins (buffered) keys, return this
             if (sequenceKeys.size() > 0) {
                 return ((Integer)sequenceKeys.remove(0)).intValue();
@@ -673,6 +675,7 @@ public class DatabaseStorageManager implements StorageManager {
                     return;
                 }
             }
+            //log.warn("Storing " + field + " for " + node.getNumber());
             InputStream in = node.getInputStreamValue(fieldName);
             OutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
             long size = 0;
@@ -695,7 +698,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Checks whether file is readable and existing. Warns if not.
      * If non-existing it checks older locations.
-     * @return the file to be used, or null if no existing readable file could be found, also no 'legacy' one.
+     * @return the file to be used, or <code>null</code> if no existing readable file could be found, also no 'legacy' one.
      */
 
     protected File checkFile(File binaryFile, MMObjectNode node, CoreField field) {
@@ -812,7 +815,9 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
         }
-        log.debug("insert field values " + fieldNames + " " + fieldValues);
+        if (log.isDebugEnabled()) {
+            log.debug("insert field values " + fieldNames + " " + fieldValues);
+        }
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
             try {
@@ -825,6 +830,7 @@ public class DatabaseStorageManager implements StorageManager {
                 releaseActiveConnection();
             }
         }
+        
     }
 
     protected void unloadShortedFields(MMObjectNode node, MMObjectBuilder builder) {
@@ -962,7 +968,7 @@ public class DatabaseStorageManager implements StorageManager {
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
-                throw new StorageException(se);
+                throw new StorageException(se.getMessage() + " for node " + node, se);
             } finally {
                 releaseActiveConnection();
             }
@@ -1367,13 +1373,18 @@ public class DatabaseStorageManager implements StorageManager {
                 if (field.inStorage()) {
                     if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == MMBaseType.TYPE_BINARY)) {
                         String fieldName = field.getName();
-                        File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
-                        if (binaryFile == null) {
-                            log.warn("Could not find blob for field '" + fieldName + "' of node " + node.getNumber());
-                        } else if (! binaryFile.delete()) {
-                            log.warn("Could not delete '" + binaryFile + "'");
+                        File binaryFile = getBinaryFile(node, fieldName);
+                        File checkedFile = checkFile(binaryFile, node, field);
+                        if (checkedFile == null) {
+                            if (field.isRequired()) {
+                                log.warn("Could not find blob for field to delete '" + fieldName + "' of node " + node.getNumber() + ": " + binaryFile);
+                            } else {
+                                // ok, value was probably simply 'null'.
+                            }
+                        } else if (! checkedFile.delete()) {
+                            log.warn("Could not delete '" + checkedFile + "'");
                         } else {
-                            log.debug("Deleted '" + binaryFile + "'");
+                            log.debug("Deleted '" + checkedFile + "'");
                         }
                     }
                 }
@@ -1537,7 +1548,7 @@ public class DatabaseStorageManager implements StorageManager {
             int dbtype = MMBaseType.TYPE_UNKNOWN;
             if (field != null) {
                 dbtype = field.getType();
-            } else { // use database type.
+            } else { // use database type.as
                 dbtype = getJDBCtoMMBaseType(result.getMetaData().getColumnType(index), dbtype);
             }
 
