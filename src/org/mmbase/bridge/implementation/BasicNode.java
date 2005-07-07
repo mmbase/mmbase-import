@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.149 2005-07-07 12:52:22 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.150 2005-07-07 17:03:44 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -538,6 +538,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (List) ValueIntercepter.processGet(MMBaseType.TYPE_LIST, this, nodeManager.getField(fieldName), result);
         }
+
         return result;
     }
 
@@ -623,11 +624,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
-        log.info("Found " + result + " for " + fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (Document) ValueIntercepter.processGet(MMBaseType.TYPE_XML, this, nodeManager.getField(fieldName), result);
         }
-        log.info("Using " + result + " for " + fieldName);
         return result;
     }
 
