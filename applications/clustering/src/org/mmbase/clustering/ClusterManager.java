@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.5 2005-07-06 16:36:45 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.6 2005-07-07 16:48:20 michiel Exp $
  */
 public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
@@ -369,11 +369,9 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
             String value = nodedata.substring(nodedata.indexOf(begintoken) + begintoken.length());
             value = value.substring(0, value.indexOf(endtoken));
 
-            // set the node
-            int dbtype = node.getDBType(key);
             if (!key.equals("number") && !key.equals("otype") && !key.equals("owner"))
-                    node.setValue(key, dbtype, value);
-
+                node.setValue(key, value);
+            
             nodedata = nodedata.substring(nodedata.indexOf(endtoken) + endtoken.length());
             bpos = nodedata.indexOf("<");
         }
