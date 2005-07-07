@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.145 2005-07-06 16:33:48 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.146 2005-07-07 16:39:36 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -468,7 +468,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     protected Document toXML(Object value, String fieldName) {
         Document doc = Casting.toXML(value);
-        if (doc == null && parent.getField(fieldName).isRequired()) doc = Casting.toXML("<p/>");
+        if (doc == null && parent.getField(fieldName).isRequired()) {
+            doc = Casting.toXML("<p/>");
+        }
         return doc;
     }
 
@@ -594,77 +596,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return setValue(fieldName, new Double(fieldValue));
     }
 
-    /**
-     *  Sets a key/value pair in the main values of this node.
-     *  The value to set is converted to the indicated type.
-     *  Note that if this node is a node in cache, the changes are immediately visible to
-     *  everyone, even if the changes are not committed.
-     *  The fieldName is added to the (public) 'changed' vector to track changes.
-     *  @deprecated  This one will be moved/replaced soon...
-     *  Testing of db types will be moved to the DB specific classes
-     *  @param fieldName the name of the field to change
-     *  @param fieldValue the value to assign
-     *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
-     */
-    public boolean setValue(String fieldName, int type, String value) {
-        if (type==MMBaseType.TYPE_UNKNOWN) {
-            log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
-            return false;
-        }
-        switch (type) {
-        case MMBaseType.TYPE_XML:
-            setValue(fieldName, toXML(value, fieldName));
-            break;
-        case MMBaseType.TYPE_STRING:
-            setValue(fieldName, value);
-            break;
-        case MMBaseType.TYPE_NODE:
-        case MMBaseType.TYPE_INTEGER:
-            Integer i;
-            try {
-                i = new Integer(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue(fieldName, i);
-            break;
-        case MMBaseType.TYPE_FLOAT:
-            Float f;
-            try {
-                f = new Float(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue(fieldName, f);
-            break;
-        case MMBaseType.TYPE_LONG:
-            Long l;
-            try {
-                l = new Long(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue(fieldName, l);
-            break;
-        case MMBaseType.TYPE_DOUBLE:
-            Double d;
-            try {
-                d = new Double(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue(fieldName, d);
-            break;
-        default:
-            log.error("unsupported fieldtype: "+type+" for field "+fieldName);
-            return false;
-        }
-        return true;
-    }
 
     // Add the field to update to the changed Vector
     //
@@ -838,7 +769,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public byte[] getByteValue(String fieldName) {
 
         Object obj = getValue(fieldName);
-        if (obj == null) {
+        if (obj == null || obj == VALUE_NULL) {
             return new byte[0];
         } else if (obj instanceof byte[]) {
             // was already unmapped so return the value
