@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.53 2005-06-24 17:19:53 michiel Exp $
+ * @version $Id: Casting.java,v 1.54 2005-07-07 17:03:11 michiel Exp $
  */
 
 import java.util.*;
@@ -405,7 +405,7 @@ public class Casting {
      * @since MMBase-1.6
      */
     static public Document toXML(Object o) {
-        if (o == null || o.equals("") || o == MMObjectNode.VALUE_NULL) return null;
+        if (o == null || o == MMObjectNode.VALUE_NULL) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on service.
@@ -808,7 +808,7 @@ public class Casting {
      * @throws  IllegalArgumentException if the value could not be converted
      */
     static private Document convertStringToXML(String value) {
-        if (value == null || value == MMObjectNode.VALUE_NULL || value.equals("")) {
+        if (value == null || value == MMObjectNode.VALUE_NULL) {
             return null;
         }
         if (log.isDebugEnabled()) {
