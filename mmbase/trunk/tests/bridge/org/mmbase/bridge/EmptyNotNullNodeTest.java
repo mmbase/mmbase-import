@@ -50,14 +50,14 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
                 int nodeValue =  getCloud().getNodeManager("bb").getNumber();
                 // not-null nodes MUST have a valid value.
                 assertTrue(fieldTypes[i] + " field queried as double did not return " + nodeValue + ", but " + value,
-                        value == nodeValue);
+                           value == nodeValue);
             } else if (fieldTypes[i].equals("boolean")) {
                 // not-null 'empty' booleans has value 0 (false)
                 assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return 0, but " + value,
-                            value == 0);
+                           value == 0);
             } else {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return -1, but " + value,
-                            value == -1.0);
+                           value == -1.0);
             }
         }
     }
@@ -158,13 +158,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
     public void testGetXMLValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Document value = node.getXMLValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as XML returns null",value !=null);
-            if (fieldTypes[i].equals("node") || fieldTypes[i].equals("long") || fieldTypes[i].equals("int") ||
-                fieldTypes[i].equals("double") || fieldTypes[i].equals("float") || fieldTypes[i].equals("boolean")
-                || fieldTypes[i].equals("list") || fieldTypes.equals("datetime") ) {
-                assertTrue("Empty " + fieldTypes[i] + " field queried as XML does not give an mmxf document but '" + value.getDoctype() + "'",
-                    value.getDoctype().getName().equals("mmxf"));
-            }
+            assertTrue("Empty " + fieldTypes[i] + " field queried as XML returns null", value != null);
         }
     }
 
@@ -174,11 +168,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
             if (fieldTypes[i].equals("node")) {
                 Node nodeValue =  getCloud().getNodeManager("bb");
                 // not-null nodes MUST have a valid value.
-                assertTrue(fieldTypes[i] + " field queried as node did not return \"bb\", but \"" + value +"\"",
-                    nodeValue.equals(value));
+                assertTrue(fieldTypes[i] + " field queried as node did not return \"bb\", but \"" + value +"\"", nodeValue.equals(value));
             } else {
-                assertTrue("Empty " + fieldTypes[i] + " field queried as Node did not return null, but " + value,
-                            value == null);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as Node did not return null, but " + value, value == null);
             }
        }
     }
@@ -187,11 +179,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             boolean value = node.getBooleanValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("node")) {
-                assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return true, but " + value,
-                            value);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return true, but " + value, value);
             } else {
-                assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return false, but " + value,
-                            !value);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return false, but " + value, !value);
             }
        }
     }
@@ -200,8 +190,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             Date value = node.getDateValue(fieldTypes[i] + "field");
             assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value!=null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
-                        value.getTime()==-1);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value, value.getTime() == -1);
        }
     }
 
@@ -210,11 +199,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
             List value = node.getListValue(fieldTypes[i] + "field");
             assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value!=null);
             if (fieldTypes[i].equals("list")) {
-                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value,
-                            value.size() == 0);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value, value.size() == 0);
             } else {
-                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [<object>], but " + value,
-                            value.size() == 1);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [<object>], but " + value, value.size() == 1);
             }
        }
     }

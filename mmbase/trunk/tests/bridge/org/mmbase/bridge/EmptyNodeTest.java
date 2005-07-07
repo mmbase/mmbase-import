@@ -141,7 +141,7 @@ public class EmptyNodeTest extends NodeTest {
     public void testGetDateTimeValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Date value = node.getDateValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value!=null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value != null);
             assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
                         value.getTime()==-1);
        }
@@ -150,9 +150,8 @@ public class EmptyNodeTest extends NodeTest {
     public void testGetListValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             List value = node.getListValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value!=null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value,
-                        value.size() == 0);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value != null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value, value.size() == 0);
        }
     }
 
