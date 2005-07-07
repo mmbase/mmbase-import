@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 
 public class SpaceRemover extends ReaderTransformer implements CharTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(SpaceRemover.class);
+    private static final Logger log = Logging.getLoggerInstance(SpaceRemover.class);
 
     public Writer transform(Reader r, Writer w) {
 
@@ -39,12 +39,13 @@ public class SpaceRemover extends ReaderTransformer implements CharTransformer {
             // consider the rest;
             boolean writing = true;
             while (c != -1) {
-                boolean isWhiteSpace = Character.isWhitespace((char) c);
-                if (isWhiteSpace) {
+                if (Character.isWhitespace((char) c)) {
                     writing = false;
                 } else {
-                    if (! writing) w.write(' ');
-                    writing = true;
+                    if (! writing) {
+                        w.write(' ');
+                        writing = true;
+                    }
                     w.write(c);
                 }
                 c = r.read();
