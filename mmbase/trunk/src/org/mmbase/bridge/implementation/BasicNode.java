@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.148 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.149 2005-07-07 12:52:22 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -509,20 +509,36 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Object result = noderef.getValue(fieldName);
         if (result == MMObjectNode.VALUE_NULL) result = null;
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
+            Object r = ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
+            if ((result != null && (! result.equals(r)))) {
+                log.info("getObjectvalue was processed! " + result + " != " + r);
+                result = r;
+            }
         }
         return result;
     }
 
     public boolean getBooleanValue(String fieldName) {
-        return noderef.getBooleanValue(fieldName);
+        Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Boolean) ValueIntercepter.processGet(MMBaseType.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), result);
+        }
+        return result.booleanValue();
     }
 
     public Date getDateValue(String fieldName) {
-        return noderef.getDateValue(fieldName);
+        Date result =  noderef.getDateValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Date) ValueIntercepter.processGet(MMBaseType.TYPE_DATETIME, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
     }
     public List getListValue(String fieldName) {
-        return noderef.getListValue(fieldName);
+        List result =  noderef.getListValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (List) ValueIntercepter.processGet(MMBaseType.TYPE_LIST, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
     }
 
     public Node getNodeValue(String fieldName) {
@@ -607,9 +623,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
+        log.info("Found " + result + " for " + fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (Document) ValueIntercepter.processGet(MMBaseType.TYPE_XML, this, nodeManager.getField(fieldName), result);
         }
+        log.info("Using " + result + " for " + fieldName);
         return result;
     }
 
