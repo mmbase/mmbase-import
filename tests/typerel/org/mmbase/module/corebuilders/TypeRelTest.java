@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.6 2005-05-29 11:20:04 nico Exp $
+ * @version $Id: TypeRelTest.java,v 1.7 2005-07-07 17:17:26 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -389,7 +389,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         if (cloud == null) {            
             startMMBase();
             //cloud = getRemoteCloud();
-            cloud = getLocalCloud();
+            cloud = getCloud();
             
             // needed builders for this test.
             try {
