@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @deprecated not used anymore (?)
  * @author Daniel Ockeloen
- * @version $Id: MMImport.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MMImport.java,v 1.11 2005-07-07 16:37:15 michiel Exp $
  */
 public class MMImport extends ProcessorModule {
 
@@ -146,7 +146,7 @@ public class MMImport extends ProcessorModule {
 
                 // set the node
                 if (!key.equals("number") && !key.equals("otype") && !key.equals("owner")) {
-                    node.setValue( key, node.getDBType(key), value);
+                    node.setValue(key, value);
                 }
 
                 nodedata=nodedata.substring(nodedata.indexOf(endtoken)+endtoken.length());
