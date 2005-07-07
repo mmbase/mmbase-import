@@ -18,18 +18,19 @@ import java.util.regex.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
+ * @version $Id: RomanTransformer.java,v 1.2 2005-07-07 17:23:00 michiel Exp $
  */
 
 public class RomanTransformer extends StringTransformer {
 
-    public static Pattern NUMERIC = Pattern.compile("\\d+");
-    public static Pattern ROMAN   = Pattern.compile("(?i)[ivxlcdm]+");
+    public static final Pattern NUMERIC = Pattern.compile("\\d+");
+    public static final Pattern ROMAN   = Pattern.compile("(?i)[ivxlcdm]+");
 
 
     /**
      * Constants for roman numbers
      */
-    public final static int I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000;
+    public static final int I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000;
 
     /**
      * Converts one of the letters from the roman number system to an int.
@@ -46,7 +47,7 @@ public class RomanTransformer extends StringTransformer {
         return 0;
     }
     /**
-     * Converts an integer to on the letters of the roman number system, or ' ' if no such number.
+     * Converts an integer to one the letters of the roman number system, or ' ' if no such number.
      * @see #decimalToRoman(int)
      */
     
@@ -84,13 +85,13 @@ public class RomanTransformer extends StringTransformer {
         return tot;
     }
     /** 
-     * Converts int to roman nunmber (if bigger than 0, smaller then 4000), other wise return the
+     * Converts int to roman number (if bigger than 0, smaller then 4000), other wise return the
      * integer as a string.
     */
     public static String decimalToRoman(int value) {
         if (value < 1 || value > 3999) {
             // throw new IllegalArgumentException("Only natural numbers smaller than 4000 can be
-            // present in roman number");
+            // presented as a roman number");
             return "" + value;
         } 
         final StringBuffer buf = new StringBuffer();
@@ -129,12 +130,13 @@ public class RomanTransformer extends StringTransformer {
             return r;
         }
     }
-        
+
+    // javadoc inherited        
     public String transformBack(String r) {
         return "" + romanToDecimal(r);
     }
 
-    // javadoc inherited
+
     /** 
      * Just to test
      */
