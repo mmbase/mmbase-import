@@ -6,5 +6,5 @@
   Throw exception on error (and higher), those will be considered
   test-case failures.
   -->
-   <configuration>error,info</configuration>
+   <configuration>error,debug</configuration>
 </logging>
