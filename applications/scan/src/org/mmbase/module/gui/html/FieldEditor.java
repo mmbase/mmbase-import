@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Arjan Houtman
- * @version $Id: FieldEditor.java,v 1.15 2004-10-11 11:16:15 pierre Exp $
+ * @version $Id: FieldEditor.java,v 1.16 2005-07-07 16:36:56 michiel Exp $
  */
 public class FieldEditor implements CommandHandlerInterface {
     // Logger
@@ -139,11 +139,10 @@ public class FieldEditor implements CommandHandlerInterface {
     boolean setEditField(EditState ed, String fieldname,Hashtable cmds) {
         MMObjectBuilder obj=ed.getBuilder();
         FieldDefs def=obj.getField(fieldname);
-        int type=def.getDBType();
         String value=(String)cmds.get("EDIT-SETFIELDVALUE-"+fieldname);
         MMObjectNode node=ed.getEditNode();
         if (node!=null) {
-            node.setValue( fieldname, type, value );
+            node.setValue( fieldname, value );
             replaceOwner(ed,node);
         }
         return true;
@@ -155,10 +154,9 @@ public class FieldEditor implements CommandHandlerInterface {
     String setEditField(EditState ed, String fieldname,String value) {
         MMObjectBuilder obj=ed.getBuilder();
         FieldDefs def=obj.getField(fieldname);
-        int type=def.getDBType();
         MMObjectNode node=ed.getEditNode();
         if (node!=null) {
-            node.setValue( fieldname, type, value );
+            node.setValue( fieldname, value );
             replaceOwner(ed,node);
         }
         return "";
