@@ -40,18 +40,14 @@
    <mm:cloud>
 
       <%// Get languages list %>
-      <mm:listnodes type="metastandard">
-         <mm:relatednodes type="metadefinition" constraints="handler='taal'">
-            <mm:relatednodes type="metavocabulary">
-               <mm:field name="value" jspvar="sLang" vartype="String">
-                  <%
-                     hsetLangCodes.add(sLang);
-                  %>
-               </mm:field>
-            </mm:relatednodes>
-         </mm:relatednodes>
-      </mm:listnodes>
-
+      <mm:list path="metastandard,metadefinition,metavocabulary" constraints="metadefinition.handler='taal'">
+    
+           <mm:field name="metavocabulary.value" jspvar="sLang" vartype="String">
+              <%
+                 hsetLangCodes.add(sLang);
+              %>
+           </mm:field>
+        </mm:list>
 
       <form name="meta_form">
 
