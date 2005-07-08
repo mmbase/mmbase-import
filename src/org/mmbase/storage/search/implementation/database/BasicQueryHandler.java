@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.40 2005-07-06 14:14:02 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.41 2005-07-08 12:53:38 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -294,12 +294,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
         Step nodeStep = fields[0].getStep();
         int j = 1;
         for (int i = 0; i < fields.length; i++) {
+            if (fields[i].getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
+            Integer index = new Integer(j++);
             if (fields[i].getStep() == nodeStep) {
-                String fieldName =  fields[i].getFieldName();
+                String fieldName =  fields[i].getFieldName();                
                 CoreField field = builder.getField(fieldName);
-                if (field == null) continue;
-                if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
-                fieldIndices.put(field, new Integer(j++));
+                if (field == null) {
+                    log.warn("Did not find the field '" + fieldName + "' in builder " + builder);
+                    continue; // could this happen?
+                }
+                fieldIndices.put(field, index);
             }
         }
 
