@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.5 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.6 2005-07-08 08:02:17 pierre Exp $
  */
 
 public class AbstractDataType extends AbstractDescriptor implements DataType, MMBaseType, Comparable {
@@ -38,8 +38,9 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
     private int type;
     private boolean finished = false;
     private Object defaultValue = null;
-    private boolean required = false;
     private Object owner = null;
+
+    private Map properties = new HashMap();
 
     /**
      * Create a data type object
@@ -120,16 +121,6 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
         return this;
     }
 
-    public boolean isRequired() {
-        return required;
-    }
-
-    public DataType setRequired(boolean required) {
-        edit();
-        this.required = required;
-        return this;
-    }
-
     public boolean isFinished() {
         return owner != null;
     }
@@ -173,13 +164,24 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
     }
 
     public void validate(Object value) {
+        validate(value,null);
+    }
+
+    private final void failOnValidate(DataType.Property property, String message, Cloud cloud) {
+        String error = property.getErrorDescription(cloud==null? null : cloud.getLocale());
+        if (error == null) error = message;
+        // todo; replace ${NAME} with property name (??)
+        throw new IllegalArgumentException(message);
+    }
+
+    public void validate(Object value, Cloud cloud) {
         if (parentDataType != null) {
             parentDataType.validate(value);
         }
         checkType(value);
         // test required
         if (value == null && isRequired() && getDefaultValue() == null) {
-            throw new IllegalArgumentException("Datatype " + getName()  + " requires a value.");
+            failOnValidate(getProperty(PROPERTY_REQUIRED), "Datatype " + getName()  + " requires a value.", cloud);
         }
     }
 
@@ -226,6 +228,97 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
 
     public int hashCode() {
         return getName().hashCode() * 13 + getTypeAsClass().hashCode();
+    }
+
+    public boolean isRequired() {
+        DataType.Property property = getProperty(PROPERTY_REQUIRED);
+        return (property!=null) && Casting.toBoolean(property.getValue());
+    }
+
+    public DataType setRequired(boolean required) {
+        return setRequired(required,null,false);
+    }
+
+    public DataType setRequired(boolean required, LocalizedString errorDescription, boolean fixed) {
+        setProperty(PROPERTY_REQUIRED, Boolean.valueOf(required), errorDescription, fixed);
+        return this;
+    }
+
+
+    public DataType.Property setProperty(String name, Object value, LocalizedString errorDescription, boolean fixed) {
+        // should we check on properties or not ???
+        edit();
+        DataType.Property property = (DataType.Property) properties.get(name);
+        if (property == null) {
+            property = new DataTypeProperty(name);
+        }
+        property.setValue(value);
+        property.setLocalizedErrorDescription(errorDescription);
+        property.setFixed(fixed);
+        properties.put(name,property);
+        return property;
+    }
+
+    public DataType.Property getProperty(String name){
+        return (DataType.Property) properties.get(name);
+    }
+
+    public class DataTypeProperty implements DataType.Property {
+        private String name;
+        private Object value;
+        private LocalizedString errorDescription;
+        private boolean fixed;
+
+        private DataTypeProperty(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public void setValue(Object value) {
+            if (fixed) {
+                throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
+            }
+            this.value = value;
+        }
+
+        public LocalizedString getLocalizedErrorDescription() {
+            return errorDescription;
+        }
+
+        public void setLocalizedErrorDescription(LocalizedString errorDescription) {
+            this.errorDescription = errorDescription;
+        }
+
+        public String getErrorDescription(Locale locale) {
+            if (errorDescription == null) {
+                return null;
+            } else {
+                return errorDescription.get(locale);
+            }
+        }
+
+        public String getErrorDescription() {
+            return getDescription(null);
+        }
+
+        public boolean isFixed() {
+            return fixed;
+        }
+
+        public void setFixed(boolean fixed) {
+            if (this.fixed && !fixed) {
+                throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
+            }
+            this.fixed = fixed;
+        }
+
     }
 
 }

@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFloatDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicFloatDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.FloatDataType
  * @since MMBase-1.8
@@ -50,55 +50,55 @@ public class BasicFloatDataType extends Parameter implements FloatDataType {
         super(name,dataType);
     }
 
-    public Float getMinimum() {
+    public Float getMin() {
         return minimum;
     }
 
-    public boolean getMinimumInclusive() {
+    public boolean getMinInclusive() {
         return minimumInclusive;
     }
 
-    public Float getMaximum() {
+    public Float getMax() {
         return maximum;
     }
 
-    public boolean getMaximumInclusive() {
+    public boolean getMaxInclusive() {
         return maximumInclusive;
     }
 
-    public FloatDataType setMinimum(Float value) {
+    public FloatDataType setMin(Float value) {
         edit();
         minimum = value;
         return this;
     }
 
-    public FloatDataType setMinimumInclusive(boolean inclusive) {
+    public FloatDataType setMinInclusive(boolean inclusive) {
         edit();
         minimumInclusive = inclusive;
         return this;
     }
 
-    public FloatDataType setMinimum(Float value, boolean inclusive) {
-        setMinimum(value);
-        setMinimumInclusive(inclusive);
+    public FloatDataType setMin(Float value, boolean inclusive) {
+        setMin(value);
+        setMinInclusive(inclusive);
         return this;
     }
 
-    public FloatDataType setMaximum(Float value) {
+    public FloatDataType setMax(Float value) {
         edit();
         maximum = value;
         return this;
     }
 
-    public FloatDataType setMaximumInclusive(boolean inclusive) {
+    public FloatDataType setMaxInclusive(boolean inclusive) {
         edit();
         maximumInclusive = inclusive;
         return this;
     }
 
-    public FloatDataType setMaximum(Float value, boolean inclusive) {
-        setMaximum(value);
-        setMaximumInclusive(inclusive);
+    public FloatDataType setMax(Float value, boolean inclusive) {
+        setMax(value);
+        setMaxInclusive(inclusive);
         return this;
     }
 
@@ -145,10 +145,10 @@ public class BasicFloatDataType extends Parameter implements FloatDataType {
     public void copyValidationRules(DataType dataType) {
         super.copyValidationRules(dataType);
         FloatDataType floatField = (FloatDataType)dataType;
-        setMinimum(floatField.getMinimum());
-        setMinimumInclusive(floatField.getMinimumInclusive());
-        setMaximum(floatField.getMaximum());
-        setMaximumInclusive(floatField.getMaximumInclusive());
+        setMin(floatField.getMin());
+        setMinInclusive(floatField.getMinInclusive());
+        setMax(floatField.getMax());
+        setMaxInclusive(floatField.getMaxInclusive());
     }
 
 }
