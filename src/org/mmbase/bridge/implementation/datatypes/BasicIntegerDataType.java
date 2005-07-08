@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicIntegerDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicIntegerDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.IntegerDataType
  * @since MMBase-1.8
@@ -50,55 +50,55 @@ public class BasicIntegerDataType extends Parameter implements IntegerDataType {
         super(name,dataType);
     }
 
-    public Integer getMinimum() {
+    public Integer getMin() {
         return minimum;
     }
 
-    public boolean getMinimumInclusive() {
+    public boolean getMinInclusive() {
         return minimumInclusive;
     }
 
-    public Integer getMaximum() {
+    public Integer getMax() {
         return maximum;
     }
 
-    public boolean getMaximumInclusive() {
+    public boolean getMaxInclusive() {
         return maximumInclusive;
     }
 
-    public IntegerDataType setMinimum(Integer value) {
+    public IntegerDataType setMin(Integer value) {
         edit();
         minimum = value;
         return this;
     }
 
-    public IntegerDataType setMinimumInclusive(boolean inclusive) {
+    public IntegerDataType setMinInclusive(boolean inclusive) {
         edit();
         minimumInclusive = inclusive;
         return this;
     }
 
-    public IntegerDataType setMinimum(Integer value, boolean inclusive) {
-        setMinimum(value);
-        setMinimumInclusive(inclusive);
+    public IntegerDataType setMin(Integer value, boolean inclusive) {
+        setMin(value);
+        setMinInclusive(inclusive);
         return this;
     }
 
-    public IntegerDataType setMaximum(Integer value) {
+    public IntegerDataType setMax(Integer value) {
         edit();
         maximum = value;
         return this;
     }
 
-    public IntegerDataType setMaximumInclusive(boolean inclusive) {
+    public IntegerDataType setMaxInclusive(boolean inclusive) {
         edit();
         maximumInclusive = inclusive;
         return this;
     }
 
-    public IntegerDataType setMaximum(Integer value, boolean inclusive) {
-        setMaximum(value);
-        setMaximumInclusive(inclusive);
+    public IntegerDataType setMax(Integer value, boolean inclusive) {
+        setMax(value);
+        setMaxInclusive(inclusive);
         return this;
     }
 
@@ -145,10 +145,10 @@ public class BasicIntegerDataType extends Parameter implements IntegerDataType {
     public void copyValidationRules(DataType dataType) {
         super.copyValidationRules(dataType);
         IntegerDataType integerField = (IntegerDataType)dataType;
-        setMinimum(integerField.getMinimum());
-        setMinimumInclusive(integerField.getMinimumInclusive());
-        setMaximum(integerField.getMaximum());
-        setMaximumInclusive(integerField.getMaximumInclusive());
+        setMin(integerField.getMin());
+        setMinInclusive(integerField.getMinInclusive());
+        setMax(integerField.getMax());
+        setMaxInclusive(integerField.getMaxInclusive());
     }
 
 }

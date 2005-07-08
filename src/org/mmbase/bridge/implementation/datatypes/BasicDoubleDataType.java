@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDoubleDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicDoubleDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DoubleDataType
  * @since MMBase-1.8
@@ -50,55 +50,55 @@ public class BasicDoubleDataType extends Parameter implements DoubleDataType {
         super(name,dataType);
     }
 
-    public Double getMinimum() {
+    public Double getMin() {
         return minimum;
     }
 
-    public boolean getMinimumInclusive() {
+    public boolean getMinInclusive() {
         return minimumInclusive;
     }
 
-    public Double getMaximum() {
+    public Double getMax() {
         return maximum;
     }
 
-    public boolean getMaximumInclusive() {
+    public boolean getMaxInclusive() {
         return maximumInclusive;
     }
 
-    public DoubleDataType setMinimum(Double value) {
+    public DoubleDataType setMin(Double value) {
         edit();
         minimum = value;
         return this;
     }
 
-    public DoubleDataType setMinimumInclusive(boolean inclusive) {
+    public DoubleDataType setMinInclusive(boolean inclusive) {
         edit();
         minimumInclusive = inclusive;
         return this;
     }
 
-    public DoubleDataType setMinimum(Double value, boolean inclusive) {
-        setMinimum(value);
-        setMinimumInclusive(inclusive);
+    public DoubleDataType setMin(Double value, boolean inclusive) {
+        setMin(value);
+        setMinInclusive(inclusive);
         return this;
     }
 
-    public DoubleDataType setMaximum(Double value) {
+    public DoubleDataType setMax(Double value) {
         edit();
         maximum = value;
         return this;
     }
 
-    public DoubleDataType setMaximumInclusive(boolean inclusive) {
+    public DoubleDataType setMaxInclusive(boolean inclusive) {
         edit();
         maximumInclusive = inclusive;
         return this;
     }
 
-    public DoubleDataType setMaximum(Double value, boolean inclusive) {
-        setMaximum(value);
-        setMaximumInclusive(inclusive);
+    public DoubleDataType setMax(Double value, boolean inclusive) {
+        setMax(value);
+        setMaxInclusive(inclusive);
         return this;
     }
 
@@ -145,10 +145,10 @@ public class BasicDoubleDataType extends Parameter implements DoubleDataType {
     public void copyValidationRules(DataType dataType) {
         super.copyValidationRules(dataType);
         DoubleDataType doubleField = (DoubleDataType)dataType;
-        setMinimum(doubleField.getMinimum());
-        setMinimumInclusive(doubleField.getMinimumInclusive());
-        setMaximum(doubleField.getMaximum());
-        setMaximumInclusive(doubleField.getMaximumInclusive());
+        setMin(doubleField.getMin());
+        setMinInclusive(doubleField.getMinInclusive());
+        setMax(doubleField.getMax());
+        setMaxInclusive(doubleField.getMaxInclusive());
     }
 
 }
