@@ -11,28 +11,27 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.BooleanDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicBooleanDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicBooleanDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BooleanDataType
  * @since MMBase-1.8
  */
-public class BasicBooleanDataType extends Parameter implements BooleanDataType {
+public class BasicBooleanDataType extends AbstractDataType implements BooleanDataType {
 
     /**
      * Constructor for boolean field.
      */
     public BasicBooleanDataType(String name) {
-        super(name, MMBaseType.TYPE_BOOLEAN);
+        super(name, Boolean.class);
     }
 
     /**
@@ -42,6 +41,10 @@ public class BasicBooleanDataType extends Parameter implements BooleanDataType {
      */
     protected BasicBooleanDataType(String name, BasicBooleanDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_BOOLEAN;
     }
 
     public void validate(Object value) {

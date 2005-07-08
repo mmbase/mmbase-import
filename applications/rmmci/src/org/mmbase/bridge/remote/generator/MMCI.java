@@ -87,7 +87,6 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldValue",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.MMBaseType", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Module",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleList",doc));
@@ -142,6 +141,8 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.AuthenticationData",doc));
         // function classes
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.ReturnType", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameter", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.LocalizedString", doc));

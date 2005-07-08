@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.48 2005-07-06 13:41:44 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.49 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -89,8 +89,8 @@ public class BasicSqlHandler implements SqlHandler {
      */
     private static boolean isRelevantCaseInsensitive(FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
-        && (constraint.getField().getType() == MMBaseType.TYPE_STRING
-        || constraint.getField().getType() == MMBaseType.TYPE_XML);
+        && (constraint.getField().getType() == Field.TYPE_STRING
+        || constraint.getField().getType() == Field.TYPE_XML);
     }
 
     /**
@@ -126,7 +126,7 @@ public class BasicSqlHandler implements SqlHandler {
      */
     // TODO: elaborate javadoc, add to SqlHandler interface?
     public void appendFieldValue(StringBuffer sb, Object value, boolean toLowerCase, int fieldType) {
-        if (fieldType == MMBaseType.TYPE_STRING || fieldType == MMBaseType.TYPE_XML) {
+        if (fieldType == Field.TYPE_STRING || fieldType == Field.TYPE_XML) {
             // escape single quotes in string
             String stringValue = toSqlString((String) value);
             // to lowercase when case insensitive
@@ -136,7 +136,7 @@ public class BasicSqlHandler implements SqlHandler {
             sb.append("'").
             append(stringValue).
             append("'");
-        } else if (fieldType == MMBaseType.TYPE_DATETIME) {
+        } else if (fieldType == Field.TYPE_DATETIME) {
             if (value instanceof Integer) {
                 sb.append(((Integer) value).intValue());
             } else {
@@ -144,7 +144,7 @@ public class BasicSqlHandler implements SqlHandler {
                 appendDateValue(sb, (Date) value);
                 sb.append("'");
             }
-        } else if (fieldType == MMBaseType.TYPE_BOOLEAN) {
+        } else if (fieldType == Field.TYPE_BOOLEAN) {
             boolean isTrue = ((Boolean) value).booleanValue();
             if (isTrue) {
                 sb.append("TRUE");
@@ -252,7 +252,7 @@ public class BasicSqlHandler implements SqlHandler {
         boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == MMBaseType.TYPE_BINARY && storesAsFile) continue; 
+            if (field.getType() == Field.TYPE_BINARY && storesAsFile) continue; 
             if (appended) {
                 sb.append(',');
             }
@@ -553,7 +553,7 @@ public class BasicSqlHandler implements SqlHandler {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
 
                 boolean uppered = false;
-                if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == MMBaseType.TYPE_STRING) {
+                if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
                     sb.append("UPPER(");
                     uppered = true;
                 }

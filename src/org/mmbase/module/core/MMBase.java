@@ -12,7 +12,6 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.bridge.Field;
 import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
@@ -39,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.136 2005-07-06 11:28:41 michiel Exp $
+ * @version $Id: MMBase.java,v 1.137 2005-07-08 12:23:45 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -662,7 +661,7 @@ public class MMBase extends ProcessorModule {
             rootBuilder.setTableName("object");
             List fields = new ArrayList();
             // number field  (note: state = 'system')
-            CoreField def = createField("number",MMBaseType.TYPE_INTEGER, Field.STATE_SYSTEM,
+            CoreField def = createField("number",Field.TYPE_INTEGER, Field.STATE_SYSTEM,
                                      "Object", "integer", 10, 10, 1);
             def.setStoragePosition(1);
             def.getDataType().setRequired(true);
@@ -670,7 +669,7 @@ public class MMBase extends ProcessorModule {
             def.finish();
             fields.add(def);
             // otype field
-            def = createField("otype",MMBaseType.TYPE_INTEGER, Field.STATE_SYSTEM,
+            def = createField("otype",Field.TYPE_INTEGER, Field.STATE_SYSTEM,
                            "Type", "integer", -1, -1, -1);
             def.setStoragePosition(2);
             def.getDataType().setRequired(true);
@@ -678,7 +677,7 @@ public class MMBase extends ProcessorModule {
             def.finish();
             fields.add(def);
             // owner field
-            def = createField("owner",MMBaseType.TYPE_STRING, Field.STATE_SYSTEM,
+            def = createField("owner",Field.TYPE_STRING, Field.STATE_SYSTEM,
                            "Owner", "string", 11, 11, -1);
             def.setSize(12);
             def.setStoragePosition(3);

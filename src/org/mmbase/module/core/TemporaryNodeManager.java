@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.corebuilders.RelDef;
 
 import org.mmbase.util.logging.Logger;
@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.38 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.39 2005-07-08 12:23:45 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -157,12 +157,12 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                 if (value instanceof String) {
                     stringValue = (String)value;
                     switch(type) {
-                    case MMBaseType.TYPE_XML:
-                    case MMBaseType.TYPE_STRING:
+                    case Field.TYPE_XML:
+                    case Field.TYPE_STRING:
                         node.setValue(field, stringValue);
                         break;
-                    case MMBaseType.TYPE_NODE:
-                    case MMBaseType.TYPE_INTEGER:
+                    case Field.TYPE_NODE:
+                    case Field.TYPE_INTEGER:
                         try {
                             int i=-1;
                             if (!stringValue.equals("")) i=Integer.parseInt(stringValue);
@@ -171,10 +171,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             log.error("Value for field " + field + " is not a number " + stringValue);
                         }
                         break;
-                    case MMBaseType.TYPE_BINARY:
+                    case Field.TYPE_BINARY:
                         log.error("We don't support casts from String to Byte");
                         break;
-                    case MMBaseType.TYPE_FLOAT:
+                    case Field.TYPE_FLOAT:
                         try {
                             float f=-1;
                             if (!stringValue.equals("")) f=Float.parseFloat(stringValue);
@@ -183,7 +183,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             log.error("Value for field " + field + " is not a number " + stringValue);
                         }
                         break;
-                    case MMBaseType.TYPE_DOUBLE:
+                    case Field.TYPE_DOUBLE:
                         try {
                             double d=-1;
                             if (!stringValue.equals("")) d=Double.parseDouble(stringValue);
@@ -192,7 +192,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             log.error("Value for field " + field + " is not a number " + stringValue);
                         }
                         break;
-                    case MMBaseType.TYPE_LONG:
+                    case Field.TYPE_LONG:
                         try {
                             long l=-1;
                             if (!stringValue.equals("")) l=Long.parseLong(stringValue);
@@ -201,10 +201,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             log.error("Value for field "+field+" is not a number "+stringValue);
                         }
                         break;
-                    case MMBaseType.TYPE_DATETIME:
+                    case Field.TYPE_DATETIME:
                         node.setValue(field, Casting.toDate(value));
                         break;
-                    case MMBaseType.TYPE_BOOLEAN:
+                    case Field.TYPE_BOOLEAN:
                         // test if this is numeric
                         try {
                             if (!stringValue.equals("")) {

@@ -94,10 +94,12 @@ public class XMLClass {
         } else if (elementName.equals("array") || elementName.equals("interface")){
 
             XMLClass xmlClass = new XMLClass(doc);
-            if (elementName.equals("array")){
+            if (elementName.equals("array")) {
                 xmlClass.isArray = true;
+                xmlClass.isInterface = false;
+            } else {
+                xmlClass.isInterface = true;
             }
-            xmlClass.isInterface = true;
             xmlClass.setXML(xml);
 
             NodeList nl= xml.getElementsByTagName("*");

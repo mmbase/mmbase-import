@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.DataType;
 import java.util.*;
 
 /**
@@ -22,7 +21,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.7 2005-06-15 08:57:58 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.8 2005-07-08 12:23:46 pierre Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -30,9 +29,9 @@ import java.util.*;
 abstract public class AbstractFunction implements Function, Comparable {
 
     protected String    name;
-    protected DataType  returnType;
+    protected ReturnType  returnType;
 
-    private DataType[] parameterDefinition;
+    private Parameter[] parameterDefinition;
     private String     description;
 
 
@@ -42,10 +41,10 @@ abstract public class AbstractFunction implements Function, Comparable {
      * @param def  Every function must have a parameter definition. It can be left <code>null</code> and then filled later by {@link #setParameterDefinition}
      * @param returnType Every function must also specify its return type. It can be left <code>null</code> and then filled later by {@link #setReturnType}
      */
-    public AbstractFunction(String name, DataType[] def, DataType returnType) {
+    public AbstractFunction(String name, Parameter[] def, ReturnType returnType) {
         this.name = name;
         if (def != null){
-            this.parameterDefinition = (DataType[]) Functions.define(def, new ArrayList()).toArray(ParametersImpl.EMPTY);
+            this.parameterDefinition = (Parameter[]) Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
         }
         this.returnType = returnType;
     }
@@ -110,7 +109,7 @@ abstract public class AbstractFunction implements Function, Comparable {
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public DataType[] getParameterDefinition() {
+    public Parameter[] getParameterDefinition() {
         return parameterDefinition;
     }
 
@@ -119,18 +118,18 @@ abstract public class AbstractFunction implements Function, Comparable {
      * @param params An array of Parameter objects.
      * @throws IllegalStateException if there was already set a parameter defintion for this function object.
      */
-    public void setParameterDefinition(DataType[] params) {
+    public void setParameterDefinition(Parameter[] params) {
         if (parameterDefinition != null) {
             throw new IllegalStateException("Definition is set already");
         }
-        parameterDefinition =  (DataType[]) Functions.define(params, new ArrayList()).toArray(ParametersImpl.EMPTY);
+        parameterDefinition =  (Parameter[]) Functions.define(params, new ArrayList()).toArray(Parameter.EMPTY);
     }
 
 
     /**
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
-    public DataType getReturnType() {
+    public ReturnType getReturnType() {
         return returnType;
     }
     /**
@@ -138,7 +137,7 @@ abstract public class AbstractFunction implements Function, Comparable {
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
-    public void setReturnType(DataType type) {
+    public void setReturnType(ReturnType type) {
         if (returnType != null) {
             throw new IllegalStateException("Returntype is set already");
         }
@@ -155,8 +154,8 @@ abstract public class AbstractFunction implements Function, Comparable {
         if (o == null) return false;
         return (o instanceof Function) && ((Function)o).getName().equals(name);
     }
-    
-    
+
+
     /**
      * @see java.lang.Object#hashCode()
      */

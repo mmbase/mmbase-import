@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.StringSearchConstraint;
 
@@ -18,7 +18,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicStringSearchConstraint.java,v 1.7 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicStringSearchConstraint.java,v 1.8 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -84,8 +84,8 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     private BasicStringSearchConstraint(StepField field, int searchType,
     int matchType) {
         super(field);
-        if (field.getType() != MMBaseType.TYPE_STRING
-        && field.getType() != MMBaseType.TYPE_XML) {
+        if (field.getType() != Field.TYPE_STRING
+        && field.getType() != Field.TYPE_XML) {
             throw new IllegalArgumentException(
             "StringSearchConstraint not allowed for this field type: "
             + getField().getType());

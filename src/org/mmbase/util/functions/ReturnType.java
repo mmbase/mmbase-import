@@ -19,10 +19,10 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.12 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: ReturnType.java,v 1.13 2005-07-08 12:23:46 pierre Exp $
  * @since MMBase-1.7
  */
-public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataType {
+public class ReturnType extends Parameter implements java.io.Serializable {
 
     /**
      * The return type of a function that does not return a thing.
@@ -125,7 +125,7 @@ public class ReturnType extends org.mmbase.bridge.implementation.AbstractDataTyp
 
 
     public String toString() {
-        return getTypeAsClass().getName();
+        return getDataType().getTypeAsClass().getName();
     }
 
 }

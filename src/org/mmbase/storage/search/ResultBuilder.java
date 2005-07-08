@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search;
 
 import java.util.*;
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.6 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: ResultBuilder.java,v 1.7 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
@@ -63,7 +63,7 @@ public class ResultBuilder extends VirtualBuilder {
         StepField stepField = (StepField) fieldsByAlias.get(fieldName);
         if (stepField == null) {
             log.error("not a known stepfield with name " + fieldName + " " + fieldsByAlias);
-            result = MMBaseType.TYPE_UNKNOWN;
+            result = Field.TYPE_UNKNOWN;
         } else {
             result = stepField.getType();
         }

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
-import org.mmbase.bridge.DataType;
 
 
 /**
@@ -23,7 +22,7 @@ import org.mmbase.bridge.DataType;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.5 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: Function.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
@@ -72,25 +71,25 @@ public interface Function {
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public DataType[] getParameterDefinition();
+    public Parameter[] getParameterDefinition();
 
     /**
      * A function object is of no use, as long as it lacks a definition.
      * @param params An array of Parameter objects.
      * @throws IllegalStateException if there was already set a parameter definition for this function object.
      */
-    public void setParameterDefinition(DataType[] params);
+    public void setParameterDefinition(Parameter[] params);
 
     /**
-     * @return The DataType of the function's result value, or <code>null</code> if unknown.
+     * @return The return type of the function's result value, or <code>null</code> if unknown.
      */
-    public DataType getReturnType();
+    public ReturnType getReturnType();
 
     /**
-     * Sets the DataType of the function's result value.
-     * @param type A DataType object. For void functions that could be {@link ReturnType#VOID}.
+     * Sets the return type of the function's result value.
+     * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
-    public void setReturnType(DataType type);
+    public void setReturnType(ReturnType type);
 
 }

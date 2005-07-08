@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.8 2005-06-28 19:09:21 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.9 2005-07-08 12:23:46 pierre Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.function.BeanFunction
@@ -60,10 +60,10 @@ public abstract class NodeFunction extends AbstractFunction {
 
 
 
-    public NodeFunction(String name, DataType[] def, DataType returnType) {
+    public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
         super(name, getNodeParameterDef(def), returnType);
     }
-    protected static DataType[] getNodeParameterDef(DataType[] def) {
+    protected static Parameter[] getNodeParameterDef(Parameter[] def) {
         if (java.util.Arrays.asList(def).contains(Parameter.NODE)) {
             return def;
         } else {
@@ -83,7 +83,7 @@ public abstract class NodeFunction extends AbstractFunction {
      * counter-part {@link #getFunctionValue(org.mmbase.bridge.Node, Parameters)}.  Overriding the
      * bridge version has two advantages. It's easier, and mmbase security will be honoured. That
      * last thing is of course not necesary if you are not going to use other nodes.
-     * 
+     *
      */
     protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
@@ -91,7 +91,7 @@ public abstract class NodeFunction extends AbstractFunction {
         if (cloud == null) throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
         final Node node     = cloud.getNode(coreNode.getNumber());
         return getFunctionValue(node, parameters);
-            
+
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class NodeFunction extends AbstractFunction {
     }
 
     /**
-     * To implement a NodeFunction, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}. 
+     * To implement a NodeFunction, you must override {@link #getFunctionValue(MMObjectNode, Parameters)}.
      * This one can be overriden if the same function must <em>also</em> be a builder function.
      */
     public Object getFunctionValue(Parameters parameters) {
@@ -116,7 +116,7 @@ public abstract class NodeFunction extends AbstractFunction {
         }
         MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
         if (node == null) {
-            throw new IllegalArgumentException("The node argument of  " + getClass() + " " + toString() + " must not be null "); 
+            throw new IllegalArgumentException("The node argument of  " + getClass() + " " + toString() + " must not be null ");
         }
         Object o = getFunctionValue(node, parameters);
         if (log.isDebugEnabled()) {

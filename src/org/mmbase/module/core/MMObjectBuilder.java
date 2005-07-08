@@ -15,7 +15,6 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 
@@ -57,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.314 2005-06-30 11:02:28 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.315 2005-07-08 12:23:45 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1245,7 +1244,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public boolean checkAddTmpField(String field) {
         if (getDBState(field) == Field.STATE_UNKNOWN) { // means that field is not yet defined.
-            CoreField fd = mmb.createField(field,MMBaseType.TYPE_STRING, Field.STATE_VIRTUAL,
+            CoreField fd = mmb.createField(field,Field.TYPE_STRING, Field.STATE_VIRTUAL,
                                         field, "string", -1,-1,-1);
             if (! field.startsWith("_")) {
                 fd.setStoragePosition(1000);
@@ -1940,7 +1939,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return a field's storage type. The returned value is one of the following values
-     * declared in MMBaseType:
+     * declared in Field:
      * TYPE_STRING,
      * TYPE_INTEGER,
      *.TYPE_BINARY,
@@ -1955,7 +1954,7 @@ public class MMObjectBuilder extends MMTable {
     public int getDBType(String fieldName) {
         if (fields == null) {
             log.error("getDBType(): fields are null on object : "+tableName);
-            return MMBaseType.TYPE_UNKNOWN;
+            return Field.TYPE_UNKNOWN;
         }
         Field field = getField(fieldName);
         if (field == null) {
@@ -1979,7 +1978,7 @@ public class MMObjectBuilder extends MMTable {
                 log.warn("getDBType(): Can't find definition on field '" + fieldName + "' of builder " + tableName);
                 log.debug(Logging.stackTrace());
             }
-            return MMBaseType.TYPE_UNKNOWN;
+            return Field.TYPE_UNKNOWN;
         }
         return field.getType();
     }
@@ -2043,10 +2042,10 @@ public class MMObjectBuilder extends MMTable {
 
         if (rtn == null) {
             CoreField fdef = getField(field);
-            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == MMBaseType.TYPE_DATETIME)) { // do something reasonable for this
+            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == Field.TYPE_DATETIME)) { // do something reasonable for this
 
                 Date date;
-                if (fdef.getType() == MMBaseType.TYPE_DATETIME) {
+                if (fdef.getType() == Field.TYPE_DATETIME) {
                     date = node.getDateValue(field);
                 } else {
                     date = new Date(node.getLongValue(field) * 1000);
@@ -2101,7 +2100,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getGUIIndicator(String fieldName, MMObjectNode node) {
         CoreField field = getField(fieldName);
-        if (field.getType() == MMBaseType.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
+        if (field.getType() == Field.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
             try {
                 MMObjectNode otherNode = node.getNodeValue(fieldName);
                 if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
@@ -3093,9 +3092,9 @@ public class MMObjectBuilder extends MMTable {
         Object value = strValue;
 
         // For numberical fields, convert string representation to Double.
-        if (field.getType() != MMBaseType.TYPE_STRING &&
-            field.getType() != MMBaseType.TYPE_XML &&
-            field.getType() != MMBaseType.TYPE_UNKNOWN) {
+        if (field.getType() != Field.TYPE_STRING &&
+            field.getType() != Field.TYPE_XML &&
+            field.getType() != Field.TYPE_UNKNOWN) {
                 // backwards comp fix. This is needed for the scan editors.
                 int length = strValue.length();
                 if (strValue.charAt(0) == '*' && strValue.charAt(length - 1) == '*') {
@@ -3111,8 +3110,8 @@ public class MMObjectBuilder extends MMTable {
             case '=':
             case 'E':
                 // EQUAL (string field)
-                if (field.getType() == MMBaseType.TYPE_STRING ||
-                    field.getType() == MMBaseType.TYPE_XML) {
+                if (field.getType() == Field.TYPE_STRING ||
+                    field.getType() == Field.TYPE_XML) {
                     // Strip first and last character of value, when
                     // equal to '*'.
                     String str = (String) value;
@@ -3328,9 +3327,9 @@ public class MMObjectBuilder extends MMTable {
 
         int type=getDBType(fieldName);
         String value="";
-        if ((type==MMBaseType.TYPE_INTEGER) || (type==MMBaseType.TYPE_NODE)) {
+        if ((type==Field.TYPE_INTEGER) || (type==Field.TYPE_NODE)) {
             value=""+node.getIntValue(fieldName);
-        } else if (type==MMBaseType.TYPE_STRING) {
+        } else if (type==Field.TYPE_STRING) {
             value=node.getStringValue(fieldName);
         } else {
             // should be mapped to the builder
@@ -3372,9 +3371,9 @@ public class MMObjectBuilder extends MMTable {
             int type = field.getType();
             String name = field.getName();
             body.append('<').append(name).append('>');
-            if ((type == MMBaseType.TYPE_INTEGER)|| (type == MMBaseType.TYPE_NODE)) {
+            if ((type == Field.TYPE_INTEGER)|| (type == Field.TYPE_NODE)) {
                 body.append(node.getIntValue(name));
-            } else if (type == MMBaseType.TYPE_BINARY) {
+            } else if (type == Field.TYPE_BINARY) {
                 body.append(node.getByteValue(name));
             } else {
                 body.append(node.getStringValue(name));
@@ -3642,7 +3641,7 @@ public class MMObjectBuilder extends MMTable {
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
-            CoreField def = mmb.createField(FIELD_OBJECT_TYPE, MMBaseType.TYPE_INTEGER, Field.STATE_SYSTEM,
+            CoreField def = mmb.createField(FIELD_OBJECT_TYPE, Field.TYPE_INTEGER, Field.STATE_SYSTEM,
                                          "Type", "integer", -1, -1, -1);
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setStoragePosition(2);

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.DataType;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.6 2005-06-09 21:27:56 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.7 2005-07-08 12:23:46 pierre Exp $
  */
 public abstract class WrappedFunction implements Function {
 
@@ -61,19 +60,19 @@ public abstract class WrappedFunction implements Function {
         return wrappedFunction.getName();
     }
 
-    public DataType[] getParameterDefinition() {
+    public Parameter[] getParameterDefinition() {
         return wrappedFunction.getParameterDefinition();
     }
 
-    public void setParameterDefinition(DataType[] params) {
+    public void setParameterDefinition(Parameter[] params) {
         wrappedFunction.setParameterDefinition(params);
     }
 
-    public DataType getReturnType() {
+    public ReturnType getReturnType() {
         return wrappedFunction.getReturnType();
     }
 
-    public void setReturnType(DataType type) {
+    public void setReturnType(ReturnType type) {
         wrappedFunction.setReturnType(type);
     }
 
