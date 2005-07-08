@@ -11,23 +11,22 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.ListDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicListDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicListDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.ListDataType
  * @since MMBase-1.8
  */
-public class BasicListDataType extends Parameter implements ListDataType {
+public class BasicListDataType extends AbstractDataType implements ListDataType {
 
     protected int minSize = -1;
     protected int maxSize = -1;
@@ -37,7 +36,7 @@ public class BasicListDataType extends Parameter implements ListDataType {
      * Constructor for List field.
      */
     public BasicListDataType(String name) {
-        super(name, MMBaseType.TYPE_LIST);
+        super(name, List.class);
     }
 
     /**
@@ -47,6 +46,10 @@ public class BasicListDataType extends Parameter implements ListDataType {
      */
     protected BasicListDataType(String name, BasicListDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_LIST;
     }
 
     public int getMinSize() {

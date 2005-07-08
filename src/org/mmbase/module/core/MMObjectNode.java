@@ -14,7 +14,6 @@ import java.io.*;
 
 import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
@@ -34,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.146 2005-07-07 16:39:36 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.147 2005-07-08 12:23:45 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -659,10 +658,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             if (value == null) {
                 int type = getDBType(fieldName);
                 switch (type) {
-                case MMBaseType.TYPE_BINARY:
+                case Field.TYPE_BINARY:
                     value = parent.getShortedByte(fieldName, this);
                     break;
-                case MMBaseType.TYPE_STRING:
+                case Field.TYPE_STRING:
                     value = parent.getShortedText(fieldName, this);
                     break;
                 default:
@@ -675,7 +674,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // if we have an XML-dbtype field, we always have to return a Document (or null).
         // note that if the value is null we store it as a null value
         if (parent != null && value != null && value != VALUE_NULL && !(value instanceof Document) &&
-            getDBType(fieldName) == MMBaseType.TYPE_XML) {
+            getDBType(fieldName) == Field.TYPE_XML) {
             String string = Casting.toString(value).trim();
             Document doc = toXML(string, fieldName);
             if(doc != null) {
@@ -754,7 +753,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public Document getXMLValue(String fieldName) {
         Document o =  toXML(getValue(fieldName), fieldName);
-        if(o != null && getDBType(fieldName) == MMBaseType.TYPE_XML) {
+        if(o != null && getDBType(fieldName) == Field.TYPE_XML) {
             storeValue(fieldName, o);
         }
         return o;
@@ -789,7 +788,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return b;
         } else {
             byte[] b;
-            if (getDBType(fieldName) == MMBaseType.TYPE_STRING) {
+            if (getDBType(fieldName) == Field.TYPE_STRING) {
                 String s = getStringValue(fieldName);
                 try {
                     b = s.getBytes(parent.getMMBase().getEncoding());

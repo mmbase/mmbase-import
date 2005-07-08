@@ -12,7 +12,7 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.24 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.25 2005-07-08 12:23:46 pierre Exp $
  */
 public class NodeWriter{
 
@@ -207,7 +207,7 @@ public class NodeWriter{
             // this is a bad way of doing it imho
             int type=node.getDBType(key);
             String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
-            if (type==MMBaseType.TYPE_BINARY) {
+            if (type==Field.TYPE_BINARY) {
                 String body="\t\t<"+key+" file=\""+stype+"/"+node.getIntValue("number")+"."+key+"\" />\n";
                 File file = new File(targetpath+stype);
                 try {

@@ -89,23 +89,23 @@ public class Fields {
      * @return the id of the type.
      */
     public static int getType(String type) {
-        if (type == null) return MMBaseType.TYPE_UNKNOWN;
+        if (type == null) return Field.TYPE_UNKNOWN;
         // XXX: deprecated VARCHAR
         type = type.toUpperCase();
-        if (type.equals("VARCHAR")) return MMBaseType.TYPE_STRING;
-        if (type.equals("STRING"))  return MMBaseType.TYPE_STRING;
-        if (type.equals("XML"))     return MMBaseType.TYPE_XML;
-        if (type.equals("INTEGER")) return MMBaseType.TYPE_INTEGER;
-        if (type.equals("BYTE"))    return MMBaseType.TYPE_BINARY;
-        if (type.equals("BINARY"))    return MMBaseType.TYPE_BINARY;
-        if (type.equals("FLOAT"))   return MMBaseType.TYPE_FLOAT;
-        if (type.equals("DOUBLE"))  return MMBaseType.TYPE_DOUBLE;
-        if (type.equals("LONG"))    return MMBaseType.TYPE_LONG;
-        if (type.equals("NODE"))    return MMBaseType.TYPE_NODE;
-        if (type.equals("DATETIME"))return MMBaseType.TYPE_DATETIME;
-        if (type.equals("BOOLEAN")) return MMBaseType.TYPE_BOOLEAN;
-        if (type.startsWith("LIST"))    return MMBaseType.TYPE_LIST;
-        return MMBaseType.TYPE_UNKNOWN;
+        if (type.equals("VARCHAR")) return Field.TYPE_STRING;
+        if (type.equals("STRING"))  return Field.TYPE_STRING;
+        if (type.equals("XML"))     return Field.TYPE_XML;
+        if (type.equals("INTEGER")) return Field.TYPE_INTEGER;
+        if (type.equals("BYTE"))    return Field.TYPE_BINARY;
+        if (type.equals("BINARY"))    return Field.TYPE_BINARY;
+        if (type.equals("FLOAT"))   return Field.TYPE_FLOAT;
+        if (type.equals("DOUBLE"))  return Field.TYPE_DOUBLE;
+        if (type.equals("LONG"))    return Field.TYPE_LONG;
+        if (type.equals("NODE"))    return Field.TYPE_NODE;
+        if (type.equals("DATETIME"))return Field.TYPE_DATETIME;
+        if (type.equals("BOOLEAN")) return Field.TYPE_BOOLEAN;
+        if (type.startsWith("LIST"))    return Field.TYPE_LIST;
+        return Field.TYPE_UNKNOWN;
     }
 
     public static void sort(List fields, int order) {

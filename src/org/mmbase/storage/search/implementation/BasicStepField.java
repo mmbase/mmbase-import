@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 
@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.19 2005-07-06 09:13:19 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.20 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -51,30 +51,30 @@ public class BasicStepField implements StepField {
         // Test for compatible type.
         boolean ok;
         switch (type) {
-        case MMBaseType.TYPE_BINARY: 
+        case Field.TYPE_BINARY: 
             ok = value instanceof byte[];
             break;
             // Numerical types.            
-        case MMBaseType.TYPE_INTEGER:
-        case MMBaseType.TYPE_FLOAT:
-        case MMBaseType.TYPE_DOUBLE:
-        case MMBaseType.TYPE_LONG:
-        case MMBaseType.TYPE_NODE:
+        case Field.TYPE_INTEGER:
+        case Field.TYPE_FLOAT:
+        case Field.TYPE_DOUBLE:
+        case Field.TYPE_LONG:
+        case Field.TYPE_NODE:
             ok = value instanceof Number;
             break;
 
             // String types.
-        case MMBaseType.TYPE_STRING:
-        case MMBaseType.TYPE_XML:
+        case Field.TYPE_STRING:
+        case Field.TYPE_XML:
             ok = value instanceof String;
             break;
-        case MMBaseType.TYPE_BOOLEAN:
+        case Field.TYPE_BOOLEAN:
             ok = value instanceof Boolean;
             break;
-        case MMBaseType.TYPE_DATETIME:
+        case Field.TYPE_DATETIME:
             ok = value instanceof java.util.Date || value instanceof Number;
             break;
-        case MMBaseType.TYPE_LIST:
+        case Field.TYPE_LIST:
             ok = value instanceof java.util.List;
             break;
 

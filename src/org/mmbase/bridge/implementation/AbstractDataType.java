@@ -25,17 +25,16 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.6 2005-07-08 08:02:17 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.7 2005-07-08 12:23:45 pierre Exp $
  */
 
-public class AbstractDataType extends AbstractDescriptor implements DataType, MMBaseType, Comparable {
+abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
 
     private DataType parentDataType = null;
 
     private Class classType;
-    private int type;
     private boolean finished = false;
     private Object defaultValue = null;
     private Object owner = null;
@@ -49,19 +48,7 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
      */
     protected AbstractDataType(String name, Class classType) {
         super(name);
-        this.type = MMBaseType.TYPE_UNKNOWN;
         this.classType = classType;
-    }
-
-    /**
-     * Create a data type object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    protected AbstractDataType(String name, int type) {
-        super(name);
-        this.type = type;
-        this.classType = DataTypes.getTypeAsClass(type);
     }
 
     /**
@@ -73,7 +60,6 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
         super(name);
         this.parentDataType = dataType;
         if (dataType != null) {
-            this.type = dataType.getType();
             this.classType = dataType.getTypeAsClass();
             copyValidationRules(dataType);
         }
@@ -83,13 +69,7 @@ public class AbstractDataType extends AbstractDescriptor implements DataType, MM
         return classType;
     }
 
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public int getType() {
-        return type;
-    }
+    abstract public int getBaseType();
 
    /**
      * Checks if the passed object is of the correct class (compatible with the type of this DataType),

@@ -16,7 +16,7 @@ package org.mmbase.storage.search;
  * This corresponds to a prefixed fieldname in a SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: StepField.java,v 1.4 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: StepField.java,v 1.5 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public interface StepField {
@@ -41,7 +41,7 @@ public interface StepField {
 
     /**
      * Gets the type of the associated field.
-     * This is one of the values defined in {@link org.mmbase.bridge.MMBaseType MMBaseType}.
+     * This is one of the values defined in {@link org.mmbase.bridge.Field Field}.
      */
     int getType();
 

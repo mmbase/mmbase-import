@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -36,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.54 2005-07-06 16:04:11 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.55 2005-07-08 12:23:45 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -605,15 +604,15 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         VirtualTypeRel(TypeRel t) {
             fields = new Hashtable();
             mmb = t.mmb;
-            CoreField field = mmb.createField("snumber",MMBaseType.TYPE_INTEGER,Field.STATE_PERSISTENT,
+            CoreField field = mmb.createField("snumber",Field.TYPE_INTEGER,Field.STATE_PERSISTENT,
                                      "snumber","integer", -1,-1, 2);
             field.finish();
             addField(field);
-            field = mmb.createField("dnumber",MMBaseType.TYPE_INTEGER,Field.STATE_PERSISTENT,
+            field = mmb.createField("dnumber",Field.TYPE_INTEGER,Field.STATE_PERSISTENT,
                                      "dnumber","integer", -1,-1, 2);
             field.finish();
             addField(field);
-            field = mmb.createField("rnumber",MMBaseType.TYPE_INTEGER,Field.STATE_PERSISTENT,
+            field = mmb.createField("rnumber",Field.TYPE_INTEGER,Field.STATE_PERSISTENT,
                                      "rnumber","integer", -1,-1, 2);
             field.finish();
             addField(field);

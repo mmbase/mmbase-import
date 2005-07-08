@@ -15,12 +15,13 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.datatypes.*;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.bridge.implementation.datatypes.*;
+import org.mmbase.module.core.MMObjectNode;
 
 /**
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.3 2005-07-08 08:02:18 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.4 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -28,19 +29,49 @@ public class DataTypes {
 
     private static Map finalDataTypes = new HashMap();
 
-    public static Class getTypeAsClass(int type) {
+    public static int classToBaseType(Class type) {
+        if (type == null) {
+            return Field.TYPE_UNKNOWN;
+        } else if (type.isArray() && type.getComponentType() == Byte.TYPE) {
+            return Field.TYPE_BINARY;
+        } else if (type == Integer.class || type == Integer.TYPE) {
+            return Field.TYPE_INTEGER;
+        } else if (type == Long.class || type == Long.TYPE) {
+            return Field.TYPE_LONG;
+        } else if (type == Double.class || type == Double.TYPE) {
+            return Field.TYPE_DOUBLE;
+        } else if (type == Float.class || type == Float.TYPE) {
+            return Field.TYPE_FLOAT;
+        } else if (type == String.class) {
+            return Field.TYPE_STRING;
+        } else if (type == org.w3c.dom.Document.class) {
+            return Field.TYPE_XML;
+        } else if (type == Node.class || type == MMObjectNode.class) {
+            return Field.TYPE_NODE;
+        } else if (type == Date.class) {
+            return Field.TYPE_DATETIME;
+        } else if (type == Boolean.class || type == Boolean.TYPE) {
+            return Field.TYPE_BOOLEAN;
+        } else if (type == List.class) {
+            return Field.TYPE_LIST;
+        } else {
+            return Field.TYPE_UNKNOWN;
+        }
+    }
+
+    public static Class baseTypeToClass(int type) {
         switch (type) {
-        case MMBaseType.TYPE_STRING : return String.class;
-        case MMBaseType.TYPE_INTEGER : return Integer.class;
-        case MMBaseType.TYPE_BINARY: return byte[].class;
-        case MMBaseType.TYPE_FLOAT: return Float.class;
-        case MMBaseType.TYPE_DOUBLE: return Double.class;
-        case MMBaseType.TYPE_LONG: return Long.class;
-        case MMBaseType.TYPE_XML: return org.w3c.dom.Document.class;
-        case MMBaseType.TYPE_NODE: return org.mmbase.module.core.MMObjectNode.class; // org.mmbase.bridge.Node.class;
-        case MMBaseType.TYPE_DATETIME: return java.util.Date.class;
-        case MMBaseType.TYPE_BOOLEAN: return Boolean.class;
-        case MMBaseType.TYPE_LIST: return List.class;
+        case Field.TYPE_STRING : return String.class;
+        case Field.TYPE_INTEGER : return Integer.class;
+        case Field.TYPE_BINARY: return byte[].class;
+        case Field.TYPE_FLOAT: return Float.class;
+        case Field.TYPE_DOUBLE: return Double.class;
+        case Field.TYPE_LONG: return Long.class;
+        case Field.TYPE_XML: return org.w3c.dom.Document.class;
+        case Field.TYPE_NODE: return org.mmbase.module.core.MMObjectNode.class; // org.mmbase.bridge.Node.class;
+        case Field.TYPE_DATETIME: return java.util.Date.class;
+        case Field.TYPE_BOOLEAN: return Boolean.class;
+        case Field.TYPE_LIST: return List.class;
         default: return null;
         }
     }
@@ -51,17 +82,17 @@ public class DataTypes {
     public static DataType createDataType(String name, int type) {
         DataType dataType = null;
         switch (type) {
-        case MMBaseType.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
-        case MMBaseType.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
-        case MMBaseType.TYPE_LONG : dataType = new BasicLongDataType(name); break;
-        case MMBaseType.TYPE_DOUBLE : dataType = new BasicDoubleDataType(name); break;
-        case MMBaseType.TYPE_FLOAT : dataType = new BasicFloatDataType(name); break;
-        case MMBaseType.TYPE_STRING : dataType = new BasicStringDataType(name); break;
-        case MMBaseType.TYPE_XML: dataType = new BasicXmlDataType(name); break;
-        case MMBaseType.TYPE_NODE : dataType = new BasicNodeDataType(name); break;
-        case MMBaseType.TYPE_DATETIME : dataType = new BasicDateTimeDataType(name); break;
-        case MMBaseType.TYPE_BOOLEAN : dataType = new BasicBooleanDataType(name); break;
-        case MMBaseType.TYPE_LIST : dataType = new BasicListDataType(name); break;
+        case Field.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
+        case Field.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
+        case Field.TYPE_LONG : dataType = new BasicLongDataType(name); break;
+        case Field.TYPE_DOUBLE : dataType = new BasicDoubleDataType(name); break;
+        case Field.TYPE_FLOAT : dataType = new BasicFloatDataType(name); break;
+        case Field.TYPE_STRING : dataType = new BasicStringDataType(name); break;
+        case Field.TYPE_XML: dataType = new BasicXmlDataType(name); break;
+        case Field.TYPE_NODE : dataType = new BasicNodeDataType(name); break;
+        case Field.TYPE_DATETIME : dataType = new BasicDateTimeDataType(name); break;
+        case Field.TYPE_BOOLEAN : dataType = new BasicBooleanDataType(name); break;
+        case Field.TYPE_LIST : dataType = new BasicListDataType(name); break;
         default: {
             dataType = new BasicDataType(name);
         }

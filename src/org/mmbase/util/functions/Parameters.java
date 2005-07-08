@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.DataType;
 import java.util.*;
 
 
@@ -22,7 +21,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: Parameters.java,v 1.16 2005-05-08 13:31:42 michiel Exp $
+ * @version $Id: Parameters.java,v 1.17 2005-07-08 12:23:46 pierre Exp $
  */
 
 public interface Parameters extends List {
@@ -36,7 +35,7 @@ public interface Parameters extends List {
      */
     public Class[] toClassArray();
 
-    public DataType[] getDefinition();
+    public Parameter[] getDefinition();
 
     /**
      * Sets the 'auto casting' property (which on default is false)
@@ -58,12 +57,12 @@ public interface Parameters extends List {
     public void checkRequiredParameters();
 
     /**
-     * Returns the position of a parameter in the parameters list, using the Datatype as a qualifier.
+     * Returns the position of a parameter in the parameters list, using the Parameter as a qualifier.
      * you can tehn acecss that paramter with {@link #get(int)}.
-     * @param parameter the datatype describing the parameter
+     * @param parameter the parameter
      * @return the index of the parameter, or -1 if it doesn't exist
      */
-    public int indexOfParameter(DataType parameter);
+    public int indexOfParameter(Parameter parameter);
 
     /**
      * Returns the position of a parameter in the parameters list, using the parameter name as a qualifier.
@@ -74,11 +73,11 @@ public interface Parameters extends List {
     public int indexOfParameter(String parameterName);
 
     /**
-     * Checks wether a certain parameter is available, using the Datatype as a qualifier.
-     * @param parameter the datatype describing the parameter
+     * Checks wether a certain parameter is available, using the Parameter as a qualifier.
+     * @param parameter the parameter
      * @return <code>true</code> if a parameter exists.
      */
-    public boolean containsParameter(DataType parameter);
+    public boolean containsParameter(Parameter parameter);
 
     /**
      * Checks wether a certain parameter is available, using the parameter name as a qualifier.
@@ -89,11 +88,11 @@ public interface Parameters extends List {
 
     /**
      * Sets the value of a parameter.
-     * @param parameter the datatype describing the parameter to set
+     * @param parameter the Parameter describing the parameter to set
      * @param value the object value to set
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
      */
-    public Parameters set(DataType parameter, Object value);
+    public Parameters set(Parameter parameter, Object value);
 
     /**
      * Sets the value of a parameter.
@@ -114,10 +113,10 @@ public interface Parameters extends List {
 
     /**
      * Sets the value of an argument, if the argument is defined, otherwise do nothing.
-     * @param parameter the datatype describing the parameter to set
+     * @param parameter the parameter to set
      * @param value the object value to set
      */
-    public Parameters setIfDefined(DataType parameter, Object value);
+    public Parameters setIfDefined(Parameter parameter, Object value);
 
     /**
      * Sets the value of an argument, if the argument is defined, otherwise do nothing.
@@ -128,10 +127,10 @@ public interface Parameters extends List {
 
     /**
      * Gets the value of a parameter.
-     * @param parameter the datatype describing the parameter to get
+     * @param parameter the parameter to get
      * @return value the parameter value
      */
-    public Object get(DataType parameter);
+    public Object get(Parameter parameter);
 
     /**
      * Gets the value of a parameter.
@@ -142,10 +141,10 @@ public interface Parameters extends List {
 
     /**
      * Gets the value of a parameter, cast to a String.
-     * @param parameter the datatype describing the parameter to get
+     * @param parameter the parameter to get
      * @return value the parameter value as a <code>STring</code>
      */
-    public String getString(DataType parameter);
+    public String getString(Parameter parameter);
 
     /**
      * Gets the value of a parameter, cast to a String.

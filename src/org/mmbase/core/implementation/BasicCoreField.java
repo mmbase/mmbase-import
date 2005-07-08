@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCoreField.java,v 1.2 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicCoreField.java,v 1.3 2005-07-08 12:23:45 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
@@ -217,7 +217,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, getName());
-        result = HashCodeUtil.hashCode(result, getDataType().getType());
+        result = HashCodeUtil.hashCode(result, getDataType().getBaseType());
         result = HashCodeUtil.hashCode(result, state);
         result = HashCodeUtil.hashCode(result, getDataType().isRequired());
         result = HashCodeUtil.hashCode(result, unique);

@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.CompositeConstraint;
@@ -45,7 +45,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.28 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.29 2005-07-08 12:23:46 pierre Exp $
  */
 public class QueryConvertor {
 
@@ -315,8 +315,8 @@ class DBQuery  extends ParseItem {
             }
 
             int fieldType = field.getType();
-            if (fieldType == MMBaseType.TYPE_STRING
-                || fieldType == MMBaseType.TYPE_XML) {
+            if (fieldType == Field.TYPE_STRING
+                || fieldType == Field.TYPE_XML) {
                 // String field.
                 fieldValueConstraint = new BasicFieldValueConstraint(field, condition.value.getValue());
                 fieldValueConstraint.setCaseSensitive(false);
@@ -332,8 +332,8 @@ class DBQuery  extends ParseItem {
                     break;
 
                 case DBConditionItem.EQUAL:
-                    if (fieldType == MMBaseType.TYPE_STRING
-                        || fieldType == MMBaseType.TYPE_XML) {
+                    if (fieldType == Field.TYPE_STRING
+                        || fieldType == Field.TYPE_XML) {
                         fieldValueConstraint.setOperator(FieldCompareConstraint.LIKE);
                     } else {
                         fieldValueConstraint.setOperator(FieldCompareConstraint.EQUAL);

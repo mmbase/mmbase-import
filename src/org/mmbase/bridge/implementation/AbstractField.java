@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -106,7 +106,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     }
 
     public boolean hasIndex() {
-        return (dataType.getType() == MMBaseType.TYPE_NODE) || getName().equals("number");
+        return (getType() == Field.TYPE_NODE) || getName().equals("number");
     }
 
     abstract public int getSearchPosition();
@@ -119,7 +119,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
 
     // MMBase Type shortcut
     public int getType() {
-        return dataType.getType();
+        return dataType.getBaseType();
     }
 
     public Class getTypeAsClass() {

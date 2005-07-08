@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.19 2005-07-06 13:47:58 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.20 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -191,7 +191,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == org.mmbase.bridge.MMBaseType.TYPE_BINARY && storesAsFile) continue; 
+            if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY && storesAsFile) continue; 
             if (appended) {
                 sb.append(',');
             }

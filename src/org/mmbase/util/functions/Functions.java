@@ -13,8 +13,6 @@ import java.lang.reflect.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import org.mmbase.bridge.DataType;
-
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -22,14 +20,14 @@ import org.mmbase.util.logging.*;
 /**
  * This class defines static methods for defining Function and Parameters objects.
  * These methods include ways to retrieve Function definitions for a class using reflection,
- * and methods to convert a List to a Parameters object, and a DataType array to a
+ * and methods to convert a List to a Parameters object, and a Parameter array to a
  * List.
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.5 2005-06-13 08:31:41 michiel Exp $
+ * @version $Id: Functions.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
  */
 public class Functions {
 
@@ -38,13 +36,13 @@ public class Functions {
     /**
      * Converts a certain List to an Parameters if it is not already one.
      */
-    public static Parameters buildParameters(DataType[] def, List args) {
+    public static Parameters buildParameters(Parameter[] def, List args) {
         ParametersImpl a;
         if (args instanceof ParametersImpl) {
             a = (ParametersImpl) args;
             // checking whether two ParametersImpl instances match won't work in some cases
             /*
-            DataType[] resolvedDef = (DataType[]) define(def, new ArrayList()).toArray(new DataType[0]); // resolve the wrappers
+            Parameter[] resolvedDef = (Parameter[]) define(def, new ArrayList()).toArray(new Parameter[0]); // resolve the wrappers
             if ( ! Arrays.equals(a.definition, resolvedDef))  {
                 throw new IllegalArgumentException("Given parameters '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
             }
@@ -60,7 +58,7 @@ public class Functions {
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
-    public static List define(DataType[] def, List list) {
+    public static List define(Parameter[] def, List list) {
         if (def == null) return list;
         for (int i = 0; i < def.length; i++) {
             if (def[i] instanceof Parameter.Wrapper) {

@@ -11,23 +11,22 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.StringDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.util.Casting;
-import org.mmbase.util.functions.Parameter;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicStringDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.StringDataType
  * @since MMBase-1.8
  */
-public class BasicStringDataType extends Parameter implements StringDataType {
+public class BasicStringDataType extends AbstractDataType implements StringDataType {
 
     protected int minLength = -1;
     protected int maxLength = -1;
@@ -37,7 +36,7 @@ public class BasicStringDataType extends Parameter implements StringDataType {
      * Constructor for string field.
      */
     public BasicStringDataType(String name) {
-        super(name, MMBaseType.TYPE_STRING);
+        super(name, String.class);
     }
 
     /**
@@ -47,6 +46,10 @@ public class BasicStringDataType extends Parameter implements StringDataType {
      */
     protected BasicStringDataType(String name, StringDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_STRING;
     }
 
     public String getPattern() {

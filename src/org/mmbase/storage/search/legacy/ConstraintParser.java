@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.legacy;
 
 import java.util.*;
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.24 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: ConstraintParser.java,v 1.25 2005-07-08 12:23:46 pierre Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -159,9 +159,9 @@ public class ConstraintParser {
              }
 
             int fieldType = field.getType();
-            if (fieldType == MMBaseType.TYPE_BINARY || fieldType == MMBaseType.TYPE_DOUBLE ||
-                fieldType == MMBaseType.TYPE_FLOAT || fieldType == MMBaseType.TYPE_INTEGER ||
-                fieldType == MMBaseType.TYPE_LONG || fieldType == MMBaseType.TYPE_NODE) {
+            if (fieldType == Field.TYPE_BINARY || fieldType == Field.TYPE_DOUBLE ||
+                fieldType == Field.TYPE_FLOAT || fieldType == Field.TYPE_INTEGER ||
+                fieldType == Field.TYPE_LONG || fieldType == Field.TYPE_NODE) {
                 // String represents a numerical value.
                 result = new Double((String) result);
             }

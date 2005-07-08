@@ -19,23 +19,23 @@ import org.mmbase.util.LocalizedString;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.4 2005-07-08 08:02:17 pierre Exp $
+ * @version $Id: DataType.java,v 1.5 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
-public interface DataType extends MMBaseType, Comparable, Descriptor {
+public interface DataType extends Comparable, Descriptor {
 
-    // DataTypes for base MMBase types
-    public static final DataType INTEGER  = DataTypes.createFinalDataType("integer", MMBaseType.TYPE_INTEGER);
-    public static final DataType LONG     = DataTypes.createFinalDataType("long", MMBaseType.TYPE_LONG);
-    public static final DataType FLOAT    = DataTypes.createFinalDataType("float", MMBaseType.TYPE_FLOAT);
-    public static final DataType DOUBLE   = DataTypes.createFinalDataType("double", MMBaseType.TYPE_DOUBLE);
-    public static final DataType STRING   = DataTypes.createFinalDataType("string", MMBaseType.TYPE_STRING);
-    public static final DataType XML      = DataTypes.createFinalDataType("xml", MMBaseType.TYPE_XML);
-    public static final DataType DATETIME = DataTypes.createFinalDataType("datetime", MMBaseType.TYPE_DATETIME);
-    public static final DataType BOOLEAN  = DataTypes.createFinalDataType("boolean", MMBaseType.TYPE_BOOLEAN);
-    public static final DataType BINARY   = DataTypes.createFinalDataType("binary", MMBaseType.TYPE_BINARY);
-    public static final DataType NODE     = DataTypes.createFinalDataType("node", MMBaseType.TYPE_NODE);
+    // DataTypes for base MMBase field types
+    public static final DataType INTEGER  = DataTypes.createFinalDataType("integer", Field.TYPE_INTEGER);
+    public static final DataType LONG     = DataTypes.createFinalDataType("long", Field.TYPE_LONG);
+    public static final DataType FLOAT    = DataTypes.createFinalDataType("float", Field.TYPE_FLOAT);
+    public static final DataType DOUBLE   = DataTypes.createFinalDataType("double", Field.TYPE_DOUBLE);
+    public static final DataType STRING   = DataTypes.createFinalDataType("string", Field.TYPE_STRING);
+    public static final DataType XML      = DataTypes.createFinalDataType("xml", Field.TYPE_XML);
+    public static final DataType DATETIME = DataTypes.createFinalDataType("datetime", Field.TYPE_DATETIME);
+    public static final DataType BOOLEAN  = DataTypes.createFinalDataType("boolean", Field.TYPE_BOOLEAN);
+    public static final DataType BINARY   = DataTypes.createFinalDataType("binary", Field.TYPE_BINARY);
+    public static final DataType NODE     = DataTypes.createFinalDataType("node", Field.TYPE_NODE);
 
     public static final DataType LIST_INTEGER = DataTypes.createFinalListDataType("list[integer]", INTEGER);
     public static final DataType LIST_LONG = DataTypes.createFinalListDataType("list[long]", LONG);
@@ -46,16 +46,6 @@ public interface DataType extends MMBaseType, Comparable, Descriptor {
     public static final DataType LIST_DATETIME = DataTypes.createFinalListDataType("list[datetime]", DATETIME);
     public static final DataType LIST_BOOLEAN = DataTypes.createFinalListDataType("list[boolean]", BOOLEAN);
     public static final DataType LIST_NODE = DataTypes.createFinalListDataType("list[node]", NODE);
-
-    // Common types
-    public static final DataType LANGUAGE = DataTypes.createFinalDataType("language", STRING);
-    public static final DataType LOCALE   = DataTypes.createFinalDataType("locale", Locale.class);
-    public static final DataType USER     = DataTypes.createFinalDataType("user", org.mmbase.security.UserContext.class);
-    public static final DataType RESPONSE = DataTypes.createFinalDataType("response", javax.servlet.http.HttpServletResponse.class);
-    public static final DataType REQUEST  = DataTypes.createFinalDataType("request", javax.servlet.http.HttpServletRequest.class);
-    public static final DataType CLOUD    = DataTypes.createFinalDataType("cloud", org.mmbase.bridge.Cloud.class);
-    // should this be a bridge node ???
-    // public static final DataType NODE     = DataTypes.createFinalDataType("node", org.mmbase.module.core.MMObjectNode.class);
 
     public static final String PROPERTY_REQUIRED = "required";
 
@@ -118,6 +108,15 @@ public interface DataType extends MMBaseType, Comparable, Descriptor {
      * @return the type as a Class
      */
     public Class getTypeAsClass();
+
+    /**
+     * Returns the identifier for the MMBase base type for this datatype.
+     * This represents one of field type constants. This basic type determines how data is stored in MMBase.
+     * Generally it only makes sense when the datatype is actually used by a field.
+     * If a datatype cannot be translated, it returns {@link Field.TYPE_UNKNOWN}.
+     * @return  an <code>int</code> which identifies the base type
+     */
+    public int getBaseType();
 
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this data type),
