@@ -20,7 +20,7 @@ import org.mmbase.bridge.implementation.datatypes.*;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.2 2005-06-28 15:26:14 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.3 2005-07-08 08:02:18 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -37,7 +37,7 @@ public class DataTypes {
         case MMBaseType.TYPE_DOUBLE: return Double.class;
         case MMBaseType.TYPE_LONG: return Long.class;
         case MMBaseType.TYPE_XML: return org.w3c.dom.Document.class;
-        case MMBaseType.TYPE_NODE: return org.mmbase.bridge.Node.class;
+        case MMBaseType.TYPE_NODE: return org.mmbase.module.core.MMObjectNode.class; // org.mmbase.bridge.Node.class;
         case MMBaseType.TYPE_DATETIME: return java.util.Date.class;
         case MMBaseType.TYPE_BOOLEAN: return Boolean.class;
         case MMBaseType.TYPE_LIST: return List.class;
@@ -48,8 +48,8 @@ public class DataTypes {
     /**
      * Create an instance of a dataType based on the MMBase type passed.
      */
-    public static AbstractDataType createDataType(String name, int type) {
-        AbstractDataType dataType = null;
+    public static DataType createDataType(String name, int type) {
+        DataType dataType = null;
         switch (type) {
         case MMBaseType.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
         case MMBaseType.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
@@ -72,8 +72,8 @@ public class DataTypes {
     /**
      * Create an instance of a dataType based on the MMBase type passed.
      */
-    public static AbstractDataType createDataType(String name, Class type) {
-        AbstractDataType dataType = null;
+    public static DataType createDataType(String name, Class type) {
+        DataType dataType = null;
         if (type == null) {
             dataType = new BasicDataType(name, type);
         } else if (type.isArray() && type.getComponentType() == Byte.TYPE) {
@@ -104,28 +104,62 @@ public class DataTypes {
         return dataType;
     }
 
-    public static synchronized AbstractDataType createFinalDataType(String name, Class type) {
+    public static DataType finish(DataType dataType) {
+        if (dataType instanceof AbstractDataType) {
+            ((AbstractDataType)dataType).finish();
+        }
+        return dataType;
+    }
+
+    public static synchronized DataType createFinalDataType(String name, Class type) {
         if (finalDataTypes.containsKey(name)) {
             throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
         }
-        AbstractDataType dataType = createDataType(name, type);
-        dataType.finish();
+        DataType dataType = createDataType(name, type);
+        finish(dataType);
         finalDataTypes.put(name, dataType);
         return dataType;
     }
 
-    public static synchronized AbstractDataType createFinalDataType(String name, int type) {
+    public static synchronized DataType createFinalDataType(String name, int type) {
         if (finalDataTypes.containsKey(name)) {
             throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
         }
-        AbstractDataType dataType = createDataType(name, type);
-        dataType.finish();
+        DataType dataType = createDataType(name, type);
+        finish(dataType);
         finalDataTypes.put(name, dataType);
         return dataType;
     }
 
-    public static synchronized AbstractDataType getDataType(String name) {
-        return (AbstractDataType) finalDataTypes.get(name);
+    /**
+     * Create an instance of a dataType based on another data type
+     */
+    public static DataType createFinalDataType(String name, DataType baseDataType) {
+        if (finalDataTypes.containsKey(name)) {
+            throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
+        }
+        DataType dataType = baseDataType.copy(name);
+        finish(dataType);
+        finalDataTypes.put(name, dataType);
+        return dataType;
+    }
+
+    /**
+     * Create an instance of a List dataType with a specified data type element
+     */
+    public static BasicListDataType createFinalListDataType(String name, DataType elementDataType) {
+        if (finalDataTypes.containsKey(name)) {
+            throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
+        }
+        BasicListDataType dataType = new BasicListDataType(name);
+        dataType.setListItemDataType(elementDataType);
+        finish(dataType);
+        finalDataTypes.put(name, dataType);
+        return dataType;
+    }
+
+    public static synchronized DataType getDataType(String name) {
+        return (DataType) finalDataTypes.get(name);
     }
 
 }

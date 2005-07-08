@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDateTimeDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicDateTimeDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DateTimeDataType
  * @since MMBase-1.8
@@ -52,77 +52,77 @@ public class BasicDateTimeDataType extends Parameter implements DateTimeDataType
         super(name,dataType);
     }
 
-    public Date getMinimum() {
+    public Date getMin() {
         return minimum;
     }
 
-    public int getMinimumPrecision() {
+    public int getMinPrecision() {
         return minimumPrecision;
     }
 
-    public boolean getMinimumInclusive() {
+    public boolean getMinInclusive() {
         return minimumInclusive;
     }
 
-    public Date getMaximum() {
+    public Date getMax() {
         return maximum;
     }
 
-    public int getMaximumPrecision() {
+    public int getMaxPrecision() {
         return maximumPrecision;
     }
 
-    public boolean getMaximumInclusive() {
+    public boolean getMaxInclusive() {
         return maximumInclusive;
     }
 
-    public DateTimeDataType setMinimum(Date value) {
+    public DateTimeDataType setMin(Date value) {
         edit();
         minimum = value;
         return this;
     }
 
-    public DateTimeDataType setMinimumPrecision(int precision) {
+    public DateTimeDataType setMinPrecision(int precision) {
         edit();
         minimumPrecision = precision;
         return this;
     }
 
-    public DateTimeDataType setMinimumInclusive(boolean inclusive) {
+    public DateTimeDataType setMinInclusive(boolean inclusive) {
         edit();
         minimumInclusive = inclusive;
         return this;
     }
 
-    public DateTimeDataType setMinimum(Date value, int precision, boolean inclusive) {
-        setMinimum(value);
-        setMinimumPrecision(precision);
-        setMinimumInclusive(inclusive);
+    public DateTimeDataType setMin(Date value, int precision, boolean inclusive) {
+        setMin(value);
+        setMinPrecision(precision);
+        setMinInclusive(inclusive);
         return this;
     }
 
-    public DateTimeDataType setMaximum(Date value) {
+    public DateTimeDataType setMax(Date value) {
         edit();
         maximum = value;
         return this;
     }
 
-    public DateTimeDataType setMaximumPrecision(int precision) {
+    public DateTimeDataType setMaxPrecision(int precision) {
         edit();
         maximumPrecision = precision;
         return this;
     }
 
-    public DateTimeDataType setMaximumInclusive(boolean inclusive) {
+    public DateTimeDataType setMaxInclusive(boolean inclusive) {
         edit();
         maximumInclusive = inclusive;
         return this;
     }
 
-    public DateTimeDataType setMaximum(Date value, int precision, boolean inclusive) {
-        setMaximum(value);
-        setMaximumPrecision(precision);
-        setMaximumInclusive(inclusive);
+    public DateTimeDataType setMax(Date value, int precision, boolean inclusive) {
+        setMax(value);
+        setMaxPrecision(precision);
+        setMaxInclusive(inclusive);
         return this;
     }
 
@@ -150,12 +150,12 @@ public class BasicDateTimeDataType extends Parameter implements DateTimeDataType
     public void copyValidationRules(DataType dataType) {
         super.copyValidationRules(dataType);
         DateTimeDataType dateTimeField = (DateTimeDataType)dataType;
-        setMinimum(dateTimeField.getMinimum());
-        setMinimumPrecision(dateTimeField.getMinimumPrecision());
-        setMinimumInclusive(dateTimeField.getMinimumInclusive());
-        setMaximum(dateTimeField.getMaximum());
-        setMaximumPrecision(dateTimeField.getMaximumPrecision());
-        setMaximumInclusive(dateTimeField.getMaximumInclusive());
+        setMin(dateTimeField.getMin());
+        setMinPrecision(dateTimeField.getMinPrecision());
+        setMinInclusive(dateTimeField.getMinInclusive());
+        setMax(dateTimeField.getMax());
+        setMaxPrecision(dateTimeField.getMaxPrecision());
+        setMaxInclusive(dateTimeField.getMaxInclusive());
     }
 
 }

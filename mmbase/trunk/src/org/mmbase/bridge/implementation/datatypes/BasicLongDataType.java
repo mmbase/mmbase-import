@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicLongDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicLongDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.LongDataType
  * @since MMBase-1.8
@@ -50,55 +50,55 @@ public class BasicLongDataType extends Parameter implements LongDataType {
         super(name,dataType);
     }
 
-    public Long getMinimum() {
+    public Long getMin() {
         return minimum;
     }
 
-    public boolean getMinimumInclusive() {
+    public boolean getMinInclusive() {
         return minimumInclusive;
     }
 
-    public Long getMaximum() {
+    public Long getMax() {
         return maximum;
     }
 
-    public boolean getMaximumInclusive() {
+    public boolean getMaxInclusive() {
         return maximumInclusive;
     }
 
-    public LongDataType setMinimum(Long value) {
+    public LongDataType setMin(Long value) {
         edit();
         minimum = value;
         return this;
     }
 
-    public LongDataType setMinimumInclusive(boolean inclusive) {
+    public LongDataType setMinInclusive(boolean inclusive) {
         edit();
         minimumInclusive = inclusive;
         return this;
     }
 
-    public LongDataType setMinimum(Long value, boolean inclusive) {
-        setMinimum(value);
-        setMinimumInclusive(inclusive);
+    public LongDataType setMin(Long value, boolean inclusive) {
+        setMin(value);
+        setMinInclusive(inclusive);
         return this;
     }
 
-    public LongDataType setMaximum(Long value) {
+    public LongDataType setMax(Long value) {
         edit();
         maximum = value;
         return this;
     }
 
-    public LongDataType setMaximumInclusive(boolean inclusive) {
+    public LongDataType setMaxInclusive(boolean inclusive) {
         edit();
         maximumInclusive = inclusive;
         return this;
     }
 
-    public LongDataType setMaximum(Long value, boolean inclusive) {
-        setMaximum(value);
-        setMaximumInclusive(inclusive);
+    public LongDataType setMax(Long value, boolean inclusive) {
+        setMax(value);
+        setMaxInclusive(inclusive);
         return this;
     }
 
@@ -145,10 +145,10 @@ public class BasicLongDataType extends Parameter implements LongDataType {
     public void copyValidationRules(DataType dataType) {
         super.copyValidationRules(dataType);
         LongDataType longField = (LongDataType)dataType;
-        setMinimum(longField.getMinimum());
-        setMinimumInclusive(longField.getMinimumInclusive());
-        setMaximum(longField.getMaximum());
-        setMaximumInclusive(longField.getMaximumInclusive());
+        setMin(longField.getMin());
+        setMinInclusive(longField.getMinInclusive());
+        setMax(longField.getMax());
+        setMaxInclusive(longField.getMaxInclusive());
     }
 
 }
