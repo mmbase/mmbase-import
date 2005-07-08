@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.bridge.remote.generator;
@@ -20,20 +20,28 @@ import java.util.*;
  **/
 public class ClassToXML {
 
-    public static Element classToXML(String className, String original, Document document) throws Exception {
-        Element e = ClassToXML.classToXML(className, document);
+    public static Element classToXML(String orgClassName, String original, Document document) throws Exception {
+        Element e = ClassToXML.classToXML(orgClassName, document);
         e.setAttribute("originalname", original);
         return e;
     }
 
-    public static Element classToXML(String className, Document document) throws Exception {
+    public static Element classToXML(String orgClassName, Document document) throws Exception {
         Set appendedMethods = new HashSet();
-        Class clazz = Class.forName(className);
+        Class clazz = Class.forName(orgClassName);
 
         Element xmle = document.createElement(clazz.isInterface() ? "interface" : "class");
-        xmle.setAttribute("name", className);
+
+        String className = orgClassName;
         int shortIndex = className.lastIndexOf(".");
-        xmle.setAttribute("shortname", className.substring(shortIndex + 1));
+        int dollarIndex = className.lastIndexOf("$");
+        if (dollarIndex > -1) {
+            className = className.substring(0,dollarIndex) + "." + className.substring(dollarIndex + 1);
+        }
+        xmle.setAttribute("name", className);
+        String shortName = className.substring(shortIndex + 1);
+        // test op static member classes
+        xmle.setAttribute("shortname", shortName);
 
         Class[] interfaceClasses = clazz.getInterfaces();
         String implementsString = "";
@@ -74,7 +82,7 @@ public class ClassToXML {
             boolean createMethod = true;
             //see if the declared method belongs to the same class
             //we need to declare it
-            if (!methods[i].getDeclaringClass().getName().equals(className)) {
+            if (!methods[i].getDeclaringClass().getName().equals(orgClassName)) {
                 createMethod = false;
                 String methodName = methods[i].getName();
 
@@ -165,7 +173,12 @@ public class ClassToXML {
             } else {
                 retval = document.createElement("classReference");
             }
-            retval.setAttribute("name", c.getName());
+            String className = c.getName();
+            int dollarIndex = className.lastIndexOf("$");
+            if (dollarIndex > -1) {
+                className = className.substring(0,dollarIndex) + "." + className.substring(dollarIndex + 1);
+            }
+            retval.setAttribute("name", className);
         }
         return retval;
     }

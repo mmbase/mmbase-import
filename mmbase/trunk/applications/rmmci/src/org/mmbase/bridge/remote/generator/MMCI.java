@@ -81,6 +81,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType$Property", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Descriptor", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
