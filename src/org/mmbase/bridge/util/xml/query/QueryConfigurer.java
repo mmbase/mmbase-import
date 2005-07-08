@@ -14,18 +14,18 @@ import org.w3c.dom.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryConfigurer.java,v 1.1 2005-06-30 12:37:54 pierre Exp $
+ * @version $Id: QueryConfigurer.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
  **/
 public class QueryConfigurer {
 
     public static QueryConfigurer defaultConfigurer = new QueryConfigurer();
 
-    public QueryDefinition getQueryDefinition(Element queryElement) {
-        return new QueryDefinition(queryElement);
+    public QueryDefinition getQueryDefinition() {
+        return new QueryDefinition(this);
     }
 
-    public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition, Element fieldElement) {
-        return new FieldDefinition(queryDefinition, fieldElement);
+    public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition) {
+        return new FieldDefinition(this,queryDefinition);
     }
 
     public static QueryConfigurer getDefaultConfigurer() {

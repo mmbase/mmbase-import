@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.1 2005-06-30 12:37:54 pierre Exp $
+ * @version $Id: FieldDefinition.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
  **/
 public class FieldDefinition {
 
@@ -33,16 +33,28 @@ public class FieldDefinition {
      */
     public StepField stepField = null;
 
-    public FieldDefinition(QueryDefinition queryDefinition, Element fieldElement) {
-        fieldName = fieldElement.getAttribute("name");
-        try {
-            stepField = queryDefinition.query.createStepField(fieldName);
-        } catch (IllegalArgumentException iae) {
-            // the field did not exist in the database.
-            // this is possible if the field is, for instance, a bytefield that is stored on disc.
-            stepField = null;
-        }
+    /**
+     * The query definition belonging to this field
+     */
+    protected QueryDefinition queryDefinition = null;
+
+    /**
+     * The Query configurer that instantiated this definition
+     */
+    protected QueryConfigurer configurer = null;
+
+    /**
+     * Constructor
+     */
+    public FieldDefinition(QueryConfigurer configurer, QueryDefinition queryDefinition) {
+        this.configurer = configurer;
+        this.queryDefinition = queryDefinition;
     }
 
+    /**
+     * Configures the field definition, using data from a DOM element
+     */
+    public void configure(Element fieldElement) {
+    }
 }
 
