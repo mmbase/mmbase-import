@@ -6,7 +6,7 @@
   Search-lists are those things that pop-up if you want to search for a node to make a relation to.
   Here you can customize how they must look like.
 
-  @version  $Id: searchlist.css,v 1.1 2003-12-19 11:09:44 nico Exp $
+  @version  $Id: searchlist.css,v 1.1.2.1 2005-07-08 18:53:32 nklasens Exp $
   
 */ 
 
@@ -24,7 +24,7 @@ div.searchnavigation  {
         bottom: 0px;
         left: 0px;
         padding: 10px 0px 0px 0px;
-        width: 100%;
+        width: 400px;
         z-index: 10;
 } 
 
