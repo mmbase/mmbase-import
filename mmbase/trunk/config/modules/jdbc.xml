@@ -97,7 +97,7 @@
     
 
     <!-- Default hsqldb driver -->
-    <property name="url">jdbc:hsqldb:$DBM</property>
+    <property name="url">jdbc:hsqldb:$DBM;shutdown=true</property>
 
     <!--
     name="user", what is the user we will use to login to the database
