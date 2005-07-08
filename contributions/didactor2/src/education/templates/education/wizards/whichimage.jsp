@@ -16,6 +16,7 @@
 </mm:field>
 <mm:listnodes type="metastandard" orderby="name">
    <mm:relatednodes type="metadefinition">
+      <mm:remove referid="defnumber"/>
       <mm:field name="number" id="defnumber">
       <mm:field name="type" jspvar="sType" vartype="String">
          <mm:field name="required" jspvar="sReq" vartype="String">
@@ -36,7 +37,7 @@
                               boolean bMin = true;
                               boolean bMax = true;
                               %>
-                             
+
                                  <mm:list nodes="<%= sCurrentNode %>" path="learnobjects,metadata,metadefinition" constraints="metadefinition.number=$defnumber">
                                  <mm:field name="metadata.number" id="datanum">
                                     <mm:node referid="datanum">
