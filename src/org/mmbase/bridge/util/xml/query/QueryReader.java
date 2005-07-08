@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.1 2005-06-30 12:37:54 pierre Exp $
+ * @version $Id: QueryReader.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
  **/
 public class QueryReader {
 
@@ -66,7 +66,17 @@ public class QueryReader {
 
     static protected void addField(Element fieldElement, QueryDefinition queryDefinition, QueryConfigurer configurer) {
         if (hasAttribute(fieldElement,"name")) {
-            FieldDefinition fieldDefinition = configurer.getFieldDefinition(queryDefinition, fieldElement);
+            FieldDefinition fieldDefinition = configurer.getFieldDefinition(queryDefinition);
+            fieldDefinition.fieldName = fieldElement.getAttribute("name");
+            try {
+                fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
+            } catch (IllegalArgumentException iae) {
+                // the field did not exist in the database.
+                // this is possible if the field is, for instance, a bytefield that is stored on disc.
+                fieldDefinition.stepField = null;
+            }
+            // custom configuration of field
+            fieldDefinition.configure(fieldElement);
             queryDefinition.fields.add(fieldDefinition);
             if (queryDefinition.isMultiLevel) {
                 // have to add field for multilevel queries
@@ -213,6 +223,7 @@ public class QueryReader {
         }
         return set;
     }
+
     static protected Constraint getAliasConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
         if (!hasAttribute(constraintElement,"name")) {
             throw new IllegalArgumentException("An aliasconstraint tag must have a 'name' attribute");
@@ -375,8 +386,7 @@ public class QueryReader {
                 path = relateFrom + "," + path;
             }
 
-            QueryDefinition queryDefinition = configurer.getQueryDefinition(queryElement);
-
+            QueryDefinition queryDefinition = configurer.getQueryDefinition();
             queryDefinition.isMultiLevel = !path.equals(element);
             Step elementStep = null;
 
@@ -393,6 +403,10 @@ public class QueryReader {
                 queryDefinition.elementStep = queryDefinition.query.getStep(element);
             }
             if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList();
+
+            // custom configurations to the query
+            queryDefinition.configure(queryElement);
+
             NodeList childNodes = queryElement.getChildNodes();
             for (int k = 0; k < childNodes.getLength(); k++) {
                 if (childNodes.item(k) instanceof Element) {
