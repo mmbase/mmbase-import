@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.bridge.remote.generator;
@@ -28,17 +28,17 @@ public class XMLClass {
     public boolean isArray  = false;
     public boolean isPrimitive = false;
     public boolean isInterface = true;
-    
+
     XMLClass(Document document) {
         this.document= document;
         methods = new HashMap();
         methodsList = new ArrayList();
         realInput = new ArrayList();
     }
-    
+
     public Object getData(){
         return data;
-        
+
     }
     public void setData(XMLClass data){
         dataIsXMLClass = true;
@@ -59,24 +59,24 @@ public class XMLClass {
     public void setData(Object data){
         this.data = data;
     }
-    
+
     public Class getJavaClass() throws ClassNotFoundException{
         return Class.forName(getName());
     }
-    
+
     public void setXML(Element xml){
         this.xml = xml;
     }
-    
+
     public void addInput(XMLClass xmlClass){
         realInput.add(xmlClass);
     }
-    
-    
+
+
     public static XMLClass fromXML(Element xml){
         Document doc = xml.getOwnerDocument();
         String elementName = xml.getTagName();
-        
+
         if (elementName.equals("primitiveclass")){
             XMLClass xmlClass = new XMLClass(doc);
             xmlClass.isPrimitive = true;
@@ -92,7 +92,7 @@ public class XMLClass {
             xmlClass.setXML(xml);
             return xmlClass;
         } else if (elementName.equals("array") || elementName.equals("interface")){
-            
+
             XMLClass xmlClass = new XMLClass(doc);
             if (elementName.equals("array")){
                 xmlClass.isArray = true;
@@ -133,12 +133,12 @@ public class XMLClass {
         }
         return null;
     }
-    
+
     public Object clone(boolean deep){
         //return new XMLClass().fromXML(xml.clone(true));
         return XMLClass.fromXML(xml);
     }
-    
+
     public List getInput(){
         return realInput;
     }
@@ -155,6 +155,16 @@ public class XMLClass {
         }
         return res;
     }
+
+    public String getClassName(){
+        String res = getShortName();
+        int periodIndex = res.lastIndexOf(".");
+        if (periodIndex > -1) {
+            res = res.substring(0,periodIndex) + "_" + res.substring(periodIndex + 1);
+        }
+        return res;
+    }
+
     public String getOriginalName(){
         String result=xml.getAttribute("originalname");
         if (result.equals("")){
@@ -162,7 +172,7 @@ public class XMLClass {
         }
         return result;
     }
-    
+
     public Element toXMLInput(){
         Element xmle = document.createElement("class");
         xmle.setAttribute("name",getName());
@@ -173,7 +183,7 @@ public class XMLClass {
         xmle.appendChild(xmlData);
         return xmle;
     }
-    
+
     public List getMethods(){
         return methodsList;
     }
@@ -183,7 +193,7 @@ public class XMLClass {
     public XMLMethod getMethod(String name){
         return (XMLMethod)methods.get(name);
     }
-    
+
     public XMLClass getReturnType(){
         NodeList nl= xml.getElementsByTagName("output");
         for(int i=0; i<nl.getLength(); i++) {
@@ -196,7 +206,7 @@ public class XMLClass {
         }
         return null;
     }
-    
+
     public List getParameterList(){
         List results= new ArrayList();
         NodeList nl= xml.getElementsByTagName("input");
@@ -210,7 +220,7 @@ public class XMLClass {
         }
         return results;
     }
-    
+
 
     public String toString() {
         return getName();
