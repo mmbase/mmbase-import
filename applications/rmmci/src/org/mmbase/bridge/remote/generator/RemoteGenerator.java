@@ -72,7 +72,7 @@ public class RemoteGenerator {
      */
     public void generateInterface(XMLClass xmlClass) {
         String shortName = xmlClass.getShortName();
-        String className = "Remote" + shortName;
+        String className = "Remote" + xmlClass.getClassName();
         StringBuffer sb = new StringBuffer();
 
         //create the default imports for the interface
@@ -104,7 +104,7 @@ public class RemoteGenerator {
             String token = st.nextToken();
             XMLClass xmlc = mmci.getClass(token);
             if (needsRemote(xmlc)) {
-                impl += ", Remote" + xmlc.getShortName();
+                impl += ", Remote" + xmlc.getClassName();
             } else {
                 //impl += ", " + token;
             }
@@ -130,14 +130,14 @@ public class RemoteGenerator {
             }
             XMLClass returnType = xmlMethod.getReturnType();
             if (returnType == null) {
-                System.err.println("Return type of " + xmlMethod + " is null");
+                throw new IllegalStateException("Return type of " + xmlMethod + " is null");
             }
-            String retTypeName = xmlMethod.getReturnType().getShortName();
+            String retTypeName = returnType.getShortName();
 
             //if the return type is in the MMBase bridge we need to
             //create a wrapper
-            if (needsRemote(xmlMethod.getReturnType())) {
-                retTypeName = "Remote" + retTypeName;
+            if (needsRemote(returnType)) {
+                retTypeName = "Remote" + returnType.getClassName();
             }
 
             if (returnType.isArray) {
@@ -154,13 +154,13 @@ public class RemoteGenerator {
                 if (parameter != null) {
                     if (parameter.isArray) {
                         if (needsRemote(parameter)) {
-                            sb.append("Remote" + parameter.getShortName() + "[] param" + counter);
+                            sb.append("Remote" + parameter.getClassName() + "[] param" + counter);
                         } else {
                             sb.append(parameter.getOriginalName() + "[] param" + counter);
                         }
                     } else {
                         if (needsRemote(parameter)) {
-                            sb.append("Remote" + parameter.getShortName() + " param" + counter);
+                            sb.append("Remote" + parameter.getClassName() + " param" + counter);
                         } else {
                             sb.append(parameter.getOriginalName() + " param" + counter);
                         }
@@ -191,7 +191,8 @@ public class RemoteGenerator {
      */
     public void generateRmi(XMLClass xmlClass) {
         String shortName = xmlClass.getShortName();
-        String className = "Remote" + shortName + "_Rmi";
+        String interfaceName = "Remote" + xmlClass.getClassName();
+        String className = interfaceName + "_Rmi";
         StringBuffer sb = new StringBuffer();
         sb.append("package org.mmbase.bridge.remote.rmi;\n");
         sb.append("\n");
@@ -208,7 +209,7 @@ public class RemoteGenerator {
         sb.append("import org.mmbase.bridge.remote.util.*;\n\n");
 
         sb.append("/**\n");
-        sb.append(" * " + className + " in a generated implementation of Remote" + xmlClass.getShortName() + "<BR>\n");
+        sb.append(" * " + className + " in a generated implementation of " + interfaceName + "<BR>\n");
         sb.append(" * This implementation is used by rmci to create a stub and skeleton for communication between remote and server.\n");
         sb.append(" * @Author Kees Jongenburger <keesj@dds.nl>\n");
         sb.append(" */\n");
@@ -223,25 +224,25 @@ public class RemoteGenerator {
                 //XMLClass xmlc = mmci.getClass(xmlClass.getImplements());
                 XMLClass xmlc = mmci.getClass(token);
                 if (xmlc != null && needsRemote(xmlc)) {
-                    impl += ", Remote" + xmlc.getShortName();
+                    impl += ", Remote" + xmlc.getClassName();
                 } else {
                     //impl = ", " + token;
                 }
             }
         }
 
-        sb.append("public class " + className + " extends  UnicastRemoteObject implements Unreferenced,Remote" + shortName + impl + "  {\n");
+        sb.append("public class " + className + " extends  UnicastRemoteObject implements Unreferenced, " + interfaceName + impl + "  {\n");
         System.err.println("generate implementation " + className);
 
         sb.append("   //original object\n");
-        sb.append("   " + xmlClass.getShortName() + " originalObject;\n\n");
+        sb.append("   " + shortName + " originalObject;\n\n");
         sb.append("   //mapper code\n");
         sb.append("   String mapperCode = null;\n\n");
 
         sb.append("   private static Logger log = Logging.getLoggerInstance(" + className + ".class);\n");
 
         //constructor
-        sb.append("   public " + className + "(" + xmlClass.getShortName() + " originalObject) throws RemoteException{\n");
+        sb.append("   public " + className + "(" + shortName + " originalObject) throws RemoteException{\n");
         sb.append("      super();\n");
         sb.append("      log.debug(\"new " + className + "\");\n");
         sb.append("      this.originalObject = originalObject;\n");
@@ -261,7 +262,7 @@ public class RemoteGenerator {
             //if the return type is in the MMBase bridge we need to
             //create a wrapper
             if (needsRemote(xmlMethod.getReturnType())) {
-                retTypeName = "Remote" + xmlMethod.getReturnType().getShortName();
+                retTypeName = "Remote" + xmlMethod.getReturnType().getClassName();
             }
 
             if (returnType.isArray) {
@@ -277,13 +278,13 @@ public class RemoteGenerator {
                 XMLClass parameter = (XMLClass)iter.next();
                 if (parameter.isArray) {
                     if (needsRemote(parameter)) {
-                        sb.append("Remote" + parameter.getShortName() + "[] param" + counter);
+                        sb.append("Remote" + parameter.getClassName() + "[] param" + counter);
                     } else {
                         sb.append(parameter.getOriginalName() + "[] param" + counter);
                     }
                 } else {
                     if (needsRemote(parameter)) {
-                        sb.append("Remote" + parameter.getShortName() + " param" + counter);
+                        sb.append("Remote" + parameter.getClassName() + " param" + counter);
                     } else {
                         sb.append(parameter.getOriginalName() + " param" + counter);
                     }
@@ -316,9 +317,9 @@ public class RemoteGenerator {
             if (xmlMethod.getReturnType().getName().indexOf("void") == -1) {
                 if (needsRemote(xmlMethod.getReturnType())) {
                     if (!xmlMethod.getReturnType().isArray) {
-                        sb.append("         Remote" + xmlMethod.getReturnType().getShortName() + " retval =(Remote" + xmlMethod.getReturnType().getShortName() + ")");
+                        sb.append("         Remote" + xmlMethod.getReturnType().getClassName() + " retval =(Remote" + xmlMethod.getReturnType().getClassName() + ")");
                     } else {
-                        sb.append("         Remote" + xmlMethod.getReturnType().getShortName() + "[] retval =(Remote" + xmlMethod.getReturnType().getShortName() + "[])");
+                        sb.append("         Remote" + xmlMethod.getReturnType().getClassName() + "[] retval =(Remote" + xmlMethod.getReturnType().getClassName() + "[])");
                     }
                 } else {
                     if (!xmlMethod.getReturnType().isArray) {
@@ -397,7 +398,8 @@ public class RemoteGenerator {
      */
     public void generateImplementation(XMLClass xmlClass) {
         String shortName = xmlClass.getShortName();
-        String className = "Remote" + shortName + "_Impl";
+        String interfaceName = "Remote" + xmlClass.getClassName();
+        String className = interfaceName + "_Impl";
         StringBuffer sb = new StringBuffer();
         sb.append("package org.mmbase.bridge.remote.implementation;\n");
         sb.append("\n");
@@ -410,12 +412,12 @@ public class RemoteGenerator {
         sb.append("import org.mmbase.security.*;\n\n");
         sb.append("import org.mmbase.bridge.remote.util.*;\n\n");
         sb.append("/**\n");
-        sb.append(" * " + className + " in a generated implementation of " + xmlClass.getShortName() + "<BR>\n");
+        sb.append(" * " + className + " in a generated implementation of " + shortName + "<BR>\n");
         sb.append(" * This implementation is used by a local class when the MMCI is called remotely\n");
         sb.append(" * @Author Kees Jongenburger <keesj@dds.nl>\n");
         sb.append(" */\n");
         sb.append(" //DO NOT EDIT THIS FILE. IT IS GENERATED by remote.remote.remoteGenerator\n");
-        String impl = xmlClass.getShortName() + ",MappedObject";
+        String impl = shortName + ",MappedObject";
         //impl += ",java.io.Serializable";
         if (!xmlClass.getImplements().equals("")) {
             impl += ",";
@@ -428,10 +430,10 @@ public class RemoteGenerator {
         System.err.println("generate implementation " + className);
 
         sb.append("   //original object\n");
-        sb.append("   " + "Remote" + xmlClass.getShortName() + " originalObject;\n\n");
+        sb.append("   " + interfaceName + " originalObject;\n\n");
 
         //constructor
-        sb.append("   public " + className + "(Remote" + xmlClass.getShortName() + " originalObject) {\n");
+        sb.append("   public " + className + "(" + interfaceName + " originalObject) {\n");
         sb.append("      super();\n");
         sb.append("      this.originalObject = originalObject;\n");
         sb.append("   }\n");
@@ -487,12 +489,12 @@ public class RemoteGenerator {
                     paramCounter++;
                     if (needsRemote(parameter)) {
                         if (parameter.isArray) {
-                            sb.append("         Remote" + parameter.getShortName() + "[] remoteparam" + paramCounter + " = new Remote" + parameter.getShortName() + "[param" + paramCounter + ".length];\n");
+                            sb.append("         Remote" + parameter.getClassName() + "[] remoteparam" + paramCounter + " = new Remote" + parameter.getClassName() + "[param" + paramCounter + ".length];\n");
                             sb.append("         for(int i = 0; i <param" + paramCounter + ".length; i++ ) {\n");
-                            sb.append("             remoteparam" + paramCounter + "[i] = (Remote" + parameter.getShortName() + ")( param" + paramCounter + "[i] == null ? null : ((MappedObject) param" + paramCounter + "[i]).getWrappedObject());\n");
+                            sb.append("             remoteparam" + paramCounter + "[i] = (Remote" + parameter.getClassName() + ")( param" + paramCounter + "[i] == null ? null : ((MappedObject) param" + paramCounter + "[i]).getWrappedObject());\n");
                             sb.append("         }\n");
                         } else {
-                            sb.append("         Remote" + parameter.getShortName() + " remoteparam" + paramCounter + " = (Remote" + parameter.getShortName() + ")( param" + paramCounter + " == null ? null : ((MappedObject) param" + paramCounter + ").getWrappedObject());\n");
+                            sb.append("         Remote" + parameter.getClassName() + " remoteparam" + paramCounter + " = (Remote" + parameter.getClassName() + ")( param" + paramCounter + " == null ? null : ((MappedObject) param" + paramCounter + ").getWrappedObject());\n");
                         }
                     }
                 }
@@ -633,17 +635,19 @@ public class RemoteGenerator {
 
             XMLClass xmlClass = (XMLClass) i.next ();
             String name = xmlClass.getName();
+            String shortName = xmlClass.getShortName();
+            String className = "Remote" + xmlClass.getClassName();
 
             if (needsRemote(xmlClass)) {
                 if (!isFirst) {
                     sb.append("} else");
                     sb2.append("} else");
                 }
-                sb.append(" if (o instanceof " + xmlClass.getShortName() + ") {\n");
-                sb.append("retval = new Remote" + xmlClass.getShortName() + "_Rmi((" + xmlClass.getShortName() + ")o);\n");
+                sb.append(" if (o instanceof " + shortName + ") {\n");
+                sb.append("retval = new " + className + "_Rmi((" + shortName + ")o);\n");
 
-                sb2.append(" if (o instanceof Remote" + xmlClass.getShortName() + ") {\n");
-                sb2.append("retval = new Remote" + xmlClass.getShortName() + "_Impl((Remote" + xmlClass.getShortName() + ")o);\n");
+                sb2.append(" if (o instanceof " + className + ") {\n");
+                sb2.append("retval = new " + className + "_Impl((" + className + ")o);\n");
                 isFirst = false;
             }
         }
