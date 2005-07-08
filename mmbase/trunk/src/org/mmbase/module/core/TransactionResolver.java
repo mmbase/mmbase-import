@@ -11,14 +11,13 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.16 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: TransactionResolver.java,v 1.17 2005-07-08 12:23:45 pierre Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
@@ -41,10 +40,10 @@ public class TransactionResolver {
             log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
             for (Enumeration f = bul.getFields().elements();f.hasMoreElements();) {
                 CoreField fd = (CoreField)f.nextElement();
-                int dbtype = fd.getDataType().getType();
+                int dbtype = fd.getDataType().getBaseType();
                 log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
-                if ((dbtype == MMBaseType.TYPE_INTEGER)||
-                    (dbtype == MMBaseType.TYPE_NODE)) {
+                if ((dbtype == Field.TYPE_INTEGER)||
+                    (dbtype == Field.TYPE_NODE)) {
                     int state = fd.getState();
                     if (state == Field.STATE_PERSISTENT || state == Field.STATE_SYSTEM) {
                         // Database field of type integer
@@ -129,9 +128,9 @@ public class TransactionResolver {
             MMObjectBuilder bul=mmbase.getMMObject(node.getName());
             for (Iterator j = bul.getFields().iterator();j.hasNext();) {
                 CoreField fd = (CoreField)j.next();
-                int dbtype = fd.getDataType().getType();
-                if ((dbtype == MMBaseType.TYPE_INTEGER)||
-                    (dbtype == MMBaseType.TYPE_NODE)) {
+                int dbtype = fd.getDataType().getBaseType();
+                if ((dbtype == Field.TYPE_INTEGER)||
+                    (dbtype == Field.TYPE_NODE)) {
                     String field = fd.getName();
                     int number = node.getIntValue(field);
                     if (number == -1) {

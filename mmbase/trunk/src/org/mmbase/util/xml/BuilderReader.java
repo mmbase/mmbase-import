@@ -13,7 +13,6 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.core.MMBase;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.19 2005-06-28 20:30:17 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.20 2005-07-08 12:23:46 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -496,7 +495,7 @@ public class BuilderReader extends XMLBasicReader {
             def.setSearchPosition(searchPos);
         } else {
             // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
-            if (def.getType() != MMBaseType.TYPE_BINARY
+            if (def.getType() != Field.TYPE_BINARY
                 && def.getState() == Field.STATE_PERSISTENT  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
                 ) {
                 int i = 1;

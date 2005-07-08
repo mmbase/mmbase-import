@@ -11,7 +11,7 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Casting;
 
@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.19 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: ClusterNode.java,v 1.20 2005-07-08 12:23:45 pierre Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -260,7 +260,7 @@ public class ClusterNode extends VirtualNode {
 
             log.debug("getStringValue(): fieldName " + fieldName + " has type " + type);
             // check if for known mapped types
-            if (type == MMBaseType.TYPE_STRING) {
+            if (type == Field.TYPE_STRING) {
 
                 // determine actual node number for this field
                 // takes into account when in a multilevel node

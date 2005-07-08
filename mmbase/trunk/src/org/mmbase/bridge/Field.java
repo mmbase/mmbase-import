@@ -17,9 +17,48 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.22 2005-07-07 09:49:00 michiel Exp $
+ * @version $Id: Field.java,v 1.23 2005-07-08 12:23:45 pierre Exp $
  */
-public interface Field extends Descriptor, MMBaseType {
+public interface Field extends Descriptor {
+
+    /** MMBase base type identifier for the String data type */
+    public final static int TYPE_STRING  = 1;
+    /** MMBase base type identifier for the Integer data type */
+    public final static int TYPE_INTEGER = 2;
+    /** MMBase base type identifier for the binary (byte[]) data type */
+    public final static int TYPE_BINARY    = 4;
+    /**
+     * MMBase base type identifier for the binary (byte[]) data type
+     * @deprecated use {@link #TYPE_BINARY}
+     */
+    public final static int TYPE_BYTE    = TYPE_BINARY;
+    /** MMBase base type identifier for the Float data type */
+    public final static int TYPE_FLOAT   = 5;
+    /** MMBase base type identifier for the Double data type */
+    public final static int TYPE_DOUBLE  = 6;
+    /** MMBase base type identifier for the Long data type */
+    public final static int TYPE_LONG    = 7;
+    /** MMBase base type identifier for the DOM Document data type */
+    public final static int TYPE_XML     = 8;
+    /** MMBase base type identifier for the Node data type */
+    public final static int TYPE_NODE    = 9;
+    /**
+     * MMBase base type identifier for the Date data type
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_DATETIME  = 10;
+    /**
+     * MMBase base type identifier for the Boolean data type
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_BOOLEAN   = 11;
+    /**
+     * MMBase base type identifier for the List data type
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_LIST      = 12;
+    /** MMBase base type identifier for data types whose type is unknown */
+    public final static int TYPE_UNKNOWN = -1;
 
     /** A field's state is 'virtual' if it is not persistent in storage. */
     public final static int STATE_VIRTUAL    = 0;
@@ -80,6 +119,14 @@ public interface Field extends Descriptor, MMBaseType {
     public boolean hasIndex();
 
     /**
+     * Returns the identifier for the MMBase base type for this field.
+     * This represents one of field type constants. This basic type determines how data is stored in MMBase.
+     * The type is retrieved from the field's DataType.
+     * @return  an <code>int</code> which identifies the base type
+     */
+    public int getType();
+
+    /**
      * Retrieve the position of the field when searching.
      * A value of -1 indicates the field is unavailable during search.
      */
@@ -103,25 +150,11 @@ public interface Field extends Descriptor, MMBaseType {
     public int getStoragePosition();
 
     /**
-     * @deprecated Use {@link org.mmbase.bridge.MMBaseType.TYPE_BINARY}
-     */
-    public final static int TYPE_BYTE    = MMBaseType.TYPE_BINARY;
-
-
-    /**
      * Returns the GUI name for the data type this field contains.
      * @deprecated use {@link #getDataType } and {@link DataType.getName}
      * @see #getDataType
      */
     public String getGUIType();
-
-    /**
-     * Returns the identifier for the data type this field contains.
-     *
-     * @return  an <code>int</code> which identifies the type of data this field
-     *          contains
-     */
-    public int getType();
 
     /**
      * Returns whether this field is required (should have content).

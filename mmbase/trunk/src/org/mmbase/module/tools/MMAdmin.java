@@ -14,7 +14,6 @@ import java.util.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.MMBaseType;
 import org.mmbase.bridge.Field;
 import org.mmbase.cache.MultilevelCache;
 import org.mmbase.module.*;
@@ -43,7 +42,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.102 2005-07-06 14:51:25 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.103 2005-07-08 12:23:45 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -801,7 +800,7 @@ public class MMAdmin extends ProcessorModule {
 
                                         // Fields with type NODE and notnull=true will be handled
                                         // by the doKeyMergeNode() method.
-                                        if (def.getType() == MMBaseType.TYPE_NODE
+                                        if (def.getType() == Field.TYPE_NODE
                                             && ! def.getName().equals("number")
                                             && ! def.isRequired()) {
 
@@ -838,7 +837,7 @@ public class MMAdmin extends ProcessorModule {
             while (j.hasNext()) {
                 CoreField def = (CoreField) j.next();
                 String fieldName = def.getName();
-                if (def.getType() == MMBaseType.TYPE_NODE &&
+                if (def.getType() == Field.TYPE_NODE &&
                     !fieldName.equals("number") &&
                     !fieldName.equals("snumber") &&
                     !fieldName.equals("dnumber") &&
@@ -866,7 +865,7 @@ public class MMAdmin extends ProcessorModule {
             for (Iterator h = vec.iterator(); h.hasNext();) {
                 CoreField def = (CoreField)h.next();
                 // check for notnull fields with type NODE.
-                if (def.getType() == MMBaseType.TYPE_NODE
+                if (def.getType() == Field.TYPE_NODE
                     && ! def.getName().equals("number")
                     && ! def.getName().equals("otype")
                     && def.isRequired()) {
@@ -889,7 +888,7 @@ public class MMAdmin extends ProcessorModule {
                 if (def.isUnique()) {
                     int type = def.getType();
                     String name = def.getName();
-                    if (type == MMBaseType.TYPE_STRING) {
+                    if (type == Field.TYPE_STRING) {
                         String value = newnode.getStringValue(name);
                         if (query==null) {
                             query = new NodeSearchQuery(bul);
@@ -1053,7 +1052,7 @@ public class MMAdmin extends ProcessorModule {
 
                                             // Fields with type NODE and notnull=true will be handled
                                             // by the doKeyMergeNode() method.
-                                            if (def.getType() == MMBaseType.TYPE_NODE
+                                            if (def.getType() == Field.TYPE_NODE
                                                 && ! def.getName().equals("number")
                                                 && ! def.isRequired()) {
 
@@ -1769,7 +1768,7 @@ public class MMAdmin extends ProcessorModule {
         } else if (command.equals("SETDBNOTNULL")) {
             setBuilderDBNotNull(vars);
         } else if (command.equals("SETDBMMBASETYPE")) {
-            setBuilderDBMMBaseType(vars);
+            setBuilderDBField(vars);
         } else if (command.equals("SETSTATE")) {
             setBuilderDBState(vars);
         } else if (command.equals("ADDFIELD")) {
@@ -1952,9 +1951,9 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    public void setBuilderDBMMBaseType(Hashtable vars) {
+    public void setBuilderDBField(Hashtable vars) {
         if (kioskmode) {
-            log.warn("Refused set setDBMMBaseType field, am in kiosk mode");
+            log.warn("Refused set setDBField field, am in kiosk mode");
             return;
         }
         String builder = (String)vars.get("BUILDER");

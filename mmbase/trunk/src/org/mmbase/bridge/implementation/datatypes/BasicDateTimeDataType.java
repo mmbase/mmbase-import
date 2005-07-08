@@ -11,23 +11,22 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.DateTimeDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDateTimeDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
+ * @version $Id: BasicDateTimeDataType.java,v 1.3 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DateTimeDataType
  * @since MMBase-1.8
  */
-public class BasicDateTimeDataType extends Parameter implements DateTimeDataType {
+public class BasicDateTimeDataType extends AbstractDataType implements DateTimeDataType {
 
     protected Date minimum = null;
     protected int minimumPrecision = Calendar.SECOND;
@@ -40,7 +39,7 @@ public class BasicDateTimeDataType extends Parameter implements DateTimeDataType
      * Constructor for DateTime field.
      */
     public BasicDateTimeDataType(String name) {
-        super(name, MMBaseType.TYPE_DATETIME);
+        super(name, Date.class);
     }
 
     /**
@@ -50,6 +49,10 @@ public class BasicDateTimeDataType extends Parameter implements DateTimeDataType
      */
     protected BasicDateTimeDataType(String name, BasicDateTimeDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_DATETIME;
     }
 
     public Date getMin() {

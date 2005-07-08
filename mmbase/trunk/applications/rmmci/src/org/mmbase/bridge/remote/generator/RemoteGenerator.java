@@ -84,6 +84,7 @@ public class RemoteGenerator {
         sb.append("import org.mmbase.security.*;\n");
         sb.append("import org.mmbase.cache.*;\n");
         sb.append("import org.mmbase.util.LocalizedString;\n");
+        sb.append("import org.mmbase.util.functions.*;\n");
         sb.append("\n");
 
         sb.append("/**\n");

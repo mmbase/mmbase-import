@@ -27,11 +27,11 @@ import org.mmbase.util.logging.*;
  * &lt;/mm:listnodes&gt;
  * </pre>
  * </code>
- * 
+ *
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.10 2005-06-21 19:19:32 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.11 2005-07-08 12:23:46 pierre Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
@@ -104,7 +104,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     {
 
         // you can of course even implement it anonymously.
-        addFunction(new AbstractFunction("showparameter", 
+        addFunction(new AbstractFunction("showparameter",
                                          new Parameter[]  {
                                              new Parameter("collectionparam", Collection.class),
                                              new Parameter("mapparam", Map.class),
@@ -117,7 +117,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
                 }
                 public Object getFunctionValue(Parameters parameters) {
                     List result = new ArrayList();
-                    DataType[] def = parameters.getDefinition();
+                    Parameter[] def = parameters.getDefinition();
                     for (int i = 0 ; i < def.length; i++) {
                         Object value = parameters.get(i);
                         if(value != null) {
@@ -126,7 +126,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
                     }
                     return result;
                 }
-            });    
+            });
     }
 
     {
@@ -149,7 +149,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
                     q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
                     q.setMaxNumber(1);
                     NodeIterator i = nm.getList(q).nodeIterator();
-                    return i.hasNext() ? i.nextNode() : null; 
+                    return i.hasNext() ? i.nextNode() : null;
                 }
 
                 public Object getFunctionValue(Parameters parameters) {
@@ -160,7 +160,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
                     q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
                     q.setMaxNumber(1);
                     NodeIterator i = nm.getList(q).nodeIterator();
-                    return i.hasNext() ? i.nextNode() : null; 
+                    return i.hasNext() ? i.nextNode() : null;
                 }
             });
     }

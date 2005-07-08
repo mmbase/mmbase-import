@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Vector;
 import java.io.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -33,7 +33,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.24 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: XMLRelationNodeReader.java,v 1.25 2005-07-08 12:23:46 pierre Exp $
  */
 public class XMLRelationNodeReader extends XMLBasicReader {
 
@@ -205,43 +205,43 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                            }
                            int type = bul.getDBType(key);
                            if (type != -1) {
-                                if (type == MMBaseType.TYPE_STRING || type == MMBaseType.TYPE_XML) {
+                                if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
                                     if (value == null)
                                         value = "";
                                     newnode.setValue(key, value);
-                                } else if (type == MMBaseType.TYPE_NODE) {
+                                } else if (type == Field.TYPE_NODE) {
                                     // do not really set it, because we need syncnodes later for this.
                                     newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
                                     newnode.setValue(key, MMObjectNode.VALUE_NULL);
-                                } else if (type == MMBaseType.TYPE_INTEGER) {
+                                } else if (type == Field.TYPE_INTEGER) {
                                    try {
                                         newnode.setValue(key, Integer.parseInt(value));
                                     } catch (Exception e) {
                                         log.warn("error setting integer-field " + e);
                                         newnode.setValue(key, -1);
                                     }
-                                } else if (type == MMBaseType.TYPE_FLOAT) {
+                                } else if (type == Field.TYPE_FLOAT) {
                                     try {
                                         newnode.setValue(key, Float.parseFloat(value));
                                     } catch (Exception e) {
                                         log.warn("error setting float-field " + e);
                                         newnode.setValue(key, -1);
                                     }
-                                } else if (type == MMBaseType.TYPE_DOUBLE) {
+                                } else if (type == Field.TYPE_DOUBLE) {
                                     try {
                                         newnode.setValue(key, Double.parseDouble(value));
                                     } catch (Exception e) {
                                         log.warn("error setting double-field " + e);
                                         newnode.setValue(key, -1);
                                     }
-                                } else if (type == MMBaseType.TYPE_LONG) {
+                                } else if (type == Field.TYPE_LONG) {
                                     try {
                                         newnode.setValue(key, Long.parseLong(value));
                                     } catch (Exception e) {
                                         log.warn("error setting long-field " + e);
                                         newnode.setValue(key, -1);
                                     }
-                                } else if (type == MMBaseType.TYPE_BINARY) {
+                                } else if (type == Field.TYPE_BINARY) {
                                     NamedNodeMap nm2 = n5.getAttributes();
                                     Node n7 = nm2.getNamedItem("file");
 

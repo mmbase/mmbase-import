@@ -11,23 +11,22 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.DoubleDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDoubleDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
+ * @version $Id: BasicDoubleDataType.java,v 1.3 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DoubleDataType
  * @since MMBase-1.8
  */
-public class BasicDoubleDataType extends Parameter implements DoubleDataType {
+public class BasicDoubleDataType extends AbstractDataType implements DoubleDataType {
 
     protected Double minimum = null;
     protected boolean minimumInclusive = true;
@@ -38,7 +37,7 @@ public class BasicDoubleDataType extends Parameter implements DoubleDataType {
      * Constructor for Double field.
      */
     public BasicDoubleDataType(String name) {
-        super(name, MMBaseType.TYPE_DOUBLE);
+        super(name, Double.class);
     }
 
     /**
@@ -48,6 +47,10 @@ public class BasicDoubleDataType extends Parameter implements DoubleDataType {
      */
     protected BasicDoubleDataType(String name, BasicDoubleDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_DOUBLE;
     }
 
     public Double getMin() {

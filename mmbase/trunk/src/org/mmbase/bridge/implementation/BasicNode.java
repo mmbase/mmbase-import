@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.150 2005-07-07 17:03:44 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.151 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -337,20 +337,20 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             setValueWithoutProcess(fieldName, value);
         } else {
             switch(type) {
-            case MMBaseType.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-            case MMBaseType.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-            case MMBaseType.TYPE_BINARY:    {
+            case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+            case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+            case Field.TYPE_BINARY:    {
                 long length = getNode().getSize(fieldName);
                 setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
             }
-            case MMBaseType.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-            case MMBaseType.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-            case MMBaseType.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-            case MMBaseType.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value)); break;
-            case MMBaseType.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
-            case MMBaseType.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
-            case MMBaseType.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-            case MMBaseType.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
+            case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+            case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+            case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+            case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value)); break;
+            case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+            case Field.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
+            case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
+            case Field.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
             default:                 setValueWithoutProcess(fieldName, value);
             }
         }
@@ -401,22 +401,22 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     public void setBooleanValue(String fieldName,final  boolean value) {
-        Object bool = ValueIntercepter.processSet(MMBaseType.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), Boolean.valueOf(value));
+        Object bool = ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), Boolean.valueOf(value));
         setValueWithoutProcess(fieldName, bool);
     }
 
     public void setDateValue(String fieldName, final Date value) {
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_DATETIME, this, nodeManager.getField(fieldName), value);
+        Object v = ValueIntercepter.processSet(Field.TYPE_DATETIME, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setListValue(String fieldName, final List value) {
-        Object v =  ValueIntercepter.processSet(MMBaseType.TYPE_LIST, this, nodeManager.getField(fieldName), value);
+        Object v =  ValueIntercepter.processSet(Field.TYPE_LIST, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setNodeValue(String fieldName, final Node value) {
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_NODE, this, nodeManager.getField(fieldName), value);
+        Object v = ValueIntercepter.processSet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), value);
         if (v == null) {
             setValueWithoutProcess(fieldName, null);
         } else if (v instanceof BasicNode) {
@@ -430,47 +430,47 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setIntValue(String fieldName, final int value) {
         Integer intValue = new Integer(value);
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_INTEGER, this, nodeManager.getField(fieldName), intValue);
+        Object v = ValueIntercepter.processSet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), intValue);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setFloatValue(String fieldName, final float value) {
         Float floatValue = new Float(value);
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_FLOAT, this, nodeManager.getField(fieldName), floatValue);
+        Object v = ValueIntercepter.processSet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), floatValue);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setDoubleValue(String fieldName, final double value) {
         Double doubleValue = new Double(value);
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_DOUBLE, this, nodeManager.getField(fieldName), doubleValue);
+        Object v = ValueIntercepter.processSet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), doubleValue);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setByteValue(String fieldName, final byte[] value) {
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_BINARY, this, nodeManager.getField(fieldName), value);
+        Object v = ValueIntercepter.processSet(Field.TYPE_BINARY, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setInputStreamValue(String fieldName, final InputStream value, long size) {
         getNode().setSize(fieldName, size);
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_BINARY, this, nodeManager.getField(fieldName), value);
+        Object v = ValueIntercepter.processSet(Field.TYPE_BINARY, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setLongValue(String fieldName, final long value) {
         Long longValue = new Long(value);
-        Object v =  ValueIntercepter.processSet(MMBaseType.TYPE_LONG, this, nodeManager.getField(fieldName), longValue);
+        Object v =  ValueIntercepter.processSet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), longValue);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setStringValue(String fieldName, final String value) {
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_STRING, this, nodeManager.getField(fieldName), value);
+        Object v = ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, v);
     }
 
 
     public void setXMLValue(String fieldName, final Document value) {
-        Object v = ValueIntercepter.processSet(MMBaseType.TYPE_XML, this, nodeManager.getField(fieldName), value);
+        Object v = ValueIntercepter.processSet(Field.TYPE_XML, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, v);
     }
     public boolean isNull(String fieldName) {
@@ -483,17 +483,17 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
             switch(type) {
-                case MMBaseType.TYPE_STRING:  return getStringValue(fieldName);
-                case MMBaseType.TYPE_BINARY:    return getByteValue(fieldName);
-                case MMBaseType.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-                case MMBaseType.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-                case MMBaseType.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-                case MMBaseType.TYPE_LONG:    return new Long(getLongValue(fieldName));
-                case MMBaseType.TYPE_XML:     return getXMLValue(fieldName);
-                case MMBaseType.TYPE_NODE:    return getNodeValue(fieldName);
-                case MMBaseType.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
-                case MMBaseType.TYPE_DATETIME:return getDateValue(fieldName);
-                case MMBaseType.TYPE_LIST:    return getListValue(fieldName);
+                case Field.TYPE_STRING:  return getStringValue(fieldName);
+                case Field.TYPE_BINARY:    return getByteValue(fieldName);
+                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+                case Field.TYPE_XML:     return getXMLValue(fieldName);
+                case Field.TYPE_NODE:    return getNodeValue(fieldName);
+                case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
+                case Field.TYPE_DATETIME:return getDateValue(fieldName);
+                case Field.TYPE_LIST:    return getListValue(fieldName);
                 default:
                     log.error("Unknown fieldtype '" + type + "'");
                     return value;
@@ -521,7 +521,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Boolean) ValueIntercepter.processGet(MMBaseType.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), result);
+            result = (Boolean) ValueIntercepter.processGet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), result);
         }
         return result.booleanValue();
     }
@@ -529,14 +529,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public Date getDateValue(String fieldName) {
         Date result =  noderef.getDateValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Date) ValueIntercepter.processGet(MMBaseType.TYPE_DATETIME, this, nodeManager.getField(fieldName), result);
+            result = (Date) ValueIntercepter.processGet(Field.TYPE_DATETIME, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
     public List getListValue(String fieldName) {
         List result =  noderef.getListValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (List) ValueIntercepter.processGet(MMBaseType.TYPE_LIST, this, nodeManager.getField(fieldName), result);
+            result = (List) ValueIntercepter.processGet(Field.TYPE_LIST, this, nodeManager.getField(fieldName), result);
         }
 
         return result;
@@ -561,7 +561,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
-            result = (Node) ValueIntercepter.processGet(MMBaseType.TYPE_NODE, this, nodeManager.getField(fieldName), result);
+            result = (Node) ValueIntercepter.processGet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
@@ -569,7 +569,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public int getIntValue(String fieldName) {
         Integer result = new Integer(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Integer) ValueIntercepter.processGet(MMBaseType.TYPE_INTEGER, this, nodeManager.getField(fieldName), result);
+            result = (Integer) ValueIntercepter.processGet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), result);
         }
         return result.intValue();
 
@@ -578,7 +578,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public float getFloatValue(String fieldName) {
         Float result = new Float(getNode().getFloatValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Float) ValueIntercepter.processGet(MMBaseType.TYPE_FLOAT, this, nodeManager.getField(fieldName), result);
+            result = (Float) ValueIntercepter.processGet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), result);
         }
         return result.floatValue();
     }
@@ -586,7 +586,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public long getLongValue(String fieldName) {
         Long result = new Long(getNode().getLongValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Long) ValueIntercepter.processGet(MMBaseType.TYPE_LONG, this, nodeManager.getField(fieldName), result);
+            result = (Long) ValueIntercepter.processGet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), result);
         }
         return result.longValue();
     }
@@ -594,7 +594,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public double getDoubleValue(String fieldName) {
         Double result = new Double(getNode().getDoubleValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Double) ValueIntercepter.processGet(MMBaseType.TYPE_DOUBLE, this, nodeManager.getField(fieldName), result);
+            result = (Double) ValueIntercepter.processGet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), result);
         }
         return result.doubleValue();
     }
@@ -602,14 +602,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public byte[] getByteValue(String fieldName) {
         byte[] result = getNode().getByteValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (byte[]) ValueIntercepter.processGet(MMBaseType.TYPE_BINARY, this, nodeManager.getField(fieldName), result);
+            result = (byte[]) ValueIntercepter.processGet(Field.TYPE_BINARY, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (java.io.InputStream) ValueIntercepter.processGet(MMBaseType.TYPE_BINARY, this, nodeManager.getField(fieldName), result);
+            result = (java.io.InputStream) ValueIntercepter.processGet(Field.TYPE_BINARY, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
@@ -617,7 +617,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public String getStringValue(String fieldName) {
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (String) ValueIntercepter.processGet(MMBaseType.TYPE_STRING, this, nodeManager.getField(fieldName), result);
+            result = (String) ValueIntercepter.processGet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
@@ -625,7 +625,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (Document) ValueIntercepter.processGet(MMBaseType.TYPE_XML, this, nodeManager.getField(fieldName), result);
+            result = (Document) ValueIntercepter.processGet(Field.TYPE_XML, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }

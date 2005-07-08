@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.bridge.DataType;
 import org.mmbase.util.Casting;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.7 2005-06-13 08:33:20 michiel Exp $
+ * @version $Id: ParametersImpl.java,v 1.8 2005-07-08 12:23:46 pierre Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -32,7 +31,6 @@ import org.mmbase.util.logging.*;
 public class ParametersImpl extends AbstractList implements Parameters {
     private static final Logger log = Logging.getLoggerInstance(ParametersImpl.class);
 
-    static final DataType[] EMPTY = new DataType[0];
     /**
      * The contents of this List are stored in this HashMap.
      */
@@ -42,7 +40,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
      * This array maps integers (position in array) to map keys, making it possible to implement
      * List.
      */
-    protected DataType[] definition = null;
+    protected Parameter[] definition = null;
 
     /**
      * If <code>true</code>, values are automatically cast to the right type (if possible) when set.
@@ -70,8 +68,8 @@ public class ParametersImpl extends AbstractList implements Parameters {
      *   </code>
      * </pre>
      */
-    public ParametersImpl(DataType[] def) {
-        definition = (DataType[]) Functions.define(def, new ArrayList()).toArray(EMPTY);
+    public ParametersImpl(Parameter[] def) {
+        definition = (Parameter[]) Functions.define(def, new ArrayList()).toArray(Parameter.EMPTY);
         toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
@@ -94,7 +92,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
      * @throws NullPointerException if definition is null
      * @see #Parameters(Parameter[])
      */
-    public ParametersImpl(DataType[] def, Collection values) {
+    public ParametersImpl(Parameter[] def, Collection values) {
         this(def);
         setAll(values);
     }
@@ -126,7 +124,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
     public Class[] toClassArray() {
         Class[] array = new Class[toIndex - fromIndex];
         for (int i = fromIndex; i < toIndex; i++) {
-            array[i - fromIndex] = definition[i].getTypeAsClass();
+            array[i - fromIndex] = definition[i].getDataType().getTypeAsClass();
         }
         return array;
     }
@@ -139,9 +137,9 @@ public class ParametersImpl extends AbstractList implements Parameters {
         autoCasting = autocast;
     }
 
-    public DataType[] getDefinition() {
+    public Parameter[] getDefinition() {
         if (fromIndex > 0 || toIndex != definition.length) {
-            return (DataType[]) Arrays.asList(definition).subList(fromIndex, toIndex).toArray(definition);
+            return (Parameter[]) Arrays.asList(definition).subList(fromIndex, toIndex).toArray(definition);
         } else {
             return definition;
         }
@@ -170,7 +168,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
     // implementation of (modifiable) List
     // @throws NullPointerException if definition not set
     public Object set(int i, Object value) {
-        DataType a = definition[i + fromIndex];
+        Parameter a = definition[i + fromIndex];
         if (autoCasting) value = a.autoCast(value);
         a.checkType(value);
         return backing.put(a.getName(), value);
@@ -178,14 +176,14 @@ public class ParametersImpl extends AbstractList implements Parameters {
 
     public void checkRequiredParameters() {
         for (int i = fromIndex; i < toIndex; i++) {
-            DataType a = definition[i];
+            Parameter a = definition[i];
             if (a.isRequired() && (get(a.getName()) == null)) {
                 throw new IllegalArgumentException("Required parameter '" + a.getName() + "' is null");
             }
         }
     }
 
-    public int indexOfParameter(DataType parameter) {
+    public int indexOfParameter(Parameter parameter) {
         int index = -1;
         for (int i = fromIndex; i < toIndex; i++) {
             if (definition[i].equals(parameter)) {
@@ -207,7 +205,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
         return index;
     }
 
-    public boolean containsParameter(DataType parameter) {
+    public boolean containsParameter(Parameter parameter) {
         return indexOfParameter(parameter) != -1;
     }
 
@@ -215,7 +213,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
         return indexOfParameter(parameterName) != -1;
     }
 
-    public Parameters set(DataType parameter, Object value) {
+    public Parameters set(Parameter parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index,value);
@@ -263,7 +261,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
         return new ParametersImpl(this, fromIndex, toIndex);
     }
 
-    public Parameters setIfDefined(DataType parameter, Object value) {
+    public Parameters setIfDefined(Parameter parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
             set(index, value);
@@ -279,7 +277,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
         return this;
     }
 
-    public Object get(DataType parameter) {
+    public Object get(Parameter parameter) {
         return get(parameter.getName());
     }
 
@@ -287,7 +285,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
         return backing.get(parameterName);
     }
 
-    public String getString(DataType parameter) {
+    public String getString(Parameter parameter) {
         return getString(parameter.getName());
     }
 

@@ -11,23 +11,22 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.IntegerDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicIntegerDataType.java,v 1.2 2005-07-08 08:02:18 pierre Exp $
+ * @version $Id: BasicIntegerDataType.java,v 1.3 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.IntegerDataType
  * @since MMBase-1.8
  */
-public class BasicIntegerDataType extends Parameter implements IntegerDataType {
+public class BasicIntegerDataType extends AbstractDataType implements IntegerDataType {
 
     protected Integer minimum = null;
     protected boolean minimumInclusive = true;
@@ -38,7 +37,7 @@ public class BasicIntegerDataType extends Parameter implements IntegerDataType {
      * Constructor for integer field.
      */
     public BasicIntegerDataType(String name) {
-        super(name, MMBaseType.TYPE_INTEGER);
+        super(name, Integer.class);
     }
 
     /**
@@ -48,6 +47,10 @@ public class BasicIntegerDataType extends Parameter implements IntegerDataType {
      */
     protected BasicIntegerDataType(String name, BasicIntegerDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_INTEGER;
     }
 
     public Integer getMin() {

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldCompareConstraint.java,v 1.9 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicFieldCompareConstraint.java,v 1.10 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint {
@@ -54,8 +54,8 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
 
         // Test "LIKE" operator only used with string type field.
         if (operator == FieldCompareConstraint.LIKE
-            && getField().getType() != MMBaseType.TYPE_STRING
-            && getField().getType() != MMBaseType.TYPE_XML) {
+            && getField().getType() != Field.TYPE_STRING
+            && getField().getType() != Field.TYPE_XML) {
             throw new IllegalArgumentException("LIKE operator not allowed for this field type: " + getField().getType());
         }
 

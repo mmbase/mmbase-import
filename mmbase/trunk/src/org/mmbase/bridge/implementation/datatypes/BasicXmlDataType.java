@@ -11,25 +11,24 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.datatypes.XmlDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
 
 /**
  * @javadoc
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicXmlDataType.java,v 1.1 2005-06-28 15:26:14 michiel Exp $
+ * @version $Id: BasicXmlDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BooleanDataType
  * @since MMBase-1.8
  */
-public class BasicXmlDataType extends Parameter implements XmlDataType {
+public class BasicXmlDataType extends AbstractDataType implements XmlDataType {
 
     public BasicXmlDataType(String name) {
-        super(name, MMBaseType.TYPE_XML);
+        super(name, org.w3c.dom.Document.class);
     }
 
     /**
@@ -38,6 +37,10 @@ public class BasicXmlDataType extends Parameter implements XmlDataType {
      */
     protected BasicXmlDataType(String name, BasicXmlDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return Field.TYPE_XML;
     }
 
     public void validate(Object value) {

@@ -11,26 +11,26 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.util.functions.Parameter;
+import org.mmbase.bridge.util.DataTypes;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @since MMBase-1.8
  */
-public class BasicDataType extends Parameter {
+public class BasicDataType extends AbstractDataType {
 
     /**
      * Constructor for node field.
      */
     public BasicDataType(String name) {
-        super(name, MMBaseType.TYPE_UNKNOWN);
+        this(name, Object.class);
     }
 
     /**
@@ -47,6 +47,10 @@ public class BasicDataType extends Parameter {
      */
     protected BasicDataType(String name, BasicDataType dataType) {
         super(name,dataType);
+    }
+
+    public int getBaseType() {
+        return DataTypes.classToBaseType(getTypeAsClass());
     }
 
     /**

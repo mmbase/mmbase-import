@@ -27,7 +27,7 @@ import org.mmbase.util.HashCodeUtil;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.46 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.47 2005-07-08 12:23:45 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -111,7 +111,7 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * @deprecated to access type constraints, use {@link #getDataType}
      */
     public int getDBType() {
-        return getDataType().getType();
+        return getDataType().getBaseType();
     }
 
     /**

@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database;
 
 import java.util.*;
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.12 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.13 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -143,7 +143,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
 
                 boolean uppered = false;
-                if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == MMBaseType.TYPE_STRING) {
+                if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
                     sb.append("BINARY ");
                 }
                 // Fieldname.

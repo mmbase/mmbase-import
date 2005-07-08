@@ -12,7 +12,7 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.31 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: XMLNodeReader.java,v 1.32 2005-07-08 12:23:46 pierre Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -138,7 +138,7 @@ public class XMLNodeReader extends XMLBasicReader {
 
                                     int type = bul.getDBType(key);
                                     if (type != -1) {
-                                        if (type == MMBaseType.TYPE_STRING || type == MMBaseType.TYPE_XML) {
+                                        if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
                                             if (value == null) {
                                                 value = "";
                                             }
@@ -146,39 +146,39 @@ public class XMLNodeReader extends XMLBasicReader {
                                             if (log.isDebugEnabled()) {
                                                 log.debug("After value " + Casting.toString(newnode.getValue(key)));
                                             }
-                                        } else if (type == MMBaseType.TYPE_NODE) {
+                                        } else if (type == Field.TYPE_NODE) {
                                             // do not really set it, because we need syncnodes later for this.
                                             newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
                                             newnode.setValue(key, MMObjectNode.VALUE_NULL);
-                                        } else if (type == MMBaseType.TYPE_INTEGER) {
+                                        } else if (type == Field.TYPE_INTEGER) {
                                            try {
                                                 newnode.setValue(key, Integer.parseInt(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting integer-field " + e);
                                                 newnode.setValue(key, -1);
                                             }
-                                        } else if (type == MMBaseType.TYPE_FLOAT) {
+                                        } else if (type == Field.TYPE_FLOAT) {
                                             try {
                                                 newnode.setValue(key, Float.parseFloat(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting float-field " + e);
                                                 newnode.setValue(key, -1);
                                             }
-                                        } else if (type == MMBaseType.TYPE_DOUBLE) {
+                                        } else if (type == Field.TYPE_DOUBLE) {
                                             try {
                                                 newnode.setValue(key, Double.parseDouble(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting double-field " + e);
                                                 newnode.setValue(key, -1);
                                             }
-                                        } else if (type == MMBaseType.TYPE_LONG) {
+                                        } else if (type == Field.TYPE_LONG) {
                                             try {
                                                 newnode.setValue(key, Long.parseLong(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting long-field " + e);
                                                 newnode.setValue(key, -1);
                                             }
-                                        } else if (type == MMBaseType.TYPE_BINARY) {
+                                        } else if (type == Field.TYPE_BINARY) {
                                             NamedNodeMap nm2 = n5.getAttributes();
                                             Node n7 = nm2.getNamedItem("file");
                                             try {
