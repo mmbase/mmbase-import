@@ -15,6 +15,9 @@
 	 <delete dir="mmbaseWEB-INF/lib"/>
 	 <delete dir="mmbase/mmdocs"/>
 	 <delete dir="mmbase/mmexamples"/>
+	 <delete file="mmbase/WEB-INF/config/modules/transactionhandler.xml"/>
+	 <delete file="mmbase/WEB-INF/config/modules/mmflash.xml"/>
+	 <delete file="mmbase/WEB-INF/config/modules/communityprc.xml"/>
 	 <jar basedir="mmbase" includes="WEB-INF/config/**" destfile="repository/mmbase/jars/mmbase-core-config-${mmbase.version}.jar"/>
 	 <jar basedir="mmbase" includes="mmbase/**" destfile="repository/mmbase/jars/mmbase-admin-pages-${mmbase.version}.jar"/>
   </target>
