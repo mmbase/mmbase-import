@@ -39,62 +39,18 @@
 <mm:content postprocessor="reducespace">
    <mm:cloud>
 
-      <%-- Get languages list
-      
-        *** 
-            somebody fix these constructs to do something like
-            
-            <mm:list path="metastandard,metadefinition,metavocabulary" constraints="metadefinition.handler='taal'">
-            ....
-            </mm:list>
-
-            walking though all possible nodes and then comparing a field with
-            a single value is hideously inefficient. the database should take
-            care of this, not some convoluted java construct.
-            
-            this page allocates about 40 mb of data on a single run - and it 
-            doesn't seem to release much either
-
-            Joost.
-        ***
-      
-      --%>
+      <%// Get languages list %>
       <mm:listnodes type="metastandard">
-         <mm:relatednodes type="metadefinition">
-            <mm:field name="handler" jspvar="sHandler" vartype="String" write="false">
-               <mm:field name="number" jspvar="sID" vartype="String" write="false">
+         <mm:relatednodes type="metadefinition" constraints="handler='taal'">
+            <mm:relatednodes type="metavocabulary">
+               <mm:field name="value" jspvar="sLang" vartype="String">
                   <%
-                     if(sHandler.equals("taal"))
-                     {
-                        %>
-                           <mm:node number="<%= sID %>">
-                              <mm:relatednodes type="metavocabulary">
-                                 <mm:field name="value" jspvar="sLang" vartype="String">
-                                    <%
-                                       hsetLangCodes.add(sLang);
-                                    %>
-                                 </mm:field>
-                              </mm:relatednodes>
-                           </mm:node>
-                        <%
-                     }
+                     hsetLangCodes.add(sLang);
                   %>
                </mm:field>
-            </mm:field>
+            </mm:relatednodes>
          </mm:relatednodes>
       </mm:listnodes>
-
-      <%// Get all related metadata to this node %>
-      <mm:node number="<%= sNode %>">
-         <mm:relatednodes type="metadata">
-            <mm:field name="number" jspvar="sID" vartype="String">
-               <%
-                  hsetRelatedNodes.add(sID);
-               %>
-            </mm:field>
-         </mm:relatednodes>
-      </mm:node>
-
 
 
       <form name="meta_form">
@@ -189,46 +145,40 @@
                               </jsp:include>
                            <%
                         }
-                        hsetRelatedNodes.add(session.getAttribute("metadata_id"));
+//                        hsetRelatedNodes.add(session.getAttribute("metadata_id"));
 
+                        String sConstraints = "metadefinition.number=" + sMetaDefinitionID;
                         if(sDefType.equals("1"))
                         {//vocabulary
                            if(sMaxValues.equals("1"))
                            {
                               String sSelected = "";
                               %>
-                                 <mm:relatednodes type="metadata">
-                                    <mm:field name="number" jspvar="sID" vartype="String">
-                                       <%
-                                          if(hsetRelatedNodes.contains(sID))
-                                          {
-                                             %>
-                                                <mm:relatednodes type="metavocabulary">
-                                                   <mm:field name="value" jspvar="sValue" vartype="String" write="false">
-                                                      <%
-                                                         sSelected = sValue;
-                                                      %>
-                                                   </mm:field>
-                                                </mm:relatednodes>
-                                             <%
-                                          }
-                                       %>
-                                    </mm:field>
-                                 </mm:relatednodes>
+                                 <mm:list nodes="<%= sNode %>" path="object,metadata,metavocabulary,metadata,metadefinition" constraints="<%= sConstraints %>">
+                                    <mm:node element="metavocabulary">
+                                       <mm:field name="value" jspvar="sValue" vartype="String" write="false">
+                                          <%
+                                             sSelected = sValue;
+                                          %>
+                                       </mm:field>
+                                    </mm:node>
+                                 </mm:list>
                                  <select name="m<mm:field name="number"/>">
-                                     <option><%= EMPTY_VALUE %></option>
-                                     <mm:relatednodes type="metavocabulary" orderby="value">
-                                        <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
-                                           <option name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
-                                              <%
-                                                 if(sSelected.equals(sCurrent))
-                                                 {
-                                                    %> selected="selected" <%
-                                                 }
-                                              %>
-                                           ><%= sCurrent %></option>
-                                        </mm:field>
-                                     </mm:relatednodes>
+                                    <option><%= EMPTY_VALUE %></option>
+                                    <mm:list nodes="<%= sMetaDefinitionID %>" path="object,metavocabulary" orderby="metavocabulary.value">
+                                       <mm:node element="metavocabulary">
+                                          <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
+                                             <option name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+                                                <%
+                                                   if(sSelected.equals(sCurrent))
+                                                   {
+                                                      %> selected="selected" <%
+                                                   }
+                                                %>
+                                             ><%= sCurrent %></option>
+                                          </mm:field>
+                                       </mm:node>
+                                    </mm:list>
                                  </select>
                               <%
                            }
@@ -236,62 +186,52 @@
                            {
                               HashSet hsetSelected = new HashSet();
                               %>
-                                 <mm:relatednodes type="metadata">
-                                    <mm:field name="number" jspvar="sID" vartype="String">
-                                       <%
-                                          if(hsetRelatedNodes.contains(sID))
-                                          {
-                                             %>
-                                                <mm:relatednodes type="metavocabulary">
-                                                   <mm:field name="value" jspvar="sValue" vartype="String" write="false">
-                                                      <%
-                                                         hsetSelected.add(sValue);
-                                                      %>
-                                                   </mm:field>
-                                                </mm:relatednodes>
-                                             <%
-                                          }
-                                       %>
-                                    </mm:field>
-                                 </mm:relatednodes>
-                                 <mm:relatednodes type="metavocabulary">
-                                    <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
-                                       <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
-                                       <%
-                                          if(hsetSelected.contains(sCurrent))
-                                          {
-                                             %> checked="checked" <%
-                                          }
-                                       %>
-                                       /><%= sCurrent %>
-                                       <br/>
-                                    </mm:field>
-                                 </mm:relatednodes>
+                                <%// List for connected metavocabularies
+                                  // snode - Target Object of any type which can have a metadata
+                                %>
+                                <mm:list nodes="<%= sNode %>" path="object,metadata,metavocabulary,metadata,metadefinition"  constraints="<%= sConstraints %>">
+                                   <mm:node element="metavocabulary">
+                                      <mm:field name="value" jspvar="sValue" vartype="String" write="false">
+                                         <%
+                                            hsetSelected.add(sValue);
+                                         %>
+                                      </mm:field>
+                                   </mm:node>
+                                </mm:list>
+
+                                <%// List for all possible metavocabulary %>
+                                <mm:list nodes="<%= sMetaDefinitionID %>" path="object,metavocabulary" orderby="metavocabulary.value">
+                                   <mm:node element="metavocabulary">
+                                      <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
+                                         <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+                                         <%
+                                            if(hsetSelected.contains(sCurrent))
+                                            {
+                                               %> checked="checked" <%
+                                            }
+                                         %>
+                                         /><%= sCurrent %>
+                                         <br/>
+                                      </mm:field>
+                                   </mm:node>
+                                </mm:list>
                               <%
                            }
                         }
+
                         if(sDefType.equals("2"))
                         {//date
                            Date date = null;
                            %>
-                              <mm:relatednodes type="metadata">
-                                 <mm:field name="number" jspvar="sID" vartype="String">
-                                    <%
-                                       if(hsetRelatedNodes.contains(sID))
-                                       {
-                                          %>
-                                             <mm:relatednodes type="metadate" max="1">
-                                                <mm:field name="value" jspvar="dateValue" vartype="Date" write="false">
-                                                   <%
-                                                      date = dateValue;
-                                                   %>
-                                                </mm:field>
-                                             </mm:relatednodes>
-                                          <%
-                                       }
-                                    %>
-                                 </mm:field>
-                              </mm:relatednodes>
+                              <mm:list nodes="<%= sNode %>" path="object,metadata,metadate,metadata,metadefinition" max="1"  constraints="<%= sConstraints %>">
+                                 <mm:node element="metadate">
+                                    <mm:field name="value" jspvar="dateValue" vartype="Date" write="false">
+                                       <%
+                                          date = dateValue;
+                                       %>
+                                    </mm:field>
+                                 </mm:node>
+                              </mm:list>
                               <table border="0" cellpadding="0" cellspacing="0" class="body">
                                  <tr>
                                     <td>Dag</td>
@@ -381,70 +321,58 @@
                               </table>
                            <%
                         }
+
+
                         if(sDefType.equals("3"))
                         {//lang
                            int iCounter = 0;
                            boolean bEmpty = true;
                            %>
-                              <mm:relatednodes type="metadata">
-                                 <mm:field name="number" jspvar="sID" vartype="String">
-                                    <%
-                                       if(hsetRelatedNodes.contains(sID))
-                                       {
-                                          %>
-                                             <mm:related path="posrel,metalangstring" orderby="posrel.pos">
-                                                <mm:node element="metalangstring">
-                                                   <mm:field name="language" jspvar="sLanguage" vartype="String" write="false">
-                                                      <mm:field name="value" jspvar="sValue" vartype="String" write="false">
-                                                         <mm:field name="number" jspvar="sMetalangID" vartype="String" write="false">
-                                                            <table border="0" cellpadding="0" cellspacing="0">
-                                                               <tr>
-                                                                  <td>
-                                                                     <select name="m<%= sMetaDefinitionID %>">
-                                                                        <option style="width:20px"><%= EMPTY_VALUE %></option>
-                                                                           <%
-                                                                              for(Iterator it = hsetLangCodes.iterator(); it.hasNext();)
-                                                                              {
-                                                                                 String sLangCode = (String) it.next();
-                                                                                 %>
-                                                                                    <option value="<%= sLangCode %>"
-                                                                                       <%
-                                                                                          if(sLanguage.equals(sLangCode))
-                                                                                          {
-                                                                                             %>selected="selected"<%
-                                                                                          }
-                                                                                       %>
-                                                                                    ><%= sLangCode %></option>
-                                                                                 <%
-                                                                              }
-                                                                              bEmpty = false;
-                                                                           %>
-                                                                     </select>
-                                                                  </td>
-                                                                  <td>
-                                                                     <input name="m<%= sMetaDefinitionID %>" type="text" value="<%= sValue %>" style="width:150px"/>
-                                                                  </td>
-                                                                  <td>
-                                                                     &nbsp;
-                                                                  </td>
-                                                                  <td>
-                                                                     <input type="image" src="gfx/minus.gif" onClick="meta_form.action='#m<%= sMetaDefinitionID %>'; submitted.value='remove'; add.value='<%= sMetaDefinitionID %>,<%= iCounter %>'">
-                                                                  </td>
-                                                               </tr>
-                                                            </table>
-                                                         </mm:field>
-                                                      </mm:field>
-                                                   </mm:field>
-                                                </mm:node>
-                                                <%
-                                                   iCounter++;
-                                                %>
-                                             </mm:related>
-                                          <%
-                                       }
-                                    %>
-                                 </mm:field>
-                              </mm:relatednodes>
+                              <mm:list nodes="<%= sNode %>" path="object,metadata,posrel,metalangstring,metadata,metadefinition" constraints="<%= sConstraints %>" orderby="posrel.pos">
+                                 <mm:node element="metalangstring">
+                                    <mm:field name="language" jspvar="sLanguage" vartype="String" write="false">
+                                       <mm:field name="value" jspvar="sValue" vartype="String" write="false">
+                                          <mm:field name="number" jspvar="sMetalangID" vartype="String" write="false">
+                                             <table border="0" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                   <td>
+                                                      <select name="m<%= sMetaDefinitionID %>">
+                                                         <option style="width:20px"><%= EMPTY_VALUE %></option>
+                                                            <%
+                                                               for(Iterator it = hsetLangCodes.iterator(); it.hasNext();)
+                                                               {
+                                                                  String sLangCode = (String) it.next();
+                                                                  %>
+                                                                     <option value="<%= sLangCode %>"
+                                                                        <%
+                                                                           if(sLanguage.equals(sLangCode))
+                                                                           {
+                                                                              %>selected="selected"<%
+                                                                           }
+                                                                        %>
+                                                                     ><%= sLangCode %></option>
+                                                                  <%
+                                                               }
+                                                               bEmpty = false;
+                                                            %>
+                                                      </select>
+                                                   </td>
+                                                   <td>
+                                                      <input name="m<%= sMetaDefinitionID %>" type="text" value="<%= sValue %>" style="width:150px"/>
+                                                   </td>
+                                                   <td>
+                                                      &nbsp;
+                                                   </td>
+                                                   <td>
+                                                      <input type="image" src="gfx/minus.gif" onClick="meta_form.action='#m<%= sMetaDefinitionID %>'; submitted.value='remove'; add.value='<%= sMetaDefinitionID %>,<%= iCounter %>'">
+                                                   </td>
+                                                </tr>
+                                             </table>
+                                          </mm:field>
+                                       </mm:field>
+                                    </mm:field>
+                                 </mm:node>
+                              </mm:list>
                               <%
                                  if(bEmpty)
                                  {
@@ -488,39 +416,30 @@
                               <input type="image" src="gfx/plus.gif" onClick="meta_form.action='#m<%= sMetaDefinitionID %>'; submitted.value='add'; add.value='<%= sMetaDefinitionID %>'"> voeg meer tekenreeksen toe
                            <%
                         }
+
+
                         if(sDefType.equals("4"))
                         {//Duration
                            Date[] date = new Date[2];
                            %>
-                              <mm:relatednodes type="metadata">
-                                 <mm:field name="number" jspvar="sID" vartype="String">
-                                    <%
-                                       if(hsetRelatedNodes.contains(sID))
-                                       {
-                                          %>
-                                             <mm:related path="posrel,metadate" orderby="posrel.pos">
-                                                <mm:node element="metadate">
-                                                   <mm:first>
-                                                      <mm:field name="value" jspvar="dateValue" vartype="Date" write="false">
-                                                         <%
-                                                            date[0] = dateValue;
-                                                         %>
-                                                      </mm:field>
-                                                   </mm:first>
-                                                   <mm:first inverse="true">
-                                                      <mm:field name="value" jspvar="dateValue" vartype="Date" write="false">
-                                                         <%
-                                                            date[1] = dateValue;
-                                                         %>
-                                                      </mm:field>
-                                                   </mm:first>
-                                                </mm:node>
-                                             </mm:related>
+                              <mm:list nodes="<%= sNode %>" path="object,metadata,posrel,metadate,metadata,metadefinition" constraints="<%= sConstraints %>" orderby="posrel.pos">
+                                 <mm:node element="metadate">
+                                    <mm:first>
+                                       <mm:field name="value" jspvar="dateValue" vartype="Date" write="false">
                                           <%
-                                       }
-                                    %>
-                                 </mm:field>
-                              </mm:relatednodes>
+                                             date[0] = dateValue;
+                                          %>
+                                       </mm:field>
+                                    </mm:first>
+                                    <mm:first inverse="true">
+                                       <mm:field name="value" jspvar="dateValue" vartype="Date" write="false">
+                                          <%
+                                             date[1] = dateValue;
+                                          %>
+                                       </mm:field>
+                                    </mm:first>
+                                 </mm:node>
+                              </mm:list>
                            <%
                            for(int f = 0; f < 2; f++)
                            {
