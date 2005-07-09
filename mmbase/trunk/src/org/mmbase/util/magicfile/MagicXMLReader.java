@@ -43,7 +43,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
             setReader(MAGICXMLFILE);
 
             if (reader != null) {
-                log.info("Magic XML file is: " + reader.getFileName());
+                log.info("Magic XML file is: " + reader.getSystemId());
             }
 
             ResourceWatcher watcher = new ResourceWatcher() {

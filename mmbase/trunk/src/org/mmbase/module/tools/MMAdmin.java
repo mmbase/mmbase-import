@@ -21,7 +21,6 @@ import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.CoreField;
-import org.mmbase.core.implementation.BasicCoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.StorageException;
@@ -42,7 +41,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.103 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.104 2005-07-09 11:46:11 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -456,7 +455,7 @@ public class MMAdmin extends ProcessorModule {
     String getBuilderClass(String bulname) {
         BuilderReader bul = getBuilderReader(bulname);
         if (bul != null) {
-            return bul.getClassFile();
+            return bul.getClassName();
         }
         return "";
     }

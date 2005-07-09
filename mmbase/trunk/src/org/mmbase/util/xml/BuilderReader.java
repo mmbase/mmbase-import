@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.20 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.21 2005-07-09 11:46:10 nklasens Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -276,13 +276,6 @@ public class BuilderReader extends XMLBasicReader {
     }
 
     /**
-     * @deprecated Use {@link #getClassName}
-     */
-    public String getClassFile() {
-        return getClassName();
-    }
-
-    /**
      * Get the field definitions of this builder.
      * If applicable, this includes the fields inherited from a parent builder.
      *
@@ -299,7 +292,7 @@ public class BuilderReader extends XMLBasicReader {
                 // need clone()!
                 for (Iterator i = parentfields.iterator();i.hasNext();) {
                     CoreField f = (CoreField)i.next();
-                    CoreField newField = (CoreField) f.copy(f.getName());
+                    CoreField newField = f.copy(f.getName());
                     while(newField.getStoragePosition() >= pos) pos++;
                     newField.finish(); 
                     results.add(newField);

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.4 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: ReloadableModule.java,v 1.5 2005-07-09 11:46:10 nklasens Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -44,12 +44,12 @@ public abstract class ReloadableModule extends Module {
 
     protected boolean reloadConfiguration(XMLModuleReader parser) {
         if (parser.getStatus().equals("inactive")) {
-            log.error("Cannot set module to inactive. " + parser.getFileName() + " Canceling reload");
+            log.error("Cannot set module to inactive. " + parser.getSystemId() + " Canceling reload");
             return false;
         }
         String className = parser.getClassFile();
         if (! className.equals(getClass().getName())) {
-            log.error("Cannot change the class of a module. " + className + " != " + getClass().getName() + " " + parser.getFileName()  + ". Canceling reload.");
+            log.error("Cannot change the class of a module. " + className + " != " + getClass().getName() + " " + parser.getSystemId()  + ". Canceling reload.");
             return false;
         }
         

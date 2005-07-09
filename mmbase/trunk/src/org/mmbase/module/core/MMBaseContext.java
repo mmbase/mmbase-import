@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.43 2005-03-16 19:17:37 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.44 2005-07-09 11:46:10 nklasens Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -49,7 +49,7 @@ public class MMBaseContext {
      *                           config files.
      *
      */
-    public synchronized static void init(ServletContext servletContext) throws ServletException {
+    public synchronized static void init(ServletContext servletContext) {
         if (!initialized) {
             // store the current context
             sx = servletContext;

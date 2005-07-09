@@ -31,7 +31,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.1 2004-12-15 11:26:32 daniel Exp $
+ * @version $Id: ExtendedDocumentReader.java,v 1.2 2005-07-09 11:46:11 nklasens Exp $
  */
 public class ExtendedDocumentReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(ExtendedDocumentReader.class);
@@ -97,7 +97,7 @@ public class ExtendedDocumentReader extends DocumentReader {
             } else if (!e.getNodeName().equals(root)) {
                 // path should start with document root element
                 log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getNodeName()+"): incorrect xml file" +
-                          "("+getFileName()+")");
+                          "("+getSystemId()+")");
                 return null;
             }
             while (st.hasMoreTokens()) {

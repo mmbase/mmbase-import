@@ -11,7 +11,8 @@ package org.mmbase.module;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.17 2004-05-06 12:34:47 keesj Exp $
+ * @version $Id: LinkChecker.java,v 1.18 2005-07-09 11:46:10 nklasens Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -137,9 +138,9 @@ public class LinkChecker extends ProcessorModule implements Runnable {
         // Get all urls.
         MMObjectBuilder urls = mmbase.getBuilder(builderName);
         if (urls != null) {
-            Enumeration nodes = urls.search("");
-            while (nodes.hasMoreElements()) {
-                MMObjectNode node = (MMObjectNode) nodes.nextElement();
+            List nodes = urls.getNodes();
+            for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+                MMObjectNode node = (MMObjectNode) iter.next();
                 long number = node.getNumber();
                 String url = "" + node.getValue(fieldName);
                 // Check if an url is correct.
