@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
+
 import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.55 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.56 2005-07-09 11:46:10 nklasens Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -105,10 +106,10 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         TypeDef typeDef = mmb.getTypeDef();
         typeDef.init();
         // Find all typerel nodes
-        Enumeration alltypes = search("");
-        while(alltypes.hasMoreElements()) {
+        List alltypes = getNodes();
+        for (Iterator iter = alltypes.iterator(); iter.hasNext();) {
             // For every reltype node :
-            MMObjectNode typerel = (MMObjectNode) alltypes.nextElement();
+            MMObjectNode typerel = (MMObjectNode) iter.next();
             addCacheEntry(typerel, buildersInitialized);
         }
         log.debug("Done reading typerel cache " + (buildersInitialized ? "(considered inheritance)" : "") + ": " + typeRelNodes );

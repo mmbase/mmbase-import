@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.25 2005-06-27 17:02:49 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.26 2005-07-09 11:46:10 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -400,9 +400,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     if (! addFileName) {
                         return servlet.append(argument).toString();
                     } else {
-                        StringObject fn = new StringObject(fileName);
-                        fn.replace(" ", "_");
-                        servlet.append(argument).append('/').append(fn.toString());
+                        servlet.append(argument).append('/').append(fileName.replace(' ', '_'));
                         return servlet.toString();
                     }
                 }

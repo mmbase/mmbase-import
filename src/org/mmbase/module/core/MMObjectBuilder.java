@@ -56,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.315 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.316 2005-07-09 11:46:10 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1413,6 +1413,18 @@ public class MMObjectBuilder extends MMTable {
         return result;
     }
 
+    public List getNodes() {
+        try {
+            List nodes = getNodes(new NodeSearchQuery(this));
+            if (nodes != null) {
+                return nodes;
+            }
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return new ArrayList();
+    }
+    
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where       where clause that the objects need to fulfill

@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.147 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.148 2005-07-09 11:46:10 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -540,7 +540,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         if (l != null)  return l.intValue();
         Object value = values.get(fieldName);
         if (value == null) return -1;
-        return (long) Casting.toString(value).getBytes().length;
+        return Casting.toString(value).getBytes().length;
     }
 
     /**
@@ -1297,15 +1297,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public int getAge() {
         return parent.getAge(this);
-    }
-
-    /**
-     * Returns the node's builder tablename.
-     * @return the tablename of the builder as a <code>String</code>
-     * @deprecated use getName instead
-     */
-    public String getTableName() {
-        return parent.getTableName();
     }
 
     /**
