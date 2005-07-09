@@ -16,6 +16,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.mmbase.bridge.Node;
@@ -24,13 +25,13 @@ import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.*;
 import org.mmbase.module.core.MMObjectBuilder;
 
 
 import org.mmbase.bridge.jsp.taglib.typehandler.TypeHandler;
 import org.mmbase.bridge.jsp.taglib.typehandler.DefaultTypeHandler;
-import org.mmbase.util.XMLBasicReader;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Element;
 
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.79 2005-06-08 19:37:47 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.80 2005-07-09 15:29:12 nklasens Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -176,11 +177,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
         Class thisClass = FieldInfoTag.class;
         InputSource fieldtypes = new InputSource(thisClass.getResourceAsStream("resources/fieldtypes.xml"));
-        XMLBasicReader reader  = new XMLBasicReader(fieldtypes, thisClass);
+        DocumentReader reader  = new DocumentReader(fieldtypes, thisClass);
         Element fieldtypesElement = reader.getElementByPath("fieldtypes");
-        Enumeration e = reader.getChildElements(fieldtypesElement, "fieldtype");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
+        
+        for (Iterator iter = reader.getChildElements(fieldtypesElement, "fieldtype"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String typeString = element.getAttribute("id");
             int fieldType =  org.mmbase.core.util.Fields.getType(typeString);
             String claz = reader.getElementValue(reader.getElementByPath(element, "fieldtype.class"));

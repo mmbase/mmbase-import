@@ -12,14 +12,14 @@ package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
 /**
  * Chains some comparators to make one new comparator.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ChainSorter.java,v 1.2 2003-02-05 16:39:39 michiel Exp $
+ * @version $Id: ChainSorter.java,v 1.3 2005-07-09 15:29:11 nklasens Exp $
  */
 public class ChainSorter extends  Sorter {
 
@@ -47,7 +47,7 @@ public class ChainSorter extends  Sorter {
     /**
      * Configure. Configures all elements on default.
      */
-    public void configure(XMLBasicReader reader, Element e) {
+    public void configure(DocumentReader reader, Element e) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
             Sorter ri = (Sorter) i.next();

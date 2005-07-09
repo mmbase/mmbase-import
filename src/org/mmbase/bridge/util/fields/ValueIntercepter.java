@@ -11,8 +11,8 @@ package org.mmbase.bridge.util.fields;
 
 import org.mmbase.bridge.*;
 
-import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Element;
 import org.mmbase.util.logging.Logger;
@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.19 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: ValueIntercepter.java,v 1.20 2005-07-09 15:29:12 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -177,11 +177,11 @@ public class ValueIntercepter {
         return org.mmbase.core.util.Fields.getType(s);
     }
 
-    private static Object createProcessor(XMLBasicReader reader, Element processorElement) {
+    private static Object createProcessor(DocumentReader reader, Element processorElement) {
         Object processor = null;
-        Enumeration classes = reader.getChildElements(processorElement, "class");
-        while(classes.hasMoreElements()) {
-            Element clazElement = (Element) classes.nextElement();
+        
+        for (Iterator classes = reader.getChildElements(processorElement, "class"); classes.hasNext();) {
+            Element clazElement = (Element) classes.next();
             String clazString = reader.getElementValue(reader.getElementByPath(clazElement, "class"));
             try {
                 Class claz = Class.forName(clazString);
@@ -323,37 +323,33 @@ public class ValueIntercepter {
             fieldTypes.setSystemId("resource:" + name + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honestly no idea what it should be, but this is at least fit for humans (in case of errors)
         }
         log.service("Reading fieldtype-definitions from " + fieldTypes.getSystemId());
-        XMLBasicReader reader  = new XMLBasicReader(fieldTypes, ValueIntercepter.class);
+        DocumentReader reader  = new DocumentReader(fieldTypes, ValueIntercepter.class);
 
         Element fieldtypesElement = reader.getElementByPath("fieldtypedefinitions");
-        Enumeration e = reader.getChildElements(fieldtypesElement, "fieldtype");
-        while (e.hasMoreElements()) {
-            Element typeElement = (Element) e.nextElement();
+        for (Iterator typeIter = reader.getChildElements(fieldtypesElement, "fieldtype"); typeIter.hasNext();) {
+            Element typeElement = (Element) typeIter.next();
             String typeString = typeElement.getAttribute("id");
             int fieldType =  getType(typeString);
 
 
             // commit processor for no specialization
-            Enumeration f = reader.getChildElements(typeElement, "commitprocessor");
-            while (f.hasMoreElements()) {
-                Element commitProcessorElement = (Element) f.nextElement();
+            for (Iterator commitProcessorIter = reader.getChildElements(typeElement, "commitprocessor"); commitProcessorIter.hasNext();) {
+                Element commitProcessorElement = (Element) commitProcessorIter.next();
                 CommitProcessor newProcessor = (CommitProcessor) createProcessor(reader, commitProcessorElement);
                 defaultCommitProcessor[fieldType] = newProcessor;
             }
 
             // fill the set-processor for no, or unknown, guitype
-            f = reader.getChildElements(typeElement, "setprocessor");
-            while (f.hasMoreElements()) {
-                Element setProcessorElement = (Element) f.nextElement();
+            for (Iterator setProcessorIter = reader.getChildElements(typeElement, "setprocessor"); setProcessorIter.hasNext();) {
+                Element setProcessorElement = (Element) setProcessorIter.next();
                 String setTypeString = setProcessorElement.getAttribute("type");
                 Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);
                 setDefaultProcessor(newProcessor, defaultSetProcessor[fieldType], setTypeString);
                 log.service("Defined for field type " + typeString + "/DEFAULT setprocessor (" + setTypeString + ")" + newProcessor);
             }
 
-            f = reader.getChildElements(typeElement, "getprocessor");
-            while (f.hasMoreElements()) {
-                Element getProcessorElement = (Element) f.nextElement();
+            for (Iterator getProcessorIter = reader.getChildElements(typeElement, "getprocessor"); getProcessorIter.hasNext();) {
+                Element getProcessorElement = (Element) getProcessorIter.next();
                 String getTypeString = getProcessorElement.getAttribute("type");
                 Processor newProcessor = (Processor) createProcessor(reader, getProcessorElement);
                 setDefaultProcessor(newProcessor, defaultGetProcessor[fieldType], getTypeString);
@@ -361,16 +357,13 @@ public class ValueIntercepter {
             }
 
             // now for known guitypes (specializations)
-
-            Enumeration g = reader.getChildElements(typeElement, "specialization");
-            while (g.hasMoreElements()) {
-                Element specializationElement = (Element) g.nextElement();
+            for (Iterator specializationIter = reader.getChildElements(typeElement, "specialization"); specializationIter.hasNext();) {
+                Element specializationElement = (Element) specializationIter.next();
                 String guiType = specializationElement.getAttribute("id");
 
                 // commit processor for this specialization
-                Enumeration h = reader.getChildElements(specializationElement, "commitprocessor");
-                while (h.hasMoreElements()) {
-                    Element commitProcessorElement = (Element) h.nextElement();
+                for (Iterator commitProcessorIter = reader.getChildElements(specializationElement, "commitprocessor"); commitProcessorIter.hasNext();) {
+                    Element commitProcessorElement = (Element) commitProcessorIter.next();
                     CommitProcessor newProcessor = (CommitProcessor) createProcessor(reader, commitProcessorElement);
 
                     Map commitMap = commitProcessor[fieldType];
@@ -382,18 +375,16 @@ public class ValueIntercepter {
                 }
 
                 // fill the set-processor for this guitype
-                h = reader.getChildElements(specializationElement, "setprocessor");
-                while (h.hasMoreElements()) {
-                    Element setProcessorElement = (Element) h.nextElement();
+                for (Iterator setProcessorIter = reader.getChildElements(specializationElement, "setprocessor"); setProcessorIter.hasNext();) {
+                    Element setProcessorElement = (Element) setProcessorIter.next();
                     String setTypeString = setProcessorElement.getAttribute("type");
                     Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);
                     addProcessorToFieldSet(newProcessor, setProcessor[fieldType], guiType, setTypeString);
                     log.service("Defined for field type " + typeString + "/" + guiType + " setprocessor(" + ("".equals(setTypeString) ? "ALL TYPES" : setTypeString)  + ") " + newProcessor);
                 }
 
-                h = reader.getChildElements(specializationElement, "getprocessor");
-                while (h.hasMoreElements()) {
-                    Element getProcessorElement = (Element) h.nextElement();
+                for (Iterator getProcessorIter = reader.getChildElements(specializationElement, "getprocessor"); getProcessorIter.hasNext();) {
+                    Element getProcessorElement = (Element) getProcessorIter.next();
                     String getTypeString = getProcessorElement.getAttribute("type");
                     Processor newProcessor = (Processor) createProcessor(reader, getProcessorElement);
                     addProcessorToFieldSet(newProcessor, getProcessor[fieldType], guiType, getTypeString);

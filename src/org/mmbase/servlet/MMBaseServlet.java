@@ -30,6 +30,7 @@ import org.xml.sax.InputSource;
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.xml.DocumentReader;
 
 
 /**
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.38 2005-06-12 10:31:32 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.39 2005-07-09 15:29:12 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -224,10 +225,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 } else {
                     InputSource path = new InputSource(url.openStream());
                     log.service("Reading servlet mappings from " + url);
-                    XMLBasicReader webDotXml = new XMLBasicReader(path, false);
-                    Enumeration mappings = webDotXml.getChildElements("web-app", "servlet-mapping");
-                    while (mappings.hasMoreElements()) {
-                        Element mapping = (Element) mappings.nextElement();
+                    DocumentReader webDotXml = new DocumentReader(path, false);
+                    
+                    for (Iterator mappingsIter = webDotXml.getChildElements("web-app", "servlet-mapping"); mappingsIter.hasNext();) {
+                        Element mapping = (Element) mappingsIter.next();
                         Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
                         String name = webDotXml.getElementValue(servName);
                         if (!(name.equals(""))) {

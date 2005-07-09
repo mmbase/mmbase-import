@@ -56,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.316 2005-07-09 11:46:10 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.317 2005-07-09 15:29:11 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3427,13 +3427,6 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * @deprecated
-     */
-    public String getShortedText(String fieldName, int number) {
-        if (number < 0) return null; // capture calls from temporary nodes
-        return getShortedText(fieldName, getNode(number));
-    }
-    /**
      * Get text from a blob field. This function is called to 'load' a field into the node, because
      * it was not loaded together with the node, because it is supposed to be too big.
      * @param fieldName name of the field
@@ -3452,13 +3445,6 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    public byte[] getShortedByte(String fieldName, int number) {
-        if (number < 0) return null; // capture calls from temporary nodes
-        return getShortedByte(fieldName, getNode(number));
-    }
     /**
      * Get binary data of a blob field. This function is called to 'load' a field into the node, because
      * it was not loaded together with the node, because it is supposed to be too big.

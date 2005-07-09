@@ -12,14 +12,14 @@ package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.ListIterator;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.List;
 
 /**
  * This removes all URLComposers wich are not available.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableFilter.java,v 1.5 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: AvailableFilter.java,v 1.6 2005-07-09 15:29:11 nklasens Exp $
  */
 public class AvailableFilter implements Filter {
 
@@ -34,7 +34,7 @@ public class AvailableFilter implements Filter {
         return urlcomposers;
         
     }
-    public void configure(XMLBasicReader reader, Element e) {
+    public void configure(DocumentReader reader, Element e) {
         // not needed
     }
 

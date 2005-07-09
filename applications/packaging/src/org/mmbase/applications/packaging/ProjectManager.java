@@ -13,7 +13,6 @@ package org.mmbase.applications.packaging;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -166,8 +165,8 @@ public class ProjectManager {
             if(reader!=null) {
 
                 // decode projects
-                for(Enumeration ns=reader.getChildElements("projects","project");ns.hasMoreElements(); ) {
-                    Element n=(Element)ns.nextElement();
+                for(Iterator ns=reader.getChildElements("projects","project");ns.hasNext(); ) {
+                    Element n=(Element)ns.next();
                     NamedNodeMap nm=n.getAttributes();
                     if (nm!=null) {
                         String name=null;
@@ -211,8 +210,8 @@ public class ProjectManager {
         if(file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProjectManager.class);
             if(reader != null) {
-                for(Enumeration ns = reader.getChildElements("creators","creator");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
+                for(Iterator ns = reader.getChildElements("creators","creator");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String type = null;

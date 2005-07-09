@@ -14,7 +14,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -162,8 +161,8 @@ public class ProviderManager {
         if(file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProviderManager.class);
             if(reader != null) {
-                for(Enumeration ns = reader.getChildElements("providers","provider");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
+                for(Iterator ns = reader.getChildElements("providers","provider");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
@@ -245,8 +244,8 @@ public class ProviderManager {
             String account = "guest";
             String password = "guest";
             String path = "";
-            for(Enumeration ns = reader.getChildElements("shareautoconfig");ns.hasMoreElements(); ) {  
-                Element e = (Element)ns.nextElement();
+            for(Iterator ns = reader.getChildElements("shareautoconfig");ns.hasNext(); ) {  
+                Element e = (Element)ns.next();
                 String field = e.getNodeName();
                 org.w3c.dom.Node n = e.getFirstChild();
                 if (field.equals("name")) name = n.getNodeValue();
@@ -258,7 +257,7 @@ public class ProviderManager {
             }
             if (method.equals("http")) {
                 if (get(name) == null) {
-                    ProviderInterface h = (ProviderInterface)new HttpProvider();
+                    ProviderInterface h = new HttpProvider();
                     h.setAccount(account);
                     h.setPassword(password);
                     h.init(name,method,maintainer,path);
@@ -299,8 +298,8 @@ public class ProviderManager {
         if(file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProviderManager.class);
             if(reader != null) {
-                for(Enumeration ns = reader.getChildElements("providerhandlers","providerhandler");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
+                for(Iterator ns = reader.getChildElements("providerhandlers","providerhandler");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String method = null;

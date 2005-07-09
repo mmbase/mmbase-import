@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.14 2005-05-04 22:21:37 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.15 2005-07-09 15:29:12 nklasens Exp $
  */
 public class UtilReader {
 
@@ -136,21 +136,20 @@ public class UtilReader {
             XMLBasicReader reader = new XMLBasicReader(is, UtilReader.class);
             Element e = reader.getElementByPath("util.properties");
             if (e != null) {
-                Enumeration enumeration = reader.getChildElements(e, "property");
-                while (enumeration.hasMoreElements()) {
-                    Element p = (Element)enumeration.nextElement();
+                for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {
+                    Element p = (Element) iter.next();
                     String name = reader.getElementAttributeValue(p, "name");
                     String type = reader.getElementAttributeValue(p, "type");
                     if (type.equals("map")) {
-                        Enumeration entries = reader.getChildElements(p, "entry");
                         Collection entryList = new ArrayList();
-                        while(entries.hasMoreElements()) {
-                            Element entry = (Element) entries.nextElement();
-                            Enumeration en = reader.getChildElements(entry, "*");
+
+                        for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
+                            Element entry = (Element) entriesIter.next();
                             String key = null;
                             String value = null;
-                            while(en.hasMoreElements()) {
-                                Element keyorvalue = (Element) en.nextElement();
+
+                            for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
+                                Element keyorvalue = (Element) en.next();
                                 if (keyorvalue.getTagName().equals("key")) {
                                     key = reader.getElementValue(keyorvalue);
                                 } else {

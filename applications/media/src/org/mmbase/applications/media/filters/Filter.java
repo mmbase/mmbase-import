@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
  */
 
 package org.mmbase.applications.media.filters;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.List;
 
@@ -19,6 +19,6 @@ import java.util.List;
 public interface Filter {
     
     public List filter(List urlcomposers);
-    public void configure(XMLBasicReader reader, Element e);
+    public void configure(DocumentReader reader, Element e);
 }
 

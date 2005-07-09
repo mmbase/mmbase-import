@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 import java.util.*;
 import java.io.InputStream;
@@ -19,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.Parameters;
 
 import org.mmbase.util.*;
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.43 2005-05-25 09:35:09 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.44 2005-07-09 15:29:12 nklasens Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -88,11 +88,11 @@ public class ContentTag extends LocaleTag  {
     }
 
 
-    private static CharTransformer readCharTransformer(XMLBasicReader reader, Element parentElement, String id) {
+    private static CharTransformer readCharTransformer(DocumentReader reader, Element parentElement, String id) {
         List result = new ArrayList();
-        Enumeration e = reader.getChildElements(parentElement, "class");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
+        Iterator e = reader.getChildElements(parentElement, "class");
+        while (e.hasNext()) {
+            Element element = (Element) e.next();
             String claz = reader.getElementValue(element);
 
             String config = element.getAttribute("config");
@@ -113,9 +113,9 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    private static ParameterizedTransformerFactory readTransformerFactory(XMLBasicReader reader, Element parentElement, String id) {
-        Enumeration e = reader.getChildElements(parentElement, "class");
-        Element element = (Element) e.nextElement();
+    private static ParameterizedTransformerFactory readTransformerFactory(DocumentReader reader, Element parentElement, String id) {
+        Iterator e = reader.getChildElements(parentElement, "class");
+        Element element = (Element) e.next();
         String claz = reader.getElementValue(element);        
         return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
     }
@@ -152,12 +152,11 @@ public class ContentTag extends LocaleTag  {
 
     protected static void readXML(InputSource escapersSource) {
         
-        XMLBasicReader reader  = new XMLBasicReader(escapersSource, ContentTag.class);
+        DocumentReader reader  = new DocumentReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
 
-        Enumeration e = reader.getChildElements(root, "escaper");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
+        for (Iterator iter = reader.getChildElements(root, "escaper"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
             if (charTransformers.containsKey(id)) {
@@ -168,9 +167,8 @@ public class ContentTag extends LocaleTag  {
             charTransformers.put(id, ct);
         }
         log.service("Reading content tag parameterizedescaperss");
-        e = reader.getChildElements(root, "parameterizedescaper");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
+        for (Iterator iter = reader.getChildElements(root, "parameterizedescaper"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             ParameterizedTransformerFactory fact = readTransformerFactory(reader, element, id);
             if (parameterizedCharTransformerFactories.containsKey(id)) {
@@ -189,9 +187,8 @@ public class ContentTag extends LocaleTag  {
 
         }
         log.service("Reading content tag post-processors");
-        e = reader.getChildElements(root, "postprocessor");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
+        for (Iterator iter = reader.getChildElements(root, "postprocessor"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
             if (charTransformers.containsKey(id)) {
@@ -202,9 +199,8 @@ public class ContentTag extends LocaleTag  {
             charTransformers.put(id, ct);
         }
 
-        e = reader.getChildElements(root, "content");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
+        for (Iterator iter = reader.getChildElements(root, "content"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String type           = element.getAttribute("type");
             String id             = element.getAttribute("id");
             if (id.equals("")) {
@@ -242,7 +238,6 @@ public class ContentTag extends LocaleTag  {
     private Attribute escaper        = Attribute.NULL;
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
-    private Attribute clear          = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -401,7 +396,7 @@ public class ContentTag extends LocaleTag  {
      * @return A CharTransformer (not null)
      */
 
-    public CharTransformer getWriteEscaper() throws JspTagException {
+    public CharTransformer getWriteEscaper() {
         return (CharTransformer) pageContext.getAttribute(ESCAPER_KEY);
     }
     private CharTransformer prevEscaper = null;

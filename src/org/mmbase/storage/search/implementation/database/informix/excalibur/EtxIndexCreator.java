@@ -12,6 +12,7 @@ package org.mmbase.storage.search.implementation.database.informix.excalibur;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+
 import org.mmbase.util.XMLModuleReader;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -33,7 +34,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online. 
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.2 2004-06-15 21:29:12 robmaris Exp $
+ * @version $Id: EtxIndexCreator.java,v 1.3 2005-07-09 15:29:12 nklasens Exp $
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
@@ -125,13 +126,12 @@ public class EtxIndexCreator {
                         new BufferedReader(
                             new FileReader(etxConfigFile))));
             
-            Enumeration iSbspaces = configReader.getSbspaceElements();
-            while (iSbspaces.hasMoreElements()) {
-                Element sbspace = (Element) iSbspaces.nextElement();
+            for (Iterator iSbspaces = configReader.getSbspaceElements(); iSbspaces.hasNext();) {
+                Element sbspace = (Element) iSbspaces.next();
                 String sbspaceName = configReader.getSbspaceName(sbspace);
-                Enumeration iEtxindices = configReader.getEtxindexElements(sbspace);
-                while (iEtxindices.hasMoreElements()) {
-                    Element etxindex = (Element) iEtxindices.nextElement();
+                
+                for (Iterator iEtxindices = configReader.getEtxindexElements(sbspace); iEtxindices.hasNext();) {
+                    Element etxindex = (Element) iEtxindices.next();
                     String name = configReader.getEtxindexValue(etxindex);
                     String table = configReader.getEtxindexTable(etxindex);
                     String field = configReader.getEtxindexField(etxindex);

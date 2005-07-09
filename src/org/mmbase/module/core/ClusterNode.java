@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.20 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: ClusterNode.java,v 1.21 2005-07-09 15:29:11 nklasens Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -265,7 +265,7 @@ public class ClusterNode extends VirtualNode {
                 // determine actual node number for this field
                 // takes into account when in a multilevel node
                 int number = getIntValue(getBuilderName(fieldName) + ".number");
-                tmp = parent.getShortedText(fieldName, number);
+                tmp = parent.getShortedText(fieldName, parent.getNode(number));
 
                 // did we get a result then store it in the values for next use
                 if (tmp != null) {
@@ -298,7 +298,7 @@ public class ClusterNode extends VirtualNode {
             int number = getIntValue(getBuilderName(fieldName) + ".number");
             // call our builder with the convert request this will probably
             // map it to the database we are running.
-            byte[] b = parent.getShortedByte(fieldName,number);
+            byte[] b = parent.getShortedByte(fieldName, parent.getNode(number));
 
             // we could in the future also leave it unmapped in the values
             // or make this programmable per builder ?

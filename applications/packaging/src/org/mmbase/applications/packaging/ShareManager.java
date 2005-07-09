@@ -12,7 +12,6 @@ package org.mmbase.applications.packaging;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -218,11 +217,11 @@ public class ShareManager {
                 decodeGroups(reader);
 
                 // decode packages
-                for(Enumeration ns = reader.getChildElements("shared","packaging");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
+                for(Iterator ns = reader.getChildElements("shared","packaging");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
 
-                        for(Enumeration ns2 = reader.getChildElements(n,"package");ns2.hasMoreElements(); ) {
-                            Element n2 = (Element)ns2.nextElement();
+                        for(Iterator ns2 = reader.getChildElements(n,"package");ns2.hasNext(); ) {
+                            Element n2 = (Element)ns2.next();
                             NamedNodeMap nm = n2.getAttributes();
                             if (nm != null) {
                                 String name = null;
@@ -289,10 +288,10 @@ public class ShareManager {
                 }
 
                 // decode bundles
-                for(Enumeration ns = reader.getChildElements("shared","bundles");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
-                    for(Enumeration ns2 = reader.getChildElements(n,"bundle");ns2.hasMoreElements(); ) {
-                        Element n2 = (Element)ns2.nextElement();
+                for(Iterator ns = reader.getChildElements("shared","bundles");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
+                    for(Iterator ns2 = reader.getChildElements(n,"bundle");ns2.hasNext(); ) {
+                        Element n2 = (Element)ns2.next();
                         NamedNodeMap nm = n2.getAttributes();
                         if (nm != null) {
                             String name = null;
@@ -366,9 +365,8 @@ public class ShareManager {
     private static boolean decodeLogins(PackageContainer p,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = p.getShareInfo();
         if (s != null) {
-            Enumeration e2 = reader.getChildElements(e,"login");
-            while (e2.hasMoreElements()) {
-                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.nextElement();
+            for (Iterator e2 = reader.getChildElements(e,"login"); e2.hasNext();) {
+                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.next();
                 NamedNodeMap nm = loginnode.getAttributes();
                 if (nm != null) {
                     // decode possible user
@@ -393,9 +391,8 @@ public class ShareManager {
     private static boolean decodeBundleLogins(BundleContainer b,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = b.getShareInfo();
         if (s != null) {
-            Enumeration e2 = reader.getChildElements(e,"login");
-            while (e2.hasMoreElements()) {
-                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.nextElement();
+            for (Iterator e2 = reader.getChildElements(e,"login"); e2.hasNext();) {
+                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.next();
                 NamedNodeMap nm = loginnode.getAttributes();
                 if (nm != null) {
                     // decode possible user
@@ -420,10 +417,10 @@ public class ShareManager {
 
 
     private static boolean decodeUsers(ExtendedDocumentReader reader) {
-        for(Enumeration ns = reader.getChildElements("shared","users");ns.hasMoreElements(); ) {
-            Element n = (Element)ns.nextElement();
-            for(Enumeration ns2 = reader.getChildElements(n,"user");ns2.hasMoreElements(); ) {
-                Element n2 = (Element)ns2.nextElement();
+        for(Iterator ns = reader.getChildElements("shared","users");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+            for(Iterator ns2 = reader.getChildElements(n,"user");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
@@ -467,10 +464,10 @@ public class ShareManager {
     }
 
     private static boolean decodeProvidingPaths(ExtendedDocumentReader reader) {
-        for(Enumeration ns = reader.getChildElements("shared","providingpaths");ns.hasMoreElements(); ) {
-            Element n = (Element)ns.nextElement();
-            for(Enumeration ns2 = reader.getChildElements(n,"providingpath");ns2.hasMoreElements(); ) {
-                Element n2 = (Element)ns2.nextElement();
+        for(Iterator ns = reader.getChildElements("shared","providingpaths");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+            for(Iterator ns2 = reader.getChildElements(n,"providingpath");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String method = null;
@@ -499,8 +496,8 @@ public class ShareManager {
 
 
     private static boolean decodeSettings(ExtendedDocumentReader reader) {
-        for(Enumeration ns = reader.getChildElements("shared","settings");ns.hasMoreElements(); ) {
-            Element n = (Element)ns.nextElement();
+        for(Iterator ns = reader.getChildElements("shared","settings");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
             org.w3c.dom.Node n2 = n.getFirstChild();
                 while (n2 != null) {
                 String name = n2.getNodeName();
@@ -521,11 +518,11 @@ public class ShareManager {
 
 
     private static boolean decodeGroups(ExtendedDocumentReader reader) {
-        for(Enumeration ns = reader.getChildElements("shared","groups");ns.hasMoreElements(); ) {
-            Element n = (Element)ns.nextElement();
+        for(Iterator ns = reader.getChildElements("shared","groups");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
 
-            for(Enumeration ns2 = reader.getChildElements(n,"group");ns2.hasMoreElements(); ) {
-                Element n2 = (Element)ns2.nextElement();
+            for(Iterator ns2 = reader.getChildElements(n,"group");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
@@ -537,8 +534,8 @@ public class ShareManager {
                     }
 
                     ShareGroup sg = new ShareGroup(name);
-                    for(Enumeration ns3 = reader.getChildElements(n2,"member");ns3.hasMoreElements(); ) {
-                        Element n4 = (Element)ns3.nextElement();
+                    for(Iterator ns3 = reader.getChildElements(n2,"member");ns3.hasNext(); ) {
+                        Element n4 = (Element)ns3.next();
                         NamedNodeMap nm2 = n4.getAttributes();
                         if (nm2 != null) {
                             String member = null;

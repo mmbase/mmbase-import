@@ -9,7 +9,6 @@ package org.mmbase.applications.packaging.packagehandlers;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -566,8 +565,8 @@ public class BasicPackage implements PackageInterface {
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
                 ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), BasicPackage.class);
-                for (Enumeration ns = reader.getChildElements("packagedepends", "package"); ns.hasMoreElements(); ) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("packagedepends", "package"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String type = n.getAttribute("type");
                     String version = n.getAttribute("version");

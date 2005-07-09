@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.21 2005-07-09 11:46:10 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.22 2005-07-09 15:29:12 nklasens Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -300,8 +300,8 @@ public class BuilderReader extends XMLBasicReader {
                 }
             }
         }
-        for(Enumeration ns = getChildElements("builder.fieldlist","field"); ns.hasMoreElements(); ) {
-            Element field = (Element)ns.nextElement();
+        for(Iterator ns = getChildElements("builder.fieldlist","field"); ns.hasNext(); ) {
+            Element field = (Element)ns.next();
             CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
             if (def != null) {
                 def.rewrite();
@@ -323,9 +323,9 @@ public class BuilderReader extends XMLBasicReader {
      */
     public Set getFunctions() {
         Set results = new HashSet();
-        for(Enumeration ns = getChildElements("builder.functionlist","function"); ns.hasMoreElements(); ) {
+        for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
             try {
-                Element functionElement   = (Element)ns.nextElement();
+                Element functionElement   = (Element)ns.next();
                 final String functionName = functionElement.getAttribute("name");
                 String providerKey        = functionElement.getAttribute("key");
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
@@ -422,36 +422,32 @@ public class BuilderReader extends XMLBasicReader {
      * @param def The field definition to alter
      */
     private void decodeFieldDef(Element field, CoreField def) {
-        Element tmp;
-        String lang;
         // Gui
-        Enumeration enumeration;
-
         Element descriptions = getElementByPath(field,"field.descriptions");
         if (descriptions!=null) {
-            for (enumeration = getChildElements(descriptions,"description"); enumeration.hasMoreElements(); ) {
-                tmp = (Element)enumeration.nextElement();
-                lang = getElementAttributeValue(tmp,"xml:lang");
+            for (Iterator iter = getChildElements(descriptions,"description"); iter.hasNext(); ) {
+                Element tmp = (Element) iter.next();
+                String lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setDescription(getElementValue(tmp), getLocale(lang));
             }
         }
 
         Element gui = getElementByPath(field,"field.gui");
         if (gui != null) {
-            for (enumeration = getChildElements(gui,"guiname"); enumeration.hasMoreElements(); ) {
-                tmp = (Element)enumeration.nextElement();
-                lang = getElementAttributeValue(tmp,"xml:lang");
+            for (Iterator iter = getChildElements(gui,"guiname"); iter.hasNext(); ) {
+                Element tmp = (Element) iter.next();
+                String lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setGUIName(getElementValue(tmp), getLocale(lang));
             }
             // XXX: deprecated tag 'name'
-            for(enumeration = getChildElements(gui,"name"); enumeration.hasMoreElements(); ) {
-                tmp = (Element)enumeration.nextElement();
-                lang = getElementAttributeValue(tmp,"xml:lang");
+            for(Iterator iter = getChildElements(gui,"name"); iter.hasNext(); ) {
+                Element tmp = (Element) iter.next();
+                String lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setGUIName(getElementValue(tmp), getLocale(lang));
             }
         }
 
-        tmp = getElementByPath(gui,"gui.guitype");
+        Element tmp = getElementByPath(gui,"gui.guitype");
         // XXX: deprecated tag 'type'
         if (tmp == null) {
             tmp = getElementByPath(gui,"gui.type");
@@ -552,13 +548,11 @@ public class BuilderReader extends XMLBasicReader {
                 results.putAll(parentparams);
             }
         }
-        Element p;
-        String name, value;
-        for(Enumeration enumeration = getChildElements("builder.properties","property");
-                        enumeration.hasMoreElements(); ) {
-            p = (Element)enumeration.nextElement();
-            name = getElementAttributeValue(p,"name");
-            value = getElementValue(p);
+        for(Iterator iter = getChildElements("builder.properties","property");
+                        iter.hasNext(); ) {
+            Element p = (Element)iter.next();
+            String name = getElementAttributeValue(p,"name");
+            String value = getElementValue(p);
             results.put(name,value);
         }
         return results;
@@ -574,9 +568,9 @@ public class BuilderReader extends XMLBasicReader {
         Hashtable results=new Hashtable();
         Element tmp;
         String lang;
-        for (Enumeration enumeration = getChildElements("builder.descriptions","description");
-             enumeration.hasMoreElements(); ) {
-            tmp = (Element)enumeration.nextElement();
+        for (Iterator iter = getChildElements("builder.descriptions","description");
+             iter.hasNext(); ) {
+            tmp = (Element)iter.next();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
@@ -590,12 +584,9 @@ public class BuilderReader extends XMLBasicReader {
      */
     public Hashtable getPluralNames() {
         Hashtable results=new Hashtable();
-        Element tmp;
-        String lang;
-        for (Enumeration enumeration = getChildElements("builder.names","plural");
-             enumeration.hasMoreElements(); ) {
-            tmp = (Element)enumeration.nextElement();
-            lang = getElementAttributeValue(tmp,"xml:lang");
+        for (Iterator iter = getChildElements("builder.names","plural"); iter.hasNext(); ) {
+            Element tmp = (Element)iter.next();
+            String lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
         return results;
@@ -608,12 +599,9 @@ public class BuilderReader extends XMLBasicReader {
      */
     public Hashtable getSingularNames() {
         Hashtable results=new Hashtable();
-        Element tmp;
-        String lang;
-        for (Enumeration enumeration = getChildElements("builder.names","singular");
-             enumeration.hasMoreElements(); ) {
-            tmp = (Element)enumeration.nextElement();
-            lang = getElementAttributeValue(tmp,"xml:lang");
+        for (Iterator iter = getChildElements("builder.names","singular"); iter.hasNext(); ) {
+            Element tmp = (Element)iter.next();
+            String lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
         return results;

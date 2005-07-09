@@ -12,6 +12,7 @@ package org.mmbase.util;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.w3c.dom.Element;
 
@@ -30,7 +31,7 @@ import org.w3c.dom.Element;
  * @application SCAN
  * @deprecated not used anywhere
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.11 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.12 2005-07-09 15:29:12 nklasens Exp $
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
 
@@ -58,15 +59,14 @@ public class XMLMMLanguageReader extends XMLBasicReader {
         Element e = document.getDocumentElement();
         languagecode = getElementAttributeValue(e,"xml:lang");
         Element d = getElementByPath("mmlanguage.dictionary");
-        Enumeration enumeration = getChildElements(d);
-        while (enumeration.hasMoreElements()) {
-            Element a = (Element)enumeration.nextElement();
-            //System.out.println(getElementName(a)+" -> "+getElementValue(a));
+        
+        for (Iterator iter = getChildElements(d); iter.hasNext();) {
+            Element a = (Element) iter.next();
             dictionary.put(getElementName(a),getElementValue(a));
         }
     }
 
-    /*
+    /**
      * @return Language code of the language of the read .xml file
      */
     public String getLanguageCode() {

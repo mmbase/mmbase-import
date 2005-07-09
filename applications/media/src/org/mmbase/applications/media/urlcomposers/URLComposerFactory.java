@@ -15,6 +15,7 @@ import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 import org.w3c.dom.Element;
 import java.util.*;
@@ -130,7 +131,7 @@ public class URLComposerFactory  {
         }
         urlComposerClasses.clear();
         
-        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        DocumentReader reader = new XMLBasicReader(configFile.toString(), getClass());
         try {
             defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)), null);
         } catch (java.lang.ClassNotFoundException e) {
@@ -139,8 +140,8 @@ public class URLComposerFactory  {
             log.error(e.toString());
         }
         
-        for(Enumeration e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasMoreElements();) {
-            Element element = (Element)e.nextElement();
+        for(Iterator e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasNext();) {
+            Element element = (Element)e.next();
             String  clazz   =  reader.getElementValue(element);
             String  f = element.getAttribute(FORMAT_ATT);
             List formats;
