@@ -11,10 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.Casting;
-import org.mmbase.util.LocalizedString;
-import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
@@ -23,12 +19,11 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.3 2005-07-09 11:07:43 nklasens Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
 
-    private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
     protected DataType dataType = null;
 
     /**

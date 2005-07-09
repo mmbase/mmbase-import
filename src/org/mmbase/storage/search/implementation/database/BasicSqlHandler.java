@@ -11,7 +11,6 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
@@ -23,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.49 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.50 2005-07-09 11:13:35 nklasens Exp $
  * @since MMBase-1.7
  */
 

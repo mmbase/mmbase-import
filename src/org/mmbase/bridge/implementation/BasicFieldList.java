@@ -13,13 +13,12 @@ package org.mmbase.bridge.implementation;
 import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.core.CoreField;
-import org.mmbase.module.corebuilders.*;
 
 /**
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.15 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicFieldList.java,v 1.16 2005-07-09 11:07:43 nklasens Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
 

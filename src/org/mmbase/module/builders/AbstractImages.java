@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.io.*;
 import org.mmbase.cache.BlobCache;
 import org.mmbase.util.MagicFile;
 import org.mmbase.util.images.*;
@@ -23,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.32 2005-05-09 10:02:18 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.33 2005-07-09 11:10:49 nklasens Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {

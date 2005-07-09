@@ -19,15 +19,12 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.transformers.XmlField;
-import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.mmbase.util.logging.*;
 
 
@@ -35,7 +32,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.14 2005-06-30 17:12:59 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.15 2005-07-09 11:08:54 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -412,12 +409,6 @@ public class MmxfSetString implements  Processor {
             NodeList usedAttachments      = cloud.getCloudContext().createNodeList();
 
             NodeList relatedBlocks        = Queries.getRelatedNodes(editedNode, blocks , "idrel", "destination", "id", null);
-            NodeList usedBlocks           = cloud.getCloudContext().createNodeList();
-
-            //log.info("Found related urls " + relatedUrls);
-
-            //log.info("Found related urls " + relatedUrls);
-
 
             Iterator linkIterator = links.iterator();
             //String imageServletPath = images.getFunctionValue("servletpath", null).toString();

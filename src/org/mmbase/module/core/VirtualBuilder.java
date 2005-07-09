@@ -11,7 +11,6 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
-import org.mmbase.module.corebuilders.*;
 
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
@@ -20,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.14 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: VirtualBuilder.java,v 1.15 2005-07-09 11:11:48 nklasens Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 

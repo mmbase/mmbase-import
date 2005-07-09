@@ -13,14 +13,13 @@ package org.mmbase.bridge;
 import java.util.SortedSet;
 
 import org.mmbase.storage.search.*;
-import org.mmbase.cache.CachePolicy;
 
 /**
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.31 2005-05-27 10:39:06 michiel Exp $
+ * @version $Id: Query.java,v 1.32 2005-07-09 11:07:43 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */

@@ -13,19 +13,16 @@ package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.Descriptor;
 import org.mmbase.util.LocalizedString;
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.2 2005-07-09 11:07:43 nklasens Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor {
-
-    private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
 
     protected String key;
     private LocalizedString description;
