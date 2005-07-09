@@ -2,7 +2,7 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 
-import org.mmbase.bridge.MMBaseType;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -140,22 +140,22 @@ public class BasicStepFieldTest extends TestCase {
         
         Step step = new BasicStep(images);
         instance = new BasicStepField(step, imagesNumber);
-        assertTrue(instance.getType() == MMBaseType.TYPE_NODE);
+        assertTrue(instance.getType() == Field.TYPE_NODE);
         
         instance = new BasicStepField(step, imagesOwner);
-        assertTrue(instance.getType() == MMBaseType.TYPE_STRING);
+        assertTrue(instance.getType() == Field.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesTitle);
-        assertTrue(instance.getType() == MMBaseType.TYPE_STRING);
+        assertTrue(instance.getType() == Field.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesDescription);
-        assertTrue(instance.getType() == MMBaseType.TYPE_STRING);
+        assertTrue(instance.getType() == Field.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesHandle);
-        assertTrue(instance.getType() == MMBaseType.TYPE_BINARY);
+        assertTrue(instance.getType() == Field.TYPE_BINARY);
         
         instance = new BasicStepField(step, imagesItype);
-        assertTrue(instance.getType() == MMBaseType.TYPE_STRING);
+        assertTrue(instance.getType() == Field.TYPE_STRING);
     }
     
     /** Test of testValue method, of class org.mmbase.storage.search.implementation.BasicStepField. */
