@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.54 2005-07-07 17:03:11 michiel Exp $
+ * @version $Id: Casting.java,v 1.55 2005-07-09 11:13:35 nklasens Exp $
  */
 
 import java.util.*;
@@ -33,7 +33,6 @@ import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.core.*;
 import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.util.transformers.XmlField;
 import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;

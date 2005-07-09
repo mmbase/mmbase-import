@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -24,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.40 2005-06-29 21:12:49 michiel Exp $
+ * @version $Id: XmlField.java,v 1.41 2005-07-09 11:14:38 nklasens Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 

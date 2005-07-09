@@ -12,10 +12,7 @@ package org.mmbase.module;
 import java.util.*;
 import java.net.*;
 
-import javax.servlet.*;
-
 import org.mmbase.util.*;
-import org.mmbase.module.core.*;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logging;
@@ -34,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.65 2005-07-06 11:22:53 michiel Exp $
+ * @version $Id: Module.java,v 1.66 2005-07-09 11:10:09 nklasens Exp $
  */
 public abstract class Module extends FunctionProvider {
 

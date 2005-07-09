@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.util.LocalizedString;
 
@@ -19,7 +18,7 @@ import org.mmbase.util.LocalizedString;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.5 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: DataType.java,v 1.6 2005-07-09 11:07:43 nklasens Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 

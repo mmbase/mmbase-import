@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 import edu.emory.mathcs.backport.java.util.concurrent.*;
-import java.io.*;
 import org.mmbase.util.logging.*;
 /**
  * Generic MMBase Thread Pools
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.2 2005-05-24 16:54:25 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.3 2005-07-09 11:13:35 nklasens Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);

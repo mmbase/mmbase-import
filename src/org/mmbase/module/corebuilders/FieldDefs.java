@@ -14,11 +14,8 @@ import java.util.*;
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.util.DataTypes;
-import org.mmbase.module.core.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.storage.*;
-import org.mmbase.util.HashCodeUtil;
 
 /**
  * One of the core objects. It is not itself a builder, but is used by builders. Defines one field
@@ -27,7 +24,7 @@ import org.mmbase.util.HashCodeUtil;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.47 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.48 2005-07-09 11:12:15 nklasens Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */

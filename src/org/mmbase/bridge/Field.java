@@ -10,14 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Locale;
-
 /**
  * This interface represents a node's field type information object.
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.23 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: Field.java,v 1.24 2005-07-09 11:07:43 nklasens Exp $
  */
 public interface Field extends Descriptor {
 

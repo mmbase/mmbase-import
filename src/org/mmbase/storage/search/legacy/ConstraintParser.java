@@ -13,7 +13,6 @@ import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -112,7 +111,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.25 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: ConstraintParser.java,v 1.26 2005-07-09 11:13:35 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {

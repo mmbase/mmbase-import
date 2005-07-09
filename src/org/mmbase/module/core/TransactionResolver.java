@@ -12,12 +12,11 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.17 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: TransactionResolver.java,v 1.18 2005-07-09 11:11:48 nklasens Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());

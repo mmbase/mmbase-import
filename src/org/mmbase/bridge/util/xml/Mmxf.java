@@ -11,8 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
 import org.mmbase.util.ResourceLoader;
@@ -24,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.5 2005-06-15 07:24:22 michiel Exp $
+ * @version $Id: Mmxf.java,v 1.6 2005-07-09 11:08:54 nklasens Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */

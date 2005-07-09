@@ -12,7 +12,6 @@ package org.mmbase.bridge.util;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.*;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.bridge.implementation.datatypes.*;
 import org.mmbase.module.core.MMObjectNode;
@@ -21,7 +20,7 @@ import org.mmbase.module.core.MMObjectNode;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.4 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.5 2005-07-09 11:08:54 nklasens Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 

@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.151 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.152 2005-07-09 11:07:43 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -422,7 +422,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         } else if (v instanceof BasicNode) {
             setValueWithoutProcess(fieldName, ((BasicNode)v).getNode());
         } else if (v instanceof Node) {
-            setValueWithoutProcess(fieldName, new Integer(((Node) value).getNumber()));
+            setValueWithoutProcess(fieldName, new Integer(value.getNumber()));
         } else {
             setValueWithoutProcess(fieldName, v);
         }
@@ -1086,7 +1086,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             Hashtable tnodes = MMObjectBuilder.TemporaryNodes;
             for (Enumeration e = tnodes.elements(); e.hasMoreElements();) {
                 MMObjectNode mynode = (MMObjectNode)e.nextElement();
-                if (mynode.getTableName().equals("oalias")){
+                if (mynode.getName().equals("oalias")){
                     String dest = mynode.getStringValue("_destination");
                     if ((account + "_" + temporaryNodeId).equals(dest)) {
                         result.add(mynode.getStringValue("name"));

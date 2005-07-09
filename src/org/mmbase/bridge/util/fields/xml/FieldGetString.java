@@ -11,7 +11,6 @@ package org.mmbase.bridge.util.fields.xml;
 import org.mmbase.bridge.util.fields.Processor;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.XMLWriter;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.4 2005-06-28 21:30:21 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.5 2005-07-09 11:08:54 nklasens Exp $
  * @since MMBase-1.8
  */
 
