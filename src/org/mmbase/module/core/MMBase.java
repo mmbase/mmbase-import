@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.137 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: MMBase.java,v 1.138 2005-07-09 11:46:10 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1156,7 +1156,7 @@ public class MMBase extends ProcessorModule {
                 log.info("Starting builder : " + objectName);
                 Class newclass;
                 try {
-                    String classname = parser.getClassFile();
+                    String classname = parser.getClassName();
                     newclass = Class.forName(classname);
                 } catch (ClassNotFoundException cnfe) {
                     MMObjectBuilder p = parser.getParentBuilder();

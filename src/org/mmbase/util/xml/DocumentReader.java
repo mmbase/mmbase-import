@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.8 2005-06-09 20:56:50 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.9 2005-07-09 11:46:10 nklasens Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -285,13 +285,7 @@ public class DocumentReader  {
      * Returns the systemID of the InputSource used to read the document.
      * This is generally the document's file path.
      * @return the systemID as a String
-     * @deprecated use {@link #getSystemId}
-     */
-    public String getFileName() {
-        return systemId;
-    }
-
-    /**
+     *
      * @since MMBase-1.8
      */
     public String getSystemId() {
