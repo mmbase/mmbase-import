@@ -12,7 +12,7 @@ package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
 /**
@@ -30,7 +30,7 @@ abstract public class Sorter implements Comparator, Filter {
 
     abstract  protected int compareURLComposer(URLComposer o1, URLComposer o2); 
     
-    public void configure(XMLBasicReader reader, Element e) {
+    public void configure(DocumentReader reader, Element e) {
         // nothing to be configured on default.
     }
          

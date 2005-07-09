@@ -15,7 +15,7 @@ import org.mmbase.applications.media.Format;
 import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
 /**
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 public class ClientFormatFilter implements Filter {
     private static Logger log = Logging.getLoggerInstance(ClientFormatFilter.class);
     
-    public void configure(XMLBasicReader reader, Element e) {
+    public void configure(DocumentReader reader, Element e) {
         // nothing to be configured on default.
     }
     

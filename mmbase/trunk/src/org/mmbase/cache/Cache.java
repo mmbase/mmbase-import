@@ -25,12 +25,13 @@ import org.mmbase.util.SizeOf;
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.22 2005-07-09 11:46:11 nklasens Exp $
+ * @version $Id: Cache.java,v 1.23 2005-07-09 15:29:12 nklasens Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
@@ -47,17 +48,17 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
      * doesn't harm.
      */
 
-    private static void configure(XMLBasicReader file) {
+    private static void configure(DocumentReader file) {
         configure(file, null);
     }
 
-    private static XMLBasicReader configReader = null;
+    private static DocumentReader configReader = null;
 
     /**
      * As configure, but it only changes the configuration of the cache 'only'.
      * This is called on first use of a cache.
      */
-    private static void configure(XMLBasicReader xmlReader, String only) {
+    private static void configure(DocumentReader xmlReader, String only) {
         if (xmlReader == null) {
             return; // nothing can be done...
         }
@@ -68,9 +69,9 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
             if (log.isDebugEnabled()) log.debug("Configuring cache " + only + " with file " + xmlReader.getSystemId());
         }
 
-        Enumeration e =  xmlReader.getChildElements("caches", "cache");
-        while (e.hasMoreElements()) {
-            Element cacheElement = (Element) e.nextElement();
+        Iterator e =  xmlReader.getChildElements("caches", "cache");
+        while (e.hasNext()) {
+            Element cacheElement = (Element) e.next();
             String cacheName =  cacheElement.getAttribute("name");
             if (only != null && ! only.equals(cacheName)) {
                 continue;
@@ -230,14 +231,16 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
      */
     protected boolean checkCachePolicy(Object key) {
         CachePolicy policy = null;
-        if (active && key instanceof Cacheable) {
-            policy = ((Cacheable)key).getCachePolicy();
+        if (active) {
+            if (key instanceof Cacheable) {
+                policy = ((Cacheable)key).getCachePolicy();
+                if (policy != null) {
+                    return policy.checkPolicy(key);
+                }
+            }
+            return true;
         }
-        if (policy != null) {
-            return policy.checkPolicy((Cacheable)key);
-        } else {
-            return active;
-        }
+        return false;
     }
 
     /**

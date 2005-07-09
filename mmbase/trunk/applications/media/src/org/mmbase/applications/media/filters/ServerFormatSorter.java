@@ -13,9 +13,9 @@ package org.mmbase.applications.media.filters;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.Format;
 import java.util.*;
-import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 
 /**
  * Sorts on format of the source, preferred formats can be can be
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * can be combined with this one).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.7 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.8 2005-07-09 15:29:11 nklasens Exp $
  * @see     ClientFormatSorter
  */
 public class ServerFormatSorter extends  PreferenceSorter {
@@ -38,11 +38,11 @@ public class ServerFormatSorter extends  PreferenceSorter {
 
     public  ServerFormatSorter() {};
 
-    public void configure(XMLBasicReader reader, Element el) {
+    public void configure(DocumentReader reader, Element el) {
         preferredFormats.clear();
-        // reading preferredSource information    
-        for( Enumeration e = reader.getChildElements(reader.getElementByPath(el, CONFIG_TAG));e.hasMoreElements();) {
-            Element n3=(Element)e.nextElement();
+        // reading preferredSource information
+        for( Iterator e = reader.getChildElements(reader.getElementByPath(el, CONFIG_TAG));e.hasNext();) {
+            Element n3=(Element)e.next();
             String format = reader.getElementAttributeValue(n3, FORMAT_ATT);
             preferredFormats.add(Format.get(format));
             log.service("Adding preferredSource format: '"+format +"'");

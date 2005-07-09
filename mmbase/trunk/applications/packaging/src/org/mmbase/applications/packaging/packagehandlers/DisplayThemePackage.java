@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -243,8 +244,8 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
         body += "<!DOCTYPE themes PUBLIC \"//MMBase - themes //\" \"http://www.mmbase.org/dtd/themes_1_0.dtd\">\n";
         body += "<themes>\n";
         boolean found = false;
-        for (Enumeration ns = reader.getChildElements("themes", "theme"); ns.hasMoreElements(); ) {
-            Element n = (Element) ns.nextElement();
+        for (Iterator ns = reader.getChildElements("themes", "theme"); ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String oldname = n.getAttribute("id");
             String oldfile = n.getAttribute("file");
             body += "\t<theme id=\"" + oldname + "\" file=\"" + oldfile + "\" />\n";

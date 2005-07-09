@@ -10,17 +10,17 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database.informix.excalibur;
 
 import java.util.*;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
  *
  * @author Rob van Maris
- * @version $Id: XmlEtxIndicesReader.java,v 1.1 2003-12-23 11:03:04 robmaris Exp $
+ * @version $Id: XmlEtxIndicesReader.java,v 1.2 2005-07-09 15:29:12 nklasens Exp $
  * @since MMBase-1.7
  */
-public class XmlEtxIndicesReader extends XMLBasicReader {
+public class XmlEtxIndicesReader extends DocumentReader {
     
     /** Creates a new instance of XmlEtxIndicesReader */
     public XmlEtxIndicesReader(InputSource source) {
@@ -32,7 +32,7 @@ public class XmlEtxIndicesReader extends XMLBasicReader {
      *
      * @return <code>sbspace<code> elements.
      */
-    public Enumeration getSbspaceElements() {
+    public Iterator getSbspaceElements() {
         return getChildElements("etxindices", "sbspace");
     }
     
@@ -52,7 +52,7 @@ public class XmlEtxIndicesReader extends XMLBasicReader {
      * @param sbspace The <code>sbspace</element>
      * @return <code>etxindex</code> elements.
      */
-    public Enumeration getEtxindexElements(Element sbspace) {
+    public Iterator getEtxindexElements(Element sbspace) {
         return getChildElements(sbspace, "etxindex");
     }
     

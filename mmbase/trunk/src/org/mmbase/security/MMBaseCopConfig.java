@@ -15,13 +15,14 @@ import org.mmbase.util.ResourceWatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 
 /**
  *  This class is the main class of the security system. It loads the authentication
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.23 2005-03-16 12:48:29 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.24 2005-07-09 15:29:12 nklasens Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -107,7 +108,7 @@ public class MMBaseCopConfig {
      * @since MMBase-1.8
      */
     void load() throws java.io.IOException {
-        XMLBasicReader reader = new XMLBasicReader(securityLoader.getInputSource("security.xml"), this.getClass());
+        DocumentReader reader = new DocumentReader(securityLoader.getInputSource("security.xml"), this.getClass());
 
         // are we active ?
         String sActive = reader.getElementAttributeValue(reader.getElementByPath("security"),"active");

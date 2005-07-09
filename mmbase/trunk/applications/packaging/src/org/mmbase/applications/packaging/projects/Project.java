@@ -9,7 +9,6 @@ package org.mmbase.applications.packaging.projects;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -312,7 +311,7 @@ public class Project {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(path, Project.class);
             if (reader != null) {
 
-                org.w3c.dom.Node n2 = (org.w3c.dom.Node) reader.getElementByPath("packaging");
+                org.w3c.dom.Node n2 = reader.getElementByPath("packaging");
                 if (n2 != null) {
                     NamedNodeMap nm = n2.getAttributes();
                     if (nm != null) {
@@ -327,8 +326,8 @@ public class Project {
                 }
 
                 // decode targets
-                for (Enumeration ns = reader.getChildElements("packaging", "target"); ns.hasMoreElements(); ) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("packaging", "target"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
@@ -356,8 +355,8 @@ public class Project {
                 }
 
                 // decode packagetargets
-                for (Enumeration ns = reader.getChildElements("packaging", "package"); ns.hasMoreElements(); ) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("packaging", "package"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;
@@ -401,8 +400,8 @@ public class Project {
                 }
 
                 // decode bundletargets
-                for (Enumeration ns = reader.getChildElements("packaging", "bundle"); ns.hasMoreElements(); ) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("packaging", "bundle"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;

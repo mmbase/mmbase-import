@@ -22,7 +22,7 @@ import org.w3c.dom.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.23 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.24 2005-07-09 15:29:12 nklasens Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 
@@ -110,9 +110,9 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public List getRequirements() {
         List results=new Vector();
-        for(Enumeration ns=getChildElements("application.requirements","requires");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.requirements","requires");
+            ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Map bset=new HashMap();
             bset.put("name",getElementAttributeValue(n3,"name"));
             addAttribute(bset,n3,"maintainer");
@@ -135,9 +135,9 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public Vector getNeededBuilders() {
         Vector results=new Vector();
-        for(Enumeration ns=getChildElements("application.neededbuilderlist","builder");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.neededbuilderlist","builder");
+            ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Hashtable bset=new Hashtable();
             bset.put("name",getElementValue(n3));
             addAttribute(bset,n3,"maintainer");
@@ -153,9 +153,9 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public Vector getNeededRelDefs() {
         Vector results=new Vector();
-        for(Enumeration ns=getChildElements("application.neededreldeflist","reldef");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.neededreldeflist","reldef");
+            ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"source");
             addAttribute(bset,n3,"target");
@@ -174,9 +174,9 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public Vector getAllowedRelations() {
         Vector results=new Vector();
-        for(Enumeration ns=getChildElements("application.allowedrelationlist","relation");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.allowedrelationlist","relation");
+            ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"from");
             addAttribute(bset,n3,"to");
@@ -191,9 +191,9 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public Vector getDataSources() {
         Vector results=new Vector();
-        for(Enumeration ns=getChildElements("application.datasourcelist","datasource");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.datasourcelist","datasource");
+            ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
@@ -208,9 +208,9 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public Vector getRelationSources() {
         Vector results=new Vector();
-        for(Enumeration ns=getChildElements("application.relationsourcelist","relationsource");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.relationsourcelist","relationsource");
+            ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
@@ -224,8 +224,8 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public Vector getContextSources() {
         Vector results=new Vector();
-        for(Enumeration ns=getChildElements("application.contextsourcelist","contextsource"); ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
+        for(Iterator ns=getChildElements("application.contextsourcelist","contextsource"); ns.hasNext(); ) {
+            Element n3=(Element)ns.next();
             Hashtable bset=new Hashtable();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"type");

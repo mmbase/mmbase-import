@@ -13,7 +13,7 @@ package org.mmbase.applications.media.filters;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.Format;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.*;
 
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RealSorter.java,v 1.10 2005-07-09 15:29:11 nklasens Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);
@@ -59,7 +59,7 @@ public class RealSorter extends  ChainSorter {
         private int maxSpeed        = -1;    
         private int defaultSpeed        = -1;    
 
-        public void configure(XMLBasicReader reader, Element e) {
+        public void configure(DocumentReader reader, Element e) {
             try {
                 minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minspeed")));
                 maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxspeed")));
@@ -120,7 +120,7 @@ public class RealSorter extends  ChainSorter {
         private int defaultChannels = -1;
 
 
-        public void configure(XMLBasicReader reader, Element e) {
+        public void configure(DocumentReader reader, Element e) {
             try {
                 minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minchannels")));
                 maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxchannels")));

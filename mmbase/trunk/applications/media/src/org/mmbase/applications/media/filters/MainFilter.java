@@ -12,6 +12,7 @@ package org.mmbase.applications.media.filters;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 
 import org.w3c.dom.Element;
@@ -88,16 +89,15 @@ public class MainFilter {
         }
         filters.clear();
 
-        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        DocumentReader reader = new XMLBasicReader(configFile.toString(), getClass());
         Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
         ChainSorter chainComp = new ChainSorter();
         // When chaining 'comparators' then they are combined to one comparator
         // Then only one 'sort' has to be done, which is more efficient.
 
-        for(Enumeration e = reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG); 
-            e.hasMoreElements();) {
-            Element chainElement =(Element)e.nextElement();
+        for(Iterator e = reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG); e.hasNext();) {
+            Element chainElement =(Element)e.next();
             String  clazz        = reader.getElementValue(chainElement);
             String  elementId    = chainElement.getAttribute(ID_ATT);
             try {
@@ -117,9 +117,9 @@ public class MainFilter {
                     // find right configuration
                     // not all filters necessarily have there own configuration
                     boolean found = false;
-                    Enumeration f = reader.getChildElements(filterConfigs, FILTERCONFIG_TAG);
-                    while (f.hasMoreElements()) {
-                        Element config = (Element) f.nextElement();
+                    
+                    for (Iterator configIter = reader.getChildElements(filterConfigs, FILTERCONFIG_TAG); configIter.hasNext();) {
+                        Element config = (Element) configIter.next();
                         String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
                         if (filterAtt.equals(elementId)) {
                             log.service("Configuring " + elementId);

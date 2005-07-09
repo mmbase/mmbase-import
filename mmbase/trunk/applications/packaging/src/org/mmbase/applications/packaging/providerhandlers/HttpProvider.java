@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -185,8 +185,8 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), HttpProvider.class);
             if (reader != null) {
                 try {
-                    for (Enumeration ns = reader.getChildElements("sharedpackages", "package"); ns.hasMoreElements(); ) {
-                        Element e = (Element) ns.nextElement();
+                    for (Iterator ns = reader.getChildElements("sharedpackages", "package"); ns.hasNext(); ) {
+                        Element e = (Element) ns.next();
 
                         NamedNodeMap nm = e.getAttributes();
                         if (nm != null) {

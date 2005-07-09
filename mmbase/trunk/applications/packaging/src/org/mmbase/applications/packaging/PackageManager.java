@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.packaging;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -125,7 +124,7 @@ public class PackageManager {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
-            ProviderInterface provider = (ProviderInterface)ProviderManager.get(wp);
+            ProviderInterface provider = ProviderManager.get(wp);
             if (provider != null) {
                 PackageInterface p = pc.getVersion(wv,provider);
                 if (p != null) {
@@ -330,8 +329,8 @@ public class PackageManager {
 
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,PackageManager.class);
             if(reader != null) {
-                for(Enumeration ns = reader.getChildElements("packagehandlers","packagehandler");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
+                for(Iterator ns = reader.getChildElements("packagehandlers","packagehandler");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String type = null;
