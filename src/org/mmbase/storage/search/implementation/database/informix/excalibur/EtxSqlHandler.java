@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation.database.informix.excalibur;
 
 import java.io.*;
 import java.util.*;
+
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageManagerFactory;
@@ -35,7 +36,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.5 2005-07-09 11:13:35 nklasens Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.6 2005-07-09 15:29:12 nklasens Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -299,12 +300,11 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                     new BufferedReader(
                         new FileReader(etxConfigFile))));
 
-        Enumeration eSbspaces = configReader.getSbspaceElements();
-        while (eSbspaces.hasMoreElements()) {
-            Element sbspace = (Element) eSbspaces.nextElement();
-            Enumeration eEtxIndices = configReader.getEtxindexElements(sbspace);
-            while (eEtxIndices.hasMoreElements()) {
-                Element etxIndex = (Element) eEtxIndices.nextElement();
+        for (Iterator eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
+            Element sbspace = (Element) eSbspaces.next();
+            
+            for (Iterator eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
+                Element etxIndex = (Element) eEtxIndices.next();
                 String table = configReader.getEtxindexTable(etxIndex);
                 String field = configReader.getEtxindexField(etxIndex);
                 String index = configReader.getEtxindexValue(etxIndex);

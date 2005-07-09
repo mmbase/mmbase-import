@@ -89,11 +89,9 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
                 // aargh!
                 return detectors;
             }
-
-            Enumeration enumeration = getChildElements(e);
-            Detector d;
-            while (enumeration.hasMoreElements()) {
-                d = getOneDetector((Element)enumeration.nextElement());
+            for (Iterator iter = getChildElements(e); iter.hasNext();) {
+                Element element = (Element) iter.next();
+                Detector d = getOneDetector(element);
                 detectors.add(d);
             }
         }
@@ -120,7 +118,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
                         boolean failed = false;
                         for (int p0 = p + 1; p0 < p + 4; p0++) {
                             c0 = s.charAt(p0);
-                            if (!((int)c0 >= '0' && (int)c0 <= '7')) {
+                            if (!((int)c0 >= '0' && (int) c0 <= '7')) {
                                 failed = true;
                             }
                         }
@@ -179,11 +177,9 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
 
         e1 = getElementByPath(e, "detector.childlist");
         if (e1 != null) {
-            Enumeration enumeration = getChildElements(e1);
-            Detector child;
-            while (enumeration.hasMoreElements()) {
-                e1 = (Element)enumeration.nextElement();
-                child = getOneDetector(e1);
+            for (Iterator iter = getChildElements(e1); iter.hasNext();) {
+                Element element = (Element) iter.next();
+                Detector child = getOneDetector(element);
                 d.addChild(child, 1); // Not sure if this is the right thing
             }
         }

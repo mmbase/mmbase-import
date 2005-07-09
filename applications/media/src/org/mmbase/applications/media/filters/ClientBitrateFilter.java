@@ -12,7 +12,7 @@ package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.*;
 
@@ -29,10 +29,10 @@ public class ClientBitrateFilter implements Filter {
     private static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".bitrates";
     private static Map bitrateFilters = new HashMap();
     
-    public void configure(XMLBasicReader reader, Element element) {
+    public void configure(DocumentReader reader, Element element) {
         try {
-            for(Enumeration bitrates = reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG));bitrates.hasMoreElements();) {
-                Element bitrate=(Element)bitrates.nextElement();
+            for(Iterator bitrates = reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG));bitrates.hasNext();) {
+                Element bitrate=(Element)bitrates.next();
                 String name = reader.getElementAttributeValue(bitrate, "name");
                 int min = Integer.parseInt(reader.getElementAttributeValue(bitrate, "min"));
                 int max = Integer.parseInt(reader.getElementAttributeValue(bitrate, "max"));

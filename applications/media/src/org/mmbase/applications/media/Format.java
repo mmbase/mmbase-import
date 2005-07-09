@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.14 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Format.java,v 1.15 2005-07-09 15:29:12 nklasens Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -63,8 +63,8 @@ public final class Format {   // final class!!
             log.service("Reading " + mimeMappingFile);
             XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), Format.class);
             
-            for(Enumeration e = reader.getChildElements("mimemapping", "map"); e.hasMoreElements();) {
-                Element map = (Element)e.nextElement();
+            for(Iterator e = reader.getChildElements("mimemapping", "map"); e.hasNext();) {
+                Element map = (Element)e.next();
                 String format = reader.getElementAttributeValue(map, "format");
                 String codec = reader.getElementAttributeValue(map, "codec");
                 String mime = reader.getElementValue(map);

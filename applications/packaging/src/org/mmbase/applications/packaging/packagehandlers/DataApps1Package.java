@@ -9,12 +9,14 @@ package org.mmbase.applications.packaging.packagehandlers;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.mmbase.applications.packaging.installhandlers.installStep;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -204,8 +206,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 substep.setUserFeedBack("Opening data.xml ... done");
                 increaseProgressBar(100);
                 // 40%
-                for (Enumeration ns = reader.getChildElements("dataset.objectsets", "objectset"); ns.hasMoreElements(); ) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("dataset.objectsets", "objectset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String path = n.getAttribute("path");
                     substep = step.getNextInstallStep();
                     substep.setUserFeedBack("loading objects " + path + "..");
@@ -220,8 +222,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 }
                 increaseProgressBar(100);
                 // 50%
-                for (Enumeration ns = reader.getChildElements("dataset.relationsets", "relationset"); ns.hasMoreElements(); ) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("dataset.relationsets", "relationset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String path = n.getAttribute("path");
                     installRelationSet(jf, path);
@@ -273,9 +275,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                     try {
                         timestamp = Integer.parseInt(nr.getAttribute("timestamp"));
                     } catch (Exception e) {}
-                    for (Enumeration ns = nodereader.getChildElements("objectset", "object");
-                            ns.hasMoreElements(); ) {
-                        Element n = (Element) ns.nextElement();
+                    for (Iterator ns = nodereader.getChildElements("objectset", "object");
+                            ns.hasNext(); ) {
+                        Element n = (Element) ns.next();
                         String exportnumber = n.getAttribute("number");
                         MMObjectBuilder bul = mmb.getMMObject(type);
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
@@ -340,9 +342,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             newnode.setAlias(alias);
         }
 
-        for (Enumeration ns2 = nodereader.getChildElements(n, "field");
-                ns2.hasMoreElements(); ) {
-            Element n2 = (Element) ns2.nextElement();
+        for (Iterator ns2 = nodereader.getChildElements(n, "field");
+                ns2.hasNext(); ) {
+            Element n2 = (Element) ns2.next();
             String field = n2.getAttribute("name");
             org.w3c.dom.Node n3 = n2.getFirstChild();
             String value = null;
@@ -352,47 +354,47 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 
             int type = bul.getDBType(field);
             if (type != -1) {
-                if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
+                if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
                     if (value == null) {
                         value = "";
                     }
                     newnode.setValue(field, value);
-                } else if (type == FieldDefs.TYPE_NODE) {
+                } else if (type == Field.TYPE_NODE) {
                     try {
                         newnode.setValue(field, Integer.parseInt(value));
                     } catch (Exception e) {
                         log.warn("error setting node-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == FieldDefs.TYPE_INTEGER) {
+                } else if (type == Field.TYPE_INTEGER) {
                     try {
                         newnode.setValue(field, Integer.parseInt(value));
                     } catch (Exception e) {
                         log.warn("error setting integer-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == FieldDefs.TYPE_FLOAT) {
+                } else if (type == Field.TYPE_FLOAT) {
                     try {
                         newnode.setValue(field, Float.parseFloat(value));
                     } catch (Exception e) {
                         log.warn("error setting float-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == FieldDefs.TYPE_DOUBLE) {
+                } else if (type == Field.TYPE_DOUBLE) {
                     try {
                         newnode.setValue(field, Double.parseDouble(value));
                     } catch (Exception e) {
                         log.warn("error setting double-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == FieldDefs.TYPE_LONG) {
+                } else if (type == Field.TYPE_LONG) {
                     try {
                         newnode.setValue(field, Long.parseLong(value));
                     } catch (Exception e) {
                         log.warn("error setting long-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == FieldDefs.TYPE_BYTE) {
+                } else if (type == Field.TYPE_BYTE) {
                     String filename = n2.getAttribute("file");
                     JarEntry je = jf.getJarEntry("data/" + filename);
                     if (je != null) {
@@ -430,7 +432,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             if (def.isKey()) {
                 int type = def.getDBType();
                 String name = def.getDBName();
-                if (type == FieldDefs.TYPE_STRING) {
+                if (type == Field.TYPE_STRING) {
                     String value = newnode.getStringValue(name);
                     if (checkQ.equals("")) {
                         checkQ += name + "=='" + value + "'";
@@ -476,9 +478,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                     try {
                         timestamp = Integer.parseInt(nr.getAttribute("timestamp"));
                     } catch (Exception e) {}
-                    for (Enumeration ns = nodereader.getChildElements("relationset", "relation");
-                            ns.hasMoreElements(); ) {
-                        Element n = (Element) ns.nextElement();
+                    for (Iterator ns = nodereader.getChildElements("relationset", "relation");
+                            ns.hasNext(); ) {
+                        Element n = (Element) ns.next();
                         String exportnumber = n.getAttribute("number");
                         String snumber = n.getAttribute("snumber");
                         String dnumber = n.getAttribute("dnumber");

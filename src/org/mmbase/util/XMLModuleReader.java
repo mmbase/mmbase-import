@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * @javadoc
@@ -21,7 +22,7 @@ import java.util.Enumeration;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: XMLModuleReader.java,v 1.14 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: XMLModuleReader.java,v 1.15 2005-07-09 15:29:12 nklasens Exp $
  */
 public class XMLModuleReader extends XMLBasicReader {
 
@@ -128,13 +129,10 @@ public class XMLModuleReader extends XMLBasicReader {
         Hashtable hash = new Hashtable();
         Element e = getElementByPath("module.properties");
         if (e != null) {
-            Enumeration enumeration = getChildElements(e, "property");
-            Element p;
-            String name, value;
-            while (enumeration.hasMoreElements()) {
-                p = (Element) enumeration.nextElement();
-                name = getElementAttributeValue(p, "name");
-                value = getElementValue(p);
+            for (Iterator iter = getChildElements(e, "property"); iter.hasNext();) {
+                Element p = (Element) iter.next();
+                String name = getElementAttributeValue(p, "name");
+                String value = getElementValue(p);
                 hash.put(name, value);
             }
         }

@@ -11,6 +11,7 @@ package org.mmbase.util.functions;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
@@ -35,7 +36,7 @@ import org.w3c.dom.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.11 2005-03-16 15:59:51 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.12 2005-07-09 15:29:12 nklasens Exp $ 
  */
 public class FunctionSets {
 
@@ -117,10 +118,10 @@ public class FunctionSets {
             return;
         }
         
-        XMLBasicReader reader = new XMLBasicReader(source, FunctionSets.class);
+        DocumentReader reader = new DocumentReader(source, FunctionSets.class);
         functionSets.clear();
-        for(Enumeration ns = reader.getChildElements("functionsets", "functionset"); ns.hasMoreElements(); ) {
-            Element n = (Element)ns.nextElement();
+        for(Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+            Element n = (Element)ns.next();
 
             NamedNodeMap nm = n.getAttributes();
             if (nm != null) {
@@ -150,7 +151,7 @@ public class FunctionSets {
      * @param
      */
     private static void decodeFunctionSet(String fileName, String setName) {
-        XMLBasicReader reader = new XMLBasicReader(fileName, FunctionSets.class);
+        DocumentReader reader = new XMLBasicReader(fileName, FunctionSets.class);
 
         String status      = reader.getElementValue("functionset.status");
         String version     = reader.getElementValue("functionset.version");
@@ -161,8 +162,8 @@ public class FunctionSets {
 
         functionSet.setFileName(fileName);
 
-        for (Enumeration functionElements = reader.getChildElements("functionset","function"); functionElements.hasMoreElements();) {
-            Element element = (Element)functionElements.nextElement();
+        for (Iterator functionElements = reader.getChildElements("functionset","function"); functionElements.hasNext();) {
+            Element element = (Element)functionElements.next();
             String functionName = reader.getElementAttributeValue(element,"name");
             if (functionName != null) {
 
@@ -214,8 +215,8 @@ public class FunctionSets {
 
                 // read the parameters
                 List parameterList = new ArrayList();
-                for (Enumeration parameterElements = reader.getChildElements(element,"param"); parameterElements.hasMoreElements();) {
-                    Element parameterElement = (Element)parameterElements.nextElement();
+                for (Iterator parameterElements = reader.getChildElements(element,"param"); parameterElements.hasNext();) {
+                    Element parameterElement = (Element)parameterElements.next();
                     String parameterName = reader.getElementAttributeValue(parameterElement, "name");
                     String parameterType = reader.getElementAttributeValue(parameterElement, "type");
                     description = reader.getElementAttributeValue(parameterElement, "description");

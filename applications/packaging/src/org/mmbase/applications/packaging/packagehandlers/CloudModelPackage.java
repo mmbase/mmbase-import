@@ -7,7 +7,7 @@
 package org.mmbase.applications.packaging.packagehandlers;
 
 import java.io.InputStream;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -215,9 +215,9 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      */
     private boolean installNeededRelDefs(JarFile jf, ExtendedDocumentReader reader, installStep step) {
         MMBase mmb = MMBase.getMMBase();
-        for (Enumeration ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef");
-                ns.hasMoreElements(); ) {
-            Element n = (Element) ns.nextElement();
+        for (Iterator ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef");
+                ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String buildername = n.getAttribute("builder");
             String source = n.getAttribute("source");
             String target = n.getAttribute("target");
@@ -260,9 +260,9 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installAllowedRelations(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        for (Enumeration ns = reader.getChildElements("cloudmodel.allowedrelationlist", "relation");
-                ns.hasMoreElements(); ) {
-            Element n = (Element) ns.nextElement();
+        for (Iterator ns = reader.getChildElements("cloudmodel.allowedrelationlist", "relation");
+                ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String from = n.getAttribute("from");
             String to = n.getAttribute("to");
             String type = n.getAttribute("type");
@@ -290,9 +290,9 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installNeededBuilders(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        for (Enumeration ns = reader.getChildElements("cloudmodel.neededbuilderlist", "builder");
-                ns.hasMoreElements(); ) {
-            Element n3 = (Element) ns.nextElement();
+        for (Iterator ns = reader.getChildElements("cloudmodel.neededbuilderlist", "builder");
+                ns.hasNext(); ) {
+            Element n3 = (Element) ns.next();
 
             String name = reader.getElementValue(n3);
 

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.6 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: DocumentWriter.java,v 1.7 2005-07-09 15:29:12 nklasens Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -74,29 +74,6 @@ abstract public class DocumentWriter extends DocumentReader {
         document=domImpl.createDocument(null,qualifiedName,doctype);
     }
 
-    /**
-     * Constructs the document by reading it from a file.
-     * @param path the path to the file from which to read the document
-     * @since MMBase-1.7
-     */
-    public DocumentWriter(String path) {
-        super(path);
-        documentGenerated = true;
-    }
-
-    /**
-     * Constructs the document by reading it from a source.
-     * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
-     * of the document read is to be found. The dtd sould be in the resources package under the package of the class passed.
-     * @param path the path to the file from which to read the document
-     * @param validating whether to validate the document
-     * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
-     * @since MMBase-1.7
-     */
-    public DocumentWriter(String path, boolean validating, Class resolveBase) {
-        super(path, validating, resolveBase);
-        documentGenerated = true;
-    }
     
     /**
      * Constructs the document by reading it from a source.

@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.70 2005-04-21 14:31:35 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.71 2005-07-09 15:29:11 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -425,7 +425,7 @@ public class ClusterBuilder extends VirtualBuilder {
         String buildername= getBuilderNameFromField(fieldname);
         if (buildername.length() > 0) {
             MMObjectBuilder bul= mmb.getMMObject(buildername);
-            return bul.getShortedText(getFieldNameFromField(fieldname), number);
+            return bul.getShortedText(getFieldNameFromField(fieldname), bul.getNode(number));
         }
         return null;
     }
@@ -441,7 +441,7 @@ public class ClusterBuilder extends VirtualBuilder {
         String buildername= getBuilderNameFromField(fieldname);
         if (buildername.length() > 0) {
             MMObjectBuilder bul= mmb.getMMObject(buildername);
-            return bul.getShortedByte(getFieldNameFromField(fieldname), number);
+            return bul.getShortedByte(getFieldNameFromField(fieldname), bul.getNode(number));
         }
         return null;
     }
