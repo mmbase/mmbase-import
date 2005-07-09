@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.core;
 
-import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.Storable;

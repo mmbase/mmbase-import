@@ -8,8 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.cache;
-import org.mmbase.module.core.MMObjectBuilder;
-import java.util.*;
 
 import org.mmbase.util.logging.*;
 
@@ -18,7 +16,7 @@ import org.mmbase.util.logging.*;
  * replacement for the 'handle cache' which was present in MMBase <1.8.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BlobCache.java,v 1.3 2005-06-03 15:08:10 pierre Exp $
+ * @version $Id: BlobCache.java,v 1.4 2005-07-09 11:10:09 nklasens Exp $
  * @since MMBase 1.8
  */
 public abstract class BlobCache extends Cache {

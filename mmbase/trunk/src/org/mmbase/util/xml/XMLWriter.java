@@ -12,7 +12,6 @@ package org.mmbase.util.xml;
 import java.io.*;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;

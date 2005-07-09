@@ -10,25 +10,16 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.core.CoreField;
-import org.mmbase.storage.Storable;
-import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.20 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicField.java,v 1.21 2005-07-09 11:07:43 nklasens Exp $
  */
 public class BasicField extends AbstractField implements Field {
-
-    // Logger routine
-    private static final Logger log = Logging.getLoggerInstance(BasicField.class);
 
     NodeManager nodeManager = null;
     CoreField coreField = null;

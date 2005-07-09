@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.*;
 import java.util.regex.*;
 
 /**
@@ -18,7 +17,7 @@ import java.util.regex.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: RomanTransformer.java,v 1.2 2005-07-07 17:23:00 michiel Exp $
+ * @version $Id: RomanTransformer.java,v 1.3 2005-07-09 11:14:38 nklasens Exp $
  */
 
 public class RomanTransformer extends StringTransformer {

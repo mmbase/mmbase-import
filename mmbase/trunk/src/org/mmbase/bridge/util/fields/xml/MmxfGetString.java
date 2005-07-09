@@ -19,7 +19,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.parsers.*;
 
 import java.util.*;
-import java.io.*;
 import org.w3c.dom.*;
 
 
@@ -27,7 +26,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.5 2005-06-28 14:19:54 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.6 2005-07-09 11:08:54 nklasens Exp $
  * @since MMBase-1.8
  */
 

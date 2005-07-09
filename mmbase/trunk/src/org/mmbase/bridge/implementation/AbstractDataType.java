@@ -13,10 +13,8 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.util.Casting;
 import org.mmbase.util.LocalizedString;
-import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
@@ -25,17 +23,14 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.7 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.8 2005-07-09 11:07:43 nklasens Exp $
  */
 
 abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
 
-    private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
-
     private DataType parentDataType = null;
 
     private Class classType;
-    private boolean finished = false;
     private Object defaultValue = null;
     private Object owner = null;
 

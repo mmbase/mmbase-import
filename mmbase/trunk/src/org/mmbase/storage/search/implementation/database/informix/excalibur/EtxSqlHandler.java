@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.*;
@@ -36,7 +35,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.4 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.5 2005-07-09 11:13:35 nklasens Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.

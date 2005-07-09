@@ -12,10 +12,8 @@ package org.mmbase.bridge.util.xml;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.xpath.XPathAPI;
-//import org.w3c.xsl.XSLTContext;  where's the damn thing?
 
 /**
  * Nodes of the bridge can have `virtual fields', which are in fact
@@ -48,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.12 2005-06-27 13:01:44 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.13 2005-07-09 11:08:54 nklasens Exp $
  * @since   MMBase-1.6
  */
 

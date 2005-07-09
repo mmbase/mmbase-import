@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-import java.util.*;
-import org.mmbase.util.ThreadPools;
 
 import org.mmbase.util.logging.*;
 
@@ -22,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ByteCharTransformer.java,v 1.1 2005-05-24 22:55:41 michiel Exp $
+ * @version $Id: ByteCharTransformer.java,v 1.2 2005-07-09 11:14:38 nklasens Exp $
  */
 
 public class ByteCharTransformer extends ReaderTransformer implements CharTransformer {

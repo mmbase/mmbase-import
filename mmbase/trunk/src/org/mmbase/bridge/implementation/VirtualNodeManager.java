@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 
 /**
  * This class represents a virtual node type information object.
@@ -24,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.24 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.25 2005-07-09 11:07:43 nklasens Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
 

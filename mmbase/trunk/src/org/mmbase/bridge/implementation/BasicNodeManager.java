@@ -25,7 +25,6 @@ import org.mmbase.security.Operation;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.functions.Function;
-import org.mmbase.util.functions.NodeFunction;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
 
@@ -40,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.97 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.98 2005-07-09 11:07:43 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {

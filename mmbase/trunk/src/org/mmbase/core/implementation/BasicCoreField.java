@@ -9,20 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.core.implementation;
 
-import java.util.*;
-
 import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.datatypes.*;
 import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.core.*;
-import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
-
 
 /**
  * The core-implementation of a field-type.
@@ -31,15 +26,12 @@ import org.mmbase.util.logging.*;
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCoreField.java,v 1.3 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicCoreField.java,v 1.4 2005-07-09 11:10:09 nklasens Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
  */
 public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractField implements CoreField {
-
-    // Logger routine
-    private static final Logger log = Logging.getLoggerInstance(BasicCoreField.class);
 
     private static final int NO_POSITION = -1;
 

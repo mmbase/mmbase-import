@@ -13,7 +13,6 @@ import java.lang.reflect.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: Functions.java,v 1.7 2005-07-09 11:14:38 nklasens Exp $
  */
 public class Functions {
 
