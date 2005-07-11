@@ -15,27 +15,38 @@ function winOnResize() {
   adjustLayout();
 }
 
-function adjustToolBoxesLayout() {   
+function rePosition(id) {
+    // This seems to be only necessary in Mozilla.
+    var el = xGetElementById(id);
+    el.style.position = "absolute";
+    el.style.left = (xClientWidth() - 202) + "px";
+}
+
+function adjustToolBoxesLayout() {
     var toolbox = 40;
     var spacing = 5;
     var toolboxRight = 2;
     xTop("kupu-toolbox-links", toolbox);
-    //xRight("kupu-toolbox-links", 2);
+    rePosition("kupu-toolbox-links");
     toolbox += xHeight("kupu-toolbox-links") + spacing;
     xTop("kupu-toolbox-images", toolbox);
+    rePosition("kupu-toolbox-images");
     toolbox += xHeight("kupu-toolbox-images") + spacing;
     xTop("kupu-toolbox-tables", toolbox);
+    rePosition("kupu-toolbox-tables");
     toolbox += xHeight("kupu-toolbox-tables") + spacing;
     xTop("kupu-toolbox-divs", toolbox);
+    rePosition("kupu-toolbox-divs");
     toolbox += xHeight("kupu-toolbox-divs") + spacing;
     xTop("kupu-toolbox-debug", toolbox);
+    rePosition("kupu-toolbox-debug");
 
 }
 function adjustLayout() {
     var zoomTool = kupu.getTool("zoomtool");
     if (zoomTool && zoomTool.zoomed) return;
 
-    var leftColumnWidth = 150;
+    var leftColumnWidth = 250;
     var maxHeight = xClientHeight() - 20;
     var maxWidth  = xClientWidth() - leftColumnWidth - 4;
   

@@ -34,26 +34,12 @@ img {
 }
 
 
-#nodefields {   
+#nodefields 
+{   
   background-color: #76a2b6;
   overflow: hidden;
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-} 
-
-
-#nodefields td {
-  vertical-align: top;
 }
-#nodefields p { 
-  margin: 0px;
-}
+
 #nodefields input {
   user-input: enabled;
 }
@@ -72,7 +58,7 @@ img {
  }
 
 iframe { 
-  background-color: red;
+  background-color: #ffc;
 }
 
 a.current  { 
@@ -135,6 +121,11 @@ div.kupu-toolbox, div.kupu-toolbox-active {
 }
 div.kupu-toolbox-active { 
   background-color: #76a2b6;
+}
+div.kupu-toolbox-active #kupu-div-addbutton 
+{ 
+  display: none;
+                                              
 }
 div#kupu-toolbox-links { 
 }

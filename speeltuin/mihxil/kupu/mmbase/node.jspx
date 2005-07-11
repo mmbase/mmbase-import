@@ -1,4 +1,5 @@
-<mm:content type="text/xml" expires="-1"
+<mm:content type="text/xml" 
+	    expires="-1"
             xmlns="http://www.w3.org/1999/xhtml"
             xmlns:jsp="http://java.sun.com/JSP/Page" 
             xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
