@@ -2,7 +2,7 @@
   Reuseable generic login-page.
   Perhaps this could be placed on a more generic location like /mmbase
 --%>
-<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,java.util.*" 
+<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*" 
 %><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><%!
    String getPrompt(String key, Locale locale) {
@@ -40,10 +40,10 @@
     %>
     <mm:import externid="authenticate" jspvar="currentType" vartype="string" ><%=authenticationTypes[0]%></mm:import>
     <form method="post" action="<mm:write referid="referrer" />" >
-    <% DataType[] params = authentication.createParameters(currentType).getDefinition();
+    <% Parameter[] params = authentication.createParameters(currentType).getDefinition();
        for (int j = 0; j < params.length ; j++) {
-         DataType param = params[j];
-         Class type = param.getTypeAsClass();
+         Parameter param = params[j];
+         Class type = param.getType();
          if (type.isAssignableFrom(String.class) && param.isRequired()) {         
     %>       
     <tr>
