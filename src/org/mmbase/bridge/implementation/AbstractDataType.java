@@ -13,8 +13,10 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.util.Casting;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
@@ -23,10 +25,15 @@ import org.mmbase.util.LocalizedString;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.8 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: AbstractDataType.java,v 1.9 2005-07-11 14:42:52 pierre Exp $
  */
 
 abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
+
+    public static final String PROPERTY_REQUIRED = "required";
+    public static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
+
+    private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
 
     private DataType parentDataType = null;
 
@@ -44,6 +51,9 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     protected AbstractDataType(String name, Class classType) {
         super(name);
         this.classType = classType;
+        createProperty(PROPERTY_REQUIRED, Boolean.FALSE,
+                new LocalizedString ("Datatype ${NAME} requires a value."), // use resource bundle
+                false);
     }
 
     /**
@@ -78,6 +88,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
 
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
+            // customize this?
             throw new IllegalArgumentException("DataType of '" + value + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
@@ -142,11 +153,12 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         validate(value,null);
     }
 
-    private final void failOnValidate(DataType.Property property, String message, Cloud cloud) {
+    protected final void failOnValidate(DataType.Property property, Object value, Cloud cloud) {
         String error = property.getErrorDescription(cloud==null? null : cloud.getLocale());
-        if (error == null) error = message;
         // todo; replace ${NAME} with property name (??)
-        throw new IllegalArgumentException(message);
+        // todo; replace ${PROPERTY} with property.getValue (??)
+        // todo; replace ${VALUE} with value .toString (??)
+        throw new IllegalArgumentException(error);
     }
 
     public void validate(Object value, Cloud cloud) {
@@ -156,7 +168,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         checkType(value);
         // test required
         if (value == null && isRequired() && getDefaultValue() == null) {
-            failOnValidate(getProperty(PROPERTY_REQUIRED), "Datatype " + getName()  + " requires a value.", cloud);
+            failOnValidate(getRequiredProperty(), value, cloud);
         }
     }
 
@@ -165,7 +177,14 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     }
 
     public DataType copy(String name) {
-        throw new UnsupportedOperationException("Copy of this datatype is not implemented");
+        try {
+            java.lang.reflect.Constructor constructor = this.getClass().getConstructor(new Class[] { String.class, DataType.class });
+            return (DataType) constructor.newInstance(new Object[] { name, this });
+        } catch (Exception e) {
+            UnsupportedOperationException uoe =  new UnsupportedOperationException("Cannot copy this datatype  : " + e.getMessage());
+            uoe.initCause(e);
+            throw uoe;
+        }
     }
 
     /**
@@ -174,6 +193,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     protected void copyValidationRules(DataType dataType) {
         super.copy(dataType);
         setDefaultValue(dataType.getDefaultValue());
+        // TODO: copy all properties! Plus find a way to share localized strings
         setRequired(dataType.isRequired());
     }
 
@@ -206,36 +226,60 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     }
 
     public boolean isRequired() {
-        DataType.Property property = getProperty(PROPERTY_REQUIRED);
-        return (property!=null) && Casting.toBoolean(property.getValue());
+        return Boolean.TRUE.equals(getRequiredProperty().getValue());
     }
 
-    public DataType setRequired(boolean required) {
-        return setRequired(required,null,false);
+    public DataType.Property getRequiredProperty() {
+        return getProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
     }
 
-    public DataType setRequired(boolean required, LocalizedString errorDescription, boolean fixed) {
-        setProperty(PROPERTY_REQUIRED, Boolean.valueOf(required), errorDescription, fixed);
-        return this;
+    public DataType.Property setRequired(boolean required) {
+        return setProperty(PROPERTY_REQUIRED, Boolean.valueOf(required));
     }
 
-
-    public DataType.Property setProperty(String name, Object value, LocalizedString errorDescription, boolean fixed) {
+    public DataType.Property createProperty(String name, Object value, LocalizedString localizedErrorDescription, boolean fixed) {
         // should we check on properties or not ???
         edit();
         DataType.Property property = (DataType.Property) properties.get(name);
         if (property == null) {
-            property = new DataTypeProperty(name);
+            property = new DataTypeProperty(name,value);
+        } else {
+            property.setValue(value);
         }
-        property.setValue(value);
-        property.setLocalizedErrorDescription(errorDescription);
         property.setFixed(fixed);
+        if (localizedErrorDescription == null) {
+            String key = Fields.getTypeDescription(getBaseType()).toLowerCase() + "." + name + ".error";
+            localizedErrorDescription = new LocalizedString(key);
+            String bundle = "org.mmbase.bridge.implementation.datatypes.resources.datatypes.properties";
+            localizedErrorDescription.setBundle(bundle);
+        }
+        property.setLocalizedErrorDescription(localizedErrorDescription);
         properties.put(name,property);
         return property;
     }
 
-    public DataType.Property getProperty(String name){
+    public DataType.Property getProperty(String name) {
         return (DataType.Property) properties.get(name);
+    }
+
+    public DataType.Property getProperty(String name, Object defaultValue) {
+        DataType.Property property = getProperty(name);
+        if (property == null) {
+            property = createProperty(name, defaultValue, null, false);
+            properties.put(name, property);
+        }
+        return property;
+    }
+
+    public DataType.Property setProperty(String name, Object value) {
+        DataType.Property property = getProperty(name);
+        if (property == null) {
+            property = createProperty(name, value, null, false);
+            properties.put(name, property);
+        } else {
+            property.setValue(value);
+        }
+        return property;
     }
 
     public class DataTypeProperty implements DataType.Property {
@@ -243,9 +287,12 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         private Object value;
         private LocalizedString errorDescription;
         private boolean fixed;
+        private Class propertyClass;
 
-        private DataTypeProperty(String name) {
+        private DataTypeProperty(String name, Object value) {
             this.name = name;
+            this.value = value;
+            this.propertyClass = value.getClass();
         }
 
         public String getName() {
@@ -259,6 +306,9 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         public void setValue(Object value) {
             if (fixed) {
                 throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
+            }
+            if (value != null && !propertyClass.isInstance(value)) {
+                throw new IllegalArgumentException("Property '" + name + "' is of class " + propertyClass.getName() + ", specified value is: " + value + ".");
             }
             this.value = value;
         }

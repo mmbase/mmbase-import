@@ -11,26 +11,23 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.DataType;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.datatypes.StringDataType;
-import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicStringDataType.java,v 1.3 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.StringDataType
  * @since MMBase-1.8
  */
-public class BasicStringDataType extends AbstractDataType implements StringDataType {
+public class BasicStringDataType extends BasicBigDataType implements StringDataType {
 
-    protected int minLength = -1;
-    protected int maxLength = -1;
-    protected String pattern = null;
+    public static final String PROPERTY_PATTERN = "pattern";
+    public static final String PROPERTY_PATTERN_DEFAULT = null;
 
     /**
      * Constructor for string field.
@@ -44,7 +41,7 @@ public class BasicStringDataType extends AbstractDataType implements StringDataT
      * @param name the name of the data type
      * @param type the class of the data type's possible value
      */
-    protected BasicStringDataType(String name, StringDataType dataType) {
+    public BasicStringDataType(String name, DataType dataType) {
         super(name,dataType);
     }
 
@@ -53,74 +50,28 @@ public class BasicStringDataType extends AbstractDataType implements StringDataT
     }
 
     public String getPattern() {
-        return pattern;
+        return (String) getPatternProperty().getValue();
     }
 
-    public StringDataType setPattern(String value) {
-        edit();
-        pattern = value;
-        return this;
+    public DataType.Property getPatternProperty() {
+        return getProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
     }
 
-    public int getMinLength() {
-        return minLength;
+    public DataType.Property setPattern(String value) {
+        return setProperty(PROPERTY_PATTERN, value);
     }
 
-    public StringDataType setMinLength(int value) {
-        edit();
-        minLength = value;
-        return this;
-    }
-
-    public int getMaxLength() {
-        return maxLength;
-    }
-
-    public StringDataType setMaxLength(int value) {
-        edit();
-        maxLength = value;
-        return this;
-    }
-
-    public void validate(Object value) {
+    public void validate(Object value, Cloud cloud) {
         super.validate(value);
-        String stringValue = Casting.toString(value);
-        if (minLength > 0) {
-            if (stringValue == null || stringValue.length() < minLength) {
-                throw new IllegalArgumentException("The value '"+stringValue+"' must be longer than " + minLength + " characters.");
+        if (value != null) {
+            String stringValue = Casting.toString(value);
+            String pattern = getPattern();
+            if (pattern != null) {
+                if (!stringValue.matches(pattern)) {
+                    failOnValidate(getPatternProperty(), value, cloud);
+                }
             }
         }
-        if (maxLength > 0) {
-            if (stringValue != null && stringValue.length() > maxLength) {
-                throw new IllegalArgumentException("The value '"+stringValue+"' must be smaller than " + maxLength + " characters.");
-            }
-        }
-        if (pattern != null) {
-            if (stringValue == null || !stringValue.matches(pattern)) {
-                throw new IllegalArgumentException("The value '"+stringValue+"' should follow the regular expression '" + pattern + "'.");
-            }
-        }
-    }
-
-    /**
-     * Returns a new (and editable) instance of this datatype, inheriting all validation rules.
-     * @param name the new name of the copied datatype.
-     */
-    public DataType copy(String name) {
-        return new BasicStringDataType(name,this);
-    }
-
-    /**
-     * Clears all validation rules set after the instantiation of the type.
-     * Note that validation rules can only be cleared for derived datatypes.
-     * @throws UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
-     */
-    public void copyValidationRules(DataType dataType) {
-        super.copyValidationRules(dataType);
-        StringDataType stringField = (StringDataType)dataType;
-        setMinLength(stringField.getMinLength());
-        setMaxLength(stringField.getMaxLength());
-        setPattern(stringField.getPattern());
     }
 
 }

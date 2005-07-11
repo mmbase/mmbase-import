@@ -18,7 +18,7 @@ import org.mmbase.util.LocalizedString;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.6 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: DataType.java,v 1.7 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -45,8 +45,6 @@ public interface DataType extends Comparable, Descriptor {
     public static final DataType LIST_DATETIME = DataTypes.createFinalListDataType("list[datetime]", DATETIME);
     public static final DataType LIST_BOOLEAN = DataTypes.createFinalListDataType("list[boolean]", BOOLEAN);
     public static final DataType LIST_NODE = DataTypes.createFinalListDataType("list[node]", NODE);
-
-    public static final String PROPERTY_REQUIRED = "required";
 
     /**
      * An empty Parameter array.
@@ -83,9 +81,15 @@ public interface DataType extends Comparable, Descriptor {
      * Sets whether the data type requires a value.
      * @param required <code>true</code> if a value is required
      * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
-     * @return this datatype
+     * @return the datatype property that was just set
      */
-    public DataType setRequired(boolean required);
+    public DataType.Property setRequired(boolean required);
+
+    /**
+     * Returns the 'required' property, containing the value, errormessages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
+    public DataType.Property getRequiredProperty();
 
     /**
      * Checks if the passed object is of the correct type (compatible with the type of this data type),
@@ -95,6 +99,16 @@ public interface DataType extends Comparable, Descriptor {
      * @throws IllegalArgumentException if the value is not compatible
      */
     public void validate(Object value);
+
+    /**
+     * Checks if the passed object is of the correct type (compatible with the type of this data type),
+     * and follows the restrictions defined for this type.
+     * It throws an IllegalArgumentException with a lozalized message (dependent on the cloud) if it doesn't.
+     * @param value the value to validate
+     * @param cloud the cloud used to determine the locale for the error message when validation fails
+     * @throws IllegalArgumentException if the value is not compatible
+     */
+    public void validate(Object value, Cloud cloud);
 
     /**
      * Returns a new (and editable) instance of this datatype, inheriting all validation rules.
@@ -131,9 +145,6 @@ public interface DataType extends Comparable, Descriptor {
      * @param value The value to be filled in in this Parameter.
      */
     public Object autoCast(Object value);
-
-    public DataType.Property setProperty(String name, Object value, LocalizedString errorDescription, boolean fixed);
-    public DataType.Property getProperty(String name);
 
     static public interface Property {
         public String getName();
