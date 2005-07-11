@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.4 2005-03-09 16:54:09 michiel Exp $
+ * @version $Id: CharsetRemoverFilter.java,v 1.5 2005-07-11 08:20:01 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -80,12 +80,20 @@ public class CharsetRemoverFilter implements Filter {
         throws java.io.IOException, ServletException {
 
         HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
-                private String contentType;
+                private String contentType = null;
                 private PrintWriter writer = null;
 
                 
                 public void setContentType(String ct) {
-                    contentType = ct;
+                    if (writer == null) {
+                        contentType = ct;
+                    } else {
+                        // too late
+                    }
+                    if (log.isDebugEnabled()) {
+                        log.trace("Setting contentType to " + ct + " " + Logging.stackTrace(new Exception()));
+                    }
+                    getResponse().setContentType(ct);                    
                 }
                 /**
                  * This is the essence of this whole thing. The idea
@@ -98,29 +106,57 @@ public class CharsetRemoverFilter implements Filter {
                     if (writer == null) {                        
                         String charSet = contentType == null ? null : (String) contentTypes.get(contentType);
                         if (charSet != null) {
-                            if (contentType != null) {                                
-                                super.setContentType(contentType);                            
-                            }
+                            if (charSet.equals("")) charSet = "ISO-8859-1"; // default for HTTP, IIRC.                             
                             if (log.isDebugEnabled()) {
                                 log.debug("Wrapping outputstream to avoid charset " + charSet);
                             }
                             try {
-                                writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet), false) {
+                                // no need buffering, i supposed the wrapped outputstream is already buffered, using getBufferSize etc.
+                                servletRequest.setAttribute("javax.servlet.include.servlet_path", "/bla"); //servletRequest.getServletPath());
+                                writer = new PrintWriter(new OutputStreamWriter(servletResponse.getOutputStream(), charSet)) {
                                         public void write(String s, int off, int len) {
+                                            log.info("Wrting1  " + s);
                                             super.write(s, off, len);
                                             flush();
                                         }
+                                        public void write(char[] buf) {
+                                            log.info("Wrting buf1 " + buf);
+                                            super.write(buf);
+                                        }
+                                        public void write(char[] buf, int off, int len) {
+                                            log.info("Wrting buf2 " + buf);
+                                            super.write(buf, off, len);
+                                        }
 
+                                        public void print(String s)  {
+                                            log.info("Printing " + s);
+                                            super.write(s);
+                                        }
+                                        public void write(int c)  {
+                                            log.info("Writch char" + c);
+                                            super.write(c);
+                                            if (c == 10) {
+                                                flush();
+                                            }
+                                        }
+                                        public void println() {
+                                            log.info("prinln!");
+                                            super.println();
+                                                
+                                        }
+
+
+                                        public void flush() {
+                                            log.info("Flushing for " + ((HttpServletRequest) servletRequest).getRequestURI());
+                                            super.flush();
+                                        }
+                                    
                                     };
                             } catch (UnsupportedEncodingException uee) {
-                                log.error(uee);
+                                log.error(uee); 
                                 writer = super.getWriter();
                             }
                         } else {
-                            if (contentType != null) {
-                                super.setContentType(contentType);
-                            }
-
                             if (log.isDebugEnabled()) {
                                 log.debug(" " + contentType + " is not contained by " + contentTypes);
                             }
@@ -132,14 +168,31 @@ public class CharsetRemoverFilter implements Filter {
                     }
                     return writer;                        
                 }
+                public void flushBuffer() throws IOException {                    
+                    if (log.isDebugEnabled()) {
+                        log.debug("Flushing for " + ((HttpServletRequest) servletRequest).getRequestURI());
+                    }
+                    log.info("Flushing wrapper for " + ((HttpServletRequest) servletRequest).getRequestURI());
+                    if (writer != null) writer.flush();
+                    super.flushBuffer();                    
+                }
+                
+                    
+
         };
         filterChain.doFilter(servletRequest, wrapper);
         
     }
+
     /**
      * destroys the filter
      */
     public void destroy() {
+        watcher.clear();
+        watcher.exit();
+        contentTypes.clear();
+        contentTypes = null;
+        
     }
 
 
