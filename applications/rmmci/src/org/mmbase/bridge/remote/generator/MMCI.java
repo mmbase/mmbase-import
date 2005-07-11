@@ -107,6 +107,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BigDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BinaryDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BooleanDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.DateTimeDataType",doc));
@@ -116,7 +117,9 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.ListDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.LongDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.NodeDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.NumberDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.StringDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.XmlDataType",doc));
         // storage interfaces
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
