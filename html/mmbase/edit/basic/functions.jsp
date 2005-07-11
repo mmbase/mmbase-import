@@ -43,7 +43,7 @@
 	  <td><%=param.getName()%><%=param.isRequired() ? " *" : ""%></td>
 	  <td>
 	    <%
-	    	if (Casting.isStringRepresentable(param.getTypeAsClass())) {
+	    	if (Casting.isStringRepresentable(param.getType())) {
 		Object v = request.getParameter(function.getName() + "_" +param.getName());
 		if (v == null) v = param.getDefaultValue();
 		%>
