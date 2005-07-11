@@ -11,7 +11,7 @@
   -->
   <status>active</status>
 
-  <classfile>org.mmbase.module.core.MMBase</classfile>
+  <class>org.mmbase.module.core.MMBase</class>
 
   <!-- <properties>
   You can define properties to be used by the classfile.
