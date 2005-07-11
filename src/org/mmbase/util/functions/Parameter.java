@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.18 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: Parameter.java,v 1.19 2005-07-11 12:54:29 michiel Exp $
  * @see Parameters
  */
 
@@ -38,7 +38,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
-    public static final Parameter NODE     = new Parameter("cloud",    org.mmbase.bridge.Node.class);
+    public static final Parameter NODE     = new Parameter("node",     org.mmbase.bridge.Node.class);
 
     /**
      * An empty Parameter array.
