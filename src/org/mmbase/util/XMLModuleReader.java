@@ -22,7 +22,7 @@ import java.util.Iterator;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: XMLModuleReader.java,v 1.15 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: XMLModuleReader.java,v 1.16 2005-07-11 10:01:50 michiel Exp $
  */
 public class XMLModuleReader extends XMLBasicReader {
 
@@ -102,11 +102,22 @@ public class XMLModuleReader extends XMLBasicReader {
     }
 
     /**
-     * get the classfile of this builder
+     * @deprecated use getClassName
      */
     public String getClassFile() {
-        Element e = getElementByPath("module.classfile");
+        return getClassName();
+    }
+
+    /**
+     * The name of the class which is implementing this Module.
+     */
+    public String getClassName() {
+        Element e = getElementByPath("module.class");
+        if (e != null) return getElementValue(e);
+        // legacy fall back
+        e = getElementByPath("module.classfile");
         return getElementValue(e);
+
     }
 
     /**
