@@ -18,10 +18,10 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.7 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: LocalizedString.java,v 1.8 2005-07-11 17:49:20 pierre Exp $
  * @since MMBase-1.8
  */
-public class LocalizedString  implements java.io.Serializable {
+public class LocalizedString  implements java.io.Serializable, Cloneable {
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -172,4 +172,14 @@ public class LocalizedString  implements java.io.Serializable {
     public String toString() {
         return "localized(" + key + ")";
     }
+
+    public Object clone() throws java.lang.CloneNotSupportedException {
+        LocalizedString clone = (LocalizedString)super.clone();
+        if (values != null) {
+            clone.values = (Map)((HashMap)values).clone();
+        }
+        return clone;
+    }
+
+
 }
