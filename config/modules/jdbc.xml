@@ -12,8 +12,8 @@
   -->
   <status>active</status>
 
-  <!-- <classfile>
-  Classfile used for initalization of this module
+  <!-- <class>
+  Class used for initalization of this module
 
   Options:
   - When org.mmbase.module.database.Naming is used, the Connections will be retrieved from the application
@@ -27,7 +27,7 @@
     <!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
     <module maintainer="mmbase.org" version="0">
     <status>active</status>
-    <classfile>org.mmbase.module.database.Naming</classfile>
+    <class>org.mmbase.module.database.Naming</class>
     <properties>
     <property name="context">java:comp/env</property>
     <property name="datasource">jdbc/MMBase</property>
@@ -48,7 +48,7 @@
     - port
     - host
   -->
-  <classfile>org.mmbase.module.database.JDBC</classfile>
+  <class>org.mmbase.module.database.JDBC</class>
 
   <!-- <properties>
   You can define properties to be used by the classfile.

@@ -2,7 +2,5 @@
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module>
 	<status>inactive</status>
-	<classfile>org.mmbase.module.XSLConvert</classfile>
-	<properties>
-	</properties>
+	<class>org.mmbase.module.XSLConvert</class>
 </module>
