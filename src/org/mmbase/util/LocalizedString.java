@@ -18,7 +18,7 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.8 2005-07-11 17:49:20 pierre Exp $
+ * @version $Id: LocalizedString.java,v 1.9 2005-07-11 19:38:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -155,7 +155,7 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
      * Locale -> description
      */
     public Map asMap() {
-        if (values == null) return new HashMap();
+        if (values == null) return Collections.EMPTY_MAP;
         return Collections.unmodifiableMap(values);
     }
 
