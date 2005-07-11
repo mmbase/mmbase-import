@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.9 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.10 2005-07-11 17:49:20 pierre Exp $
  */
 
 abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
@@ -35,13 +35,11 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
 
     private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
 
-    private DataType parentDataType = null;
-
     private Class classType;
     private Object defaultValue = null;
     private Object owner = null;
 
-    private Map properties = new HashMap();
+    protected Map properties = new HashMap();
 
     /**
      * Create a data type object
@@ -63,10 +61,9 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
      */
     protected AbstractDataType(String name, DataType dataType) {
         super(name);
-        this.parentDataType = dataType;
-        if (dataType != null) {
+        if (dataType instanceof AbstractDataType) {
             this.classType = dataType.getTypeAsClass();
-            copyValidationRules(dataType);
+            copyValidationRules((AbstractDataType)dataType);
         }
     }
 
@@ -162,9 +159,6 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     }
 
     public void validate(Object value, Cloud cloud) {
-        if (parentDataType != null) {
-            parentDataType.validate(value);
-        }
         checkType(value);
         // test required
         if (value == null && isRequired() && getDefaultValue() == null) {
@@ -190,11 +184,20 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     /**
      * @javadoc
      */
-    protected void copyValidationRules(DataType dataType) {
+    protected void copyValidationRules(AbstractDataType dataType) {
         super.copy(dataType);
         setDefaultValue(dataType.getDefaultValue());
         // TODO: copy all properties! Plus find a way to share localized strings
-        setRequired(dataType.isRequired());
+        for (Iterator i = dataType.properties.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entrySet = (Map.Entry)i.next();
+            DataTypeProperty property = (DataTypeProperty)entrySet.getValue();
+            try {
+                properties.put(entrySet.getKey(),(DataType.Property)property.clone());
+            } catch (CloneNotSupportedException cnse) {
+                // should not happen!
+                log.error(cnse.getMessage());
+            }
+        }
     }
 
     public int compareTo(Object o) {
@@ -282,7 +285,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return property;
     }
 
-    public class DataTypeProperty implements DataType.Property {
+    public class DataTypeProperty implements DataType.Property, Cloneable {
         private String name;
         private Object value;
         private LocalizedString errorDescription;
@@ -342,6 +345,14 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
                 throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
             }
             this.fixed = fixed;
+        }
+
+        public Object clone() throws CloneNotSupportedException {
+            DataTypeProperty clone = (DataTypeProperty)super.clone();
+            if (errorDescription != null) {
+                clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
+            }
+            return clone;
         }
 
     }
