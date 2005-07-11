@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.104 2005-07-09 11:46:11 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.105 2005-07-11 10:08:43 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -466,7 +466,7 @@ public class MMAdmin extends ProcessorModule {
     String getModuleClass(String modname) {
         XMLModuleReader mod = new XMLModuleReader("modules/" + modname + ".xml");
         if (mod != null) {
-            return mod.getClassFile();
+            return mod.getClassName();
         }
         return "";
     }
