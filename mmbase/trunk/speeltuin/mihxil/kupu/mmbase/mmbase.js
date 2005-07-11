@@ -6,12 +6,12 @@ var trunkNode;
 
 // any object can be used as map in javascript, but make it look a bit nicer.
 function Map() {
-    this.add = function(key, value) { 
+    this.add = function(key, value) {
         var prevValue = this[key];
         this[key] = value;
         return prevValue;
     };
-    this.get = function(key) {       
+    this.get = function(key) {
         return this[key];
     };
     this.remove = function(key) {
@@ -34,7 +34,7 @@ function startKupu(language) {
     // if there's no global 'i18n_message_catalog' variable available, don't
     // try to load any translations
 
-    if (window.i18n_message_catalog) {        
+    if (window.i18n_message_catalog) {
         var request = getRequest();
         // sync request, scary...
         request.open('GET', '../common/kupu.pox.jspx?mymessages=../mmbase/mymessages.jspx&language=' + language, false);
@@ -46,17 +46,17 @@ function startKupu(language) {
             var dom = request.responseXML;
             window.i18n_message_catalog.initialize(dom);
         };
-    }   
+    }
     // initialize the editor, initKupu groks 1 arg, a reference to the iframe
-    var frame = getFromSelector('kupu-editor'); 
+    var frame = getFromSelector('kupu-editor');
     var kupu = initKupu(frame);
-    
+
     // this makes the editor's content_changed attribute set according to changes
     // in a textarea or input (registering onchange, see saveOnPart() for more
     // details)
     kupu.registerContentChanger(getFromSelector('kupu-editor-textarea'));
-    
-    // let's register saveOnPart(), to ask the user if he wants to save when 
+
+    // let's register saveOnPart(), to ask the user if he wants to save when
     // leaving after editing
     if (kupu.getBrowserName() == 'IE') {
         // IE supports onbeforeunload, so let's use that
@@ -95,7 +95,7 @@ function mmbaseInit(node) {
         }
     }
 
-    winOnLoad();    
+    winOnLoad();
     trunkNumber = node;
     loadNode(node);
 
@@ -106,7 +106,7 @@ function getRequest() {
     // new sarissa:
     //return new XMLHttpRequest();
 }
-    
+
 function serialize(request) {
     //return request.responseXML.xml;
     // new sarissa:
@@ -140,11 +140,11 @@ function saveNode(button, editor) {
     //kupu.handleSaveResponse(request);
     var node = currentNode;
     currentNode = undefined;
+    alert(_("saved") + " " + node);
     kupu.logMessage("Reloading " + node);
     loadedNodes.remove(node);
     loadedNodeBodies.remove(node);
     loadNode(node);
-    alert(_("saved") + " " + node);
 
 }
 
@@ -161,7 +161,7 @@ function updateTree(nodeNumber, title) {
  * result is taken from cache.
  */
 function loadNode(nodeNumber) {
-    
+
     var nodeDiv = document.getElementById('nodefields');
 
     if (nodeNumber == currentNode) {
@@ -184,21 +184,22 @@ function loadNode(nodeNumber) {
     }
     var nodeXml = loadedNodes.get(nodeNumber);
     if (nodeXml == null) {
-        kupu.logMessage(_("Getting node fields for ") + nodeNumber); 
+        kupu.logMessage(_("Getting node fields for ") + nodeNumber);
         var dom = Sarissa.getDomDocument();
         dom.async = false;
         dom.load('node.jspx?node=' + nodeNumber);
         nodeXml = Sarissa.serialize(dom);
+        //alert("received " + nodeXml);
         loadedNodes.add(nodeNumber, nodeXml);
     } else {
-        kupu.logMessage(_("Loading node fields for ") + nodeNumber); 
+        kupu.logMessage(_("Loading node fields for ") + nodeNumber);
         var request = getRequest();
         request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
-        request.send('');        
+        request.send('');
     }
-    
+
     nodeDiv.innerHTML = nodeXml;
-    
+
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
     if (nodeBodyXml == null) {
         kupu.logMessage(_("Getting node body ") + " " + nodeNumber);
@@ -210,7 +211,7 @@ function loadNode(nodeNumber) {
     } else {
         kupu.logMessage(_("Loading node body ") + " " + nodeNumber);
     }
-    
+
     /*
     alert("found " + Sarissa.serialize(nodeBodyXml));
     var text = "";
@@ -224,7 +225,7 @@ function loadNode(nodeNumber) {
     currentA = document.getElementById('a_' + currentNode);
     currentA.className = "current";
     adjustLayout();
-    
+
 }
 
 /**
@@ -234,7 +235,7 @@ function loadRelated(nodeNumber) {
     var treeXml = loadedTrees.get(nodeNumber);
     if (treeXml == null) {
         var request = getRequest();
-        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
+        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);
         request.send('');
         treeXml = serialize(request);
         loadedTrees.add(nodeNumber, treeXml);
@@ -250,12 +251,12 @@ function loadRelated(nodeNumber) {
  * Unload a part from the 'tree' of nodes. The div with the correct id is made empty.
  */
 function unloadRelated(nodeNumber) {
-    var related = document.getElementById('node_' + nodeNumber);    
-    var html = unloadedTrees.get(nodeNumber);   
+    var related = document.getElementById('node_' + nodeNumber);
+    var html = unloadedTrees.get(nodeNumber);
     if (html == null) {
         // just fall-back
         var request = getRequest();
-        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);    
+        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);
         request.send('');
         html = serialize(request);
     }
@@ -265,10 +266,10 @@ function unloadRelated(nodeNumber) {
 
 function reloadTree() {
     var request = getRequest();
-    request.open('GET', 'tree.jspx?node=' + trunkNumber, false);    
+    request.open('GET', 'tree.jspx?node=' + trunkNumber, false);
     request.send('');
     var tree = serialize(request);
-    document.getElementById('tree').innerHTML = tree;    
+    document.getElementById('tree').innerHTML = tree;
     for (var i in uncollapsedNodes) {
         if (i.indexOf("node") == 0) {
             loadRelated(uncollapsedNodes[i]);
@@ -277,7 +278,7 @@ function reloadTree() {
     // trick to make current node active again
     var node = currentNode;
     currentNode = undefined; // otherwise it will be relaoded from the server
-    
+
     loadNode(node);
 
 }
@@ -287,7 +288,7 @@ function reloadTree() {
  */
 function createSubNode(nodeNumber) {
     var request = getRequest();
-    request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);    
+    request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);
     request.send('');
     var result = serialize(request);
     alert(result);

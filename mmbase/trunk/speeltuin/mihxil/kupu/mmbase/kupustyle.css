@@ -79,6 +79,7 @@ img.image-left {
 strong, b 
 { 
   color: green;
+  font-weight: bold;
   font-style: bold, underline;
 }
 
@@ -104,3 +105,10 @@ div.right {
 div.left { 
   margin-left: 0px;
 } 
+div.intermezzo 
+{ 
+  float: left;
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: #cfc;
+}
