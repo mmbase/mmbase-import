@@ -1,11 +1,11 @@
-<mm:content 
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
-    type="text/xml" 
+<mm:content
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    type="text/xml"
     expires="-1">
-  <!--      
-       $Id: library.jspx,v 1.7 2005-06-28 12:33:20 michiel Exp $
-  -->  
+  <!--
+       $Id: library.jspx,v 1.8 2005-07-11 16:33:48 michiel Exp $
+  -->
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:cloud>
@@ -19,17 +19,20 @@
         <title>
           <mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" />
         </title>
-        <icon>icons/map.gif</icon>	
+        <icon><mm:url page="icons/map.gif" /></icon>
         <mm:remove referid="query" />
-        <mm:listnodescontainer id="query" type="$nodetype">          
-          
+        <mm:listnodescontainer id="query" type="$nodetype">
+
           <mm:sortorder field="number" direction="down" />
           <mm:maxnumber value="$librarysize" />
-          <mm:offset    value="${librarysize * page}" />          
+          <mm:offset    value="${librarysize * page}" />
           <src><mm:url referids="librarysize@max,nodetype" page="drawers/collection.jspx" /></src>
-        
+
         </mm:listnodescontainer>
-      </library>            
+        <mm:compare referid="nodetype" valueset="images,attachments">
+          <uploadbutton type="${nodetype}" />
+        </mm:compare>
+      </library>
     </mm:context>
   </mm:cloud>
 </mm:content>
