@@ -2,7 +2,7 @@ var divids = 0;
 
 function DivsTool() {
     /* tool to add 'divs' */
-    
+
     this.initialize = function(editor) {
         /* attach the event handlers */
         this.editor = editor;
@@ -11,7 +11,9 @@ function DivsTool() {
 
 
     this.createDiv = function(divclass) {
-        /* create an image */
+        /* create a div */
+        var currnode = this.editor.getSelectedNode();
+
         var doc = this.editor.getInnerDocument();
         var div = doc.createElement('div');
         div.id = "createddiv_" + (divids++);
@@ -20,11 +22,12 @@ function DivsTool() {
         };
         var text = this.editor.getSelection();
         if (! text || text == '') text = ".";
+        var marker = doc.createTextNode("XXX");
         div.appendChild(doc.createTextNode(text));
-        var currnode = this.editor.getSelectedNode();
         var currp = this.editor.getNearestParentOfType(currnode, 'p');
         if (currp) {
             currp.parentNode.insertBefore(div, currp);
+            this.editor.insertNodeAtSelection(doc.createTextNode(""), 1);
         } else {
             div = this.editor.insertNodeAtSelection(div, 1);
         }

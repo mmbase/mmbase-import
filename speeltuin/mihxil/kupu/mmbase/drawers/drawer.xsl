@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.8 2005-07-11 16:33:48 michiel Exp $
+$Id: drawer.xsl,v 1.9 2005-07-11 16:35:07 michiel Exp $
 -->
 <xsl:stylesheet
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -144,7 +144,11 @@ $Id: drawer.xsl,v 1.8 2005-07-11 16:33:48 michiel Exp $
     </div>
   </xsl:template>
   <xsl:template match="icon">
-    <img src="{.}" height="{@height}" width="{@width}" alt="{../title}">
+    <img alt="{../title}" src="{.}">
+      <xsl:if test="@height">
+        <xsl:attribute name="height"><xsl:value-of select="@height" /></xsl:attribute>
+        <xsl:attribute name="width"><xsl:value-of select="@width" /></xsl:attribute>
+      </xsl:if>      
       <xsl:attribute name="class">library-icon-<xsl:value-of select="local-name(..)"/></xsl:attribute>
     </img>
   </xsl:template>

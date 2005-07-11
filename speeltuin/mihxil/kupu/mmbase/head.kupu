@@ -7,7 +7,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
     >
-  <kupu:id>$Id: head.kupu,v 1.11 2005-06-30 17:11:44 michiel Exp $</kupu:id>
+  <kupu:id>$Id: head.kupu,v 1.12 2005-07-11 16:33:48 michiel Exp $</kupu:id>
 
   <kupu:part name="meta">
     <title>MMBase Richtext Editor</title>
@@ -44,6 +44,8 @@
     <script type="text/javascript" src="cross-browser.com/x/lib/xwidth.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/xheight.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/xtop.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xright.js"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="cross-browser.com/x/lib/xleft.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbytagname.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="cross-browser.com/x/lib/xgetelementsbyclassname.js"><jsp:text> </jsp:text></script>
     <script type="text/javascript" src="layout.js"><jsp:text> </jsp:text></script>

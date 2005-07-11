@@ -52,7 +52,8 @@
 		    line = r.readLine();                                                                      
 		    while (line != null &amp;&amp; ! line.equals(boundary)) {
 		       buf.append(line);                                                                                
-		       line = r.readLine();                                                                             
+		       line = r.readLine(); 
+		       if (line != null) buf.append("\n");
 		    }                                                                                                    
 		    value = buf.toString();                                                                              
                  } else {                                                                                                 
