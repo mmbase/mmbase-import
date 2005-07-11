@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.66 2005-07-09 11:10:09 nklasens Exp $
+ * @version $Id: Module.java,v 1.67 2005-07-11 10:06:12 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -395,7 +395,7 @@ public abstract class Module extends FunctionProvider {
             }
 
             if (parser.getStatus().equals("active")) {
-                String className = parser.getClassFile();
+                String className = parser.getClassName();
                 // try starting the module and give it its properties
                 try {
                     log.service("Loading module " + fileName + " with class " + className);
