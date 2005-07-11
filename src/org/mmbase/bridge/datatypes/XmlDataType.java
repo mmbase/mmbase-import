@@ -10,16 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.datatypes;
 
-import org.mmbase.bridge.DataType;
-
 /**
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: XmlDataType.java,v 1.1 2005-06-28 15:26:14 michiel Exp $
+ * @version $Id: XmlDataType.java,v 1.2 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
-public interface XmlDataType extends DataType {
+public interface XmlDataType extends BigDataType {
 
-    
+
 }
