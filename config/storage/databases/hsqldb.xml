@@ -32,18 +32,22 @@
     <scheme name="change-field-scheme" />
 
     <!-- HSQLdb wants to have index declarations at the end of a CREATE TABLE statement  -->
+    <!--    -->
     <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
 
     <!-- some alternatives, which you may want to use -->
-    <!-- This one creates an ASCII file for every table. This may be a very handy setting for debugging.
-
-    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt;fs=\t"</scheme>
+    <!-- This one creates an ASCII file for every table. This may be a very handy setting for debugging. -->
+    <!--    
+    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt"</scheme>
+    <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt"</scheme>
     -->
-    <!-- This one is better if the tables get so big that you don't want them in memory entirely 
+    <!-- This one is better if the tables get so big that you don't want them in memory entirely     
+    -->
+    <!--
 		<scheme name="create-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
     -->
-
-    <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
 
   </attributes>
 
