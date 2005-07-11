@@ -11,8 +11,7 @@ package org.mmbase.bridge.implementation.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.DataType;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.datatypes.ListDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.util.Casting;
@@ -21,16 +20,21 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicListDataType.java,v 1.2 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicListDataType.java,v 1.3 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.ListDataType
  * @since MMBase-1.8
  */
 public class BasicListDataType extends AbstractDataType implements ListDataType {
 
-    protected int minSize = -1;
-    protected int maxSize = -1;
-    protected DataType itemDataType = null;
+    public static final String PROPERTY_MINSIZE = "minSize";
+    public static final Integer PROPERTY_MINSIZE_DEFAULT = new Integer(-1);
+
+    public static final String PROPERTY_MAXSIZE = "maxSize";
+    public static final Integer PROPERTY_MAXSIZE_DEFAULT = new Integer(-1);
+
+    public static final String PROPERTY_ITEMDATATYPE = "itemDataType";
+    public static final Integer PROPERTY_ITEMDATATYPE_DEFAULT = null;
 
     /**
      * Constructor for List field.
@@ -44,7 +48,7 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
      * @param name the name of the data type
      * @param type the class of the data type's possible value
      */
-    protected BasicListDataType(String name, BasicListDataType dataType) {
+    public BasicListDataType(String name, DataType dataType) {
         super(name,dataType);
     }
 
@@ -53,79 +57,69 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
     }
 
     public int getMinSize() {
-        return minSize;
+        return Casting.toInt(getMinSizeProperty().getValue());
     }
 
-    public ListDataType setMinSize(int value) {
-        edit();
-        minSize = value;
-        return this;
+    public DataType.Property getMinSizeProperty() {
+        return getProperty(PROPERTY_MINSIZE,PROPERTY_MINSIZE_DEFAULT);
+    }
+
+    public DataType.Property setMinSize(int value) {
+        return setProperty(PROPERTY_MINSIZE, new Integer(value));
     }
 
     public int getMaxSize() {
-        return maxSize;
+        return Casting.toInt(getMaxSizeProperty().getValue());
     }
 
-    public ListDataType setMaxSize(int value) {
-        edit();
-        maxSize = value;
-        return this;
+    public DataType.Property getMaxSizeProperty() {
+        return getProperty(PROPERTY_MAXSIZE,PROPERTY_MAXSIZE_DEFAULT);
     }
 
-    public DataType getListItemDataType() {
-        return itemDataType;
+    public DataType.Property setMaxSize(int value) {
+        return setProperty(PROPERTY_MAXSIZE, new Integer(value));
     }
 
-    public ListDataType setListItemDataType(DataType value) {
-        edit();
-        itemDataType = value;
-        return this;
+    public DataType getItemDataType() {
+        return (DataType)getItemDataTypeProperty().getValue();
     }
 
-    public void validate(Object value) {
+    public DataType.Property getItemDataTypeProperty() {
+        return getProperty(PROPERTY_ITEMDATATYPE, PROPERTY_ITEMDATATYPE_DEFAULT);
+    }
+
+    public DataType.Property setItemDataType(DataType value) {
+        return setProperty(PROPERTY_ITEMDATATYPE, value);
+    }
+
+    public void validate(Object value, Cloud cloud) {
         super.validate(value);
-        List listValue = Casting.toList(value);
-        if (minSize > 0) {
-            if (listValue == null || listValue.size() < minSize) {
-                throw new IllegalArgumentException("The list may not be smaller than  "+minSize + " items.");
+        if (value !=null) {
+            List listValue = Casting.toList(value);
+            int minSize = getMinSize();
+            if (minSize > 0) {
+                if (listValue.size() < minSize) {
+                    failOnValidate(getMinSizeProperty(), value, cloud);
+                }
+            }
+            int maxSize = getMaxSize();
+            if (maxSize > -1) {
+                if (listValue.size() > maxSize) {
+                    failOnValidate(getMaxSizeProperty(), value, cloud);
+                }
+            }
+            // test list item values
+            DataType itemDataType = getItemDataType();
+            if (itemDataType != null) {
+                for (Iterator i = listValue.iterator(); i.hasNext(); ) {
+                    try {
+                        itemDataType.validate(i.next());
+                    } catch (ClassCastException cce) {
+                        failOnValidate(getItemDataTypeProperty(), value, cloud);
+                    }
+                }
             }
         }
-        if (maxSize > -1) {
-            if (listValue != null && listValue.size() > maxSize) {
-                throw new IllegalArgumentException("The list may not be larger than  "+maxSize + " items.");
-            }
-        }
-        // test list item values
-        if (itemDataType != null && listValue != null) {
-            for (Iterator i = listValue.iterator(); i.hasNext(); ) {
-                itemDataType.validate(i.next());
-            }
-        }
-    }
-
-    /**
-     * Returns a new (and editable) instance of this datatype, inheriting all validation rules.
-     * @param name the new name of the copied datatype.
-     */
-    public DataType copy(String name) {
-        return new BasicListDataType(name,this);
-    }
-
-    /**
-     * Clears all validation rules set after the instantiation of the type.
-     * Note that validation rules can only be cleared for derived datatypes.
-     * @throws UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
-     */
-    public void copyValidationRules(DataType dataType) {
-        super.copyValidationRules(dataType);
-        ListDataType listField = (ListDataType)dataType;
-        setMinSize(listField.getMinSize());
-        setMaxSize(listField.getMaxSize());
-        DataType itemDataType = listField.getListItemDataType();
-        if (itemDataType != null) {
-            itemDataType = itemDataType.copy(key+".item");
-        }
-        setListItemDataType(itemDataType);
     }
 
 }

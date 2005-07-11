@@ -18,7 +18,7 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.6 2005-06-09 21:35:37 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.7 2005-07-11 14:42:52 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable {
@@ -55,7 +55,7 @@ public class LocalizedString  implements java.io.Serializable {
 
     // just for the contract of Serializable
     protected LocalizedString() {
-        
+
     }
 
     /**
@@ -161,7 +161,7 @@ public class LocalizedString  implements java.io.Serializable {
 
     /**
      * A resource-bundle with given name can be associated to this LocalizedString. If no
-     * tranlations where explicitely added, it can be used to look up the translation in the bundle,
+     * translations where explicitely added, it can be used to look up the translation in the bundle,
      * using the key.
      */
 

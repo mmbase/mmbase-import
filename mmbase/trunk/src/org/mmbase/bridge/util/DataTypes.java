@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMObjectNode;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.5 2005-07-09 11:08:54 nklasens Exp $
+ * @version $Id: DataTypes.java,v 1.6 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -182,7 +182,7 @@ public class DataTypes {
             throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
         }
         BasicListDataType dataType = new BasicListDataType(name);
-        dataType.setListItemDataType(elementDataType);
+        dataType.setItemDataType(elementDataType);
         finish(dataType);
         finalDataTypes.put(name, dataType);
         return dataType;

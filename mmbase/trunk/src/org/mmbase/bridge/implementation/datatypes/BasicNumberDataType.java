@@ -12,7 +12,7 @@ package org.mmbase.bridge.implementation.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.DateTimeDataType;
+import org.mmbase.bridge.datatypes.NumberDataType;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.util.Casting;
 
@@ -20,12 +20,12 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDateTimeDataType.java,v 1.4 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicNumberDataType.java,v 1.1 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.bridge.DataType
- * @see org.mmbase.bridge.datatypes.DateTimeDataType
+ * @see org.mmbase.bridge.datatypes.NumberDataType
  * @since MMBase-1.8
  */
-public class BasicDateTimeDataType extends AbstractDataType implements DateTimeDataType {
+abstract public class BasicNumberDataType extends AbstractDataType implements NumberDataType {
 
     public static final String PROPERTY_MININCLUSIVE = "minInclusive";
     public static final String PROPERTY_MINEXCLUSIVE = "minExclusive";
@@ -35,33 +35,27 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
     public static final String PROPERTY_MAXEXCLUSIVE = "minExclusive";
     public static final Number PROPERTY_MAX_DEFAULT = null;
 
-    protected int minPrecision = Calendar.SECOND;
     protected boolean minInclusive = true;
-    protected int maxPrecision = Calendar.SECOND;
     protected boolean maxInclusive = true;
 
     /**
-     * Constructor for DateTime field.
+     * Constructor for Number field.
      */
-    public BasicDateTimeDataType(String name) {
-        super(name, Date.class);
+    public BasicNumberDataType(String name, Class classType) {
+        super(name, classType);
     }
 
     /**
-     * Create a datetime field object
+     * Create a Number field object
      * @param name the name of the data type
      * @param type the class of the data type's possible value
      */
-    public BasicDateTimeDataType(String name, DataType dataType) {
+    public BasicNumberDataType(String name, DataType dataType) {
         super(name,dataType);
     }
 
-    public int getBaseType() {
-        return Field.TYPE_DATETIME;
-    }
-
-    public Date getMin() {
-        return (Date)getMinProperty().getValue();
+    protected Number getMinValue() {
+        return (Number)getMinProperty().getValue();
     }
 
     public DataType.Property getMinProperty() {
@@ -72,16 +66,12 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
         }
     }
 
-    public int getMinPrecision() {
-        return minPrecision;
-    }
-
     public boolean isMinInclusive() {
         return minInclusive;
     }
 
-    public Date getMax() {
-        return (Date)getMaxProperty().getValue();
+    protected Number getMaxValue() {
+        return (Number)getMaxProperty().getValue();
     }
 
     public DataType.Property getMaxProperty() {
@@ -92,57 +82,64 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
         }
     }
 
-    public int getMaxPrecision() {
-        return maxPrecision;
-    }
-
     public boolean isMaxInclusive() {
         return maxInclusive;
     }
 
-    public DataType.Property setMin(Date value) {
-        return setProperty(PROPERTY_MININCLUSIVE, value);
-    }
-
-    public void setMinPrecision(int precision) {
-        minPrecision = precision;
+    public DataType.Property setMin(Number value) {
+        if (minInclusive) {
+            return setProperty(PROPERTY_MININCLUSIVE, value);
+        } else {
+            return setProperty(PROPERTY_MINEXCLUSIVE, value);
+        }
     }
 
     public void setMinInclusive(boolean inclusive) {
         minInclusive = inclusive;
     }
 
-    public DataType.Property setMin(Date value, int precision, boolean inclusive) {
+    public DataType.Property setMin(Number value, boolean inclusive) {
         edit();
-        setMinPrecision(precision);
         setMinInclusive(inclusive);
         return setMin(value);
     }
 
-    public DataType.Property setMax(Date value) {
-        return setProperty(PROPERTY_MAXINCLUSIVE, value);
-    }
-
-    public void setMaxPrecision(int precision) {
-        maxPrecision = precision;
+    public DataType.Property setMax(Number value) {
+        if (maxInclusive) {
+            return setProperty(PROPERTY_MAXINCLUSIVE, value);
+        } else {
+            return setProperty(PROPERTY_MAXEXCLUSIVE, value);
+        }
     }
 
     public void setMaxInclusive(boolean inclusive) {
         maxInclusive = inclusive;
     }
 
-    public DataType.Property setMax(Date value, int precision, boolean inclusive) {
+    public DataType.Property setMax(Number value, boolean inclusive) {
         edit();
-        setMaxPrecision(precision);
         setMaxInclusive(inclusive);
         return setMax(value);
     }
 
     public void validate(Object value, Cloud cloud) {
         super.validate(value);
-        if (value != null) {
-            Date dateValue = Casting.toDate(value);
-            // Todo: check on mindate/max date, taking into account precision and inclusiveness
+        if (value == null) {
+            double doubleValue = Casting.toDouble(value);
+            Number minimum = getMinValue();
+            if (minimum != null) {
+                double minValue = minimum.doubleValue();
+                if (minValue > doubleValue || (!minInclusive && minValue == doubleValue)) {
+                    failOnValidate(getMinProperty(), value, cloud);
+                }
+            }
+            Number maximum = getMaxValue();
+            if (maximum != null) {
+                double maxValue = maximum.doubleValue();
+                if (maxValue > doubleValue || (!minInclusive && maxValue == doubleValue)) {
+                    failOnValidate(getMaxProperty(), value, cloud);
+                }
+            }
         }
     }
 

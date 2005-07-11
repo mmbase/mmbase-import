@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: ListDataType.java,v 1.1 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: ListDataType.java,v 1.2 2005-07-11 14:42:52 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -29,10 +29,16 @@ public interface ListDataType extends DataType {
     public int getMinSize();
 
     /**
+     * Returns the 'minsize' property, containing the value, errormessages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
+    public DataType.Property getMinSizeProperty();
+
+    /**
      * Sets the minimum size for the list.
      * @param value the minimum size as an <code>int</code>, or <code>-1</code> if there is no minimum.
      */
-    public ListDataType setMinSize(int value);
+    public DataType.Property setMinSize(int value);
 
     /**
      * Returns the maximum size for the list.
@@ -41,22 +47,34 @@ public interface ListDataType extends DataType {
     public int getMaxSize();
 
     /**
+     * Returns the 'maxsize' property, containing the value, errormessages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
+    public DataType.Property getMaxSizeProperty();
+
+    /**
      * Sets the maximum size for the list.
      * @param value the maximum size as an <code>int</code>, or <code>-1</code> if there is no maximum.
      */
-    public ListDataType setMaxSize(int value);
+    public DataType.Property setMaxSize(int value);
 
     /**
      * Returns the datatype of items in this list.
      * @return the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
-    public DataType getListItemDataType();
+    public DataType getItemDataType();
+
+    /**
+     * Returns the 'itemDataType' property, containing the value, errormessages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
+    public DataType.Property getItemDataTypeProperty();
 
     /**
      * Sets the datatype of items in this list.
      * @param value the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
-    public ListDataType setListItemDataType(DataType value);
+    public DataType.Property setItemDataType(DataType value);
 
 
 }
