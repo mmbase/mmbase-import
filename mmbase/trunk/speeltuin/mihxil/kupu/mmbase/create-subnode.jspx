@@ -3,6 +3,7 @@
      xmlns:jsp="http://java.sun.com/JSP/Page" 
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
      >
+  <jsp:directive.page session="false" errorPage="error.jspx" />
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="basic user">
     <mm:param name="org.mmbase.xml-mode" value="kupu" />

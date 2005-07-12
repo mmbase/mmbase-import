@@ -7,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.18 2005-06-30 17:11:44 michiel Exp $
+// $Id: kupuinit.js,v 1.19 2005-07-12 18:44:38 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -207,7 +207,69 @@ function initKupu(iframe) {
 
     // register some cleanup filter
     // remove tags that aren't in the XHTML DTD
-    var nonxhtmltagfilter = new NonXHTMLTagFilter();
+   var nonxhtmltagfilter = new NonXHTMLTagFilter(
+   {'html': 1,
+        'body': 1,
+        'head': 1,
+        'title': 1,        
+        'a': 1,
+        'abbr': 0,
+        'acronym': 0,
+        'address': 0,
+        'b': 1,
+        'base': 0,
+        'blockquote': 0,
+        'br': 1,
+        'caption': 1,
+        'cite': 0,
+        'code': 0,
+        'col': 0,
+        'colgroup': 0,
+        'dd': 0,
+        'dfn': 0,
+        'div': 1,
+        'dl': 0,
+        'dt': 0,
+        'em': 1,
+        'h1': 1,
+        'h2': 1,
+        'h3': 1,
+        'h4': 1,
+        'h5': 1,
+        'h6': 1,
+        'h7': 1,
+        'i': 1,
+        'img': 1,
+        'kbd': 1,
+        'li': 1,
+        'link': 0,
+        'meta': 1,
+        'ol': 1,
+        'p': 1,
+        'pre': 0,
+        'q': 0,
+        'samp': 0,
+        'script': 0,
+        'span': 0,
+        'strong': 1,
+        'style': 0,
+        'sub': 1,
+        'sup': 1,
+        'table': 1,
+        'tbody': 1,
+        'td': 1,
+        'tfoot': 0,
+        'th': 1,
+        'thead': 0,
+        'tr': 1,
+        'ul': 1,
+        'u': 0,
+        'var': 0,
+        'font': 0,
+        'center': 0
+        });
     kupu.registerFilter(nonxhtmltagfilter);
+
+        
     return kupu;
 };

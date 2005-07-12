@@ -4,18 +4,16 @@
     type="text/xml"
     expires="-1">
   <!--
-       $Id: library.jspx,v 1.9 2005-07-11 16:35:07 michiel Exp $
+       $Id: library.jspx,v 1.10 2005-07-12 18:44:38 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:cloud>
-    <mm:import externid="librarysize">50</mm:import>
-    <mm:import externid="page">0</mm:import>
     <mm:import externid="nodetype">images</mm:import>
 
     <mm:context scope="request" id="drawer">
       <library id="${nodetype}">
-        <uri><mm:url referids="librarysize@max,nodetype" page="drawers/collection.jspx" /></uri>
+        <uri><mm:url referids="nodetype" page="drawers/collection.jspx" />&amp;amp;upload=</uri>
         <title>
           <mm:nodeinfo nodetype="$nodetype" type="plural_guinodemanager" />
         </title>
@@ -24,9 +22,7 @@
         <mm:listnodescontainer id="query" type="$nodetype">
 
           <mm:sortorder field="number" direction="down" />
-          <mm:maxnumber value="$librarysize" />
-          <mm:offset    value="${librarysize * page}" />
-          <src><mm:url referids="librarysize@max,nodetype" page="drawers/collection.jspx" /></src>
+          <src><mm:url referids="nodetype" page="drawers/collection.jspx" /></src>
 
         </mm:listnodescontainer>
         <mm:compare referid="nodetype" valueset="images,attachments">

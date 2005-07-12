@@ -1,6 +1,6 @@
 <!-- sadly no way of iterating bundle in jstl, falling back to java -->
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
-  <jsp:directive.page import="java.util.*" contentType="text/plain" />
+  <jsp:directive.page import="java.util.*" contentType="text/xml"  errorPage="error.jspx" />
   <jsp:scriptlet>
     try {
     String language = request.getParameter("language");
