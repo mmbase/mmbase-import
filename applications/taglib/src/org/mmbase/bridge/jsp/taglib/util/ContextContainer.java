@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.43 2005-06-22 19:24:40 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.44 2005-07-12 14:52:34 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -555,7 +555,12 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 if (log.isDebugEnabled()) {
                     log.debug("searching " + referId + " in multipart post");
                 }
-                result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
+                MultiPart.MMultipartRequest mp = MultiPart.getMultipartRequest(pageContext);
+                if (mp.isFile(referId)) {
+                    result = mp.getBytes(referId);
+                } else {
+                    result = fixEncoding(mp.getParameterValues(referId), pageContext);
+                }
                 //result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
