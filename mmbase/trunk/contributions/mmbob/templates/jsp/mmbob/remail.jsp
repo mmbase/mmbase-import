@@ -45,7 +45,7 @@
                <mm:import id="newconfirmpassword"><mm:write referid="wpassword"/></mm:import>
                 <!--  create the email node -->
                 <mm:createnode id="mail1" type="email">
-                        <mm:setfield name="from">type.here@your.emailaddress.com</mm:setfield>
+                        <mm:setfield name="from"><mm:function set="mmbob" name="getForumFromEmailAddress" referids="forumid"/></mm:setfield>
                         <mm:setfield name="to"><mm:write referid="wemail" /></mm:setfield>
                         <mm:setfield name="subject"><mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/></mm:setfield>
                         <mm:setfield name="body"> <mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
