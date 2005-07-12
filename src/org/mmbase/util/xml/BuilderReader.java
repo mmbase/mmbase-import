@@ -13,8 +13,10 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
+import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.core.CoreField;
@@ -34,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.22 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.23 2005-07-12 15:03:36 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -292,9 +294,9 @@ public class BuilderReader extends XMLBasicReader {
                 // need clone()!
                 for (Iterator i = parentfields.iterator();i.hasNext();) {
                     CoreField f = (CoreField)i.next();
-                    CoreField newField = f.copy(f.getName());
+                    CoreField newField = (CoreField)f.clone(f.getName());
                     while(newField.getStoragePosition() >= pos) pos++;
-                    newField.finish(); 
+                    newField.finish();
                     results.add(newField);
                     oldset.put(newField.getName(), newField);
                 }
@@ -305,6 +307,11 @@ public class BuilderReader extends XMLBasicReader {
             CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
             if (def != null) {
                 def.rewrite();
+                DataType baseDataType = DataTypes.getBaseDataType(def.getDataType());
+                DataType dataType = decodeDataType(def.getName(),getElementByPath(field,"field.gui"), baseDataType);
+                if (dataType != null) {
+                    def.setDataType(dataType); // replace datatype
+                }
                 decodeFieldDef(field, def);
                 def.finish();
             } else {
@@ -447,16 +454,6 @@ public class BuilderReader extends XMLBasicReader {
             }
         }
 
-        Element tmp = getElementByPath(gui,"gui.guitype");
-        // XXX: deprecated tag 'type'
-        if (tmp == null) {
-            tmp = getElementByPath(gui,"gui.type");
-        }
-        if (tmp != null) {
-            def.setGUIType(getElementValue(tmp));
-        } else {
-            def.setGUIType(""); // it may not be null.
-        }
         // Editor
         Element editorpos = getElementByPath(field,"field.editor.positions.input");
         if (editorpos != null) {
@@ -496,9 +493,21 @@ public class BuilderReader extends XMLBasicReader {
             } else {
                 def.setSearchPosition(-1);
             }
-
-
         }
+    }
+
+    protected DataType decodeDataType(String fieldName, Element gui, DataType baseDataType) {
+        Element guiTypeElement = getElementByPath(gui,"gui.guitype");
+        // XXX: deprecated tag 'type'
+        if (guiTypeElement == null) {
+            guiTypeElement = getElementByPath(gui,"gui.type");
+        }
+        DataType dataType = null;
+        if (guiTypeElement != null) {
+            String guiType = getElementValue(guiTypeElement);
+            dataType = DataTypes.getDataTypeInstance(guiType, baseDataType);
+        }
+        return dataType;
     }
 
     /**
@@ -515,7 +524,23 @@ public class BuilderReader extends XMLBasicReader {
         int type = Fields.getType(getElementValue(dbtype));
         int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        CoreField def = mmbase.createField(fieldName, type, state);
+        DataType baseDataType = null;
+        if (type == Field.TYPE_LIST) {
+            baseDataType = DataTypes.getDataType(type);
+            int subType = Field.TYPE_UNKNOWN;
+            String listType = getElementValue(dbtype);
+            if (listType.length() > 5) {
+                subType = Fields.getType(listType.substring(5,listType.length()-1));
+            }
+            baseDataType = DataTypes.getListDataType(subType);
+        } else {
+            baseDataType = DataTypes.getDataType(type);
+        }
+        DataType dataType = decodeDataType(fieldName,getElementByPath(field,"field.gui"), baseDataType);
+        if (dataType == null) {
+            dataType = (DataType)baseDataType.clone();
+        }
+        CoreField def = mmbase.createField(fieldName, dataType, state);
 
         String size = getElementAttributeValue(dbtype,"size");
         if (size!=null && !size.equals("")) {

@@ -26,7 +26,7 @@ import org.mmbase.util.*;
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCoreField.java,v 1.4 2005-07-09 11:10:09 nklasens Exp $
+ * @version $Id: BasicCoreField.java,v 1.5 2005-07-12 15:03:36 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
@@ -35,7 +35,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
 
     private static final int NO_POSITION = -1;
 
-    private String guiType;
     private int storageType; // JDBC type of this field
     private int searchPosition = NO_POSITION;
     private int listPosition = NO_POSITION;
@@ -56,8 +55,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
      */
     protected BasicCoreField(String name, DataType dataType) {
         super(name,dataType);
-        // guitype should be datatype name ???
-        setGUIType(dataType.getName());
     }
 
     /**
@@ -66,7 +63,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
      * @param type the class of the data type's possible value
      */
     protected BasicCoreField(String name, CoreField coreField) {
-        super(name,coreField, true);
+        super(name, coreField, true);
         setState(coreField.getState());
         setSearchPosition(coreField.getSearchPosition());
         setEditPosition(coreField.getEditPosition());
@@ -74,8 +71,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
         setStoragePosition(coreField.getStoragePosition());
         setParent(coreField.getParent());
         setSize(coreField.getSize());
-        // deprecated methods?
-        setGUIType(coreField.getGUIType());
         setUnique(coreField.isUnique());
     }
 
@@ -83,8 +78,12 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
         throw new UnsupportedOperationException("Core fields currently do not support calls to getNodeManager.");
     }
 
-    public CoreField copy(String name) {
-         return new BasicCoreField(name,this);
+    public Object clone() {
+        return clone (null);
+    }
+
+    public Object clone(String name) {
+        return super.clone(name, true);
     }
 
     /**
@@ -162,7 +161,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
      */
     public String toString() {
 
-        return getName() + "(" + getDataType() + " /  " + getGUIType() + ")";
+        return getName() + "(" + getDataType() + ")";
     }
 
     /**
@@ -193,7 +192,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
                 storageEquals(f)
                 && getLocalizedDescription().equals(f.getLocalizedDescription())
                 && getLocalizedGUIName().equals(f.getLocalizedGUIName())
-                && guiType.equals(f.guiType)
                 && searchPosition == f.searchPosition
                 && listPosition  ==  f.listPosition
                 && editPosition   == f.editPosition
@@ -234,11 +232,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
         } else {
             return 0;
         }
-    }
-
-    // should this be possible?
-    public void setType(int type) {
-        dataType = DataTypes.createDataType(guiType,type);
     }
 
     // Storable interfaces
@@ -288,11 +281,9 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
 
     public void setSize(int i) {
         size = i;
-        if (dataType instanceof StringDataType) {
-            ((StringDataType)dataType).setMaxLength(size);
-        } else if (dataType instanceof BinaryDataType) {
-            ((BinaryDataType)dataType).setMaxLength(size);
-        } else if (dataType instanceof ListDataType) {
+        if (dataType instanceof BigDataType && size < ((BigDataType)dataType).getMaxLength()) {
+            ((BigDataType)dataType).setMaxLength(size);
+        } else if (dataType instanceof ListDataType && size < ((ListDataType)dataType).getMaxSize()) {
             ((ListDataType)dataType).setMaxSize(size);
         }
     }
@@ -302,11 +293,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
      * Retrieve the GUI type of the field.
      */
     public String getGUIType() {
-        return guiType;  // should return datatype name ???
-    }
-
-    public void setGUIType(String g) {
-        guiType = g;
+        return dataType.getName();
     }
 
     /**
@@ -324,5 +311,10 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
         return getSize();
     }
 
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+        // datatype can be influenced by size
+        setSize(getSize());
+    }
 
 }

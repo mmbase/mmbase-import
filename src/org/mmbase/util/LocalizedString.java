@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A String which is localized. There are two mechanisms to find and provide translations: They can
@@ -18,10 +19,12 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.9 2005-07-11 19:38:52 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.10 2005-07-12 15:03:36 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
+
+    private static final Logger log = Logging.getLoggerInstance(LocalizedString.class);
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -173,13 +176,18 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
         return "localized(" + key + ")";
     }
 
-    public Object clone() throws java.lang.CloneNotSupportedException {
-        LocalizedString clone = (LocalizedString)super.clone();
-        if (values != null) {
-            clone.values = (Map)((HashMap)values).clone();
-        }
-        return clone;
+    public Object clone() {
+        try {
+            LocalizedString clone = (LocalizedString)super.clone();
+            if (values != null) {
+                clone.values = (Map)((HashMap)values).clone();
+            }
+            return clone;
+        } catch (CloneNotSupportedException cnse) {
+            // should not happen
+            log.error("Cannot clone this LocalizedString");
+                throw new RuntimeException("Cannot clone this LocalizedString", cnse);
+       }
     }
-
 
 }

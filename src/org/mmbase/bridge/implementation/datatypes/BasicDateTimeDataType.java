@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDateTimeDataType.java,v 1.4 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicDateTimeDataType.java,v 1.5 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DateTimeDataType
  * @since MMBase-1.8
@@ -45,15 +45,6 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
      */
     public BasicDateTimeDataType(String name) {
         super(name, Date.class);
-    }
-
-    /**
-     * Create a datetime field object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    public BasicDateTimeDataType(String name, DataType dataType) {
-        super(name,dataType);
     }
 
     public int getBaseType() {

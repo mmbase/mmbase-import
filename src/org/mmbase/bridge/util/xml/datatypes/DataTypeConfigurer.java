@@ -18,7 +18,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeConfigurer.java,v 1.1 2005-07-08 08:04:26 pierre Exp $
+ * @version $Id: DataTypeConfigurer.java,v 1.2 2005-07-12 15:03:36 pierre Exp $
  **/
 public class DataTypeConfigurer {
 
@@ -47,7 +47,7 @@ public class DataTypeConfigurer {
     }
 
     public DataType getDataType(String name) {
-        DataType dataType = DataTypes.getDataType(name);
+        DataType dataType = DataTypes.getDataTypeInstance(name, null);
         if (dataType == null) {
             throw new NotFoundException("Datatype with name " + name + " does not exist.");
         }

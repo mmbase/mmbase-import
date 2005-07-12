@@ -18,33 +18,35 @@ import org.mmbase.util.LocalizedString;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.7 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: DataType.java,v 1.8 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
-public interface DataType extends Comparable, Descriptor {
+public interface DataType extends Comparable, Descriptor, Cloneable {
 
     // DataTypes for base MMBase field types
-    public static final DataType INTEGER  = DataTypes.createFinalDataType("integer", Field.TYPE_INTEGER);
-    public static final DataType LONG     = DataTypes.createFinalDataType("long", Field.TYPE_LONG);
-    public static final DataType FLOAT    = DataTypes.createFinalDataType("float", Field.TYPE_FLOAT);
-    public static final DataType DOUBLE   = DataTypes.createFinalDataType("double", Field.TYPE_DOUBLE);
-    public static final DataType STRING   = DataTypes.createFinalDataType("string", Field.TYPE_STRING);
-    public static final DataType XML      = DataTypes.createFinalDataType("xml", Field.TYPE_XML);
-    public static final DataType DATETIME = DataTypes.createFinalDataType("datetime", Field.TYPE_DATETIME);
-    public static final DataType BOOLEAN  = DataTypes.createFinalDataType("boolean", Field.TYPE_BOOLEAN);
-    public static final DataType BINARY   = DataTypes.createFinalDataType("binary", Field.TYPE_BINARY);
-    public static final DataType NODE     = DataTypes.createFinalDataType("node", Field.TYPE_NODE);
+    public static final DataType INTEGER  = DataTypes.getDataType(Field.TYPE_INTEGER);
+    public static final DataType LONG     = DataTypes.getDataType(Field.TYPE_LONG);
+    public static final DataType FLOAT    = DataTypes.getDataType(Field.TYPE_FLOAT);
+    public static final DataType DOUBLE   = DataTypes.getDataType(Field.TYPE_DOUBLE);
+    public static final DataType STRING   = DataTypes.getDataType(Field.TYPE_STRING);
+    public static final DataType XML      = DataTypes.getDataType(Field.TYPE_XML);
+    public static final DataType DATETIME = DataTypes.getDataType(Field.TYPE_DATETIME);
+    public static final DataType BOOLEAN  = DataTypes.getDataType(Field.TYPE_BOOLEAN);
+    public static final DataType BINARY   = DataTypes.getDataType(Field.TYPE_BINARY);
+    public static final DataType NODE     = DataTypes.getDataType(Field.TYPE_NODE);
+    public static final DataType UNKNOWN  = DataTypes.getDataType(Field.TYPE_UNKNOWN);
 
-    public static final DataType LIST_INTEGER = DataTypes.createFinalListDataType("list[integer]", INTEGER);
-    public static final DataType LIST_LONG = DataTypes.createFinalListDataType("list[long]", LONG);
-    public static final DataType LIST_FLOAT = DataTypes.createFinalListDataType("list[float]", FLOAT);
-    public static final DataType LIST_DOUBLE = DataTypes.createFinalListDataType("list[double]", DOUBLE);
-    public static final DataType LIST_STRING = DataTypes.createFinalListDataType("list[string]", STRING);
-    public static final DataType LIST_XML = DataTypes.createFinalListDataType("list[xml]", XML);
-    public static final DataType LIST_DATETIME = DataTypes.createFinalListDataType("list[datetime]", DATETIME);
-    public static final DataType LIST_BOOLEAN = DataTypes.createFinalListDataType("list[boolean]", BOOLEAN);
-    public static final DataType LIST_NODE = DataTypes.createFinalListDataType("list[node]", NODE);
+    public static final DataType LIST_UNKNOWN = DataTypes.getListDataType(Field.TYPE_UNKNOWN);
+    public static final DataType LIST_INTEGER = DataTypes.getListDataType(Field.TYPE_INTEGER);
+    public static final DataType LIST_LONG = DataTypes.getListDataType(Field.TYPE_LONG);
+    public static final DataType LIST_FLOAT = DataTypes.getListDataType(Field.TYPE_FLOAT);
+    public static final DataType LIST_DOUBLE = DataTypes.getListDataType(Field.TYPE_DOUBLE);
+    public static final DataType LIST_STRING = DataTypes.getListDataType(Field.TYPE_STRING);
+    public static final DataType LIST_XML = DataTypes.getListDataType(Field.TYPE_XML);
+    public static final DataType LIST_DATETIME = DataTypes.getListDataType(Field.TYPE_DATETIME);
+    public static final DataType LIST_BOOLEAN = DataTypes.getListDataType(Field.TYPE_BOOLEAN);
+    public static final DataType LIST_NODE = DataTypes.getListDataType(Field.TYPE_NODE);
 
     /**
      * An empty Parameter array.
@@ -111,12 +113,6 @@ public interface DataType extends Comparable, Descriptor {
     public void validate(Object value, Cloud cloud);
 
     /**
-     * Returns a new (and editable) instance of this datatype, inheriting all validation rules.
-     * @param name the new name of the copied datatype (can be <code>null</code>).
-     */
-    public DataType copy(String name);
-
-    /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
@@ -145,6 +141,20 @@ public interface DataType extends Comparable, Descriptor {
      * @param value The value to be filled in in this Parameter.
      */
     public Object autoCast(Object value);
+
+    /**
+     * Returns a cloned instance of this datatype, inheriting all validation rules.
+     * Similar to calling clone(), but changes the data type name if one is provided.
+     * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
+     */
+    public Object clone(String name);
+
+    /**
+     * Returns a cloned instance of this datatype, inheriting all validation rules.
+     * Unlike the original datatype though, the cloned copy is declared unfinished even if the original
+     * was finished. This means that the cloned datatype can be changed.
+     */
+    public Object clone();
 
     static public interface Property {
         public String getName();
