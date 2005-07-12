@@ -8,6 +8,7 @@
 
 <mm:cloud jspvar="cloud" method="asis">
    <%@include file="/shared/setImports.jsp" %>
+   <%@include file="/education/wizards/roles_defs.jsp" %>
 
    <%
       //education-people connector
@@ -65,41 +66,76 @@
             <form onSubmit="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';">
                <input type="hidden" name="mode" value="educations"/>
                <tr>
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="components">      class="education_top_menu_selected" </mm:compare>><a href="?mode=components"       style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuComponents"/></a></td>
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="roles">           class="education_top_menu_selected" </mm:compare>><a href="?mode=roles"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuRoles"/></a></td>
+                  <mm:import id="editcontextname" reset="true">componenten</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="components">      class="education_top_menu_selected" </mm:compare>><a href="?mode=components"       style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuComponents"/></a></td>
+                  </mm:islessthan>
+
+                  <mm:import id="editcontextname" reset="true">rollen</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="roles">           class="education_top_menu_selected" </mm:compare>><a href="?mode=roles"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuAuthorization"/></a></td>
+                  </mm:islessthan>
 
                   <mm:node number="component.pop" notfound="skip">
                      <%// A user will see a Competence submenu only if POP component is switched ON %>
                      <mm:relatednodes type="providers" constraints="providers.number=$provider">
-                        <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="competence">      class="education_top_menu_selected" </mm:compare>><a href="?mode=competence"       style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuCompetence"/></a></td>
+                        <mm:import id="editcontextname" reset="true">competentie</mm:import>
+                        <%@include file="/education/wizards/roles_chk.jsp" %>
+                        <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                           <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="competence">      class="education_top_menu_selected" </mm:compare>><a href="?mode=competence"       style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuCompetence"/></a></td>
+                        </mm:islessthan>
                      </mm:relatednodes>
                   </mm:node>
 
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="metadata">        class="education_top_menu_selected" </mm:compare>><a href="?mode=metadata"         style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuMetadata"/></a></td>
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="content_metadata">class="education_top_menu_selected" </mm:compare>><a href="?mode=content_metadata" style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuContentMetadata"/></a></td>
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="filemanagement">  class="education_top_menu_selected" </mm:compare>><a href="?mode=filemanagement"   style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuFilemanagement"/></a></td>
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="tests">           class="education_top_menu_selected" </mm:compare>><a href="?mode=tests"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuTests"/></a></td>
+                  <mm:import id="editcontextname" reset="true">metadata</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="metadata">        class="education_top_menu_selected" </mm:compare>><a href="?mode=metadata"         style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuMetadata"/></a></td>
+                  </mm:islessthan>
+
+                  <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="content_metadata">class="education_top_menu_selected" </mm:compare>><a href="?mode=content_metadata" style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuContentMetadata"/></a></td>
+                  </mm:islessthan>
+
+                  <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="filemanagement">  class="education_top_menu_selected" </mm:compare>><a href="?mode=filemanagement"   style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuFilemanagement"/></a></td>
+                  </mm:islessthan>
+
+                  <mm:import id="editcontextname" reset="true">toetsen</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="tests">           class="education_top_menu_selected" </mm:compare>><a href="?mode=tests"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuTests"/></a></td>
+                  </mm:islessthan>
+
                   <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="workgroups">           class="education_top_menu_selected" </mm:compare>><a href="?mode=workgroups"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuWorkgroups"/></a></td>
- 
-                  
-                  <td style="padding:1px;padding-left:6px;"   <mm:compare referid="education_top_menu" value="educations">      class="education_top_menu_selected" </mm:compare>>
-                     <%
-                        if(hsetEducations.size() < 2)
-                        {
-                           %>
-                              <a href="?mode=educations"     style="font-weight:bold;"><fmt:message key="educationMenuEducations"/></a>
-                           <%
-                        }
-                        else
-                        {
-                           %>
-                              <table border="0" cellspacing="0" class="titlefield2" style="padding:2px;">
-                                 <tr>
-                                    <td style="padding-right:6px;">
-                                       <fmt:message key="educationMenuEducations"/>
-                                    </td>
-                                    <td>
-                                         <select name="course" class="titlefield2">
+
+                  <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
+                  <%@include file="/education/wizards/roles_chk.jsp" %>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+                     <td style="padding:1px;padding-left:6px;"   <mm:compare referid="education_top_menu" value="educations">      class="education_top_menu_selected" </mm:compare>>
+                        <%
+                           if(hsetEducations.size() < 2)
+                           {
+                              %>
+                                 <a href="?mode=educations"     style="font-weight:bold;"><fmt:message key="educationMenuEducations"/></a>
+                              <%
+                           }
+                           else
+                           {
+                              %>
+                                 <table border="0" cellspacing="0" class="titlefield2" style="padding:2px;">
+                                    <tr>
+                                       <td style="padding-right:6px;">
+                                          <fmt:message key="educationMenuEducations"/>
+                                       </td>
+                                       <td>
+                                          <select name="course" class="titlefield2">
                                              <%
                                                 for(Iterator it = hsetEducations.iterator(); it.hasNext();)
                                                 {
@@ -110,16 +146,17 @@
                                                 }
                                              %>
                                           </select>
-                                    </td>
-                                    <td>
-                                      <input type="image" src="<mm:treefile page="/education/wizards/gfx/ga.gif" objectlist="$includePath" referids="$referids" />" border="0" align="bottom"/>
-                                    </td>
-                                 </tr>
-                              </table>
-                           <%
-                        }
-                     %>
-                  </td>
+                                       </td>
+                                       <td>
+                                          <input type="image" src="<mm:treefile page="/education/wizards/gfx/ga.gif" objectlist="$includePath" referids="$referids" />" border="0" align="bottom"/>
+                                       </td>
+                                    </tr>
+                                 </table>
+                              <%
+                           }
+                        %>
+                     </td>
+                  </mm:islessthan>
                   <td width="100%">&nbsp;</td>
                </tr>
             </form>

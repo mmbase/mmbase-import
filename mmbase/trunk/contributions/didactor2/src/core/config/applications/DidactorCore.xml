@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCore" maintainer="didactor.nl" version="6" auto-deploy="true">
+<application name="DidactorCore" maintainer="didactor.nl" version="7" auto-deploy="true">
     <requirements>
         <requires name="Resources" maintainer="didactor.nl" version="2" />
     </requirements>  
@@ -24,6 +24,8 @@
         <builder maintainer="didactor.nl" version="2">copybooks</builder>
 
         <builder maintainer="didactor.nl" version="2">news</builder>
+
+        <builder maintainer="didactor.nl" version="2">editcontexts</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -63,6 +65,9 @@
         <!-- workgroups -->
         <relation from="classes" to="workgroups" type="related" />
         <relation from="workgroups" to="people" type="related" />
+
+        <!-- role editor -->
+        <relation from="roles" to="editcontexts" type="posrel" />
   </allowedrelationlist>
 
   <datasourcelist />
