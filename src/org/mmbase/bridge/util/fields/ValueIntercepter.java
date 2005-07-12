@@ -23,9 +23,17 @@ import org.mmbase.util.XMLEntityResolver;
 import java.util.*;
 
 /**
+ * This class contains the static methods implementing 'value interception' of the set- and get-
+ * methods of {@link org.mmbase.bridge.Node}.
+ * 
+ * It reads (on static init) 'fieldtypedefinitions.xml' to know which 
+ * {@link org.mmbase.bridge.util.fields.Processor}(s)  and {@link org.mmbase.birdge.util.field.CommitProcessor}(s)
+ * must be linked to which combinations of field-type and 'specialization'.
+ * 
+ * @todo The concept of 'specialization' ~= 'guitype' seems to be 'datatype name' now.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.20 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: ValueIntercepter.java,v 1.21 2005-07-12 20:01:21 michiel Exp $
  * @since MMBase-1.7
  */
 
