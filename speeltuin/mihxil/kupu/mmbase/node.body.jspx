@@ -3,12 +3,11 @@
             xmlns="http://www.w3.org/1999/xhtml" 
             xmlns:jsp="http://java.sun.com/JSP/Page" 
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:directive.page session="false" />
+  <jsp:directive.page session="false" errorPage="error.jspx" />
   <jsp:output omit-xml-declaration="true" />
   <mm:import id="kupu_node" externid="node" />
   <mm:import id="node" externid="kupu_node" from="this,session" />
   <mm:cloud>
-    <mm:param name="org.mmbase.xml-mode" value="kupu" />
     <mm:notpresent referid="node">      
       <mm:remove referid="node" />
       <mm:import externid="node" from="parameters" />
