@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.10 2005-05-02 22:23:35 michiel Exp $ 
+ * @version $Id: WriterTEI.java,v 1.11 2005-07-12 14:52:34 michiel Exp $ 
  */
 
 public class WriterTEI extends TagExtraInfo {
@@ -72,7 +72,7 @@ public class WriterTEI extends TagExtraInfo {
         case WriterHelper.TYPE_BOOLEAN:
             type = Boolean.class.getName(); break;
         case WriterHelper.TYPE_BYTES:
-            type = "[B"; break; 
+            type = "byte[]"; break; 
             // this doesn't work like this...
             // How it does??
 

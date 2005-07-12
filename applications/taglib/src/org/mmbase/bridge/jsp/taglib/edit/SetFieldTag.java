@@ -12,7 +12,10 @@ package org.mmbase.bridge.jsp.taglib.edit;
 import javax.servlet.jsp.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.transformers.*;
+import org.mmbase.util.Casting;
 
 /**
  * The SetFieldTag can be used as a child of a 'NodeProvider' tag or inside a
@@ -20,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.30 2005-07-01 14:51:20 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.31 2005-07-12 14:52:34 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -30,7 +33,8 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         return s;
     }
 
-    String body = "";
+    private String body = null;
+    private Attribute valueId = Attribute.NULL;
 
     public int doStartTag() throws JspTagException {
         node = null;
@@ -42,7 +46,11 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         if (bodyContent != null) body = bodyContent.getString();
         return SKIP_BODY;
     }
+    public void setValueid(String v) throws JspTagException {
+        valueId = getAttribute(v);
+    }
 
+    private static final ByteToCharTransformer base64 = new Base64();
     /**
      * Set the value of the field.
      */
@@ -54,44 +62,37 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         }
         Node node = getNodeVar();
         int type = field.getType();
-        if ((field != null) && (type == Field.TYPE_BYTE)) {
-            // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
-            node.setByteValue(fieldName, org.mmbase.util.Encode.decodeBytes("BASE64", body));
+
+        Object value;
+        String refid = valueId.getString(this);
+        if (body != null) {
+            if (! refid.equals("")) throw new JspTagException("Cannot use both body and referid attribute on setfield tag");
+            value = body;
+        } else if (! refid.equals("")) {
+            value = getObject(refid);
         } else {
-            String newValue = convert(body);
-            Object value;
+            value = "";
+        }
+
+        if ((field != null) && (type == Field.TYPE_BYTE)) {
+            // if the field type is a byte[] then we expect a BASE64 encoded String, unless value is actualy a byte[].
+            if (value instanceof byte[]) {
+                node.setByteValue(fieldName, (byte[]) value);
+            } else {
+                node.setByteValue(fieldName, base64.transformBack(Casting.toString(value)));
+            }
+        } else {
+            String newValue = convert(Casting.toString(value));
             // a bit of hackery to make it more likely that actually a right type is fed to the core.
             // E.g. if you use ExprCalc to set an integer field, that would not work otherwise (because always double like '1.0')
             switch(type) {
             case Field.TYPE_NODE:
-            case Field.TYPE_INTEGER: {
-                try {
-                    value = new Integer(newValue);
-                } catch (NumberFormatException e) {
-                    try {
-                        log.debug("Values does not look like a integer, trying to round");
-                        value = new Integer(new Float(newValue).intValue());
-                    } catch (NumberFormatException e2) {
-                        // don't know any more, leave error-handling to core.
-                        value = newValue;
-                    }
-                }
+            case Field.TYPE_INTEGER: 
+                value = Casting.toInteger(newValue);
                 break;
-            }
-            case Field.TYPE_LONG: {
-                try {
-                    value = new Long(newValue);
-                } catch (NumberFormatException e) {
-                    try {
-                        log.debug("Values does not look like a long, trying to round");
-                        value = new Long(new Float(newValue).longValue());
-                    } catch (NumberFormatException e2) {
-                        // don't know any more, leave error-handling to core.
-                        value = newValue;
-                    }
-                }
+            case Field.TYPE_LONG: 
+                value = Casting.toInteger(newValue);
                 break;
-            }
             default: // rest should go ok in core
                 value = newValue;
             }
