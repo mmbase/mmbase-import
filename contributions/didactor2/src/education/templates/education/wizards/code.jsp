@@ -162,9 +162,9 @@
 <mm:compare referid="education_top_menu" value="roles">
    <% //----------------------- Roles come from here ----------------------- %>
    <di:hasrole role="systemadministrator">
-      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=roles&nodepath=roles&fields=name&orderby=name' title='' target="text"><fmt:message key="roles"/></nobr></a>
+      <a href='javascript:clickNode("roles_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_roles_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=roles&nodepath=roles&fields=name&orderby=name' title='' target="text"><fmt:message key="roles"/></nobr></a>
       <br>
-      <div id='components_0' style='display: none'>
+      <div id='roles_0' style='display: none'>
          <%// edit people,rolerel, education %>
          <%-- doesn't work properly, so commented it out for the moment
             rolestree.addItem("<fmt:message key="editPeopleRoleRelEducation"/>",
@@ -223,7 +223,7 @@
 <fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="education_top_menu" value="content_metadata">
    <% //----------------------- Metadata for components comes from here ----------------------- %>
-   <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='#' title="<fmt:message key="filemanagement"/>"><fmt:message key="educationMenuContentMetadata"/></a></nobr>
+   <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='#' title="<fmt:message key="educationMenuContentMetadata"/>"><fmt:message key="educationMenuContentMetadata"/></a></nobr>
    <br>
    <div id='content_metadata_0' style='display: none'>
       <%
@@ -489,7 +489,7 @@
                   </mm:last>
 
                <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
-               <td><nobr><a href='<mm:write referid="wizardjsp"/>?wizard=metastandard&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatMetastandard"/>' target="text"><mm:field name="name" /><mm:field name="name" /></a>&nbsp;<a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'></a></nobr></td>
+               <td><nobr><a href='<mm:write referid="wizardjsp"/>?wizard=metastandard&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatMetastandard"/>' target="text"><mm:field name="name" /></a>&nbsp;<a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'></a></nobr></td>
             </tr>
          </table>
 
