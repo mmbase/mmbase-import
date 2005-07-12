@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.14 2005-05-31 15:36:40 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.15 2005-07-12 14:52:34 michiel Exp $
  **/
 
 public class MultiPart {
@@ -31,8 +31,9 @@ public class MultiPart {
 
     public static boolean isMultipart(PageContext pageContext) {
         String ct = ((HttpServletRequest)pageContext.getRequest()).getContentType();
-        if (ct == null)
+        if (ct == null) {
             return false;
+        }
         return (ct.indexOf("multipart/form-data") != -1);
     }
 
@@ -172,6 +173,14 @@ public class MultiPart {
             } catch (java.io.UnsupportedEncodingException e) {
                 throw new TaglibException(e);
             }
+        }
+
+        /**
+         * @since MMBase-1.8
+         */
+        public boolean isFile(String param) {
+            Object value = parametersMap.get(param);
+            return value instanceof FileItem;
         }
 
         /**

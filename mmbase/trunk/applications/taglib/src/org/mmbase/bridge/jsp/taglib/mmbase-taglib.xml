@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.312 2005-06-29 13:11:06 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.313 2005-07-12 14:52:34 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2694,6 +2694,24 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <info>
         The name of the field to set. If this field is not set this tag will
         look for a surrounding fieldlist tag to retrieve name and node from.
+      </info>
+    </attribute>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8</since>
+      <info>
+        Refers to other field-tag.
+      </info>
+    </attribute>
+    <attribute>
+      <name>valueid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8</since>
+      <info>
+        The body of the tag, or the value represented by this referid is used to fill the field's value.
       </info>
     </attribute>
     <see tag="createnode" />
