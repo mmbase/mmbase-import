@@ -49,6 +49,8 @@
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <tr>
       <mm:compare referid="posterid" value="-1">
+     <%-- should be fixed in a nicer way, but now it actually works --%>
+     <mm:import id="entree">null</mm:import>
      <mm:compare referid="entree" value="null">
         <th width="100"><mm:field name="accountcreationtype"><mm:compare value="open"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="image_guest"/></a></mm:compare></mm:field></th>
       <td align="left">
