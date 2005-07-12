@@ -70,10 +70,14 @@ th {
 
 img.image-right { 
   float: right;
+  margin-right: 0px;
+  margin-left: 1ex;
 }
 
 img.image-left { 
   float: left;
+  margin-left: 0px;
+  margin-right: 1ex;
 }
 
 strong, b 
@@ -92,11 +96,22 @@ div.float {
   display: block;
   float: left;
   width: 200px;
-  background-color: #ffc;
   padding: 5px;
   margin: 1ex;
   border: solid black 1px;
 }
+
+div.note { 
+  background-color: #ffc;
+  font-style: italic;
+}
+div.note i { 
+  font-style: normal;
+}
+div.note em { 
+  font-style: normal;
+}
+
 div.right { 
   margin-right: 0px;
   float: right;
@@ -104,11 +119,18 @@ div.right {
 }
 div.left { 
   margin-left: 0px;
+  float: left;
 } 
-div.intermezzo 
-{ 
+
+div.intermezzo  { 
   float: left;
   margin-left: 0px;
-  margin-right: 0px;
+  margin-right: 2ex;
+  width: 90%;
   background-color: #cfc;
+  font-style: normal;
+}
+
+div.caption { 
+  background-color: #ddd;
 }

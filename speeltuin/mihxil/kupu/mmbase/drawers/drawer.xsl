@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.9 2005-07-11 16:35:07 michiel Exp $
+$Id: drawer.xsl,v 1.10 2005-07-12 18:44:38 michiel Exp $
 -->
 <xsl:stylesheet
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -24,7 +24,7 @@ $Id: drawer.xsl,v 1.9 2005-07-11 16:35:07 michiel Exp $
   <xsl:param name="drawertitle">Image Drawer</xsl:param>
   <xsl:variable name="showupload">yes</xsl:variable>
   <xsl:param name="usecaptions">no</xsl:param>
-  <xsl:variable name="titlelength" select="20"/>
+  <xsl:variable name="titlelength" select="40"/>
   <xsl:template match="/libraries">
     <html>
       <head>
@@ -67,21 +67,20 @@ $Id: drawer.xsl,v 1.9 2005-07-11 16:35:07 michiel Exp $
 
                   <td id="kupu-propertiespanel" class="panel">
                     <div id="kupu-properties" class="overflow">
-                      AAAA
                       <xsl:choose>
                         <xsl:when test="$drawertype='image'">
                           <xsl:if test="//resource[@selected]">
                             <xsl:apply-templates select="/libraries/*[@selected]//resource[@selected]" mode="image-properties"/>
-                          </xsl:if>
-                          <!-- use upload template -->
-                          <xsl:if test="$showupload='yes'">
-                            <xsl:apply-templates select="/libraries/*[@selected]//uploadbutton" mode="image-upload"/>
                           </xsl:if>
                         </xsl:when>
                         <xsl:when test="$drawertype='link'">
                           <xsl:apply-templates select="/libraries/*[@selected]//resource[@selected]" mode="link-properties"/>
                         </xsl:when>
                       </xsl:choose>
+                      <!-- use upload template -->
+                      <xsl:if test="not(//resource[@selected]) and $showupload='yes'">                      
+                        <xsl:apply-templates select="/libraries/*[@selected]//uploadbutton" mode="image-upload"/>
+                      </xsl:if>
                     </div>
                   </td>
                 </tr>
@@ -244,7 +243,7 @@ $Id: drawer.xsl,v 1.9 2005-07-11 16:35:07 michiel Exp $
       Select an image from your computer and click ok to have it automatically uploaded to selected folder and inserted into the editor.
     </div>
     <form name="kupu_upload_form" method="POST"
-          action="upload.jspx" scrolling="off" target="kupu_upload_form_target"
+          action="" scrolling="off" target="kupu_upload_form_target"
           enctype="multipart/form-data" style="margin: 0; border: 0;">
       <span id="kupu-upload-to"><strong>Upload to: </strong> <xsl:value-of select="/libraries/*[@selected]/title"/> </span><br/>
       <input id="kupu-upload-file" type="file" name="node_prop_image" /><br/>
