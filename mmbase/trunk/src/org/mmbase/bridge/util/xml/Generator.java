@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.35 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: Generator.java,v 1.36 2005-07-12 18:27:05 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -364,7 +364,7 @@ public class Generator {
         if (dt != null) {
             namespace = dt.getSystemId();
         } else {
-            namespace = "http://www.mmbase.org/" + tagName;
+            namespace = "http://www.mmbase.org/xmlns/" + tagName;
         }
         if (log.isDebugEnabled()) {
             log.debug("using namepace: " + namespace);
