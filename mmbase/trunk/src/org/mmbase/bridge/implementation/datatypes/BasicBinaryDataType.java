@@ -18,7 +18,7 @@ import org.mmbase.bridge.datatypes.BinaryDataType;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicBinaryDataType.java,v 1.3 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicBinaryDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BinaryDataType
  * @since MMBase-1.8
@@ -30,15 +30,6 @@ public class BasicBinaryDataType extends BasicBigDataType implements BinaryDataT
      */
     public BasicBinaryDataType(String name) {
         super(name, byte[].class);
-    }
-
-    /**
-     * Create a binary field object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    public BasicBinaryDataType(String name, DataType dataType) {
-        super(name,dataType);
     }
 
     public int getBaseType() {

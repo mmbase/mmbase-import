@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
@@ -19,10 +20,12 @@ import org.mmbase.bridge.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.3 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
+
+    private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
     protected DataType dataType = null;
 
@@ -45,10 +48,9 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      *        without affecting the original datatype)
      */
     protected AbstractField(String name, Field field, boolean copyDataTypeForRewrite) {
-        super(name);
-        copy((Descriptor)field);
+        super(name, (Descriptor)field);
         if (copyDataTypeForRewrite) {
-            dataType = field.getDataType().copy(field.getDataType().getName());
+            dataType = (DataType)field.getDataType().clone();
         } else {
             dataType = field.getDataType();
         }
@@ -140,5 +142,24 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     abstract public String getGUIType();
 
     abstract public boolean isUnique();
+
+
+    public Object clone() {
+        return clone (null, false);
+    }
+
+    public Object clone(String name, boolean copyDataTypeForRewrite) {
+        try {
+            AbstractField clone = (AbstractField)super.clone(name);
+            if (copyDataTypeForRewrite) {
+                clone.dataType = (DataType)getDataType().clone();
+            }
+            return clone;
+        } catch (CloneNotSupportedException cnse) {
+            // should not happen
+            log.error("Cannot clone this Field");
+                throw new RuntimeException("Cannot clone this Field", cnse);
+        }
+    }
 
 }

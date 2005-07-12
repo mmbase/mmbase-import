@@ -24,7 +24,7 @@ import org.mmbase.core.util.Fields;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.48 2005-07-09 11:12:15 nklasens Exp $
+ * @version $Id: FieldDefs.java,v 1.49 2005-07-12 15:03:36 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -41,19 +41,6 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
     public final static int ORDER_EDIT   = NodeManager.ORDER_EDIT;
     public final static int ORDER_LIST   = NodeManager.ORDER_LIST;
     public final static int ORDER_SEARCH = NodeManager.ORDER_SEARCH;
-
-    /*
-    public FieldDefs() {
-    }
-
-    public FieldDefs(String name) {
-        super(name);
-    }
-    */
-
-    public FieldDefs(String name, FieldDefs parentFieldDef ) {
-        super(name, parentFieldDef);
-    }
 
     public FieldDefs(String name, DataType dataType ) {
         super(name, dataType);
@@ -84,10 +71,9 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * @param state the state of the field (persistent, virtual, etc.)
      */
     public FieldDefs(String guiName, String guiType, int searchPos, int listPos, String name, int type, int guiPos, int state) {
-        super(name,DataTypes.createDataType(null,type));
+        super(name,(DataType)DataTypes.getDataType(type).clone(guiType));
         setState(state);
         setGUIName(guiName);
-        setGUIType(guiType);
         setSearchPosition(searchPos);
         setEditPosition(guiPos);
         setListPosition(listPos);
@@ -394,10 +380,6 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      */
     public static void sort(List fielddefs, int order) {
         Fields.sort(fielddefs, order);
-    }
-
-    public CoreField copy(String name) {
-         return new FieldDefs(name,this);
     }
 
 }

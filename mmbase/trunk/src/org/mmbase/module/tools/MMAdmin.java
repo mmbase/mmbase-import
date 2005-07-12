@@ -12,9 +12,11 @@ package org.mmbase.module.tools;
 import java.io.File;
 import java.util.*;
 
+import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.cache.MultilevelCache;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.Versions;
@@ -41,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.105 2005-07-11 10:08:43 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.106 2005-07-12 15:03:36 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1829,13 +1831,16 @@ public class MMAdmin extends ProcessorModule {
             return;
         }
         String builder = (String)vars.get("BUILDER");
-        String fieldname = (String)vars.get("FIELDNAME");
-        String value = (String)vars.get("VALUE");
+        String fieldName = (String)vars.get("FIELDNAME");
+        String guiType = (String)vars.get("VALUE");
 
         MMObjectBuilder bul = getMMObject(builder);
-        CoreField def = bul.getField(fieldname);
+        CoreField def = bul.getField(fieldName);
         if (def != null) {
-            def.setGUIType(value);
+            DataType baseDataType = DataTypes.getBaseDataType(def.getDataType());
+            DataType dataType = DataTypes.getDataTypeInstance(guiType, baseDataType);
+            def.setDataType(dataType);
+            def.finish();
         }
         syncBuilderXML(bul, builder);
     }
@@ -1962,17 +1967,17 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
-            int oldType = def.getType();
+            DataType oldType = def.getDataType();
             int newType = Fields.getType(value);
-            if (oldType != newType) {
+            if (oldType.getBaseType() != newType) {
                 def.rewrite();
-                def.setType(newType);
+                def.setDataType((DataType)DataTypes.getDataType(newType).clone());
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
                     syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
-                    def.setType(oldType);
+                    def.setDataType(oldType);
                     throw se;
                 } finally {
                     def.finish();
@@ -2105,7 +2110,8 @@ public class MMAdmin extends ProcessorModule {
             int state = Fields.getState((String)vars.get("dbstate"));
 
             log.service("Adding field " + fieldName);
-            CoreField def = mmb.createField(fieldName, type, state, fieldName, guiType, pos, -1, pos);
+            DataType dataType = DataTypes.getDataTypeInstance(guiType, type);
+            CoreField def = mmb.createField(fieldName, dataType, state, fieldName, pos, -1, pos);
 
             def.setParent(bul);
             def.setStoragePosition(pos);

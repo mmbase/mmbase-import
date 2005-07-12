@@ -15,8 +15,11 @@ import java.util.*;
 
 import javax.sql.DataSource;
 
+
+import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.module.core.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
@@ -32,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.105 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.106 2005-07-12 15:03:36 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -713,7 +716,7 @@ public class DatabaseStorageManager implements StorageManager {
                         log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
                                  + factory.getBinaryFileBasePath()
                                  + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
-                        
+
                     } else if (log.isDebugEnabled()) {
                         log.debug("The file '" + binaryFile + "' does not exist. Probably the blob field is simply 'null'");
                     }
@@ -830,7 +833,7 @@ public class DatabaseStorageManager implements StorageManager {
                 releaseActiveConnection();
             }
         }
-        
+
     }
 
     protected void unloadShortedFields(MMObjectNode node, MMObjectBuilder builder) {
@@ -1298,9 +1301,9 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             } else {
             }
-            
+
             statement.setString(index, setValue);
-            
+
         }
         if (value != null) {
             if (! encoding.equalsIgnoreCase("UTF-8")) {
@@ -1332,9 +1335,9 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @since MMBase-1.7.1
      */
-    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {        
+    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (objectValue == null || objectValue == MMObjectNode.VALUE_NULL) {
-            if(field.isRequired()) { 
+            if(field.isRequired()) {
                 objectValue = "<p/>";
             }
         }
@@ -1688,7 +1691,7 @@ public class DatabaseStorageManager implements StorageManager {
                         if (rowtypeScheme == null || createIndices.length() > 0) {
                             createIndices.append(", ");
                         }
-                        
+
                         createIndices.append(constraintDef);
                         if (createFieldsAndIndices.length() > 0) {
                             createFieldsAndIndices.append(", ");
@@ -2196,7 +2199,7 @@ public class DatabaseStorageManager implements StorageManager {
                                       + Fields.getTypeDescription(curtype)
                                       + ", but in storage " + Fields.getTypeDescription(type)
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
-                            field.setType(type);
+                            field.setDataType((DataType)DataTypes.getDataType(type).clone());
                         }
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.getDataType().isRequired()) {

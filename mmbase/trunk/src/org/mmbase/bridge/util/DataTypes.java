@@ -12,15 +12,17 @@ package org.mmbase.bridge.util;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.datatypes.*;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.bridge.implementation.datatypes.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.6 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.7 2005-07-12 15:03:36 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -78,30 +80,6 @@ public class DataTypes {
     /**
      * Create an instance of a dataType based on the MMBase type passed.
      */
-    public static DataType createDataType(String name, int type) {
-        DataType dataType = null;
-        switch (type) {
-        case Field.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
-        case Field.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
-        case Field.TYPE_LONG : dataType = new BasicLongDataType(name); break;
-        case Field.TYPE_DOUBLE : dataType = new BasicDoubleDataType(name); break;
-        case Field.TYPE_FLOAT : dataType = new BasicFloatDataType(name); break;
-        case Field.TYPE_STRING : dataType = new BasicStringDataType(name); break;
-        case Field.TYPE_XML: dataType = new BasicXmlDataType(name); break;
-        case Field.TYPE_NODE : dataType = new BasicNodeDataType(name); break;
-        case Field.TYPE_DATETIME : dataType = new BasicDateTimeDataType(name); break;
-        case Field.TYPE_BOOLEAN : dataType = new BasicBooleanDataType(name); break;
-        case Field.TYPE_LIST : dataType = new BasicListDataType(name); break;
-        default: {
-            dataType = new BasicDataType(name);
-        }
-        }
-        return dataType;
-    }
-
-    /**
-     * Create an instance of a dataType based on the MMBase type passed.
-     */
     public static DataType createDataType(String name, Class type) {
         DataType dataType = null;
         if (type == null) {
@@ -134,6 +112,30 @@ public class DataTypes {
         return dataType;
     }
 
+    /**
+     * Create an instance of a dataType based on the MMBase type passed.
+     */
+    private static DataType createDataType(String name, int type) {
+        DataType dataType = null;
+        switch (type) {
+        case Field.TYPE_BINARY : dataType = new BasicBinaryDataType(name); break;
+        case Field.TYPE_INTEGER : dataType = new BasicIntegerDataType(name); break;
+        case Field.TYPE_LONG : dataType = new BasicLongDataType(name); break;
+        case Field.TYPE_DOUBLE : dataType = new BasicDoubleDataType(name); break;
+        case Field.TYPE_FLOAT : dataType = new BasicFloatDataType(name); break;
+        case Field.TYPE_STRING : dataType = new BasicStringDataType(name); break;
+        case Field.TYPE_XML: dataType = new BasicXmlDataType(name); break;
+        case Field.TYPE_NODE : dataType = new BasicNodeDataType(name); break;
+        case Field.TYPE_DATETIME : dataType = new BasicDateTimeDataType(name); break;
+        case Field.TYPE_BOOLEAN : dataType = new BasicBooleanDataType(name); break;
+        case Field.TYPE_LIST : dataType = new BasicListDataType(name); break;
+        default: {
+            dataType = new BasicDataType(name);
+        }
+        }
+        return dataType;
+    }
+
     public static DataType finish(DataType dataType) {
         if (dataType instanceof AbstractDataType) {
             ((AbstractDataType)dataType).finish();
@@ -151,16 +153,6 @@ public class DataTypes {
         return dataType;
     }
 
-    public static synchronized DataType createFinalDataType(String name, int type) {
-        if (finalDataTypes.containsKey(name)) {
-            throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
-        }
-        DataType dataType = createDataType(name, type);
-        finish(dataType);
-        finalDataTypes.put(name, dataType);
-        return dataType;
-    }
-
     /**
      * Create an instance of a dataType based on another data type
      */
@@ -168,7 +160,7 @@ public class DataTypes {
         if (finalDataTypes.containsKey(name)) {
             throw new IllegalArgumentException("Datatype with name " + name + " already exists as : " + finalDataTypes.get(name));
         }
-        DataType dataType = baseDataType.copy(name);
+        DataType dataType = (DataType)baseDataType.clone(name);
         finish(dataType);
         finalDataTypes.put(name, dataType);
         return dataType;
@@ -188,8 +180,64 @@ public class DataTypes {
         return dataType;
     }
 
-    public static synchronized DataType getDataType(String name) {
-        return (DataType) finalDataTypes.get(name);
+    public static synchronized DataType getDataTypeInstance(String name, DataType baseDataType) {
+        DataType dataType = (DataType) finalDataTypes.get(name);
+        // base type should be correct
+        if (dataType == null && baseDataType == null) {
+            return null;
+        } else if (dataType == null || dataType.getBaseType() != baseDataType.getBaseType()) {
+            return (DataType)baseDataType.clone(name);
+        } else {
+            return (DataType)dataType.clone();
+        }
+    }
+
+    public static synchronized DataType getDataTypeInstance(String name, int baseType) {
+        return getDataTypeInstance(name, getDataType(baseType));
+    }
+
+    public static synchronized DataType getDataType(int type) {
+        String name = Fields.getTypeDescription(type).toLowerCase();
+        DataType dataType = (DataType) finalDataTypes.get(name);
+        if (dataType == null) {
+            if (type == Field.TYPE_LIST) {
+                dataType = getListDataType(Field.TYPE_UNKNOWN);
+            } else {
+                dataType = createDataType(name, type);
+                finish(dataType);
+                finalDataTypes.put(name, dataType);
+            }
+        }
+        return dataType;
+    }
+
+    public static ListDataType getListDataType(int subType) {
+        String name = Fields.getTypeDescription(Field.TYPE_LIST).toLowerCase() +
+                      "[" +  Fields.getTypeDescription(subType).toLowerCase() + "]";
+        ListDataType dataType = (ListDataType)finalDataTypes.get(name);
+        if (dataType == null) {
+            dataType = (ListDataType)createDataType(name, Field.TYPE_LIST);
+            dataType.setItemDataType(getDataType(subType));
+            finish(dataType);
+            finalDataTypes.put(name, dataType);
+        }
+        return dataType;
+    }
+
+    public static DataType getBaseDataType(DataType dataType) {
+        int baseType = dataType.getBaseType();
+        DataType baseDataType;
+        if (baseType == Field.TYPE_LIST) {
+            int subType = Field.TYPE_UNKNOWN;
+            DataType itemDataType = ((ListDataType)dataType).getItemDataType();
+            if (itemDataType != null) {
+                subType = itemDataType.getBaseType();
+            }
+            baseDataType = DataTypes.getListDataType(subType);
+        } else {
+            baseDataType = DataTypes.getDataType(baseType);
+        }
+        return baseDataType;
     }
 
 }

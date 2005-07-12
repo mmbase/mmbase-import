@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.10 2005-07-11 17:49:20 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.11 2005-07-12 15:03:35 pierre Exp $
  */
 
 abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
@@ -52,19 +52,6 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         createProperty(PROPERTY_REQUIRED, Boolean.FALSE,
                 new LocalizedString ("Datatype ${NAME} requires a value."), // use resource bundle
                 false);
-    }
-
-    /**
-     * Create an data type object
-     * @param name the name of the data type
-     * @param dataType the parent data type whose constraints to inherit
-     */
-    protected AbstractDataType(String name, DataType dataType) {
-        super(name);
-        if (dataType instanceof AbstractDataType) {
-            this.classType = dataType.getTypeAsClass();
-            copyValidationRules((AbstractDataType)dataType);
-        }
     }
 
     public Class getTypeAsClass() {
@@ -170,33 +157,25 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return getTypeAsClass() + " " + getName();
     }
 
-    public DataType copy(String name) {
-        try {
-            java.lang.reflect.Constructor constructor = this.getClass().getConstructor(new Class[] { String.class, DataType.class });
-            return (DataType) constructor.newInstance(new Object[] { name, this });
-        } catch (Exception e) {
-            UnsupportedOperationException uoe =  new UnsupportedOperationException("Cannot copy this datatype  : " + e.getMessage());
-            uoe.initCause(e);
-            throw uoe;
-        }
+    public Object clone() {
+        return clone (null);
     }
 
-    /**
-     * @javadoc
-     */
-    protected void copyValidationRules(AbstractDataType dataType) {
-        super.copy(dataType);
-        setDefaultValue(dataType.getDefaultValue());
-        // TODO: copy all properties! Plus find a way to share localized strings
-        for (Iterator i = dataType.properties.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entrySet = (Map.Entry)i.next();
-            DataTypeProperty property = (DataTypeProperty)entrySet.getValue();
-            try {
+    public Object clone(String name) {
+        try {
+            AbstractDataType clone = (AbstractDataType)super.clone(name);
+            for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entrySet = (Map.Entry)i.next();
+                DataTypeProperty property = (DataTypeProperty)entrySet.getValue();
                 properties.put(entrySet.getKey(),(DataType.Property)property.clone());
-            } catch (CloneNotSupportedException cnse) {
-                // should not happen!
-                log.error(cnse.getMessage());
             }
+            // reset owner if itw as set, so this datatype can be changed
+            clone.owner = null;
+            return clone;
+        } catch (CloneNotSupportedException cnse) {
+            // should not happen
+            log.error("Cannot clone this DataType");
+            throw new RuntimeException("Cannot clone this DataType", cnse);
         }
     }
 
@@ -347,12 +326,18 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
             this.fixed = fixed;
         }
 
-        public Object clone() throws CloneNotSupportedException {
-            DataTypeProperty clone = (DataTypeProperty)super.clone();
-            if (errorDescription != null) {
-                clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
-            }
-            return clone;
+        public Object clone() {
+            try {
+                DataTypeProperty clone = (DataTypeProperty)super.clone();
+                if (errorDescription != null) {
+                    clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
+                }
+                return clone;
+            } catch (CloneNotSupportedException cnse) {
+                // should not happen
+                log.error("Cannot clone this DataType.Property");
+                throw new RuntimeException("Cannot clone this DataType.Property", cnse);
+           }
         }
 
     }

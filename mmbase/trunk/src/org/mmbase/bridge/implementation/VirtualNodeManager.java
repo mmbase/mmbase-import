@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 
@@ -23,7 +24,7 @@ import org.mmbase.module.core.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.25 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.26 2005-07-12 15:03:35 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
 
@@ -43,29 +44,12 @@ public class VirtualNodeManager extends BasicNodeManager {
             Iterator i = node.values.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
-                String fieldName= (String) entry.getKey();
-                Object value     = entry.getValue();
+                String fieldName = (String) entry.getKey();
+                Object value = entry.getValue();
                 if (value == MMObjectNode.VALUE_NULL) continue;
-                int fieldType = Field.TYPE_UNKNOWN;
-                if (value instanceof MMObjectNode) {
-                    fieldType = Field.TYPE_NODE;
-                } else if (value instanceof String) {
-                    fieldType = Field.TYPE_STRING;
-                } else if (value instanceof Integer) {
-                    fieldType = Field.TYPE_INTEGER;
-                } else if (value instanceof  byte[]) {
-                    fieldType = Field.TYPE_BINARY;
-                } else if (value instanceof  Float) {
-                    fieldType = Field.TYPE_FLOAT;
-                } else if (value instanceof  Double) {
-                    fieldType = Field.TYPE_DOUBLE;
-                } else if (value instanceof  Long) {
-                    fieldType = Field.TYPE_LONG;
-                } else if (value instanceof  org.w3c.dom.Node) {
-                    fieldType = Field.TYPE_XML;
-                }
-                CoreField fd = BasicCloudContext.mmb.createField(fieldName, fieldType, Field.STATE_VIRTUAL,
-                                               fieldName, "field", -1, -1, -1);
+                DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
+                CoreField fd = BasicCloudContext.mmb.createField(fieldName, fieldDataType, Field.STATE_VIRTUAL,
+                                               fieldName, -1, -1, -1);
                 fd.finish();
                 Field ft = new BasicField(fd, this);
                 fieldTypes.put(fieldName, ft);

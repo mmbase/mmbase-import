@@ -12,7 +12,9 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 
+import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.core.CoreField;
@@ -38,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.138 2005-07-09 11:46:10 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.139 2005-07-12 15:03:36 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -625,20 +627,20 @@ public class MMBase extends ProcessorModule {
      * Returns an instance of a CoreField based on the type, and initializes it with the given values.
      * @since MMBase-1.8
      */
-    public CoreField createField(String name, int type, int state) {
-        CoreField field = Fields.createField(name, type);
+    public CoreField createField(String name, DataType dataType, int state) {
+        CoreField field = Fields.createField(name, dataType);
         field.setState(state);
         return field;
     }
 
     /**
-     * Returns an instance of a CoreField based on the type, and initializes it with the gieven values.
+     * Returns an instance of a CoreField based on the type, and initializes it with the given values.
      * @since MMBase-1.8
      */
-    public CoreField createField(String name, int type, int state, String guiName, String guiType, int searchPosition, int listPosition, int editPosition) {
-        CoreField field = createField(name, type, state);
-        // should be keep guitypes or not?
-        field.setGUIType(guiType);
+    public CoreField createField(String name, DataType dataType, int state, String guiName, int searchPosition, int listPosition, int editPosition) {
+        CoreField field = createField(name, dataType, state);
+        // set through passed datatype:
+        // field.setGUIType(guiType);
         field.setSearchPosition(searchPosition);
         field.setListPosition(listPosition);
         field.setEditPosition(editPosition);
@@ -661,24 +663,24 @@ public class MMBase extends ProcessorModule {
             rootBuilder.setTableName("object");
             List fields = new ArrayList();
             // number field  (note: state = 'system')
-            CoreField def = createField("number",Field.TYPE_INTEGER, Field.STATE_SYSTEM,
-                                     "Object", "integer", 10, 10, 1);
+            CoreField def = createField("number",(DataType)DataType.INTEGER.clone(), Field.STATE_SYSTEM,
+                                     "Object", 10, 10, 1);
             def.setStoragePosition(1);
             def.getDataType().setRequired(true);
             def.setParent(rootBuilder);
             def.finish();
             fields.add(def);
             // otype field
-            def = createField("otype",Field.TYPE_INTEGER, Field.STATE_SYSTEM,
-                           "Type", "integer", -1, -1, -1);
+            def = createField("otype",(DataType)DataType.NODE.clone(), Field.STATE_SYSTEM,
+                           "Type", -1, -1, -1);
             def.setStoragePosition(2);
             def.getDataType().setRequired(true);
             def.setParent(rootBuilder);
             def.finish();
             fields.add(def);
             // owner field
-            def = createField("owner",Field.TYPE_STRING, Field.STATE_SYSTEM,
-                           "Owner", "string", 11, 11, -1);
+            def = createField("owner",(DataType)DataType.STRING.clone(), Field.STATE_SYSTEM,
+                           "Owner", 11, 11, -1);
             def.setSize(12);
             def.setStoragePosition(3);
             def.getDataType().setRequired(true);

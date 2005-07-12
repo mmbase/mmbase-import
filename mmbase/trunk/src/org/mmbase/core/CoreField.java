@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.core;
 
+import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.Storable;
@@ -17,7 +18,7 @@ import org.mmbase.storage.Storable;
 /**
  * @since MMBase-1.8
  */
-public interface CoreField extends Field, Storable {
+public interface CoreField extends Field, Storable, Cloneable {
 
     /**
      * Retrieves the parent builder for this field
@@ -65,8 +66,6 @@ public interface CoreField extends Field, Storable {
 
     public void setSize(int i);
 
-    public void setType(int i);
-
     public void setState(int i);
 
     public void setUnique(boolean b);
@@ -77,13 +76,10 @@ public interface CoreField extends Field, Storable {
 
     public void rewrite();
 
-    public CoreField copy(String name);
+    public Object clone();
 
-    /**
-     * Returns the GUI name for the data type this field contains.
-     * @deprecated use {@link #getDataType } and {@link DataType.getName}
-     * @see #getDataType
-     */
-    public void setGUIType(String type);
+    public Object clone(String name);
+
+    public void setDataType(DataType dataType);
 
 }

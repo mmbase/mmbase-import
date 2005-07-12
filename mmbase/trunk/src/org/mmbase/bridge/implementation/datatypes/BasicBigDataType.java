@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicBigDataType.java,v 1.1 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicBigDataType.java,v 1.2 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BigDataType
  * @since MMBase-1.8
@@ -38,15 +38,6 @@ abstract public class BasicBigDataType extends AbstractDataType implements BigDa
      */
     public BasicBigDataType(String name, Class classType) {
         super(name, classType);
-    }
-
-    /**
-     * Create a binary field object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    public BasicBigDataType(String name, DataType dataType) {
-        super(name,dataType);
     }
 
     public int getMinLength() {
