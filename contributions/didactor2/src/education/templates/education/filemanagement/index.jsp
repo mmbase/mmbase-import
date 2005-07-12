@@ -49,8 +49,12 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
+<%@include file="/education/wizards/roles_defs.jsp" %>
 
-<di:hasrole role="courseeditor">
+<mm:import id="editcontextname" reset="true">filemanagement</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
+<mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+
 <% request.getSession().setAttribute("mayupload","true"); %>
 <%
     String msg = "";
@@ -164,6 +168,6 @@
 </body>
 </html>
 
-</di:hasrole>
+</mm:islessthan>
 </mm:cloud>
 </mm:content>
