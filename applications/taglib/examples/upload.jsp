@@ -8,6 +8,7 @@
 <body>
 <%@ include file="menu.jsp"%>
 <mm:import externid="processupload">false</mm:import>
+<mm:import externid="processupload_alternative">false</mm:import>
 <mm:cloud method="http">
 
   <h1>Example of how to upload a file into mmbase using taglibs</h1>
@@ -29,8 +30,15 @@
         Select another file you want to upload:
       <mm:fieldlist id="fields2" nodetype="attachments" fields="title,handle">
         <p><mm:fieldinfo type="guiname" />: <mm:fieldinfo type="input"/></p>
-      </mm:fieldlist>
+      </mm:fieldlist>      
       <input type="submit"/>
+    </form>
+    <p>This is a different way of implementing it (using mm:setfield)</p>
+    <form action="upload.jsp" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="processupload_alternative" value="true"/>
+      <p>Title: <input  type="text" name="title"  value=""/></p>
+      <p>File: <input  type="file" name="fileupload" /></p>
+      <input type="submit" />
     </form>
   </mm:compare>
 
@@ -78,5 +86,25 @@
     </mm:isnotempty>
 
 
+  </mm:compare>
+
+  <mm:compare referid="processupload_alternative" value="true">
+    <mm:import externid="title"  from="multipart"/>
+    <mm:import externid="fileupload" from="multipart" vartype="bytes" />
+    <mm:createnode id="attachment1" type="attachments">
+      <mm:setfield name="title"><mm:write referid="title" /></mm:setfield>
+      <mm:setfield name="handle" valueid="fileupload" />
+      <!-- would also work (but with an intermediate 'base64' encoding 
+      <mm:setfield name="handle"><mm:write referid="fileupload" /></mm:setfield>
+      -->
+    </mm:createnode>
+      <%-- show some info --%>
+      <mm:node referid="attachment1">
+        number: <mm:field name="number"/><br/>
+        title: <mm:field name="title"/><br/>
+        mimetype: <mm:field name="mimetype"/><br/>
+        size: <mm:field name="size"/><br/>
+        gui: <mm:function name="gui" /><br />
+      </mm:node>
   </mm:compare>
 </mm:cloud>
