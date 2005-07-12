@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <html>
 <head>
- <title>A simple http upload</title>
+ <title>HTTP upload</title>
  <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -11,7 +11,7 @@
 <mm:import externid="processupload_alternative">false</mm:import>
 <mm:cloud method="http">
 
-  <h1>Example of how to upload a file into mmbase using taglibs</h1>
+  <h1>Uploading a file into MMBase</h1>
   <p>
     This page shows an example of how to upload an attachment into mmbase
     the page constist of two parts and depending on the processupload paramteter
@@ -20,6 +20,7 @@
   <%-- the form part --%>
 
   <mm:compare referid="processupload" value="false">
+    <mm:compare referid="processupload_alternative" value="false">
     <%-- create a html form  with method post and enctype multipart   --%>
     <form action="upload.jsp" method="post" enctype="multipart/form-data">
       <input type="hidden" name="processupload" value="true"/>
@@ -40,6 +41,7 @@
       <p>File: <input  type="file" name="fileupload" /></p>
       <input type="submit" />
     </form>
+    </mm:compare>
   </mm:compare>
 
   <%-- the process form part --%>
