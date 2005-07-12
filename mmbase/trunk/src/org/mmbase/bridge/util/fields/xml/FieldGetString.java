@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.5 2005-07-09 11:08:54 nklasens Exp $
+ * @version $Id: FieldGetString.java,v 1.6 2005-07-12 18:27:40 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -30,7 +30,7 @@ public class FieldGetString implements  Processor {
     public Object process(Node node, Field field, Object value) {
         
         Object realValue =  node.getObjectValue(field.getName());
-        if (realValue == null || value == null) return null;
+        if (realValue == null || value == null) return "";
 
 
         if (! (realValue  instanceof Document)) {
