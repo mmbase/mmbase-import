@@ -34,10 +34,8 @@ public class Fields {
     /**
      * Returns an instance of a CoreField based on the type.
      */
-    public static CoreField createField(String name, int type) {
-        DataType dataType = DataTypes.createDataType(null,type);
-        CoreField field = new org.mmbase.module.corebuilders.FieldDefs(name, dataType);
-        return field;
+    public static CoreField createField(String name, DataType dataType) {
+        return new org.mmbase.module.corebuilders.FieldDefs(name, dataType);
     }
 
     /**

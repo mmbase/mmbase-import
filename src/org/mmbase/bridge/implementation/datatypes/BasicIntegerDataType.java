@@ -19,7 +19,7 @@ import org.mmbase.bridge.datatypes.IntegerDataType;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicIntegerDataType.java,v 1.4 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicIntegerDataType.java,v 1.5 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.IntegerDataType
  * @since MMBase-1.8
@@ -31,15 +31,6 @@ public class BasicIntegerDataType extends BasicNumberDataType implements Integer
      */
     public BasicIntegerDataType(String name) {
         super(name, Integer.class);
-    }
-
-    /**
-     * Create a integer field object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    public BasicIntegerDataType(String name, DataType dataType) {
-        super(name,dataType);
     }
 
     public int getBaseType() {

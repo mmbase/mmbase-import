@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNumberDataType.java,v 1.1 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicNumberDataType.java,v 1.2 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.NumberDataType
  * @since MMBase-1.8
@@ -43,15 +43,6 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
      */
     public BasicNumberDataType(String name, Class classType) {
         super(name, classType);
-    }
-
-    /**
-     * Create a Number field object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    public BasicNumberDataType(String name, DataType dataType) {
-        super(name,dataType);
     }
 
     protected Number getMinValue() {

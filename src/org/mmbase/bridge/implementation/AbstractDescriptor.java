@@ -19,10 +19,10 @@ import java.util.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.2 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.3 2005-07-12 15:03:35 pierre Exp $
  */
 
-abstract public class AbstractDescriptor implements Descriptor {
+abstract public class AbstractDescriptor implements Descriptor, Cloneable {
 
     protected String key;
     private LocalizedString description;
@@ -41,18 +41,15 @@ abstract public class AbstractDescriptor implements Descriptor {
         setGUIName(name);
     }
 
-    protected void copy(Descriptor descriptor) {
-        Iterator descriptions = descriptor.getLocalizedDescription().asMap().entrySet().iterator();
-        while(descriptions.hasNext()) {
-            Map.Entry p = (Map.Entry) descriptions.next();
-            setDescription((String)p.getValue(), (Locale)p.getKey());
-        }
-        guiName = null;
-        Iterator guiNames = descriptor.getLocalizedGUIName().asMap().entrySet().iterator();
-        while(guiNames.hasNext()) {
-            Map.Entry p = (Map.Entry) guiNames.next();
-            setGUIName((String)p.getValue(), (Locale)p.getKey());
-        }
+    /**
+     * Create a data type object
+     * @param name the name of the data type
+     * @param type the class of the data type's possible value
+     */
+    protected AbstractDescriptor(String name, Descriptor descriptor) {
+        key = name;
+        description = (LocalizedString)descriptor.getLocalizedDescription().clone();
+        guiName = (LocalizedString)descriptor.getLocalizedGUIName().clone();
     }
 
     /**
@@ -134,6 +131,18 @@ abstract public class AbstractDescriptor implements Descriptor {
 
     public String toString() {
         return key;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return clone(null);
+    }
+
+    public Object clone(String name) throws CloneNotSupportedException {
+        AbstractDescriptor clone = (AbstractDescriptor)super.clone();
+        if (name != null) clone.key = name;
+        clone.description = (LocalizedString)description.clone();
+        clone.guiName = (LocalizedString)guiName.clone();
+        return clone;
     }
 
 }

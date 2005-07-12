@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.19 2005-07-11 12:54:29 michiel Exp $
+ * @version $Id: Parameter.java,v 1.20 2005-07-12 15:03:36 pierre Exp $
  * @see Parameters
  */
 
@@ -69,7 +69,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     public Parameter(String name, DataType dataType, boolean copy) {
         super(name);
         if (copy) {
-            this.dataType = dataType.copy(name);
+            this.dataType = (DataType)dataType.clone(name);
         } else {
             this.dataType = dataType;
         }

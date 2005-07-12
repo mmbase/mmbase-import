@@ -20,7 +20,7 @@ import org.mmbase.bridge.implementation.AbstractDataType;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicBooleanDataType.java,v 1.3 2005-07-11 14:42:52 pierre Exp $
+ * @version $Id: BasicBooleanDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BooleanDataType
  * @since MMBase-1.8
@@ -32,15 +32,6 @@ public class BasicBooleanDataType extends AbstractDataType implements BooleanDat
      */
     public BasicBooleanDataType(String name) {
         super(name, Boolean.class);
-    }
-
-    /**
-     * Create a boolean field object
-     * @param name the name of the data type
-     * @param type the class of the data type's possible value
-     */
-    public BasicBooleanDataType(String name, DataType dataType) {
-        super(name,dataType);
     }
 
     public int getBaseType() {

@@ -20,7 +20,7 @@ import org.mmbase.util.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.1 2005-07-08 08:04:26 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.2 2005-07-12 15:03:36 pierre Exp $
  **/
 public class DataTypeDefinition extends AbstractObjectDefinition {
 
@@ -70,7 +70,7 @@ public class DataTypeDefinition extends AbstractObjectDefinition {
             baseType = getAttribute(dataTypeElement,"base");
         }
         baseDataType = configurer.getDataType(baseType);
-        dataType = baseDataType.copy(name);
+        dataType = (DataType)baseDataType.clone(name);
         configureConditions(dataTypeElement);
         return this;
     }
