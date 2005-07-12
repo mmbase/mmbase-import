@@ -23,6 +23,7 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
+   <%@include file="/education/wizards/roles_defs.jsp" %>
 
    <%
       String bundleCompetence = null;
@@ -161,8 +162,10 @@
 <fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="education_top_menu" value="roles">
    <% //----------------------- Roles come from here ----------------------- %>
-   <di:hasrole role="systemadministrator">
-      <a href='javascript:clickNode("roles_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_roles_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=roles&nodepath=roles&fields=name&orderby=name' title='' target="text"><fmt:message key="roles"/></nobr></a>
+   <mm:import id="editcontextname" reset="true">rollen</mm:import>
+   <%@include file="/education/wizards/roles_chk.jsp" %>
+   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+      <a href='javascript:clickNode("roles_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_roles_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='roles.jsp' title='' target="text"><fmt:message key="roles"/></nobr></a>
       <br>
       <div id='roles_0' style='display: none'>
          <%// edit people,rolerel, education %>
@@ -174,46 +177,26 @@
                               "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
          --%>
          <%// create new role %>
-         <mm:import id="number_of_roles" reset="true">0</mm:import>
-         <mm:listnodes type="roles">
-            <mm:import id="number_of_roles" reset="true"><mm:size /></mm:import>
-         </mm:listnodes>
-
          <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                  <%// We have to detect the last element %>
-                  <mm:isgreaterthan referid="number_of_roles" value="0">
-                     <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-                  </mm:isgreaterthan>
+               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
-                  <mm:islessthan    referid="number_of_roles" value="1">
-                     <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-                  </mm:islessthan>
-
-               <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=roles&objectnumber=new' title='<fmt:message key="createNewRolesDescription"/>' target="text"><fmt:message key="createNewRoles"/></a></nobr></td>
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<a href='roles.jsp' title='<fmt:message key="rolesShort"/>' target="text"><fmt:message key="rolesShort"/></a></nobr></td>
             </tr>
          </table>
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
 
-         <%// edit existing roles %>
-         <mm:listnodes type="roles">
-            <table border="0" cellpadding="0" cellspacing="0">
-               <tr>
-                  <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                  <mm:last inverse="true">
-                     <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-                  </mm:last>
-                  <mm:last>
-                     <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-                  </mm:last>
-                  <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                  <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>?wizard=roles&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatRoles"/>' target="text"><mm:field name="name" /></a></nobr></td>
-               </tr>
-            </table>
-         </mm:listnodes>
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=people&nodepath=people&fields=firstname,suffix,lastname,externid&orderby=lastname&search=yes' title='<fmt:message key="users"/>' target="text"><fmt:message key="users"/></a></nobr></td>
+            </tr>
+         </table>
       </div>
-   </di:hasrole>
+   </mm:islessthan>
 </mm:compare>
 </fmt:bundle>
 
