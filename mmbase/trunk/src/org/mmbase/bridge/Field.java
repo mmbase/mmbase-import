@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.24 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: Field.java,v 1.25 2005-07-12 19:55:38 michiel Exp $
  */
 public interface Field extends Descriptor {
 
@@ -127,23 +127,27 @@ public interface Field extends Descriptor {
     /**
      * Retrieve the position of the field when searching.
      * A value of -1 indicates the field is unavailable during search.
+     * @since MMBase-1.8
      */
     public int getSearchPosition();
 
     /**
      * Retrieve the position of the field when listing.
      * A value of -1 indicates the field is unavailable in a list.
+     * @since MMBase-1.8
      */
     public int getListPosition();
 
     /**
      * Retrieve the position of the field when editing.
      * A value of -1 indicates the field cannot be edited.
+     * @since MMBase-1.8
      */
     public int getEditPosition();
 
     /**
      * Retrieve the position of the field in the database table.
+     * @since MMBase-1.8
      */
     public int getStoragePosition();
 
