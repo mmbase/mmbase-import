@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.39 2005-06-29 12:34:24 andre Exp $
+  version: $Id: taglibcontent.xml,v 1.40 2005-07-12 14:54:10 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -151,6 +151,16 @@
   <escaper id="pp-ommit-surrounding">
     <class config="HTML_BLOCK_NOSURROUNDINGP"  back="true">org.mmbase.util.transformers.XmlField</class>
   </escaper>
+
+  <escaper id="wiki">
+    <class config="RICHBODY"  back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>Generates piece of XHTML2 compatible XML</info>
+  </escaper>
+  <escaper id="mmxf">
+    <class config="RICH"  back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>Generates piece of mmxf XML which can be converted to XHTML1 using mm:formatter.</info>
+  </escaper>
+
   <escaper id="sql">
     <class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
     <info>Escapes for use in SQL (escaping of quotes). You will _not_ have to use this if use mm:constraint.</info>
