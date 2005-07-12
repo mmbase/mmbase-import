@@ -26,7 +26,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.6 2005-07-09 11:08:54 nklasens Exp $
+ * @version $Id: MmxfGetString.java,v 1.7 2005-07-12 18:27:40 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -34,7 +34,9 @@ public class MmxfGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfGetString.class);
 
 
-
+    /**
+     * Returns a 'objects' Document containing the node with the mmxf field plus all idrelated objects
+     */
     public static Document getDocument(Node node, Field field)  {
         try {
            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
@@ -46,19 +48,10 @@ public class MmxfGetString implements  Processor {
            Generator generator = new Generator(documentBuilder, node.getCloud());
            generator.setNamespaceAware(true);
            generator.add(node, field);
-           generator.add(node.getRelatedNodes("images", "idrel", "both"));
-           generator.add(node.getRelations("idrel", "images"));
-           
-           generator.add(node.getRelatedNodes("urls", "idrel", "both"));
-           generator.add(node.getRelations("idrel", "urls"));
+           generator.add(node.getRelatedNodes("object", "idrel", "destination"));
+           generator.add(node.getRelations("idrel", node.getCloud().getNodeManager("object"), "destination"));
 
-
-           generator.add(node.getRelatedNodes("segments", "idrel", "both"));
-           generator.add(node.getRelations("idrel", "segments"));
-
-           generator.add(node.getRelatedNodes("attachments", "idrel", "both"));
-           generator.add(node.getRelations("idrel", "attachments"));
-           
+           // TODO. With advent of 'blocks' one deeper level must be queried here (see node.body.jspx)
            return generator.getDocument();
         } catch (ParserConfigurationException pce) {
             throw new RuntimeException(pce.getMessage(), pce);
@@ -66,12 +59,12 @@ public class MmxfGetString implements  Processor {
     }
 
     public Object process(Node node, Field field, Object value) {
-        log.info("Getting " + field + " from " + node + " as a String");
+        log.debug("Getting " + field + " from " + node + " as a String");
         
         try {
             switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case Modes.KUPU: {
-                //
+                // this is actually not really used, at the moment is done on node.body.jspx
                 log.debug("Generating kupu-compatible XML for" + value);
                 Document xml = getDocument(node, field);
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2kupu.xslt");
@@ -115,6 +108,9 @@ public class MmxfGetString implements  Processor {
                 return "";
                 
             }                
+            case Modes.DOCBOOK:
+                // not implemented..
+                return value;
             case Modes.XML:
             default:
                 Document xml = node.getXMLValue(field.getName());
