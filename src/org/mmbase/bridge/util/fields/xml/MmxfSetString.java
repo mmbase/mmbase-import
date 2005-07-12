@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.15 2005-07-09 11:08:54 nklasens Exp $
+ * @version $Id: MmxfSetString.java,v 1.16 2005-07-12 15:08:01 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -110,11 +110,15 @@ public class MmxfSetString implements  Processor {
     private static Pattern crossElement  = Pattern.compile("a|img|div");
 
 
+    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class");
+
     private void copyAttributes(Element source, Element destination) {
         NamedNodeMap attributes = source.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             org.w3c.dom.Node n = attributes.item(i);
-            destination.setAttribute(n.getNodeName(), n.getNodeValue());
+            if (allowedAttributes.matcher(n.getNodeName()).matches()) {
+                destination.setAttribute(n.getNodeName(), n.getNodeValue());
+            }
         }
     }
 
