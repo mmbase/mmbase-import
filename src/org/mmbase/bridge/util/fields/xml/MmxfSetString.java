@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
+import javax.xml.transform.dom.*;
 import org.mmbase.util.logging.*;
 
 
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.16 2005-07-12 15:08:01 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.17 2005-07-12 18:27:40 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -41,7 +42,14 @@ public class MmxfSetString implements  Processor {
 
     private static XmlField xmlField = new XmlField(XmlField.WIKI);
 
+    /**
+     * Used for generating unique id's
+     */
     private static long indexCounter = System.currentTimeMillis() / 1000;
+
+    /**
+     * Just parses String to Document
+     */
     private Document parse(String value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
         try {
             return parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
@@ -51,6 +59,9 @@ public class MmxfSetString implements  Processor {
         }
 
     }
+    /**
+     * Just parses InputStream  to Document (without validation).
+     */
     private Document parse(java.io.InputStream value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
         dfactory.setValidating(false);
@@ -78,6 +89,10 @@ public class MmxfSetString implements  Processor {
      * Other levels, 
      */
     private final int MODE_INLINE  = 1;
+
+    /**
+     * Also used for parsing kupu-output
+     */
     private class ParseState {
         int level = 0;
         int offset = 0;
@@ -101,7 +116,11 @@ public class MmxfSetString implements  Processor {
 
         }
     }
+    
 
+    /**
+     * Patterns used in parsing of kupu-output
+     */
 
     private static Pattern copyElement   = Pattern.compile("table|tr|td|th|em|strong|ul|ol|li|p|sub|sup");
     private static Pattern ignoreElement = Pattern.compile("tbody|thead");
@@ -130,6 +149,14 @@ public class MmxfSetString implements  Processor {
             child = child.getNextSibling();
         }
     }
+
+    /**
+     * Parses kupu-output
+     * @param source       XML as received from kupu
+     * @param destination  pseudo MMXF which is going to receive it.
+     * @param links        This list collects elements representing some kind of link (cross-links, images, attachments, urls). Afterwards these can be compared with actual MMBase objects.
+     * @param state        The function is called recursively, and this object remembers the state then (where it was while parsing e.g.).
+     */
 
     private void parseKupu(Element source, Element destination, List links, ParseState state) {
         org.w3c.dom.NodeList nl = source.getChildNodes();
@@ -290,6 +317,9 @@ public class MmxfSetString implements  Processor {
         }                
     }
 
+    /**
+     * Just searches the nodes in a NodeList for which a certain field has a certain value.
+     */
     private NodeList get(Cloud cloud, NodeList list, String field, String value) {
         NodeList result = cloud.getCloudContext().createNodeList();
         NodeIterator i = list.nodeIterator();
@@ -371,6 +401,16 @@ public class MmxfSetString implements  Processor {
     final Pattern DIV_ID = Pattern.compile("block_(.*?)_(.*)");
 
 
+    /**
+     * Parses kupu-output for a certain node. First it will translate the XHTML like kupu-output to
+     * something very similar to MMXF, while collecting the 'links'. Then in a second stage these
+     * links are compared with related nodes. So the side-effect may be removed, updated, and new
+     * related nodes.
+     *
+     * @param editedNode MMBase node containing the MMXF field.
+     * @param document   XML received from Kupu
+     * @return An MMXF document.
+     */
     private Document parseKupu(Node editedNode, Document document) {
         if (log.isDebugEnabled()) {
             log.debug("Handeling kupu-input" + XMLWriter.write(document, false));
@@ -383,8 +423,12 @@ public class MmxfSetString implements  Processor {
         body.normalize();
         Element mmxf = xml.getDocumentElement();
         List links = new ArrayList();
+
+        // first stage.
         parseKupu(body, mmxf, links, new ParseState(0, MODE_SECTION));
-        // now handle kupu-links.
+
+
+        // second stage, handle kupu-links.
         if (editedNode == null) {
             log.warn("Node node given, cannot handle cross-links!!");
         } else {
@@ -671,7 +715,10 @@ public class MmxfSetString implements  Processor {
         return xml;
 
     }
-    public void cleanDanglingIdRels(NodeList clusterNodes, NodeList usedNodes, String type) {
+    /**
+     * At the end of stage 2 of parseKupu all relations are removed which are not used any more, using this function.
+     */
+    protected void cleanDanglingIdRels(NodeList clusterNodes, NodeList usedNodes, String type) {
        NodeIterator i = clusterNodes.nodeIterator();            
        while(i.hasNext()) {
            Node clusterNode = i.nextNode();
@@ -687,7 +734,29 @@ public class MmxfSetString implements  Processor {
        }
     }
 
-    
+    /** 
+     * Receives Docbook XML, and saves as MMXF. Docbook is more powerfull as MMXF so this
+     * transformation will not be perfect. It is mainly meant for MMBase documentation.
+     */
+    protected Document parseDocBook(Node editedNode, Document source) {
+        java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/docbook2pseudommxf.xslt");
+        DOMResult result = new DOMResult();
+        Map params = new HashMap();
+        params.put("cloud", editedNode.getCloud());
+        try {
+            XSLTransformer.transform(new DOMSource(source), u, result, params);
+        } catch (javax.xml.transform.TransformerException te) {
+            log.error(te);
+        }
+        Document pseudoMmxf = result.getNode().getOwnerDocument();
+
+
+        // shoudl follow some code to remove and create cross-links, images etc.
+
+        return pseudoMmxf;
+    }
+
+    // javadoc inherited
     public Object process(Node node, Field field, Object value) {
         
         try {
@@ -699,6 +768,10 @@ public class MmxfSetString implements  Processor {
             case Modes.WIKI: {
                 log.debug("Handling wiki-input: " + value);
                 return  parse(xmlField.transformBack("" + value));
+            }
+            case Modes.DOCBOOK: {
+                log.debug("Handling wiki-input: " + value);
+                return  parseDocBook(node, parse("" + value));
             }
             case Modes.FLAT: {
                 return parse(xmlField.transformBack("" + value));
