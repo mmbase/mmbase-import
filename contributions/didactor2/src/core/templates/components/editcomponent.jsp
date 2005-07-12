@@ -130,17 +130,22 @@
          <fmt:message key="EDITCOMPONENT" />
       </div>
 
-      <div class="contentSubHeader">
-         <mm:compare referid="component" value="-1" inverse="true">
-            <!-- TODO translate -->
-            <a href="<mm:treefile page="/components/deletecomponent.jsp" objectlist="$includePath" referids="$referids">
-                        <mm:param name="component"><mm:write referid="component"/></mm:param>
-                        <mm:param name="callerpage"><mm:write referid="callerpage"/></mm:param>
-                        <mm:param name="components_show_cockpit"><mm:write referid="components_show_cockpit"/></mm:param>
-                     </mm:treefile>">delete component</a>
-         </mm:compare>
-      </div>
-
+      <%@include file="/education/wizards/roles_defs.jsp" %>
+      <mm:import id="editcontextname" reset="true">componenten</mm:import>
+      <%@include file="/education/wizards/roles_chk.jsp" %>
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
+         <div class="contentSubHeader">
+            <mm:compare referid="component" value="-1" inverse="true">
+               <!-- TODO translate -->
+               <a href="<mm:treefile page="/components/deletecomponent.jsp" objectlist="$includePath" referids="$referids">
+                           <mm:param name="component"><mm:write referid="component"/></mm:param>
+                           <mm:param name="callerpage"><mm:write referid="callerpage"/></mm:param>
+                           <mm:param name="components_show_cockpit"><mm:write referid="components_show_cockpit"/></mm:param>
+                        </mm:treefile>">delete component</a>
+            </mm:compare>
+         </div>
+      </mm:islessthan>
+   
       <div class="contentBody">
          <%-- Show the form --%>
          <form name="editcomponentform" method="post" action="<mm:treefile page="/components/editcomponent.jsp" objectlist="$includePath" referids="$referids"/>">

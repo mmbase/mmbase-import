@@ -9,6 +9,9 @@
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
+<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:import id="editcontextname" reset="true">competentie</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
 
 <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" /></mm:import>
 <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" /></mm:import>
@@ -297,7 +300,12 @@
                String sCompetenceID = (String) arliTmp.get(f);
                %>
                   <mm:node number="<%= sCompetenceID %>">
-                     <nobr><a href="#" onClick="document.getElementById('delete_node').value='<%= sCompetenceID %>'; document.forms[0].submit(); return false;"><img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/></a> <a href='<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<%= sCompetenceID %>'><mm:field name="name" /></a></nobr>
+                     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
+                        <nobr><a href="#" onClick="document.getElementById('delete_node').value='<%= sCompetenceID %>'; document.forms[0].submit(); return false;"><img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/></a> <a href='<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<%= sCompetenceID %>'><mm:field name="name" /></a></nobr>
+                     </mm:islessthan>
+                     <mm:islessthan referid="rights" referid2="RIGHTS_RWD">
+                        <nobr> <a href='<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<%= sCompetenceID %>'><mm:field name="name" /></a></nobr>
+                     </mm:islessthan>
                   </mm:node>
                <%
             }
