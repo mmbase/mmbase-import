@@ -32,7 +32,8 @@
 
 <html>
 <head>
-   <title>MMBob</title>
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> /
+<mm:write referid="mlg.private_messages"/> </mm:compare></title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
 </head>
 
@@ -152,7 +153,7 @@
 		</mm:compare>
 	</mm:node>
 	<mm:compare referid="viewstate" value="0">
-        <mm:function set="mmbob" name="signalMailboxChange" referids="forumid,posterid,mbn@mailboxid" />
+        <!--<mm:function set="mmbob" name="signalMailboxChange" referids="forumid,posterid,mbn@mailboxid" />-->
 	</mm:compare>
 	</mm:present>
 	</table>

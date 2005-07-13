@@ -6,7 +6,7 @@
 
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
-<mm:import externid="pathtype">poster_newposter</mm:import>
+<mm:import externid="pathtype">newposter</mm:import>
 <mm:import externid="postareaid" />
 <mm:import externid="feedback">none</mm:import>
 
@@ -38,7 +38,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node></mm:compare></title>
 </head>
 <body>
 

@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">allposters</mm:import>
@@ -24,6 +19,14 @@
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> /
+<mm:write referid="mlg.All_members" /></mm:compare></title>
+</head>
+<body>
 
 <!-- action check -->
 <mm:import externid="action" />
