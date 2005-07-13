@@ -27,8 +27,8 @@
 
 <html>
 <head>
-   <title>MMBob</title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:write referid="mlg.private_messages"/> </mm:compare></title>
 </head>
 <body>
 
