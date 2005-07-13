@@ -4,13 +4,14 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
+<mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
+
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node></mm:compare></title>
 </head>
 <body>
-<mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
 
 <mm:compare referid="forumid" value="unknown">
 	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
@@ -201,8 +202,8 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
   <tr>
    <td align="right">
-        <mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="profile.jsp" referids="forumid,posterid" />"><mm:write referid="mlg.Profile_settings" /> |</mm:compare>
-	<mm:node referid="forumid"><mm:relatednodes type="forumrules"><a href="<mm:url page="rules.jsp" referids="forumid"><mm:param name="rulesid"><mm:field name="number" /></mm:param></mm:url>"><mm:write referid="mlg.Forum_rules" /> | </a></mm:relatednodes></mm:node><a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg.The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg.Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg.All_members" /></a> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid" />"><mm:write referid="mlg.Search" /></a>
+        <mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="profile.jsp" referids="forumid,posterid" />"><mm:write referid="mlg.Profile_settings" /> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarks</a> | </mm:compare>
+	<mm:node referid="forumid"><mm:relatednodes type="forumrules"><a href="<mm:url page="rules.jsp" referids="forumid"><mm:param name="rulesid"><mm:field name="number" /></mm:param></mm:url>"><mm:write referid="mlg.Forum_rules" /> | </a></mm:relatednodes></mm:node><a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg.The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg.Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg.All_members" /></a> | <a href="<mm:url page="search.jsp" referids="forumid" />"><mm:write referid="mlg.Search" /></a>
    </td>
   </tr>
 </table>

@@ -11,6 +11,7 @@
 <mm:import externid="posterid" id="profileid" />
 <mm:import externid="profile">personal</mm:import>
 <mm:import id="feedbackdefault"></mm:import>
+<mm:import id="page">1</mm:import>
 <mm:write session="feedback_message" referid="feedbackdefault"/>
 <%-- login part --%>
 <%@ include file="getposterid.jsp" %>
@@ -26,12 +27,18 @@
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
+
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
 </mm:nodefunction>
+
+<mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+  <mm:import id="privatemessagesenabled"><mm:field name="privatemessagesenabled" /></mm:import>
+</mm:nodefunction>
+
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:write referid="mlg.Profile_settings" /></mm:compare></title>
 </head>
 <body>
 
@@ -258,7 +265,8 @@
           <span class="formw">
             <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
-        </div>    
+        </div> 
+    
         </mm:nodefunction>
         </mm:functioncontainer>    
         </mm:node>
@@ -525,6 +533,19 @@
             <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>   
+
+       <div class="row"></div>
+
+        <div class="row">
+           <span class="formw">
+           <mm:compare referid="posterid" value="-1" inverse="true">
+             <mm:compare referid="privatemessagesenabled" value="true">
+                <a href="<mm:url page="newsingleprivatemessage.jsp" referids="forumid,profileid"/>"><img src="<mm:write referid="image_privatemsg" />" border="0" /></a>
+             </mm:compare>
+          </mm:compare>
+          </span>
+        </div>
+
              </mm:nodefunction>
 </mm:functioncontainer>
         </mm:node>

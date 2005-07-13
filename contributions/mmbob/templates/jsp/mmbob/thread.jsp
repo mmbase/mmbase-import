@@ -4,16 +4,19 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-   <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
-</head>
-<body>
+
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:node referid="postareaid"><mm:field name="name"/></mm:node> / <mm:node referid="postthreadid"><mm:field name="subject"/></mm:node></mm:compare></title>
+   <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
+</head>
+<body>
+
 <mm:import externid="page">1</mm:import>
 <mm:import externid="postingid" />
 
@@ -116,8 +119,9 @@
 	  </b>
 	</td>
 	<td align="right">
+        <mm:compare referid="posterid" value="-1" inverse="true">
 	<a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
-	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarks</a> | </mm:compare> <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
         </mm:nodefunction>
 </table>

@@ -4,16 +4,18 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
+
+<mm:import externid="forumid" />
+<mm:import externid="postareaid" />
+
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBase Forum</title>
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:node referid="postareaid"><mm:field name="name"/></mm:node></mm:compare></title>
 </head>
 <body>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="forumid" />
-<mm:import externid="postareaid" />
 <mm:import externid="page">1</mm:import>
 
 <!-- login part -->
@@ -92,7 +94,7 @@
 	</td>
 	</form>
 	<td align="right">
-	<a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+	<mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarks</a> | </mm:compare> <a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">

@@ -18,6 +18,33 @@
 	</mm:node>
 </mm:compare>
 
+<mm:compare value="bookmarked" referid="type">
+        <mm:node number="$forumid">
+        <a href="<mm:url page="index.jsp">
+                <mm:param name="forumid" value="$forumid" />
+                </mm:url>">
+        <mm:field name="name" /></a> / Bookmarks
+        </mm:node>
+</mm:compare>
+
+<mm:compare value="search" referid="type">
+        <mm:node number="$forumid">
+        <a href="<mm:url page="index.jsp">
+                <mm:param name="forumid" value="$forumid" />
+                </mm:url>">
+        <mm:field name="name" /></a> / <mm:write referid="mlg.Search" />
+        </mm:node>
+</mm:compare>
+
+<mm:compare value="newposter" referid="type">
+        <mm:node number="$forumid">
+        <a href="<mm:url page="index.jsp">
+                <mm:param name="forumid" value="$forumid" />
+                </mm:url>">
+        <mm:field name="name" /></a> 
+        </mm:node>
+</mm:compare>
+
 <mm:compare value="postarea" referid="type">
 	<mm:node number="$forumid">
 	<a href="<mm:url page="index.jsp">

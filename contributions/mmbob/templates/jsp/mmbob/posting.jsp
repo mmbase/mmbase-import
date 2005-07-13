@@ -38,7 +38,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
+   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:node referid="postareaid"><mm:field name="name"/></mm:node> / <mm:node referid="postthreadid"><mm:field name="subject"/></mm:node></mm:compare></title>
    <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 </head>
 <body>
