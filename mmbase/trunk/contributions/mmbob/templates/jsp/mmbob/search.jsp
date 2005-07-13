@@ -115,9 +115,8 @@
 		
 		   <option value="-1">All Areas
                   <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
-			<mm:field name="id">
-			<option value="<mm:field name="id" />" <mm:compare referid="searchareaid">selected</mm:compare>><mm:field name="name" />
-			</mm:field>
+                      <mm:import reset="true" id="area_id"/>
+			<option value="<mm:field name="id" />" <mm:compare referid="searchareaid" referid2="area_id">selected</mm:compare>><mm:field name="name" />
 		  </mm:nodelistfunction>
 		   </select>
 		</th>
