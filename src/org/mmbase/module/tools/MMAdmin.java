@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.108 2005-07-14 11:42:01 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.109 2005-07-14 20:23:47 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -410,7 +410,7 @@ public class MMAdmin extends ProcessorModule {
                 //return ("" + (MMObjectBuilder.nodeCache.maxSize()));
                 return ("" + (MMObjectBuilder.nodeCache.getSize()));
             } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
-                return ("" + (MMObjectBuilder.TemporaryNodes.size()));
+                return ("" + (MMObjectBuilder.temporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
                 return ("" + MMObjectNode.getRelationCacheHits());
             } else if (cmd.equals("RELATIONCACHEMISSES")) {
