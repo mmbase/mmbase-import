@@ -20,7 +20,7 @@
 
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe leerblok</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe leerblok</a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -39,7 +39,7 @@
 
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=pages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe pagina</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/pages/pages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe pagina</a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -58,7 +58,7 @@
 
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=tests-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe toets</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/tests/tests-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe toets</a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -82,7 +82,7 @@
                <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
             </mm:compare>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe flash-pagina</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/pages/flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe flash-pagina</a></nobr></td>
          </tr>
       </table>
    </mm:compare>
