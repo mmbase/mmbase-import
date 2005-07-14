@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.19 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: TransactionResolver.java,v 1.20 2005-07-14 20:19:49 nklasens Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
@@ -26,7 +26,7 @@ public class TransactionResolver {
         this.mmbase = mmbase;
     }
 
-    public boolean resolve(Collection nodes) throws TransactionManagerException {
+    public boolean resolve(Collection nodes) {
         Map numbers = new HashMap();
         Map nnodes = new HashMap();
         boolean success = true;
@@ -37,8 +37,8 @@ public class TransactionResolver {
             MMObjectNode node = (MMObjectNode)i.next();
             MMObjectBuilder bul = mmbase.getMMObject(node.getName());
             log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
-            for (Enumeration f = bul.getFields().elements();f.hasMoreElements();) {
-                CoreField fd = (CoreField)f.nextElement();
+            for (Iterator f = bul.getFields().iterator(); f.hasNext();) {
+                CoreField fd = (CoreField)f.next();
                 int dbtype = fd.getType();
                 log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
                 if ((dbtype == Field.TYPE_INTEGER)||
@@ -104,7 +104,7 @@ public class TransactionResolver {
             Object key = numberEntry.getKey();
             Integer num = (Integer)numberEntry.getValue();
             if (num.intValue() == -1) {
-                numbers.put(key, new Integer(mmbase.getDBKey()));
+                numbers.put(key, new Integer(mmbase.getStorageManager().createKey()));
             }
         }
 
