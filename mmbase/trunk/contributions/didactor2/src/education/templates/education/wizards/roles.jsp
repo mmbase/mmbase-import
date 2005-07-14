@@ -79,7 +79,7 @@
                   <td class="tightborder">&nbsp;</td>
                 </mm:listnodes>
               </mm:islessthan>
-              <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>?wizard=roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
+              <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>?wizard=config/role/roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
                                           alt="<fmt:message key="createNewRole"/>"/></a></td>
             </tr>
             <% String sSelectName = ""; %>
