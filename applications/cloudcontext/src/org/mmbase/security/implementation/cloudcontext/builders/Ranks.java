@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.12 2005-03-04 14:34:37 michiel Exp $
+ * @version $Id: Ranks.java,v 1.13 2005-07-14 11:48:01 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -134,7 +134,7 @@ public class Ranks extends MMObjectBuilder {
      */
     public MMObjectNode getRankNode(Rank rank) {
         NodeSearchQuery q = new NodeSearchQuery(this);
-        org.mmbase.module.corebuilders.FieldDefs rankFieldDefs = getField("rank");
+        org.mmbase.core.CoreField rankFieldDefs = getField("rank");
         StepField rankField = q.getField(rankFieldDefs);
         BasicFieldValueConstraint cons = new BasicFieldValueConstraint(rankField, new Integer(rank.getInt()));
         cons.setOperator(FieldValueConstraint.LESS_EQUAL);   
