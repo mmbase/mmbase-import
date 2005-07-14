@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title xml:lang="nl">Hulpmiddelen</title>
-    <title xml:lang="en">Resources</title>
+    <title xml:lang="nl">Taak hulpmiddelen</title>
+    <title xml:lang="en">Task resources</title>
 
     <action type="create">
-        <object type="resources">
+        <object type="taskresources">
         </object>
     </action>
 

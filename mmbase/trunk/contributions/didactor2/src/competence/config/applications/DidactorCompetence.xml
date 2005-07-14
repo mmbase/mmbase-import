@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCompetence" maintainer="didactor.nl" version="11" auto-deploy="true">
+<application name="DidactorCompetence" maintainer="didactor.nl" version="12" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorPortfolio" maintainer="didactor.nl" version="2" />
@@ -9,10 +9,10 @@
     </requirements>
 
     <neededbuilderlist>
-        <builder maintainer="didactor.nl" version="2">profiles</builder>
-        <builder maintainer="didactor.nl" version="2">competencies</builder>
-        <builder maintainer="didactor.nl" version="2">preassessments</builder>
-        <builder maintainer="didactor.nl" version="2">postassessments</builder>
+      <builder maintainer="didactor.nl" version="2">profiles</builder>
+      <builder maintainer="didactor.nl" version="2">competencies</builder>
+      <builder maintainer="didactor.nl" version="2">preassessments</builder>
+      <builder maintainer="didactor.nl" version="2">postassessments</builder>
       <builder maintainer="didactor.nl" version="2">pop</builder>
       <builder maintainer="didactor.nl" version="2">poprel</builder>
       <builder maintainer="didactor.nl" version="2">todoitems</builder>
@@ -24,7 +24,7 @@
       <builder maintainer="didactor.nl" version="1">profilelevels</builder>
       <builder maintainer="didactor.nl" version="1">coretasks</builder>
       <builder maintainer="didactor.nl" version="1">coreassignments</builder>
-      <builder maintainer="didactor.nl" version="1">resources</builder>
+      <builder maintainer="didactor.nl" version="1">taskresources</builder>
       <builder maintainer="didactor.nl" version="1">priorities</builder>
       <builder maintainer="didactor.nl" version="1">ratings</builder>
 
@@ -81,7 +81,7 @@
         <relation from="competencies" to="competencetypes" type="posrel" />
         <relation from="profiles"     to="profiletypes"    type="posrel" />
         <relation from="profiles"     to="profilelevels"   type="related" />
-        <relation from="coretasks"    to="resources"       type="posrel" />
+        <relation from="coretasks"    to="taskresources"   type="posrel" />
         <relation from="coretasks"    to="tests"           type="posrel" />
 
 
