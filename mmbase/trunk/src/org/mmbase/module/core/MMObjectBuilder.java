@@ -15,7 +15,6 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import org.mmbase.bridge.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 
@@ -57,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.320 2005-07-14 13:13:23 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.321 2005-07-14 20:23:47 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -145,10 +144,9 @@ public class MMObjectBuilder extends MMTable {
      * Collection for temporary nodes,
      * Used by the Temporarynodemanager when working with transactions
      * The default size is 1024.
-     * @rename to Map temporaryNodes
      * @scope  protected
      */
-    public static Hashtable TemporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
+    public static Map temporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
 
     /**
      * Default output when no data is available to determine a node's GUI description
@@ -1216,7 +1214,7 @@ public class MMObjectBuilder extends MMTable {
         MMObjectNode node = null;
         node = getNewNode(owner);
         node.setValue("_number", key);
-        TemporaryNodes.put(key, node);
+        temporaryNodes.put(key, node);
         return node;
     }
 
@@ -1227,7 +1225,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void putTmpNode(String key, MMObjectNode node) {
         node.setValue("_number",key);
-        TemporaryNodes.put(key,node);
+        temporaryNodes.put(key,node);
     }
 
     /**
@@ -1270,7 +1268,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public MMObjectNode getTmpNode(String key) {
         MMObjectNode node = null;
-        node = (MMObjectNode)TemporaryNodes.get(key);
+        node = (MMObjectNode) temporaryNodes.get(key);
         if (node == null && log.isDebugEnabled()) {
             log.trace("getTmpNode(): node not found " + key);
         }
@@ -1283,7 +1281,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void removeTmpNode(String key) {
         MMObjectNode node;
-        node=(MMObjectNode)TemporaryNodes.remove(key);
+        node=(MMObjectNode) temporaryNodes.remove(key);
         if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
     }
 
@@ -3637,7 +3635,7 @@ public class MMObjectBuilder extends MMTable {
         Iterator i = f.iterator();
         while (i.hasNext()) {
             CoreField def = (CoreField) i.next();
-            String name = (String) def.getName();
+            String name = def.getName();
             def.setParent(this);
             fields.put(name, def);
         }
