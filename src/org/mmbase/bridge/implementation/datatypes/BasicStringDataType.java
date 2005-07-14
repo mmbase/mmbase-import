@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: BasicStringDataType.java,v 1.6 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.StringDataType
  * @since MMBase-1.8
@@ -29,11 +29,14 @@ public class BasicStringDataType extends BasicBigDataType implements StringDataT
     public static final String PROPERTY_PATTERN = "pattern";
     public static final String PROPERTY_PATTERN_DEFAULT = null;
 
+    protected DataType.Property patternProperty = null;
+
     /**
      * Constructor for string field.
      */
     public BasicStringDataType(String name) {
         super(name, String.class);
+        patternProperty = createProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
     }
 
     public String getPattern() {
@@ -41,11 +44,11 @@ public class BasicStringDataType extends BasicBigDataType implements StringDataT
     }
 
     public DataType.Property getPatternProperty() {
-        return getProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
+        return patternProperty;
     }
 
     public DataType.Property setPattern(String value) {
-        return setProperty(PROPERTY_PATTERN, value);
+        return setProperty(getPatternProperty(), value);
     }
 
     public void validate(Object value, Cloud cloud) {
@@ -59,6 +62,12 @@ public class BasicStringDataType extends BasicBigDataType implements StringDataT
                 }
             }
         }
+    }
+
+    public Object clone(String name) {
+        BasicStringDataType clone = (BasicStringDataType)super.clone(name);
+        clone.patternProperty = (DataTypeProperty)getPatternProperty().clone(clone);
+        return clone;
     }
 
 }

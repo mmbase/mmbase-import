@@ -18,7 +18,7 @@ import org.mmbase.util.LocalizedString;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.9 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: DataType.java,v 1.10 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -147,7 +147,7 @@ public interface DataType extends Comparable, Descriptor, Cloneable {
      */
     public Object clone();
 
-    static public interface Property {
+    static public interface Property extends Cloneable {
         public String getName();
         public Object getValue();
         public void setValue(Object value);
@@ -157,6 +157,7 @@ public interface DataType extends Comparable, Descriptor, Cloneable {
         public void setLocalizedErrorDescription(LocalizedString errorDescription);
         public boolean isFixed();
         public void setFixed(boolean fixed);
-    }
+        public Object clone(DataType dataType);
+   }
 
 }

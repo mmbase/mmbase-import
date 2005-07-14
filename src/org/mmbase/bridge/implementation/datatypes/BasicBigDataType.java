@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicBigDataType.java,v 1.3 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: BasicBigDataType.java,v 1.4 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BigDataType
  * @since MMBase-1.8
@@ -33,11 +33,17 @@ abstract public class BasicBigDataType extends AbstractDataType implements BigDa
     public static final String PROPERTY_MAXLENGTH = "maxLength";
     public static final Integer PROPERTY_MAXLENGTH_DEFAULT = new Integer(-1);
 
+    protected DataType.Property minLengthProperty = null;
+    protected DataType.Property maxLengthProperty = null;
+
+
     /**
      * Constructor for bif type field.
      */
     public BasicBigDataType(String name, Class classType) {
         super(name, classType);
+        minLengthProperty = createProperty(PROPERTY_MINLENGTH, PROPERTY_MINLENGTH_DEFAULT);
+        maxLengthProperty = createProperty(PROPERTY_MAXLENGTH, PROPERTY_MAXLENGTH_DEFAULT);
     }
 
     public int getMinLength() {
@@ -45,11 +51,11 @@ abstract public class BasicBigDataType extends AbstractDataType implements BigDa
     }
 
     public DataType.Property getMinLengthProperty() {
-        return getProperty(PROPERTY_MINLENGTH, PROPERTY_MINLENGTH_DEFAULT);
+        return minLengthProperty;
     }
 
     public DataType.Property setMinLength(int value) {
-        return setProperty(PROPERTY_MINLENGTH, new Integer(value));
+        return setProperty(getMinLengthProperty(), new Integer(value));
     }
 
     public int getMaxLength() {
@@ -57,11 +63,11 @@ abstract public class BasicBigDataType extends AbstractDataType implements BigDa
     }
 
     public DataType.Property getMaxLengthProperty() {
-        return getProperty(PROPERTY_MAXLENGTH, PROPERTY_MAXLENGTH_DEFAULT);
+        return maxLengthProperty;
     }
 
     public DataType.Property setMaxLength(int value) {
-        return setProperty(PROPERTY_MINLENGTH, new Integer(value));
+        return setProperty(getMaxLengthProperty(), new Integer(value));
     }
 
     public void validate(Object value, Cloud cloud) {
@@ -88,6 +94,13 @@ abstract public class BasicBigDataType extends AbstractDataType implements BigDa
                 }
             }
         }
+    }
+
+    public Object clone(String name) {
+        BasicBigDataType clone = (BasicBigDataType)super.clone(name);
+        clone.minLengthProperty = (DataTypeProperty)getMinLengthProperty().clone(clone);
+        clone.maxLengthProperty = (DataTypeProperty)getMaxLengthProperty().clone(clone);
+        return clone;
     }
 
 }
