@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.25 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.26 2005-07-14 13:07:40 michiel Exp $
  */
 public class NodeWriter{
 
@@ -132,9 +132,9 @@ public class NodeWriter{
             }
         }
         MMObjectBuilder bul=node.parent;
-        Enumeration nd=bul.getFields().elements();
-        while (nd.hasMoreElements()) {
-            CoreField def = (CoreField)nd.nextElement();
+        Iterator nd = bul.getFields().iterator();
+        while (nd.hasNext()) {
+            CoreField def = (CoreField)nd.next();
             if (def.inStorage()) {
                 String key = def.getName();
                 if (isRelationNode) {
