@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20020516170724">
+    <node number="11001" owner="system" alias="component.projectgroup">
+        <name>projectgroup</name>
+        <classname></classname>
+    </node>
+</components>
