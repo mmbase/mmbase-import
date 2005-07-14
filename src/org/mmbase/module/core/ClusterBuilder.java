@@ -11,6 +11,7 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
@@ -38,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.71 2005-07-09 15:29:11 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.72 2005-07-14 11:43:39 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -236,7 +237,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param the requested field's name
      * @return the field
      */
-    public FieldDefs getField(String fieldName) {
+    public CoreField getField(String fieldName) {
         String builderName = getBuilderNameFromField(fieldName);
         if (builderName.length() > 0) {
             MMObjectBuilder bul = mmb.getBuilder(builderName);
@@ -859,7 +860,7 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         MMObjectBuilder builder= mmb.getBuilder(step.getTableName());
-        FieldDefs fieldDefs= builder.getField(fieldName);
+        CoreField fieldDefs= builder.getField(fieldName);
         if (fieldDefs == null) {
             throw new IllegalArgumentException("Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
         }
@@ -969,6 +970,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
         return result;
     }
+
 
     /**
      * Adds relation directions.
