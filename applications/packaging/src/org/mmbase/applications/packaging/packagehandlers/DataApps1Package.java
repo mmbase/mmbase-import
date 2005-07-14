@@ -10,7 +10,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -20,7 +20,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.util.XMLEntityResolver;
@@ -30,13 +30,12 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 /**
- * DisplayHtmlPackage, Handler for html packages
  *
  * @author     Daniel Ockeloen (MMBased)
  */
 public class DataApps1Package extends BasicPackage implements PackageInterface {
 
-    private static Logger log = Logging.getLoggerInstance(DataApps1Package.class);
+    private static final Logger log = Logging.getLoggerInstance(DataApps1Package.class);
 
     /**
      *  Description of the Field
@@ -426,12 +425,12 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
      */
     private MMObjectNode getExistingContentNode(MMObjectNode newnode, MMObjectBuilder bul) {
         String checkQ = "";
-        Vector vec = bul.getFields();
-        for (Enumeration h = vec.elements(); h.hasMoreElements(); ) {
-            FieldDefs def = (FieldDefs) h.nextElement();
-            if (def.isKey()) {
-                int type = def.getDBType();
-                String name = def.getDBName();
+        Collection vec = bul.getFields();
+        for (Iterator h = vec.iterator(); h.hasNext(); ) {
+            CoreField def = (CoreField) h.next();
+            if (def.isUnique()) {
+                int type = def.getType();
+                String name = def.getName();
                 if (type == Field.TYPE_STRING) {
                     String value = newnode.getStringValue(name);
                     if (checkQ.equals("")) {
