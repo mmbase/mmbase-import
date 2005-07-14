@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.4 2003-03-07 11:49:10 pierre Exp $
+ * @version $Id: Transaction.java,v 1.5 2005-07-14 12:07:42 michiel Exp $
  */
 public class Transaction implements Runnable {
 
@@ -910,9 +910,9 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Enumeration fieldNames = tempObj1.getNode().parent.getFieldNames().elements();
-        while (fieldNames.hasMoreElements()) {
-            String fieldName = (String) fieldNames.nextElement();
+        Iterator fieldNames = tempObj1.getNode().parent.getFieldNames().iterator();
+        while (fieldNames.hasNext()) {
+            String fieldName = (String) fieldNames.next();
 
             // Merge field for all fields except "number" and "owner".
             if (!fieldName.equals("number") && !fieldName.equals("owner")) {
@@ -957,10 +957,9 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Enumeration fieldNames
-        = tempObj1.getNode().parent.getFieldNames().elements();
-        while (fieldNames.hasMoreElements()) {
-            String fieldName = (String) fieldNames.nextElement();
+        Iterator fieldNames  = tempObj1.getNode().parent.getFieldNames().iterator();
+        while (fieldNames.hasNext()) {
+            String fieldName = (String) fieldNames.next();
 
             // Merge field for all fields except "number" and "owner".
             if (!fieldName.equals("number") && !fieldName.equals("owner")) {
