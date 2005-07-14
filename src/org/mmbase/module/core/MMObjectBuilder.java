@@ -57,7 +57,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.319 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.320 2005-07-14 13:13:23 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -343,7 +343,6 @@ public class MMObjectBuilder extends MMTable {
     // contains the builder's field definitions
     protected Map fields;
 
-
     /**
      * Reference to the builders that this builder extends.
      * @since MMBase-1.6.2 (parentBuilder in 1.6.0)
@@ -366,7 +365,7 @@ public class MMObjectBuilder extends MMTable {
      * Contains lists of builder fields in specified order
      * (ORDER_CREATE, ORDER_EDIT, ORDER_LIST, ORDER_SEARCH)
      */
-    private HashMap sortedFieldLists = new HashMap();
+    private Map sortedFieldLists = new HashMap();
 
     /** Properties of a specific Builder.
      * Specified in the xml builder file with the <properties> tag.
@@ -843,11 +842,11 @@ public class MMObjectBuilder extends MMTable {
      * @param node The node whose relations to remove.
      */
     public void removeRelations(MMObjectNode node) {
-        Vector relsv=getRelations_main(node.getNumber());
+        List relsv = getRelations_main(node.getNumber());
         if (relsv != null) {
-            for(Enumeration rels=relsv.elements(); rels.hasMoreElements(); ) {
+            for(Iterator rels = relsv.iterator(); rels.hasNext(); ) {
                 // get the relation node
-                MMObjectNode relnode=(MMObjectNode)rels.nextElement();
+                MMObjectNode relnode = (MMObjectNode)rels.next();
                 // determine the true builder for this node
                 // (node.parent is always InsRel, but otype
                 //  indicates any derived builders, such as AuthRel)
@@ -1214,10 +1213,10 @@ public class MMObjectBuilder extends MMTable {
      * node space
      */
     public MMObjectNode getNewTmpNode(String owner,String key) {
-        MMObjectNode node=null;
-        node=getNewNode(owner);
-        node.setValue("_number",key);
-        TemporaryNodes.put(key,node);
+        MMObjectNode node = null;
+        node = getNewNode(owner);
+        node.setValue("_number", key);
+        TemporaryNodes.put(key, node);
         return node;
     }
 
@@ -1887,25 +1886,27 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return a copy of the list  of field definitions of this table.
-     * @return A new  <code>Vector</code> with the tables fields
+     * @return An unmodifiable <code>Collection</code> with the tables fields
      */
-    public Vector getFields() {
-        return new Vector(fields.values());
+    public Collection getFields() {
+        return Collections.unmodifiableCollection(fields.values());
     }
 
 
     /**
      * Return a list of field names of this table.
-     * @return a new <code>Vector</code> with the tables field anmes (String)
+     * @return a unmodifiable <code>Set</code> with the tables field names
+     * @todo return an unmodifiable Set.
      */
-    public Vector getFieldNames() {
-        return new Vector(fields.keySet());
+    public Set getFieldNames() {
+        return Collections.unmodifiableSet(fields.keySet());
     }
 
     /**
      * Return a field's definition
      * @param fieldName the requested field's name
      * @return a <code>FieldDefs</code> belonging with the indicated field
+     * @todo  Should return CoreField
      */
     public FieldDefs getField(String fieldName) {
         return (FieldDefs) fields.get(fieldName);
@@ -1925,7 +1926,10 @@ public class MMObjectBuilder extends MMTable {
      * @param def the field definiton to add
      */
     public void addField(CoreField def) {
-        fields.put(def.getName(), def);
+        Object oldField = fields.put(def.getName(), def);
+        if (oldField != null) {
+            log.warn("Replaced " + oldField + " !!");
+        }
         updateFields();
     }
 
@@ -1954,7 +1958,7 @@ public class MMObjectBuilder extends MMTable {
      * declared in Field:
      * TYPE_STRING,
      * TYPE_INTEGER,
-     *.TYPE_BINARY,
+     * TYPE_BINARY,
      * TYPE_FLOAT,
      * TYPE_DOUBLE,
      * TYPE_LONG,
@@ -2158,24 +2162,26 @@ public class MMObjectBuilder extends MMTable {
      *        {@link org.mmbase.core.CoreField CoreField}
      * @return The ordered list of field definitions.
      */
-    public List getFields(int sortorder) {
-        List orderedFields = (List)sortedFieldLists.get(new Integer(sortorder));
+    public List getFields(int sortOrder) {
+        List orderedFields = (List)sortedFieldLists.get(new Integer(sortOrder));
         if (orderedFields == null) {
             orderedFields = new ArrayList();
             for (Iterator i = fields.values().iterator(); i.hasNext();) {
                 CoreField field = (CoreField)i.next();
                 // include only fields which have been assigned a valid position, and are
-                if ((sortorder == NodeManager.ORDER_NONE) ||
-                    ((sortorder == NodeManager.ORDER_CREATE) && (field.getStoragePosition()>-1)) ||
-                    ((sortorder == NodeManager.ORDER_EDIT) && (field.getEditPosition()>-1)) ||
-                    ((sortorder == NodeManager.ORDER_SEARCH) && (field.getSearchPosition()>-1)) ||
-                    ((sortorder == NodeManager.ORDER_LIST) && (field.getListPosition()>-1))
+                if ((sortOrder == NodeManager.ORDER_NONE) ||
+                    ((sortOrder == NodeManager.ORDER_CREATE) && (field.getStoragePosition()>-1)) ||
+                    ((sortOrder == NodeManager.ORDER_EDIT) && (field.getEditPosition()>-1)) ||
+                    ((sortOrder == NodeManager.ORDER_SEARCH) && (field.getSearchPosition()>-1)) ||
+                    ((sortOrder == NodeManager.ORDER_LIST) && (field.getListPosition()>-1))
                     ) {
                     orderedFields.add(field);
                 }
             }
-            Fields.sort(orderedFields, sortorder);
-            sortedFieldLists.put(new Integer(sortorder),orderedFields);
+            Fields.sort(orderedFields, sortOrder);
+            sortedFieldLists.put(new Integer(sortOrder), Collections.unmodifiableList(orderedFields));
+        } else {
+            //log.info("From cache!");
         }
         return orderedFields;
     }
@@ -2668,10 +2674,11 @@ public class MMObjectBuilder extends MMTable {
      * This returns the relation objects, not the objects related to.
      * Note that the relations returned are always of builder type 'InsRel', even if they are really from a derived builser such as AuthRel.
      * @param src the number of the node to obtain the relations from
-     * @return a <code>Vector</code> with InsRel nodes
+     * @return a <code>Vector</code> with InsRel nodes     
+     * @todo Return-type and name of this function are not sound.
      */
     public Vector getRelations_main(int src) {
-        InsRel bul=mmb.getInsRel();
+        InsRel bul = mmb.getInsRel();
         if (bul == null) {
             log.error("getMMObject(): InsRel not yet loaded");
             return null;
@@ -3634,6 +3641,8 @@ public class MMObjectBuilder extends MMTable {
             def.setParent(this);
             fields.put(name, def);
         }
+
+
 
         // should be TYPE_NODE ???
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
