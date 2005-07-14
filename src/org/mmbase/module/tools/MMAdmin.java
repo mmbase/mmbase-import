@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.107 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.108 2005-07-14 11:42:01 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -794,7 +794,7 @@ public class MMAdmin extends ProcessorModule {
                                     // && (newNode.parent instanceof Message)) { terrible stuff
 
                                     // determine if there were NODE fields, which need special treatment later.
-                                    List fields = newNode.parent.getFields();
+                                    Collection fields = newNode.parent.getFields();
                                     Iterator i = fields.iterator();
                                     while (i.hasNext()) {
                                         CoreField def = (CoreField) i.next();
@@ -833,7 +833,7 @@ public class MMAdmin extends ProcessorModule {
             // clean it up
             importedNode.values.remove("__exportsource");
 
-            List fields = importedNode.parent.getFields();
+            Collection fields = importedNode.parent.getFields();
             Iterator j = fields.iterator();
             while (j.hasNext()) {
                 CoreField def = (CoreField) j.next();
@@ -860,7 +860,7 @@ public class MMAdmin extends ProcessorModule {
     private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newnode, String exportsource, ApplicationResult result) {
         MMObjectBuilder bul = newnode.parent;
         if (bul != null) {
-            List vec = bul.getFields();
+            Collection vec = bul.getFields();
             Constraint constraint = null;
             NodeSearchQuery query = null;
             for (Iterator h = vec.iterator(); h.hasNext();) {
@@ -1046,7 +1046,7 @@ public class MMAdmin extends ProcessorModule {
                                     if (localnumber == newnode.getNumber()) {
 
                                         // determine if there were NODE fields, which need special treatment later.
-                                        List fields = newnode.parent.getFields();
+                                        Collection fields = newnode.parent.getFields();
                                         Iterator i = fields.iterator();
                                         while (i.hasNext()) {
                                             CoreField def = (CoreField) i.next();
