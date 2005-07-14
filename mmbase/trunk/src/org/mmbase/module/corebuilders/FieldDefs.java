@@ -24,7 +24,7 @@ import org.mmbase.core.util.Fields;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.49 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.50 2005-07-14 11:37:54 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -42,8 +42,8 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
     public final static int ORDER_LIST   = NodeManager.ORDER_LIST;
     public final static int ORDER_SEARCH = NodeManager.ORDER_SEARCH;
 
-    public FieldDefs(String name, DataType dataType ) {
-        super(name, dataType);
+    public FieldDefs(String name, int type, int listItemType, int state, DataType dataType ) {
+        super(name, type, listItemType, state, dataType);
     }
 
     /**
@@ -71,8 +71,7 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * @param state the state of the field (persistent, virtual, etc.)
      */
     public FieldDefs(String guiName, String guiType, int searchPos, int listPos, String name, int type, int guiPos, int state) {
-        super(name,(DataType)DataTypes.getDataType(type).clone(guiType));
-        setState(state);
+        super(name, type, TYPE_UNKNOWN, state, (DataType)DataTypes.getDataTypeInstance(guiType,type));
         setGUIName(guiName);
         setSearchPosition(searchPos);
         setEditPosition(guiPos);
@@ -94,7 +93,7 @@ public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
      * @deprecated to access type constraints, use {@link #getDataType}
      */
     public int getDBType() {
-        return getDataType().getBaseType();
+        return getType();
     }
 
     /**

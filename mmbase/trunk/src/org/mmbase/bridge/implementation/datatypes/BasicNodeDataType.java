@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicNodeDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.NodeDataType
  * @since MMBase-1.8
@@ -37,10 +37,6 @@ public class BasicNodeDataType extends AbstractDataType implements NodeDataType 
      */
     public BasicNodeDataType(String name) {
         super(name, MMObjectNode.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_NODE;
     }
 
     public DataType.Property getMustExistProperty() {

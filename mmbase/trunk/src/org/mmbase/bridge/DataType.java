@@ -18,7 +18,7 @@ import org.mmbase.util.LocalizedString;
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.8 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: DataType.java,v 1.9 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.util.functions.Parameter
  */
 
@@ -117,15 +117,6 @@ public interface DataType extends Comparable, Descriptor, Cloneable {
      * @return the type as a Class
      */
     public Class getTypeAsClass();
-
-    /**
-     * Returns the identifier for the MMBase base type for this datatype.
-     * This represents one of field type constants. This basic type determines how data is stored in MMBase.
-     * Generally it only makes sense when the datatype is actually used by a field.
-     * If a datatype cannot be translated, it returns {@link Field.TYPE_UNKNOWN}.
-     * @return  an <code>int</code> which identifies the base type
-     */
-    public int getBaseType();
 
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this data type),

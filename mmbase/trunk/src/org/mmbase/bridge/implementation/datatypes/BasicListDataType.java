@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicListDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicListDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.ListDataType
  * @since MMBase-1.8
@@ -41,10 +41,6 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
      */
     public BasicListDataType(String name) {
         super(name, List.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_LIST;
     }
 
     public int getMinSize() {

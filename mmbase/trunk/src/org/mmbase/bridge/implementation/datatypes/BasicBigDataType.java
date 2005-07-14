@@ -12,7 +12,7 @@ package org.mmbase.bridge.implementation.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.BigDataType;
+import org.mmbase.bridge.datatypes.*;
 import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.util.Casting;
 
@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicBigDataType.java,v 1.2 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicBigDataType.java,v 1.3 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BigDataType
  * @since MMBase-1.8
@@ -68,12 +68,12 @@ abstract public class BasicBigDataType extends AbstractDataType implements BigDa
         super.validate(value);
         if (value != null) {
             int size = -1;
-            if (getBaseType() == Field.TYPE_STRING) {
-                String stringValue = Casting.toString(value);
-                size = stringValue.length();
-            } else {
+            if (this instanceof BinaryDataType) {
                 byte[] binaryValue = Casting.toByte(value);
                 size = binaryValue.length;
+            } else {
+                String stringValue = Casting.toString(value);
+                size = stringValue.length();
             }
             int minLength = getMinLength();
             if (minLength > 0) {

@@ -19,7 +19,7 @@ import org.mmbase.bridge.datatypes.DoubleDataType;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDoubleDataType.java,v 1.5 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicDoubleDataType.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DoubleDataType
  * @since MMBase-1.8
@@ -31,10 +31,6 @@ public class BasicDoubleDataType extends BasicNumberDataType implements DoubleDa
      */
     public BasicDoubleDataType(String name) {
         super(name, Double.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_DOUBLE;
     }
 
     public Double getMin() {

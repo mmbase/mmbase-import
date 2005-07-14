@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.23 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.24 2005-07-14 11:37:54 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -307,8 +307,7 @@ public class BuilderReader extends XMLBasicReader {
             CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
             if (def != null) {
                 def.rewrite();
-                DataType baseDataType = DataTypes.getBaseDataType(def.getDataType());
-                DataType dataType = decodeDataType(def.getName(),getElementByPath(field,"field.gui"), baseDataType);
+                DataType dataType = decodeDataType(def.getName(),getElementByPath(field,"field.gui"), def.getType(), def.getListItemType(), false);
                 if (dataType != null) {
                     def.setDataType(dataType); // replace datatype
                 }
@@ -496,16 +495,30 @@ public class BuilderReader extends XMLBasicReader {
         }
     }
 
-    protected DataType decodeDataType(String fieldName, Element gui, DataType baseDataType) {
-        Element guiTypeElement = getElementByPath(gui,"gui.guitype");
-        // XXX: deprecated tag 'type'
-        if (guiTypeElement == null) {
-            guiTypeElement = getElementByPath(gui,"gui.type");
+    /**
+     * detemrine a data type instance based on the given gui element
+     */
+    protected DataType decodeDataType(String fieldName, Element gui, int type, int listItemType, boolean forceInstance) {
+        DataType baseDataType;
+        if (type == Field.TYPE_LIST) {
+            baseDataType = DataTypes.getListDataType(listItemType);
+        } else {
+            baseDataType = DataTypes.getDataType(type);
         }
         DataType dataType = null;
-        if (guiTypeElement != null) {
-            String guiType = getElementValue(guiTypeElement);
-            dataType = DataTypes.getDataTypeInstance(guiType, baseDataType);
+        if (gui != null) {
+            Element guiTypeElement = getElementByPath(gui,"gui.guitype");
+            // XXX: deprecated tag 'type'
+            if (guiTypeElement == null) {
+                guiTypeElement = getElementByPath(gui,"gui.type");
+            }
+            if (guiTypeElement != null) {
+                String guiType = getElementValue(guiTypeElement);
+                dataType = DataTypes.getDataTypeInstance(guiType, baseDataType);
+            }
+        }
+        if (dataType == null && forceInstance) {
+            dataType = (DataType)baseDataType.clone();
         }
         return dataType;
     }
@@ -521,26 +534,18 @@ public class BuilderReader extends XMLBasicReader {
         Element db = getElementByPath(field,"field.db");
         String fieldName = getElementValue(getElementByPath(db,"db.name"));
         Element dbtype = getElementByPath(db,"db.type");
-        int type = Fields.getType(getElementValue(dbtype));
+        String baseType = getElementValue(dbtype);
+        int type = Fields.getType(baseType);
+        int listItemType = Field.TYPE_UNKNOWN;
+        if (type == Field.TYPE_LIST) {
+            if (baseType.length() > 5) {
+                listItemType = Fields.getType(baseType.substring(5,baseType.length()-1));
+            }
+        }
         int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        DataType baseDataType = null;
-        if (type == Field.TYPE_LIST) {
-            baseDataType = DataTypes.getDataType(type);
-            int subType = Field.TYPE_UNKNOWN;
-            String listType = getElementValue(dbtype);
-            if (listType.length() > 5) {
-                subType = Fields.getType(listType.substring(5,listType.length()-1));
-            }
-            baseDataType = DataTypes.getListDataType(subType);
-        } else {
-            baseDataType = DataTypes.getDataType(type);
-        }
-        DataType dataType = decodeDataType(fieldName,getElementByPath(field,"field.gui"), baseDataType);
-        if (dataType == null) {
-            dataType = (DataType)baseDataType.clone();
-        }
-        CoreField def = mmbase.createField(fieldName, dataType, state);
+        DataType dataType = decodeDataType(fieldName,getElementByPath(field,"field.gui"), type, listItemType, true);
+        CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
 
         String size = getElementAttributeValue(dbtype,"size");
         if (size!=null && !size.equals("")) {

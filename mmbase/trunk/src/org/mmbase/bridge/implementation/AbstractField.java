@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -28,6 +28,9 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
     protected DataType dataType = null;
+    protected int type = TYPE_UNKNOWN;
+    protected int state = STATE_UNKNOWN;
+    protected int listItemType = TYPE_UNKNOWN;
 
     /**
      * Create a field object based on another field.
@@ -49,6 +52,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      */
     protected AbstractField(String name, Field field, boolean copyDataTypeForRewrite) {
         super(name, (Descriptor)field);
+        type = field.getType();
+        listItemType = field.getListItemType();
         if (copyDataTypeForRewrite) {
             dataType = (DataType)field.getDataType().clone();
         } else {
@@ -61,8 +66,11 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      * @param name the name of the field
      * @param dataType the data type of the field
      */
-    protected AbstractField(String name, DataType dataType) {
+    protected AbstractField(String name, int type, int listItemType, int state, DataType dataType) {
         super(name);
+        this.type = type;
+        this.listItemType = listItemType;
+        this.state = state;
         this.dataType = dataType;
     }
 
@@ -96,7 +104,17 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
         return getName().hashCode() * 13 + dataType.hashCode();
     }
 
-    abstract public int getState();
+    public int getState() {
+        return state;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public int getListItemType() {
+        return listItemType;
+    }
 
     public DataType getDataType() {
         return dataType;
@@ -113,23 +131,6 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     abstract public int getEditPosition();
 
     abstract public int getStoragePosition();
-
-    // MMBase Type shortcut
-    public int getType() {
-        return dataType.getBaseType();
-    }
-
-    public Class getTypeAsClass() {
-        return dataType.getTypeAsClass();
-    }
-
-    public void checkType(Object o) {
-        dataType.checkType(o);
-    }
-
-    public Object autoCast(Object o) {
-        return dataType.autoCast(o);
-    }
 
     // deprecated methods
 

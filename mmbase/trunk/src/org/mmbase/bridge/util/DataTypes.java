@@ -23,16 +23,16 @@ import org.mmbase.module.core.MMObjectNode;
  * It contains a static set of named DataType objects, with which it is possible to craete a set
  * of datatypes that are accessable throught the MMBase application.
  * This set contains, at the very least, the basic datatypes (a DataType for every
- * MMBase 'base' type, i.e. integer, string, etc).
+ * 'MMBase' type, i.e. integer, string, etc).
  * There can be only one DataType in a set with a given name, so it is not possible to have multiple
- * registered datatypes with the same name (i.e. various 'integer' DataTypes for different basetypes).
+ * registered datatypes with the same name.
  * <br />
  * A number of other methods in this class deal with conversion, creating datatypes, and 'finishing'
  * datatypes (locking a datatype to protect it form being changed).
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.8 2005-07-13 11:48:48 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.9 2005-07-14 11:37:53 pierre Exp $
  */
 
 public class DataTypes {
@@ -41,13 +41,13 @@ public class DataTypes {
     private static Map finalDataTypes = new HashMap();
 
     /**
-     * Determines the MMBase base type of a specified class. The MMBase base type determines, amonmg otehr things,
-     * how the class would - ideally - be stored.
+     * Determines the MMBase type of a specified class. The MMBase base type is sue dby teh storage layer to
+     * determine how to store a field.
      * If the base type cannot be determined from the class, the value returned is {@link Field.TYPE_UNKNOWN}.
      * @param classType
      * @return an MMBase base type constant
      */
-    public static int classToBaseType(Class classType) {
+    public static int classToType(Class classType) {
         if (classType == null) {
             return Field.TYPE_UNKNOWN;
         } else if (classType.isArray() && classType.getComponentType() == Byte.TYPE) {
@@ -79,12 +79,11 @@ public class DataTypes {
 
     /**
      * Determines the class for a specified MMBase base type.
-     * If the class cannot be determined from the bas etype (i.e. the value is {@link Field.TYPE_UNKNOWN}),
-     * the method returns <code>null</code>.
+     * If the value is {@link Field.TYPE_UNKNOWN}), the method returns <code>null</code>.
      * @param classType
      * @return an MMBase base type constant
      */
-    public static Class baseTypeToClass(int type) {
+    public static Class typeToClass(int type) {
         switch (type) {
         case Field.TYPE_STRING : return String.class;
         case Field.TYPE_INTEGER : return Integer.class;
@@ -103,20 +102,20 @@ public class DataTypes {
 
     /**
      * Create an instance of a DataType based on the class passed.
-     * The DataType returned is, if possoble, a specialized DataType (such as {@link IntegerDataType})
-     * based on the BaseType associated with the passed class. Otherwis, it is a generic DataType
-     * specific for that class (with generally emans that it only supports basic functionality such as autocast).
+     * The DataType returned is, if possible, a specialized DataType (such as {@link IntegerDataType})
+     * based on the MMBase Type that most closely matches the passed class. Otherwise, it is a generic DataType
+     * specific for that class (with generally means that it only supports basic functionality such as autocast).
      * @param name The name of the datatype to create. If <code>null</code> is passed, the class name is used.
      * @param classType The class of the datatype to create. If <code>null</code> is passed, the
      *          dataType returned is based on Object.class.
      */
     public static DataType createDataType(String name, Class classType) {
-        int baseType = classToBaseType(classType);
+        int type = classToType(classType);
         if (name == null && classType != null) {
             name = classType.getName();
         }
-        if (baseType != Field.TYPE_UNKNOWN || classType == null) {
-            return createDataType(name, baseType);
+        if (type != Field.TYPE_UNKNOWN || classType == null) {
+            return createDataType(name, type);
         } else {
             return new BasicDataType(name, classType);
         }
@@ -178,74 +177,62 @@ public class DataTypes {
     }
 
     /**
-     * Returns a DataType instance that is assignment compatible with the passed base DataType.
-     * Assignment compatible in this regard means that the MMBase base type of the DataType matches,
-     * (and in the case of a list, the base type of the elements as well). Note that a base Datatype that is of type
-     * {@link Field.TYPE_UNKNOWN} matches with anything.
-     * The system first tries to obtain a assignment-compatible type from the available set of datatypes
-     * accessible throughout the application. If a DataType of the passed name exists, and if it is
-     * assignent-compatible to the base DataType, a clone of that DataType is returned.
-     * Otherwise, a clone of the base DataType is returned.
+     * Returns a DataType instance.
+     * The system first tries to obtain a data type from the available set of datatypes
+     * accessible throughout the application. If a DataType of the passed name exists, a clone of that DataType is returned.
+     * Otherwise, a clone of the base DataType passed is returned.
      * if the DataType with the passed name does not exist, and the value passed for the baseDataType is <code>null</code>,
      * the method returns <code>null</code>.
      * @param name the name of the DataType to look for
-     * @param baseDataType the dataType to match against. Can be <code>null</code>, in which case no matching takes place.
+     * @param baseDataType the dataType to match against. Can be <code>null</code>.
      * @return A DataType instance or <code>null</code> if none can be instantiated
      */
     public static synchronized DataType getDataTypeInstance(String name, DataType baseDataType) {
         DataType dataType = (DataType) finalDataTypes.get(name);
-        int baseType = baseDataType != null ? baseDataType.getBaseType() : Field.TYPE_UNKNOWN;
         if (dataType == null && baseDataType == null) {
             return null;
-        } else if (dataType == null || (baseType != Field.TYPE_UNKNOWN && dataType.getBaseType() != baseType)) {
+        } else if (dataType == null) {
             return (DataType)baseDataType.clone(name);
-        } else if (baseType == Field.TYPE_LIST) {
-            DataType baseItemDataType = ((ListDataType) baseDataType).getItemDataType();
-            int itemBaseType = baseItemDataType != null ? baseItemDataType.getBaseType() : Field.TYPE_UNKNOWN;
-            if (itemBaseType != Field.TYPE_UNKNOWN) {
-                DataType itemDataType = ((ListDataType) dataType).getItemDataType();
-                if (itemDataType == null || itemDataType.getBaseType() != itemBaseType) {
-                    return (DataType)baseDataType.clone(name);
-                }
-            }
+        } else {
+            return (DataType)dataType.clone();
         }
-        return (DataType)dataType.clone();
     }
 
     /**
-     * Returns a DataType instance that matches the passed basetype.
-     * Note that a base type{@link Field.TYPE_UNKNOWN} matches with anything.
+     * Returns a DataType instance.
      * The system first tries to obtain a type from the available set of datatypes
-     * accessible throughout the application. If a DataType of the passed name (and appropriate type) exists,
-     * a clone of that DataType is returned. Otherwise, an instance of a DataType based on the base type is returned.
+     * accessible throughout the application. If a DataType of the passed name exists,
+     * a clone of that DataType is returned. Otherwise, an instance of a DataType based
+     * on the base type is returned.
      * @param name the name of the DataType to look for
-     * @param baseType the base type  to match against.
+     * @param type the base type to use for a default datatype instance
      * @return A DataType instance
      */
-    public static synchronized DataType getDataTypeInstance(String name, int baseType) {
-        return getDataTypeInstance(name, getDataType(baseType));
+    public static synchronized DataType getDataTypeInstance(String name, int type) {
+        return getDataTypeInstance(name, getDataType(type));
     }
 
     /**
-     * Returns a ListDataType instance whose itemDataType matches the passed basetype.
-     * Note that a base type{@link Field.TYPE_UNKNOWN} matches with anything.
+     * Returns a ListDataType instance.
      * The system first tries to obtain a type from the available set of datatypes
-     * accessible throughout the application. If a DataType of the passed name (and appropriate type) exists,
-     * a clone of that DataType is returned. Otherwise, an instance of a DataType based on the base type is returned.
+     * accessible throughout the application. If a DataType of the passed name exists,
+     * a clone of that DataType is returned. Otherwise, an instance of a ListDataType based
+     * on the list item type is returned.
      * @param name the name of the DataType to look for
-     * @param baseType the base type to match against
+     * @param listItemType the base type to use for a default listdatatype instance
+     *        (this type determines the type of the list elements)
      * @return A ListDataType instance
      */
-    public static synchronized ListDataType getListDataTypeInstance(String name, int subBaseType) {
-        return (ListDataType)getDataTypeInstance(name, getListDataType(subBaseType));
+    public static synchronized ListDataType getListDataTypeInstance(String name, int listItemType) {
+        return (ListDataType)getDataTypeInstance(name, getListDataType(listItemType));
     }
 
     /**
-     * Returns the basic DataType that matches the passed basetype.
+     * Returns the basic DataType that matches the passed type.
      * The datatype is retrieved from the available set of datatypes accessible throughout the application.
      * If this datatype does not (yet) exists, an instance is automatically created and added.
      * The datatype returned by this method is only useful for matching or cloning -  it cannot be changed.
-     * @param baseType the base type whose DataType to return
+     * @param type the base type whose DataType to return
      * @return the DataType instance
      */
     public static synchronized DataType getDataType(int type) {
@@ -264,48 +251,24 @@ public class DataTypes {
     }
 
     /**
-     * Returns the basic ListDataType whose item's DataType matches the passed basetype.
+     * Returns the basic ListDataType whose item's DataType matches the passed type.
      * The datatype is retrieved from the available set of datatypes accessible throughout the application.
      * If this datatype does not (yet) exists, an instance is automatically created and added.
      * The datatype returned by this method is only useful for matching or cloning -  it cannot be changed.
-     * @param subBaseType the base type whose ListDataType to return
+     * @param listItemType the base type whose ListDataType to return
      * @return the ListDataType instance
      */
-    public static ListDataType getListDataType(int subBaseType) {
+    public static ListDataType getListDataType(int listItemType) {
         String name = Fields.getTypeDescription(Field.TYPE_LIST).toLowerCase() +
-                      "[" +  Fields.getTypeDescription(subBaseType).toLowerCase() + "]";
+                      "[" +  Fields.getTypeDescription(listItemType).toLowerCase() + "]";
         ListDataType dataType = (ListDataType)finalDataTypes.get(name);
         if (dataType == null) {
             dataType = (ListDataType)createDataType(name, Field.TYPE_LIST);
-            dataType.setItemDataType(getDataType(subBaseType));
+            dataType.setItemDataType(getDataType(listItemType));
             finish(dataType);
             finalDataTypes.put(name, dataType);
         }
         return dataType;
-    }
-
-    /**
-     * Returns a basic DataType extracted from the passed DataType.
-     * A basic DataType does not contain any validation rules other than type casting, andd cannot be changed.
-     * This method is useful if you want to make an assignment compatible DataType, but do not wish to
-     * copy all the validation rules.
-     * @param  dataType the type to extract the basic DataType from
-     * @return the basic DataType
-     */
-    public static DataType getBaseDataType(DataType dataType) {
-        int baseType = dataType.getBaseType();
-        DataType baseDataType;
-        if (baseType == Field.TYPE_LIST) {
-            int subType = Field.TYPE_UNKNOWN;
-            DataType itemDataType = ((ListDataType)dataType).getItemDataType();
-            if (itemDataType != null) {
-                subType = itemDataType.getBaseType();
-            }
-            baseDataType = DataTypes.getListDataType(subType);
-        } else {
-            baseDataType = DataTypes.getDataType(baseType);
-        }
-        return baseDataType;
     }
 
 }
