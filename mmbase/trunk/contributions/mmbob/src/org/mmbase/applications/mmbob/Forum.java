@@ -679,7 +679,7 @@ public class Forum {
      * @return Poster <code>null</code> if the account was not found
      */
     public Poster getPoster(String posterid) {
-        Poster p = (Poster) posternames.get(posterid);
+        Poster p = (Poster) posternames.get(posterid.toLowerCase());
         if (p != null) {
             return p;
         }
@@ -779,7 +779,7 @@ public class Forum {
                 Poster p = new Poster(node, this,true);
         	//long end = System.currentTimeMillis();
                 posters.put(new Integer(p.getId()), p);
-                posternames.put(p.getAccount(), p);
+                posternames.put(p.getAccount().toLowerCase(), p);
                 totalusers++;
                 if (p.getLastSeen() > onlinetime) {
                     onlineposters.add(p);
@@ -903,7 +903,7 @@ public class Forum {
                 Poster p = new Poster(pnode, this,false);
                 posters.put(new Integer(p.getId()), p);
                 onlineposters.add(p);
-                posternames.put(p.getAccount(), p);
+                posternames.put(p.getAccount().toLowerCase(), p);
 
                 totalusers++;
                 totalusersnew++;

@@ -1073,6 +1073,7 @@ public class Controller {
         if (password.equals(confirmpassword)) {
             Forum f = ForumManager.getForum(forumid);
             if (f != null) {
+                account = account.trim();
                 Poster p = f.getPoster(account);
                 if (p == null) {
 		    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";

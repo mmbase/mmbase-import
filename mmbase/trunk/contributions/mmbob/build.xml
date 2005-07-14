@@ -9,6 +9,7 @@
   <property name="project.target.templates.dir" value="mmbob" />
   <property name="source.dir" value="../../mmbase" />
   <property name="project.extra.path" location="../thememanager/build/mmbase-thememanager.jar" />
+  <property name="project.extra.path2" location="../../mmbase/applications/email/build/mmbase-email.jar"/>
 
   &base;
 
