@@ -1,5 +1,11 @@
 Migratie issues
 
+
+2005-07-14
+
+    Please run /fix-taskresources.jsp for fix bug with 'resources' builder.
+
+
 2005-07-12
     
     Please run /migrate-2005-07-12.jsp for preset rights for roles.
