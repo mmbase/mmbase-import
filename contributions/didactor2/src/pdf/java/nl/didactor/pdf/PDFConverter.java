@@ -9,6 +9,8 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.xml.XmlWriter;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Image;
 import java.io.*;
@@ -21,10 +23,17 @@ public class PDFConverter {
     public static void pageAsPDF (URL url, OutputStream out, URL headerImageURL) 
         throws ServletException, java.io.IOException
     {
-       try {
-            Document pdf = new Document();
+        PipedOutputStream pipeout = null;
+        PipedInputStream pipein = null;
+        InputStream urlStream = null;
+        Document pdf = null;
+        try {
+            pdf = new Document();
+//            pdf.compress = false; // debug
             pdf.setMargins(50f,50f,120f,50f);
+//            XmlWriter writer = XmlWriter.getInstance(pdf, out);
             PdfWriter writer = PdfWriter.getInstance(pdf, out);
+            
 
             pdf.setFooter(footer());
 
@@ -50,15 +59,35 @@ public class PDFConverter {
             tidy.setDropProprietaryAttributes(true);
             tidy.setWord2000(true);
             tidy.setDocType("omit");
-            PipedOutputStream pipeout = new PipedOutputStream();
-            PipedInputStream pipein = new PipedInputStream(pipeout);
+            tidy.setBreakBeforeBR(true);
+            pipeout = new PipedOutputStream();
+            pipein = new PipedInputStream(pipeout);
             Thread t = new PdfThread(pdf, parser, pipein);
             t.start();
-            tidy.parse(url.openStream(),pipeout);
+            urlStream = url.openStream();
+            tidy.parse(urlStream,pipeout);
+//            tidy.parse(urlStream,out); // debug: output tidied html instead of pdf
             t.join();
         }
         catch ( Exception e ) {
             throw new ServletException(e);
+        }
+        finally {
+            if (urlStream != null) {
+                urlStream.close();
+            }
+            if (pipeout != null) {
+                pipeout.close();
+            }
+            if  (pipein != null) {
+                pipein.close();
+            }
+            if (pdf != null) {
+                pdf.close();
+            }
+            if (out != null) {
+                out.close();
+            }
         }
     }
 
@@ -101,7 +130,6 @@ public class PDFConverter {
                 
         public void run() {
             parser.go(pdf,pipein);
-            pdf.close();
         }
     }
     
