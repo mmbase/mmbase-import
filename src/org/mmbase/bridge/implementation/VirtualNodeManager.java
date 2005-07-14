@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
 
 /**
@@ -24,7 +25,7 @@ import org.mmbase.module.core.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.26 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.27 2005-07-14 11:37:53 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
 
@@ -48,8 +49,8 @@ public class VirtualNodeManager extends BasicNodeManager {
                 Object value = entry.getValue();
                 if (value == MMObjectNode.VALUE_NULL) continue;
                 DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
-                CoreField fd = BasicCloudContext.mmb.createField(fieldName, fieldDataType, Field.STATE_VIRTUAL,
-                                               fieldName, -1, -1, -1);
+                int type = DataTypes.classToType(value.getClass());
+                CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
                 fd.finish();
                 Field ft = new BasicField(fd, this);
                 fieldTypes.put(fieldName, ft);

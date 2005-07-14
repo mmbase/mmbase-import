@@ -19,7 +19,7 @@ import org.mmbase.bridge.datatypes.FloatDataType;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFloatDataType.java,v 1.5 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicFloatDataType.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.FloatDataType
  * @since MMBase-1.8
@@ -31,10 +31,6 @@ public class BasicFloatDataType extends BasicNumberDataType implements FloatData
      */
     public BasicFloatDataType(String name) {
         super(name, Float.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_FLOAT;
     }
 
     public Float getMin() {

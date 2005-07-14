@@ -32,10 +32,32 @@ public class Fields {
     };
 
     /**
-     * Returns an instance of a CoreField based on the type.
+     * Returns an instance of a CoreField based on the type, with state 'SYSTEM', and a basic datatype assigned.
+     * @param name The name of the field
+     * @param type the MMBase basic field type, one of the {@link Field} TYPE constants. Specifying {@link Field#TYPE_LIST},
+     *             may give unpredictable results.
      */
-    public static CoreField createField(String name, DataType dataType) {
-        return new org.mmbase.module.corebuilders.FieldDefs(name, dataType);
+    public static CoreField createSystemField(String name, int type) {
+        return createField(name, type, Field.TYPE_UNKNOWN, Field.STATE_SYSTEM, null);
+    }
+
+    /**
+     * Returns an instance of a CoreField based on the type and state.
+     * @param name The name of the field
+     * @param type the MMBase basic field type, one of the {@link Field} TYPE constants.
+     * @param listItemType the MMBase type for items of a list (if type is {@link Field#TYPE_LIST}).
+     * @param state the MMBase field state, one of the {@link Field} STATE constants.
+     * @param dataType the dataType to use for validating the field data. If <code>null</code>, a default datatype is assigned
+     */
+    public static CoreField createField(String name, int type, int listItemType, int state, DataType dataType) {
+        if (dataType == null) {
+            if (type == Field.TYPE_LIST) {
+                dataType = (DataType)DataTypes.getListDataType(listItemType).clone();
+            } else {
+                dataType = (DataType)DataTypes.getDataType(type).clone();
+            }
+        }
+        return new org.mmbase.module.corebuilders.FieldDefs(name, type, listItemType, state, dataType);
     }
 
     /**

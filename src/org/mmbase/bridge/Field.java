@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.25 2005-07-12 19:55:38 michiel Exp $
+ * @version $Id: Field.java,v 1.26 2005-07-14 11:37:53 pierre Exp $
  */
 public interface Field extends Descriptor {
 
@@ -119,10 +119,17 @@ public interface Field extends Descriptor {
     /**
      * Returns the identifier for the MMBase base type for this field.
      * This represents one of field type constants. This basic type determines how data is stored in MMBase.
-     * The type is retrieved from the field's DataType.
      * @return  an <code>int</code> which identifies the base type
      */
     public int getType();
+
+    /**
+     * If the type of this field is TYPE_LIST, this method returns the MMBase base type for the list elements.
+     * This represents one of field type constants. This basic type determines how data is stored in MMBase.
+     * For any field types other that TYPE_LIST, this method returns TYPE_UNKNOWN.
+     * @return  an <code>int</code> which identifies the base type
+     */
+    public int getListItemType();
 
     /**
      * Retrieve the position of the field when searching.

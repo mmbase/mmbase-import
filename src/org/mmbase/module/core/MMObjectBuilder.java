@@ -57,7 +57,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.318 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.319 2005-07-14 11:37:54 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1245,8 +1245,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public boolean checkAddTmpField(String field) {
         if (getDBState(field) == Field.STATE_UNKNOWN) { // means that field is not yet defined.
-            CoreField fd = mmb.createField(field,(DataType)DataType.STRING.clone(), Field.STATE_VIRTUAL,
-                                        field,  -1,-1,-1);
+            CoreField fd = Fields.createField(field, Field.TYPE_STRING, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
             if (! field.startsWith("_")) {
                 fd.setStoragePosition(1000);
                 log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
@@ -3640,8 +3639,8 @@ public class MMObjectBuilder extends MMTable {
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
-            CoreField def = mmb.createField(FIELD_OBJECT_TYPE, (DataType)DataType.INTEGER.clone(), Field.STATE_SYSTEM,
-                                         "Type", -1, -1, -1);
+            CoreField def = Fields.createSystemField(FIELD_OBJECT_TYPE, Field.TYPE_NODE);
+            def.setGUIName("Type");
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setStoragePosition(2);
             def.getDataType().setRequired(true);

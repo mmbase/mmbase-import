@@ -64,9 +64,13 @@ public interface CoreField extends Field, Storable, Cloneable {
      */
     public int getSize();
 
-    public void setSize(int i);
+    public void setSize(int size);
 
-    public void setState(int i);
+    public void setState(int state);
+
+    public void setType(int type);
+
+    public void setListItemType(int listItemType);
 
     public void setUnique(boolean b);
 

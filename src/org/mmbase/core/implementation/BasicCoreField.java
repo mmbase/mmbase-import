@@ -26,7 +26,7 @@ import org.mmbase.util.*;
  * @author Hans Speijer
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCoreField.java,v 1.5 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: BasicCoreField.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @package org.mmbase.core?
  * @since MMBase-1.8
@@ -40,7 +40,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
     private int listPosition = NO_POSITION;
     private int editPosition = NO_POSITION;
     private int size = NO_POSITION;
-    private int state = STATE_UNKNOWN;
 
     private boolean unique = false;
 
@@ -53,8 +52,8 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
      * @param name the name of the data type
      * @param dataType the data type for this field
      */
-    protected BasicCoreField(String name, DataType dataType) {
-        super(name,dataType);
+    protected BasicCoreField(String name, int type, int listItemType, int state, DataType dataType) {
+        super(name, type, listItemType, state, dataType);
     }
 
     /**
@@ -64,7 +63,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
      */
     protected BasicCoreField(String name, CoreField coreField) {
         super(name, coreField, true);
-        setState(coreField.getState());
         setSearchPosition(coreField.getSearchPosition());
         setEditPosition(coreField.getEditPosition());
         setListPosition(coreField.getListPosition());
@@ -148,12 +146,16 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
         this.parent = parent;
     }
 
-    public int getState() {
-        return state;
+    public void setState(int state) {
+        this.state = state;
     }
 
-    public void setState(int i) {
-        state = i;
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setListItemType(int listItemType) {
+        this.listItemType = listItemType;
     }
 
     /**
@@ -207,7 +209,7 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, getName());
-        result = HashCodeUtil.hashCode(result, getDataType().getBaseType());
+        result = HashCodeUtil.hashCode(result, getType());
         result = HashCodeUtil.hashCode(result, state);
         result = HashCodeUtil.hashCode(result, getDataType().isRequired());
         result = HashCodeUtil.hashCode(result, unique);
@@ -279,13 +281,19 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
         return size;
     }
 
-    public void setSize(int i) {
-        size = i;
+    public void setSize(int size) {
+        this.size = size;
         if (dataType instanceof BigDataType && size < ((BigDataType)dataType).getMaxLength()) {
             ((BigDataType)dataType).setMaxLength(size);
         } else if (dataType instanceof ListDataType && size < ((ListDataType)dataType).getMaxSize()) {
             ((ListDataType)dataType).setMaxSize(size);
         }
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+        // datatype can be influenced by size
+        setSize(getSize());
     }
 
     // deprecated methods
@@ -309,12 +317,6 @@ public class BasicCoreField extends org.mmbase.bridge.implementation.AbstractFie
 
     public int getMaxLength() {
         return getSize();
-    }
-
-    public void setDataType(DataType dataType) {
-        this.dataType = dataType;
-        // datatype can be influenced by size
-        setSize(getSize());
     }
 
 }
