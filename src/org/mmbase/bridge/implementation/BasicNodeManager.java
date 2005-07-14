@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.98 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.99 2005-07-14 20:19:49 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -148,7 +148,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         long builderVersion = builder.getInternalVersion();
         if (internalVersion < builderVersion) {
             internalVersion = builderVersion;
-            List fields = builder.getFields();
+            Collection fields = builder.getFields();
             if (fields != null) { // when is it null?
                 fieldTypes.clear();
                 for(Iterator i = fields.iterator(); i.hasNext();){

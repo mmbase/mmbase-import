@@ -4,6 +4,7 @@ import junit.framework.*;
 import java.util.*;
 
 import org.mmbase.bridge.Field;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -12,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -28,8 +29,8 @@ public class NodeSearchQueryTest extends TestCase {
     private InsRel insrel = null;
     
     /** Example fields. */
-    private FieldDefs imagesTitle = null;
-    private FieldDefs newsTitle = null;
+    private CoreField imagesTitle = null;
+    private CoreField newsTitle = null;
     
     public NodeSearchQueryTest(java.lang.String testName) {
         super(testName);
@@ -72,25 +73,25 @@ public class NodeSearchQueryTest extends TestCase {
             fail("Virtual builder, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
             
-        List fields = images.getFields();
+        Collection fields = images.getFields();
         List stepFields = instance.getFields();
         Iterator iStepFields = stepFields.iterator();
         // Test all elements in stepFields are persistent fields from images.
         while (iStepFields.hasNext()) {
             StepField stepField = (StepField) iStepFields.next();
-            FieldDefs field = images.getField(stepField.getFieldName());
+            CoreField field = images.getField(stepField.getFieldName());
             assertTrue(fields.contains(field));
-            assertTrue(field.getDBType() != Field.TYPE_BINARY &&
-                (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM));
+            assertTrue(field.getType() != Field.TYPE_BINARY &&
+                (field.getState() == Field.STATE_PERSISTENT
+                    || field.getState() == Field.STATE_SYSTEM));
         }
         // Test all persistent fields from images are in query.
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
-            FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != Field.TYPE_BINARY &&
-                (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
+            CoreField field = (CoreField) iFields.next();
+            if (field.getType() != Field.TYPE_BINARY &&
+                (field.getState() == Field.STATE_PERSISTENT
+                    || field.getState() == Field.STATE_SYSTEM)) {
                 assertTrue(instance.getField(field) != null);
             }
         }
@@ -99,18 +100,17 @@ public class NodeSearchQueryTest extends TestCase {
     /** Test of getField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testGetField() {
         Step step = (Step) instance.getSteps().get(0);
-        List fields = images.getFields();
-        Iterator iFields = fields.iterator();
-        while (iFields.hasNext()) {
-            FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBType() != Field.TYPE_BINARY &&
-                (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
+        Collection fields = images.getFields();
+        for (Iterator iFields = fields.iterator(); iFields.hasNext();) {
+            CoreField field = (CoreField) iFields.next();
+            if (field.getType() != Field.TYPE_BINARY &&
+                (field.getState() == Field.STATE_PERSISTENT
+                    || field.getState() == Field.STATE_SYSTEM)) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
-                assertTrue(stepField.getFieldName().equals(field.getDBName()));
+                assertTrue(stepField.getFieldName().equals(field.getName()));
                 assertTrue(stepField.getAlias() == null);
-                assertTrue(stepField.getType() == field.getDBType());
+                assertTrue(stepField.getType() == field.getType());
                 assertTrue(stepField.getStep().equals(step));
             } else {
                 // Non-persistent field: should throw IllegalArgumentException.
