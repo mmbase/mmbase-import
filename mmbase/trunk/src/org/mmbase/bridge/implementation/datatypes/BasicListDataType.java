@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicListDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: BasicListDataType.java,v 1.6 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.ListDataType
  * @since MMBase-1.8
@@ -36,11 +36,18 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
     public static final String PROPERTY_ITEMDATATYPE = "itemDataType";
     public static final Integer PROPERTY_ITEMDATATYPE_DEFAULT = null;
 
+    protected DataType.Property minSizeProperty = null;
+    protected DataType.Property maxSizeProperty = null;
+    protected DataType.Property itemDataTypeProperty = null;
+
     /**
      * Constructor for List field.
      */
     public BasicListDataType(String name) {
         super(name, List.class);
+        minSizeProperty = createProperty(PROPERTY_MINSIZE, PROPERTY_MINSIZE_DEFAULT);
+        maxSizeProperty = createProperty(PROPERTY_MAXSIZE, PROPERTY_MAXSIZE_DEFAULT);
+        itemDataTypeProperty = createProperty(PROPERTY_ITEMDATATYPE, PROPERTY_ITEMDATATYPE_DEFAULT);
     }
 
     public int getMinSize() {
@@ -48,11 +55,11 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
     }
 
     public DataType.Property getMinSizeProperty() {
-        return getProperty(PROPERTY_MINSIZE,PROPERTY_MINSIZE_DEFAULT);
+        return minSizeProperty;
     }
 
     public DataType.Property setMinSize(int value) {
-        return setProperty(PROPERTY_MINSIZE, new Integer(value));
+        return setProperty(getMinSizeProperty(), new Integer(value));
     }
 
     public int getMaxSize() {
@@ -60,11 +67,11 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
     }
 
     public DataType.Property getMaxSizeProperty() {
-        return getProperty(PROPERTY_MAXSIZE,PROPERTY_MAXSIZE_DEFAULT);
+        return maxSizeProperty;
     }
 
     public DataType.Property setMaxSize(int value) {
-        return setProperty(PROPERTY_MAXSIZE, new Integer(value));
+        return setProperty(getMaxSizeProperty(), new Integer(value));
     }
 
     public DataType getItemDataType() {
@@ -72,11 +79,11 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
     }
 
     public DataType.Property getItemDataTypeProperty() {
-        return getProperty(PROPERTY_ITEMDATATYPE, PROPERTY_ITEMDATATYPE_DEFAULT);
+        return itemDataTypeProperty;
     }
 
     public DataType.Property setItemDataType(DataType value) {
-        return setProperty(PROPERTY_ITEMDATATYPE, value);
+        return setProperty(getItemDataTypeProperty(), value);
     }
 
     public void validate(Object value, Cloud cloud) {
@@ -107,6 +114,14 @@ public class BasicListDataType extends AbstractDataType implements ListDataType 
                 }
             }
         }
+    }
+
+    public Object clone(String name) {
+        BasicListDataType clone = (BasicListDataType)super.clone(name);
+        clone.minSizeProperty = (DataTypeProperty)getMinSizeProperty().clone(clone);
+        clone.maxSizeProperty = (DataTypeProperty)getMaxSizeProperty().clone(clone);
+        clone.itemDataTypeProperty = (DataTypeProperty)getItemDataTypeProperty().clone(clone);
+        return clone;
     }
 
 }

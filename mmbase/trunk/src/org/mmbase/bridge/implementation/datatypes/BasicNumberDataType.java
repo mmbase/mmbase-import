@@ -20,22 +20,22 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNumberDataType.java,v 1.2 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicNumberDataType.java,v 1.3 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.NumberDataType
  * @since MMBase-1.8
  */
 abstract public class BasicNumberDataType extends AbstractDataType implements NumberDataType {
 
-    public static final String PROPERTY_MININCLUSIVE = "minInclusive";
-    public static final String PROPERTY_MINEXCLUSIVE = "minExclusive";
+    public static final String PROPERTY_MIN = "min";
     public static final Number PROPERTY_MIN_DEFAULT = null;
 
-    public static final String PROPERTY_MAXINCLUSIVE = "minInclusive";
-    public static final String PROPERTY_MAXEXCLUSIVE = "minExclusive";
+    public static final String PROPERTY_MAX = "min";
     public static final Number PROPERTY_MAX_DEFAULT = null;
 
+    protected DataType.Property minProperty = null;
     protected boolean minInclusive = true;
+    protected DataType.Property maxProperty = null;
     protected boolean maxInclusive = true;
 
     /**
@@ -43,6 +43,8 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
      */
     public BasicNumberDataType(String name, Class classType) {
         super(name, classType);
+        minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
+        maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
     }
 
     protected Number getMinValue() {
@@ -50,11 +52,7 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
     }
 
     public DataType.Property getMinProperty() {
-        if (minInclusive) {
-            return getProperty(PROPERTY_MININCLUSIVE, PROPERTY_MIN_DEFAULT);
-        } else {
-            return getProperty(PROPERTY_MINEXCLUSIVE, PROPERTY_MIN_DEFAULT);
-        }
+        return minProperty;
     }
 
     public boolean isMinInclusive() {
@@ -66,11 +64,7 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
     }
 
     public DataType.Property getMaxProperty() {
-        if (maxInclusive) {
-            return getProperty(PROPERTY_MAXINCLUSIVE, PROPERTY_MAX_DEFAULT);
-        } else {
-            return getProperty(PROPERTY_MAXEXCLUSIVE, PROPERTY_MAX_DEFAULT);
-        }
+        return maxProperty;
     }
 
     public boolean isMaxInclusive() {
@@ -78,11 +72,7 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
     }
 
     public DataType.Property setMin(Number value) {
-        if (minInclusive) {
-            return setProperty(PROPERTY_MININCLUSIVE, value);
-        } else {
-            return setProperty(PROPERTY_MINEXCLUSIVE, value);
-        }
+        return setProperty(getMinProperty(), value);
     }
 
     public void setMinInclusive(boolean inclusive) {
@@ -96,11 +86,7 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
     }
 
     public DataType.Property setMax(Number value) {
-        if (maxInclusive) {
-            return setProperty(PROPERTY_MAXINCLUSIVE, value);
-        } else {
-            return setProperty(PROPERTY_MAXEXCLUSIVE, value);
-        }
+        return setProperty(getMaxProperty(), value);
     }
 
     public void setMaxInclusive(boolean inclusive) {
@@ -132,6 +118,13 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
                 }
             }
         }
+    }
+
+    public Object clone(String name) {
+        BasicNumberDataType clone = (BasicNumberDataType)super.clone(name);
+        clone.minProperty = (DataTypeProperty)getMinProperty().clone(clone);
+        clone.maxProperty = (DataTypeProperty)getMaxProperty().clone(clone);
+        return clone;
     }
 
 }

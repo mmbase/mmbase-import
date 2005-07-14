@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: BasicNodeDataType.java,v 1.6 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.NodeDataType
  * @since MMBase-1.8
@@ -32,15 +32,19 @@ public class BasicNodeDataType extends AbstractDataType implements NodeDataType 
     public static final String PROPERTY_MUSTEXIST = "mustExist";
     public static final Boolean PROPERTY_MUSTEXIST_DEFAULT = Boolean.TRUE;
 
+    protected DataType.Property mustExistProperty = null;
+
     /**
      * Constructor for node field.
      */
     public BasicNodeDataType(String name) {
         super(name, MMObjectNode.class);
+        mustExistProperty = createProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
+        mustExistProperty.setFixed(true);
     }
 
     public DataType.Property getMustExistProperty() {
-        return getProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
+        return mustExistProperty;
     }
 
     public void validate(Object value, Cloud cloud) {
@@ -51,6 +55,12 @@ public class BasicNodeDataType extends AbstractDataType implements NodeDataType 
                 failOnValidate(getMustExistProperty(), value, cloud);
             }
         }
+    }
+
+    public Object clone(String name) {
+        BasicNodeDataType clone = (BasicNodeDataType)super.clone(name);
+        clone.mustExistProperty = (DataTypeProperty)getMustExistProperty().clone(clone);
+        return clone;
     }
 
 }
