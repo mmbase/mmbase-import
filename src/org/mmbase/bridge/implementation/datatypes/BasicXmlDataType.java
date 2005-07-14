@@ -19,7 +19,7 @@ import org.mmbase.bridge.datatypes.XmlDataType;
  * @javadoc
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicXmlDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicXmlDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.BooleanDataType
  * @since MMBase-1.8
@@ -28,10 +28,6 @@ public class BasicXmlDataType extends BasicBigDataType implements XmlDataType {
 
     public BasicXmlDataType(String name) {
         super(name, org.w3c.dom.Document.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_XML;
     }
 
 }

@@ -40,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.139 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: MMBase.java,v 1.140 2005-07-14 11:37:54 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -624,30 +624,6 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Returns an instance of a CoreField based on the type, and initializes it with the given values.
-     * @since MMBase-1.8
-     */
-    public CoreField createField(String name, DataType dataType, int state) {
-        CoreField field = Fields.createField(name, dataType);
-        field.setState(state);
-        return field;
-    }
-
-    /**
-     * Returns an instance of a CoreField based on the type, and initializes it with the given values.
-     * @since MMBase-1.8
-     */
-    public CoreField createField(String name, DataType dataType, int state, String guiName, int searchPosition, int listPosition, int editPosition) {
-        CoreField field = createField(name, dataType, state);
-        // set through passed datatype:
-        // field.setGUIType(guiType);
-        field.setSearchPosition(searchPosition);
-        field.setListPosition(listPosition);
-        field.setEditPosition(editPosition);
-        return field;
-    }
-
-    /**
      * Returns a reference to the Object builder.
      * The Object builder is the builder from which all other builders eventually extend.
      * If the builder is not defined in the MMbase configuration, the system creates one.
@@ -663,30 +639,35 @@ public class MMBase extends ProcessorModule {
             rootBuilder.setTableName("object");
             List fields = new ArrayList();
             // number field  (note: state = 'system')
-            CoreField def = createField("number",(DataType)DataType.INTEGER.clone(), Field.STATE_SYSTEM,
-                                     "Object", 10, 10, 1);
-            def.setStoragePosition(1);
-            def.getDataType().setRequired(true);
-            def.setParent(rootBuilder);
-            def.finish();
-            fields.add(def);
+            CoreField field = Fields.createSystemField("number",Field.TYPE_INTEGER);
+            field.setGUIName("Object");
+            field.setSearchPosition(10);
+            field.setListPosition(10);
+            field.setEditPosition(1);
+            field.setStoragePosition(1);
+            field.getDataType().setRequired(true);
+            field.setParent(rootBuilder);
+            field.finish();
+            fields.add(field);
             // otype field
-            def = createField("otype",(DataType)DataType.NODE.clone(), Field.STATE_SYSTEM,
-                           "Type", -1, -1, -1);
-            def.setStoragePosition(2);
-            def.getDataType().setRequired(true);
-            def.setParent(rootBuilder);
-            def.finish();
-            fields.add(def);
+            field = Fields.createSystemField("otype",Field.TYPE_NODE);
+            field.setGUIName("Type");
+            field.setStoragePosition(2);
+            field.getDataType().setRequired(true);
+            field.setParent(rootBuilder);
+            field.finish();
+            fields.add(field);
             // owner field
-            def = createField("owner",(DataType)DataType.STRING.clone(), Field.STATE_SYSTEM,
-                           "Owner", 11, 11, -1);
-            def.setSize(12);
-            def.setStoragePosition(3);
-            def.getDataType().setRequired(true);
-            def.setParent(rootBuilder);
-            def.finish();
-            fields.add(def);
+            field = Fields.createSystemField("owner",Field.TYPE_STRING);
+            field.setGUIName("Owner");
+            field.setSearchPosition(11);
+            field.setListPosition(11);
+            field.setSize(12);
+            field.setStoragePosition(3);
+            field.getDataType().setRequired(true);
+            field.setParent(rootBuilder);
+            field.finish();
+            fields.add(field);
             rootBuilder.setFields(fields);
         }
         return rootBuilder;

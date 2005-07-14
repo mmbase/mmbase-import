@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.Casting;
 import org.mmbase.util.LocalizedString;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.11 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.12 2005-07-14 11:37:53 pierre Exp $
  */
 
 abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
@@ -54,11 +55,13 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
                 false);
     }
 
+    protected String getBaseTypeIdentifier() {
+        return Fields.getTypeDescription(DataTypes.classToType(classType)).toLowerCase();
+    }
+
     public Class getTypeAsClass() {
         return classType;
     }
-
-    abstract public int getBaseType();
 
    /**
      * Checks if the passed object is of the correct class (compatible with the type of this DataType),
@@ -230,7 +233,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         }
         property.setFixed(fixed);
         if (localizedErrorDescription == null) {
-            String key = Fields.getTypeDescription(getBaseType()).toLowerCase() + "." + name + ".error";
+            String key = getBaseTypeIdentifier() + "." + name + ".error";
             localizedErrorDescription = new LocalizedString(key);
             String bundle = "org.mmbase.bridge.implementation.datatypes.resources.datatypes.properties";
             localizedErrorDescription.setBundle(bundle);

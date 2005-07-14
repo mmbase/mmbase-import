@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicStringDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.StringDataType
  * @since MMBase-1.8
@@ -34,10 +34,6 @@ public class BasicStringDataType extends BasicBigDataType implements StringDataT
      */
     public BasicStringDataType(String name) {
         super(name, String.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_STRING;
     }
 
     public String getPattern() {

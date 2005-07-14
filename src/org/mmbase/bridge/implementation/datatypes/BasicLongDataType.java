@@ -19,7 +19,7 @@ import org.mmbase.bridge.datatypes.LongDataType;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicLongDataType.java,v 1.5 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicLongDataType.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.LongDataType
  * @since MMBase-1.8
@@ -31,10 +31,6 @@ public class BasicLongDataType extends BasicNumberDataType implements LongDataTy
      */
     public BasicLongDataType(String name) {
         super(name, Long.class);
-    }
-
-    public int getBaseType() {
-        return Field.TYPE_LONG;
     }
 
     public Long getMin() {

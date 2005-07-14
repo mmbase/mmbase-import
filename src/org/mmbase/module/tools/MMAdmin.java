@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.106 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.107 2005-07-14 11:37:54 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1837,8 +1837,13 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         CoreField def = bul.getField(fieldName);
         if (def != null) {
-            DataType baseDataType = DataTypes.getBaseDataType(def.getDataType());
-            DataType dataType = DataTypes.getDataTypeInstance(guiType, baseDataType);
+            DataType dataType;
+            int type = def.getType();
+            if (type == Field.TYPE_LIST) {
+                dataType = DataTypes.getDataTypeInstance(guiType, def.getListItemType());
+            } else {
+                dataType = DataTypes.getDataTypeInstance(guiType, type);
+            }
             def.setDataType(dataType);
             def.finish();
         }
@@ -1967,17 +1972,17 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
-            DataType oldType = def.getDataType();
+            int oldType = def.getType();
             int newType = Fields.getType(value);
-            if (oldType.getBaseType() != newType) {
+            if (oldType != newType) {
                 def.rewrite();
-                def.setDataType((DataType)DataTypes.getDataType(newType).clone());
+                def.setType(newType);
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
                     syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
-                    def.setDataType(oldType);
+                    def.setType(oldType);
                     throw se;
                 } finally {
                     def.finish();
@@ -2107,11 +2112,20 @@ public class MMAdmin extends ProcessorModule {
             String fieldName = (String)vars.get("dbname");
             String guiType = (String)vars.get("guitype");
             int type = Fields.getType((String)vars.get("mmbasetype"));
+            int itemListType = Fields.getType((String)vars.get("mmbasetype"));
             int state = Fields.getState((String)vars.get("dbstate"));
 
             log.service("Adding field " + fieldName);
-            DataType dataType = DataTypes.getDataTypeInstance(guiType, type);
-            CoreField def = mmb.createField(fieldName, dataType, state, fieldName, pos, -1, pos);
+            DataType dataType;
+            if (type ==  Field.TYPE_LIST) {
+                dataType = DataTypes.getListDataTypeInstance(guiType, itemListType);
+            } else {
+                dataType = DataTypes.getDataTypeInstance(guiType, type);
+            }
+
+            CoreField def = Fields.createField(fieldName, type, itemListType, state, dataType);
+            def.setListPosition(pos);
+            def.setEditPosition(pos);
 
             def.setParent(bul);
             def.setStoragePosition(pos);

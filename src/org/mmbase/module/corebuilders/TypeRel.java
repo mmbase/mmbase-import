@@ -17,6 +17,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 import org.mmbase.storage.search.implementation.BasicRelationStep;
 import org.mmbase.storage.search.RelationStep;
 
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.57 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.58 2005-07-14 11:37:54 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -597,7 +598,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * Of course, virtual typerel nodes need a virtual typerel
      * builder. Well 'of course', the reason is not quite obvious to
      * me, it has to do with the bridge/temporarynodemanager which
-     * sometimes need to know it.
+     * sometimes needs to know it.
      *
      * @since MMBase-1.6.2
      */
@@ -606,16 +607,16 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         VirtualTypeRel(TypeRel t) {
             fields = new Hashtable();
             mmb = t.mmb;
-            CoreField field = mmb.createField("snumber",(DataType)DataType.NODE.clone(),Field.STATE_PERSISTENT,
-                                     "snumber", -1,-1, 2);
+            CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_PERSISTENT, null);
+            field.setEditPosition(2);
             field.finish();
             addField(field);
-            field = mmb.createField("dnumber",(DataType)DataType.NODE.clone(),Field.STATE_PERSISTENT,
-                                     "dnumber", -1,-1, 2);
+            field = Fields.createField("dnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_PERSISTENT, null);
+            field.setEditPosition(2);
             field.finish();
             addField(field);
-            field = mmb.createField("rnumber",(DataType)DataType.NODE.clone(),Field.STATE_PERSISTENT,
-                                     "rnumber", -1,-1, 2);
+            field = Fields.createField("rnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_PERSISTENT, null);
+            field.setEditPosition(2);
             field.finish();
             addField(field);
             tableName = "virtual_typerel";

@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.DataTypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDataType.java,v 1.4 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @since MMBase-1.8
  */
@@ -38,10 +38,6 @@ public class BasicDataType extends AbstractDataType {
      */
     public BasicDataType(String name, Class type) {
         super(name, type);
-    }
-
-    public int getBaseType() {
-        return DataTypes.classToBaseType(getTypeAsClass());
     }
 
 }

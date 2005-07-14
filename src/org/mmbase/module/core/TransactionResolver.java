@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.18 2005-07-09 11:11:48 nklasens Exp $
+ * @version $Id: TransactionResolver.java,v 1.19 2005-07-14 11:37:54 pierre Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
@@ -39,7 +39,7 @@ public class TransactionResolver {
             log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
             for (Enumeration f = bul.getFields().elements();f.hasMoreElements();) {
                 CoreField fd = (CoreField)f.nextElement();
-                int dbtype = fd.getDataType().getBaseType();
+                int dbtype = fd.getType();
                 log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
                 if ((dbtype == Field.TYPE_INTEGER)||
                     (dbtype == Field.TYPE_NODE)) {
@@ -127,7 +127,7 @@ public class TransactionResolver {
             MMObjectBuilder bul=mmbase.getMMObject(node.getName());
             for (Iterator j = bul.getFields().iterator();j.hasNext();) {
                 CoreField fd = (CoreField)j.next();
-                int dbtype = fd.getDataType().getBaseType();
+                int dbtype = fd.getType();
                 if ((dbtype == Field.TYPE_INTEGER)||
                     (dbtype == Field.TYPE_NODE)) {
                     String field = fd.getName();
