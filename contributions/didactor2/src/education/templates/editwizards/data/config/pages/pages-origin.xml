@@ -81,7 +81,7 @@
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
-        <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
+        <list extends="paragraphs/add_paragraphs_posrel.xml"/>
     </form-schema>
 
     <form-schema id="step3">
