@@ -67,8 +67,10 @@
          }
       %>
       <%// Go through all paragraphs %>
-      <table  border="0" cellpadding="0" cellspacing="0" width="100%">
          <mm:related path="posrel,paragraphs" orderby="posrel.pos" directions="UP">
+            <mm:first>
+               <table  border="0" cellpadding="0" cellspacing="0" width="100%">
+            </mm:first>
             <mm:first inverse="true">
                <% //This is a padding for the next paragraph %>
             </mm:first>
@@ -216,8 +218,10 @@
                   </td>
                </tr>
             </mm:node>
+            <mm:last>
+                </table>
+            </mm:last>
          </mm:related>
-      </table>
    </mm:import>
 
 
@@ -350,6 +354,8 @@
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
         text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
         text = text.replaceAll("<br>","<br/>");
+        text = text.replaceAll("(<br\\s*/>\\s*)+(((</b>|</em>|</u>|</strong>|</i>)\\s*)+)","$2$1");
+        text = text.replaceAll("<br\\*s/>\\s*(<br\\s*/>\\s*)*","<p>$1");
         text = text.replaceAll("<\\/?\\s*personname\\s*\\/>","");
 /*        if (nodeType.equals("pages") && "2".equals(layout)) {
             text = text.replaceAll("<table[^>]*>","<table border='1' cellpadding='4' width='50%' align='left'>");
