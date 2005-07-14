@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.32 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: MMServers.java,v 1.33 2005-07-14 20:22:57 nklasens Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -180,9 +180,8 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             String machineName = mmb.getMachineName();
             host = mmb.getHost();
             log.debug("doCheckUp(): machine=" + machineName);
-            Enumeration e = search("");
-            while (e.hasMoreElements()) {
-                MMObjectNode node = (MMObjectNode)e.nextElement();
+            for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
+                MMObjectNode node = (MMObjectNode) iter.next();
                 String tmpname = node.getStringValue("name");
                 if (tmpname.equals(machineName)) {
                     imoke = checkMySelf(node);
@@ -396,9 +395,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         
         String machineName = mmb.getMachineName();
         log.debug("getActiveServers(): machine="+machineName);
-        Enumeration e=search("");
-        while (e.hasMoreElements()) {
-            MMObjectNode node = (MMObjectNode)e.nextElement();
+        
+        for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
+            MMObjectNode node = (MMObjectNode) iter.next();
             String tmpname=node.getStringValue("name");
             if (!tmpname.equals(machineName)) {
                 if (node.getIntValue("state") == ACTIVE) {
