@@ -11,7 +11,7 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.CoreField;
 
 /**
  * Simple extension of Contexts. It overrides the concept of an 'own' node wich is on default only
@@ -20,7 +20,7 @@ import org.mmbase.module.corebuilders.*;
  * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.5 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PeopleContexts.java,v 1.6 2005-07-14 11:48:01 michiel Exp $
  */
 public class PeopleContexts extends Contexts {
 
@@ -39,15 +39,15 @@ public class PeopleContexts extends Contexts {
     protected boolean isOwnNode(User user, MMObjectNode node) {       
         if (super.isOwnNode(user, node)) return true;
         if (node.getBuilder().getTableName().equals(peopleBuilder)) {
-            FieldDefs  field = node.getBuilder().getField("account");
+            CoreField field = node.getBuilder().getField("account");
             if (field != null) {
-                switch (field.getDBType()) {
-                case FieldDefs.TYPE_STRING:
+                switch (field.getType()) {
+                case CoreField.TYPE_STRING:
                     if (node.getStringValue("account").equals(user.getIdentifier())) {
                         return true;
                     }
                     break;
-                case FieldDefs.TYPE_NODE:
+                case CoreField.TYPE_NODE:
                     if (node.getIntValue("account") == user.getNode().getNumber()) {
                         return true;
                     }
