@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.28 2005-05-14 14:06:47 nico Exp $
+ * @version $Id: Message.java,v 1.29 2005-07-14 20:23:47 nklasens Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -796,7 +796,7 @@ public class Message extends MMObjectBuilder {
      */
     private int addRelated(Object key, int otypeWanted, int count, int offset, Vector result) {
         if (key != null) {
-            MMObjectNode node = (MMObjectNode) TemporaryNodes.get("" + key);
+            MMObjectNode node = (MMObjectNode) temporaryNodes.get("" + key);
             count = addRelatedNode(node, otypeWanted, count, offset, result);
         }
         return count;
@@ -831,9 +831,9 @@ public class Message extends MMObjectBuilder {
         if (_number == null) number = node.getNumber();
 
         // Get all temporary nodes and filter out all insrels.
-        Enumeration tmpInsRels = TemporaryNodes.keys();
-        while ((count < (offset + max)) && tmpInsRels.hasMoreElements()) {
-            tmpInsRel = (MMObjectNode) TemporaryNodes.get(tmpInsRels.nextElement());
+        Iterator tmpInsRels = temporaryNodes.keySet().iterator();
+        while ((count < (offset + max)) && tmpInsRels.hasNext()) {
+            tmpInsRel = (MMObjectNode) temporaryNodes.get(tmpInsRels.next());
             if (tmpInsRel != null) {
                 if (tmpInsRel.parent instanceof InsRel) {
                     found = false;
@@ -1137,7 +1137,7 @@ public class Message extends MMObjectBuilder {
         String tmp = tok.nextToken();
         MMObjectNode message = getNode(tmp);
         //tmp = tmp.substring(tmp.indexOf("_") + 1);
-        if (message == null) message = (MMObjectNode) TemporaryNodes.get(tmp.trim());
+        if (message == null) message = (MMObjectNode) temporaryNodes.get(tmp.trim());
         if (message == null) {
             log.error("Message with id '" + tmp + "' cannot be found.");
             return "";
