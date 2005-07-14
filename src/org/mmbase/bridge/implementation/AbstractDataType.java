@@ -26,21 +26,22 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.12 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.13 2005-07-14 14:13:40 pierre Exp $
  */
 
 abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
+
+    public static final String DATATYPE_BUNDLE = "org.mmbase.bridge.implementation.datatypes.resources.datatypes.properties";
 
     public static final String PROPERTY_REQUIRED = "required";
     public static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
 
     private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
 
+    protected DataType.Property requiredProperty = null;
     private Class classType;
     private Object defaultValue = null;
     private Object owner = null;
-
-    protected Map properties = new HashMap();
 
     /**
      * Create a data type object
@@ -50,9 +51,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     protected AbstractDataType(String name, Class classType) {
         super(name);
         this.classType = classType;
-        createProperty(PROPERTY_REQUIRED, Boolean.FALSE,
-                new LocalizedString ("Datatype ${NAME} requires a value."), // use resource bundle
-                false);
+        requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
     }
 
     protected String getBaseTypeIdentifier() {
@@ -167,12 +166,8 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     public Object clone(String name) {
         try {
             AbstractDataType clone = (AbstractDataType)super.clone(name);
-            for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entrySet = (Map.Entry)i.next();
-                DataTypeProperty property = (DataTypeProperty)entrySet.getValue();
-                properties.put(entrySet.getKey(),(DataType.Property)property.clone());
-            }
-            // reset owner if itw as set, so this datatype can be changed
+            clone.requiredProperty = (DataTypeProperty)getRequiredProperty().clone(clone);
+            // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
             return clone;
         } catch (CloneNotSupportedException cnse) {
@@ -215,69 +210,36 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     }
 
     public DataType.Property getRequiredProperty() {
-        return getProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
+        return requiredProperty;
     }
 
     public DataType.Property setRequired(boolean required) {
-        return setProperty(PROPERTY_REQUIRED, Boolean.valueOf(required));
+        return setProperty(getRequiredProperty(),Boolean.valueOf(required));
     }
 
-    public DataType.Property createProperty(String name, Object value, LocalizedString localizedErrorDescription, boolean fixed) {
-        // should we check on properties or not ???
-        edit();
-        DataType.Property property = (DataType.Property) properties.get(name);
-        if (property == null) {
-            property = new DataTypeProperty(name,value);
-        } else {
-            property.setValue(value);
-        }
-        property.setFixed(fixed);
-        if (localizedErrorDescription == null) {
-            String key = getBaseTypeIdentifier() + "." + name + ".error";
-            localizedErrorDescription = new LocalizedString(key);
-            String bundle = "org.mmbase.bridge.implementation.datatypes.resources.datatypes.properties";
-            localizedErrorDescription.setBundle(bundle);
-        }
+    protected DataType.Property createProperty(String name, Object value) {
+        DataType.Property property =  new DataTypeProperty(name,value);
+        String key = getBaseTypeIdentifier() + "." + name + ".error";
+        LocalizedString localizedErrorDescription = new LocalizedString(key);
+        localizedErrorDescription.setBundle(DATATYPE_BUNDLE);
         property.setLocalizedErrorDescription(localizedErrorDescription);
-        properties.put(name,property);
         return property;
     }
 
-    public DataType.Property getProperty(String name) {
-        return (DataType.Property) properties.get(name);
-    }
-
-    public DataType.Property getProperty(String name, Object defaultValue) {
-        DataType.Property property = getProperty(name);
-        if (property == null) {
-            property = createProperty(name, defaultValue, null, false);
-            properties.put(name, property);
-        }
+    protected DataType.Property setProperty(DataType.Property property, Object value) {
+        property.setValue(value);
         return property;
     }
 
-    public DataType.Property setProperty(String name, Object value) {
-        DataType.Property property = getProperty(name);
-        if (property == null) {
-            property = createProperty(name, value, null, false);
-            properties.put(name, property);
-        } else {
-            property.setValue(value);
-        }
-        return property;
-    }
-
-    public class DataTypeProperty implements DataType.Property, Cloneable {
+    public final class DataTypeProperty implements DataType.Property, Cloneable {
         private String name;
         private Object value;
         private LocalizedString errorDescription;
         private boolean fixed;
-        private Class propertyClass;
 
         private DataTypeProperty(String name, Object value) {
             this.name = name;
             this.value = value;
-            this.propertyClass = value.getClass();
         }
 
         public String getName() {
@@ -289,11 +251,9 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         }
 
         public void setValue(Object value) {
+            AbstractDataType.this.edit();
             if (fixed) {
                 throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
-            }
-            if (value != null && !propertyClass.isInstance(value)) {
-                throw new IllegalArgumentException("Property '" + name + "' is of class " + propertyClass.getName() + ", specified value is: " + value + ".");
             }
             this.value = value;
         }
@@ -329,18 +289,13 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
             this.fixed = fixed;
         }
 
-        public Object clone() {
-            try {
-                DataTypeProperty clone = (DataTypeProperty)super.clone();
-                if (errorDescription != null) {
-                    clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
-                }
-                return clone;
-            } catch (CloneNotSupportedException cnse) {
-                // should not happen
-                log.error("Cannot clone this DataType.Property");
-                throw new RuntimeException("Cannot clone this DataType.Property", cnse);
-           }
+        public Object clone(DataType dataType) {
+            DataTypeProperty clone = ((AbstractDataType)dataType).new DataTypeProperty(name, value);
+            if (errorDescription != null) {
+                clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
+            }
+            clone.setFixed(fixed);
+            return clone;
         }
 
     }

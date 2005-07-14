@@ -20,23 +20,24 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDateTimeDataType.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: BasicDateTimeDataType.java,v 1.7 2005-07-14 14:13:40 pierre Exp $
  * @see org.mmbase.bridge.DataType
  * @see org.mmbase.bridge.datatypes.DateTimeDataType
  * @since MMBase-1.8
  */
 public class BasicDateTimeDataType extends AbstractDataType implements DateTimeDataType {
 
-    public static final String PROPERTY_MININCLUSIVE = "minInclusive";
-    public static final String PROPERTY_MINEXCLUSIVE = "minExclusive";
+    public static final String PROPERTY_MIN = "min";
     public static final Number PROPERTY_MIN_DEFAULT = null;
 
-    public static final String PROPERTY_MAXINCLUSIVE = "minInclusive";
-    public static final String PROPERTY_MAXEXCLUSIVE = "minExclusive";
+    public static final String PROPERTY_MAX = "max";
     public static final Number PROPERTY_MAX_DEFAULT = null;
 
+    protected DataType.Property minProperty = null;
     protected int minPrecision = Calendar.SECOND;
     protected boolean minInclusive = true;
+
+    protected DataType.Property maxProperty = null;
     protected int maxPrecision = Calendar.SECOND;
     protected boolean maxInclusive = true;
 
@@ -45,6 +46,8 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
      */
     public BasicDateTimeDataType(String name) {
         super(name, Date.class);
+        minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
+        maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
     }
 
     public Date getMin() {
@@ -52,11 +55,7 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
     }
 
     public DataType.Property getMinProperty() {
-        if (minInclusive) {
-            return getProperty(PROPERTY_MININCLUSIVE, PROPERTY_MIN_DEFAULT);
-        } else {
-            return getProperty(PROPERTY_MINEXCLUSIVE, PROPERTY_MIN_DEFAULT);
-        }
+        return minProperty;
     }
 
     public int getMinPrecision() {
@@ -72,11 +71,7 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
     }
 
     public DataType.Property getMaxProperty() {
-        if (maxInclusive) {
-            return getProperty(PROPERTY_MAXINCLUSIVE, PROPERTY_MAX_DEFAULT);
-        } else {
-            return getProperty(PROPERTY_MAXEXCLUSIVE, PROPERTY_MAX_DEFAULT);
-        }
+        return maxProperty;
     }
 
     public int getMaxPrecision() {
@@ -88,7 +83,7 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
     }
 
     public DataType.Property setMin(Date value) {
-        return setProperty(PROPERTY_MININCLUSIVE, value);
+        return setProperty(minProperty, value);
     }
 
     public void setMinPrecision(int precision) {
@@ -107,7 +102,7 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
     }
 
     public DataType.Property setMax(Date value) {
-        return setProperty(PROPERTY_MAXINCLUSIVE, value);
+        return setProperty(maxProperty, value);
     }
 
     public void setMaxPrecision(int precision) {
@@ -131,6 +126,13 @@ public class BasicDateTimeDataType extends AbstractDataType implements DateTimeD
             Date dateValue = Casting.toDate(value);
             // Todo: check on mindate/max date, taking into account precision and inclusiveness
         }
+    }
+
+    public Object clone(String name) {
+        BasicDateTimeDataType clone = (BasicDateTimeDataType)super.clone(name);
+        clone.minProperty = (DataTypeProperty)getMinProperty().clone(clone);
+        clone.maxProperty = (DataTypeProperty)getMaxProperty().clone(clone);
+        return clone;
     }
 
 }
