@@ -56,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.321 2005-07-14 20:23:47 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.322 2005-07-15 09:51:48 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -657,7 +657,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6.2
 
      */
-    protected List  getAncestors() {
+    public List  getAncestors() {
         return Collections.unmodifiableList(ancestors);
     }
 
