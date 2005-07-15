@@ -102,9 +102,7 @@ function mmbaseInit(node) {
 }
 
 function getRequest() {
-    return Sarissa.getXmlHttpRequest();
-    // new sarissa:
-    //return new XMLHttpRequest();
+    return new XMLHttpRequest();
 }
 
 function serialize(request) {
