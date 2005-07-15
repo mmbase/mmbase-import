@@ -36,35 +36,35 @@
           </mm:compare>          
           <mm:compare referid="fields" value="true">
             <jsp:scriptlet>
-	      log.info("Saving fields of " + node.getNumber());
-	      String boundary = "----------__________----------";
-	      String fieldPrefix = "field_";                                                                               
-	      BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));           
-	      String line = r.readLine();                                                                                  
-	      while (line != null) {                                
-	         log.debug("Reading line " + line);
-		 int colon = line.indexOf(':');
-		 String fieldName = line.substring(fieldPrefix.length(), colon);
-		 String rest      = line.substring(colon + 1);
-		 String value;                                                                                            
-		 if (rest.equals(boundary)) {                                            
-		    StringBuffer buf = new StringBuffer();                                                               
-		    line = r.readLine();                                                                      
-		    while (line != null &amp;&amp; ! line.equals(boundary)) {
-		       buf.append(line);                                                                                
-		       line = r.readLine(); 
-		       if (line != null) buf.append("\n");
-		    }                                                                                                    
-		    value = buf.toString();                                                                              
+              log.info("Saving fields of " + node.getNumber());
+              String boundary = "----------__________----------";
+              String fieldPrefix = "field_";                                                                               
+              BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));           
+              String line = r.readLine();                                                                                  
+              while (line != null) {                                
+                 log.debug("Reading line " + line);
+                 int colon = line.indexOf(':');
+                 String fieldName = line.substring(fieldPrefix.length(), colon);
+                 String rest      = line.substring(colon + 1);
+                 String value;                                                                                            
+                 if (rest.equals(boundary)) {                                            
+                    StringBuffer buf = new StringBuffer();                                                               
+                    line = r.readLine();                                                                      
+                    while (line != null &amp;&amp; ! line.equals(boundary)) {
+                       buf.append(line);                                                                                
+                       line = r.readLine(); 
+                       if (line != null) buf.append("\n");
+                    }                                                                                                    
+                    value = buf.toString();                                                                              
                  } else {                                                                                                 
-		    value = rest;
-		 }                        
-		 log.info("Setting " + fieldName + " to " + value);
-		 node.setStringValue(fieldName, value);                                                                   
-		 line = r.readLine();                                                                                     
+                    value = rest;
+                 }                        
+                 log.debug("Setting " + fieldName + " to " + value);
+                 node.setStringValue(fieldName, value);                                                                   
+                 line = r.readLine();                                                                                     
               }                                                                                                            
-	      node.commit();
-	      log.info("Commited");
+              node.commit();
+              log.info("Commited");
             </jsp:scriptlet>
           </mm:compare>
         </mm:node>
