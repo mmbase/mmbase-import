@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.17 2004-08-26 12:39:42 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.18 2005-07-15 10:53:22 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -182,6 +182,10 @@ public class MultiStatement implements Statement {
      * @since MMBase-1.7.1
      */
     protected Statement checkAfterException() throws SQLException {
+        if (!  org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").created()) {
+            // if this table does not exist, this is impossible
+            return s;
+        }
         ResultSet rs = null;        
         // check wether connection is still functional
         try {
