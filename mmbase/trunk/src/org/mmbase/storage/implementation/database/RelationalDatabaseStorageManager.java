@@ -18,7 +18,7 @@ import org.mmbase.storage.StorageException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.7 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.8 2005-07-15 09:51:04 michiel Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -43,16 +43,19 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during creation
      */
-    public void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
         }
         try {
-            do {
-                super.create(node,builder);
-                builder = builder.getParentBuilder();
-            } while (builder!=null);
+            // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
+            java.util.Iterator i = builder.getAncestors().iterator();
+            while(i.hasNext()) {
+                MMObjectBuilder b = (MMObjectBuilder) i.next();
+                super.create(node, b);
+            }
+            super.create(node, builder);
             if (localTransaction) commit();
         } catch (StorageException se) {
             if (localTransaction && inTransaction) rollback();
