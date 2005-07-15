@@ -21,9 +21,14 @@ function DivsTool() {
             div.className = divclass;
         };
         var text = this.editor.getSelection();
-        if (! text || text == '') text = ".";
+        var child;
+        if (! text || text == '') {
+            child = doc.createElement("p");
+        } else {
+            child = doc.createTextNode(text);
+        }        
         var marker = doc.createTextNode("XXX");
-        div.appendChild(doc.createTextNode(text));
+        div.appendChild(child);
         var currp = this.editor.getNearestParentOfType(currnode, 'p');
         if (currp) {
             currp.parentNode.insertBefore(div, currp);
@@ -31,6 +36,8 @@ function DivsTool() {
         } else {
             div = this.editor.insertNodeAtSelection(div, 1);
         }
+        this.editor.insertNodeAtSelection(marker, 1);
+
         this.editor.logMessage(_("Div inserted"));
         this.editor.updateState();
         return div;
