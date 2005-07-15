@@ -56,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.322 2005-07-15 09:51:48 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.323 2005-07-15 10:05:44 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2672,7 +2672,7 @@ public class MMObjectBuilder extends MMTable {
      * This returns the relation objects, not the objects related to.
      * Note that the relations returned are always of builder type 'InsRel', even if they are really from a derived builser such as AuthRel.
      * @param src the number of the node to obtain the relations from
-     * @return a <code>Vector</code> with InsRel nodes     
+     * @return a <code>Vector</code> with InsRel nodes
      * @todo Return-type and name of this function are not sound.
      */
     public Vector getRelations_main(int src) {
@@ -3644,6 +3644,7 @@ public class MMObjectBuilder extends MMTable {
 
         // should be TYPE_NODE ???
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
+            log.warn("Object 'otype' field is not defined. Please update your object.xml!");
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
             CoreField def = Fields.createSystemField(FIELD_OBJECT_TYPE, Field.TYPE_NODE);

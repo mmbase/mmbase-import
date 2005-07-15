@@ -39,14 +39,14 @@
 
   <fieldlist>
     <field>
-      
+
       <descriptions>
         <description xml:lang="en">Unique objectnumber</description>
         <description xml:lang="nl">Uniek objectnummer</description>
         <description xml:lang="es">Numero unico del objeto</description>
         <description xml:lang="eo">Unika numero de ĉi objekto</description>
       </descriptions>
-      
+
       <gui>
         <guiname xml:lang="en">Object</guiname>
         <guiname xml:lang="nl">Object</guiname>
@@ -62,7 +62,7 @@
       <editor>
         <positions>
           <input>-1</input>
-          <list>100</list>          
+          <list>100</list>
           <search>100</search>
         </positions>
       </editor>
@@ -72,6 +72,35 @@
       </db>
     </field>
 
+
+    <field>
+
+      <descriptions>
+        <description xml:lang="en">
+          Object's type.
+        </description>
+        <description xml:lang="nl">
+          Objecttype.
+        </description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Type</guiname>
+        <guitype>typedef</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <db>
+        <name>otype</name>
+        <type state="persistent" notnull="true" key="false">NODE</type>
+      </db>
+    </field>
 
     <field>
 
@@ -87,7 +116,7 @@
           in dit veld opgeslagen.
         </description>
         <description xml:lang="es">
-        Dueño del objeto. Dependiendo de seguridad elegida esta puede significar diversas cosas. 
+        Dueño del objeto. Dependiendo de seguridad elegida esta puede significar diversas cosas.
         Por Ejemplo, si se usa 'seguridad contexto' el contexto seguridad sera grabado aqui.
         </description>
         <description xml:lang="eo">
