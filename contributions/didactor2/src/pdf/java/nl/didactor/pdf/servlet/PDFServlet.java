@@ -19,7 +19,8 @@ public class PDFServlet extends HttpServlet {
         }
         int number = Integer.parseInt(req.getParameter("number"));
         int provider = Integer.parseInt(req.getParameter("provider"));
-        URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&provider="+provider);
+        String debug = req.getParameter("debug");
+        URL url = debug != null ? new URL(debug) : new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&provider="+provider);
         URL headerImage =  new URL(baseUrl+"/pdf/pdfheaderimage.jsp?provider="+provider);
         PDFConverter.pageAsPDF(url, resp.getOutputStream(),headerImage);
    }
