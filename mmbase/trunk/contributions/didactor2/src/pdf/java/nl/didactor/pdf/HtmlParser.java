@@ -10,6 +10,8 @@ import org.xml.sax.SAXException;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.DocListener;
 import com.lowagie.text.xml.XmlParser;
+import com.lowagie.text.markup.MarkupTags;
+
 import com.lowagie.text.html.*;
 import com.lowagie.text.ElementTags;
 
@@ -38,6 +40,17 @@ public class HtmlParser extends com.lowagie.text.html.HtmlParser {
         peer = new HtmlPeer(ElementTags.NEWPAGE, HtmlTags.HORIZONTALRULE);
 
         map.put(peer.getAlias(), peer);
+
+        peer = new HtmlPeer(ElementTags.PHRASE, HtmlTags.U);
+        peer.addValue(ElementTags.STYLE, MarkupTags.CSS_UNDERLINE);
+
+        map.remove(peer.getAlias());
+        
+        peer = new HtmlPeer(ElementTags.PHRASE, HtmlTags.U);
+        peer.addValue(ElementTags.STYLE, MarkupTags.CSS_ITALIC);
+        map.put(peer.getAlias(), peer);
+ 
+        
         return new SAXmyHtmlHandler(document,map);
     }
     
