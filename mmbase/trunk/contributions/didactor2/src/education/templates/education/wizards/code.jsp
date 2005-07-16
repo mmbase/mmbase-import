@@ -769,7 +769,7 @@
                </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>?wizard=config/education/educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>?wizard=educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
             </tr>
          </table>
 
