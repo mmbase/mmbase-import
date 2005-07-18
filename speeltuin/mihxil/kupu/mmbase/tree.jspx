@@ -61,7 +61,8 @@
                     </mm:isgreaterthan>
                     <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
                   </mm:size>
-                  <a href="javascript: loadNode(${segment});" id="a_${segment}"> ${segment.title}</a>
+                  <mm:function name="index" id="index" write="false" />
+                  <a href="javascript: loadNode(${segment});" id="a_${segment}" title="${index}"> ${segment.title}</a>
                 </mm:listrelationscontainer>
               </div>
             </mm:relatednode>
