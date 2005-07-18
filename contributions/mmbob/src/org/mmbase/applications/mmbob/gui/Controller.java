@@ -556,6 +556,7 @@ public class Controller {
                 			virtual.setValue("lastname", p.getLastName());
                 			virtual.setValue("location", p.getLocation());
                 			virtual.setValue("lastseen", p.getLastSeen());
+                                        virtual.setValue("state", p.getState());
 					if (page!=0) {
 						virtual.setValue("prevpage",page-1);
 					} else {
