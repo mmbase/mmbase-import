@@ -68,7 +68,7 @@ public class Poster {
         this.parent = parent;
         //this.node = node;
 	id = node.getIntValue(prefix+"number");
-	state = -1;
+	state = node.getIntValue(prefix+"state");
 	account = node.getStringValue(prefix+"account");
 	password = node.getStringValue(prefix+"password");
 	firstname = node.getStringValue(prefix+"firstname");
@@ -316,6 +316,16 @@ public class Poster {
     }
 
     /**
+     * get the the state of the poster 
+     * -1, 0 is active, 1 is disabled
+     *
+     * @return int  
+     */
+    public int getState() {
+        return state;
+    }
+
+    /**
      * get the date/time (epoch) when the poster started this session
      *
      * @return date/time (epoch)
@@ -374,6 +384,7 @@ public class Poster {
         node.setStringValue("level", level);
         node.setStringValue("gender", gender);
         node.setStringValue("location", location);
+        node.setIntValue("state",state);
         ForumManager.syncNode(node, queue);
     }
 
@@ -481,9 +492,7 @@ public class Poster {
      */
     public boolean disable() {
         this.state = STATE_DISABLED;
-        Node node = ForumManager.getCloud().getNode(id);
-        node.setIntValue("state",this.state);
-        ForumManager.syncNode(node, ForumManager.FASTSYNC);
+        syncNode(ForumManager.FASTSYNC);
         return true;
     }
 
@@ -494,9 +503,7 @@ public class Poster {
      */
     public boolean enable() {
         this.state = STATE_ACTIVE;
-        Node node = ForumManager.getCloud().getNode(id);
-        node.setIntValue("state",this.state);
-        ForumManager.syncNode(node, ForumManager.FASTSYNC);
+        syncNode(ForumManager.FASTSYNC);
         return true;
     }
 
