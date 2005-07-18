@@ -3,7 +3,13 @@ Migratie issues
 
 2005-07-14
 
-    Please run /fix-taskresources.jsp for fix bug with 'resources' builder.
+    1.save old version of didactor/WEB-INF/config/builders/resources.xml to temporary directory
+    2.place new update
+    3.place resources.xml from temporary directory in didactor/WEB-INF/config/builders/
+    4.start Tomcat
+    5.run /fix-taskresources.jsp for fix bug with 'resources' builder
+    6.stop Tomcat
+    7.remove didactor/WEB-INF/config/builders/resources.xml
 
 
 2005-07-12
