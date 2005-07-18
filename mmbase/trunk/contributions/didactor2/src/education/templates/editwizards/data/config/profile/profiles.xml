@@ -42,7 +42,7 @@
 
 
 
-   <list extends="config/assessments/preassessments.xml"/>
+   <list extends="config/assessments/preassessments-list.xml"/>
 
    <list role="related" destination="competencies" minoccurs="0" maxoccurs="*" ordertype="number">
       <title>Bijbehorende competenties</title>
