@@ -9,6 +9,9 @@
 
    <%@include file="/shared/setImports.jsp" %>
    <%@include file="/education/tests/definitions.jsp" %>
+   <%@include file="/education/wizards/roles_defs.jsp" %>
+   <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+   <%@include file="/education/wizards/roles_chk.jsp" %>
 
    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
@@ -29,7 +32,9 @@
 
       <mm:import id="student" reset="true"><mm:write referid="user"/></mm:import>
 
-      <di:hasrole role="teacher"><mm:import id="student" externid="student" reset="true"/></di:hasrole>
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+         <mm:import id="student" externid="student" reset="true"/>
+      </mm:islessthan>
       <mm:isempty referid="student">
          <mm:import id="student" reset="true"><mm:write referid="user"/></mm:import>
       </mm:isempty>
@@ -67,9 +72,9 @@
                      </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/portfolio.gif"  objectlist="$includePath" referids="$referids"/>" alt="Portfolio" border="0"/>
                   </a>
 
-                  <di:hasrole role="teacher">
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
                      <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="Terug naar overzicht" border="0"/></a>
-                  </di:hasrole>
+                  </mm:islessthan>
                </div>
 
 

@@ -9,19 +9,22 @@
 
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
+<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
 
 <% //education-people connector
    EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
 %>
 
-<di:hasrole role="teacher" inverse="true">
+<mm:islessthan referid="rights" referid2="RIGHTS_RW">
     <di:hasrole role="student">
         <jsp:forward page="student.jsp"/>
     </di:hasrole>
-</di:hasrole>
+</mm:islessthan>
 
 
-<di:hasrole role="teacher">
+<mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
          <title>Voortgang</title>
@@ -229,7 +232,7 @@
 
 </mm:node>
 
-</di:hasrole>
+</mm:islessthan>
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 

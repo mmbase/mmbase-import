@@ -6,6 +6,9 @@
 
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
+<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
 
 <mm:import externid="student"           required="true"/>
 <mm:import externid="startAt"           jspvar="startAt" vartype="Integer" required="true"/>
@@ -114,16 +117,16 @@
 
                            <mm:compare referid="teststatus" value="incomplete" inverse="true">
                               <mm:compare referid="teststatus" value="toberated">
-                                 <di:hasrole role="teacher">
+                                 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
                                     <td class="td_test_tbs" style="border-color:#000000; border-top:0px; border-left:0px"><a href="<mm:treefile page="/education/tests/rateopen.jsp" objectlist="$includePath" referids="$referids">
                                                                         <mm:param name="studentNo"><mm:write referid="student"/></mm:param>
                                                                         <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
                                                                      </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?" border="0"></a>
                                     </td>
-                                 </di:hasrole>
-                                 <di:hasrole role="teacher" inverse="true">
+                                 </mm:islessthan>
+                                 <mm:islessthan referid="rights" referid2="RIGHTS_RW">
                                     <td class="td_test_tbs" style="border-color:#000000; border-top:0px; border-left:0px"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?" border="0"></td>
-                                 </di:hasrole>
+                                 </mm:islessthan>
                               </mm:compare>
 
                               <mm:compare referid="teststatus" value="passed">
