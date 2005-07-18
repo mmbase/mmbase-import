@@ -43,10 +43,12 @@
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
         <form name="roleform" action="<mm:treefile page="/education/wizards/roles_cmd.jsp" objectlist="$includePath" referids="$referids"/>" method="post">
           <input type="hidden" name="command" value="-1">
+          <mm:import id="numofroles" jspvar="numOfRoles" vartype="Integer">0</mm:import>
           <table class="tightborder" border="1" cellpadding="0" cellspacing="0">
             <tr align="center">
               <td class="tightborder">&nbsp;</td>
-              <mm:listnodes type="roles" orderby="number">
+              <mm:listnodes type="roles" orderby="name">
+                <mm:import id="numofroles" jspvar="numOfRoles" vartype="Integer" reset="true"><mm:size/></mm:import>
                 <mm:field name="name" jspvar="name" vartype="String">
                   <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
                   <mm:import id="template" reset="true">s(150!x30!)+font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(13)+gravity(NorthWest)+text(0,20,"<%= name %>")+rotate(-90)</mm:import>
@@ -61,10 +63,8 @@
             </tr>
             <tr align="center" valign="middle" height="25">
               <td class="tightborder">&nbsp;</td>
-              <mm:import id="editcontextname" reset="true">rollen</mm:import>
-              <%@include file="/education/wizards/roles_chk.jsp" %>
               <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
-                <mm:listnodes type="roles" orderby="number">
+                <mm:listnodes type="roles" orderby="name">
                   <td class="tightborder"><a href="<mm:treefile page="/education/wizards/roles_cmd.jsp" objectlist="$includePath" referids="$referids">
                                                      <mm:param name="command">deleterole</mm:param>
                                                      <mm:param name="rolenumber"><mm:field name="number"/></mm:param>
@@ -75,9 +75,9 @@
                 </mm:listnodes>
               </mm:islessthan>
               <mm:islessthan referid="rights" referid2="RIGHTS_RWD">
-                <mm:listnodes type="roles" orderby="number">
-                  <td class="tightborder">&nbsp;</td>
-                </mm:listnodes>
+                <% for(int i=0; i<numOfRoles.intValue();i++) { %>
+                     <td class="tightborder">&nbsp;</td>
+                <% } %>
               </mm:islessthan>
               <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>?wizard=config/role/roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
                                           alt="<fmt:message key="createNewRole"/>"/></a></td>
@@ -89,7 +89,7 @@
               </mm:field>
               <tr>
                 <td class="tightborder"><mm:field name="name"/></td>
-                <mm:listnodes type="roles" orderby="number">
+                <mm:listnodes type="roles" orderby="name">
                   <% String sSelectFullName = ""; %>
                   <mm:field name="number" jspvar="dummy" vartype="String">
                     <% sSelectFullName = sSelectName + dummy; %>
