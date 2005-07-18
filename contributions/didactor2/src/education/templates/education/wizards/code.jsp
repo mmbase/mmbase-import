@@ -263,9 +263,7 @@
                         }
                      %>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-                       <mm:import id="template" reset="true"><mm:write referid="listjsp"/>?wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes</mm:import>
-                     </mm:islessthan>
+                     <mm:import id="template" reset="true"><mm:write referid="listjsp"/>?wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes</mm:import>
                      <mm:compare referid="rights" referid2="RIGHTS_RW">
                        <mm:import id="template" reset="true"><mm:write referid="template"/>&forbiddelete=yes</mm:import>
                      </mm:compare>
@@ -327,6 +325,10 @@
    <mm:import id="editcontextname" reset="true">competentie</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+      <mm:import id="forbidtemplate" reset="true">&forbiddelete=yes</mm:import>
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
+         <mm:import id="forbidtemplate" reset="true"></mm:import>
+      </mm:islessthan>
       <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href="#" title="<fmt:message key="CompetenceTreeRootDescription"/>"><fmt:message key="CompetenceTreeRoot"/></nobr></a>
       <br>
       <div id='competence_0' style='display: none'>
@@ -344,7 +346,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/core/coretasks&nodepath=coretasks&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemCoreTasksDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreTasks"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/core/coretasks&nodepath=coretasks&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemCoreTasksDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreTasks"/></a></nobr></td>
             </tr>
          </table>
 
@@ -353,7 +355,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/core/coreassignments&nodepath=coreassignments&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemCoreAssignmentsDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreAssignments"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/core/coreassignments&nodepath=coreassignments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemCoreAssignmentsDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreAssignments"/></a></nobr></td>
             </tr>
          </table>
 
@@ -362,7 +364,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/assessments/preassessments&nodepath=preassessments&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemPreGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPreGrades"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/assessments/preassessments&nodepath=preassessments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemPreGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPreGrades"/></a></nobr></td>
             </tr>
          </table>
 
@@ -371,7 +373,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/assessments/postassessments&nodepath=postassessments&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemPostGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPostGrades"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/assessments/postassessments&nodepath=postassessments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemPostGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPostGrades"/></a></nobr></td>
             </tr>
          </table>
 
@@ -386,7 +388,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><a href='javascript:clickNode("profiles_root")'><img src="gfx/tree_plus.gif" border="0" align="middle" id='img_profiles_root'/></a></td>
                <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_profiles_root"/>'/></td>
-               <td><nobr><a href='<mm:write referid="listjsp"/>?wizard=config/profile/profiles&nodepath=profiles&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemProfilesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemProfiles"/></a></nobr></td>
+               <td><nobr><a href='<mm:write referid="listjsp"/>?wizard=config/profile/profiles&nodepath=profiles&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemProfilesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemProfiles"/></a></nobr></td>
             </tr>
          </table>
          <div id="profiles_root" style="display:none">
@@ -426,7 +428,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/pop/pop&nodepath=pop&searchfields=name&fields=name' title="<fmt:message key="CompetenceTreeItemPEPDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPEP"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/pop/pop&nodepath=pop&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemPEPDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPEP"/></a></nobr></td>
             </tr>
          </table>
 
