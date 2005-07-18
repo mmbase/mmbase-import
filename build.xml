@@ -464,6 +464,7 @@ builddate=${builddate}
         <include name="functions/**/*.xml"/>
         <include name="storage/**/*.xml"/>
         <include name="modules/mmbaseroot.xml"/>
+        <include name="modules/mmadmin.xml"/>
         <include name="utils/**/*.xml"/>
         <include name="xslt/**/*.xsl"/>
         <include name="xslt/**/*.xslt"/>
@@ -476,6 +477,7 @@ Basics.xml
     </echo>
     <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
 mmbaseroot.xml
+mmadmin.xml
     </echo>
   </target>
 
