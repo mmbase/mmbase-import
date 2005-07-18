@@ -90,7 +90,6 @@ function mmbaseInit(node) {
             //xGetElementById("header").style.display = "none";
         } else {
             xGetElementById("leftColumn").style.display = "block";
-            //xGetElementById("header").style.display = "block";
             adjustLayout();
         }
     }
