@@ -107,7 +107,7 @@
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
 </mm:list>
-<% constraints = "roles.name='teacher'"; %>
+<% constraints = "roles.name='docent'"; %>
 <%@include file="migrate-2005-07-12p2.jsp" %>
 <mm:list path="roles" constraints="<%= constraints %>">
    <mm:import id="roleID" reset="true"><mm:field name="roles.number"/></mm:import>
