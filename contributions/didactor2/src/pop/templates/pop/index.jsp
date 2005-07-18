@@ -5,6 +5,10 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
+
    <%
 
       String bundlePOP = null;
@@ -46,9 +50,9 @@
 
     <%@ include file="leftpanel.jsp" %>
 
-    <di:hasrole referid="user" role="teacher" inverse="true">
+    <mm:islessthan referid="rights" referid2="RIGHTS_RW">
       <mm:import id="whatselected" reset="true">student</mm:import>
-    </di:hasrole>
+    </mm:islessthan>
 
     <%-- right section --%>
     <mm:compare referid="whatselected" value="0" inverse="true">
@@ -65,11 +69,7 @@
           <mm:compare referid="currentfolder" value="-1">
             <div class="contentHeader"><fmt:message key="Competencies"/> <mm:compare referid="currentprofile" value="-1" inverse="true"
                 ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
-              <di:hasrole referid="user" role="teacher">
-                <mm:node number="$student">
-                  : <mm:field name="firstname"/> <mm:field name="lastname"/>
-                </mm:node>
-              </di:hasrole>
+              <%@include file="nameintitle.jsp">
             </div>
             <%@ include file="todo.jsp" %>
             <%@ include file="docs.jsp" %>
@@ -118,21 +118,17 @@
             </mm:compare>
           </mm:compare>
           <mm:compare referid="currentfolder" value="1">
-            <di:hasrole referid="user" role="teacher">
+            <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
               <mm:compare referid="whatselected" value="class">
                 <jsp:include page="coachpredetail.jsp"/>
               </mm:compare>
               <mm:compare referid="whatselected" value="wgroup">
                 <jsp:include page="coachpredetail.jsp"/>
               </mm:compare>
-            </di:hasrole>
+            </<mm:islessthan>
             <mm:compare referid="whatselected" value="student">
               <div class="contentHeader"><fmt:message key="Progressmonitor"/>
-                <di:hasrole referid="user" role="teacher">
-                  <mm:node number="$student">
-                    : <mm:field name="firstname"/> <mm:field name="lastname"/>
-                  </mm:node>
-                </di:hasrole>
+                <%@include file="nameintitle.jsp">
               </div>
               <mm:compare referid="command" value="intake">
                 <mm:import id="competencies" jspvar="competencies" />
@@ -156,11 +152,7 @@
           </mm:compare>
           <mm:compare referid="currentfolder" value="2">
             <div class="contentHeader"><fmt:message key="TodoItems"/>
-              <di:hasrole referid="user" role="teacher">
-                <mm:node number="$student">
-                  : <mm:field name="firstname"/> <mm:field name="lastname"/>
-                </mm:node>
-              </di:hasrole>
+              <%@include file="nameintitle.jsp">
             </div>
             <%@ include file="todo.jsp" %>
             <mm:compare referid="command" value="-1" inverse="true">
@@ -174,7 +166,7 @@
     </mm:compare>
 
     <mm:compare referid="whatselected" value="0">
-      <di:hasrole referid="user" role="teacher">
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
         <div class="mainContent">
           <div class="contentHeader"><fmt:message key="SelectStudent"/></div>
           <div class="contentBody">
@@ -182,7 +174,7 @@
             <fmt:message key="ExplanatoryBody"/>
           </div>
         </div>
-      </di:hasrole>
+      </<mm:islessthan>
     </mm:compare>
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />

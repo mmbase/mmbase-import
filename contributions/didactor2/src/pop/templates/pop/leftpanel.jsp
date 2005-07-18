@@ -3,7 +3,7 @@
   </div>
   <div class="folderBody">
 
-<di:hasrole referid="user" role="teacher">
+<mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
   <mm:import externid="wgroup"/>
   <mm:compare referid="wgroup" value="">  <mm:import id="wgroup" reset="true">0</mm:import></mm:compare>
   <form name="teacherform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
@@ -217,10 +217,10 @@
 </mm:compare>
 </mm:compare>
 
-</di:hasrole>
+</mm:islessthan>
 
 
-<di:hasrole referid="user" role="teacher" inverse="true">
+<mm:islessthan referid="rights" referid2="RIGHTS_RW">
 <%-- folder is open --%>
 <mm:compare referid="currentfolder" value="-1">
   <img src="<mm:treefile page="/pop/gfx/mapopen.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
@@ -282,7 +282,7 @@
     <mm:param name="currentfolder">2</mm:param>
   </mm:treefile>"><fmt:message key="TodoItems"/>
 </a><br />
-</di:hasrole>
+</mm:islessthan>
 
   </div>
 </div>
