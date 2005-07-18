@@ -48,10 +48,13 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             log.debug("Creating transformer, with " + parameters);
         }
         URL referrer;
+        String referer = ((javax.servlet.http.HttpServletRequest) parameters.get(Parameter.REQUEST)).getHeader("Referer");
+        if (referer == null) return CopyCharTransformer.INSTANCE;
+
         try {
-            referrer = new URL(((javax.servlet.http.HttpServletRequest) parameters.get(Parameter.REQUEST)).getHeader("Referer"));
+            referrer = new URL(referer);
         } catch (java.net.MalformedURLException mfue) {
-            log.warn(mfue);
+            log.warn(mfue.getMessage() + " for '" + referer + "'", mfue);
             return CopyCharTransformer.INSTANCE;
         }
         log.debug("Using referrer " + referrer);
