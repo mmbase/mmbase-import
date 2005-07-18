@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="MediaEditor" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="true">
+<application name="MediaEditor" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="false">
 
 
   <!-- adds pooling, publishtimes, intro's and security to Media app (features used by media-editor) -->
@@ -43,11 +43,11 @@
   </allowedrelationlist>
 
   <datasourcelist>
-		<datasource builder="pools"      path="MediaEditor/pools.xml" />
-	</datasourcelist>
+    <datasource builder="pools"      path="MediaEditor/pools.xml" />
+  </datasourcelist>
 
-	<relationsourcelist>
-		<relationsource builder="insrel" path="MediaEditor/insrel.xml" />
+  <relationsourcelist>
+    <relationsource builder="insrel" path="MediaEditor/insrel.xml" />
   </relationsourcelist>
   
   <contextsourcelist>
