@@ -88,7 +88,7 @@
              value="${chat.engine.logfile}"/>
  
  
-    <replace file="${build.wizards.dir}/data/pages.xml"
+    <replace file="${build.wizards.dir}/data/config/pages/pages.xml"
              token="$${wizards.pages.text.type}"
              value="${wizards.pages.text.type}"/>
 
