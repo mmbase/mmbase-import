@@ -21,11 +21,9 @@ div.kupu-toolbox, div.kupu-toolbox-active{
 }
 body.kupu-fulleditor-zoomed  { 
   position: absolute;
-  height: 300px;
-  width: 200px;
-  top: 50px;
-  background-color: yellow;
+  background-color: white;
 }
+
 form { 
 
 }
