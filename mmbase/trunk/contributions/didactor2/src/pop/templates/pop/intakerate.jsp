@@ -10,6 +10,9 @@
 
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
+<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
 
 <mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
 
@@ -56,11 +59,7 @@
     <%-- right section --%>
     <div class="mainContent">
 <div class="contentHeader"><fmt:message key="Progressmonitor"/>
-  <di:hasrole referid="user" role="teacher">
-    <mm:node number="$student">
-      : <mm:field name="firstname"/> <mm:field name="lastname"/>
-    </mm:node>
-  </di:hasrole>
+  <%@include file="nameintitle.jsp">
 </div>
   <div class="contentBody">
 
