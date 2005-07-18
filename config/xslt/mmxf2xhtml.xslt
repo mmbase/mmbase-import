@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.18 2005-06-28 08:23:40 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.19 2005-07-18 08:49:58 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -35,7 +35,23 @@
   <xsl:template match="mmxf:ul|mmxf:ol">
     <xsl:element name="{name()}">
       <xsl:if test="@type">
-        <xsl:attribute name="style">list-style-type: <xsl:value-of select="@type" />;</xsl:attribute>
+        <xsl:choose>
+          <xsl:when test="@type='A'">            
+            <xsl:attribute name="style">list-style-type: upper-alpha;</xsl:attribute>
+          </xsl:when>
+          <xsl:when test="@type='a'">            
+            <xsl:attribute name="style">list-style-type: lower-alpha;</xsl:attribute>
+          </xsl:when>
+          <xsl:when test="@type='I'">            
+            <xsl:attribute name="style">list-style-type: upper-roman;</xsl:attribute>
+          </xsl:when>
+          <xsl:when test="@type='i'">            
+            <xsl:attribute name="style">list-style-type: lower-roman;</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:attribute name="style">list-style-type: <xsl:value-of select="@type" />;</xsl:attribute>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:if>
       <xsl:apply-templates select="node()" />
     </xsl:element>

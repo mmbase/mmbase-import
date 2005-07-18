@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.11 2005-06-30 17:13:42 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.12 2005-07-18 08:49:57 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -56,6 +56,15 @@
     </xsl:choose>
   </xsl:template>
 
+
+  <xsl:template match="mmxf:ul|mmxf:ol">
+    <xsl:element name="{name()}">
+      <xsl:if test="@type">
+        <xsl:attribute name="type"><xsl:value-of select="@type" /></xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="node()" />
+    </xsl:element>
+  </xsl:template>
 
 
   <xsl:template match = "mmxf:mmxf" >
