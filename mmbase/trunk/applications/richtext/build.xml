@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../../applications/buildbase.xml" > ]
+>
+
+<project name="MMBase Richtext" default="jar" basedir=".">
+  <property name="project.name"   value="richtext" />
+  &base;
+
+</project>
