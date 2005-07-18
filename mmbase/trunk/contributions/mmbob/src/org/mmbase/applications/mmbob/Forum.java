@@ -757,7 +757,7 @@ public class Forum {
             RelationStep step2 = query.addRelationStep(postersmanager);
             StepField f1 = query.addField(step1, forumsmanager.getField("number"));
             query.addField(step2.getNext(), postersmanager.getField("number"));
-            //query.addField(step2.getNext(), postersmanager.getField("state"));
+            query.addField(step2.getNext(), postersmanager.getField("state"));
             query.addField(step2.getNext(), postersmanager.getField("account"));
             query.addField(step2.getNext(), postersmanager.getField("password"));
             query.addField(step2.getNext(), postersmanager.getField("firstname"));
