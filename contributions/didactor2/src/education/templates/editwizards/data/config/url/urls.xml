@@ -41,6 +41,8 @@
         </relation>
     </action>
 
+    <action type="delete" />
+
     <lists>
        <optionlist include="option_lists/boolean.xml" />
     </lists>
