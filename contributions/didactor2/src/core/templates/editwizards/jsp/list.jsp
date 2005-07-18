@@ -13,7 +13,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.3 2005-04-21 14:33:13 azemskov Exp $
+     * @version  $Id: list.jsp,v 1.4 2005-07-18 12:27:13 nbukharev Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -327,7 +327,13 @@ if (ewconfig.templates != null) params.put("templatedir",  ewconfig.templates);
 params.put("len",        String.valueOf(len));
 params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid",  ewconfig.sessionId);
-params.put("deletable",  deletable+"");
+
+if(request.getParameter("forbiddelete") == null) {
+   params.put("deletable",  deletable+"");
+} else {
+   params.put("deletable",  "false");
+}
+    
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
