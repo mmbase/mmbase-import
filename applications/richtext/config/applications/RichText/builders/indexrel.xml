@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
+<builder extends="posrel" maintainer="mmbase.org" name="indexrel" version="0">
+  <names>
+    <singular xml:lang="en">Index relation</singular>
+    <singular xml:lang="nl">Indexrelatie</singular>
+    <plural xml:lang="en">Index Relations</plural>
+    <plural xml:lang="nl">Indexrelaties</plural>
+  </names>
+  <fieldlist>
+    <field>
+      <gui>
+        <guiname xml:lang="nl">Index</guiname>
+        <guiname xml:lang="en">Index</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <list>4</list>
+          <search>4</search>
+        </positions>
+      </editor>
+      <db>
+        <name>index</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <gui>
+        <guiname xml:lang="nl">Wortel</guiname>
+        <guiname xml:lang="en">Root</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <list>5</list>
+          <search>6</search>
+        </positions>
+      </editor>
+      <db>
+        <name>root</name>
+        <type key="false" notnull="false" state="persistent">NODE</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>
