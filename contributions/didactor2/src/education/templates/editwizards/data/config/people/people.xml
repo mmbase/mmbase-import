@@ -1,54 +1,56 @@
-<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="people" role="classrel" minoccurs="0" maxoccurs="*" ordertype="string" orderby="lastname" hidecommand="move-up|move-down">
-    <title>Bijbehorende Personen</title>
-    <item>
-        <field name="firstname" ftype="data">
-            <prompt>Voornaam</prompt>
-        </field>
-        <field name="lastname" ftype="data">
-            <prompt>Achternaam</prompt>
-        </field>
-        <list extends="list/roles-inlist.xml"/>
-        <field wizardname="people" ftype="startwizard" />
-    </item>
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+    <title>Personen Editor</title>
 
     <action type="create">
-        <relation destinationtype="people" role="classrel">
-        </relation>
-    </action>
-
-    <action type="add">
-        <relation destinationtype="people" role="classrel">
-            <object type="people">
-            </object>
-        </relation>
+        <object type="people"/>
     </action>
 
     <action type="load">
-        <relation destinationtype="people" role="classrel">
-            <object type="people">
-              <relation destinationtype="roles" role="related">
-                <object type="roles"/>
-              </relation>
-            </object>
-        </relation>
+        <object type="people"/>
+        <relation destinationtype="roles" role="related"/> 
     </action>
 
-    <command name="startwizard" inline="true" wizardname="people" objectnumber="new" />
+    <steps>
+        <step form-schema="step1" />
+    </steps>
 
-    <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar studenten</prompt>
-        <search-filter>
-            <name>Achternaam bevat</name>
-            <search-fields>lastname</search-fields>
-        </search-filter>
-        <search-filter>
-            <name>Voornaam bevat</name>
-            <search-fields>firstname</search-fields>
-        </search-filter>
-        <search-filter>
-            <name>Account bevat</name>
-            <search-fields>account</search-fields>
-        </search-filter>
-    </command>
-</list>
+    <form-schema id="step1">
+      <title>Persoon invoeren</title>
+        <field name="initials" >
+            <prompt>Initialen</prompt>
+        </field>
+        <field name="firstname" >
+            <prompt>Voornaam</prompt>
+        </field>
+        <field name="lastname" >
+            <prompt>Achternaam</prompt>
+        </field>
+        <field name="address" >
+            <prompt>Adres</prompt>
+        </field>
+        <field name="zipcode" >
+            <prompt>Postcode</prompt>
+        </field>
+        <field name="city" >
+            <prompt>Plaats</prompt>
+        </field>
+        <field name="telephone" >
+            <prompt>Telefoonnummer</prompt>
+        </field>
+        <field name="email" >
+            <prompt>E-mail adres</prompt>
+        </field>
+        <field name="username" >
+            <prompt>Gebruikersnaam</prompt>
+        </field>
+        <field name="password" >
+            <prompt>Wachtwoord</prompt>
+        </field>
+
+
+        <list extends="config/role/roles-list.xml" />
+
+    </form-schema>
+</wizard-schema>
