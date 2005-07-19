@@ -73,11 +73,11 @@
             <prompt>Omschrijving</prompt>
         </field>
 
-        <list extends="list/roles.xml" />
+        <list extends="config/role/roles-list.xml" />
 
-        <list extends="list/workgroups.xml" />
-        <list extends="list/classes-classrelrelated.xml" />
-        <list extends="list/educations-classrelrelated.xml" />
+        <list extends="config/workgroup/workgroups-list.xml" />
+        <list extends="config/education/classes-classrelrelated.xml" />
+        <list extends="config/education/educations-classrelrelated.xml" />
 
     </form-schema>
 </wizard-schema>
