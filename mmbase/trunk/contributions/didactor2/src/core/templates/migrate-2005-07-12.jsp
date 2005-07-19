@@ -54,10 +54,10 @@
       <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_metadata">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_contentelementen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_filemanagement">
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
@@ -89,10 +89,10 @@
       <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_metadata">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_contentelementen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_filemanagement">
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
@@ -104,7 +104,7 @@
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_docent_schermen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
 </mm:list>
 <% constraints = "roles.name='docent'"; %>
@@ -112,34 +112,34 @@
 <mm:list path="roles" constraints="<%= constraints %>">
    <mm:import id="roleID" reset="true"><mm:field name="roles.number"/></mm:import>
    <mm:createrelation role="posrel" source="roleID" destination="ec_cursuseditor">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_componenten">
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_rollen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_competentie">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_metadata">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_contentelementen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_filemanagement">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_toetsen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_opleidingen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_docent_schermen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
    </mm:createrelation> 
 </mm:list>
 <% constraints = "roles.name='contenteditor'"; %>
@@ -147,13 +147,13 @@
 <mm:list path="roles" constraints="<%= constraints %>">
    <mm:import id="roleID" reset="true"><mm:field name="roles.number"/></mm:import>
    <mm:createrelation role="posrel" source="roleID" destination="ec_cursuseditor">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_componenten">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_rollen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_competentie">
       <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
@@ -168,13 +168,13 @@
       <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_toetsen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_opleidingen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_RWD"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_docent_schermen">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
 </mm:list>
 <% constraints = "roles.name='systemadministrator'"; %>
