@@ -167,9 +167,13 @@
    <mm:import id="editcontextname" reset="true">rollen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("roles_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_roles_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='roles.jsp' title='' target="text"><fmt:message key="roles"/></nobr></a>
+      <mm:import id="forbidtemplate" reset="true">&forbiddelete=yes</mm:import>
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
+         <mm:import id="forbidtemplate" reset="true"></mm:import>
+      </mm:islessthan>
+      <a href='javascript:clickNode("persons_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_persons_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("persons_0")'><fmt:message key="personsTab"/></nobr></a>
       <br>
-      <div id='roles_0' style='display: none'>
+      <div id='persons_0' style='display: none'>
          <%// edit people,rolerel, education %>
          <%-- doesn't work properly, so commented it out for the moment
             rolestree.addItem("<fmt:message key="editPeopleRoleRelEducation"/>",
@@ -179,13 +183,32 @@
                               "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
          --%>
          <%// create new role %>
+
          <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='roles.jsp' title='<fmt:message key="rolesShort"/>' target="text"><fmt:message key="rolesShort"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/people/people&nodepath=people&fields=firstname,suffix,lastname,externid&orderby=lastname&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title='<fmt:message key="persons"/>' target="text"><fmt:message key="persons"/></a></nobr></td>
+            </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/class/classes&nodepath=classes&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="classes"/>" target="text"><fmt:message key="classes"/></a></nobr></td>
+            </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/workgroup/workgroups&nodepath=workgroups&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="workgroups"/>" target="text"><fmt:message key="workgroups"/></a></nobr></td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -194,7 +217,7 @@
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/people/people&nodepath=people&fields=firstname,suffix,lastname,externid&orderby=lastname&search=yes' title='<fmt:message key="users"/>' target="text"><fmt:message key="users"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='roles.jsp' title='<fmt:message key="roles"/>' target="text"><fmt:message key="roles"/></a></nobr></td>
             </tr>
          </table>
       </div>
@@ -297,25 +320,31 @@
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="filemanagement"/>" target="text"><fmt:message key="filemanagement"/></a></nobr>
+      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("filemanagement_0")'><fmt:message key="filemanagement"/></a></nobr>
       <br>
       <div id='filemanagement_0' style='display: none'>
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="ftpUpload"/>" target="text"><fmt:message key="ftpUpload"/></a></nobr></td>
+            </tr>
+         </table>
 
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td><nobr>&nbsp;<fmt:message key="SCORMimport"/></nobr></td>
+            </tr>
+         </table>
       </div>
    </mm:islessthan>
 </mm:compare>
 </fmt:bundle>
 
-<fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="workgroups">
-   <% //----------------------- Workgroups comes from here ----------------------- %>
-      <a href='javascript:clickNode("workgroups_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_workgroups_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='<mm:treefile write="true" page="/editwizards/jsp/list.jsp?wizard=config/workgroup/workgroups&nodepath=workgroups&orderby=name" objectlist="$includePath" />' title="<fmt:message key="workgroups"/>" target="text"><fmt:message key="workgroups"/></a></nobr>
-      <br>
-      <div id='workgroups_0' style='display: none'>
-
-      </div>
-</mm:compare>
-</fmt:bundle>
 
 
 
