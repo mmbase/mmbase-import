@@ -8,16 +8,16 @@
 
   <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">????</singular>
+    <singular xml:lang="nl">Editcontext</singular>
     <singular xml:lang="en">Editcontext</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">????</plural>
-    <plural xml:lang="en">Edit Contexts</plural>
+    <plural xml:lang="nl">Editcontexts</plural>
+    <plural xml:lang="en">Editcontexts</plural>
   </names>
 
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">????</description>
+    <description xml:lang="nl">Editcontext</description>
     <description xml:lang="en">Editcontext</description>
   </descriptions>
 
@@ -30,7 +30,7 @@
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">????</description>
+        <description xml:lang="nl">Naam van de editcontext</description>
         <description xml:lang="en">Name of the editcontext</description>
       </descriptions>
       <!-- gui related -->
