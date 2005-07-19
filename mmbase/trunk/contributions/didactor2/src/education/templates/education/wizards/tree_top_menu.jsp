@@ -75,7 +75,7 @@
                   <mm:import id="editcontextname" reset="true">rollen</mm:import>
                   <%@include file="/education/wizards/roles_chk.jsp" %>
                   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="roles">           class="education_top_menu_selected" </mm:compare>><a href="?mode=roles"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuAuthorization"/></a></td>
+                     <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="roles">           class="education_top_menu_selected" </mm:compare>><a href="?mode=roles"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuPersons"/></a></td>
                   </mm:islessthan>
 
                   <mm:node number="component.pop" notfound="skip">
@@ -112,8 +112,6 @@
                   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
                      <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="tests">           class="education_top_menu_selected" </mm:compare>><a href="?mode=tests"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuTests"/></a></td>
                   </mm:islessthan>
-
-                  <td style="border-right: #000000 1px solid" <mm:compare referid="education_top_menu" value="workgroups">           class="education_top_menu_selected" </mm:compare>><a href="?mode=workgroups"            style="font-weight:bold;" onMouseDown="top.frames['text'].location.href = '<mm:treefile page="/education/wizards/loading.jsp" objectlist="$includePath" referids="$referids" />';"><fmt:message key="educationMenuWorkgroups"/></a></td>
 
                   <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
                   <%@include file="/education/wizards/roles_chk.jsp" %>
