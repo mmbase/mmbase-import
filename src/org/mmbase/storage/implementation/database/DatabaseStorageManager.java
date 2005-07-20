@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.15 2005-07-20 08:56:46 marcel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.16 2005-07-20 09:23:32 marcel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -80,6 +80,9 @@ public class DatabaseStorageManager implements StorageManager {
      * Pool of changed nodes in a transaction
      */
     protected Map changes;
+
+    // buildername cache
+    private static Set buildername_cache = null;
     
 
     /**
@@ -1573,12 +1576,14 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public void delete(MMObjectBuilder builder) throws StorageException {
+    public synchronized void delete(MMObjectBuilder builder) throws StorageException {
         int size = size(builder);
         if (size != 0) {
             throw new StorageException("Can not drop builder, it still contains " + size + " node(s)");
         }
         try {
+            String buildername = builder.getTableName();
+
             getActiveConnection();
             Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
             String query = scheme.format(new Object[] { this, builder });
@@ -1593,6 +1598,9 @@ public class DatabaseStorageManager implements StorageManager {
                 logQuery(query);
                 s.executeUpdate(query);
                 s.close();
+
+                if(buildername_cache.contains(buildername)) 
+                    buildername_cache.remove(buildername);
             }
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
@@ -1665,9 +1673,6 @@ public class DatabaseStorageManager implements StorageManager {
         return result;
     }
 
-    // buildername cache
-    private static Set cache = null;
-
     /**
      * Queries the database metadata to test whether a given table exists.
      * 
@@ -1676,16 +1681,16 @@ public class DatabaseStorageManager implements StorageManager {
      * @return <code>true</code> if the table exists
      */
     protected synchronized boolean exists(String tableName) throws StorageException {
-        if(cache == null) { 
+        if(buildername_cache == null) { 
             try {
-                cache = new HashSet();
+                buildername_cache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
                 ResultSet res = 
                     metaData.getTables(factory.getCatalog(),null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
                 try { 
                     while(res.next()) 
-                        if(!cache.add(res.getString(3)))
+                        if(!buildername_cache.add(res.getString(3)))
                             log.warn("builder already in cache("+res.getString(3)+")!");
                 } finally { 
                     res.close();
@@ -1697,7 +1702,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-        return cache.contains(tableName);
+        return buildername_cache.contains(tableName);
     }
 
     // javadoc is inherited
