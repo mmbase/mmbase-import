@@ -1,5 +1,5 @@
 <%-- in: user, editcontextname --%>
-<%-- out: rights, forbiddelete (for EW) --%>
+<%-- out: rights, forbidtemplate (for EW) --%>
 <%-- need: definition of RIGHTS_NO --%>
 
 <mm:import id="rights" reset="true"><mm:write referid="RIGHTS_NO"/></mm:import>
