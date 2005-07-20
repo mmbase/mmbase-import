@@ -206,8 +206,8 @@
     <form-schema id="step4">
         <title>Assessments invoeren</title>
         <field name="name" ftype="data"/>
-        <list extends="config/assessments/preassessments-list.xml"/>
-        <list extends="config/assessments/postassessments-list.xml"/>
+        <list extends="config/assessment/preassessments-list.xml"/>
+        <list extends="config/assessment/postassessments-list.xml"/>
     </form-schema>
 
 </wizard-schema>
