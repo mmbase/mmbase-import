@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.108 2005-07-20 09:26:52 marcel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.109 2005-07-20 13:16:47 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2005,7 +2005,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected synchronized boolean exists(String tableName) throws StorageException {
         if(buildername_cache == null) {
             try {
-                buildername_buildername_cache = new HashSet();
+                buildername_cache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
                 ResultSet res =
@@ -2524,7 +2524,7 @@ public class DatabaseStorageManager implements StorageManager {
                                         if (foundColumn) {
 
                                             Blob b = getBlobFromDatabase(node, field, false);
-                                            byte[] bytes = (byte[]) b.getBytes(0L, (int) b.length());
+                                            byte[] bytes = b.getBytes(0L, (int) b.length());
                                             node.setValue(fieldName, bytes);
                                             storeBinaryAsFile(node, field);
 
