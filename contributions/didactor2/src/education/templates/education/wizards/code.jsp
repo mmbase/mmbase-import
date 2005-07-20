@@ -1,3 +1,11 @@
+<script>
+if (top == self) {
+    var loc = document.location.href;
+    loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*/,"$1wizards/index.jsp");
+    document.location.href = loc;
+}
+</script>
+
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
@@ -792,7 +800,7 @@
                </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>?wizard=educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>?wizard=config/education/educations&objectnumber=new&origin=<mm:write referid="user"/>" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
             </tr>
          </table>
 
