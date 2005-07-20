@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.27.2.6 2004-08-18 10:45:30 rob Exp $
+ * @version $Id: StringHandler.java,v 1.27.2.7 2005-07-20 15:12:01 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -63,9 +63,9 @@ public class StringHandler extends AbstractTypeHandler {
                 } else {
 
                     String value = node.getContext();
-                    buffer.append("<select name=\"" + prefix("owner") + "\">\n");
-
+                    buffer.append("<select name=\"" + prefix("owner") + "\"");
                     addExtraAttributes(buffer);
+                    buffer.append(" >\n");
                     StringList possibleContexts = node.getPossibleContexts();
 
                     if (! possibleContexts.contains(value)) {
