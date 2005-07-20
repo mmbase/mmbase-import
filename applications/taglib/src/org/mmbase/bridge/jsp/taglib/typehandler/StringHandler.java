@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.40 2005-05-25 09:39:01 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.41 2005-07-20 15:10:33 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -64,9 +64,10 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
                 } else {
 
                     String value = node.getContext();
-                    buffer.append("<select name=\"" + prefix("owner") + "\">\n");
+                    buffer.append("<select name=\"" + prefix("owner") + "\"");
 
                     addExtraAttributes(buffer);
+                    buffer.append(" >\n");
                     StringList possibleContexts = node.getPossibleContexts();
 
                     if (! possibleContexts.contains(value)) {
