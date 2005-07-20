@@ -18,6 +18,7 @@
 
     <lists>
       <optionlist include="option_lists/layout_ext.xml" />
+      <optionlist include="option_lists/boolean.xml" />
     </lists>
 
     <steps>
