@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.106 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.107 2005-07-20 08:58:39 marcel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1987,28 +1987,39 @@ public class DatabaseStorageManager implements StorageManager {
         return result;
     }
 
+    // buildername cache
+    private static Set cache = null;
+
     /**
      * Queries the database metadata to test whether a given table exists.
+     *
      * @param tableName name of the table to look for
      * @throws StorageException when the metadata could not be retrieved
      * @return <code>true</code> if the table exists
      */
-    protected boolean exists(String tableName) throws StorageException {
-        try {
-            getActiveConnection();
-            DatabaseMetaData metaData = activeConnection.getMetaData();
-            ResultSet res = metaData.getTables(null, null, tableName, null);
+    protected synchronized boolean exists(String tableName) throws StorageException {
+        if(cache == null) {
             try {
-                boolean result = res.next();
-                return result;
+                cache = new HashSet();
+                getActiveConnection();
+                DatabaseMetaData metaData = activeConnection.getMetaData();
+                ResultSet res =
+                    metaData.getTables(factory.getCatalog(),null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
+                try {
+                    while(res.next())
+                        if(!cache.add(res.getString(3)))
+                            log.warn("builder already in cache("+res.getString(3)+")!");
+                } finally {
+                    res.close();
+                }
+            } catch(Exception e) {
+                throw new StorageException(e.getMessage());
             } finally {
-                res.close();
+                releaseActiveConnection();
             }
-        } catch (Exception e) {
-            throw new StorageException(e.getMessage());
-        } finally {
-            releaseActiveConnection();
         }
+
+        return cache.contains(tableName);
     }
 
     // javadoc is inherited
