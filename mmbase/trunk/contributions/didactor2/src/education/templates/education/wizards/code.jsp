@@ -290,10 +290,7 @@ if (top == self) {
                         }
                      %>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <mm:import id="template" reset="true"><mm:write referid="listjsp"/>?wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes</mm:import>
-                     <mm:compare referid="rights" referid2="RIGHTS_RW">
-                       <mm:import id="template" reset="true"><mm:write referid="template"/>&forbiddelete=yes</mm:import>
-                     </mm:compare>
+                     <mm:import id="template" reset="true"><mm:write referid="listjsp"/>?wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes<mm:write referid="forbidtemplate" escape="text/plain" /></mm:import>
                      <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />' title='Bewerk <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
                   </tr>
                </table>
