@@ -475,7 +475,11 @@
    <mm:import id="editcontextname" reset="true">metadata</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&orderby=name' title='' target="text"><fmt:message key="metadata"/></nobr></a>
+      <mm:import id="forbidtemplate" reset="true">&forbiddelete=yes</mm:import>
+      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
+         <mm:import id="forbidtemplate" reset="true"></mm:import>
+      </mm:islessthan>
+      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title='' target="text"><fmt:message key="metadata"/></nobr></a>
       <br>
 
       <mm:import id="number_of_metadata" reset="true">0</mm:import>
