@@ -53,7 +53,7 @@
       </tr>
       <mm:compare referid="currentcomp" value="-1">
         <tr>
-          <td>Competentie</td>
+          <td><fmt:message key="Competence"/></td>
           <td>
             <select name="todocomp" class="popCompFormSelect">
               <option value="-1">...</option>
