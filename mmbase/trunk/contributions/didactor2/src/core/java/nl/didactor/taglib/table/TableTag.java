@@ -172,7 +172,7 @@ public class TableTag extends CloudReferrerTag {
         try {
             if (bodyContent != null) {
                 getPreviousOut().print(getLabel("surrounding.start"));
-                String pagingContent = "";
+                String pagingContent = "<span style='width:80%'>";
 
                 // If there were more results then fit on one page, we need to
                 // create a paging <div>
@@ -198,11 +198,11 @@ public class TableTag extends CloudReferrerTag {
                     int nrpages = ((size - 1) / max) + 1;
                     for (int i=0; i<nrpages; i++) {
                         if (i == offset) {
-                            pagingContent += (i + 1) + "&nbsp;";
+                            pagingContent += (i + 1) + " ";
                         } else {
                             pagingContent += "<a class=\"" + getLabel("paging.number.class") + "\" href=\"" + baseUrl + 
                                     PARAM_PAGE + "=" + i + 
-                                    "\">" + (i + 1) + "</a>&nbsp;";
+                                    "\">" + (i + 1) + "</a> ";
                         }
                     }
                     
@@ -214,6 +214,7 @@ public class TableTag extends CloudReferrerTag {
                     } else {
                         pagingContent += "&gt;&nbsp;";
                     }
+                    pagingContent += "</span>";
                 }
                 if (!"".equals(pagingContent))
                     getPreviousOut().print(getLabel("paging.top.start") + pagingContent + getLabel("paging.top.end"));
