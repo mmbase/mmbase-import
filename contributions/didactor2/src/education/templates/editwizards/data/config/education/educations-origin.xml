@@ -35,8 +35,8 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="paragraphs/images_position.xml" />
-       <optionlist include="paragraphs/boolean.xml" />
+       <optionlist include="config/option_lists/images_position.xml" />
+       <optionlist include="config/option_lists/boolean.xml" />
     </lists>
 
     <steps>
@@ -120,7 +120,7 @@
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean"></optionlist>
         </field>
-        <list extends="paragraphs/add_paragraphs_posrel.xml"/>
+        <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
     </form-schema>
 
     <form-schema id="step3">

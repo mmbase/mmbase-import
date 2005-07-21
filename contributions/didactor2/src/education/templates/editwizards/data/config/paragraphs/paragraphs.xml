@@ -7,8 +7,8 @@
    <action include="config/paragraphs/delete_paragraphs.xml" />
    <action include="config/paragraphs/load_paragraphs.xml" />
    <lists>
-      <optionlist include="config/paragraphs/images_position.xml" />
-      <optionlist include="config/paragraphs/boolean.xml" />
+      <optionlist include="config/option_lists/images_position.xml" />
+      <optionlist include="config/option_lists/boolean.xml" />
    </lists>
    <steps>
       <step form-schema="edit_paragraphs" />
@@ -27,8 +27,8 @@
          <prompt xml:lang="nl">Alinea tekst</prompt>
          <prompt xml:lang="en">Paragraph body</prompt>
       </field>
-      <list include="config/paragraphs/add_images_pos2rel_position.xml" />
-      <list include="config/paragraphs/add_attachments_posrel.xml" />
-      <list include="config/paragraphs/add_exturls_posrel.xml" />
+      <list include="config/image/add_images_pos2rel_position.xml" />
+      <list include="config/attachment/add_attachments_posrel.xml" />
+      <list include="config/url/add_exturls_posrel.xml" />
    </form-schema>
 </wizard-schema>

@@ -113,7 +113,7 @@
                %>
             </mm:field>
          </mm:write>
-         <td colspan="2" valign="top" style="border-color:#000000; border-top:0px; background:#BDBDBD"><a href="<mm:write referid="wizardjsp"/>?wizard=profiles&objectnumber=<mm:field name="number"/>" style="text-decoration:none;" class="titlefield2"><%= sProfileName %></a></td>
+         <td colspan="2" valign="top" style="border-color:#000000; border-top:0px; background:#BDBDBD"><a href="<mm:write referid="wizardjsp"/>?wizard=config/profile/profiles&objectnumber=<mm:field name="number"/>" style="text-decoration:none;" class="titlefield2"><%= sProfileName %></a></td>
          <td style="border-top:0px; border-left:0px; border-right:0px">&nbsp;</td>
          <%// Core tasks header
             if(hsetCoreTasks.size() > 0)
@@ -126,7 +126,7 @@
                         <mm:field name="name" jspvar="sName" vartype="String">
                            <mm:node number="progresstextbackground">
                               <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName.replaceAll("\\s+","_").replaceAll("\"","''") %>)+rotate(270)</mm:import>
-                              <td style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=coretasks&objectnumber=<%= sCoreTaskID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
+                              <td style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=config/core/coretasks&objectnumber=<%= sCoreTaskID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
                            </mm:node>
                         </mm:field>
                      </mm:node>
@@ -152,7 +152,7 @@
                         <mm:field name="name" jspvar="sName" vartype="String">
                            <mm:node number="progresstextbackground">
                               <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(12)+gravity(NorthEast)+text(20,20,<%= sName.replaceAll("\\s+","_").replaceAll("\"","''") %>)+rotate(270)</mm:import>
-                              <td style="border-color:#000000; border-right:0px; border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=coreassignments&objectnumber=<%= sCoreAssignmentID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
+                              <td style="border-color:#000000; border-right:0px; border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=config/core/coreassignments&objectnumber=<%= sCoreAssignmentID %>"><img border="0" src="<mm:image template="$template" />"/></a></td>
                            </mm:node>
                         </mm:field>
                      </mm:node>
@@ -197,7 +197,7 @@
 
          <tr>
             <td style="border-color:#000000; border-top:0px; border-right:0px"><%= iNumber %>.</td>
-            <td style="border-color:#000000; border-top:0px;"><a href="<mm:write referid="wizardjsp"/>?wizard=competencies&objectnumber=<mm:field name="competencies.number"/>" style="text-decoration:none;"><mm:field name="competencies.name"/></a></td>
+            <td style="border-color:#000000; border-top:0px;"><a href="<mm:write referid="wizardjsp"/>?wizard=config/competency/competencies&objectnumber=<mm:field name="competencies.number"/>" style="text-decoration:none;"><mm:field name="competencies.name"/></a></td>
             <td style="border-top:0px; border-left:0px; border-right:0px">&nbsp;</td>
             <%
                if(hsetCoreTasks.size() > 0)
@@ -206,7 +206,7 @@
                   {
                      String sCoreTaskID = (String) it.next();
 
-                     %><td align="center" style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%"><%
+                     %><td align="center" style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=config/insrel/insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%"><%
 
                      if ((mapCoreTasks.get(sCoreTaskID) != null) && (((ArrayList) mapCoreTasks.get(sCoreTaskID)).contains(sCompetenceID)))
                      {
@@ -222,7 +222,7 @@
                }
                else
                {//click here to create a new one
-                  %><td align="center" style="border-color:#000000; border-top:0px; border-right:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a></td><%
+                  %><td align="center" style="border-color:#000000; border-top:0px; border-right:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=config/insrel/insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a></td><%
                }
                %>
                   <mm:last inverse="true">
@@ -238,7 +238,7 @@
                   {
                      String sCoreAssignmentID = (String) it.next();
 
-                     %><td align="center" style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%"><%
+                     %><td align="center" style="border-color:#000000;border-right:0px;border-top:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=config/insrel/insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%"><%
 
                      if ((mapCoreAssignments.get(sCoreAssignmentID) != null) && (((ArrayList) mapCoreAssignments.get(sCoreAssignmentID)).contains(sCompetenceID)))
                      {
@@ -254,7 +254,7 @@
                }
                else
                {//click here to create a new one
-                  %><td align="center" style="border-color:#000000;border-top:0px;border-right:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a></td><%
+                  %><td align="center" style="border-color:#000000;border-top:0px;border-right:0px"><a href="<mm:write referid="wizardjsp"/>?wizard=config/insrel/insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a></td><%
                }
             %>
             <td style="border-color:#000000;border-top:0px">
@@ -263,11 +263,11 @@
 
                   <mm:relatednodes type="ratings" orderby="ratings.pos" directions="down">
                      <mm:import id="rating_is_empty" reset="true">false</mm:import>
-                     <a href="<mm:write referid="wizardjsp"/>?wizard=ratings&objectnumber=<mm:field name="number"/>" style="text-decoration:none; width:100%"><mm:field name="name"/></a>
+                     <a href="<mm:write referid="wizardjsp"/>?wizard=config/rating/ratings&objectnumber=<mm:field name="number"/>" style="text-decoration:none; width:100%"><mm:field name="name"/></a>
                   </mm:relatednodes>
 
                   <mm:compare referid="rating_is_empty" value="true">
-                     <a href="<mm:write referid="wizardjsp"/>?wizard=insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a>
+                     <a href="<mm:write referid="wizardjsp"/>?wizard=config/insrel/insrel&objectnumber=<%=sInsrelID %>" style="text-decoration:none; width:100%">&nbsp;</a>
                   </mm:compare>
                </mm:node>
             </td>
