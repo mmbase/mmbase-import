@@ -46,7 +46,7 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="option_lists/boolean.xml" />
+       <optionlist include="config/option_lists/boolean.xml" />
     </lists>
 
     <steps>

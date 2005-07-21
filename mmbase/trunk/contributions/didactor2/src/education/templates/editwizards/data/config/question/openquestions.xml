@@ -49,7 +49,7 @@
 
 
     <lists>
-        <optionlist include="option_lists/boolean.xml" />
+        <optionlist include="config/option_lists/boolean.xml" />
         <optionlist name="layout">
             <option id="0">Groot veld</option>
             <option id="1">Klein veld</option>

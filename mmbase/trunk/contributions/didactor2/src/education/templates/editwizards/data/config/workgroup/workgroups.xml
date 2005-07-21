@@ -20,7 +20,7 @@
 
     <action type="delete" />
      <lists>
-        <optionlist include="option_lists/workgrouptype.xml" />
+        <optionlist include="config/option_lists/workgrouptype.xml" />
     </lists>
 
    
