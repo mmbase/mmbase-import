@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.110 2005-07-21 08:25:43 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.111 2005-07-21 12:45:25 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -90,8 +90,12 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected Map changes;
 
-    // buildername cache
-    private static Set buildername_cache = null;
+    /**
+     * This sets contains all existing tables which could by associated with MMBase builders. This
+     * is because they are queried all at once, but requested for existance only one at a time.
+     * @since MMBase-1.7.4
+     */
+    private static Set tableNameCache = null;
 
     /**
      * Constructor
@@ -1140,10 +1144,10 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setNodeValue(PreparedStatement statement, int index, Object nodeValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, nodeValue, field, java.sql.Types.INTEGER)) {
-            int nodeNumber = Casting.toInt(nodeValue);
-            if (nodeNumber < 0 && field.isRequired()) { // node numbers cannot be negative
-                throw new StorageException("The NODE field with name " + field.getName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
+            if (nodeValue == null && field.isRequired()) {
+                throw new StorageException("The NODE field with name " + field.getClass() + " " + field.getName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
             }
+            int nodeNumber = Casting.toInt(nodeValue);
             // retrieve node as a numeric value
             statement.setInt(index, nodeNumber);
         }
@@ -1754,7 +1758,7 @@ public class DatabaseStorageManager implements StorageManager {
             s.executeUpdate(query);
             s.close();
 
-            buildername_cache.add(factory.getStorageIdentifier(builder));
+            tableNameCache.add(factory.getStorageIdentifier(builder));
 
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
@@ -1908,7 +1912,7 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException("Can not drop builder, it still contains " + size + " node(s)");
         }
         try {
-            String buildername = builder.getTableName();
+            String builderName = builder.getTableName();
 
             getActiveConnection();
             Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
@@ -1925,8 +1929,9 @@ public class DatabaseStorageManager implements StorageManager {
                 s.executeUpdate(query);
                 s.close();
 
-                if(buildername_cache.contains(buildername))
-                    buildername_cache.remove(buildername);
+                if(tableNameCache.contains(builderName)) {
+                    tableNameCache.remove(builderName);
+                }
             }
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
@@ -2006,17 +2011,19 @@ public class DatabaseStorageManager implements StorageManager {
      * @return <code>true</code> if the table exists
      */
     protected synchronized boolean exists(String tableName) throws StorageException {
-        if(buildername_cache == null) {
+        if(tableNameCache == null) {
             try {
-                buildername_cache = new HashSet();
+                tableNameCache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
                 ResultSet res =
-                    metaData.getTables(factory.getCatalog(),null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
+                    metaData.getTables(factory.getCatalog(), null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
                 try {
-                    while(res.next())
-                        if(!buildername_cache.add(res.getString(3)))
-                            log.warn("builder already in cache("+res.getString(3)+")!");
+                    while(res.next()) {
+                        if(! tableNameCache.add(res.getString(3))) {
+                            log.warn("builder already in cache(" + res.getString(3) + ")!");
+                        }
+                    }
                 } finally {
                     res.close();
                 }
@@ -2027,7 +2034,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-        return buildername_cache.contains(tableName);
+        return tableNameCache.contains(tableName);
     }
 
     // javadoc is inherited
