@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.109 2005-07-20 13:16:47 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.110 2005-07-21 08:25:43 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1753,6 +1753,9 @@ public class DatabaseStorageManager implements StorageManager {
             logQuery(query);
             s.executeUpdate(query);
             s.close();
+
+            buildername_cache.add(factory.getStorageIdentifier(builder));
+
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
         } catch (SQLException se) {
@@ -1763,7 +1766,7 @@ public class DatabaseStorageManager implements StorageManager {
             releaseActiveConnection();
         }
         verify(builder);
-
+        
         //create indices for key's that are not primary keys
         Scheme createIndex = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
         if (createIndex != null) {
