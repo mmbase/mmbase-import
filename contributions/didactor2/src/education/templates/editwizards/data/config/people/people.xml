@@ -76,7 +76,7 @@
         <list extends="config/role/roles-list.xml" />
 
         <list extends="config/workgroup/workgroups-list.xml" />
-        <list extends="config/education/classes-classrelrelated.xml" />
+        <list extends="config/class/classes-classrelrelated.xml" />
         <list extends="config/education/educations-classrelrelated.xml" />
 
     </form-schema>
