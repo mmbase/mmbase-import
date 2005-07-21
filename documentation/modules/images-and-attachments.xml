@@ -1,10 +1,10 @@
-﻿<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
   <articleinfo>
     <title>Images and Attachments</title>
     <date>2005-05-09</date>
-    <edition>$Id: images-and-attachments.xml,v 1.7 2005-05-20 10:06:31 michiel Exp $</edition>
+    <edition>$Id: images-and-attachments.xml,v 1.8 2005-07-21 12:40:11 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -13,7 +13,7 @@
     </authorgroup>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.MMBase.org/license">http://www.MMBase.org/license</ulink>
       </para>
     </legalnotice>
   </articleinfo>
@@ -22,7 +22,7 @@
     <para>
       This document describes how you have to deal with images and attachments in MMBase. We will
       start with a simple description of what these things are for MMBase and how you can use them,
-      and will end with some implementation details an mmbase developer might need to know.
+      and will end with some implementation details an MMBase developer might need to know.
     </para>
   </section>
   <section>
@@ -32,14 +32,14 @@
       are in MMBase just another form of content, so they can be stored in a builder (a.k.a. 'node
       manager'). This builder is named `images' in the MMBase distribution, and can be installed by
       deploying the resources' application. Normally the image itself will be stored as a blob in the
-      database, though mmbase can be configured to do it differently. Of course normally the
+      database, though MMBase can be configured to do it differently. Of course normally the
       image-builder will also feature the meta information about the image.
     </para>
     <para>
       But there is more to it then this. There must e.g. be a way to present the image to the
       visitor of your web site. For the meta information about the image this is of course no
-      problem, you can do that just as you would with other mmbase node fields. If you use the
-      mmbase taglib you would for example list the related images like this:
+      problem, you can do that just as you would with other MMBase node fields. If you use the
+      MMBase taglib you would for example list the related images like this:
       <programlisting><![CDATA[
 <mm:relatednodes type="images">
    <img src="????" 
@@ -67,16 +67,16 @@
       distro is '/img.db' which means that then the image of node 123 is available on the url:
       http://yourhost/context/img.db?123. I like to map the image servlet to "/images/*", and then
       the image 123 is available on http://yourhost/context/images/123, which I find to look a bit
-      better. 'yourhost' is the name of your webserver and 'context' is the application context you
-      have started mmbase in (it can be empty, then mmbase is running in the 'root' context, but
+      better. 'yourhost' is the name of your web server and 'context' is the application context you
+      have started MMBase in (it can be empty, then MMBase is running in the 'root' context, but
       this is not generally true).
     </para>
     <para>
-      Well, you know that you do not need to know explicitly the hostname of your server when you
+      Well, you know that you do not need to know explicitly the host name of your server when you
       make your html page, because you can refer to the image relatively in the 'img' tag. It is
       also not very convenient to use an url like &lt;img src="/context/images/123" /&gt; because
-      'context' can change (you can move the page to another mmbase instance in another context),
-      and even the 'images/' part can vary between mmbase installations, because it can be configured
+      'context' can change (you can move the page to another MMBase instance in another context),
+      and even the 'images/' part can vary between MMBase installations, because it can be configured
       to which URL the image-servlet is mapped by the application server.
     </para>
     <para>
@@ -89,7 +89,7 @@
 	alt="<mm:field name="title" />" /><mm:field name="description" /><br />
 </mm:relatednodes>
 ]]></programlisting>    
-      So, this image tag finds out for you in which context your mmbase is running and to which URL's
+      So, this image tag finds out for you in which context your MMBase is running and to which URL's
       the servlet is mapped and it then produces the right URL.
     </para>
     <para>
@@ -210,43 +210,43 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
     <section>
       <title>Image height and width</title>
       <para>
-	Until now we've said nothing about the 'height' and 'width' of images. In HTML you actually
-	need to specify those in the height and width attributes of the img tag. Since MMBase-1.8
-	height and width are fields of the two image-builders (images and icaches). These fields are
-	automaticly field by MMBase, so you should never have to worry about it.
+        Until now we've said nothing about the 'height' and 'width' of images. In HTML you actually
+        need to specify those in the height and width attributes of the img tag. Since MMBase-1.8
+        height and width are fields of the two image-builders (images and icaches). These fields are
+        automaticly filled by MMBase, so you should never have to worry about it.
       </para>
       <para>
-	The image-tag however, provided only the URL of a cached image. So in the previous chapter
-	the issue was ignored. It would be fixed you have somehow access to the actual 'icaches'
-	node (and indeed this is possible, using a 'nodefunction' tag), but there are 2 alternatives
-	in the mm:image tag.	
+        The image-tag however, provided only the URL of a cached image. So in the previous chapter
+        the issue was ignored. It would be fixed if you have somehow access to the actual 'icaches'
+        node. This is this indeed possible (using a 'nodefunction' tag), but this is not very
+        convenient and there for there are 2 alternatives in the mm:image tag.
       </para>
       <para>
-	The first alternative is the 'mode' attribute on mm:image. When its value is 'attributes' it
-	will not only produce the URL for the image, but it will produce the 3 relevant attributes
-	for a XHTML img-tag. Like this:
+        The first alternative is the 'mode' attribute on mm:image. When its value is 'attributes' it
+        will not only produce the URL for the image, but it will produce the 3 relevant attributes
+        for a XHTML img-tag. Like this:
 	<programlisting><![CDATA[
 <mm:relatednodes type="images">
    <img <mm:image mode="attributes" template="s(100)" />
 	alt="<mm:field name="title" />" /><mm:field name="description" /><br />
 </mm:relatednodes>
 ]]></programlisting>
-	So then you don't have to specify the 'src' attribute itself either, because it is provided by the image-tag now.
+  So then you don't have to specify the 'src' attribute itself either, because it is provided by the image-tag now.
       </para>
       <para>
-	You can also specify 'img' as a value for the 'mode' of the image-tag, which will, of
-	course, produce an entire img-tag. You would probably end up with something like:
-	<programlisting><![CDATA[
+        You can also specify 'img' as a value for the 'mode' of the image-tag, which will, of
+        course, produce an entire img-tag. You would probably end up with something like:
+        <programlisting><![CDATA[
 <mm:relatednodes type="images">
-   <<mm:image mode="img" template="s(100)" /><mm:field name="description" /><br />
+   <mm:image mode="img" template="s(100)" /><mm:field name="description" /><br />
 </mm:relatednodes>
 ]]></programlisting>
       </para>
       <para>
-	The second alternative is that the mm:image tag produces a 'dimension' variable which can be
-	accessed using JSP2's Expression Language. This variable is available in the body of the
-	mm:image tag. The URL is available as ${_} (as with any 'Writer' tag). One could end up with something like:
-	<programlisting><![CDATA[
+        The second alternative is that the mm:image tag produces a 'dimension' variable which can be
+        accessed using JSP2's Expression Language. This variable is available in the body of the
+        mm:image tag. The URL is available as ${_} (as with any 'Writer' tag). One could end up with something like:
+        <programlisting><![CDATA[
 <mm:relatednodes type="images" id="image" >
    <mm:image template="s(100)">
      <img src="${_}" width="${dimension.width}" height="${dimension.height}" title="${image.title}" alt="${image.title}"  /><mm:field name="description" /><br />
@@ -256,11 +256,11 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
 	
       </para>
       <para>
-	In MMBase-1.8, the creating of the converted image is actually 'lazy', so the icaches object
-	is created without the byte-array first, which will only be filled on actual request of the
-	client. This however has little influence on the height and width of the icaches object,
-	because those are 'predicted', and are therefore available immediately, also when the actual
-	conversion has not yet taken place.
+        In MMBase-1.8, the creating of the converted image is actually 'lazy', so the icaches object
+        is created without the byte-array first, which will only be filled on actual request of the
+        client. This however has little influence on the height and width of the icaches object,
+        because those are 'predicted', and are therefore available immediately, also when the actual
+        conversion has not yet taken place.
       </para>
     </section>
     <section>
@@ -268,7 +268,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       <para>
         Other types of data blobs can of course, just as images, be stored in MMBase. We call them generally
         'attachments'. There is in fact no need to make any difference between images and attachments. The
-        'attachments' builder from the mmbase distro does indeed share the 'handle' field with the 'images'
+        'attachments' builder from the MMBase distro does indeed share the 'handle' field with the 'images'
         builder, but it also has some other fields which are lacking in the default images builder (filename,
         size, mimetype). Because of these small differences there is variant for the image servlet, the
         attachments-servlet.
@@ -290,7 +290,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
     <para>
       Sometimes you want to generate output using XSLT. This happens for example in the Editwizard
       implementation and you can also do it on a JSP page using the `mm:formatter' tag. Generally,
-      as in these two examples, the source XML would describe the fields of the mmbase nodes only,
+      as in these two examples, the source XML would describe the fields of the MMBase nodes only,
       like e.g. &lt;field name="number"&gt;123&lt;/field&gt;. So, the same problem as in JSP/taglib
       arises, namely, how to convert this to an actual URL for the image or the attachment? The
       mm:image tag is not available in XSL.
@@ -312,12 +312,12 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       that it would become quite hard to perform the XSLT not on the server itself.
     </para>
     <para>
-      For this to work the utility class org.mmbase.bridge.util.xml.NodeFunction was created, which
+      For this to work the utility class org.MMBase.bridge.util.xml.NodeFunction was created, which
       can be installed in your XSL like this:
       <programlisting><![CDATA[
 <xsl:stylesheet  
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+    xmlns:node="org.MMBase.bridge.util.xml.NodeFunction"
     ....
 ]]>
       </programlisting>
@@ -328,7 +328,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       </programlisting>
 
       We refer to the javadoc  of       
-      <ulink url="http://www.mmbase.org/api/org/mmbase/bridge/util/xml/NodeFunction.html">NodeFunction</ulink>
+      <ulink url="http://www.MMBase.org/api/org/MMBase/bridge/util/xml/NodeFunction.html">NodeFunction</ulink>
       for more information on how to use it.      
     </para>
   </section>
@@ -338,15 +338,8 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       It has become clear that the images and attachments builders are more than simple dumb MMBase
       builders ('Dummy). They do provide extra functionality like 'servletpath' and 'cache' functions.
       In the builder xml of Images and Attachments you can see this because another class is configured
-      (by the 'classfile' tag)
+      (by the 'class' tag (or 'classfile' in older XML's))
     </para>
-    <note>
-      <para>
-        I do not know why this tag in builder xml's is named 'classfile' and not simply 'class'. It is
-        not a file, it is a class. I think it is silly, so I would not be surprised if this will be
-        changed in a future version of MMBase.
-      </para>
-    </note>
     <para>
       The general feature of images and attachments nodes is that they need to be associated with a
       Servlet. Therefore the abstract builder 'ServletBuilder' was introduced which provides the
@@ -389,7 +382,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
     <section>
       <title>Bridge servlet, handle servlet, image servlet</title>
       <para>
-        Protecting read rights has nothing do with images. When you want to honor mmbase security, the
+        Protecting read rights has nothing do with images. When you want to honor MMBase security, the
         only thing you have to do is implement your stuff using the bridge. Therefore the
         'BridgeServlet' was created. It provides the functionality to get the Cloud (perhaps using the
         session, if needed). It can be used to implement any MMBase servlet which actually serves
@@ -404,15 +397,15 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         extended by ImageServlet and AttachmentServlet.
       </para>
       <para>
-	Since MMBase 1.8, the Image servlet also triggers the icache conversion if it detects that
-	the 'handle' field of the requests icaches object is still unfilled. For that, the format of
-	the 'ckey' field was changed a bit, so that it is possible now to use it to initiate the
-	conversion.
+        Since MMBase 1.8, the Image servlet also triggers the icache conversion if it detects that
+        the 'handle' field of the requests icaches object is still unfilled. For that, the format of
+        the 'ckey' field was changed a bit, so that it is possible now to use it to initiate the
+        conversion.
       </para>
       <para>
-	This means that a request on the image-server will block until the image-conversion is
-	ready. In stead of the page on which appeares the URL to the image-server, as happened in
-	earlier MMBase versions.
+        This means that a request on the image-server will block until the image-conversion is
+        ready. In stead of the page on which appeares the URL to the image-server, as happened in
+        earlier MMBase versions.
       </para>
     </section>
   </section>
