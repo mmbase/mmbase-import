@@ -10,7 +10,7 @@
     </action>
 
     <action type="load">
-       <relation destination="resources" role="posrel"/>
+       <relation destination="taskresources" role="posrel"/>
        <relation destination="tests" role="posrel"/>
     </action>
 
@@ -54,27 +54,27 @@
         </field>
 
 
-        <list role="posrel" destination="resources" minoccurs="0" maxoccurs="*" ordertype="number">
+        <list role="posrel" destination="taskresources" minoccurs="0" maxoccurs="*" ordertype="number">
            <title xml:lang="nl">Bijbehorende hulpmiddelen</title>
            <title xml:lang="en">Related resources</title>
            <item>
               <field name="name" ftype="data"/>
-              <field ftype="startwizard" wizardname="resources" />
+              <field ftype="startwizard" wizardname="config/taskresource/taskresources" />
            </item>
-           <command name="search" nodepath="resources" fields="name" age="-1" orderby="number" directions="down">
+           <command name="search" nodepath="taskresources" fields="name" age="-1" orderby="number" directions="down">
               <search-filter>
                  <name xml:lang="nl">Naam bevat</name>
                  <name xml:lang="en">Name</name>
                  <search-fields>name</search-fields>
               </search-filter>
            </command>
-           <command name="startwizard" inline="true" wizardname="resources" objectnumber="new">
+           <command name="startwizard" inline="true" wizardname="config/taskresource/taskresources" objectnumber="new">
               <prompt xml:lang="nl">Nieuw</prompt>
               <prompt xml:lang="en">New</prompt>
            </command>
 
            <action type="create">
-              <relation destinationtype="resources" role="posrel"/>
+              <relation destinationtype="taskresources" role="posrel"/>
            </action>
         </list>
 
