@@ -51,7 +51,7 @@
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_competentie">
-      <mm:setfield name="pos"><mm:write referid="RIGHTS_RW"/></mm:setfield>
+      <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
    </mm:createrelation> 
    <mm:createrelation role="posrel" source="roleID" destination="ec_metadata">
       <mm:setfield name="pos"><mm:write referid="RIGHTS_NO"/></mm:setfield>
