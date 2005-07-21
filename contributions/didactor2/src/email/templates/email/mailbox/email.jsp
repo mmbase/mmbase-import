@@ -74,7 +74,9 @@
       <hr />
       Tekst:
       <br />
-      <mm:field name="body" escape="p"/>
+      <mm:field name="body" jspvar="dummy" vartype="String" escape="text/plain">
+        <%= dummy.replaceAll("\n","<br/>\n") %>
+      </mm:field>
       <hr />
       <mm:relatednodes type="attachments">
         <mm:first>
