@@ -61,7 +61,7 @@
     <%-- right section --%>
     <div class="mainContent">
 <div class="contentHeader"><fmt:message key="Progressmonitor"/>
-  <%@include file="nameintitle.jsp">
+  <%@include file="nameintitle.jsp" %>
 </div>
   <div class="contentBody">
 
