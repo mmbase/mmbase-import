@@ -52,14 +52,14 @@
 
 <%-- find student's copybook --%>
 <mm:node number="$student">
-   <%@include file="find_copybook.jsp"%>
+   <%@include file="find_copybook.jsp" %>
 </mm:node>
 
 
     <%-- right section --%>
     <div class="mainContent">
 <div class="contentHeader"><fmt:message key="Progressmonitor"/>
-  <%@include file="nameintitle.jsp">
+  <%@include file="nameintitle.jsp" %>
 </div>
   <div class="contentBody">
 

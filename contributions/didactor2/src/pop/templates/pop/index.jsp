@@ -69,7 +69,7 @@
           <mm:compare referid="currentfolder" value="-1">
             <div class="contentHeader"><fmt:message key="Competencies"/> <mm:compare referid="currentprofile" value="-1" inverse="true"
                 ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
-              <%@include file="nameintitle.jsp">
+              <%@include file="nameintitle.jsp" %>
             </div>
             <%@ include file="todo.jsp" %>
             <%@ include file="docs.jsp" %>
@@ -128,7 +128,7 @@
             </<mm:islessthan>
             <mm:compare referid="whatselected" value="student">
               <div class="contentHeader"><fmt:message key="Progressmonitor"/>
-                <%@include file="nameintitle.jsp">
+                <%@include file="nameintitle.jsp" %>
               </div>
               <mm:compare referid="command" value="intake">
                 <mm:import id="competencies" jspvar="competencies" />
@@ -152,7 +152,7 @@
           </mm:compare>
           <mm:compare referid="currentfolder" value="2">
             <div class="contentHeader"><fmt:message key="TodoItems"/>
-              <%@include file="nameintitle.jsp">
+              <%@include file="nameintitle.jsp" %>
             </div>
             <%@ include file="todo.jsp" %>
             <mm:compare referid="command" value="-1" inverse="true">
