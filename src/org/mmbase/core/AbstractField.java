@@ -8,9 +8,10 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.implementation;
+package org.mmbase.core;
 
 import org.mmbase.bridge.*;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.5 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.1 2005-07-22 12:35:46 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {

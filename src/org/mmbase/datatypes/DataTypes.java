@@ -8,13 +8,10 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.util;
+package org.mmbase.datatypes;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.*;
-import org.mmbase.bridge.implementation.AbstractDataType;
-import org.mmbase.bridge.implementation.datatypes.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectNode;
 
@@ -32,7 +29,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.9 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  */
 
 public class DataTypes {
@@ -117,7 +114,7 @@ public class DataTypes {
         if (type != Field.TYPE_UNKNOWN || classType == null) {
             return createDataType(name, type);
         } else {
-            return new BasicDataType(name, classType);
+            return new DataType(name, classType);
         }
     }
 
@@ -126,32 +123,19 @@ public class DataTypes {
      */
     private static DataType createDataType(String name, int type) {
         switch (type) {
-        case Field.TYPE_BINARY: return new BasicBinaryDataType(name);
-        case Field.TYPE_INTEGER : return new BasicIntegerDataType(name);
-        case Field.TYPE_LONG: return new BasicLongDataType(name);
-        case Field.TYPE_FLOAT: return new BasicFloatDataType(name);
-        case Field.TYPE_DOUBLE: return new BasicDoubleDataType(name);
-        case Field.TYPE_BOOLEAN: return new BasicBooleanDataType(name);
-        case Field.TYPE_STRING : return new BasicStringDataType(name);
-        case Field.TYPE_XML: return new BasicXmlDataType(name);
-        case Field.TYPE_NODE: return new BasicNodeDataType(name);
-        case Field.TYPE_DATETIME: return new BasicDateTimeDataType(name);
-        case Field.TYPE_LIST: return new BasicListDataType(name);
-        default: return new BasicDataType(name);
+        case Field.TYPE_BINARY: return new BinaryDataType(name);
+        case Field.TYPE_INTEGER : return new IntegerDataType(name);
+        case Field.TYPE_LONG: return new LongDataType(name);
+        case Field.TYPE_FLOAT: return new FloatDataType(name);
+        case Field.TYPE_DOUBLE: return new DoubleDataType(name);
+        case Field.TYPE_BOOLEAN: return new BooleanDataType(name);
+        case Field.TYPE_STRING : return new StringDataType(name);
+        case Field.TYPE_XML: return new XmlDataType(name);
+        case Field.TYPE_NODE: return new NodeDataType(name);
+        case Field.TYPE_DATETIME: return new DateTimeDataType(name);
+        case Field.TYPE_LIST: return new ListDataType(name);
+        default: return new DataType(name);
         }
-    }
-
-    /**
-     * Finishes the passed DataType, indicated all validation rules on it have been set.
-     * This prohibits any future changes to the datatype.
-     * @param datatype the Datatype to finish
-     * @return the datatype after being finished.
-     */
-    public static DataType finish(DataType dataType) {
-        if (dataType instanceof AbstractDataType) {
-            ((AbstractDataType)dataType).finish();
-        }
-        return dataType;
     }
 
     /**
@@ -171,7 +155,7 @@ public class DataTypes {
             throw new IllegalArgumentException("The datatype " + dataType + " was passed, but a type with the same name occurs as : " +
                                                finalDataTypes.get(name));
         }
-        finish(dataType);
+        dataType.finish();
         finalDataTypes.put(name, dataType);
         return dataType;
     }
@@ -243,7 +227,7 @@ public class DataTypes {
                 dataType = getListDataType(Field.TYPE_UNKNOWN);
             } else {
                 dataType = createDataType(name, type);
-                finish(dataType);
+                dataType.finish();
                 finalDataTypes.put(name, dataType);
             }
         }
@@ -265,7 +249,7 @@ public class DataTypes {
         if (dataType == null) {
             dataType = (ListDataType)createDataType(name, Field.TYPE_LIST);
             dataType.setItemDataType(getDataType(listItemType));
-            finish(dataType);
+            dataType.finish();
             finalDataTypes.put(name, dataType);
         }
         return dataType;

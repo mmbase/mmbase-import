@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.core.util;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
 import java.util.*;
 

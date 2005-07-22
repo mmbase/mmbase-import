@@ -11,13 +11,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import org.mmbase.bridge.*;
+import org.mmbase.core.AbstractField;
 import org.mmbase.core.CoreField;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.21 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: BasicField.java,v 1.22 2005-07-22 12:35:46 pierre Exp $
  */
 public class BasicField extends AbstractField implements Field {
 

@@ -7,13 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation.datatypes;
+package org.mmbase.datatypes;
 
-import java.util.*;
-
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.NodeDataType;
-import org.mmbase.bridge.implementation.AbstractDataType;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.Casting;
@@ -22,12 +18,10 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeDataType.java,v 1.6 2005-07-14 14:13:40 pierre Exp $
- * @see org.mmbase.bridge.DataType
- * @see org.mmbase.bridge.datatypes.NodeDataType
+ * @version $Id: NodeDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  * @since MMBase-1.8
  */
-public class BasicNodeDataType extends AbstractDataType implements NodeDataType {
+public class NodeDataType extends DataType {
 
     public static final String PROPERTY_MUSTEXIST = "mustExist";
     public static final Boolean PROPERTY_MUSTEXIST_DEFAULT = Boolean.TRUE;
@@ -37,7 +31,7 @@ public class BasicNodeDataType extends AbstractDataType implements NodeDataType 
     /**
      * Constructor for node field.
      */
-    public BasicNodeDataType(String name) {
+    public NodeDataType(String name) {
         super(name, MMObjectNode.class);
         mustExistProperty = createProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
         mustExistProperty.setFixed(true);
@@ -58,8 +52,8 @@ public class BasicNodeDataType extends AbstractDataType implements NodeDataType 
     }
 
     public Object clone(String name) {
-        BasicNodeDataType clone = (BasicNodeDataType)super.clone(name);
-        clone.mustExistProperty = (DataTypeProperty)getMustExistProperty().clone(clone);
+        NodeDataType clone = (NodeDataType)super.clone(name);
+        clone.mustExistProperty = (DataType.Property)getMustExistProperty().clone(clone);
         return clone;
     }
 

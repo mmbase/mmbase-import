@@ -7,32 +7,28 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation.datatypes;
-
-import java.util.*;
-
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.DataType;
-import org.mmbase.bridge.datatypes.DoubleDataType;
+package org.mmbase.datatypes;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicDoubleDataType.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
- * @see org.mmbase.bridge.DataType
- * @see org.mmbase.bridge.datatypes.DoubleDataType
+ * @version $Id: DoubleDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  * @since MMBase-1.8
  */
-public class BasicDoubleDataType extends BasicNumberDataType implements DoubleDataType {
+public class DoubleDataType extends NumberDataType {
 
     /**
      * Constructor for Double field.
      */
-    public BasicDoubleDataType(String name) {
+    public DoubleDataType(String name) {
         super(name, Double.class);
     }
 
+    /**
+     * Returns the minimum value for this datatype.
+     * @return the minimum value as an <code>Double</code>, or <code>null</code> if there is no minimum.
+     */
     public Double getMin() {
         Number min = getMinValue();
         if (min instanceof Double) {
@@ -42,6 +38,10 @@ public class BasicDoubleDataType extends BasicNumberDataType implements DoubleDa
         }
     }
 
+    /**
+     * Returns the maximum value for this datatype.
+     * @return the maximum value as an <code>Double</code>, or <code>null</code> if there is no maximum.
+     */
     public Double getMax() {
         Number max = getMaxValue();
         if (max instanceof Double) {
