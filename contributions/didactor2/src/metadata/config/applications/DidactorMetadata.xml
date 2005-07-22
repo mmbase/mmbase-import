@@ -16,11 +16,13 @@
         <builder maintainer="didactor.nl" version="2">metalangstring</builder>
         <builder maintainer="didactor.nl" version="2">metavocabulary</builder>
         <builder maintainer="didactor.nl" version="2">metadate</builder>
+        <builder maintainer="didactor.nl" version="2">constraints</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
+        <reldef source="constraints" target="constraints" direction="bidirectional" guisourcename="Constraint" guitargetname="Constraint" builder="constraints" />
     </neededreldeflist>
 
     <allowedrelationlist>
