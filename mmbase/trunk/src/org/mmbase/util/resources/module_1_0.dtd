@@ -11,6 +11,7 @@
 <!ELEMENT url ( #PCDATA ) >
 
 <!ELEMENT classfile ( #PCDATA ) >
+<!ELEMENT class ( #PCDATA ) >
 
 <!ELEMENT properties ( property* ) >
 
