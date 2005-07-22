@@ -122,6 +122,13 @@
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/color/list.css" objectlist="$includePath" referids="$referids" />" />
 </head>
 <body>
+<script>
+if (top == self) {
+    var loc = document.location.href;
+    loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*/,"$1wizards/index.jsp");
+    document.location.href = loc;
+}
+</script>
 <mm:import externid="deletefile" jspvar="deletefile"/>
 <%
     File dir = new File(directory);
