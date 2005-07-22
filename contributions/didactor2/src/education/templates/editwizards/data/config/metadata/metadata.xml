@@ -42,13 +42,13 @@
       </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="metalangstringwithdefinition" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/metalangstring/metalangstringwithdefinition" objectnumber="new">
       <prompt>Nieuwe tekenreeks toevoegen</prompt>
     </command>
-    <command name="startwizard" inline="true" wizardname="metadatewithdefinition" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/metadate/metadatewithdefinition" objectnumber="new">
       <prompt>Nieuwe duur of datumtijd toevoegen</prompt>
     </command>
-    <command name="startwizard" inline="true" wizardname="metavocabularywithdefinition" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularywithdefinition" objectnumber="new">
       <prompt>Nieuwe vocabulary selecteren</prompt>
     </command>
 

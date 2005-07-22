@@ -5,7 +5,7 @@
     <field fdatapath="field[@name='value']" ftype="data">
       <prompt>Waarde</prompt>
     </field>
-    <field wizardname="metadate" ftype="startwizard" objectnumber="{field[@name='number']}"/>
+    <field wizardname="config/metadate/metadate" ftype="startwizard" objectnumber="{field[@name='number']}"/>
   </item>
 
 
@@ -21,7 +21,7 @@
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="metadate" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="config/metadate/metadate" objectnumber="new" />
 
   <command name="search" nodepath="metadate" fields="value" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar tekenreeksen</prompt>
