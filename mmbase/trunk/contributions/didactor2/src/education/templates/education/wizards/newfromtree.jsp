@@ -82,7 +82,7 @@
                <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
             </mm:compare>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/pages/flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe flash-pagina</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/flashpages/flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe flash-pagina</a></nobr></td>
          </tr>
       </table>
    </mm:compare>
