@@ -53,7 +53,7 @@
 
   <action type="delete"/>
 
-    <command name="startwizard" inline="true" wizardname="metavocabularywithdefinition" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularywithdefinition" objectnumber="new">
       <prompt>Nieuwe vocabulary selecteren</prompt>
     </command>
 

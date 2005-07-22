@@ -48,7 +48,7 @@
        </relation>
      </action>
 
-     <command name="startwizard" inline="true" wizardname="metadatewithdefinition" objectnumber="new">
+     <command name="startwizard" inline="true" wizardname="config/metadate/metadatewithdefinition" objectnumber="new">
        <prompt>Nieuwe duur of datumtijd toevoegen</prompt>
      </command>
 

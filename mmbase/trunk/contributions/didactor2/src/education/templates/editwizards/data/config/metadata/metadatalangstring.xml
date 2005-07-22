@@ -47,7 +47,7 @@
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="metalangstringwithdefinition" objectnumber="new">
+  <command name="startwizard" inline="true" wizardname="config/metalangstring/metalangstringwithdefinition" objectnumber="new">
     <prompt>Nieuwe tekenreeks toevoegen</prompt>
   </command>
 
