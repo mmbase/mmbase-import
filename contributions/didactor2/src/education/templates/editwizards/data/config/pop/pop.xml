@@ -31,7 +31,7 @@
       <title>Bijbehorend Persoon</title>
       <item>
          <field name="firstname" ftype="data"/>
-         <field ftype="startwizard" wizardname="people" />
+         <field ftype="startwizard" wizardname="config/people/people" />
       </item>
       <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down">
         <search-filter>
@@ -43,7 +43,7 @@
             <search-fields>firstname</search-fields>
         </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="people" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/people/people" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
       <action type="create">
@@ -56,7 +56,7 @@
       <title>Gewenste profielen</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="profiles" />
+         <field ftype="startwizard" wizardname="config/profile/profiles" />
       </item>
       <command name="search" nodepath="profiles" fields="name" age="-1" orderby="number" directions="down">
          <search-filter>
@@ -64,7 +64,7 @@
             <search-fields>name</search-fields>
          </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="profiles" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/profile/profiles" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
       <action type="create">
