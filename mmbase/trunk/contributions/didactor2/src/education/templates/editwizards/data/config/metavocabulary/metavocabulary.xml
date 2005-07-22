@@ -8,17 +8,30 @@
     </field>
   </item>
 
+  <action type="load">
+        <relation destination="metavocabulary" role="posrel" />
+          <relation destination="metadefinition" role="constraints" />
+  </action>
+
+
   
   <action type="create">
     <relation destinationtype="metavocabulary" role="posrel">
       <object type="metavocabulary"></object>
     </relation>
+
+    <relation destinationtype="metadefinition" role="constraints">
+      <object type="metadefinition"></object>
+    </relation>
+
   </action>
 
   <action type="delete"/>
 
   <action type="add">
     <relation destinationtype="metavocabulary" role="posrel">
+    </relation>
+    <relation destinationtype="metadefinition" role="constraints">
     </relation>
   </action>
 
