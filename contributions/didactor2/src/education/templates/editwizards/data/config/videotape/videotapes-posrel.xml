@@ -9,10 +9,10 @@
         <field ftype="data" name="intro">
             <prompt>Omschrijving</prompt>
         </field>
-       <field wizardname="videotapes" ftype="startwizard" />
+       <field wizardname="config/videotape/videotapes" ftype="startwizard" />
    </item>
 
-    <command name="startwizard" inline="true" wizardname="videotapes" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/videotape/videotapes" objectnumber="new" />
 
     <command name="search" nodepath="videotapes" fields="title" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar video</prompt>
