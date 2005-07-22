@@ -15,18 +15,18 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="pages" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/pages/pages" objectnumber="new">
       <prompt>Nieuwe pagina: </prompt>
     </command>
 
-    <command name="startwizard" inline="true" wizardname="flashpages" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/flashpages/flashpages" objectnumber="new">
       <prompt>Nieuwe flashpagina: </prompt>
     </command>
 
-    <command name="startwizard" inline="true" wizardname="tests" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/tests/tests" objectnumber="new">
       <prompt>Nieuwe toets: &lt;br /&gt; </prompt>
     </command>
-    <command name="startwizard" inline="true" wizardname="learnblocks" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/learnblocks/learnblocks" objectnumber="new">
       <prompt>Nieuw leerblok: </prompt>
     </command>
 

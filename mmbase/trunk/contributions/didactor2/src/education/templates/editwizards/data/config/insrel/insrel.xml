@@ -26,7 +26,7 @@
            <title xml:lang="en">Core tasks</title>
            <item>
               <field name="name" ftype="data"/>
-              <field ftype="startwizard" wizardname="coretasks" />
+              <field ftype="startwizard" wizardname="config/core/coretasks" />
            </item>
 
            <command name="search" nodepath="coretasks" fields="name" age="-1" orderby="number" directions="down">
@@ -36,7 +36,7 @@
               </search-filter>
            </command>
 
-           <command name="startwizard" inline="true" wizardname="coretasks" objectnumber="new">
+           <command name="startwizard" inline="true" wizardname="config/core/coretasks" objectnumber="new">
               <prompt xml:lang="nl">Nieuw</prompt>
               <prompt xml:lang="en">New</prompt>
            </command>
@@ -53,7 +53,7 @@
            <title xml:lang="en">Core assignments</title>
            <item>
               <field name="name" ftype="data"/>
-              <field ftype="startwizard" wizardname="coreassignments" />
+              <field ftype="startwizard" wizardname="config/core/coreassignments" />
            </item>
 
            <command name="search" nodepath="coreassignments" fields="name" age="-1" orderby="number" directions="down">
@@ -63,7 +63,7 @@
               </search-filter>
            </command>
 
-           <command name="startwizard" inline="true" wizardname="coreassignments" objectnumber="new">
+           <command name="startwizard" inline="true" wizardname="config/core/coreassignments" objectnumber="new">
               <prompt xml:lang="nl">Nieuw</prompt>
               <prompt xml:lang="en">New</prompt>
            </command>
@@ -80,7 +80,7 @@
            <title xml:lang="en">Ratings</title>
            <item>
               <field name="name" ftype="data"/>
-              <field ftype="startwizard" wizardname="ratings" />
+              <field ftype="startwizard" wizardname="config/rating/ratings" />
            </item>
 
            <command name="search" nodepath="ratings" fields="name" age="-1" orderby="number" directions="down">
@@ -90,7 +90,7 @@
               </search-filter>
            </command>
 
-           <command name="startwizard" inline="true" wizardname="ratings" objectnumber="new">
+           <command name="startwizard" inline="true" wizardname="config/rating/ratings" objectnumber="new">
               <prompt xml:lang="nl">Nieuw</prompt>
               <prompt xml:lang="en">New</prompt>
            </command>
