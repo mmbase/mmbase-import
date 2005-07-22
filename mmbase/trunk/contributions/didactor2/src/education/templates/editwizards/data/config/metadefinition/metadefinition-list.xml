@@ -14,7 +14,7 @@
     <field name="handler" ftype="data">
       <prompt>Handler</prompt>
     </field>
-    <field ftype="startwizard" wizardname="metadefinition" />
+    <field ftype="startwizard" wizardname="config/metadefinition/metadefinition" />
   </item>
 
   <action type="create">
@@ -22,7 +22,7 @@
      </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="metadefinition-noorigin" objectnumber="new" >
+  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition-noorigin" objectnumber="new" >
   </command>
 
   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >

@@ -6,7 +6,7 @@
     <field name="value" ftype="data">
       <prompt>Waarde</prompt>
     </field>
-    <field ftype="startwizard" wizardname="metavocabularydefinition" />
+    <field ftype="startwizard" wizardname="config/metavocabulary/metavocabularydefinition" />
   </item>
 
   <action type="create">

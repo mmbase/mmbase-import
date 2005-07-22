@@ -7,7 +7,7 @@
             <description>Titel van het nieuwsbericht</description>
         </field>
         <field fdatapath="field[@name='pos']"  ftype="line" />
-   <field wizardname="news" ftype="startwizard" />
+   <field wizardname="config/news/news" ftype="startwizard" />
     </item>
 
     <action type="create">
@@ -15,7 +15,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="news" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/news/news" objectnumber="new" />
 
     <command name="search" nodepath="news" fields="title" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar nieuwsberichten</prompt>
