@@ -8,12 +8,12 @@
             <prompt>Naam</prompt>
             <description>Naam van de feedback</description>
         </field>
-   <field wizardname="feedback" ftype="startwizard">
+   <field wizardname="config/feedback/feedback" ftype="startwizard">
        <prompt>Edit ...</prompt>
    </field>
     </item>
 
-    <command name="startwizard" inline="true" wizardname="feedback" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/feedback/feedback" objectnumber="new" />
 
     <command name="search" nodepath="feedback" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar feedback</prompt>
