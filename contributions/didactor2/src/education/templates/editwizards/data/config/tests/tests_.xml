@@ -111,7 +111,7 @@
                 </search-filter>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="mcquestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/mcquestions" objectnumber="new">
                 <prompt>Nieuwe Multiple Choice vraag</prompt>
             </command>
 

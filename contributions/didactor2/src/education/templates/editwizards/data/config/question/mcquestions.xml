@@ -81,7 +81,7 @@
                     <prompt>Correct</prompt>
                     <optionlist select="boolean_inverse" />
                 </field>
-                <field wizardname="mcanswers" ftype="startwizard"/>
+                <field wizardname="config/answer/mcanswers" ftype="startwizard"/>
             </item>
 
             <action type="create">
@@ -109,7 +109,7 @@
             </command>
 
 
-            <command name="startwizard" inline="true" wizardname="mcanswers" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/answer/mcanswers" objectnumber="new">
                 <prompt>Nieuwe Multiple Choice antwoord</prompt>
             </command>
 
