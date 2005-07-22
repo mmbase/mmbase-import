@@ -7,7 +7,7 @@
       <description>Naam van het leerblok</description>
     </field>
     <field fdatapath="field[@name='pos']"  ftype="line" />
-    <field wizardname="learnblocks" ftype="startwizard" />
+    <field wizardname="config/learnblocks/learnblocks" ftype="startwizard" />
   </item>
 
   <action type="create">
@@ -16,7 +16,7 @@
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="learnblocks" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="config/learnblocks/learnblocks" objectnumber="new" />
 
   <command name="search" nodepath="learnblocks" fields="name" age="-1" orderby="number" directions="down">
     <prompt>Zoeken naar Leerblokken</prompt>
