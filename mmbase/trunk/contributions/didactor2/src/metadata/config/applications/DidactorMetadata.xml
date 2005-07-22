@@ -36,6 +36,9 @@
         <relation from="metadata" to="metavalue" type="posrel" />
         <relation from="metastandard" to="metadefinition" type="related" />
         <relation from="metadefinition" to="metavocabulary" type="related" />
+        <relation from="metavocabulary" to="metavocabulary" type="posrel" />
+        <relation from="metavocabulary" to="metadefinition" type="constraints" />
+
     </allowedrelationlist>
 
     <datasourcelist>
