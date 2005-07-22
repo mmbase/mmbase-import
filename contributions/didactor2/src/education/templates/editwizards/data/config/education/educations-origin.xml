@@ -35,8 +35,8 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="config/option_lists/images_position.xml" />
-       <optionlist include="config/option_lists/boolean.xml" />
+       <optionlist include="config/option_list/images_position.xml" />
+       <optionlist include="config/option_list/boolean.xml" />
     </lists>
 
     <steps>
@@ -55,12 +55,12 @@
             <prompt>Tekst</prompt>
         </field>
 
-        <list destination="providers" role="related" extends="list/providers.xml" />
-        <list destination="news" extends="list/news.xml" />
-        <list destination="learnblocks" role="posrel" extends="list/learnblocks.xml" />
-        <list destination="classes" role="related" extends="list/classes.xml" />
-        <list destination="people" role="rolerel" extends="list/people-education.xml" />
-        <list destination="urlcategories" role="related" extends="list/urlcategories.xml" />
+        <list destination="providers" role="related" extends="config/provider/providers-list.xml" />
+        <list destination="news" extends="config/news/news-list.xml" />
+        <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
+        <list destination="classes" role="related" extends="config/class/classes-list.xml" />
+        <list destination="people" role="rolerel" extends="config/people/people-education.xml" />
+        <list destination="urlcategories" role="related" extends="config/url/urlcategories.xml" />
 
 
         <list destination="people" role="classrel" minoccurs="0" maxoccurs="*">
@@ -126,8 +126,8 @@
     <form-schema id="step3">
         <title>Competenties invoeren</title>
         <field name="name" ftype="data"/>
-        <list extends="list/needcompetencies.xml"/>
-        <list extends="list/developcompetencies.xml"/>
+        <list extends="config/competency/needcompetencies.xml"/>
+        <list extends="config/competency/developcompetencies.xml"/>
     </form-schema>
 
 
