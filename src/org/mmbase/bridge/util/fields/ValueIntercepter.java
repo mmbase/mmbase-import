@@ -18,7 +18,8 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.*;
+import java.net.*;
 
 import java.util.*;
 
@@ -33,7 +34,7 @@ import java.util.*;
  * @todo The concept of 'specialization' ~= 'guitype' seems to be 'datatype name' now.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.21 2005-07-12 20:01:21 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.22 2005-07-22 09:13:39 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -65,116 +66,145 @@ public class ValueIntercepter {
     public final static int TYPE_BOOLEAN    = 11;
     */
 
-    private static final Processor[][] defaultSetProcessor = {
-        //set  setString setInteger ...
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                                     /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 11=boolean */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
-    };
+    private static  Processor[][] defaultSetProcessor;
 
     /**
      * @since MMBase-1.8
      */
-    private static final CommitProcessor[] defaultCommitProcessor = {
-        null,  /* 0=not used */
-        null,  /* 1=string */
-        null,  /* 2=integer */
-        null,  /* 3=not used */
-        null,  /* 4=byte */
-        null,  /* 5=float */
-        null,  /* 6=double */
-        null,  /* 7=long */
-        null,  /* 8=xml */
-        null,   /* 9=node */
-        null,   /* 10=datetime */
-        null,   /* 11=boolean */
-        null   /* 12=list */
-    };
+    private static  CommitProcessor[] defaultCommitProcessor;
 
-
-    private static final Map[][] setProcessor = { // maps with guiType -> Processor
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                                     /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 11=boolean */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
-    };
+    private static  Map[][] setProcessor;
 
     /**
      * @since MMBase-1.8
      */
-    private static final Map[] commitProcessor = {
-        null,  /* 0=not used */
-        null,  /* 1=string */
-        null,  /* 2=integer */
-        null,  /* 3=not used */
-        null,  /* 4=byte */
-        null,  /* 5=float */
-        null,  /* 6=double */
-        null,  /* 7=long */
-        null,  /* 8=xml */
-        null,   /* 9=node */
-        null,   /* 10=datetime */
-        null,   /* 11=boolean */
-        null   /* 12=boolean */
-    };
+    private static  Map[] commitProcessor;
 
-    private static final Processor[][] defaultGetProcessor = {
-        //set  setString setInteger ...
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                                     /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 11=boolean */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
-    };
-    private static final Map[][] getProcessor = { // maps with guiType -> Processor
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                                     /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 11=boolean */
-        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
-    };
+    private static  Processor[][] defaultGetProcessor;
+
+    private static  Map[][] getProcessor;
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    private static void initMaps() {
+        defaultSetProcessor = new Processor[][] {
+            //set  setString setInteger ...
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+            null,                                                                     /* 3 not used */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 11=boolean */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
+        };
+
+        defaultCommitProcessor = new CommitProcessor[] {
+            null,  /* 0=not used */
+            null,  /* 1=string */
+            null,  /* 2=integer */
+            null,  /* 3=not used */
+            null,  /* 4=byte */
+            null,  /* 5=float */
+            null,  /* 6=double */
+            null,  /* 7=long */
+            null,  /* 8=xml */
+            null,  /* 9=node */
+            null,  /* 10=datetime */
+            null,  /* 11=boolean */
+            null   /* 12=list */
+        };
+
+
+        setProcessor = new Map[][] { // maps with guiType -> Processor
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+            null,                                                                     /* 3 not used */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 11=boolean */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
+        };
+
+
+        commitProcessor = new Map[] {
+            null,  /* 0=not used */
+            null,  /* 1=string */
+            null,  /* 2=integer */
+            null,  /* 3=not used */
+            null,  /* 4=byte */
+            null,  /* 5=float */
+            null,  /* 6=double */
+            null,  /* 7=long */
+            null,  /* 8=xml */
+            null,   /* 9=node */
+            null,   /* 10=datetime */
+            null,   /* 11=boolean */
+            null   /* 12=boolean */
+        };
+
+        defaultGetProcessor = new Processor[][] {
+            //set  setString setInteger ...
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+            null,                                                                     /* 3 not used */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 11=boolean */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
+        };
+        getProcessor = new Map[][] { // maps with guiType -> Processor
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+            null,                                                                     /* 3 not used */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 11=boolean */
+            {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
+        };
+    }
 
     static {
         log = Logging.getLoggerInstance(ValueIntercepter.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FIELD_TYPE_DEFINITIONS, DTD_FIELD_TYPE_DEFINITIONS, ValueIntercepter.class);
         // read the XML
         try {
-            readFieldDefinitions();
+
+            // XXX location of resource will probably change?
+            ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
+                    public void onChange(String resource) {
+                        initMaps();
+                        readFieldDefinitions(getResourceLoader(), resource);
+                    }
+                };
+            watcher.add("fieldtypedefinitions.xml");
+            watcher.start();
+            watcher.onChange("fieldtypedefinitions.xml");
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
@@ -232,9 +262,29 @@ public class ValueIntercepter {
     /**
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
-    private static void readFieldDefinitions() {
+    private static void readFieldDefinitions(ResourceLoader loader, String resource) {
+        // backwards compatibilty
         InputSource fieldTypes = new InputSource(ValueIntercepter.class.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
         readFieldDefinitions(fieldTypes);
+
+        List resources = loader.getResourceList(resource);
+        log.info("Using " + resources);
+        ListIterator i = resources.listIterator();
+        while (i.hasNext()) i.next();
+        while (i.hasPrevious()) {
+            try {
+                URL u = (URL) i.previous();
+                log.info("Reading " + u);
+                URLConnection con = u.openConnection();
+                if (con.getDoInput()) {
+                    InputSource source = new InputSource(con.getInputStream());
+                    readFieldDefinitions(source);
+                }
+            } catch (Exception e) {
+                log.error(e);
+            }
+        }
+
 
     }
 
