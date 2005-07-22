@@ -20,12 +20,12 @@
                 <search-fields>filename</search-fields>
       </search-filter>
    </command>
-   <command name="startwizard" inline="true" wizardname="attachment" objectnumber="new"/>
+   <command name="startwizard" inline="true" wizardname="config/attachment/attachment" objectnumber="new"/>
 
    <item displaytype="file">
       <description></description>
       <field name="filename" ftype="data" />
-      <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="attachment">
+      <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/attachment/attachment">
          <prompt></prompt>
       </field>
    </item>
