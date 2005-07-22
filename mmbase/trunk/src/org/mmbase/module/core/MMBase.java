@@ -12,9 +12,9 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.core.CoreField;
@@ -40,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.140 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: MMBase.java,v 1.141 2005-07-22 12:35:47 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 

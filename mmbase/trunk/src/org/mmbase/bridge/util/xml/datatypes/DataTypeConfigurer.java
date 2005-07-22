@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml.datatypes;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.*;
 import org.w3c.dom.*;
 
 import org.mmbase.util.*;
@@ -18,7 +18,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeConfigurer.java,v 1.2 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: DataTypeConfigurer.java,v 1.3 2005-07-22 12:35:46 pierre Exp $
  **/
 public class DataTypeConfigurer {
 

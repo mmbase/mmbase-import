@@ -16,10 +16,10 @@ import java.util.*;
 import javax.sql.DataSource;
 
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.module.core.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.111 2005-07-21 12:45:25 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.112 2005-07-22 12:35:47 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 

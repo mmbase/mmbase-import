@@ -13,10 +13,10 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.core.CoreField;
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.24 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.25 2005-07-22 12:35:47 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);

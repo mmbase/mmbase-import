@@ -12,11 +12,11 @@ package org.mmbase.module.tools;
 import java.io.File;
 import java.util.*;
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.cache.MultilevelCache;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.Versions;
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.109 2005-07-14 20:23:47 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.110 2005-07-22 12:35:47 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);

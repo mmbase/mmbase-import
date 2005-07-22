@@ -11,8 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.AbstractDescriptor;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.datatypes.*;
 import java.util.*;
 
 /**
@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.20 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: Parameter.java,v 1.21 2005-07-22 12:35:47 pierre Exp $
  * @see Parameters
  */
 

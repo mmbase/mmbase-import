@@ -8,13 +8,14 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.implementation;
+package org.mmbase.datatypes;
 
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.DataTypes;
 import org.mmbase.core.util.Fields;
+import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.Casting;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
@@ -24,19 +25,50 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.13 2005-07-14 14:13:40 pierre Exp $
+ * @version $Id: DataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  */
 
-abstract public class AbstractDataType extends AbstractDescriptor implements DataType, Comparable {
+public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
 
-    public static final String DATATYPE_BUNDLE = "org.mmbase.bridge.implementation.datatypes.resources.datatypes.properties";
+    // DataTypes for base MMBase field types
+    public static final DataType INTEGER  = DataTypes.getDataType(Field.TYPE_INTEGER);
+    public static final DataType LONG     = DataTypes.getDataType(Field.TYPE_LONG);
+    public static final DataType FLOAT    = DataTypes.getDataType(Field.TYPE_FLOAT);
+    public static final DataType DOUBLE   = DataTypes.getDataType(Field.TYPE_DOUBLE);
+    public static final DataType STRING   = DataTypes.getDataType(Field.TYPE_STRING);
+    public static final DataType XML      = DataTypes.getDataType(Field.TYPE_XML);
+    public static final DataType DATETIME = DataTypes.getDataType(Field.TYPE_DATETIME);
+    public static final DataType BOOLEAN  = DataTypes.getDataType(Field.TYPE_BOOLEAN);
+    public static final DataType BINARY   = DataTypes.getDataType(Field.TYPE_BINARY);
+    public static final DataType NODE     = DataTypes.getDataType(Field.TYPE_NODE);
+    public static final DataType UNKNOWN  = DataTypes.getDataType(Field.TYPE_UNKNOWN);
 
-    public static final String PROPERTY_REQUIRED = "required";
-    public static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
+    public static final DataType LIST_UNKNOWN = DataTypes.getListDataType(Field.TYPE_UNKNOWN);
+    public static final DataType LIST_INTEGER = DataTypes.getListDataType(Field.TYPE_INTEGER);
+    public static final DataType LIST_LONG = DataTypes.getListDataType(Field.TYPE_LONG);
+    public static final DataType LIST_FLOAT = DataTypes.getListDataType(Field.TYPE_FLOAT);
+    public static final DataType LIST_DOUBLE = DataTypes.getListDataType(Field.TYPE_DOUBLE);
+    public static final DataType LIST_STRING = DataTypes.getListDataType(Field.TYPE_STRING);
+    public static final DataType LIST_XML = DataTypes.getListDataType(Field.TYPE_XML);
+    public static final DataType LIST_DATETIME = DataTypes.getListDataType(Field.TYPE_DATETIME);
+    public static final DataType LIST_BOOLEAN = DataTypes.getListDataType(Field.TYPE_BOOLEAN);
+    public static final DataType LIST_NODE = DataTypes.getListDataType(Field.TYPE_NODE);
 
-    private static final Logger log = Logging.getLoggerInstance(AbstractDataType.class);
+    /**
+     * An empty Parameter array.
+     */
+    public static final DataType[] EMPTY  = new DataType[0];
+
+    /**
+     * @javadoc
+     */
+    public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes.properties";
+
+    private static final String PROPERTY_REQUIRED = "required";
+    private static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
+
+    private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
     protected DataType.Property requiredProperty = null;
     private Class classType;
@@ -44,11 +76,19 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
     private Object owner = null;
 
     /**
+     * Create a data type object of unspecified class type
+     * @param name the name of the data type
+     */
+    public DataType(String name) {
+        this(name, Object.class);
+    }
+
+    /**
      * Create a data type object
      * @param name the name of the data type
      * @param classType the class of the data type's possible value
      */
-    protected AbstractDataType(String name, Class classType) {
+    protected DataType(String name, Class classType) {
         super(name);
         this.classType = classType;
         requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
@@ -58,6 +98,10 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return Fields.getTypeDescription(DataTypes.classToType(classType)).toLowerCase();
     }
 
+    /**
+     * Returns the type of values that this data type accepts.
+     * @return the type as a Class
+     */
     public Class getTypeAsClass() {
         return classType;
     }
@@ -72,6 +116,12 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return Casting.isType(classType, value);
     }
 
+    /**
+     * Checks if the passed object is of the correct class (compatible with the type of this data type),
+     * and throws an IllegalArgumentException if it doesn't.
+     * @param value the value whose type (class) to check
+     * @throws IllegalArgumentException if the type is not compatible
+     */
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
             // customize this?
@@ -79,14 +129,29 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         }
     }
 
+    /**
+     * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
+     * parameter is of type Integer, then the string can be parsed to Integer.
+     * @param value The value to be filled in in this Parameter.
+     */
     public Object autoCast(Object value) {
         return Casting.toType(classType, value);
     }
 
+    /**
+     * Returns the default value of this data type.
+     * @return the default value
+     */
     public Object getDefaultValue() {
         return defaultValue;
     }
 
+    /**
+     * Sets the default value of this data type.
+     * @param def the default value
+     * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
+     * @return this datatype
+     */
     public DataType setDefaultValue(Object def) {
         edit();
         defaultValue = def;
@@ -135,6 +200,13 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         }
     }
 
+    /**
+     * Checks if the passed object is of the correct type (compatible with the type of this data type),
+     * and follows the restrictions defined for this type.
+     * It throws an IllegalArgumentException if it doesn't.
+     * @param value the value to validate
+     * @throws IllegalArgumentException if the value is not compatible
+     */
     public void validate(Object value) {
         validate(value,null);
     }
@@ -147,6 +219,14 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         throw new IllegalArgumentException(error);
     }
 
+    /**
+     * Checks if the passed object is of the correct type (compatible with the type of this data type),
+     * and follows the restrictions defined for this type.
+     * It throws an IllegalArgumentException with a lozalized message (dependent on the cloud) if it doesn't.
+     * @param value the value to validate
+     * @param cloud the cloud used to determine the locale for the error message when validation fails
+     * @throws IllegalArgumentException if the value is not compatible
+     */
     public void validate(Object value, Cloud cloud) {
         checkType(value);
         // test required
@@ -159,14 +239,24 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return getTypeAsClass() + " " + getName();
     }
 
+    /**
+     * Returns a cloned instance of this datatype, inheriting all validation rules.
+     * Unlike the original datatype though, the cloned copy is declared unfinished even if the original
+     * was finished. This means that the cloned datatype can be changed.
+     */
     public Object clone() {
         return clone (null);
     }
 
+    /**
+     * Returns a cloned instance of this datatype, inheriting all validation rules.
+     * Similar to calling clone(), but changes the data type name if one is provided.
+     * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
+     */
     public Object clone(String name) {
         try {
-            AbstractDataType clone = (AbstractDataType)super.clone(name);
-            clone.requiredProperty = (DataTypeProperty)getRequiredProperty().clone(clone);
+            DataType clone = (DataType)super.clone(name);
+            clone.requiredProperty = (DataType.Property)getRequiredProperty().clone(clone);
             // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
             return clone;
@@ -205,20 +295,40 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return getName().hashCode() * 13 + getTypeAsClass().hashCode();
     }
 
+    /**
+     * Returns whether this field is required (should have content).
+     * Note that MMBase does not generally enforce required fields to be filled -
+     * If not provided, a default value (generally an empty string or the integer value -1)
+     * is filled in by the system.
+     * As such, isRequired will mostly be used as an indicator for (generic) editors.
+     *
+     * @return  <code>true</code> if the field is required
+     * @since  MMBase-1.6
+     */
     public boolean isRequired() {
         return Boolean.TRUE.equals(getRequiredProperty().getValue());
     }
 
+    /**
+     * Returns the 'required' property, containing the value, errormessages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
     public DataType.Property getRequiredProperty() {
         return requiredProperty;
     }
 
+    /**
+     * Sets whether the data type requires a value.
+     * @param required <code>true</code> if a value is required
+     * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
+     * @return the datatype property that was just set
+     */
     public DataType.Property setRequired(boolean required) {
         return setProperty(getRequiredProperty(),Boolean.valueOf(required));
     }
 
     protected DataType.Property createProperty(String name, Object value) {
-        DataType.Property property =  new DataTypeProperty(name,value);
+        DataType.Property property =  new DataType.Property(name,value);
         String key = getBaseTypeIdentifier() + "." + name + ".error";
         LocalizedString localizedErrorDescription = new LocalizedString(key);
         localizedErrorDescription.setBundle(DATATYPE_BUNDLE);
@@ -231,13 +341,13 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         return property;
     }
 
-    public final class DataTypeProperty implements DataType.Property, Cloneable {
+    public final class Property implements Cloneable {
         private String name;
         private Object value;
         private LocalizedString errorDescription;
         private boolean fixed;
 
-        private DataTypeProperty(String name, Object value) {
+        private Property(String name, Object value) {
             this.name = name;
             this.value = value;
         }
@@ -251,7 +361,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         }
 
         public void setValue(Object value) {
-            AbstractDataType.this.edit();
+            DataType.this.edit();
             if (fixed) {
                 throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
             }
@@ -290,7 +400,7 @@ abstract public class AbstractDataType extends AbstractDescriptor implements Dat
         }
 
         public Object clone(DataType dataType) {
-            DataTypeProperty clone = ((AbstractDataType)dataType).new DataTypeProperty(name, value);
+            DataType.Property clone = ((DataType)dataType).new Property(name, value);
             if (errorDescription != null) {
                 clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
             }

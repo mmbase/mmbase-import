@@ -12,7 +12,7 @@ package org.mmbase.bridge.util.xml.datatypes;
 import java.util.*;
 import org.w3c.dom.*;
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.util.xml.AbstractObjectDefinition;
 import org.mmbase.util.*;
 
@@ -20,7 +20,7 @@ import org.mmbase.util.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: TypeSetDefinition.java,v 1.1 2005-07-08 08:04:26 pierre Exp $
+ * @version $Id: TypeSetDefinition.java,v 1.2 2005-07-22 12:35:46 pierre Exp $
  **/
 public class TypeSetDefinition extends AbstractObjectDefinition {
 
