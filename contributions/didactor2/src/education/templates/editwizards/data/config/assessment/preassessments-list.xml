@@ -2,7 +2,7 @@
       <title>Bijbehorende preassessments</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="preassessments" />
+         <field ftype="startwizard" wizardname="config/assessments/preassessments" />
       </item>
       <command name="search" nodepath="preassessments" fields="name" age="-1" orderby="number" directions="down">
          <search-filter>
@@ -10,7 +10,7 @@
             <search-fields>name</search-fields>
          </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="preassessments" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/assessments/preassessments" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
 
