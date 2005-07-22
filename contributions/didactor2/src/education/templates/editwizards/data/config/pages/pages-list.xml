@@ -15,7 +15,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="pages" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/pages/pages" objectnumber="new" />
 
     <command name="search" nodepath="pages" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Paginas</prompt>

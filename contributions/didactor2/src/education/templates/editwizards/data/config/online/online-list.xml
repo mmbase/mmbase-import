@@ -15,5 +15,5 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="online" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/online/online" objectnumber="new" />
 </list>

@@ -9,7 +9,7 @@
             <prompt>Achternaam</prompt>
         </field>
         <list extends="config/role/roles-inlist.xml"/>
-        <field wizardname="people" ftype="startwizard" />
+        <field wizardname="config/people/people" ftype="startwizard" />
     </item>
 
     <action type="create">
@@ -34,7 +34,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="people" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/people/people" objectnumber="new" />
 
     <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar studenten</prompt>

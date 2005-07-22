@@ -8,7 +8,7 @@
     <field fdatapath="field[@name='value']" ftype="data">
       <prompt>Waarde</prompt>
     </field>
-    <field wizardname="metalangstring" ftype="startwizard" objectnumber="{field[@name='number']}"/>
+    <field wizardname="config/metalangstring/metalangstring" ftype="startwizard" objectnumber="{field[@name='number']}"/>
   </item>
 
 <!-- not needed?
@@ -28,7 +28,7 @@
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="metalangstring" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="config/metalangstring/metalangstring" objectnumber="new" />
 
   <command name="search" nodepath="metalangstring" fields="value" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar tekenreeksen</prompt>
