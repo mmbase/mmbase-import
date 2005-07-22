@@ -48,7 +48,7 @@
       <title>Bijbehorende competenties</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="competencies" />
+         <field ftype="startwizard" wizardname="config/competency/competencies" />
       </item>
 
       <command name="search" nodepath="competencetypes,competencies" fields="competencetypes.name,competencies.name" age="-1" orderby="competencetypes.name,competencies.name" directions="up,up">
@@ -62,7 +62,7 @@
          </search-filter>
       </command>
 
-      <command name="startwizard" inline="true" wizardname="competencies" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/competency/competencies" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
 
@@ -78,7 +78,7 @@
       <title xml:lang="en">Profile type</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="profiletypes" />
+         <field ftype="startwizard" wizardname="config/profile/profiletypes" />
       </item>
       <command name="search" nodepath="profiletypes" fields="name" age="-1" orderby="number" directions="down">
          <search-filter>
@@ -87,7 +87,7 @@
             <search-fields>name</search-fields>
          </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="profiletypes" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/profile/profiletypes" objectnumber="new">
          <prompt xml:lang="nl">Nieuw</prompt>
          <prompt xml:lang="en">New</prompt>
       </command>
@@ -105,7 +105,7 @@
       <title xml:lang="en">Profile level</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="profilelevels" />
+         <field ftype="startwizard" wizardname="config/profile/profilelevels" />
       </item>
       <command name="search" nodepath="profilelevels" fields="name" age="-1" orderby="number" directions="down">
          <search-filter>
@@ -114,7 +114,7 @@
             <search-fields>name</search-fields>
          </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="profilelevels" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/profile/profilelevels" objectnumber="new">
          <prompt xml:lang="nl">Nieuw</prompt>
          <prompt xml:lang="en">New</prompt>
       </command>
