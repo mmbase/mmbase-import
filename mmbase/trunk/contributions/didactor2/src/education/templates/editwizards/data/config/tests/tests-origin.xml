@@ -25,8 +25,8 @@
     <action type="delete" />
 
   <lists>
-      <optionlist include="config/option_lists/boolean.xml" />
-      <optionlist include="config/option_lists/boolean_inverse.xml" /> 
+      <optionlist include="config/option_list/boolean.xml" />
+      <optionlist include="config/option_list/boolean_inverse.xml" /> 
       <optionlist name="questionsperpage">
           <option id="0">Alle vragen op 1 pagina</option>
           <option id="1">1 vraag per pagina</option>

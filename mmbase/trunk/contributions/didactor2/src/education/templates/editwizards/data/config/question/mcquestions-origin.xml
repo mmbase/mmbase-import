@@ -26,7 +26,7 @@
 
 
     <lists>
-        <optionlist include="config/option_lists/boolean.xml" />
+        <optionlist include="config/option_list/boolean.xml" />
         <optionlist name="mctypes">
             <option id="0">Een van de gegeven antwoorden kan worden geselecteerd</option>
             <option id="1">Meerdere antwoorden kunnen worden geselecteerd</option>
@@ -40,7 +40,7 @@
             <option id="4">Alle antwoorden naast elkaar (vaste volgorde)</option>
             <option id="5">Pulldown menu (vaste volgorde)</option>
         </optionlist>
-        <optionlist include="config/option_lists/boolean_inverse.xml" />
+        <optionlist include="config/option_list/boolean_inverse.xml" />
     </lists>
 
     <steps>

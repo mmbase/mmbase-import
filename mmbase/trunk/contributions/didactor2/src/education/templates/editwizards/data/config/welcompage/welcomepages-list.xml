@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van de welkompagina</description>
         </field>
-        <field ftype="startwizard" wizardname="welcomepages" inline="true"/>
+        <field ftype="startwizard" wizardname="config/welcompage/welcomepages" inline="true"/>
    </item>
 
     <action type="create">
@@ -14,7 +14,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="welcomepages" objectnumber="new">
+    <command name="startwizard" inline="true" wizardname="config/welcompage/welcomepages" objectnumber="new">
       <prompt>Nieuwe welkompagina: </prompt>
     </command>
 

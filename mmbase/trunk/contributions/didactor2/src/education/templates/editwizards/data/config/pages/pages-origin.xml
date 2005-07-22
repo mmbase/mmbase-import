@@ -34,10 +34,10 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="config/option_lists/layout.xml" />
-       <optionlist include="config/option_lists/imagelayout.xml" />
-       <optionlist include="config/option_lists/images_position.xml" />
-       <optionlist include="config/option_lists/boolean.xml" />
+       <optionlist include="config/option_list/layout.xml" />
+       <optionlist include="config/option_list/imagelayout.xml" />
+       <optionlist include="config/option_list/images_position.xml" />
+       <optionlist include="config/option_list/boolean.xml" />
     </lists>
 
 

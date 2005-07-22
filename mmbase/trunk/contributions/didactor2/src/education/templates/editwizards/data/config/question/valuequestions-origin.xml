@@ -50,7 +50,7 @@
     <action type="delete" />
 
     <lists>
-       <optionlist include="config/option_lists/boolean.xml" />
+       <optionlist include="config/option_list/boolean.xml" />
     </lists>
 
     <steps>

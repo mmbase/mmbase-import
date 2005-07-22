@@ -19,7 +19,7 @@
       </relation>
    </action>
    <lists>
-       <optionlist include="config/option_lists/boolean.xml" />
+       <optionlist include="config/option_list/boolean.xml" />
    </lists>
    <steps>
       <step form-schema="edit_postassessments"/>
