@@ -8,7 +8,10 @@
   </action>
     
   <action type="load">
+        <relation destination="metavocabulary" role="posrel" />
+          <relation destination="metadefinition" role="constraints" />
   </action>
+
 
   <action type="delete" />
     
@@ -57,13 +60,37 @@
 
 </list>
 
-    <!--
-    <field name="value" dtminlength="1">
-      <prompt>Metavocabulary waarde</prompt>
-      <mm:nodeinfo type="number" />
-      constraints="[metavocabulary.number]!= 48533"
-    </field>
-    -->
+<list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
+      <title>Bijbehorende Metadefinition</title>
+      <item> 
+        <field name="name" ftype="data" dtminlength="1" >
+          <prompt>Metadefinition waarde    </prompt>
+        </field>
+      </item> 
 
-    </form-schema>
+     <action type="add">
+       <relation destinationtype="metadefinition" role="constraints">
+         <object type="metadefinition"></object>
+       </relation>
+    
+
+     </action>
+
+     <action type="load">
+        <relation destinationtype="metadefinition" role="constraints"/>
+     </action>
+
+
+    <command name="search" nodepath="metadefinition" fields="name" age="-1" orderby="number" 
+                              directions="down"  >
+      <prompt>Zoeken naar metadefinition </prompt>
+        <search-filter>
+            <name>Waarde naam</name>
+            <search-fields>name</search-fields>
+        </search-filter>
+    </command>
+
+    </list>
+
+  </form-schema>
 </wizard-schema>
