@@ -13,8 +13,8 @@ package org.mmbase.applications.packaging;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
+
 
 import org.mmbase.applications.packaging.projects.Project;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
@@ -36,16 +36,16 @@ import org.w3c.dom.NamedNodeMap;
 public class ProjectManager {
 
     // create a logger for this class
-    private static Logger log = Logging.getLoggerInstance(ProjectManager.class);
+    private static final Logger log = Logging.getLoggerInstance(ProjectManager.class);
 
     // state of this manager is running or not
     private static boolean state = false;
 
     // list of all the defined projects (xml file)
-    private static HashMap projects = new HashMap();
+    private static Map projects = new HashMap();
  
     // list of all the defined creators this manager can work with (xml file)
-    private static HashMap creators = new HashMap();
+    private static Map creators = new HashMap();
 
     // defines needed for the xml readers to find the dtd's
     public static final String DTD_PROJECTS_1_0 = "projects_1_0.dtd";
@@ -54,11 +54,7 @@ public class ProjectManager {
     public static final String PUBLIC_ID_PROJECTS_1_0 = "-//MMBase//DTD projects config 1.0//EN";
     public static final String PUBLIC_ID_CREATORS_1_0 = "-//MMBase//DTD creators config 1.0//EN";
 
-    /**
-     * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
-     */
-    public static void registerPublicIDs() {
+    static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_PROJECTS_1_0, "DTD_PROJECTS_1_0", ProjectManager.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_CREATORS_1_0, "DTD_CREATORS_1_0", ProjectManager.class);
     }
@@ -158,6 +154,9 @@ public class ProjectManager {
     * resources.
     */
     public static void readProjects() {
+
+        // XXX should use ResourceLoader here
+
         String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
         File file = new File(filename);
         if(file.exists()) {
@@ -202,13 +201,16 @@ public class ProjectManager {
     * config directory. Uses a xml reader and the dtd's found as
     * resources.
     */
-    public static void readCreators() {
+    public static void readCreators() {        
         creators = new HashMap();
-        String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"creators.xml";
+
+        // XXX Should use ResourceLoader here
+
+        String filename = PackageManager.getConfigPath() + File.separator + "packaging" + File.separator + "creators.xml";
 
         File file = new File(filename);
         if(file.exists()) {
-            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProjectManager.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename, ProjectManager.class);
             if(reader != null) {
                 for(Iterator ns = reader.getChildElements("creators","creator");ns.hasNext(); ) {
                     Element n = (Element)ns.next();
@@ -250,7 +252,7 @@ public class ProjectManager {
     *
     * @return creators
     */
-    public static HashMap getCreators() {
+    public static Map getCreators() {
         return creators;
     }
 
