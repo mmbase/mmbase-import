@@ -115,7 +115,7 @@
                 <prompt>Nieuwe Multiple Choice vraag</prompt>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="openquestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/openquestions" objectnumber="new">
                 <prompt>Nieuwe Open vraag</prompt>
             </command>
 
