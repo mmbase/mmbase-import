@@ -6,11 +6,7 @@
  */
 package org.mmbase.applications.packaging.projects.gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.mmbase.applications.packaging.InstallManager;
 import org.mmbase.applications.packaging.PackageManager;
@@ -36,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author     Daniel Ockeloen
  * @created    July 20, 2004
- * @version    $Id: guiController.java
+ * @version    $Id: Controller.java,v 1.9 2005-07-22 20:10:31 michiel Exp $
  */
 public class Controller {
 
@@ -1191,7 +1187,7 @@ public class Controller {
      */
     public List getCreators() {
         // get the current creators we have installed
-        HashMap creators = ProjectManager.getCreators();
+        Map creators = ProjectManager.getCreators();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
