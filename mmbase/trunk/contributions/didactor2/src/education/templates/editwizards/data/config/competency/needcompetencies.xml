@@ -3,7 +3,7 @@
       <title>Benodigde competenties</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="competencies" />
+         <field ftype="startwizard" wizardname="config/competency/competencies" />
       </item>
 
       <command name="search" nodepath="competencetypes,competencies" fields="competencetypes.name,competencies.name,competencies.value" age="-1" orderby="competencetypes.name,competencies.name" directions="up,up">
@@ -21,7 +21,7 @@
          </search-filter>
       </command>
 
-      <command name="startwizard" inline="true" wizardname="competencies" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/competency/competencies" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
       <action type="create">
