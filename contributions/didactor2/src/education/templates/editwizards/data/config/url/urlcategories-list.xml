@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van de Informatiebron</description>
         </field>
-         <field wizardname="urlcategories" ftype="startwizard" />
+         <field wizardname="config/url/urlcategories" ftype="startwizard" />
    </item>
 
     <action type="create">
@@ -14,7 +14,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="urlcategories-noorigin" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/url/urlcategories-noorigin" objectnumber="new" />
 
     <command name="search" nodepath="urlcategories" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Informatiebronnen</prompt>

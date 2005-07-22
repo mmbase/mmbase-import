@@ -8,7 +8,7 @@
         <field name="lastname" ftype="data">
             <prompt>Achternaam</prompt>
         </field>
-        <field wizardname="students" ftype="startwizard" />
+        <field wizardname="config/student/students" ftype="startwizard" />
     </item>
 
     <action type="create">
@@ -21,7 +21,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="students" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/student/students" objectnumber="new" />
 
     <command name="search" nodepath="students" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar studenten</prompt>
