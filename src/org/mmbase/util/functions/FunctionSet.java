@@ -28,11 +28,6 @@ public class FunctionSet {
      */
     private Map functions = new HashMap();
 
-    /**
-     * With this set of Function a configuration file is associated
-     */
-    private String fileName;
-
     public FunctionSet(String name, String version, String status, String description) {
         this.name        = name;
         this.version     = version;
@@ -77,31 +72,16 @@ public class FunctionSet {
     }
 
     public void setStatus(String status) {
-        this.status=status;
+        this.status = status;
     }
 
     public void setVersion(String version) {
-        this.version=version;
+        this.version = version;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
-
-    /**
-     * @javadoc
-     */
-    public boolean save() {
-        // 1.7temp
-        /*
-          if (filename!=null) {
-          saveFile(filename,createSetXML());
-        }
-        */
-
-        return true;
-    }
-
 
     /**
      * @return An unmodifiable Map (String -> {@link Function}) containing all functions of this set.
@@ -110,8 +90,4 @@ public class FunctionSet {
         return Collections.unmodifiableMap(functions);
     }
 
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 }

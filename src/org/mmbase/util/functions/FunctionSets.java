@@ -17,8 +17,9 @@ import org.mmbase.module.core.*;
 
 import java.io.*;
 import java.util.*;
-
+import org.xml.sax.InputSource;
 import org.w3c.dom.*;
+import java.net.*;
 
 
 
@@ -36,7 +37,7 @@ import org.w3c.dom.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.12 2005-07-09 15:29:12 nklasens Exp $ 
+ * @version $Id: FunctionSets.java,v 1.13 2005-07-22 18:37:39 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -48,8 +49,7 @@ public class FunctionSets {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
 
-    private static Map functionSets = new HashMap();
-    private static boolean init = false;
+    private static final Map functionSets = new HashMap();
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
@@ -79,24 +79,36 @@ public class FunctionSets {
         return null;
     }
 
+    static {
+        ResourceLoader functionLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("functions");
+        // read the XML
+        try {
+            ResourceWatcher watcher = new ResourceWatcher(functionLoader) {
+                    public void onChange(String resource) {
+                        functionSets.clear();
+                        clear();
+                        add("functionssets.xml");
+                        readSets(this);
+                    }
+                };
+            watcher.start();
+            watcher.onChange("functionsets.xml");
+        } catch (Throwable t) {
+            log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
+        }
+     
+    }
+
     /**
      * Returns the {@link #FunctionSet} with the given set name.
      * If this is the first call, or if the set does not exist in the cache, the cache
      * is refreshed by reading the functionset.xml configuration file.
      * configuration file.
      * @param setName the name of the function set
-     * @return the {@link #FunctionSet}, or <code>nulll</code> if the set is not defined
+     * @return the {@link #FunctionSet}, or <code>null</code> if the set is not defined
      */
     public static FunctionSet getFunctionSet(String setName) {
-        if (!init) {
-            readSets();
-        }
-        FunctionSet set = (FunctionSet)functionSets.get(setName);
-        if (set == null) { // retry hack for mmpm
-            readSets();
-            set = (FunctionSet)functionSets.get(setName);
-        }
-        return set;
+        return (FunctionSet)functionSets.get(setName);
     }
 
     /**
@@ -104,65 +116,58 @@ public class FunctionSets {
      * The read sets are added to the functionset cache.
      * @todo It makes FunctionSet's now using a sub-XML. It would be possible to create a complete function-set by reflection.
      */
-    private static void readSets() {
-	init = true;
-        org.xml.sax.InputSource source;
-        try {
-            source = ResourceLoader.getConfigurationRoot().getInputSource("functions/functionsets.xml");
-        } catch (Exception e) {
-            log.warn(e);
-            return;
-        }
-        if (source == null) {
-            log.info("No resource functions/functionsets.xml");
-            return;
-        }
+
+    private static void readSets(ResourceWatcher watcher) {
         
-        DocumentReader reader = new DocumentReader(source, FunctionSets.class);
-        functionSets.clear();
-        for(Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
-            Element n = (Element)ns.next();
+        List resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
+        log.info("Using " + resources);
+        ListIterator i = resources.listIterator();
+        while (i.hasNext()) i.next();
+        while (i.hasPrevious()) {
+            try {
+                URL u = (URL) i.previous();
+                log.info("Reading " + u);
+                URLConnection con = u.openConnection();
+                if (con.getDoInput()) {
+                    InputSource source = new InputSource(con.getInputStream());
+                    DocumentReader reader = new DocumentReader(source, FunctionSets.class);
 
-            NamedNodeMap nm = n.getAttributes();
-            if (nm != null) {
-                String name   = null;
-                String setfile = null;
-
-                // decode name
-                org.w3c.dom.Node n3 = nm.getNamedItem("name");
-                if (n3 != null) {
-                    name = n3.getNodeValue();
+                    for(Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+                        Element n = (Element)ns.next();
+                        
+                        String setName     = n.getAttribute("name");
+                        if (functionSets.containsKey(setName)) {
+                            log.warn("The function-set '" + setName + "' did exist already");
+                        }
+                        String setResource = n.getAttribute("resource");
+                        if (setResource.equals("")) setResource = n.getAttribute("file"); // deprecated, it's not necessarily a file
+                        watcher.add(setResource);
+                        decodeFunctionSet(watcher.getResourceLoader(), setResource, setName);
+                    }
                 }
-
-                // decode filename
-                n3 = nm.getNamedItem("file");
-                if (n3 != null) {
-                    setfile = MMBaseContext.getConfigPath() + File.separator + "functions" + File.separator + n3.getNodeValue();
-                    decodeFunctionSet(setfile, name);
-                }
+            } catch (Exception e) {
+                log.error(e);
             }
         }
     }
-
+                
     /**
      * Reads a 'sub' xml (a functionset XML) referred to by functionsets.xml.
      * The read set is added to the functionset cache.
      * @param
      * @param
      */
-    private static void decodeFunctionSet(String fileName, String setName) {
-        DocumentReader reader = new XMLBasicReader(fileName, FunctionSets.class);
+    private static void decodeFunctionSet(ResourceLoader loader, String setResource, String setName) throws IOException {
+        DocumentReader reader = new DocumentReader(loader.getInputSource(setResource), FunctionSets.class);
 
-        String status      = reader.getElementValue("functionset.status");
-        String version     = reader.getElementValue("functionset.version");
+        String status         = reader.getElementValue("functionset.status");
+        String version        = reader.getElementValue("functionset.version");
         String setDescription = reader.getElementValue("functionset.description");
 
         FunctionSet functionSet = new FunctionSet(setName, version, status, setDescription);
         functionSets.put(setName, functionSet);
 
-        functionSet.setFileName(fileName);
-
-        for (Iterator functionElements = reader.getChildElements("functionset","function"); functionElements.hasNext();) {
+        for (Iterator functionElements = reader.getChildElements("functionset", "function"); functionElements.hasNext();) {
             Element element = (Element)functionElements.next();
             String functionName = reader.getElementAttributeValue(element,"name");
             if (functionName != null) {
