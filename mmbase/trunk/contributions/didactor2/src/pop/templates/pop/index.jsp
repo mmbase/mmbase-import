@@ -125,7 +125,7 @@
               <mm:compare referid="whatselected" value="wgroup">
                 <jsp:include page="coachpredetail.jsp"/>
               </mm:compare>
-            </<mm:islessthan>
+            </mm:islessthan>
             <mm:compare referid="whatselected" value="student">
               <div class="contentHeader"><fmt:message key="Progressmonitor"/>
                 <%@include file="nameintitle.jsp" %>
@@ -174,7 +174,7 @@
             <fmt:message key="ExplanatoryBody"/>
           </div>
         </div>
-      </<mm:islessthan>
+      </mm:islessthan>
     </mm:compare>
   </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
