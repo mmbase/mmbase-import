@@ -9,10 +9,10 @@
         <field ftype="data" name="description">
             <prompt>Omschrijving</prompt>
         </field>
-       <field wizardname="urls" ftype="startwizard" />
+       <field wizardname="config/url/urls" ftype="startwizard" />
    </item>
 
-    <command name="startwizard" inline="true" wizardname="urls" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/url/urls" objectnumber="new" />
 
     <command name="search" nodepath="urls" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar link</prompt>

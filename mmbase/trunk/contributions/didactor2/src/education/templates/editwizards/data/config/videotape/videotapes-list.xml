@@ -12,10 +12,10 @@
         <field name="url" ftype="data">
             <prompt>URL</prompt>
         </field>
-        <field wizardname="videotapes" ftype="startwizard" />
+        <field wizardname="config/videotape/videotapes" ftype="startwizard" />
    </item>
 
-    <command name="startwizard" inline="true" wizardname="videotapes" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/videotape/videotapes" objectnumber="new" />
 
     <action type="create">
         <relation destination="videotapes" role="related"/>
