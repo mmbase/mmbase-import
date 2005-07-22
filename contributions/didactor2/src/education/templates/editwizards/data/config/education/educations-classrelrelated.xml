@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van de opleiding</description>
         </field>
-        <field wizardname="educations" ftype="startwizard" />
+        <field wizardname="config/education/educations" ftype="startwizard" />
     </item>
 
     <action type="create">
@@ -28,7 +28,7 @@
     </action>
 
 
-    <command name="startwizard" inline="true" wizardname="educations" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/education/educations" objectnumber="new" />
 
     <command name="search" nodepath="educations" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar opleidingen</prompt>
