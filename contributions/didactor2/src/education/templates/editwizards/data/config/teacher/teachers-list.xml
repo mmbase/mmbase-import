@@ -12,7 +12,7 @@
         <relation destinationtype="teachers" role="related">
         </relation>
     </action>
-    <command name="startwizard" inline="true" wizardname="teachers" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/teacher/teachers" objectnumber="new" />
     <command name="search" nodepath="teachers" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar docenten</prompt>
         <search-filter>

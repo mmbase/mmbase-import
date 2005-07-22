@@ -119,29 +119,29 @@
                 <prompt>Nieuwe Open vraag</prompt>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="rankingquestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/rankingquestions" objectnumber="new">
                 <prompt>Nieuwe Rangorde vraag</prompt>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="valuequestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/valuequestions" objectnumber="new">
                 <prompt>Nieuwe Waarde vraag</prompt>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="couplingquestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/couple/couplingquestions" objectnumber="new">
                 <prompt>Nieuwe Koppel vraag</prompt>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="hotspotquestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/hotspotquestions" objectnumber="new">
                 <prompt>Nieuwe Hotspot vraag</prompt>
             </command>
 
-            <command name="startwizard" inline="true" wizardname="dropquestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/dropquestions" objectnumber="new">
                 <prompt>Nieuwe drag en drop vraag</prompt>
             </command>
 
 
 <!-- Not available in this version. Take care that the reuse questions is based on another question.
-            <command name="startwizard" inline="true" wizardname="reusequestions" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/question/reusequestions" objectnumber="new">
                 <prompt>Nieuwe Hergebruik vraag</prompt>
             </command>
 -->

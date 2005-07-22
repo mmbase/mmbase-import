@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van de werkgroep</description>
         </field>
-        <field wizardname="workgroups" ftype="startwizard" />
+        <field wizardname="/config/workgroup/workgroups" ftype="startwizard" />
     </item>
 
     <action type="create">
@@ -19,7 +19,7 @@
         </relation>
     </action>
 
-    <command name="startwizard" inline="true" wizardname="workgroups" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="/config/workgroup/workgroups" objectnumber="new" />
 
     <command name="search" nodepath="workgroups" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar werkgroepen</prompt>
