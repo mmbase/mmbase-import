@@ -80,8 +80,6 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cacheable",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType$Property", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Descriptor", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
@@ -107,19 +105,6 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BigDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BinaryDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.BooleanDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.DateTimeDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.DoubleDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.FloatDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.IntegerDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.ListDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.LongDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.NodeDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.NumberDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.StringDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.datatypes.XmlDataType",doc));
         // storage interfaces
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
@@ -139,6 +124,22 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
         // cache classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.cache.CachePolicy",doc));
+        // datatypes classes
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType$Property", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BigDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BinaryDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BooleanDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DateTimeDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DoubleDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.FloatDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.IntegerDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.ListDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.LongDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.NodeDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.NumberDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.StringDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.XmlDataType",doc));
         // security classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.UserContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));

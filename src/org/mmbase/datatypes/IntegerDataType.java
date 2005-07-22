@@ -7,32 +7,28 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation.datatypes;
-
-import java.util.*;
-
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.DataType;
-import org.mmbase.bridge.datatypes.IntegerDataType;
+package org.mmbase.datatypes;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicIntegerDataType.java,v 1.6 2005-07-14 11:37:53 pierre Exp $
- * @see org.mmbase.bridge.DataType
- * @see org.mmbase.bridge.datatypes.IntegerDataType
+ * @version $Id: IntegerDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  * @since MMBase-1.8
  */
-public class BasicIntegerDataType extends BasicNumberDataType implements IntegerDataType {
+public class IntegerDataType extends NumberDataType {
 
     /**
      * Constructor for integer field.
      */
-    public BasicIntegerDataType(String name) {
+    public IntegerDataType(String name) {
         super(name, Integer.class);
     }
 
+    /**
+     * Returns the minimum value for this datatype.
+     * @return the minimum value as an <code>Integer</code>, or <code>null</code> if there is no minimum.
+     */
     public Integer getMin() {
         Number min = getMinValue();
         if (min instanceof Integer) {
@@ -42,6 +38,10 @@ public class BasicIntegerDataType extends BasicNumberDataType implements Integer
         }
     }
 
+    /**
+     * Returns the maximum value for this datatype.
+     * @return the maximum value as an <code>Integer</code>, or <code>null</code> if there is no maximum.
+     */
     public Integer getMax() {
         Number max = getMaxValue();
         if (max instanceof Integer) {

@@ -10,12 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.datatypes.DataType;
+
 /**
  * This interface represents a node's field type information object.
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.26 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: Field.java,v 1.27 2005-07-22 12:35:46 pierre Exp $
  */
 public interface Field extends Descriptor {
 

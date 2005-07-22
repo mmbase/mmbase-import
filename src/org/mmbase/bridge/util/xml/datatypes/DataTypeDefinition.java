@@ -11,8 +11,7 @@ package org.mmbase.bridge.util.xml.datatypes;
 
 import org.w3c.dom.*;
 
-import org.mmbase.bridge.DataType;
-import org.mmbase.bridge.datatypes.*;
+import org.mmbase.datatypes.*;
 import org.mmbase.bridge.util.xml.AbstractObjectDefinition;
 import org.mmbase.util.*;
 
@@ -20,7 +19,7 @@ import org.mmbase.util.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.2 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.3 2005-07-22 12:35:46 pierre Exp $
  **/
 public class DataTypeDefinition extends AbstractObjectDefinition {
 

@@ -7,24 +7,21 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation.datatypes;
+package org.mmbase.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.StringDataType;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringDataType.java,v 1.6 2005-07-14 14:13:40 pierre Exp $
- * @see org.mmbase.bridge.DataType
- * @see org.mmbase.bridge.datatypes.StringDataType
+ * @version $Id: StringDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  * @since MMBase-1.8
  */
-public class BasicStringDataType extends BasicBigDataType implements StringDataType {
+public class StringDataType extends BigDataType {
 
     public static final String PROPERTY_PATTERN = "pattern";
     public static final String PROPERTY_PATTERN_DEFAULT = null;
@@ -32,21 +29,35 @@ public class BasicStringDataType extends BasicBigDataType implements StringDataT
     protected DataType.Property patternProperty = null;
 
     /**
-     * Constructor for string field.
+     * Constructor for string data type.
+     * @param name the name of the data type
      */
-    public BasicStringDataType(String name) {
+    public StringDataType(String name) {
         super(name, String.class);
         patternProperty = createProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
     }
 
+    /**
+     * Returns the regular expression pattern used to validate values for this datatype.
+     * @return the pattern as a <code>String</code>, or <code>null</code> if there is no pattern.
+     */
     public String getPattern() {
         return (String) getPatternProperty().getValue();
     }
 
+    /**
+     * Returns the 'pattern' property, containing the value, errormessages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
     public DataType.Property getPatternProperty() {
         return patternProperty;
     }
 
+    /**
+     * Sets the regular expression pattern used to validate values for this datatype.
+     * @param pattern the pattern as a <code>String</code>, or <code>null</code> if no pattern should be applied.
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
+     */
     public DataType.Property setPattern(String value) {
         return setProperty(getPatternProperty(), value);
     }
@@ -65,8 +76,8 @@ public class BasicStringDataType extends BasicBigDataType implements StringDataT
     }
 
     public Object clone(String name) {
-        BasicStringDataType clone = (BasicStringDataType)super.clone(name);
-        clone.patternProperty = (DataTypeProperty)getPatternProperty().clone(clone);
+        StringDataType clone = (StringDataType)super.clone(name);
+        clone.patternProperty = (DataType.Property)getPatternProperty().clone(clone);
         return clone;
     }
 

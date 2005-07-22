@@ -7,25 +7,21 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation.datatypes;
+package org.mmbase.datatypes;
 
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.datatypes.NumberDataType;
-import org.mmbase.bridge.implementation.AbstractDataType;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNumberDataType.java,v 1.3 2005-07-14 14:13:40 pierre Exp $
- * @see org.mmbase.bridge.DataType
- * @see org.mmbase.bridge.datatypes.NumberDataType
+ * @version $Id: NumberDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
  * @since MMBase-1.8
  */
-abstract public class BasicNumberDataType extends AbstractDataType implements NumberDataType {
+abstract public class NumberDataType extends DataType {
 
     public static final String PROPERTY_MIN = "min";
     public static final Number PROPERTY_MIN_DEFAULT = null;
@@ -41,7 +37,7 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
     /**
      * Constructor for Number field.
      */
-    public BasicNumberDataType(String name, Class classType) {
+    public NumberDataType(String name, Class classType) {
         super(name, classType);
         minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
         maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
@@ -51,10 +47,18 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
         return (Number)getMinProperty().getValue();
     }
 
+    /**
+     * Returns the minimum value for this data type.
+     * @return the property defining the minimum value
+     */
     public DataType.Property getMinProperty() {
         return minProperty;
     }
 
+    /**
+     * Returns whether the minimum value for this data type is inclusive or not.
+     * @return <code>true</code> if the minimum value if inclusive, <code>false</code> if it is not, or if there is no minimum.
+     */
     public boolean isMinInclusive() {
         return minInclusive;
     }
@@ -63,14 +67,27 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
         return (Number)getMaxProperty().getValue();
     }
 
+    /**
+     * Returns the maximum value for this data type.
+     * @return the property defining the maximum value
+     */
     public DataType.Property getMaxProperty() {
         return maxProperty;
     }
 
+    /**
+     * Returns whether the maximum value for this data type is inclusive or not.
+     * @return <code>true</code> if the maximum value if inclusive, <code>false</code> if it is not, or if there is no minimum.
+     */
     public boolean isMaxInclusive() {
         return maxInclusive;
     }
 
+    /**
+     * Sets the minimum Number value for this data type.
+     * @param length the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
+     */
     public DataType.Property setMin(Number value) {
         return setProperty(getMinProperty(), value);
     }
@@ -79,12 +96,23 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
         minInclusive = inclusive;
     }
 
+    /**
+     * Sets the minimum Number value for this data type.
+     * @param length the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
+     * @param inclusive whether the minimum value is inclusive or not
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
+     */
     public DataType.Property setMin(Number value, boolean inclusive) {
         edit();
         setMinInclusive(inclusive);
         return setMin(value);
     }
 
+    /**
+     * Sets the maximum Number value for this data type.
+     * @param length the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
+     */
     public DataType.Property setMax(Number value) {
         return setProperty(getMaxProperty(), value);
     }
@@ -93,6 +121,12 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
         maxInclusive = inclusive;
     }
 
+    /**
+     * Sets the maximum Number value for this data type.
+     * @param length the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
+     * @param inclusive whether the maximum value is inclusive or not
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
+     */
     public DataType.Property setMax(Number value, boolean inclusive) {
         edit();
         setMaxInclusive(inclusive);
@@ -121,9 +155,9 @@ abstract public class BasicNumberDataType extends AbstractDataType implements Nu
     }
 
     public Object clone(String name) {
-        BasicNumberDataType clone = (BasicNumberDataType)super.clone(name);
-        clone.minProperty = (DataTypeProperty)getMinProperty().clone(clone);
-        clone.maxProperty = (DataTypeProperty)getMaxProperty().clone(clone);
+        NumberDataType clone = (NumberDataType)super.clone(name);
+        clone.minProperty = (DataType.Property)getMinProperty().clone(clone);
+        clone.maxProperty = (DataType.Property)getMaxProperty().clone(clone);
         return clone;
     }
 

@@ -12,7 +12,7 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.58 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.59 2005-07-22 12:35:47 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase

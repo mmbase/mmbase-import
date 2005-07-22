@@ -12,7 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
@@ -25,7 +25,7 @@ import org.mmbase.module.core.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.27 2005-07-14 11:37:53 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.28 2005-07-22 12:35:46 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
 

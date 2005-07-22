@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.implementation;
+package org.mmbase.core;
 
 import org.mmbase.bridge.Descriptor;
 import org.mmbase.util.LocalizedString;
@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.3 2005-07-12 15:03:35 pierre Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.1 2005-07-22 12:35:46 pierre Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {

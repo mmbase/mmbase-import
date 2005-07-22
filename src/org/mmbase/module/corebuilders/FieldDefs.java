@@ -11,9 +11,9 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 
-import org.mmbase.bridge.DataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.util.DataTypes;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 
@@ -24,11 +24,11 @@ import org.mmbase.core.util.Fields;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.50 2005-07-14 11:37:54 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.51 2005-07-22 12:35:47 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
-public class FieldDefs extends org.mmbase.core.implementation.BasicCoreField {
+public class FieldDefs extends org.mmbase.core.CoreField {
 
     public final static int DBSTATE_VIRTUAL     = 0;
     public final static int DBSTATE_PERSISTENT  = 2;
