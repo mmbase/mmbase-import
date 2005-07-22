@@ -2,7 +2,7 @@
       <title>Bijbehorende postassessments</title>
       <item>
          <field name="name" ftype="data"/>
-         <field ftype="startwizard" wizardname="postassessments" />
+         <field ftype="startwizard" wizardname="config/assessments/postassessments" />
       </item>
       <command name="search" nodepath="postassessments" fields="name" age="-1" orderby="number" directions="down">
          <search-filter>
@@ -10,7 +10,7 @@
             <search-fields>name</search-fields>
          </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="postassessments" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/assessments/postassessments" objectnumber="new">
          <prompt>Nieuw</prompt>
       </command>
 
