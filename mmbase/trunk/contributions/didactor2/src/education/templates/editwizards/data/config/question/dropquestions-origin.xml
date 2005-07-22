@@ -92,7 +92,7 @@
                 <relation role="related" destinationtype="dropanswers"/>
             </action>
 
-            <command name="startwizard" inline="true" wizardname="dropanswers" objectnumber="new">
+            <command name="startwizard" inline="true" wizardname="config/answer/dropanswers" objectnumber="new">
                 <prompt>Nieuwe combinatie</prompt>
             </command>
 
