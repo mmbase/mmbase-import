@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.14 2005-05-20 09:03:35 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.15 2005-07-25 16:08:55 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -205,7 +205,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Takes a String, which is considered to be (the first) part of an XML, and returns the
      * encoding (the specified one, or the XML default)
-     * @returns The XML Encoding, or <code>null</code> if the String was not recognized as XML (no &lt;?xml&gt; header found)
+     * @return The XML Encoding, or <code>null</code> if the String was not recognized as XML (no &lt;?xml&gt; header found)
      * @since MMBase-1.7.1
      * @see #getXMLEncoding(byte[])
      */
@@ -223,7 +223,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * Takes a ByteArrayInputStream, which is considered to be (the first) part of an XML, and returns the encoding.
-     * @returns The XML Encoding, or <code>null</code> if the String was not recognized as XML (not &lt;?xml&gt; header found)
+     * @return The XML Encoding, or <code>null</code> if the String was not recognized as XML (not &lt;?xml&gt; header found)
      * @since MMBase-1.7.1
      * @see #getXMLEncoding(String)
      */

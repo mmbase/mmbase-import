@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.13 2005-07-22 18:37:39 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.14 2005-07-25 16:09:21 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -57,12 +57,12 @@ public class FunctionSets {
     }
 
     /**
-     * Returns the {@link #Function} with the given function name, and which exists in the set with the given set name.
+     * Returns the {@link Function} with the given function name, and which exists in the set with the given set name.
      * If this is the first call, or if the set does not exist in the cache, the cache
      * is refreshed by reading the functionset.xml configuration file.
      * @param setName the name of the function set
      * @param functionName the name of the function
-     * @return the {@link #Function}, or <code>nulll</code> if either the fucntion or set is not defined
+     * @return the {@link Function}, or <code>nulll</code> if either the fucntion or set is not defined
      */
     public static Function getFunction(String setName, String functionName) {
         FunctionSet set = getFunctionSet(setName);
@@ -100,12 +100,12 @@ public class FunctionSets {
     }
 
     /**
-     * Returns the {@link #FunctionSet} with the given set name.
+     * Returns the {@link FunctionSet} with the given set name.
      * If this is the first call, or if the set does not exist in the cache, the cache
      * is refreshed by reading the functionset.xml configuration file.
      * configuration file.
      * @param setName the name of the function set
-     * @return the {@link #FunctionSet}, or <code>null</code> if the set is not defined
+     * @return the {@link FunctionSet}, or <code>null</code> if the set is not defined
      */
     public static FunctionSet getFunctionSet(String setName) {
         return (FunctionSet)functionSets.get(setName);
