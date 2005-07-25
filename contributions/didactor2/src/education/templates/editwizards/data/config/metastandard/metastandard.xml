@@ -11,6 +11,8 @@
     <field name="name"/>
     <field name="description"/>
     <relation destinationtype="metadefinition" role="related" />
+    <relation destinationtype="metadefinition" role="posrel" />
+    <relation destinationtype="metadefinition" role="related" />
   </action>
 
   <action type="delete" />
@@ -32,6 +34,7 @@
 
 
     <list destination="metadefinition" role="related" extends="config/metadefinition/metadefinition-list.xml" />
+    <list destination="metadefinition" role="posrel" extends="config/metadefinition/metadefinition-posrel-list.xml" />
 
     <!--<list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabularydefinition.xml" />-->
 

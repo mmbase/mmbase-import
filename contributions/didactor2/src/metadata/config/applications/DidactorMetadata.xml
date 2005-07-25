@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorMetadata" maintainer="didactor.nl" version="5" auto-deploy="true">
+<application name="DidactorMetadata" maintainer="didactor.nl" version="17" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -16,7 +16,7 @@
         <builder maintainer="didactor.nl" version="2">metalangstring</builder>
         <builder maintainer="didactor.nl" version="2">metavocabulary</builder>
         <builder maintainer="didactor.nl" version="2">metadate</builder>
-        <builder maintainer="didactor.nl" version="2">constraints</builder>
+	  <builder maintainer="didactor.nl" version="2">constraints</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -34,13 +34,22 @@
         <relation from="images" to="metadata" type="related" />
         <relation from="metastandard" to="metadata" type="related" />
         <relation from="urls" to="metadata" type="related" />
+
         <relation from="metadata" to="metadefinition" type="related" />
         <relation from="metadata" to="metavalue" type="posrel" />
+
         <relation from="metastandard" to="metadefinition" type="related" />
+        <relation from="metastandard" to="metadefinition" type="posrel" />
+        <relation from="metastandard" to="metastandard" type="posrel" />
+
         <relation from="metadefinition" to="metavocabulary" type="related" />
         <relation from="metavocabulary" to="metavocabulary" type="posrel" />
-        <relation from="metavocabulary" to="metadefinition" type="constraints" />
+        <relation from="metadefinition" to="metadefinition" type="posrel" />
+        <relation from="metavocabulary" to="metadefinition" type="posrel" />
+	  <relation from="metavocabulary" to="metadefinition" type="constraints" />
 
+        
+        
     </allowedrelationlist>
 
     <datasourcelist>
