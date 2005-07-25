@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.313 2005-07-12 14:52:34 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.314 2005-07-25 12:15:43 michiel Exp $
 
 -->
 <taglib author="MMBase community">
