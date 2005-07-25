@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.62 2005-05-27 09:35:05 michiel Exp $
+ * @version $Id: Dove.java,v 1.63 2005-07-25 11:11:35 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -143,7 +143,7 @@ public class Dove extends AbstractDove {
                 if (isDataField(nm,f)) {
                     Element fel;
                     int type = f.getType();
-                    if (type == Field.TYPE_BYTE) {
+                    if (type == Field.TYPE_BINARY) {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
@@ -165,7 +165,7 @@ public class Dove extends AbstractDove {
                 } else if (isDataField(nm,fname)) {
                     Element fel;
                     int type = nm.getField(fname).getType();
-                    if (type == Field.TYPE_BYTE) {
+                    if (type == Field.TYPE_BINARY) {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
@@ -634,7 +634,7 @@ public class Dove extends AbstractDove {
                                 case Field.TYPE_DOUBLE:
                                     dttype="double";
                                     break;
-                                case Field.TYPE_BYTE:
+                                case Field.TYPE_BINARY:
                                     dttype="binary";
                                     break;
                                 case Field.TYPE_DATETIME:
