@@ -2,9 +2,13 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
   <title>Metadata Editor</title>
+
   <action type="load">
     <relation destinationtype="metavocabulary" role="posrel">
       <object type="metavocabulary"/>
+    </relation>
+    <relation destinationtype="metadefinition" role="constraints">
+      <object type="metadefinition"/>
     </relation>
   </action>
 
@@ -50,6 +54,37 @@
       </command>
 
     </list>
+
+    <list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
+      <title>Beperking voor metadefinitie</title>
+      <item>
+        <field name="name" ftype="data">
+          <prompt>Naam</prompt>
+        </field>
+      </item>
+
+      <action type="add">
+        <relation destinationtype="metadefinition" role="constraints">
+          <object type="metadefinition"></object>
+        </relation>
+      </action>
+
+      <action type="load">
+        <relation destinationtype="metadefinition" role="constraints">
+          <object type="metadefinition"/>
+        </relation>
+      </action>
+
+      <command name="search" nodepath="metadefinition" fields="name" age="-1" orderby="number" directions="down" >
+        <prompt>Zoeken naar metadefinition</prompt>
+        <search-filter>
+          <name>Naam bevat</name>
+          <search-fields>name</search-fields>
+        </search-filter>
+      </command>
+
+    </list>
+
 
   </form-schema>
 </wizard-schema>
