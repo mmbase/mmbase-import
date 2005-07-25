@@ -18,6 +18,7 @@
     <field name="handler"/>
     <field name="description"/>
    <relation destinationtype="metavocabulary" role="related" />
+   <relation destinationtype="metavocabulary" role="constraints" />
   </action>
 
   <action type="delete" />
@@ -76,7 +77,7 @@
 
     <!-- has to be only visible if type=3, but that's not possible atm -->
     <list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabularydefinition-list.xml" />
-
+    <list destination="metavocabulary" role="constraints" extends="config/metavocabulary/metavocabularydefinition-constraint-list.xml"/> 
 
      <!--   <list destination="providers" role="related" extends="config/provider/providers-list.xml" />
         <list destination="news" extends="config/news/news-list.xml" />
