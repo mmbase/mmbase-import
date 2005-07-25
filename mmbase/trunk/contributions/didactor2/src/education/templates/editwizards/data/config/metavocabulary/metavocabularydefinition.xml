@@ -8,8 +8,9 @@
   </action>
     
   <action type="load">
-        <relation destination="metavocabulary" role="posrel" />
-          <relation destination="metadefinition" role="constraints" />
+       <relation destination="metavocabulary" role="posrel" />
+        <relation destination="metadefinition" role="constraints" />
+    <relation destination="metavocabulary" role="constraints" />
   </action>
 
 
@@ -46,7 +47,7 @@
       <relation destinationtype="metavocabulary" role="posrel"/>
      </action>
 
-
+    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" objectnumber="new" />
     <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" 
                               directions="down"  >
       <prompt>Zoeken naar metavocabulary </prompt>
@@ -61,7 +62,7 @@
 </list>
 
 <list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
-      <title>Bijbehorende Metadefinition</title>
+      <title>Beperking voor metadefinitie</title>
       <item> 
         <field name="name" ftype="data" dtminlength="1" >
           <prompt>Metadefinition waarde    </prompt>
