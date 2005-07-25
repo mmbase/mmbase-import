@@ -30,6 +30,7 @@ Create a build.xml with a DOCTYPE like this:
   <property file="${source.dir}/build.properties.version" />
 
   <property name="build.compiler" value="modern" />
+  <property name="build.documentation" value="false" />
   <property name="optimize"       value="on" />
   <property name="debug"          value="off" />
   <property name="deprecation"    value="on" />
@@ -130,6 +131,12 @@ Create a build.xml with a DOCTYPE like this:
     <available property="templates.available"      file="${project.templates.dir}"/>
 
 
+    <condition property="do.jar">
+      <or>
+        <equals arg1="${src.available}" arg2="true" />
+        <equals arg1="${config.available}" arg2="true" />
+      </or>
+    </condition>
 
     <condition property="do.documentation">
       <equals arg1="${build.documentation}" arg2="true" />
@@ -184,7 +191,7 @@ Create a build.xml with a DOCTYPE like this:
     </copy>
   </target>
 
-  <target name="project.manifest" depends="jar.check" unless="jar.uptodate" if="src.available">
+  <target name="project.manifest" depends="jar.check" unless="jar.uptodate" if="do.jar">
     <manifest file="${project.build.dir}/manifest.mf">
       <attribute name="Main-Class" value="${project.main.class}" />
       <section name="${project.package}">
@@ -202,7 +209,7 @@ Create a build.xml with a DOCTYPE like this:
 
 
   <target name="jar" description="Create the MMBase project jar file"
-    depends="jar.check,project.manifest,jar.config" unless="jar.uptodate" if="src.available">
+    depends="jar.check,project.manifest,jar.config" unless="jar.uptodate" if="do.jar">
 
     <antcall target="compile" />
 
@@ -306,6 +313,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
 
     <echo message="compiling" />
+    <echo message="${project.jars.dir}${project.jars.includes}" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
@@ -338,7 +346,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
 
-  <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
+  <target name="documentation" description="Documentation" depends="init,javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
     <available property="documentation.build.available"        file="${project.build.dir}/documentation"/>
   </target>
 
@@ -367,19 +375,19 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="javadocs" description="Documentation" depends="init" if="do.javadoc">
-  <javadoc packagenames="${project.javadoc.packages}"
-    sourcepath="${project.source.dir}/src"
-    destdir="${project.javadoc.dir}"
-    author="true"
-    version="true"
-    use="false"
-    noindex="true"
-    windowtitle="${project.name} API"
-    doctitle="${project.name}"
-    maxmemory="100M"
-    source="1.4"
-    failonerror="false"
-    bottom="${project.name} build ${version}">
+    <javadoc packagenames="${project.javadoc.packages}"
+             sourcepath="${project.source.dir}/src"
+             destdir="${project.javadoc.dir}"
+             author="true"
+             version="true"
+             use="false"
+             noindex="true"
+             windowtitle="${project.name} API"
+             doctitle="${project.name}"
+             maxmemory="100M"
+             source="1.4"
+             failonerror="false"
+             bottom="${project.name} build ${version}">
       <classpath>
         <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
