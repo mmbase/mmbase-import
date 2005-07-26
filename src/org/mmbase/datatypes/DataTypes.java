@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.2 2005-07-26 14:36:31 pierre Exp $
  */
 
 public class DataTypes {
@@ -158,6 +158,16 @@ public class DataTypes {
         dataType.finish();
         finalDataTypes.put(name, dataType);
         return dataType;
+    }
+
+    /**
+     * Returns a DataType from the the available set of datatypes accessible throughout the application,
+     * or <code>null</code> if that type does not exist.
+     * @param name the name of the DataType to look for
+     * @return A DataType instance or <code>null</code> if none can be found
+     */
+    public static synchronized DataType getDataType(String name) {
+        return (DataType) finalDataTypes.get(name);
     }
 
     /**
