@@ -13,6 +13,9 @@ package org.mmbase.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+
+import org.mmbase.bridge.util.fields.*;
+
 import org.mmbase.core.util.Fields;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.DataTypes;
@@ -26,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: DataType.java,v 1.2 2005-07-26 14:36:31 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -55,6 +58,11 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     public static final DataType LIST_BOOLEAN = DataTypes.getListDataType(Field.TYPE_BOOLEAN);
     public static final DataType LIST_NODE = DataTypes.getListDataType(Field.TYPE_NODE);
 
+
+    public static final int PROCESS_COMMIT = 0;
+    public static final int PROCESS_GET    = 1;
+    public static final int PROCESS_SET    = 2;
+
     /**
      * An empty Parameter array.
      */
@@ -74,6 +82,18 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     private Class classType;
     private Object defaultValue = null;
     private Object owner = null;
+
+    private Processor commitProcessor = null;
+    private Processor[] getProcessor = new Processor[] {
+             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
+             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
+             null /* datetime */, null /* boolean */, null /* list    */
+        };
+    private Processor[] setProcessor = new Processor[] {
+             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
+             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
+             null /* datetime */, null /* boolean */, null /* list    */
+        };
 
     /**
      * Create a data type object of unspecified class type
@@ -327,6 +347,128 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         return setProperty(getRequiredProperty(),Boolean.valueOf(required));
     }
 
+    /**
+     * Processes a value, according to the default processors set on this datatype.
+     * @see #process(int, Node, Field, Object, int)
+     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     * @param node the node for wich the values should be processed
+     * @param field the field for wioch the values should be processed
+     * @param value The value to process
+     * @return the processed value
+     */
+    public Object process(int action, Node node, Field field, Object value) {
+        return process(action, node, field, value, Field.TYPE_UNKNOWN);
+    }
+
+    /**
+     * Processes a value, according to the processors set on this datatype.
+     * <br />
+     * If you ask for a PROCESS_COMMIT action, and the commit processor is defined,
+     * eitehr the commit() action is called (if the processor is a Commitprocessor),
+     * or the process() method on the commit processor (with <code>null</code> passed
+     * as a value.
+     * <br />
+     * If you ask for a PROCESS_GET action, and a get processor is defined, the process()
+     * method of that processor is called.
+     * <br />
+     * If you ask for a PROCESS_SET action, and a set processor is defined, the process()
+     * method of that processor is called. If a set processor is not defnied but a
+     * commitProcessor is, the process() method on the commit processor is called.
+     * <br />
+     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     * @param node the node for wich the values should be processed
+     * @param field the field for wioch the values should be processed
+     * @param value The value to process
+     * @param processingType the MMBase type defining the type of value to process
+     * @return the processed value
+     */
+    public Object process(int action, Node node, Field field, Object value, int processingType) {
+        Processor processor = getProcessor(action, processingType);
+        if (processor == null) processor = getProcessor(action);
+        if (processor == null && action == PROCESS_SET) {
+            processor = getProcessor(PROCESS_COMMIT, processingType);
+            if (processor == null) processor = getProcessor(PROCESS_COMMIT);
+        }
+        if (processor != null) {
+            if (action == PROCESS_COMMIT && processor instanceof CommitProcessor) {
+                ((CommitProcessor)processor).commit(node, field);
+            } else {
+                processor.process(node, field, null);
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Returns the default processor for this action
+     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     */
+    public Processor getProcessor(int action) {
+        Processor processor = null;
+        if (action == PROCESS_COMMIT) {
+            processor =  commitProcessor;
+        } else if (action == PROCESS_GET) {
+            processor =  getProcessor[0];
+        } else {
+            processor =  setProcessor[0];
+        }
+        return processor;
+    }
+
+    /**
+     * Returns the processor for this action and processing type
+     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     * @param processingType the MMBase type defining the type of value to process, ignored if action - PROCESS_COMMIT
+     */
+    public Processor getProcessor(int action, int processingType) {
+        if (processingType == Field.TYPE_UNKNOWN) {
+            return getProcessor(action);
+        } else {
+            Processor processor = null;
+            if (action == PROCESS_COMMIT) {
+                processor =  commitProcessor;
+            } else if (action == PROCESS_GET) {
+                processor =  getProcessor[processingType];
+            } else {
+                processor =  setProcessor[processingType];
+            }
+            return processor;
+        }
+    }
+
+    /**
+     * Sets the processor for this action
+     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     */
+    public void setProcessor(int action, Processor processor) {
+        if (action == PROCESS_COMMIT) {
+            commitProcessor = processor;
+        } else if (action == PROCESS_GET) {
+            getProcessor[0] = processor;
+        } else {
+            setProcessor[0] = processor;
+        }
+    }
+
+    /**
+     * Sets the processor for this action
+     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     * @param processingType the MMBase type defining the type of value to process, ignored if action - PROCESS_COMMIT
+     */
+    public void setProcessor(int action, Processor processor, int processingType) {
+        if (processingType == Field.TYPE_UNKNOWN) {
+            setProcessor(action, processor);
+        } else {
+            if (action == PROCESS_COMMIT) {
+                commitProcessor = processor;
+            } else if (action == PROCESS_GET) {
+                getProcessor[processingType] = processor;
+            } else {
+                setProcessor[processingType] = processor;
+            }
+        }
+    }
+
     protected DataType.Property createProperty(String name, Object value) {
         DataType.Property property =  new DataType.Property(name,value);
         String key = getBaseTypeIdentifier() + "." + name + ".error";
@@ -344,8 +486,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     public final class Property implements Cloneable {
         private String name;
         private Object value;
-        private LocalizedString errorDescription;
-        private boolean fixed;
+        private LocalizedString errorDescription = null;
+        private boolean fixed = false;
 
         private Property(String name, Object value) {
             this.name = name;
@@ -376,6 +518,17 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             this.errorDescription = errorDescription;
         }
 
+        public void setErrorDescription(String description) {
+            setErrorDescription(description, null);
+        }
+
+        public void setErrorDescription(String description, Locale locale) {
+            if (errorDescription == null) {
+                errorDescription = new LocalizedString(description);
+            }
+            errorDescription.set(description, locale);
+        }
+
         public String getErrorDescription(Locale locale) {
             if (errorDescription == null) {
                 return null;
@@ -385,7 +538,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
 
         public String getErrorDescription() {
-            return getDescription(null);
+            return errorDescription.get(null);
         }
 
         public boolean isFixed() {
