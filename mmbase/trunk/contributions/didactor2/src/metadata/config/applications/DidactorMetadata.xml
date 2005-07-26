@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorMetadata" maintainer="didactor.nl" version="17" auto-deploy="true">
+<application name="DidactorMetadata" maintainer="didactor.nl" version="18" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -23,6 +23,9 @@
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
         <reldef source="constraints" target="constraints" direction="bidirectional" guisourcename="Constraint" guitargetname="Constraint" builder="constraints" />
+        <reldef source="include" target="include" direction="bidirectional" guisourcename="IncludeRel" guitargetname="IncludeRel" builder="posrel" />
+        <reldef source="exclude" target="exclude" direction="bidirectional" guisourcename="ExcludeRel" guitargetname="ExcludeRel" builder="posrel" />
+        <reldef source="specify" target="specify" direction="bidirectional" guisourcename="SpecifyRel" guitargetname="SpecifyRel" builder="posrel" />
     </neededreldeflist>
 
     <allowedrelationlist>
@@ -32,14 +35,18 @@
         <relation from="audiotapes" to="metadata" type="related" />
         <relation from="videotapes" to="metadata" type="related" />
         <relation from="images" to="metadata" type="related" />
-        <relation from="metastandard" to="metadata" type="related" />
+        
         <relation from="urls" to="metadata" type="related" />
 
         <relation from="metadata" to="metadefinition" type="related" />
         <relation from="metadata" to="metavalue" type="posrel" />
-
+        <relation from="metastandard" to="metadata" type="related" />
+        <relation from="metastandard" to="metavocabulary" type="exclude" />
+        <relation from="metastandard" to="metavocabulary" type="include" />
+ 
         <relation from="metastandard" to="metadefinition" type="related" />
         <relation from="metastandard" to="metadefinition" type="posrel" />
+        <relation from="metastandard" to="metadefinition" type="specify"/>
         <relation from="metastandard" to="metastandard" type="posrel" />
 
         <relation from="metadefinition" to="metavocabulary" type="related" />
