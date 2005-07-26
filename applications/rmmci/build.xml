@@ -3,9 +3,10 @@
   <property file="../build.properties" />
 
   <property name="source.dir" value="../.."/>
+  <property file="${source.dir}/build.properties.version" />
+
   <property name="project.jar.dir" value="build"/>
   <property name="project.zip.dir" value="${project.jar.dir}"/>
-  <property name="project.zip" value="${project.zip.dir}/mmbase-rmmci.zip"/>
   <property name="build.dir" value="${source.dir}/build"/>
   <target name="init">
     <mkdir dir="build/classes"/>
@@ -19,6 +20,10 @@
         </fileset>
       </classpath>
     </available>
+    <tstamp/>
+    <property name="builddate"       value="${DSTAMP}"/>
+    <property name="zip.name"      value="mmbase-${distro.version}.${builddate}-rmmci" />
+    <property name="project.zip"     value="${project.zip.dir}/${zip.name}.zip" />
   </target>
 
   <target name="jar.uptodatecheck">
@@ -27,7 +32,7 @@
     </uptodate>
   </target>
 
-  <target name="package" depends="rmmci">
+  <target name="package" depends="init,rmmci">
     <zip zipfile="${project.zip}">
       <fileset dir="${project.jar.dir}" includes="*.jar"/>
       <fileset dir=".">
