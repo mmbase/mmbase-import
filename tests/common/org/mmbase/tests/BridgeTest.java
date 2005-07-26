@@ -40,7 +40,7 @@ public abstract class BridgeTest extends MMBaseTest {
                 if (cc instanceof LocalContext) {
                     throw be;
                 }
-                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds");
+                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
                 try {
                     tryCount ++;
                     Thread.sleep(5000);
