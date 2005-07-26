@@ -35,6 +35,8 @@
         <field name="value" ftype="data" dtminlength="1" >
           <prompt>Metavocabulary waarde    </prompt>
         </field>
+        <field fdatapath="field[@name='pos']" ftype="line" dttype="int" 
+               dtmin="1" dtmax="3" dtmaxlength="1" dtminlength="1" />
       </item> 
 
      <action type="add">
@@ -47,7 +49,9 @@
       <relation destinationtype="metavocabulary" role="posrel"/>
      </action>
 
-    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" 
+                                               objectnumber="new" />
+
     <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" 
                               directions="down"  >
       <prompt>Zoeken naar metavocabulary </prompt>
@@ -67,6 +71,21 @@
         <field name="name" ftype="data" dtminlength="1" >
           <prompt>Metadefinition waarde    </prompt>
         </field>
+
+	<field fdatapath="field[@name='type']" ftype="enum" >
+            <prompt>Constraint type</prompt>
+            <optionlist name="type">
+                  <option id="1">Mandatory</option>
+		  <option id="2">Limited</option>
+		  <option id="3">Forbidden</option>
+            </optionlist>
+        </field>
+
+ 
+        <field fdatapath="field[@name='minvalues']" ftype="line" 
+               dttype="int" dtmin="1" dtmaxlength="4" dtminlength="1" />
+        <field fdatapath="field[@name='maxvalues']" ftype="line" 
+               dttype="int" dtmin="1" dtmaxlength="4" dtminlength="1" />
       </item> 
 
      <action type="add">
