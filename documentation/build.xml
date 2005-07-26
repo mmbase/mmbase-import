@@ -118,7 +118,10 @@
 
 
   <target name="lib.compile">
-    <ant inheritAll="false" dir="${source.dir}" target="lib.compile" />
+    <ant inheritAll="false" dir="${source.dir}" target="lib.compile">
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"     value="${download.dir}" />
+    </ant>
   </target>
 
   <!-- compile the XSLTransformer -->
