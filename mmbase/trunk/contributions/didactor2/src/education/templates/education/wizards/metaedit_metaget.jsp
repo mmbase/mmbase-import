@@ -62,7 +62,7 @@
                         sType = sMetadefType;
                      %>
                   </mm:field>
-                  <mm:relatednodes type="metastandard" max="1">
+                  <mm:relatednodes type="metastandard" max="1" role="posrel">
                      <mm:related path="metadata,metadefinition">
                         <mm:field name="metadata.number" jspvar="sMetadataTemplateID" vartype="String">
                            <mm:field name="metadefinition.number" jspvar="sMetadefID" vartype="String">

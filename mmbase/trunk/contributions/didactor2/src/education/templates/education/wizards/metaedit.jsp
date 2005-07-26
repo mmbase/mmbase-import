@@ -19,7 +19,7 @@
          String sNode = request.getParameter("number");
          String EMPTY_VALUE = "...";
 
-
+        
          String sRequest_Submitted = request.getParameter("submitted");
          String sRequest_DoCloseMetaeditor = request.getParameter("close");
 
@@ -27,6 +27,8 @@
          {//Empty form
             if (request.getParameter("set_defaults") != null)
             {
+
+               
                %>
                   <jsp:include page="metaedit_form.jsp">
                      <jsp:param name="node" value="<%= sNode %>" />
@@ -36,6 +38,8 @@
             }
             else
             {
+
+		  
                
                %>
                   <jsp:include page="metaedit_form.jsp">
@@ -50,79 +54,84 @@
             HashSet hsetPassedNodes = new HashSet();
             HashSet hsetHaveToBeNotEmpty = new HashSet();
             HashSet hsetAssignedMetadefinitions = new HashSet();
-	    HashSet hsetAssignedVocabularies = new HashSet();
-	    Enumeration enumParamNames;
+	      HashSet hsetAssignedVocabularies = new HashSet();
+
+	      Enumeration enumParamNames;
             ArrayList arlistParVals = new ArrayList();
+            ArrayList arliConstraintErrors = new ArrayList();
 
             boolean bFillOk = true;
             boolean bSizeOk = true;
-
+            boolean bConstraintOk = true;
             
             %>
                <mm:content postprocessor="reducespace">
                   <mm:cloud>
+
                      <mm:listnodes type="metastandard" orderby="name">
+                     
+                     <mm:field name="name" jspvar="sMetastandardName" vartype="String">
 
                      <%
-
-			enumParamNames = request.getParameterNames();
+                         
+				 enumParamNames = request.getParameterNames();
 
             	       while(enumParamNames.hasMoreElements())
-        	       {
-	                String sParameter = (String) enumParamNames.nextElement(); 
-	  	        String[] arrstrParameters = request.getParameterValues(sParameter);
-          	       if(sParameter.charAt(0) == 'm')
-          	       {
-		        String sMetadataDefinitionID = sParameter.substring(1);
-
-                        for (int i=0 ; i < arrstrParameters.length ; i++)
-		        {
+        	             {
+	                       String sParameter = (String) enumParamNames.nextElement(); 
+	  	        	     String[] arrstrParameters = request.getParameterValues(sParameter);
+          	                 if(sParameter.charAt(0) == 'm')
+          	                  {
+                                
+		        		  String sMetadataDefinitionID = sParameter.substring(1);
+                               			
+		                    for (int i=0 ; i < arrstrParameters.length ; i++)
+		                        {
                    
-                         if(arrstrParameters[i]!= null && 
-                            !arrstrParameters[i].equals(EMPTY_VALUE) && 
-                            !arrstrParameters[i].equals(""))
-                            {
-                            // Put metadefinition in the list
-                            hsetAssignedMetadefinitions.add(sMetadataDefinitionID);
+                         		if(arrstrParameters[i]!= null && 
+                                       !arrstrParameters[i].equals(EMPTY_VALUE) && 
+                                       !arrstrParameters[i].equals(""))
+                                      {
+                            			// Put metadefinition in the list
+                                          hsetAssignedMetadefinitions.add(sMetadataDefinitionID);
 		            
-
-                           // Let's check this metadefinition metavocabularies
-                       %>
+                                          // Let's check this metadefinition metavocabularies
+                     %>
                       
 
-                      <mm:list nodes="<%=sMetadataDefinitionID %>"  path="metadefinition,related,metavocabulary" 
-                               searchdir="destination" fields="metavocabulary.number,metavocabulary.value" >
-                      <mm:field name="metavocabulary.value" jspvar="sVocValue" vartype="String">
-                      <mm:field name="metavocabulary.number" jspvar="sVocNumber" vartype="String">
+                                     <mm:list nodes="<%=sMetadataDefinitionID %>"  path="metadefinition,related,metavocabulary" 
+                                               searchdir="destination" fields="metavocabulary.number,metavocabulary.value" >
+                                     <mm:field name="metavocabulary.value" jspvar="sVocValue" vartype="String">
+                                     <mm:field name="metavocabulary.number" jspvar="sVocNumber" vartype="String">
                                
-                      <%  
+                                       <%                                   
                           
-                          if(sVocValue.equals(arrstrParameters[i]))
-                                  hsetAssignedVocabularies.add(sVocNumber);
-                                                                  
-                       %>
+                                       if(sVocValue.equals(arrstrParameters[i]))
+                                           hsetAssignedVocabularies.add(sVocNumber);
+                                                                                            
+                                      %>
 
-                      </mm:field>
-                      </mm:field>
-                      </mm:list>
+                                    </mm:field>
+                                    </mm:field>
+                                    </mm:list>
 
-                    <%
-                    } // end of if
+                     <%
+                                  } // end of if
 
-		  } // end of for
+		                   } // end of for
 
-                 } // end of if
+                            } // end of if
 
-                } // end of while
+                      } // end of while
 
+                    %>
 
-
-
-		     %>
-
-                        <mm:relatednodes type="metadefinition">
+                        <mm:relatednodes type="metadefinition" role="posrel">
                            <mm:field name="required" jspvar="sRequired" vartype="String">
-                              <mm:field name="number" jspvar="sNumber" vartype="String">
+                              <mm:field name="number" jspvar="sNumber"  vartype="String">
+                                <mm:field name="name" jspvar="sName"    vartype="String">
+                                  <mm:field name="type" jspvar="sType"  vartype="String">
+
                                  <%
                                     if(sRequired.equals("1"))
                                     {
@@ -131,64 +140,111 @@
 				    
                                   %>
 
-                                 <!-- Now we have to check whether we fill this values or not according type2 relations  -->
+                                  <!-- Now we have to check whether we fill this values or not according type2 relations  -->
 
-				    <mm:list nodes="<%=sNumber %>"  path="metadefinition,posrel,metadefinition2" 
+			                <mm:list nodes="<%=sNumber %>"  path="metadefinition,posrel,metadefinition2" 
                                              searchdir="source" fields="metadefinition.number,metadefinition.name,posrel.pos" >
 
-        		            <mm:field name="metadefinition2.number" jspvar="rMd" vartype="String">
-               				<%
-			                  System.out.print("**** related number= "+rMd);
-			               %>
-			            
-                                    <mm:field name="metadefinition2.name" jspvar="rTp" vartype="String">
-               				<%
-			                  System.out.print("**** related  name= "+rTp);
-			               %>
-			            </mm:field>
+        		                  <mm:field name="metadefinition2.number" jspvar="rMd" vartype="String">
+               			                                              
+				            <mm:field name="posrel.pos" jspvar="rPos" vartype="String">
 
-				    <mm:field name="posrel.pos" jspvar="rPos" vartype="String">
-               				<%
-			                  
+               			      <%			                  
                                           if(rPos.equals("1") && hsetAssignedMetadefinitions.contains(rMd))
                                               {
                                                  hsetHaveToBeNotEmpty.add(sNumber);
-                                              }
+                                              } 
+                                                                                 
+			                  %>
+
+			                  </mm:field> <%-- posrel.pos --%>
+
+				            </mm:field> <%-- metadefinition2.number --%>
+
+			             </mm:list>
+
+
+			             <mm:list nodes="<%=sNumber %>"  path="metadefinition,constraints,metavocabulary" searchdir="source"
+                                  fields="metavocabulary.number,metavocabulary.value,constraints.type,constraints.maxvalues,constraints.minvalues" >
+
+			            <mm:field name="metavocabulary.number" jspvar="rMv"   vartype="String">
+                              <mm:field name="metavocabulary.value"  jspvar="rMval" vartype="String">
+ 				      <mm:field name="constraints.type" jspvar="vType"      vartype="String">
+                              <mm:field name="constraints.maxvalues" jspvar="iMaxvalues"    vartype="Integer">
+					<mm:field name="constraints.minvalues" jspvar="iMinvalues"    vartype="Integer">
+
+               				<%	
+
+                                          String sParam = "m"+sNumber;
+                                          String[] arrstrParams = request.getParameterValues(sParam);
                                           
-			                %>
-			            </mm:field> <%-- posrel.pos --%>
-
-				 </mm:field> <%-- metadefinition2.number --%>
-			      </mm:list>
-
-
-			      <mm:list nodes="<%=sNumber %>"  path="metadefinition,posrel,metavocabulary" searchdir="source" 
-                                  fields="metavocabulary.number,metavocabulary.value,posrel.pos" >
-
-			            <mm:field name="metavocabulary.number" jspvar="rMv" vartype="String">
- 				    <mm:field name="posrel.pos" jspvar="vPos" vartype="String">
-               				<%			                  
-                                          if(vPos.equals("1") && hsetAssignedVocabularies.contains(rMv))
+                                          if(arrstrParams == null)
+                                               {
+                                                arrstrParams = new String[0];
+                                               }                                              
+							
+                                         		                  
+                                          if(vType.equals("1") && hsetAssignedVocabularies.contains(rMv))
                                               {
-                                                hsetHaveToBeNotEmpty.add(sNumber);
+                                                hsetHaveToBeNotEmpty.add(sNumber);								
                                               }
-                                        %>
+                                           
+                                           
+
+                                            if(vType.equals("2") && 
+                                             hsetAssignedVocabularies.contains(rMv) &&                                             
+                                             sType.equals("1") &&
+                                             (arrstrParams.length < iMinvalues.intValue() || 
+							    arrstrParams.length > iMaxvalues.intValue() ))
+                                             {
+							     bConstraintOk = false;
+                                               arliConstraintErrors.add("Metavocabulary "+
+                                                                        rMval+
+                                                                        " requires more or less values from metadefinition "+
+                                                                        sName);
+                                             }
+                                           
+
+                                           if(vType.equals("3") && 
+                                             hsetAssignedVocabularies.contains(rMv) && 
+							   hsetAssignedMetadefinitions.contains(sNumber)) 
+                                              {
+								bConstraintOk = false;
+                                                arliConstraintErrors.add("Metavocabulary "+rMval+" forbids metadefinition "+sName);
+                                              }
+
+                                          
+                                     %>
+
 			            </mm:field>
-                                    </mm:field>
-			      </mm:list>
+					</mm:field>
+					</mm:field>
+                              </mm:field>
+                              </mm:field>
+                        
+			            </mm:list>
 
 				 
                                 
                               </mm:field>
+                            </mm:field>
                            </mm:field>
+                          </mm:field>
                         </mm:relatednodes>
-                     </mm:listnodes>
+
+                     </mm:field>     <%-- matastandard name --%>
+                     </mm:listnodes> <%-- metastandards     --%>
                      <%
- 
-                        if ((!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")) && (request.getParameter("set_defaults") == null))
-                        {//If we are not adding or delete a langstring:
+                         
+                        if ((!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")) && 
+                            (request.getParameter("set_defaults") == null))
+
+                        {
+                           //If we are not adding or delete a langstring:
                            //Check for all required metadefinitions
                            //If the metadefinition is present, we remove it from "hsetHaveToBeNotEmpty"
+
+  
                            enumParamNames = request.getParameterNames();
                            ArrayList arliSizeErrors = new ArrayList();
 
@@ -291,7 +347,7 @@
                               <br/>
                            <%
                            //Header, if error
-                           if((hsetHaveToBeNotEmpty.size() > 0) || (arliSizeErrors.size() > 0))
+                           if((hsetHaveToBeNotEmpty.size() > 0) || (arliSizeErrors.size() > 0) || (arliConstraintErrors.size() > 0))
                            {
                               %>
                                  <style type="text/css">
@@ -327,6 +383,14 @@
                                  </li>
                               <%
                            }
+                           //List constraint errors
+                           for(Iterator it = arliConstraintErrors.iterator(); it.hasNext();)
+                           {
+                              String sConstraintError = (String) it.next();
+                              %><li><%= sConstraintError %></li><%
+                           }
+ 
+
                            //List of error for errors with "size"
                            for(Iterator it = arliSizeErrors.iterator(); it.hasNext();)
                            {
@@ -338,10 +402,14 @@
 
 
                            //Use JS to synchronize values in tree
-                           if((!bFillOk) || (!bSizeOk) || (hsetHaveToBeNotEmpty.size() > 0))
+                           if((!bFillOk) || (!bSizeOk) || (!bConstraintOk) || (hsetHaveToBeNotEmpty.size() > 0))
                            {
                               %>
-                                 <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
+                                 <a href="javascript:history.go(-1)">
+                                 <font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier
+                                 </font>
+                                 </a>
+
                                  <script>
                                     try
                                     {
@@ -355,7 +423,7 @@
                            }
                            else
                            {
-                              if(session.getAttribute("show_metadata_in_list") == null)
+                             if(session.getAttribute("show_metadata_in_list") == null)
                               {//We use metaeditor from content_metadata or not?
 
                                String sParList = "";
@@ -363,12 +431,12 @@
                               enumParamNames = request.getParameterNames();
 			      while(enumParamNames.hasMoreElements())
                               {
-				   String sParameter = (String) enumParamNames.nextElement();
-				   String[] arrstrParameters = request.getParameterValues(sParameter);
+				        String sParameter = (String) enumParamNames.nextElement();
+				        String[] arrstrParameters = request.getParameterValues(sParameter);
 						
-				   if(sParameter.charAt(0) == 'm')
+				        if(sParameter.charAt(0) == 'm')
                                          {
-						for(int i=0; i < arrstrParameters.length; i++)
+						       for(int i=0; i < arrstrParameters.length; i++)
                                                 {
                                                                                                
                                                  sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
@@ -433,7 +501,7 @@
 
                                          }
 
- 	        	   }
+ 	        	           }
 
 
                            %>
@@ -719,24 +787,24 @@
 			  enumParamNames = request.getParameterNames();
 			  while(enumParamNames.hasMoreElements())
                           {
-				   String sParameter = (String) enumParamNames.nextElement();
-				   String[] arrstrParameters = request.getParameterValues(sParameter);
+				    String sParameter = (String) enumParamNames.nextElement();
+				    String[] arrstrParameters = request.getParameterValues(sParameter);
 
-				   if(sParameter.charAt(0) == 'm')
+				    if(sParameter.charAt(0) == 'm')
                                          {
-						for(int i=0; i < arrstrParameters.length; i++)
+						         for(int i=0; i < arrstrParameters.length; i++)
                                                 {
                                                                                                
                                                 
                                                 sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
                                                 
 
-                                                }
+                                                }// end of for
 						
 
-                                         }
+                                         } // ind of if
 
- 	        	}
+ 	        	       }// end of while
 
 
 
@@ -762,3 +830,4 @@
       %>
    </body>
 </html>
+
