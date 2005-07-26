@@ -15,7 +15,7 @@ import org.w3c.dom.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: AbstractObjectDefinition.java,v 1.1 2005-07-08 08:04:26 pierre Exp $
+ * @version $Id: AbstractObjectDefinition.java,v 1.2 2005-07-26 14:36:31 pierre Exp $
  **/
 abstract public class AbstractObjectDefinition {
 
@@ -51,5 +51,21 @@ abstract public class AbstractObjectDefinition {
         }
     }
 
+    /**
+     * Returns the textual value (content) of a certain element
+     */
+    protected String getValue(Element element) {
+        NodeList nl = element.getChildNodes();
+        StringBuffer res = new StringBuffer();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node textnode = nl.item(i);
+            if (textnode.getNodeType() == Node.TEXT_NODE) {
+                res.append(textnode.getNodeValue().trim());
+            } else if (textnode.getNodeType() == Node.CDATA_SECTION_NODE) {
+                res.append(textnode.getNodeValue());
+            }
+        }
+        return res.toString();
+    }
 }
 
