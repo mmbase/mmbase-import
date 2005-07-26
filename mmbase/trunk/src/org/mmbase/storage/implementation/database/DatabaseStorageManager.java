@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.112 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.113 2005-07-26 12:59:41 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1758,7 +1758,7 @@ public class DatabaseStorageManager implements StorageManager {
             s.executeUpdate(query);
             s.close();
 
-            tableNameCache.add(factory.getStorageIdentifier(builder));
+            tableNameCache.add(factory.getStorageIdentifier(builder).toString().toUpperCase());
 
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
@@ -1929,8 +1929,8 @@ public class DatabaseStorageManager implements StorageManager {
                 s.executeUpdate(query);
                 s.close();
 
-                if(tableNameCache.contains(builderName)) {
-                    tableNameCache.remove(builderName);
+                if(tableNameCache.contains(builderName.toUpperCase())) {
+                    tableNameCache.remove(builderName.toUpperCase());
                 }
             }
         } catch (Exception e) {
@@ -2016,25 +2016,33 @@ public class DatabaseStorageManager implements StorageManager {
                 tableNameCache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
+                String prefixTablename = factory.getMMBase().getBaseName();
+                if (metaData.storesLowerCaseIdentifiers()) {
+                    prefixTablename = prefixTablename.toLowerCase();
+                }
+                if (metaData.storesUpperCaseIdentifiers()) {
+                    prefixTablename = prefixTablename.toUpperCase();
+                }
                 ResultSet res =
-                    metaData.getTables(factory.getCatalog(), null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
+                    metaData.getTables(factory.getCatalog(), null, prefixTablename+"_%", new String[] { "TABLE", "VIEW" });
                 try {
                     while(res.next()) {
-                        if(! tableNameCache.add(res.getString(3))) {
+                        if(! tableNameCache.add(res.getString(3).toUpperCase())) {
                             log.warn("builder already in cache(" + res.getString(3) + ")!");
                         }
                     }
                 } finally {
                     res.close();
                 }
+
             } catch(Exception e) {
                 throw new StorageException(e.getMessage());
             } finally {
                 releaseActiveConnection();
-            }
+             }
         }
 
-        return tableNameCache.contains(tableName);
+        return tableNameCache.contains(tableName.toUpperCase());
     }
 
     // javadoc is inherited
