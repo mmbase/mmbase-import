@@ -1,3 +1,4 @@
+
 /*
 
 This software is OSI Certified Open Source Software.
@@ -27,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.32 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: XMLNodeReader.java,v 1.33 2005-07-26 19:34:13 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -106,20 +107,20 @@ public class XMLNodeReader extends XMLBasicReader {
                         NamedNodeMap nm = n2.getAttributes();
                         if (nm != null) {
                             Node n4 = nm.getNamedItem("owner");
-                            MMObjectNode newnode = null;
+                            MMObjectNode newNode = null;
                             if (n4 != null) {
-                                newnode = bul.getNewNode(n4.getNodeValue());
+                                newNode = bul.getNewNode(n4.getNodeValue());
                             } else {
-                                newnode = bul.getNewNode("import");
+                                newNode = bul.getNewNode("import");
                             }
                             n4 = nm.getNamedItem("alias");
                             if (n4 != null)
-                                newnode.setAlias(n4.getNodeValue());
+                                newNode.setAlias(n4.getNodeValue());
                             n4 = nm.getNamedItem("number");
                             try {
                                 int num = Integer.parseInt(n4.getNodeValue());
 
-                                newnode.setValue("number", num);
+                                newNode.setValue("number", num);
                             } catch (Exception e) {}
                             Node n5 = n2.getFirstChild();
                             while (n5 != null) {
@@ -142,59 +143,71 @@ public class XMLNodeReader extends XMLBasicReader {
                                             if (value == null) {
                                                 value = "";
                                             }
-                                            newnode.setValue(key, value);
+                                            newNode.setValue(key, value);
                                             if (log.isDebugEnabled()) {
-                                                log.debug("After value " + Casting.toString(newnode.getValue(key)));
+                                                log.debug("After value " + Casting.toString(newNode.getValue(key)));
                                             }
                                         } else if (type == Field.TYPE_NODE) {
                                             // do not really set it, because we need syncnodes later for this.
-                                            newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
-                                            newnode.setValue(key, MMObjectNode.VALUE_NULL);
+                                            newNode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
+                                            newNode.setValue(key, MMObjectNode.VALUE_NULL);
                                         } else if (type == Field.TYPE_INTEGER) {
                                            try {
-                                                newnode.setValue(key, Integer.parseInt(value));
+                                                newNode.setValue(key, Integer.parseInt(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting integer-field " + e);
-                                                newnode.setValue(key, -1);
+                                                newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_FLOAT) {
                                             try {
-                                                newnode.setValue(key, Float.parseFloat(value));
+                                                newNode.setValue(key, Float.parseFloat(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting float-field " + e);
-                                                newnode.setValue(key, -1);
+                                                newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_DOUBLE) {
                                             try {
-                                                newnode.setValue(key, Double.parseDouble(value));
+                                                newNode.setValue(key, Double.parseDouble(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting double-field " + e);
-                                                newnode.setValue(key, -1);
+                                                newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_LONG) {
                                             try {
-                                                newnode.setValue(key, Long.parseLong(value));
+                                                newNode.setValue(key, Long.parseLong(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting long-field " + e);
-                                                newnode.setValue(key, -1);
+                                                newNode.setValue(key, -1);
+                                            }
+                                        } else if (type == Field.TYPE_DATETIME) {
+                                            try {
+                                                long l = Long.parseLong(value);
+                                                newNode.setValue(key, new Date(1000 * l));
+                                            } catch (Exception e) {
+                                                try {
+                                                    newNode.setValue(key, Casting.ISO_8601_UTC.parse(value));
+                                                } catch (Exception e2) {
+                                                    // something else?
+                                                    log.warn("error setting long-field " + e2);
+                                                    newNode.setValue(key, -1);
+                                                }
                                             }
                                         } else if (type == Field.TYPE_BINARY) {
                                             NamedNodeMap nm2 = n5.getAttributes();
                                             Node n7 = nm2.getNamedItem("file");
                                             try {
-                                                newnode.setValue(key, readBytesStream(n7.getNodeValue()));
+                                                newNode.setValue(key, readBytesStream(n7.getNodeValue()));
                                             } catch (IOException ioe) {
                                                 log.warn("Could not set field " + key + " " + ioe);
                                             }
                                         } else {
-                                            log.error("CoreField not found for #" + type + " was not known for field with name: '"
-                                                      + key + "' and with value: '" + value + "'");
+                                            log.error("CoreField not found for #" + type + " was not known for field with name: '" + key + "' and with value: '" + value + "'");
                                         }
                                     }
                                 }
                                 n5 = n5.getNextSibling();
                             }
-                            nodes.addElement(newnode);
+                            nodes.addElement(newNode);
                         }
                     }
                     n2 = n2.getNextSibling();
