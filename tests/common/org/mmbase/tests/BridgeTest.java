@@ -43,9 +43,9 @@ public abstract class BridgeTest extends MMBaseTest {
                 System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds");
                 try {
                     tryCount ++;
-                    if (tryCount > 25) throw be;
                     Thread.sleep(5000);
                 } catch (Exception ie) {}
+                if (tryCount > 25) throw be;
             }
         }
         return c;
