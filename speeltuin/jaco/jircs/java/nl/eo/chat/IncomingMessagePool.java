@@ -18,18 +18,24 @@ import java.util.Vector;
  *
  * @author Jaco de Groot
  */
-public class IncomingMessagePool {
-    private static Vector messages = new Vector();
-
-    protected static synchronized void putMessage(Message message) {
-        messages.add(message);
+public class IncomingMessagePool extends MessagePool {
+    private Vector messages = new Vector();
+    private Object msgWatcher = new Object();
+    
+    protected void putMessage(Message message) {
+        synchronized(msgWatcher) {
+            log.debug("incoming: putMessage "+message.getCommand());
+            messages.add(message);
+        }
     }
 
-    protected static synchronized Message getMessage() {
-        if (messages.size() > 0) {
-            return (Message)messages.remove(0);
-        } else {
-            return null;
+    protected Message getMessage() {
+        synchronized(msgWatcher) {
+            if (messages.size() > 0) {
+                return (Message)messages.remove(0);
+            } else {
+                return null;
+            }
         }
     }
 }

@@ -11,9 +11,9 @@ package nl.eo.chat.repository;
 
 import java.util.Date;
 import java.util.Collection;
-import java.util.Properties;
 import nl.eo.chat.InitializationException;
 import nl.eo.chat.Logger;
+import nl.eo.chat.ChatEngine;
 
 /**
  * The repository holds the user repository and the channel repository.
@@ -22,9 +22,7 @@ import nl.eo.chat.Logger;
  */
 public interface Repository {
     
-    public void setProperties(Properties properties);
-
-    public void init() throws InitializationException;
+    public void init(ChatEngine engine) throws InitializationException;
     
     public UserRepository getUserRepository();
     

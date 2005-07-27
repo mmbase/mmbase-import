@@ -28,12 +28,8 @@ import java.util.Hashtable;
  * @author Jaco de Groot
  */
 public class Logger {
-    private String propertiesFilename;
-    private File propertiesFile;
-    private long lastModified = Long.MIN_VALUE;
     private String logFilename;
     private boolean logPerChannel = false;
-    private String propertiesPrefix;
     private BufferedWriter writer;
     private SimpleDateFormat df;
     private Hashtable channelLogFiles;
@@ -48,28 +44,57 @@ public class Logger {
     public static final int LOG_LEVEL_MESSAGE = 7;
     public static final int LOG_LEVEL_DEBUG = 8;
 
-    public Logger(String propertiesFilename, String propertiesPrefix) {
-        this.propertiesPrefix = propertiesPrefix;
-        propertiesFile = new File(propertiesFilename);
+    public Logger() {
         df = new SimpleDateFormat("yyyyMMdd HH:mm:ss,SSS");
-        checkProperties();
+    }
+
+    public void setLogLevel(String ll) throws Exception {
+        if (ll.equals("silent")) {
+            logLevel = LOG_LEVEL_SILENT;
+        } else if (ll.equals("error")) {
+            logLevel = LOG_LEVEL_ERROR;
+        } else if (ll.equals("info")) {
+            logLevel = LOG_LEVEL_INFO;
+        } else if (ll.equals("connect")) {
+            logLevel = LOG_LEVEL_CONNECT;
+        } else if (ll.equals("login")) {
+            logLevel = LOG_LEVEL_LOGIN;
+        } else if (ll.equals("join")) {
+            logLevel = LOG_LEVEL_JOIN;
+        } else if (ll.equals("message")) {
+            logLevel = LOG_LEVEL_MESSAGE;
+        } else if (ll.equals("debug")) {
+            logLevel = LOG_LEVEL_DEBUG;
+        }
+        else {
+            throw new Exception("Unknown loglevel '"+ll+"'");
+        }
+    }
+    
+    public void setFile( String file ) throws IOException {
+        logFilename = file;
+        FileWriter fw = new FileWriter(file, true);
+        writer = new BufferedWriter(fw);
+    }
+
+
+    public void setLogPerChannel(boolean lpc) {
+        if (lpc) {
+            channelLogFiles = new Hashtable();
+            logPerChannel = true;
+        }
+        else {
+            logPerChannel = false;
+        }
     }
 
     public void error(String message) {
-        error(message, true);
-    }
-
-    private void error(String message, boolean checkProperties) {
-        if (checkProperties) {
-            checkProperties();
-        }
         if (logLevel >= LOG_LEVEL_ERROR) {
             log("Error: " + message);
         }
     }
 
     public void exception(Exception e) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_EXCEPTION) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -80,63 +105,54 @@ public class Logger {
     }
 
     public void info(String message) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_INFO) {
             log("Info: " + message);
         }
     }
 
     public void connect(String hostname) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_CONNECT) {
             log("Connect " + hostname + ".");
         }
     }
 
     public void disconnect(String hostname, String reason) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_CONNECT) {
             log("Disconnect " + hostname + " (" + reason + ").");
         }
     }
 
     public void disconnect(String hostname, String reason, String nick) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_CONNECT) {
             log("Disconnect " + nick + "@" + hostname + " (" + reason + ").");
         }
     }
 
     public void login(String nick, String hostname) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_LOGIN) {
             log("Login " + nick + " from " + hostname + ".");
         }
     }
 
     public void logout(String nick, String hostname) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_LOGIN) {
             log("Logout " + nick + " from " + hostname + ".");
         }
     }
 
     public void join(String channel, String nick) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_JOIN) {
             log("Join " + channel + " by " + nick + ".");
         }
     }
 
     public void part(String channel, String nick) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_JOIN) {
             log("Part " + channel + " by " + nick + ".");
         }
     }
 
     public void message(String source, String destination, String message) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_MESSAGE) {
             //log messages to channels in seperate files.
             if (logPerChannel) {
@@ -147,14 +163,12 @@ public class Logger {
     }
 
     public void filteredMessage(String source, String destination, String message) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_MESSAGE) {
             log("Filtered message from " + source + " to " + destination + " (" + message + ").");
         }
     }
 
     public void debug(String message) {
-        checkProperties();
         if (logLevel >= LOG_LEVEL_DEBUG) {
             log("Debug info: " + message);
         }
@@ -195,7 +209,7 @@ public class Logger {
                       wr.flush();              
                       channelLogFiles.put(destination,wr);                  
                   } catch(IOException e) {
-                      error("Can not open file '" + lf + "' (" + e.getMessage() + ")", false);
+                      error("Can not open file '" + lf + "' (" + e.getMessage() + ")");
                   }
               }
             } catch(Exception e) {
@@ -204,67 +218,4 @@ public class Logger {
             }
           }
     }
-
-    
-    
-    protected void checkProperties() {
-        long l = propertiesFile.lastModified();
-        if (lastModified < l) {
-            Properties properties = new Properties();
-            boolean stop = false;
-            try {
-                properties.load(new FileInputStream(propertiesFile));
-            } catch(FileNotFoundException e) {
-                error("Could not find properties file '" + propertiesFilename + "'.", false);
-                stop = true;
-            } catch(IOException e) {
-                error("Could not read properties file '" + propertiesFilename + "': " + e.getMessage(), false);
-                stop = true;
-            }
-            if (!stop) {
-                String lf = properties.getProperty(propertiesPrefix + "logfile");
-                if (lf != null && (logFilename == null || !logFilename.equals(lf))) {
-                    FileWriter fw = null;
-                    try {
-                        fw = new FileWriter(lf, true);
-                    } catch(IOException e) {
-                        error("Can not open file '" + lf + "' (" + e.getMessage() + ")", false);
-                        stop = true;
-                    }
-                    if (!stop) {
-                        logFilename = lf;
-                        writer = new BufferedWriter(fw);
-                    }
-                }
-                String ll = properties.getProperty(propertiesPrefix + "loglevel");
-                if (ll != null) {
-                    if (ll.equals("silent")) {
-                        logLevel = LOG_LEVEL_SILENT;
-                    } else if (ll.equals("error")) {
-                        logLevel = LOG_LEVEL_ERROR;
-                    } else if (ll.equals("info")) {
-                        logLevel = LOG_LEVEL_INFO;
-                    } else if (ll.equals("connect")) {
-                        logLevel = LOG_LEVEL_CONNECT;
-                    } else if (ll.equals("login")) {
-                        logLevel = LOG_LEVEL_LOGIN;
-                    } else if (ll.equals("join")) {
-                        logLevel = LOG_LEVEL_JOIN;
-                    } else if (ll.equals("message")) {
-                        logLevel = LOG_LEVEL_MESSAGE;
-                    } else if (ll.equals("debug")) {
-                        logLevel = LOG_LEVEL_DEBUG;
-                    }
-                }
-                //enable loggin per channel
-                String lpc = properties.getProperty(propertiesPrefix + "logperchannel");
-                if (lpc != null && lpc.equals("true")) {
-                    channelLogFiles = new Hashtable();
-                    logPerChannel = true;
-                }                
-            }
-            lastModified = l;
-        }
-    }
-
 }

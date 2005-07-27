@@ -15,18 +15,10 @@ package nl.eo.chat;
  *
  * @author Jaco de Groot
  */
-class SynchronizedLogger extends Logger {
+public class SynchronizedLogger extends Logger {
 
-    public SynchronizedLogger(String propertiesFilename, String propertiesPrefix) {
-        super(propertiesFilename, propertiesPrefix);
-    }
-    
     protected synchronized void log(String message) {
         super.log(message);
-    }
-    
-    protected synchronized void checkProperties() {
-        super.checkProperties();
     }
     
 }

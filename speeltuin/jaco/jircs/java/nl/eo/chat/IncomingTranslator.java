@@ -24,10 +24,13 @@ public abstract class IncomingTranslator extends PoolElement {
     protected byte[] buffer = new byte[2048];
     protected String s;
     protected long messageTimer;
+    protected IncomingMessagePool incomingMessagePool;
 
-    IncomingTranslator() {
+    public void setPool(MessagePool pool) {
+        incomingMessagePool = (IncomingMessagePool) pool;
     }
 
+    
     /**
      * Set the socket that will be used to read incoming messages from.
      */
@@ -44,9 +47,9 @@ public abstract class IncomingTranslator extends PoolElement {
                 }
             } catch (InterruptedException e) {
             }
-            Server.log.debug("IncomingTranslator " + number + " (" + Thread.currentThread().getName() + "): Start.");
+            log.debug("IncomingTranslator " + number + " (" + Thread.currentThread().getName() + "): Start.");
             translate();
-            Server.log.debug("IncomingTranslator " + number + " (" + Thread.currentThread().getName() + "): Stop.");
+            log.debug("IncomingTranslator " + number + " (" + Thread.currentThread().getName() + "): Stop.");
         }
     }
     
@@ -59,7 +62,7 @@ public abstract class IncomingTranslator extends PoolElement {
         message.setCommand(ClientMessage.START);
         message.addParameter(hostname);
         message.setSender(socket);
-        IncomingMessagePool.putMessage(message);
+        incomingMessagePool.putMessage(message);
         try {
             inputStream = socket.getInputStream();
         } catch(IOException e) {
@@ -67,7 +70,7 @@ public abstract class IncomingTranslator extends PoolElement {
             message.setCommand(ClientMessage.STOP);
             message.addParameter("Connection could not be initialized.");
             message.setSender(socket);
-            IncomingMessagePool.putMessage(message);
+            incomingMessagePool.putMessage(message);
             return;
         }
         int available = -1;
@@ -78,7 +81,7 @@ public abstract class IncomingTranslator extends PoolElement {
             message.setCommand(ClientMessage.STOP);
             message.addParameter("Connection aborted.");
             message.setSender(socket);
-            IncomingMessagePool.putMessage(message);
+            incomingMessagePool.putMessage(message);
             return;
         }
         messageTimer = System.currentTimeMillis();
@@ -86,7 +89,7 @@ public abstract class IncomingTranslator extends PoolElement {
         while (available != -1) {
             if (available == 0) {
                 // Is this possible?
-                Server.log.debug(Thread.currentThread().getName() + ": Going to sleep.");
+                log.debug(Thread.currentThread().getName() + ": Going to sleep.");
                 try {
                     Thread.currentThread().sleep(1000);
                 } catch(InterruptedException e) {
@@ -131,7 +134,7 @@ public abstract class IncomingTranslator extends PoolElement {
                 message.setCommand(ClientMessage.STOP);
                 message.addParameter("Connection aborted.");
                 message.setSender(socket);
-                IncomingMessagePool.putMessage(message);
+                incomingMessagePool.putMessage(message);
                 return;
             }
         }
@@ -139,7 +142,7 @@ public abstract class IncomingTranslator extends PoolElement {
         message.setCommand(ClientMessage.STOP);
         message.addParameter("Connection closed.");
         message.setSender(socket);
-        IncomingMessagePool.putMessage(message);
+        incomingMessagePool.putMessage(message);
     }
     
     protected void setCommand(ClientMessage message, String command) {
@@ -147,7 +150,7 @@ public abstract class IncomingTranslator extends PoolElement {
         if (commandId != -1) {
             message.setCommand(commandId);
         } else {
-            Server.log.debug("UNKNOWN COMMAND '" + command + "'.");
+            log.debug("UNKNOWN COMMAND '" + command + "'.");
             message.setUnkownCommand(command);
         }
     }
