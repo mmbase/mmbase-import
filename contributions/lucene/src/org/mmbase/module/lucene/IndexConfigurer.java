@@ -13,14 +13,14 @@ import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.lucene.query.*;
+import org.mmbase.bridge.util.xml.query.*;
 
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: IndexConfigurer.java,v 1.1 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: IndexConfigurer.java,v 1.2 2005-07-27 13:59:58 pierre Exp $
  **/
-public class IndexConfigurer implements QueryConfigurer {
+public class IndexConfigurer extends QueryConfigurer {
 
     Set allIndexedFieldsSet = null;
     boolean storeText = false;
@@ -32,20 +32,12 @@ public class IndexConfigurer implements QueryConfigurer {
         this.mergeText = mergeText;
     }
 
-    public QueryDefinition getQueryDefinition(Element queryElement) {
-        return new IndexDefinition(queryElement);
+    public QueryDefinition getQueryDefinition() {
+        return new IndexDefinition(this);
     }
 
-    public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition, Element fieldElement) {
-        IndexFieldDefinition fieldDefinition = new IndexFieldDefinition(queryDefinition, fieldElement, storeText, mergeText);
-        if (!fieldDefinition.keyWord) {
-            if (fieldDefinition.alias != null) {
-                allIndexedFieldsSet.add(fieldDefinition.alias);
-            } else {
-                allIndexedFieldsSet.add(fieldDefinition.fieldName);
-            }
-        }
-        return fieldDefinition;
+    public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition) {
+        return new IndexFieldDefinition(this, queryDefinition, storeText, mergeText);
     }
 
 }

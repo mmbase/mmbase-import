@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.6 2005-05-25 08:53:56 pierre Exp $
+ * @version $Id: Searcher.java,v 1.7 2005-07-27 13:59:58 pierre Exp $
  **/
 public class Searcher {
 
@@ -59,8 +59,10 @@ public class Searcher {
         SearchLog.log(value);
         List list = new LinkedList();
         if (value!=null && !value.equals("")) {
+            IndexSearcher searcher = null;
             try {
-                Hits hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
+                searcher = new IndexSearcher(index);
+                Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
                 if (hits != null) {
                     for (int i = offset; (i < offset+max || max < 0) && i < hits.length(); i++) {
                         String hit = hits.doc(i).get("number");
@@ -75,6 +77,14 @@ public class Searcher {
                 }
             } catch (Exception e) {
                 log.error("Cannot run search :"+e.getMessage());
+            } finally {
+                if (searcher != null) {
+                    try {
+                        searcher.close();
+                    } catch (IOException ioe) {
+                        log.error("Can't close index searcher: " + ioe.getMessage());
+                    }
+                }
             }
         }
         return list;
@@ -90,18 +100,27 @@ public class Searcher {
 
     public int searchSize(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) {
         if (value!=null && !value.equals("")) {
+            IndexSearcher searcher = null;
             try {
-                Hits hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
+                searcher = new IndexSearcher(index);
+                Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
                 return hits.length();
             } catch (Exception e) {
                 log.error("Cannot run searchSize :"+e.getMessage());
+            } finally {
+                if (searcher != null) {
+                    try {
+                        searcher.close();
+                    } catch (IOException ioe) {
+                        log.error("Can't close index searcher: " + ioe.getMessage());
+                    }
+                }
             }
         }
         return 0;
     }
 
-    protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
-        IndexSearcher searcher = new IndexSearcher(index);
+    protected Hits getHits(IndexSearcher searcher, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
         Query query;
         if (fields == null || fields.length == 0) {
             query = QueryParser.parse(value,"fulltext",analyzer);
