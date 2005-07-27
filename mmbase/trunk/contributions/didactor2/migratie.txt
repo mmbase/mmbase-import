@@ -1,5 +1,10 @@
 Migratie issues
 
+2005-07-26
+
+    To change "related" role of the metastandard relation to metadefinition, please run
+    /migrate-2005-07-26.jsp. Now it should be "posrel".  
+
 
 2005-07-14
 
