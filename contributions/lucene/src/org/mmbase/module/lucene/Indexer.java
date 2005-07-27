@@ -18,7 +18,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
 
-import org.pdfbox.encryption.DecryptDocument;
+import org.pdfbox.encryption.DocumentEncryption;
 import org.pdfbox.exceptions.CryptographyException;
 import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
@@ -30,7 +30,6 @@ import org.textmining.text.extraction.WordExtractor;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.HugeNodeListIterator;
-import org.mmbase.module.lucene.query.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
@@ -46,7 +45,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.7 2005-04-27 12:50:32 pierre Exp $
+ * @version $Id: Indexer.java,v 1.8 2005-07-27 13:59:58 pierre Exp $
  **/
 public class Indexer {
 
@@ -86,13 +85,21 @@ public class Indexer {
      * @param number the numbe rof teh node whose index to delete
      */
     public void deleteIndex(String number) {
+        IndexReader reader = null;
         try {
-            IndexReader reader = IndexReader.open(index);
+            reader = IndexReader.open(index);
             Term term = new Term("number", number);
             reader.delete(term);
-            reader.close();
         } catch (Exception e) {
             log.error("Cannot delete Index:"+e.getMessage());
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ioe) {
+                    log.error("Can't close index reader: " + ioe.getMessage());
+                }
+            }
         }
     }
 
@@ -103,8 +110,9 @@ public class Indexer {
      */
     public void updateIndex(String number) {
         deleteIndex(number);
+        IndexWriter writer = null;
         try {
-            IndexWriter writer = new IndexWriter(index, new StandardAnalyzer(), false);
+            writer = new IndexWriter(index, new StandardAnalyzer(), false);
             Node node = cloud.getNode(number);
             if (node != null) {
                 // process all queries
@@ -117,9 +125,16 @@ public class Indexer {
                     }
                 }
             }
-            writer.close();
         } catch (Exception e) {
             log.error("Cannot update Index:"+e.getMessage());
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException ioe) {
+                    log.error("Can't close index writer: " + ioe.getMessage());
+                }
+            }
         }
     }
 
@@ -128,8 +143,9 @@ public class Indexer {
      * and indexing the results.
      */
     public void fullIndex() {
+        IndexWriter writer = null;
         try {
-            IndexWriter writer = new IndexWriter(index, new StandardAnalyzer(), true);
+            writer = new IndexWriter(index, new StandardAnalyzer(), true);
             // process all queries
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
@@ -140,10 +156,17 @@ public class Indexer {
             if (log.isDebugEnabled()) {
                 log.debug("Total nr documents in index: "+writer.docCount());
             }
-            writer.close();
         } catch (Exception e) {
             log.error("Cannot run FullIndex: "+e.getMessage());
             log.error(Logging.stackTrace(e));
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException ioe) {
+                    log.error("Can't close index writer: " + ioe.getMessage());
+                }
+            }
         }
     }
 
@@ -175,6 +198,16 @@ public class Indexer {
         return new HugeNodeListIterator(query, cursor.maxNodesInQuery);
     }
 
+    public void runSubCursors(IndexCursor cursor) throws SearchQueryException, IOException {
+        for (Iterator j = cursor.subQueries.iterator(); j.hasNext(); ) {
+            IndexDefinition queryDefinition = (IndexDefinition) j.next();
+            IndexCursor localCursor = new IndexCursor(queryDefinition);
+            localCursor.nodeNumber = cursor.nodeNumber;
+            indexQuery(localCursor, SUBQUERY);
+            cursor.subCursors.add(localCursor);
+        }
+    }
+
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      * @param cursor the cursor with query and offset information
@@ -186,7 +219,14 @@ public class Indexer {
         if (log.isDebugEnabled()) {
             log.debug("index builder "+cursor.elementManager.getName());
         }
+        boolean cursorEmpty = true;
         for (NodeIterator i = getNodeIterator(cursor,queryType); i.hasNext();) {
+            if (cursorEmpty) {
+                if (queryType == LIMITED_QUERY) {
+                    runSubCursors(cursor);
+                }
+                cursorEmpty = false;
+            }
             Node node = i.nextNode();
             int nodeNumber = -1;
             if (cursor.isMultiLevel) {
@@ -199,18 +239,11 @@ public class Indexer {
                     indexData(cursor);
                 }
                 cursor.init(nodeNumber, queryType != SUBQUERY);
-                for (Iterator j = cursor.subQueries.iterator(); j.hasNext(); ) {
-                    IndexDefinition queryDefinition = (IndexDefinition) j.next();
-                    IndexCursor localCursor = new IndexCursor(queryDefinition);
-                    localCursor.nodeNumber = nodeNumber;
-                    indexQuery(localCursor, SUBQUERY);
-                    cursor.subCursors.add(localCursor);
-                }
-
+                runSubCursors(cursor);
             }
             storeData(node, cursor);
         }
-        if (queryType != SUBQUERY) {
+        if (!cursorEmpty && queryType != SUBQUERY) {
             indexData(cursor);
         }
     }
@@ -241,7 +274,7 @@ public class Indexer {
             IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.alias;
             if (fieldName == null)  fieldName = fieldDefinition.fieldName;
-            if (document.getField(fieldName) == null) {
+            if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
                 String value = cursor.getFieldDataAsString(fieldName);
                 if (fieldDefinition.keyWord) {
                     if (log.isDebugEnabled()) {
@@ -345,7 +378,7 @@ public class Indexer {
                                 parser.parse();
                                 pdfDocument = parser.getPDDocument();
                                 if (pdfDocument.isEncrypted()) {
-                                    DecryptDocument decryptor = new DecryptDocument(pdfDocument);
+                                    DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
                                     decryptor.decryptDocument(decryptionPassword); //  configure password?
                                 }
                                 StringWriter out = new StringWriter();
@@ -418,9 +451,6 @@ public class Indexer {
        // map with data to index for each field
         private Map data = new HashMap();
 
-       // map with data to index for each field
-        private Map fieldTypes = new HashMap();
-
         // set with numbers of nodes indexed so far - used to prevent the indexing
         // of fields already indexed
         private Set indexed = new HashSet();
@@ -455,7 +485,8 @@ public class Indexer {
             if (clearData) {
                 data = new HashMap();
                 indexed = new HashSet();
-            }
+                subCursors = new HashSet();
+           }
         }
 
         /**

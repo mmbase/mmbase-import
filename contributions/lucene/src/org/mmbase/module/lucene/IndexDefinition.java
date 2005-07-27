@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.ArrayList;
 import org.w3c.dom.*;
 
-import org.mmbase.module.lucene.query.*;
+import org.mmbase.bridge.util.xml.query.*;
 
 /**
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexDefinition.java,v 1.3 2005-04-27 12:50:32 pierre Exp $
+ * @version $Id: IndexDefinition.java,v 1.4 2005-07-27 13:59:58 pierre Exp $
  **/
 class IndexDefinition extends QueryDefinition {
 
@@ -39,8 +39,8 @@ class IndexDefinition extends QueryDefinition {
      */
     List subQueries = new ArrayList();
 
-    IndexDefinition(Element queryElement) {
-        super(queryElement);
+    IndexDefinition(QueryConfigurer configurer) {
+        super(configurer);
     }
 
     /**
