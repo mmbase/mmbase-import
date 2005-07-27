@@ -18,8 +18,9 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
-import org.mmbase.module.lucene.query.*;
+import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.Queue;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.12 2005-05-25 08:53:56 pierre Exp $
+ * @version $Id: Lucene.java,v 1.13 2005-07-27 13:59:58 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -41,8 +42,22 @@ public class Lucene extends Module implements MMBaseObserver {
     /** DTD repource filename of the most recent Lucene config DTD */
     public static final String DTD_LUCENE = DTD_LUCENE_2_0;
 
+    /** XSD resource filename of the Lucene config XSD version 1.0 */
+    public static final String XSD_LUCENE_1_0 = "luceneindex.xsd";
+    /** XSD namespace of the Lucene config XSD version 1.0 */
+    public static final String NAMESPACE_LUCENE_1_0 = "http://www.mmbase.org/xmlns/luceneindex";
+
+    /** XSD namespace of the Lucene config XSD most recent version version */
+    public static final String NAMESPACE_LUCENE = NAMESPACE_LUCENE_1_0;
+
+    // Default namespace to use when parsing the DOM. This circumvents oddities
+    // and inconsistencies with how namespaces are treated and assigned in DOM
+    // (particularly regarding unqualified attributes) and with non-validating documents
+    public static final String XMLNS = "*";
+
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
+        XMLEntityResolver.registerPublicID(NAMESPACE_LUCENE_1_0, XSD_LUCENE_1_0, Lucene.class);
     }
 
     // initial wait time after startup, default 5 minutes
@@ -72,6 +87,28 @@ public class Lucene extends Module implements MMBaseObserver {
     private Map indexerMap = new HashMap();
     private Map searcherMap = new HashMap();
     private boolean readOnly = false;
+
+
+
+    /**
+     * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * lucene namespace
+     */
+    static public boolean hasAttribute(Element element, String localName) {
+        return element.hasAttributeNS(NAMESPACE_LUCENE,localName) || element.hasAttribute(localName);
+    }
+
+    /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * lucene namespace
+     */
+    static public String getAttribute(Element element, String localName) {
+        if (element.hasAttributeNS(NAMESPACE_LUCENE,localName)) {
+            return element.getAttributeNS(NAMESPACE_LUCENE,localName);
+        } else {
+            return element.getAttribute(localName);
+        }
+    }
 
     /**
      * This function starts a full Index of Lucene.
@@ -160,7 +197,7 @@ public class Lucene extends Module implements MMBaseObserver {
         }
 
         // read only?
-        readOnly = "true".equals(getInitParameter("readnly"));
+        readOnly = "true".equals(getInitParameter("readonly"));
 
         // initial wait time?
         String time = getInitParameter("initialwaittime");
@@ -199,8 +236,8 @@ public class Lucene extends Module implements MMBaseObserver {
 
     protected void addToIndex (Element queryElement, Collection queries, Set allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom) {
         try {
-            if (queryElement.hasAttribute("optimize")) {
-                String optimize = queryElement.getAttribute("optimize");
+            if (Lucene.hasAttribute(queryElement,"optimize")) {
+                String optimize = Lucene.getAttribute(queryElement,"optimize");
                 storeText = optimize.equals("none");
                 mergeText = optimize.equals("full");
             }
@@ -226,7 +263,7 @@ public class Lucene extends Module implements MMBaseObserver {
             for (int k = 0; k < childNodes.getLength(); k++) {
                 if (childNodes.item(k) instanceof Element) {
                     Element childElement = (Element) childNodes.item(k);
-                    if ("related".equals(childElement.getTagName())) {
+                    if ("related".equals(childElement.getLocalName())) {
                         addToIndex(childElement, queryDefinition.subQueries, allIndexedFieldsSet, storeText, mergeText, elementName);
                     }
                 }
@@ -243,23 +280,23 @@ public class Lucene extends Module implements MMBaseObserver {
 
     protected void readConfiguration() {
         try {
-            Document config = ResourceLoader.getConfigurationRoot().getDocument(INDEX_CONFIG_FILE);
+            Document config = ResourceLoader.getConfigurationRoot().getDocument(INDEX_CONFIG_FILE, true, true, Lucene.class);
             log.service("Reading lucene search configuration from " + INDEX_CONFIG_FILE);
             Element root = config.getDocumentElement();
-            NodeList indexElements = root.getElementsByTagName("index");
+            NodeList indexElements = root.getElementsByTagNameNS("*","index");
             for (int i = 0; i < indexElements.getLength(); i++) {
                 Element indexElement = (Element) indexElements.item(i);
                 String indexName = "default";
-                if (indexElement.hasAttribute("name")) {
-                    indexName = indexElement.getAttribute("name");
+                if (Lucene.hasAttribute(indexElement,"name")) {
+                    indexName = Lucene.getAttribute(indexElement,"name");
                 }
                 if (indexerMap.containsKey(indexName)) {
                     log.warn("Index with name " + indexName + "already exists");
                 } else {
                     boolean storeText = false; // default: no text fields are stored in the index unless noted otherwise
                     boolean mergeText = true; // default: all text fields have the "fulltext" alias unless noted otherwise
-                    if (indexElement.hasAttribute("optimize")) {
-                        String optimize = indexElement.getAttribute("optimize");
+                    if (Lucene.hasAttribute(indexElement,"optimize")) {
+                        String optimize = Lucene.getAttribute(indexElement,"optimize");
                         storeText = optimize.equals("none");
                         mergeText = optimize.equals("full");
                     }
@@ -271,9 +308,9 @@ public class Lucene extends Module implements MMBaseObserver {
                     for (int k = 0; k < childNodes.getLength(); k++) {
                         if (childNodes.item(k) instanceof Element) {
                             Element childElement = (Element) childNodes.item(k);
-                            if ("list".equals(childElement.getTagName())||
-                                "builder".equals(childElement.getTagName()) || // backward comp. old finalist lucene
-                                "table".equals(childElement.getTagName())) { // backward comp. finalist lucene
+                            if ("list".equals(childElement.getLocalName())||
+                                "builder".equals(childElement.getLocalName()) || // backward comp. old finalist lucene
+                                "table".equals(childElement.getLocalName())) { // backward comp. finalist lucene
                                addToIndex(childElement, queries, allIndexedFieldsSet, storeText, mergeText, null);
                             }
                         }

@@ -13,14 +13,14 @@ import java.util.Collection;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.lucene.query.*;
+import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.storage.search.*;
 
 /**
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.1 2005-04-21 14:28:43 pierre Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.2 2005-07-27 13:59:58 pierre Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -46,11 +46,21 @@ public class IndexFieldDefinition extends FieldDefinition {
      */
     public String decryptionPassword = "";
 
-    public IndexFieldDefinition(QueryDefinition queryDefinition, Element fieldElement,
-                                boolean storeTextDefault, boolean mergeTextDefault) {
-        super(queryDefinition, fieldElement);
-        if (fieldElement.hasAttribute("keyword")) {
-            keyWord = "true".equals(fieldElement.getAttribute("keyword"));
+    // default for storing text
+    private boolean storeTextDefault = false;
+
+    //d efault for merging text
+    private boolean mergeTextDefault = false;
+
+    public IndexFieldDefinition(QueryConfigurer configurer, QueryDefinition queryDefinition, boolean storeTextDefault, boolean mergeTextDefault) {
+        super(configurer, queryDefinition);
+        this.storeTextDefault = storeTextDefault;
+        this.mergeTextDefault = mergeTextDefault;
+    }
+
+    public void configure(Element fieldElement) {
+        if (QueryReader.hasAttribute(fieldElement,"keyword")) {
+            keyWord = "true".equals(QueryReader.getAttribute(fieldElement,"keyword"));
         } else {
             int type = Field.TYPE_UNKNOWN;
             if (stepField != null) type = stepField.getType();
@@ -59,18 +69,25 @@ public class IndexFieldDefinition extends FieldDefinition {
                       (type == Field.TYPE_DOUBLE) || (type == Field.TYPE_FLOAT) ||
                       (type == Field.TYPE_NODE);
         }
-        if (fieldElement.hasAttribute("alias")) {
-            alias = fieldElement.getAttribute("alias");
+        if (QueryReader.hasAttribute(fieldElement,"alias")) {
+            alias = QueryReader.getAttribute(fieldElement,"alias");
         } else if (mergeTextDefault && !keyWord) {
             alias = "fulltext";
         }
-        if (fieldElement.hasAttribute("store")) {
-            storeText = "true".equals(fieldElement.getAttribute("store"));
+        if (QueryReader.hasAttribute(fieldElement,"store")) {
+            storeText = "true".equals(QueryReader.getAttribute(fieldElement,"store"));
         } else {
             storeText = !keyWord && storeTextDefault;
         }
-        if (fieldElement.hasAttribute("password")) {
-            decryptionPassword = fieldElement.getAttribute("password");
+        if (QueryReader.hasAttribute(fieldElement,"password")) {
+            decryptionPassword = QueryReader.getAttribute(fieldElement,"password");
+        }
+        if (!keyWord) {
+            if (alias != null) {
+                ((IndexConfigurer)configurer).allIndexedFieldsSet.add(alias);
+            } else {
+                ((IndexConfigurer)configurer).allIndexedFieldsSet.add(fieldName);
+            }
         }
     }
 
