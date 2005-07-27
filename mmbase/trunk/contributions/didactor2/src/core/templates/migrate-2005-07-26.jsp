@@ -8,32 +8,29 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 
+<% int nextPos = 0; %>
+
 delete all related and create posrel for metastandard->metadefinition ...<br/>
 metastandards:<br/>
 
-<mm:listnodes type="metastandard" >
+<mm:listnodes type="metastandard"  id="metastandard_id">
 
-  <mm:field name="name" jspvar="metaStandard" vartype="String">
-     <%=metaStandard %> <br/>
-  </mm:field>
-    
-   <mm:node id="metastandard_id" >
+  <mm:field name="name" />
+  <% nextPos = 1; %>
 
-     <mm:relatednodes type="metadefinition" role="related">
+  <mm:relatednodes type="metadefinition" role="related"  id="metadefinition_id" orderby="name">
+          <% nextPos +=10 ; %>
       
-       <mm:node id="metadefinition_id" >
           <mm:createrelation source="metastandard_id" destination="metadefinition_id" role="posrel" >
-             <mm:setfield name="pos">1</mm:setfield>
+             <mm:setfield name="pos"><%=nextPos%></mm:setfield>
           </mm:createrelation>
+
           <mm:listrelations type="metastandard" role="related" >
              <mm:deletenode />
           </mm:listrelations> 
-      </mm:node>
-
-    </mm:relatednodes>
- 
-  </mm:node> 
- 
+      
+  </mm:relatednodes>
+    
 </mm:listnodes>
 
 done.
