@@ -20,11 +20,9 @@ import java.util.Vector;
  */
 public abstract class OutgoingTranslator extends PoolElement {
     protected Socket socket;
+    protected OutgoingMessagePool outgoingMessagePool;
     protected byte[] buffer = new byte[2048];
     
-    OutgoingTranslator() {
-    }
-
     /**
      * Set the socket that will be used to read from.
      */
@@ -32,7 +30,15 @@ public abstract class OutgoingTranslator extends PoolElement {
         this.socket = socket;
     }
 
+    public void setPool(MessagePool pool) {
+        outgoingMessagePool = (OutgoingMessagePool) pool;
+    }
+
+
     public void run() {
+        if (outgoingMessagePool == null) {
+            throw new RuntimeException("outgoingMessagePool is null!");
+        }
         while (true) {
             try{
                 synchronized(this) {
@@ -41,9 +47,9 @@ public abstract class OutgoingTranslator extends PoolElement {
                 }
             } catch (InterruptedException e) {
             }
-            Server.log.debug("OutgoingTranslator " + number + " (" + Thread.currentThread().getName() + "): Start.");
+            log.debug("OutgoingTranslator " + number + " (" + Thread.currentThread().getName() + "): Start.");
             translate();
-            Server.log.debug("OutgoingTranslator " + number + " (" + Thread.currentThread().getName() + "): Stop.");
+            log.debug("OutgoingTranslator " + number + " (" + Thread.currentThread().getName() + "): Stop.");
         }
     }
 
@@ -52,9 +58,10 @@ public abstract class OutgoingTranslator extends PoolElement {
         try {
             writer = new OutputStreamWriter(socket.getOutputStream());
         } catch(IOException e) {
+            log.debug("IOException in translate(): "+e.toString());
             return;
         }
-        ServerMessage message = (ServerMessage)OutgoingMessagePool.getMessage(socket);
+        ServerMessage message = (ServerMessage)outgoingMessagePool.getMessage(socket);
         boolean quit = false;
         while (!quit) {
             if (message == null) {
@@ -66,15 +73,16 @@ public abstract class OutgoingTranslator extends PoolElement {
                 try {
                     quit = writeMessage(writer, message);
                 } catch(IOException e) {
+                    log.debug("IOException in translate(): "+e.toString());
                     return;
                 }
             }
-            message = (ServerMessage)OutgoingMessagePool.getMessage(socket);
+            message = (ServerMessage)outgoingMessagePool.getMessage(socket);
         }
         try {
             socket.close();
         } catch (IOException e) {
-            Server.log.error("Can't close socket.");
+            log.error("Can't close socket: "+e.toString());
         }
     }
 

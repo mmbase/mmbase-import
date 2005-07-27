@@ -25,8 +25,10 @@ class ConnectionBuilder implements Runnable {
     Pool incomingTranslatorPool;
     Pool outgoingTranslatorPool;
     private ServerSocket serverSocket;
-
-    ConnectionBuilder() {
+    private ChatEngine engine;
+    
+    ConnectionBuilder(ChatEngine engine) {
+        this.engine = engine;
     }
 
     public void setPort(int port) {
@@ -42,12 +44,12 @@ class ConnectionBuilder implements Runnable {
     }
 
     public void run() {
-        while (!Server.stop) {
+        while (!engine.stop) {
             serverSocket = null;
             try {
                 serverSocket = new ServerSocket(port);
             } catch(IOException e) {
-                Server.log.error("Could not open port " + port + ": " + e.getMessage());
+                engine.log.error("Could not open port " + port + ": " + e.getMessage());
             }
             if (serverSocket == null) {
                 try {
@@ -55,18 +57,18 @@ class ConnectionBuilder implements Runnable {
                 } catch(InterruptedException e) {
                 }
             } else {
-                Server.log.info("Port " + port + " opened.");
+                engine.log.info("Port " + port + " opened.");
                 // Set a timeout to be able to react on a server shutdown.
                 try {
                     serverSocket.setSoTimeout(1000);
                 } catch(SocketException e) {
-                    Server.log.error("Could not set socket timeout.");
+                    engine.log.error("Could not set socket timeout.");
                 }
                 int socketNr = 0;
-                while (!Server.stop) {
+                while (!engine.stop) {
                     Socket socket = null;
                     boolean accepted = false;
-                    while (!Server.stop && !accepted) {
+                    while (!engine.stop && !accepted) {
                         try {
                             socket = serverSocket.accept();
                             accepted = true;
@@ -74,7 +76,7 @@ class ConnectionBuilder implements Runnable {
                             // Socket timeout. Gives a change to check for
                             // server shutdown.
                         } catch(IOException e) {
-                            Server.log.error("Could not accept a socket: " + e.getMessage());
+                            engine.log.error("Could not accept a socket: " + e.getMessage());
                         }
                     }
                     if (accepted) {
@@ -84,19 +86,19 @@ class ConnectionBuilder implements Runnable {
                             // socket was closed and the read will stay blocked.
                             socket.setSoTimeout(1000);
                         } catch(SocketException e) {
-                            Server.log.error("Can't set socket timeout.");
+                            engine.log.error("Can't set socket timeout.");
                             ok = false;
                         }
                         try {
                             socket.setTcpNoDelay(true);
                         } catch(SocketException e) {
-                            Server.log.error("Can't set tcp no delay.");
+                            engine.log.error("Can't set tcp no delay.");
                             ok = false;
                         }
                         if (ok) {
-                            Server.log.debug("Accept a socket.");
+                            engine.log.debug("Accept a socket.");
                             socketNr++;
-                            Server.log.debug("Accepted socket number " + socketNr + ".");
+                            engine.log.debug("Accepted socket number " + socketNr + ".");
                             IncomingTranslator incomingTranslator = (IncomingTranslator)incomingTranslatorPool.getObject();
                             incomingTranslator.setSocket(socket);
                             incomingTranslatorPool.proceed(incomingTranslator);
@@ -108,7 +110,7 @@ class ConnectionBuilder implements Runnable {
                 }
             }
         }
-        Server.log.info("Port " + port + " closed.");
+        engine.log.info("Port " + port + " closed.");
     }
 
 }

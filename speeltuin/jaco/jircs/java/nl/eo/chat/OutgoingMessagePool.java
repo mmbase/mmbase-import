@@ -20,29 +20,36 @@ import java.net.Socket;
  *
  * @author Jaco de Groot
  */
-public class OutgoingMessagePool {
+public class OutgoingMessagePool extends MessagePool {
     // Contains vectors with messages (values) related to sockets (keys).
-    private static Hashtable sockets = new Hashtable();
-
-    protected static synchronized void putMessage(ServerMessage message) {
-        Vector recipients = message.getRecipients();
-        for (int i = 0; i < recipients.size(); i++) {
-            Socket socket = (Socket)recipients.elementAt(i);
-            Vector messages = (Vector)sockets.get(socket);
-            if (messages == null) {
-                messages = new Vector();
-                sockets.put(socket, messages);
+    private Hashtable sockets = new Hashtable();
+    private Object watcher = new Object();
+    
+    protected void putMessage(ServerMessage message) {
+        synchronized(watcher) {
+            log.debug("outgoing servermessage: "+message.getCommand(message.getCommand()));
+            Vector recipients = message.getRecipients();
+            for (int i = 0; i < recipients.size(); i++) {
+                Socket socket = (Socket)recipients.elementAt(i);
+                Vector messages = (Vector)sockets.get(socket);
+                if (messages == null) {
+                    messages = new Vector();
+                    sockets.put(socket, messages);
+                }
+                messages.add(message);
             }
-            messages.add(message);
+
         }
     }
 
-    protected static synchronized Message getMessage(Socket socket) {
-        Vector messages = (Vector)sockets.get(socket);
-        if (messages != null && messages.size() > 0) {
-            return (Message)messages.remove(0);
-        } else {
-            return null;
+    protected Message getMessage(Socket socket) {
+        synchronized(watcher) {
+            Vector messages = (Vector)sockets.get(socket);
+            if (messages != null && messages.size() > 0) {
+                return (Message)messages.remove(0);
+            } else {
+                return null;
+            }
         }
     }
 }

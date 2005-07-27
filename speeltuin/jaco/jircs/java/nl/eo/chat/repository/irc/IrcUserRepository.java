@@ -34,8 +34,10 @@ public class IrcUserRepository implements UserRepository {
     private String operatorPassword;
     private String administratorUsername;
     private String administratorPassword;
+    protected ChatEngine engine;
     
-    public IrcUserRepository() {
+    public void init(ChatEngine e) {
+        engine = e;
     }
 
     public void connect(Socket socket, String hostname) {
@@ -178,14 +180,14 @@ public class IrcUserRepository implements UserRepository {
     }
 
     public void disconnect(Socket socket) {
-        ChatEngine.log.debug("<disconnect-pre>");
-        ChatEngine.log.debug("REGISTERED SOCKETS: " + registeredSockets.size());
-        ChatEngine.log.debug("REGISTERED NICKS: " + registeredNicks.size());
-        ChatEngine.log.debug("UNREGISTERED SOCKETS: " + unregisteredSockets.size());
-        ChatEngine.log.debug("UNREGISTERED NICKS: " + unregisteredNicks.size());
-        ChatEngine.log.debug("LAST COMMAND RECIEVED: " + lastCommandRecieved.size());
-        ChatEngine.log.debug("LAST PING SEND: " + lastPingSend.size());
-        ChatEngine.log.debug("</disconnect-pre>");
+        engine.log.debug("<disconnect-pre>");
+        engine.log.debug("REGISTERED SOCKETS: " + registeredSockets.size());
+        engine.log.debug("REGISTERED NICKS: " + registeredNicks.size());
+        engine.log.debug("UNREGISTERED SOCKETS: " + unregisteredSockets.size());
+        engine.log.debug("UNREGISTERED NICKS: " + unregisteredNicks.size());
+        engine.log.debug("LAST COMMAND RECIEVED: " + lastCommandRecieved.size());
+        engine.log.debug("LAST PING SEND: " + lastPingSend.size());
+        engine.log.debug("</disconnect-pre>");
         if (lastPingSend.remove(socket) == null) {
             lastCommandRecieved.remove(socket);
         }
@@ -203,14 +205,14 @@ public class IrcUserRepository implements UserRepository {
             registeredNicks.remove(user.getNick().toLowerCase());
             registeredSockets.remove(socket);
         }
-        ChatEngine.log.debug("<disconnect-post>");
-        ChatEngine.log.debug("REGISTERED SOCKETS: " + registeredSockets.size());
-        ChatEngine.log.debug("REGISTERED NICKS: " + registeredNicks.size());
-        ChatEngine.log.debug("UNREGISTERED SOCKETS: " + unregisteredSockets.size());
-        ChatEngine.log.debug("UNREGISTERED NICKS: " + unregisteredNicks.size());
-        ChatEngine.log.debug("LAST COMMAND RECIEVED: " + lastCommandRecieved.size());
-        ChatEngine.log.debug("LAST PING SEND: " + lastPingSend.size());
-        ChatEngine.log.debug("</disconnect-post>");
+        engine.log.debug("<disconnect-post>");
+        engine.log.debug("REGISTERED SOCKETS: " + registeredSockets.size());
+        engine.log.debug("REGISTERED NICKS: " + registeredNicks.size());
+        engine.log.debug("UNREGISTERED SOCKETS: " + unregisteredSockets.size());
+        engine.log.debug("UNREGISTERED NICKS: " + unregisteredNicks.size());
+        engine.log.debug("LAST COMMAND RECIEVED: " + lastCommandRecieved.size());
+        engine.log.debug("LAST PING SEND: " + lastPingSend.size());
+        engine.log.debug("</disconnect-post>");
     }
 
     public int numberOfRegisteredUsers() {

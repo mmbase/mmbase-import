@@ -25,22 +25,57 @@ public class Pool {
     // proceed is called.
     Vector init = new Vector();
     Vector busy = new Vector();
-    Class c;
 
-    public Pool(Class c, int min, int max) {
+    // here are the (unstarted) elements that get created with new Pool()
+    Vector waiting = new Vector();
+    
+    Class c;
+    ChatEngine engine;
+    MessagePool messagePool;
+    Logger log;
+
+    public Pool(Class c, int min, int max, MessagePool messagePool) throws Exception {
+        if (messagePool == null) throw new Exception("No messagePool configured");
         this.c = c;
         this.min = min;
         this.max = max;
         poolSize = 0;
+        
+        this.messagePool = messagePool;
+        
         for (int i = 0; i < min; i++) {
-            try {
-                addThread();
-            } catch(Exception e) {
-                Server.log.error("Could not create instance of " + c.getName() + ".");
-            }
+            addWaiting();
         }
     }
 
+    public synchronized void setLogger(Logger log) {
+        this.log = log;
+        log.info("Registering logger with Pool");
+        for (int i = 0; i < waiting.size(); i++) {
+            ((PoolElement) waiting.get(i)).setLogger(log);
+        }   
+        for (int i = 0; i < init.size(); i++) {
+             ((PoolElement) init.get(i)).setLogger(log);
+        }
+        for (int i = 0; i < free.size(); i++) {
+            ((PoolElement) free.get(i)).setLogger(log);
+        }
+        for (int i = 0; i < busy.size(); i++) {
+            ((PoolElement) busy.get(i)).setLogger(log);
+        }
+    }
+    
+    public void start() {
+        if (log == null) {
+            throw new RuntimeException("Log must be initialized before pool is started!");
+        }
+        while (waiting.size() > 0) {
+            PoolElement e = (PoolElement) busy.remove(0);
+            addThread(e);
+        }
+    }
+
+    
     public synchronized Object getObject() {
         int size = free.size();
         if (size == 0) {
@@ -51,15 +86,15 @@ public class Pool {
                 try {
                     addThread();
                 } catch(Exception e) {
-                    Server.log.error("Could not create instance of " + c.getName() + ".");
+                    log.error("Could not create instance of " + c.getName() + ".");
                     return null;
                 }
                 checkBusyThreads();
                 size = free.size();
             }
-            Server.log.debug(c.getName() + " pool: " + free.size() + " free, " + init.size() + " init, " + busy.size() + " busy, " + poolSize + " total.");
+            log.debug(c.getName() + " pool: " + free.size() + " free, " + init.size() + " init, " + busy.size() + " busy, " + poolSize + " total.");
             while (size == 0) {
-                Server.log.debug("Pool " + c.getName() + " waiting for free threads.");
+                log.debug("Pool " + c.getName() + " waiting for free threads.");
                 try {
                     Thread.currentThread().sleep(1000);
                 } catch(InterruptedException e) {
@@ -75,21 +110,34 @@ public class Pool {
 
     public synchronized void proceed(PoolElement poolElement) {
         if (!init.remove(poolElement)) {
-            Server.log.error(c.getName() + " pool error: This thread should have been part of the init Vector.");
+            log.error(c.getName() + " pool error: This thread should have been part of the init Vector.");
         }
         poolElement.proceed();
         if (!busy.add(poolElement)) {
-            Server.log.error(c.getName() + " pool error: This thread should not already be part of the busy Vector.");
+            log.error(c.getName() + " pool error: This thread should not already be part of the busy Vector.");
         }
     }
 
-    private void addThread() throws InstantiationException, IllegalAccessException {
-        PoolElement poolElement = (PoolElement)c.newInstance();
+    private void addWaiting() throws InstantiationException, IllegalAccessException {
+         PoolElement poolElement = (PoolElement)c.newInstance();
+         if (this.log != null) {
+             poolElement.setLogger(this.log);
+         }
+         waiting.add(poolElement);
+    }
+    
+    private void addThread(PoolElement poolElement) {
+        poolElement.setLogger(this.log);
+        poolElement.setPool(this.messagePool);
         poolSize++;
         poolElement.setNumber(poolSize);
         new Thread(poolElement).start();
         busy.add(poolElement);
-        Server.log.info("New " + c.getName() + " pool size: " + poolSize);
+    }
+    
+    private void addThread() throws InstantiationException, IllegalAccessException {
+        PoolElement poolElement = (PoolElement)c.newInstance();
+        addThread(poolElement);
     }
 
     private void checkBusyThreads() {

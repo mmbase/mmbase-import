@@ -31,8 +31,8 @@ public class ChatEngine implements Runnable {
     private Repository repository;
     private UserRepository userRepository;
     private ChannelRepository channelRepository;
-    public static Logger log; // Should only be used by code executed by the chat engine thread.
-    private final static String version = "1.3.2.dev"; // Change this version also in build.xml
+    public  Logger log; // Should only be used by code executed by the chat engine thread.
+    private final static String version = "1.4.dev"; // Change this version also in build.xml
     private String servername;
     private String serverinfo;
     private String motd;
@@ -56,84 +56,141 @@ public class ChatEngine implements Runnable {
     private boolean openWarning5Done = false;
     private Filter filter;
     private Filter nickFilter;
+    protected IncomingMessagePool incomingMessagePool = new IncomingMessagePool();
+    protected OutgoingMessagePool outgoingMessagePool = new OutgoingMessagePool();
+    long freshFilters = 0;
+    public boolean stop = false;
 
-    public ChatEngine() {
+    protected ArrayList connectionBuilders = new ArrayList();
+    protected ArrayList connectionBuilderThreads = new ArrayList();
+    protected Pool incomingFlashTranslatorPool;
+    protected Pool outgoingFlashTranslatorPool;
+    protected Pool incomingIrcTranslatorPool;
+    protected Pool outgoingIrcTranslatorPool;
+
+    public void setLogger (Logger log) {
+        this.log = log;
+        if (incomingFlashTranslatorPool != null) {
+            incomingFlashTranslatorPool.setLogger(log);
+            outgoingFlashTranslatorPool.setLogger(log);
+        }
+        if (incomingIrcTranslatorPool != null) {
+            incomingIrcTranslatorPool.setLogger(log);
+            outgoingIrcTranslatorPool.setLogger(log);
+        }
+        incomingMessagePool.setLogger(log);
+        outgoingMessagePool.setLogger(log);
     }
 
-    public void setPropertiesFilename(String filename) {
-        propertiesFilename = filename;
+    public void setName( String name ) {
+        servername = name;
     }
 
-    public void init() throws InitializationException {
-        log = new Logger(propertiesFilename, "chatengine.");
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(new File(propertiesFilename)));
-        } catch(FileNotFoundException e) {
-            throw new InitializationException("Could not find properties file '" + propertiesFilename + "'.");
-        } catch(IOException e) {
-            throw new InitializationException("Could not read properties file '" + propertiesFilename + "': " + e.getMessage());
+    public void setInfo( String info) {
+        this.serverinfo = info;
+    }
+
+    public void setMotd( String motd) {
+        this.motd = motd;
+    }
+
+    public void addFlashPort(String num) throws Exception {
+        addFlashPort(Integer.parseInt(num));
+    }
+
+    
+    public void addFlashPort( int portnum ) throws Exception {
+        if (incomingFlashTranslatorPool == null) {
+            incomingFlashTranslatorPool = new Pool(Class.forName("nl.eo.chat.IncomingFlashTranslator"), 5, -1, incomingMessagePool);
+            outgoingFlashTranslatorPool = new Pool(Class.forName("nl.eo.chat.OutgoingFlashTranslator"), 5, -1, outgoingMessagePool);
+        }      
+        ConnectionBuilder connectionBuilder = new ConnectionBuilder(this);
+        connectionBuilder.setPort(portnum);
+        connectionBuilder.setIncomingTranslatorPool(incomingFlashTranslatorPool);
+        connectionBuilder.setOutgoingTranslatorPool(outgoingFlashTranslatorPool);
+        connectionBuilders.add(connectionBuilder);
+    }
+
+    
+    public void addIrcPort(String num) throws Exception {
+        addIrcPort(Integer.parseInt(num));
+    }
+
+    public void addIrcPort( int portnum ) throws Exception {
+        if (incomingIrcTranslatorPool == null) {
+            incomingIrcTranslatorPool = new Pool(Class.forName("nl.eo.chat.IncomingIrcTranslator"), 5, -1, incomingMessagePool);
+            outgoingIrcTranslatorPool = new Pool(Class.forName("nl.eo.chat.OutgoingIrcTranslator"), 5, -1, outgoingMessagePool);
         }
-        servername = properties.getProperty("servername");
-        if (servername == null) {
-            throw new InitializationException("Could not read property servername.");
-        }
-        serverinfo = properties.getProperty("serverinfo");
-        if (serverinfo == null) {
-            throw new InitializationException("Could not read property serverinfo.");
-        }
-        motd = properties.getProperty("motd");
-        if (motd == null) {
-            throw new InitializationException("Could not read property motd.");
-        }
-        defaultChannelModes = properties.getProperty("defaultchannelmodes");
+        ConnectionBuilder connectionBuilder = new ConnectionBuilder(this);
+        connectionBuilder.setPort(portnum);
+        connectionBuilder.setIncomingTranslatorPool(incomingIrcTranslatorPool);
+        connectionBuilder.setOutgoingTranslatorPool(outgoingIrcTranslatorPool);
+        connectionBuilders.add(connectionBuilder);
+    }
+
+   
+
+    public void setDefaultChannelModes(String m) {
+        defaultChannelModes = m;
         if (defaultChannelModes == null) {
             defaultChannelModes = "d";
         }
+    }
+
+    public void setDefaultChannelUserLimit(String l) {
+        defaultChannelUserLimit = Integer.parseInt(l);
+    }
+    
+    public void setAllowChannelCreationByUser(boolean b) {
+        allowChannelCreationByUser = b;
+    }
+
+    public void setAllowChannelOperationWhenNotOnChannel(boolean b) {
+        allowChannelOperationWhenNotOnChannel = b;
+    }
+
+    public void setKickOperatorAllowed(boolean b) {
+        kickOperatorAllowed = b;
+    }
+    
+    public void setIgnoreBanForOperator(boolean b) {
+        ignoreBanForOperator = b;
+    }
+
+    public void setChannelOperatorMaySetRemoveChannelOperatorStatus(boolean b) {
+        channelOperatorMaySetRemoveChannelOperatorStatus = b;
+    }
+
+    public void setRepository(Repository r) throws Exception {
+        repository = r;
+   }
+
+
+    protected synchronized void updateFilters() {
+        long now = System.currentTimeMillis();
+        if (now - freshFilters > 60 * 1000) {
+            filter = repository.getFilter();
+            nickFilter = repository.getNickFilter();
+            freshFilters = System.currentTimeMillis();
+        }
+    }
+    
+    public void run() {
+        if (log == null) {
+            throw new RuntimeException("ChatEngine has no logger");
+        }
+        log.info("ChatEngine starting.");
+        if (repository == null) {
+            throw new RuntimeException("No repository loaded");
+        }
         try {
-            defaultChannelUserLimit = Integer.parseInt(properties.getProperty("defaultchanneluserlimit"));
-        } catch(Exception e) {
+            repository.init(this);
         }
-        if ("true".equals(properties.getProperty("AllowChannelCreationByUser"))) {
-            allowChannelCreationByUser = true;
-        } else if ("false".equals(properties.getProperty("AllowChannelCreationByUser"))) {
-            allowChannelCreationByUser = false;
+        catch (Throwable e) {
+            log.error(e.toString());
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        if ("true".equals(properties.getProperty("AllowChannelOperationWhenNotOnChannel"))) {
-            allowChannelOperationWhenNotOnChannel = true;
-        } else if ("false".equals(properties.getProperty("AllowChannelOperationWhenNotOnChannel"))) {
-            allowChannelOperationWhenNotOnChannel= false;
-        }
-        if ("true".equals(properties.getProperty("KickOperatorAllowed"))) {
-            kickOperatorAllowed = true;
-        } else if ("false".equals(properties.getProperty("KickOperatorAllowed"))) {
-            kickOperatorAllowed = false;
-        }
-        if ("true".equals(properties.getProperty("IgnoreBanForOperator"))) {
-            ignoreBanForOperator = true;
-        } else if ("false".equals(properties.getProperty("IgnoreBanForOperator"))) {
-            ignoreBanForOperator = false;
-        }
-        if ("true".equals(properties.getProperty("ChannelOperatorMaySetRemoveChannelOperatorStatus"))) {
-            channelOperatorMaySetRemoveChannelOperatorStatus = true;
-        } else if ("false".equals(properties.getProperty("ChannelOperatorMaySetRemoveChannelOperatorStatus"))) {
-            channelOperatorMaySetRemoveChannelOperatorStatus = false;
-        }
-        String r = properties.getProperty("repository");
-        if (r == null) {
-            throw new InitializationException("Could not read property repository.");
-        }
-        try {
-            repository = (Repository)Class.forName(r).newInstance();
-        } catch(ClassNotFoundException e) {
-            throw new InitializationException("Could not find class: " + r);
-        } catch(InstantiationException e) {
-            throw new InitializationException("Could not instantiate class: " + r);
-        } catch(IllegalAccessException e) {
-            throw new InitializationException("Could not access class: " + r);
-        }
-        repository.setProperties(properties);
-        repository.init();
         userRepository = repository.getUserRepository();
         channelRepository = repository.getChannelRepository();
         checkSocketsAfter = new Date(System.currentTimeMillis());
@@ -143,11 +200,26 @@ public class ChatEngine implements Runnable {
         date = df.format(new Date(System.currentTimeMillis()));
         filter = repository.getFilter();
         nickFilter = repository.getNickFilter();
-    }
-
-    public void run() {
-        while (!Server.stop) {
+        
+        if (incomingFlashTranslatorPool != null) {
+            incomingFlashTranslatorPool.setLogger(log);
+            outgoingFlashTranslatorPool.setLogger(log);
+        }
+        if (incomingIrcTranslatorPool != null) {
+            incomingIrcTranslatorPool.setLogger(log);
+            outgoingIrcTranslatorPool.setLogger(log);
+        }
+        Iterator ci = connectionBuilders.iterator();
+        while (ci.hasNext()) {
+            ConnectionBuilder cb = (ConnectionBuilder) ci.next();
+            Thread cbThread = new Thread(cb);
+            cbThread.start();
+            connectionBuilderThreads.add(cbThread);
+        }
+        
+        while (!stop) {
             try {
+                updateFilters();
                 // Check "working hours" of channels.
                 Date date = new Date(System.currentTimeMillis());
                 if (date.after(checkChatOpenAfter)) {
@@ -199,7 +271,7 @@ public class ChatEngine implements Runnable {
                             serverMessage.addParameter(user.getNick());
                             serverMessage.addParameter(message);
                             serverMessage.setRecipient(user.getSocket());
-                            OutgoingMessagePool.putMessage(serverMessage);
+                            outgoingMessagePool.putMessage(serverMessage);
                         }
                     }
                     log.debug("Done.");
@@ -229,7 +301,7 @@ public class ChatEngine implements Runnable {
                                 serverMessage.addParameter(channel.getName());
                                 serverMessage.addParameter(mode);
                                 serverMessage.setRecipient(u.getSocket());
-                                OutgoingMessagePool.putMessage(serverMessage);
+                                outgoingMessagePool.putMessage(serverMessage);
                             }
                         }
                     }
@@ -265,7 +337,7 @@ public class ChatEngine implements Runnable {
                     log.debug("Listed " + i + " unregistered sockets.");
                 }
                 // Check for incoming messages.
-                ClientMessage clientMessage = (ClientMessage)IncomingMessagePool.getMessage();
+                ClientMessage clientMessage = (ClientMessage)incomingMessagePool.getMessage();
                 if (clientMessage == null) {
                     // No message found, check for connection timeouts.
                     Socket socket = userRepository.getInactiveSocket(false, new Date(System.currentTimeMillis() - 5 * 60 * 1000));
@@ -415,7 +487,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter("USERHOST");
             serverMessage.addParameter("Not enough parameters");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else {
             for (int i=0;i < 5;i++) {
                 if (clientMessage.getParameter(i) != null) {
@@ -428,7 +500,7 @@ public class ChatEngine implements Runnable {
                             serverMessage.addParameter(user.getNick());
                             serverMessage.addParameter(":" + usr.getNick() + "=+" + usr.getNick() + "@" + usr.getHostname());
                             serverMessage.setRecipient(socket);
-                            OutgoingMessagePool.putMessage(serverMessage);
+                            outgoingMessagePool.putMessage(serverMessage);
                         }
                     }
                 }
@@ -458,7 +530,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter("PASS");
             serverMessage.addParameter("Not enough parameters");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else {
             userRepository.setPass(socket, pass);
         }
@@ -482,7 +554,7 @@ public class ChatEngine implements Runnable {
             }
             serverMessage.addParameter("No nickname given");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else {
             if (!userRepository.isValidNick(nick) || (nickFilter != null && !nickFilter.allow(nick))) {
                 String n = userRepository.getUnregisteredNick(socket);
@@ -497,7 +569,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(nick);
                 serverMessage.addParameter("Erroneous nickname");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             } else {
                 if (userRepository.setNick(socket, nick)) {
                     // X-Chat 1.8.8 doesn't resend the USER message after a
@@ -522,7 +594,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(nick);
                     serverMessage.addParameter("Nickname is already in use");
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 }
             }
         }
@@ -546,7 +618,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter("USER");
             serverMessage.addParameter("Not enough parameters");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else {
             userRepository.setUsername(socket, username);
             userRepository.setRealname(socket, realname);
@@ -575,7 +647,7 @@ public class ChatEngine implements Runnable {
             }
             serverMessage.addParameter("Password incorrect");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else if (result == UserRepository.REGISTER_BANNED) {
             String n = userRepository.getUnregisteredNick(socket);
             ServerMessage serverMessage = new ServerMessage();
@@ -588,7 +660,7 @@ public class ChatEngine implements Runnable {
             }
             serverMessage.addParameter("You are banned from this server");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         }
     }
 
@@ -604,7 +676,7 @@ public class ChatEngine implements Runnable {
                                    + user.getUsername() + "@"
                                    + user.getHostname());
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -614,7 +686,7 @@ public class ChatEngine implements Runnable {
                                    + servername + ", running version  "
                                    + version);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -623,7 +695,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter("This server was created "
                                    + date);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -634,7 +706,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(usermodes);
         serverMessage.addParameter(channelmodes);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -643,7 +715,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter("There are " + userRepository.numberOfRegisteredUsers()
                                    + " users and 0 services on 1 servers");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -652,7 +724,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter("" + userRepository.numberOfOperators());
         serverMessage.addParameter("operator(s) online");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -661,7 +733,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter("" + userRepository.numberOfUnregisteredUsers());
         serverMessage.addParameter("unknown connection(s)");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -670,7 +742,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter("" + channelRepository.getChannels().size());
         serverMessage.addParameter("channels formed");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -680,7 +752,7 @@ public class ChatEngine implements Runnable {
                                     + userRepository.numberOfRegisteredUsers())
                        + " clients and 1 servers");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -688,7 +760,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(user.getNick());
         serverMessage.addParameter("- " + servername + " Message of the day - ");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -696,7 +768,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(user.getNick());
         serverMessage.addParameter("- " + motd);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
 
         serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -704,7 +776,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(user.getNick());
         serverMessage.addParameter("End of MOTD command");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void handleCommandPING(ClientMessage clientMessage, User user, Socket socket) {
@@ -718,7 +790,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter(param2);
             serverMessage.addParameter("No such server");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else if (param1 == null) {
             ServerMessage serverMessage = new ServerMessage();
             serverMessage.setPrefix(servername);
@@ -726,7 +798,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter(user.getNick());
             serverMessage.addParameter("No origin specified");
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         } else {
             ServerMessage serverMessage = new ServerMessage();
             serverMessage.setPrefix(servername);
@@ -735,7 +807,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter(param1);
             serverMessage.setUseLastParameterColon(true);
             serverMessage.setRecipient(socket);
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         }
     }
 
@@ -745,7 +817,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(servername);
         serverMessage.setUseLastParameterColon(true);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     // Only call this method for registered users.
@@ -764,7 +836,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(user.getNick());
                 serverMessage.addParameter("Your connection is restricted!");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             } else {
                 if (!userRepository.isValidNick(nick) || (nickFilter != null && !nickFilter.allow(nick))) {
                     ServerMessage serverMessage = new ServerMessage();
@@ -774,7 +846,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(nick);
                     serverMessage.addParameter("Erroneous nickname");
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 } else {
                     String oldNick = user.getNick();
                     if (userRepository.setNick(socket, nick)) {
@@ -785,7 +857,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.setCommand(Message.NICK);
                         serverMessage.addParameter(nick);
                         serverMessage.setRecipient(user.getSocket());
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                         notifiedUsers.add(user);
                         Iterator channelIterator = user.getChannels().iterator();
                         while (channelIterator.hasNext()) {
@@ -799,7 +871,7 @@ public class ChatEngine implements Runnable {
                                     serverMessage.setCommand(Message.NICK);
                                     serverMessage.addParameter(nick);
                                     serverMessage.setRecipient(u.getSocket());
-                                    OutgoingMessagePool.putMessage(serverMessage);
+                                    outgoingMessagePool.putMessage(serverMessage);
                                     notifiedUsers.add(u);
                                 }
                             }
@@ -812,7 +884,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(nick);
                         serverMessage.addParameter("Nickname is already in use");
                         serverMessage.setRecipient(socket);
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     }
                 }
             }
@@ -835,7 +907,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(user.getNick());
                 serverMessage.addParameter("No recipient given (PRIVMSG)");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             } else if (text == null) {
                 ServerMessage serverMessage = new ServerMessage();
                 serverMessage.setPrefix(servername);
@@ -843,7 +915,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(user.getNick());
                 serverMessage.addParameter("No text to send");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             } else if (target.startsWith("#")) {
                 Channel channel = channelRepository.getChannel(target);
                 if (channel == null) {
@@ -857,7 +929,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(user.getNick());
                         serverMessage.addParameter("Your message to " + target + " has been filtered: " + text);
                         serverMessage.setRecipient(user.getSocket());
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     } else if ((channel.noOutsideMessages() && !channel.containsUser(user))
                           || (channel.isModerated() && !channel.isOperator(user))
                           || isBanned(channel, user)) {
@@ -866,9 +938,19 @@ public class ChatEngine implements Runnable {
                         serverMessage.setCommand(ServerMessage.ERR_CANNOTSENDTOCHAN);
                         serverMessage.addParameter(user.getNick());
                         serverMessage.addParameter(target);
-                        serverMessage.addParameter("Cannot send to channel");
+                        String reason = "(?)";
+                        if (channel.isModerated() && !channel.isOperator(user)) {
+                            reason = "(moderated)";
+                        }
+                        else if (channel.noOutsideMessages() && !channel.containsUser(user)) {
+                            reason = "(not joined)";
+                        }
+                        else if (isBanned(channel, user)) {
+                            reason = "(banned)";
+                        }
+                        serverMessage.addParameter("Cannot send to channel " + reason);
                         serverMessage.setRecipient(socket);
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     } else {
                         log.message(user.getNick(), target, text);
                         Vector users = channel.getUsers();
@@ -882,7 +964,7 @@ public class ChatEngine implements Runnable {
                                 serverMessage.addParameter(text);
                                 serverMessage.setUseLastParameterColon(true);
                                 serverMessage.setRecipient(u.getSocket());
-                                OutgoingMessagePool.putMessage(serverMessage);
+                                outgoingMessagePool.putMessage(serverMessage);
                             }
                         }
                     }
@@ -900,7 +982,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(user.getNick());
                         serverMessage.addParameter("Your message to " + target + " has been filtered: " + text);
                         serverMessage.setRecipient(user.getSocket());
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     } else {
                         log.message(user.getNick(), target, text);
                         ServerMessage serverMessage = new ServerMessage();
@@ -910,7 +992,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(text);
                         serverMessage.setUseLastParameterColon(true);
                         serverMessage.setRecipient(u.getSocket());
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     }
                 }
             }
@@ -921,7 +1003,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter(user.getNick());
             serverMessage.addParameter("This chat server is closed");
             serverMessage.setRecipient(user.getSocket());
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         }
     }
 
@@ -949,6 +1031,7 @@ public class ChatEngine implements Runnable {
             Channel channel = channelRepository.getChannel(channelName);
             boolean setOperator = false;
             if (channel == null) {
+                log.debug("No channel for "+channelName);
                 // Create the channel if allowed.
                 if (!allowChannelCreationByUser && !user.isOperator()) {
                     sendErrorNoSuchChannel(user, channelName);
@@ -973,6 +1056,7 @@ public class ChatEngine implements Runnable {
                     setOperator = true;
                 }
             }
+            log.debug("Testing permissions for channel "+channelName);
             if (isBanned(channel, user)) {
                 ServerMessage serverMessage = new ServerMessage();
                 serverMessage.setPrefix(servername);
@@ -980,7 +1064,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(user.getNick());
                 serverMessage.addParameter("Cannot join channel (+b)");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             } else if (!channel.containsUser(user)) {
                 Vector users = channel.getUsers();
                 int userLimit = channel.getUserLimit();
@@ -1001,7 +1085,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(channelName);
                     serverMessage.addParameter("Cannot join channel (+l)");
                     serverMessage.setRecipient(user.getSocket());
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 } else {
                     log.join(channelName, user.getNick());
                     channel.addUser(user);
@@ -1017,7 +1101,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(channelName);
                         serverMessage.setUseLastParameterColon(true); // Needed by: ChatZilla 0.8.7
                         serverMessage.setRecipient(u.getSocket());
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     }
 
                     String topic = channel.getTopic();
@@ -1029,7 +1113,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(channelName);
                         serverMessage.addParameter(topic);
                         serverMessage.setRecipient(socket);
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     }
 
                     serverMessage = new ServerMessage();
@@ -1057,7 +1141,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(sb.toString());
                     serverMessage.setUseLastParameterColon(true);
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
 
                     serverMessage = new ServerMessage();
                     serverMessage.setPrefix(servername);
@@ -1066,7 +1150,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(channelName);
                     serverMessage.addParameter("End of NAMES list");
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
 
                     // If user is an operator for this channel set the o mode.
                     if (channel.isOperator(user)) {
@@ -1080,7 +1164,7 @@ public class ChatEngine implements Runnable {
                             serverMessage.addParameter("+o");
                             serverMessage.addParameter(user.getNick());
                             serverMessage.setRecipient(u.getSocket());
-                            OutgoingMessagePool.putMessage(serverMessage);
+                            outgoingMessagePool.putMessage(serverMessage);
                         }
                     }
                 }
@@ -1135,7 +1219,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(channelName);
                 serverMessage.addParameter(message);
                 serverMessage.setRecipient(u.getSocket());
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             }
             removeUserFromChannel(channel, user);
         }
@@ -1193,7 +1277,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(target);
                     serverMessage.addParameter(channelModes);
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 } else {
                     String param2 = clientMessage.getParameter(2);
                     if (mode.equals("+l") || mode.equals("-l")) {
@@ -1219,7 +1303,7 @@ public class ChatEngine implements Runnable {
                                             serverMessage.addParameter(mode);
                                             serverMessage.addParameter(param2);
                                             serverMessage.setRecipient(u.getSocket());
-                                            OutgoingMessagePool.putMessage(serverMessage);
+                                            outgoingMessagePool.putMessage(serverMessage);
                                         }
                                     }
                                 } else {
@@ -1234,7 +1318,7 @@ public class ChatEngine implements Runnable {
                                             serverMessage.addParameter(target);
                                             serverMessage.addParameter(mode);
                                             serverMessage.setRecipient(u.getSocket());
-                                            OutgoingMessagePool.putMessage(serverMessage);
+                                            outgoingMessagePool.putMessage(serverMessage);
                                         }
                                     }
                                 }
@@ -1255,7 +1339,7 @@ public class ChatEngine implements Runnable {
                                 serverMessage.addParameter(channel.getName());
                                 serverMessage.addParameter(ban);
                                 serverMessage.setRecipient(user.getSocket());
-                                OutgoingMessagePool.putMessage(serverMessage);
+                                outgoingMessagePool.putMessage(serverMessage);
                             }
                             ServerMessage serverMessage = new ServerMessage();
                             serverMessage.setPrefix(servername);
@@ -1264,7 +1348,7 @@ public class ChatEngine implements Runnable {
                             serverMessage.addParameter(channel.getName());
                             serverMessage.addParameter("End of channel ban list");
                             serverMessage.setRecipient(user.getSocket());
-                            OutgoingMessagePool.putMessage(serverMessage);
+                            outgoingMessagePool.putMessage(serverMessage);
                         } else if (mode.equals("+t") || mode.equals("-t")
                                 || mode.equals("+m") || mode.equals("-m")
                                 || mode.equals("+n") || mode.equals("-n")
@@ -1307,7 +1391,7 @@ public class ChatEngine implements Runnable {
                                             serverMessage.addParameter(target);
                                             serverMessage.addParameter(mode);
                                             serverMessage.setRecipient(u.getSocket());
-                                            OutgoingMessagePool.putMessage(serverMessage);
+                                            outgoingMessagePool.putMessage(serverMessage);
                                         }
                                     }
                                 }
@@ -1327,7 +1411,7 @@ public class ChatEngine implements Runnable {
                             }
                             serverMessage.addParameter("is unknown mode char to me for " + target);
                             serverMessage.setRecipient(user.getSocket());
-                            OutgoingMessagePool.putMessage(serverMessage);
+                            outgoingMessagePool.putMessage(serverMessage);
                         }
                     } else if (mode.equals("+b") || mode.equals("-b")
                             || mode.equals("+o") || mode.equals("-o")) {
@@ -1359,7 +1443,7 @@ public class ChatEngine implements Runnable {
                                                 serverMessage.addParameter(user.getNick());
                                                 serverMessage.addParameter("You're not allowed to set or remove channel operator status");
                                                 serverMessage.setRecipient(user.getSocket());
-                                                OutgoingMessagePool.putMessage(serverMessage);
+                                                outgoingMessagePool.putMessage(serverMessage);
                                             } else {
                                                 if (mode.equals("+o")) {
                                                     if (!channel.isOperator(u)) {
@@ -1386,7 +1470,7 @@ public class ChatEngine implements Runnable {
                                             serverMessage.addParameter(mode);
                                             serverMessage.addParameter(param2);
                                             serverMessage.setRecipient(u.getSocket());
-                                            OutgoingMessagePool.putMessage(serverMessage);
+                                            outgoingMessagePool.putMessage(serverMessage);
                                         }
                                     }
                                 }
@@ -1407,7 +1491,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(user.getNick());
                     serverMessage.addParameter("Cannot change mode for other users");
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 } else {
                     String mode = clientMessage.getParameter(1);
                     if (mode == null) {
@@ -1425,7 +1509,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(user.getNick());
                         serverMessage.addParameter(mode);
                         serverMessage.setRecipient(socket);
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     } else if (mode.equals("-o") && user.isOperator()) {
                         user.setOperator(false);
                         ServerMessage serverMessage = new ServerMessage();
@@ -1434,7 +1518,7 @@ public class ChatEngine implements Runnable {
                         serverMessage.addParameter(user.getNick());
                         serverMessage.addParameter(mode);
                         serverMessage.setRecipient(socket);
-                        OutgoingMessagePool.putMessage(serverMessage);
+                        outgoingMessagePool.putMessage(serverMessage);
                     }
                 }
             }
@@ -1467,7 +1551,7 @@ public class ChatEngine implements Runnable {
                     }
                     serverMessage.addParameter("0 " + u.getRealname());
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 }
                 ServerMessage serverMessage = new ServerMessage();
                 serverMessage.setPrefix(servername);
@@ -1476,7 +1560,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(channelName);
                 serverMessage.addParameter("End of WHO list.");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             }
         }
     }
@@ -1508,7 +1592,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(u.getRealname());
                 serverMessage.setUseLastParameterColon(true); // Needed for: X-Chat 1.8.8
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
                 serverMessage = new ServerMessage();
                 serverMessage.setPrefix(servername);
                 serverMessage.setCommand(ServerMessage.RPL_WHOISSERVER);
@@ -1517,7 +1601,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(servername);
                 serverMessage.addParameter(serverinfo);
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
                 if (u.isOperator()) {
                     serverMessage = new ServerMessage();
                     serverMessage.setPrefix(servername);
@@ -1526,7 +1610,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(u.getNick());
                     serverMessage.addParameter("is an IRC operator");
                     serverMessage.setRecipient(socket);
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 }
                 serverMessage = new ServerMessage();
                 serverMessage.setPrefix(servername);
@@ -1536,7 +1620,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter("" + ((System.currentTimeMillis() - u.getLastCommandRecieved().getTime()) / 1000));
                 serverMessage.addParameter("seconds idle");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
                 serverMessage = new ServerMessage();
                 serverMessage.setPrefix(servername);
                 serverMessage.setCommand(ServerMessage.RPL_ENDOFWHOIS);
@@ -1544,7 +1628,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(mask);
                 serverMessage.addParameter("End of WHOIS list");
                 serverMessage.setRecipient(socket);
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             }
         }
     }
@@ -1576,7 +1660,7 @@ public class ChatEngine implements Runnable {
                 serverMessage.addParameter(channel.getName());
                 serverMessage.addParameter(message);
                 serverMessage.setRecipient(u.getSocket());
-                OutgoingMessagePool.putMessage(serverMessage);
+                outgoingMessagePool.putMessage(serverMessage);
             }
             // Retrieve the iterator again because channel.removeUser(user)
             // changed the collection of channels associated with the user.
@@ -1596,7 +1680,7 @@ public class ChatEngine implements Runnable {
         serverMessage.setCommand(ServerMessage.ERROR_CLOSING_LINK);
         serverMessage.addParameter("Closing Link: " + message);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
         userRepository.disconnect(socket);
     }
 
@@ -1621,7 +1705,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(user.getNick());
         serverMessage.addParameter("End of LIST");
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendChannelInfo(Socket socket, User user, Channel channel) {
@@ -1639,7 +1723,7 @@ public class ChatEngine implements Runnable {
         }
         serverMessage.setUseLastParameterColon(true);
         serverMessage.setRecipient(socket);
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void handleCommandKICK(ClientMessage clientMessage, User user, Socket socket) {
@@ -1672,7 +1756,7 @@ public class ChatEngine implements Runnable {
                             serverMessage.addParameter(user.getNick());
                             serverMessage.addParameter("You're not allowed to kick an operator");
                             serverMessage.setRecipient(user.getSocket());
-                            OutgoingMessagePool.putMessage(serverMessage);
+                            outgoingMessagePool.putMessage(serverMessage);
                         } else {
                             // Check if nick exists on channel.
                             if (message == null) {
@@ -1688,7 +1772,7 @@ public class ChatEngine implements Runnable {
                                 serverMessage.addParameter(nickToKick);
                                 serverMessage.addParameter(message);
                                 serverMessage.setRecipient(u.getSocket());
-                                OutgoingMessagePool.putMessage(serverMessage);
+                                outgoingMessagePool.putMessage(serverMessage);
                             }
                             removeUserFromChannel(channel, userToKick);
                         }
@@ -1731,7 +1815,7 @@ public class ChatEngine implements Runnable {
                                     serverMessage.addParameter(channelName);
                                     serverMessage.addParameter("No topic is set");
                                     serverMessage.setRecipient(user.getSocket());
-                                    OutgoingMessagePool.putMessage(serverMessage);
+                                    outgoingMessagePool.putMessage(serverMessage);
                                 } else {
                                     ServerMessage serverMessage = new ServerMessage();
                                     serverMessage.setPrefix(servername);
@@ -1741,7 +1825,7 @@ public class ChatEngine implements Runnable {
                                     serverMessage.addParameter(topic);
                                     serverMessage.setUseLastParameterColon(true);
                                     serverMessage.setRecipient(user.getSocket());
-                                    OutgoingMessagePool.putMessage(serverMessage);
+                                    outgoingMessagePool.putMessage(serverMessage);
                                 }
                             } else {
                                 if (filter != null && !filter.allow(topic)) {
@@ -1752,7 +1836,7 @@ public class ChatEngine implements Runnable {
                                     serverMessage.addParameter(user.getNick());
                                     serverMessage.addParameter("Your message to " + channelName + " has been filtered: " + topic);
                                     serverMessage.setRecipient(user.getSocket());
-                                    OutgoingMessagePool.putMessage(serverMessage);
+                                    outgoingMessagePool.putMessage(serverMessage);
                                 } else {
                                     if (topic.equals("")) {
                                         channel.setTopic(null);
@@ -1768,7 +1852,7 @@ public class ChatEngine implements Runnable {
                                         serverMessage.addParameter(channelName);
                                         serverMessage.addParameter(topic);
                                         serverMessage.setRecipient(u.getSocket());
-                                        OutgoingMessagePool.putMessage(serverMessage);
+                                        outgoingMessagePool.putMessage(serverMessage);
                                     }
                                 }
                             }
@@ -1783,7 +1867,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter(user.getNick());
             serverMessage.addParameter("This chat server is closed");
             serverMessage.setRecipient(user.getSocket());
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         }
     }
 
@@ -1809,7 +1893,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(user.getNick());
                     serverMessage.addParameter("You are now an IRC operator");
                     serverMessage.setRecipient(user.getSocket());
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 } else if (result == UserRepository.REGISTER_AS_OPERATOR_INCORRECT_PASSWORD) {
                     ServerMessage serverMessage = new ServerMessage();
                     serverMessage.setPrefix(servername);
@@ -1817,7 +1901,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(user.getNick());
                     serverMessage.addParameter("Password incorrect");
                     serverMessage.setRecipient(user.getSocket());
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 } else if (result == UserRepository.REGISTER_AS_OPERATOR_HOST_NOT_ALLOWED) {
                     ServerMessage serverMessage = new ServerMessage();
                     serverMessage.setPrefix(servername);
@@ -1825,7 +1909,7 @@ public class ChatEngine implements Runnable {
                     serverMessage.addParameter(user.getNick());
                     serverMessage.addParameter("No O-lines for your host");
                     serverMessage.setRecipient(user.getSocket());
-                    OutgoingMessagePool.putMessage(serverMessage);
+                    outgoingMessagePool.putMessage(serverMessage);
                 }
             }
         }
@@ -1834,7 +1918,7 @@ public class ChatEngine implements Runnable {
     private void handleCommandDIE(User user) {
         // ERR_NOPRIVILEGES
         if (user.isAdministrator()) {
-            Server.stop = true;
+            stop = true;
         } else {
             ServerMessage serverMessage = new ServerMessage();
             serverMessage.setPrefix(servername);
@@ -1842,7 +1926,7 @@ public class ChatEngine implements Runnable {
             serverMessage.addParameter(user.getNick());
             serverMessage.addParameter("Permission Denied- You're not an IRC operator");
             serverMessage.setRecipient(user.getSocket());
-            OutgoingMessagePool.putMessage(serverMessage);
+            outgoingMessagePool.putMessage(serverMessage);
         }
     }
 
@@ -1854,9 +1938,66 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(clientMessage.getUnkownCommand());
         serverMessage.addParameter("Unknown command");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
+    /**
+     * This is a callback that can be used to signify
+     * that a channel was removed by other means than
+     * through the normal command structure - i.e: if
+     * it was removed from the cloud in case of an MMBaseChannel
+     *
+     * basically, it just kicks all users off the channel
+     */
+    
+    public void channelRemoved(Channel channel) {
+        Iterator i = channel.getUsers().iterator();
+        while (i.hasNext()) {
+            User userToKick = (User) i.next();
+            String message = "server: channel was destroyed or renamed";
+            Vector users = channel.getUsers();
+            for (int j = 0; j < users.size(); j++) {
+                User u = (User)users.elementAt(j);
+                ServerMessage serverMessage = new ServerMessage();
+                serverMessage.setPrefix("server!server@"+servername);
+                serverMessage.setCommand(Message.KICK);
+                serverMessage.addParameter(channel.getName());
+                serverMessage.addParameter(userToKick.getNick());
+                serverMessage.addParameter(message);
+                serverMessage.setRecipient(u.getSocket());
+                outgoingMessagePool.putMessage(serverMessage);
+            }
+        }
+    }
+
+    /**
+     * This is a callback that can be used to signify
+     * that a channel topic was changed by other means than
+     * through the normal command structure - i.e: if
+     * it was changed from the cloud in case of an MMBaseChannel
+     */
+    
+    public void channelTopicChanged(Channel channel) {
+        Iterator iterator = channel.getUsers().iterator();
+        String topic = channel.getTopic();
+        if (topic == null) {
+            topic = "";
+        }
+        while (iterator.hasNext()) {
+            User u = (User)iterator.next();
+            ServerMessage serverMessage = new ServerMessage();
+            serverMessage.setPrefix("server!server@" + servername);
+            serverMessage.setCommand(Message.TOPIC);
+            serverMessage.addParameter(channel.getName());
+            serverMessage.addParameter(topic);
+            serverMessage.setRecipient(u.getSocket());
+            outgoingMessagePool.putMessage(serverMessage);
+        }
+    }
+
+
+
+    
     private void sendErrorNeedMoreParams(User user, String command) {
         ServerMessage serverMessage = new ServerMessage();
         serverMessage.setPrefix(servername);
@@ -1865,7 +2006,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(command);
         serverMessage.addParameter("Not enough parameters");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorNoNicknameGiven(User user) {
@@ -1875,7 +2016,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(user.getNick());
         serverMessage.addParameter("No nickname given");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorAlreadyRegistered(User user) {
@@ -1885,7 +2026,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(user.getNick());
         serverMessage.addParameter("Unauthorized command (already registered)");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorNoSuchChannel(User user, String channel) {
@@ -1896,7 +2037,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(channel);
         serverMessage.addParameter("No such channel");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorNoSuchNick(User user, String nick) {
@@ -1907,7 +2048,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(nick);
         serverMessage.addParameter("No such nick/channel");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorNotOnChannel(User user, String channel) {
@@ -1918,7 +2059,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(channel);
         serverMessage.addParameter("You're not on that channel");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorUserNotInChannel(User user, String nick, String channel) {
@@ -1930,7 +2071,7 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(channel);
         serverMessage.addParameter("They aren't on that channel");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
     private void sendErrorChanOpPrivsNeeded(User user, String channel) {
@@ -1941,7 +2082,8 @@ public class ChatEngine implements Runnable {
         serverMessage.addParameter(channel);
         serverMessage.addParameter("You're not channel operator");
         serverMessage.setRecipient(user.getSocket());
-        OutgoingMessagePool.putMessage(serverMessage);
+        outgoingMessagePool.putMessage(serverMessage);
     }
 
 }
+

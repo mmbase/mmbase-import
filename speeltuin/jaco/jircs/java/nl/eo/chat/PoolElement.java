@@ -20,6 +20,8 @@ import java.net.*;
 abstract class PoolElement implements Runnable {
     protected boolean suspended = false;
     protected int number;
+    protected MessagePool pool;
+    protected Logger log;
 
     PoolElement() {
     }
@@ -40,6 +42,16 @@ abstract class PoolElement implements Runnable {
     public int getNumber() {
         return number;
     }
+
+    public void setLogger(Logger log) {
+        this.log = log;
+        log.debug("Logger registered with PoolElement "+this.getClass().toString());
+    }
+
+    public void setPool(MessagePool pool) {
+        this.pool = pool;
+    }
+
 
 }
 
