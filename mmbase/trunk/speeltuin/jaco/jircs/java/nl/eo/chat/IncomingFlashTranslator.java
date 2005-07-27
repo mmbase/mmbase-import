@@ -21,6 +21,7 @@ import nanoxml.XMLElement;
  */
 public class IncomingFlashTranslator extends IncomingTranslator {
 
+
     protected boolean messageSeparatorFound(int i) {
         if (((char)buffer[i]) == '\0') {
             return true;
@@ -53,7 +54,7 @@ public class IncomingFlashTranslator extends IncomingTranslator {
             if (commandId != -1) {
                 message.setCommand(commandId);
             } else {
-                Server.log.debug("UNKNOWN COMMAND '" + command + "'.");
+                log.debug("UNKNOWN COMMAND '" + command + "'.");
             }
             Vector children = xml.getChildren();
             for (int j = 0; j < children.size(); j++) {
@@ -61,7 +62,7 @@ public class IncomingFlashTranslator extends IncomingTranslator {
                 message.addParameter(child.getStringAttribute("value",""));
             }
             message.setSender(socket);
-            IncomingMessagePool.putMessage(message);
+            incomingMessagePool.putMessage(message);
         }
     }
 

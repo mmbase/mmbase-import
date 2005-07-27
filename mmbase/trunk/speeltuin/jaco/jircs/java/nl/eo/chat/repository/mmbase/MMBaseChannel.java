@@ -68,6 +68,28 @@ public class MMBaseChannel extends IrcChannel {
         super.setUserLimit(chatchannelsNode.getIntValue("userlimit"));
     }
 
+    protected void updateChannel(Node chatchannelsNode) {
+        this.chatchannelsNode = chatchannelsNode;
+        System.err.println("Updating channel "+getName()+" (number="+chatchannelsNode.getNumber());
+        bans = new Vector();
+        StringTokenizer st = new StringTokenizer(chatchannelsNode.getStringValue("banlist"));
+        while (st.hasMoreTokens()) {
+            String tok = st.nextToken();
+            bans.add(tok);
+        }
+        String t = chatchannelsNode.getStringValue("topic");
+        if (t != null && !t.equals("")) {
+            topic = t;
+        }
+        else {
+            topic = null;
+        }
+        super.setTopicProtection(chatchannelsNode.getIntValue("topicprotection") == 1);
+        super.setModerated(chatchannelsNode.getIntValue("moderated") == 1);
+        super.setNoOutsideMessages(chatchannelsNode.getIntValue("nooutsidemessages") == 1);
+        super.setUserLimit(chatchannelsNode.getIntValue("userlimit"));
+    }
+    
     public void addUser(User user) {
         MMBaseUser mmbaseUser = (MMBaseUser)user;
         Node rolerelRelation = mmbaseUser.getRolerelRelation(chatchannelsNode);

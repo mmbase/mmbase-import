@@ -20,6 +20,7 @@ import java.util.Vector;
  */
 public class IncomingIrcTranslator extends IncomingTranslator {
 
+
     protected boolean messageSeparatorFound(int i) {
         // Officially we should only check for \r\n. But ksirc only
         // sends \n
@@ -120,7 +121,7 @@ public class IncomingIrcTranslator extends IncomingTranslator {
             }
         }
         message.setSender(socket);
-        IncomingMessagePool.putMessage(message);
+        incomingMessagePool.putMessage(message);
     }
 
 }

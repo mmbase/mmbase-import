@@ -31,6 +31,8 @@ the IRC protocol).
 Requirements
 ============
 
+- Jakarta commons Digester (automatically downloaded)
+
 - Java 1.4
 
     MMBase requires Java 1.4. It might be possible to run Jircs (without
@@ -46,12 +48,12 @@ Install as standalone server without MMBase
 
 1. Extract all files from the zip file.
 
-2. Change the properties operator.password and administrator.password in
-   conf/jircs.properties.
+2. Change the attributes operator-password and administrator-password in
+   conf/jircs.xml.
 
 3. Execute the following command in the Jircs directory:
 
-   java -classpath <classpath> nl.eo.chat.Server conf/jircs.properties
+   java -classpath <classpath> nl.eo.chat.Server conf/jircs.xml
 
    Replace <classpath> with all jar files in the lib directory. E.g.
    lib/jircs.jar:lib/<package>.jar:lib/<package>.jar
@@ -66,22 +68,22 @@ Install as servlet in a webapp without MMBase
 
 1. Extract all files from the zip file.
 
-2. Change the properties operator.password and administrator.password in
-   conf/jircs_servlet.properties.
+2. Change the attributes operator-password and administrator-password in
+   conf/jircs.xml.
 
-3. Copy jircs_servlet.properties into the WEB-INF directory of your webapp.
+3. Copy jircs.xml into the WEB-INF directory of your webapp.
 
-4. Copy the jircs and nanoxml-lite jar files in the lib direcotry into the
+4. Copy the jircs, nanoxml-lite and jakarta-commons* jar files in the lib direcotry into the
    WEB-INF/lib directory of your webapp.
 
 5. Add the following to the web.xml of your webapp:
 
    <servlet>
      <servlet-name>jircs</servlet-name>
-     <servlet-class>nl.eo.chat.Server</servlet-class>
+     <servlet-class>nl.eo.chat.Servlet</servlet-class>
      <init-param>
-       <param-name>propertiesfile</param-name>
-       <param-value>jircs_servlet.properties</param-value>
+       <param-name>configfile</param-name>
+       <param-value>jircs.xml</param-value>
      </init-param>
      <load-on-startup/>
    </servlet>
@@ -98,8 +100,8 @@ Install as standalone server with MMBase
 
 1. Extract all files from the zip file.
 
-2. Change the properties operator.password and administrator.password in
-   conf/jircs_mmbase.properties.
+2. Change the attributes operator-password and administrator-password in
+   conf/jircs_mmbase.xml.
 
 3. Extract all the directory mmbase-webapp from the MMBase zip into the
    directory mmbase.
@@ -108,12 +110,12 @@ Install as standalone server with MMBase
    mmbase/mmbase-webapp/WEB-INF/config/applications.
 
 5. Check the MMBase security config to see if the mmbase user, as specified in
-   the jircs properties file with mmbase.username and mmbase.password, is
+   the jircs config file with mmbase-username and mmbase-password, is
    allowed to create nodes.
 
 6. Execute the following command in the Jircs directory:
 
-   java -classpath <classpath> nl.eo.chat.Server conf/jircs_mmbase.properties
+   java -classpath <classpath> nl.eo.chat.Server conf/jircs_mmbase.xml
 
    Replace <classpath> with all jar files in the Jircs lib directory and the all
    the files in the MMBase lib directory. E.g.
@@ -130,10 +132,10 @@ Install as servlet in a webapp with MMBase
 
 1. Extract all files from the zip file.
 
-2. Change the properties operator.password and administrator.password in
-   conf/jircs_servlet_mmbase.properties.
+2. Change the attributes operator-password and administrator-password in
+   conf/jircs_mmbase.xml.
 
-3. Copy jircs_servlet_mmbase.properties into the WEB-INF directory of your
+3. Copy jircs_mmbase.xml into the WEB-INF directory of your
    MMBase webapp.
    
 4. Copy the jircs and nanoxml-lite jar files in the lib direcotry into the
@@ -143,10 +145,10 @@ Install as servlet in a webapp with MMBase
 
    <servlet>
      <servlet-name>jircs</servlet-name>
-     <servlet-class>nl.eo.chat.Server</servlet-class>
+     <servlet-class>nl.eo.chat.Servlet</servlet-class>
      <init-param>
-       <param-name>propertiesfile</param-name>
-       <param-value>jircs_servlet_mmbase.properties</param-value>
+       <param-name>configfile</param-name>
+       <param-value>jircs_mmbase.xml</param-value>
      </init-param>
      <load-on-startup/>
    </servlet>
@@ -155,7 +157,7 @@ Install as servlet in a webapp with MMBase
    WEB-INF/config/applications of your MMBase webapp.
 
 7. Check the MMBase security config to see if the mmbase user, as specified in
-   the jircs properties file with mmbase.username and mmbase.password, is
+   the jircs config file with mmbase-sername and mmbase-password, is
    allowed to create nodes.
 
 8. Start your webapp.
@@ -190,7 +192,7 @@ chatexample1 and chatexample2).
 It is also possible to connect to a remote MMBase instance, that has the MMBase
 chat application installed, using RMI. Check if the remote MMBase instance has
 RMI active (see modules/rmmci.xml) and specifiy the uri of this remote MMBase
-instance in the chat server properties.
+instance in the chat server configuration file.
 
 If you want to create a new chat instance using different nodes do the
 following:
@@ -200,7 +202,7 @@ following:
   to login to the chat. The group node can be any type of node, it doesn't need
   to be of type groups. For example a project node with related user can also
   be specified as group node.
-- Specify the numbers (or aliases) in the server.properties.
+- Specify the numbers (or aliases) in the server configfile.
   
 If a users node is related to the chatservers node using a rolerel with "o" as
 value this user can become operator using the oper command and his username
@@ -289,30 +291,4 @@ Future plans
 
 - Make it possible to communicate through http on port 80 with webbrowsers
   and/or Flash to prevent problems with firewalls.
-- Make Jircs configuration more flexible with xml and make it possible to
-  have more than one ChatEngine in a virtual machine. The xml configuration
-  could look something like:
-
-  <server logfile="logs/server.log" loglevel="info">
-
-    <chatengine logfile="logs/chatserver1.log" loglevel="message" ...properties from current properties file... id="chatserver1"/>
-
-    <chatengine logfile="logs/chatserver2.log" loglevel="message" ...properties from current properties file... id="chatserver2"/>
-
-    <chatengine logfile="logs/chatserver3.log" loglevel="message" ...properties from current properties file... id="chatserver3"/>
-
-    <connectionbuilder port="80" escapechar="@">
-      <protocol class="nl.eo.FlashProtocol">
-        <translatorpool incomingsize="10" outgoingsize="10" chatengineid="chatserver1"/>
-        <translatorpool incomingsize="10" outgoingsize="10" chatengineid="chatserver2"/>
-        <translatorpool incomingsize="10" outgoingsize="10" chatengineid="chatserver3"/>
-      </protocol>
-      <protocol class="nl.eo.IrcProtocol">
-        <translatorpool incomingsize="10" outgoingsize="10" chatengineid="chatserver1"/>
-        <translatorpool incomingsize="10" outgoingsize="10" chatengineid="chatserver2"/>
-        <translatorpool incomingsize="10" outgoingsize="10" chatengineid="chatserver3"/>
-      </protocol>
-    </connectionbuilder>
-
-  </server>
 
