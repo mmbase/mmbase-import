@@ -18,7 +18,7 @@
   <property name="optimize" value="on"/>
   <property name="deprecation" value="off"/>
   <property name="minimal.java.version" value="1.4"/> <!-- Change this version in readme.txt also -->
-  <property name="minimal.ant.version" value="Apache Ant version 1.5.1 compiled on October 2 2002"/>
+  <property name="minimal.ant.version" value="Apache Ant version 1.5 compiled on July 9 2002"/>
   <property name="version" value="1.4.dev"/> <!-- Change this version in ChatEngine.java also -->
   <property name="srcdist.name" value="jircs-src-${version}"/>
   <property name="bindist.name" value="jircs-${version}"/>
@@ -43,11 +43,11 @@
   <!-- Compile the java sources                                            -->
   <!-- =================================================================== -->
   <target name="compile" description="Compile the java sources"
-          depends="get.nanoxml-lite,expand.mmbase,expand.servlet,expand.digester,expand.beanutils">
+          depends="get.nanoxml-lite,expand.mmbase,expand.servlet,expand.jakarta-commons-digester,expand.jakarta-commons-beanutils">
     <mkdir dir="${build.dir}/classes"/>
     <javac srcdir="${basedir}/java"
            destdir="${build.dir}/classes"
-           classpath="${nanoxml-lite.jar}:${mmbase.jar}:${servlet.jar}:${digester.jar}:${beenutils.jar}"
+           classpath="${nanoxml-lite.jar}:${mmbase.jar}:${servlet.jar}:${jakarta-commons-digester.jar}:${beenutils.jar}"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
@@ -72,7 +72,7 @@
     <javadoc packagenames="nl.eo.chat.*,nl.eo.chat.repository.*,nl.eo.chat.repository.irc.*,nl.eo.chat.repository.mmbase.*"
              sourcepath="${basedir}/java"
              destdir="${build.dir}/javadoc"
-             classpath="${nanoxml-lite.jar}:${mmbase.jar}:{$digester.jar}:{$beanutils.jar}"
+             classpath="${nanoxml-lite.jar}:${mmbase.jar}:${jakarta-commons-digester.jar}:${jakarta-commons-beanutils.jar}"
              author="true"
              windowtitle="Chat Java documentation"
              doctitle="Chat"/>
@@ -87,12 +87,11 @@
     </condition>
     <fail unless="correct.java.version"
           message="Use the correct Java version, ${minimal.java.version} instead of ${ant.java.version}, to build a distro!"/>
-<!--    <condition property="correct.ant.version">
+    <condition property="correct.ant.version">
       <equals arg1="${ant.version}" arg2="${minimal.ant.version}" />
     </condition>
     <fail unless="correct.ant.version"
           message="Use the correct Ant version, ${minimal.ant.version} instead of ${ant.version}, to build a distro!"/>
--->
   </target>
 
   <!-- =================================================================== -->
@@ -144,7 +143,7 @@
     </ant>
   </target>
   
-  <target name="bindist.external" depends="check.versions,jar,expand.servlet">
+  <target name="bindist.external" depends="check.versions,jar,expand.servlet,expand.jakarta-commons-logging">
     <copy todir="${bindist.dir}/${bindist.name}">
       <fileset dir="${basedir}">
         <patternset refid="docs"/>
@@ -161,6 +160,12 @@
     <copy file="${nanoxml-lite.jar}"
           todir="${bindist.dir}/${bindist.name}/lib"/>
     <copy file="${servlet.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${jakarta-commons-digester.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${jakarta-commons-beanutils.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${jakarta-commons-logging.jar}"
           todir="${bindist.dir}/${bindist.name}/lib"/>
     <mkdir dir="${bindist.dir}/${bindist.name}/logs"/>
     <copy todir="${bindist.dir}/${bindist.name}/mmbase">
@@ -207,17 +212,29 @@
     <available property="nanoxml-lite.present" file="${nanoxml-lite.jar}"/>
     
     <!-- Digester -->
-    <property name="digester.url" value="http://apache.mirror.intouch.nl/jakarta/commons/digester/binaries/commons-digester-1.6.zip"/>
-    <property name="digester.zip" value="${download.dir}/commons-digester-1.6.zip"/>
-    <property name="digester.jar" value="${expand.dir}/commons-digester-1.6/commons-digester.jar"/>
-    <available property="digester.present" file="${digester.zip}"/>
-    <available property="digester.expanded" file="${digester.jar}"/>
+    <property name="jakarta-commons-digester.version" value="1.6"/>
+    <property name="jakarta-commons-digester.url" value="http://apache.mirror.intouch.nl/jakarta/commons/digester/binaries/commons-digester-${jakarta-commons-digester.version}.zip"/>
+    <property name="jakarta-commons-digester.zip" value="${download.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}/commons-digester-${jakarta-commons-digester.version}.zip"/>
+    <property name="jakarta-commons-digester.dir" value="${expand.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}"/>
+    <property name="jakarta-commons-digester.jar" value="${expand.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}/commons-digester-${jakarta-commons-digester.version}/commons-digester.jar"/>
+    <available property="jakarta-commons-digester.present" file="${jakarta-commons-digester.zip}"/>
+    <available property="jakarta-commons-digester.expanded" file="${jakarta-commons-digester.jar}"/>
  
-    <property name="beanutils.url" value="http://apache.mirror.intouch.nl/jakarta/commons/beanutils/binaries/commons-beanutils-1.7.0.zip"/>
-    <property name="beanutils.zip" value="${download.dir}/commons-beanutils-1.7.0.zip"/>
-    <property name="beanutils.jar" value="${expand.dir}/commons-beanutils-1.7.0/commons-beanutils.jar"/>
-    <available property="beanutils.present" file="${beanutils.zip}"/>
-    <available property="beanutils.expanded" file="${beanutils.jar}"/>
+    <property name="jakarta-commons-beanutils.version" value="1.7.0"/>
+    <property name="jakarta-commons-beanutils.url" value="http://apache.mirror.intouch.nl/jakarta/commons/beanutils/binaries/commons-beanutils-${jakarta-commons-beanutils.version}.zip"/>
+    <property name="jakarta-commons-beanutils.zip" value="${download.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}/commons-beanutils-${jakarta-commons-beanutils.version}.zip"/>
+    <property name="jakarta-commons-beanutils.dir" value="${expand.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}"/>
+    <property name="jakarta-commons-beanutils.jar" value="${expand.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}/commons-beanutils-${jakarta-commons-beanutils.version}/commons-beanutils.jar"/>
+    <available property="jakarta-commons-beanutils.present" file="${jakarta-commons-beanutils.zip}"/>
+    <available property="jakarta-commons-beanutils.expanded" file="${jakarta-commons-beanutils.jar}"/>
+ 
+    <property name="jakarta-commons-logging.version" value="1.0.4"/>
+    <property name="jakarta-commons-logging.url" value="http://apache.mirror.intouch.nl/jakarta/commons/logging/binaries/commons-logging-${jakarta-commons-logging.version}.zip"/>
+    <property name="jakarta-commons-logging.zip" value="${download.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}/commons-logging-${jakarta-commons-logging.version}.zip"/>
+    <property name="jakarta-commons-logging.dir" value="${expand.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}"/>
+    <property name="jakarta-commons-logging.jar" value="${expand.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}/commons-logging-${jakarta-commons-logging.version}/commons-logging.jar"/>
+    <available property="jakarta-commons-logging.present" file="${jakarta-commons-logging.zip}"/>
+    <available property="jakarta-commons-logging.expanded" file="${jakarta-commons-logging.jar}"/>
     
     
     <!-- Init actions -->
@@ -255,22 +272,31 @@
     <get src="${nanoxml-lite.url}" dest="${nanoxml-lite.jar}" verbose="on"/>
   </target>
 
-   <target name="get.digester" depends="init.get" unless="digester.present">
-    <get src="${digester.url}" dest="${digester.zip}" verbose="on"/>
+  <target name="get.jakarta-commons-digester" depends="init.get" unless="jakarta-commons-digester.present">
+    <mkdir dir="${download.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}"/>
+    <get src="${jakarta-commons-digester.url}" dest="${jakarta-commons-digester.zip}" verbose="on"/>
   </target>
 
-  <target name="expand.digester" depends="get.digester" unless="digester.expanded">
-    <unzip src="${digester.zip}" dest="${expand.dir}"/>
+  <target name="expand.jakarta-commons-digester" depends="get.jakarta-commons-digester" unless="jakarta-commons-digester.expanded">
+    <unzip src="${jakarta-commons-digester.zip}" dest="${jakarta-commons-digester.dir}"/>
   </target>
 
-    <target name="get.beanutils" depends="init.get" unless="beanutils.present">
-    <get src="${beanutils.url}" dest="${beanutils.zip}" verbose="on"/>
+  <target name="get.jakarta-commons-beanutils" depends="init.get" unless="jakarta-commons-beanutils.present">
+    <mkdir dir="${download.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}"/>
+    <get src="${jakarta-commons-beanutils.url}" dest="${jakarta-commons-beanutils.zip}" verbose="on"/>
   </target>
 
-  <target name="expand.beanutils" depends="get.beanutils" unless="beanutils.expanded">
-    <unzip src="${beanutils.zip}" dest="${expand.dir}"/>
+  <target name="expand.jakarta-commons-beanutils" depends="get.jakarta-commons-beanutils" unless="jakarta-commons-beanutils.expanded">
+    <unzip src="${jakarta-commons-beanutils.zip}" dest="${jakarta-commons-beanutils.dir}"/>
   </target>
 
-  
+  <target name="get.jakarta-commons-logging" depends="init.get" unless="jakarta-commons-logging.present">
+    <mkdir dir="${download.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}"/>
+    <get src="${jakarta-commons-logging.url}" dest="${jakarta-commons-logging.zip}" verbose="on"/>
+  </target>
+
+  <target name="expand.jakarta-commons-logging" depends="get.jakarta-commons-logging" unless="jakarta-commons-logging.expanded">
+    <unzip src="${jakarta-commons-logging.zip}" dest="${jakarta-commons-logging.dir}"/>
+  </target>
 
 </project>
