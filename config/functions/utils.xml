@@ -17,7 +17,6 @@
     <class>org.mmbase.util.PasswordGenerator</class>
     <method>getPassword</method>
     <param name="template" type="String">SSSSSS</param>
-    <return type="String" />
   </function>
 
   <function name="randomLong">
@@ -27,7 +26,6 @@
     <type>class</type>
     <class>org.mmbase.util.RandomPool</class>
     <method>value_and_stir</method>
-    <return type="long" />
   </function>
 
 
