@@ -70,12 +70,16 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             return CopyCharTransformer.INSTANCE;
         }
         String[] query = queryString.split("&");
-        
+
         String s = null;
         for (int i = 0; i < query.length; i++) {
             String q = query[i];
             if (q.startsWith("q=")) {
-                s = org.mmbase.util.URLParamEscape.unescapeurl(q.substring(2));
+                try {
+                    s = java.net.URLDecoder.decode(q.substring(2), "UTF-8");
+                } catch (java.io.UnsupportedEncodingException uee) { // cannot happen
+                    s = q.substring(2);
+                }
                 break;
             }
         }
@@ -83,11 +87,11 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             // odd
             log.debug("No search, returning COPY");
             return CopyCharTransformer.INSTANCE;
-        } 
+        }
         final String search = s;
         log.debug("Using search " + search);
-        
-        RegexpReplacer trans = new RegexpReplacer() {                
+
+        RegexpReplacer trans = new RegexpReplacer() {
                 private Collection patterns = new ArrayList();
                 {
                     Pattern p        = Pattern.compile("(" + search.replace('+', '|') + ")");
