@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.7 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: SetFunction.java,v 1.8 2005-07-28 12:26:14 michiel Exp $
  * @since MMBase-1.8
  */
 public class SetFunction extends AbstractFunction {
@@ -47,7 +47,12 @@ public class SetFunction extends AbstractFunction {
                        ", instance: " + functionInstance +", parameters: " + parameters);
             return null;
         } catch (InvocationTargetException ite) {
-            throw new RuntimeException(ite.getTargetException()); // throw the actual exception that occurred
+            Throwable te = ite.getTargetException();
+            if (te instanceof RuntimeException) {
+                throw (RuntimeException) te;
+            } else {
+                throw new RuntimeException(te); // throw the actual exception that occurred
+            }
         }
     }
 
