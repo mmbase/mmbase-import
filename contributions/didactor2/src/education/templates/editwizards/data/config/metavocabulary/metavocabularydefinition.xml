@@ -9,8 +9,9 @@
     
   <action type="load">
        <relation destination="metavocabulary" role="posrel" />
-        <relation destination="metadefinition" role="constraints" />
-    <relation destination="metavocabulary" role="constraints" />
+       <relation destination="synonym" role="related" />
+       <relation destination="metadefinition" role="constraints" />
+       <relation destination="metavocabulary" role="constraints" />
   </action>
 
 
@@ -111,6 +112,8 @@
     </command>
 
     </list>
+
+    <list destination="synonym" role="related" extends="config/synonym/synonym-list.xml" />
 
   </form-schema>
 </wizard-schema>
