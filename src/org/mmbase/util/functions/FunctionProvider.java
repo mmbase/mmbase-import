@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.9 2005-06-28 19:09:21 michiel Exp $
+ * @version $Id: FunctionProvider.java,v 1.10 2005-07-28 16:55:43 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
@@ -112,11 +112,10 @@ public abstract class FunctionProvider {
     }
 
     /**
-     * Return a Map of all functions currently provided by the FunctionProvider.
+     * Returns a Collection of all functions currently provided by the FunctionProvider.
      */
-    public Set getFunctions() {
-        Set result = new HashSet(functions.values());
-        return result;
+    public Collection getFunctions() {
+        return Collections.unmodifiableCollection(functions.values());
     }
 
 }
