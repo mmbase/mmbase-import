@@ -1,9 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page errorPage="error.jsp" session="false" 
- %><mm:escaper id="mygoogle" type="google">
-  <mm:param name="host" value="" />
-</mm:escaper>	   
-<mm:content type="text/html" postprocessor="mygoogle,reducespace">
+ %><mm:content type="text/html" postprocessor="reducespace,google">
 <html>
 <head>
   <title>Functions</title>
@@ -98,16 +95,24 @@ demonstrate it here based on 'BeanFunction' based on an inner bean of the JSP.
 </td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functionnodemanager.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/functionnodemanager.jsp" %></td>
+  <td width="50%">
+    <% try { %>
+    <%@include file="codesamples/functionnodemanager.jsp" %> 
+    <% } catch (Exception e) {out.println(e.getMessage());} %>
+  </td>
 </tr>
 
 
 <tr><td colspan="2">
-  Another function on a node, this time with a list argument. View ExampleBuilder for implementaiton.
+  Another function on a node, this time with a list argument. View ExampleBuilder for implementation.
 </td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functionnode2.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/functionnode2.jsp" %></td>
+  <td width="50%">
+    <% try { %>
+    <%@include file="codesamples/functionnode2.jsp" %> 
+    <% } catch (Exception e) {out.println(e.getMessage());} %>
+  </td>  
 </tr>
 
 
@@ -125,7 +130,19 @@ demonstrate it here based on 'BeanFunction' based on an inner bean of the JSP.
 </td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functioncomplexparams.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/functioncomplexparams.jsp" %></td>
+  <td width="50%">
+    <% try { %>
+    <%@include file="codesamples/functioncomplexparams.jsp" %> 
+    <% } catch (Exception e) {out.println(e.getMessage());} %>
+  </td>  
+</tr>
+
+<tr><td colspan="2">
+  More about function 'sets'
+</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/functionsets.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/functionsets.jsp" %></td>
 </tr>
 
 
