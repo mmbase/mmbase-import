@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.21 2005-07-28 12:18:58 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.22 2005-07-28 17:24:49 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -194,20 +194,26 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             value = getObject(getReferid());
         } else {
             FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            log.debug("Getting function value. Container " + functionContainer);
+            if(log.isDebugEnabled()) {
+                log.debug("Getting function value. Container " + functionContainer);
+            }
 
             Function function;
             if ("".equals(functionName)) {  // no name given, certainly must use container.
                 function = functionContainer.getFunction(functionContainer.getName());
+                if (function == null) {
+                    throw new JspTagException("Could not determine the name of the function to be executed");
+                }
             } else {
                 log.debug("Trying self for function " + functionName);
                 // name given, try self:
                 function = getFunction(functionName);
+                if (function == null) {
+                    throw new JspTagException("Could not find function with the name '" + functionName + "'");
+                }
             }
 
-            if (function == null) {
-                throw new JspTagException("Could not determine the name of the function to be executed");
-            }
+
             log.debug("Function to use " + function);
             Parameters params;
             try {
