@@ -13,7 +13,7 @@
     <relation destinationtype="metadefinition" role="related" />
     <relation destinationtype="metadefinition" role="posrel" />
     <relation destinationtype="metastandard" role="posrel" />
-    <relation destinationtype="metadefinition" role="specify" />
+    <relation destinationtype="metadefinition" role="constraints" />
     <relation destinationtype="metavocabulary" role="include" />
     <relation destinationtype="metavocabulary" role="exclude" />
     <relation destinationtype="synonym" role="related" />
@@ -41,7 +41,7 @@
     -->
     <list destination="metadefinition" role="posrel"  extends="config/metadefinition/metadefinition-posrel-list.xml" />
     <list destination="metastandard"   role="posrel"  extends="config/metastandard/metastandard-posrel-list.xml" />
-    <list destination="metadefinition" role="specify" extends="config/metadefinition/metadefinition-specify-list.xml" />
+    <list destination="metadefinition" role="constraints" extends="config/metadefinition/metadefinition-specify-list.xml" />
     
     <list destination="metavocabulary" role="include" extends="config/metavocabulary/metavocabularydefinition-include-list.xml" />
     <list destination="metavocabulary" role="exclude" extends="config/metavocabulary/metavocabularydefinition-exclude-list.xml" />
