@@ -58,15 +58,16 @@ public class URLEscape {
      * @return the escaped url.
      */
     public static String escapeurl(String str) {
+        StringBuffer esc = new StringBuffer();
         byte buf[];
-        int i,a;
-        StringBuffer esc=new StringBuffer();
+        try {
+            buf = str.getBytes("UTF-8");
+        } catch (java.io.UnsupportedEncodingException uee) {
+            return str; // should not happen
+        }
 
-        buf=new byte[str.length()];
-        str.getBytes(0,str.length(),buf,0);
-
-        for (i = 0; i<str.length();i++) {
-            a = (int)buf[i] & 0xff;
+        for (int i = 0; i<buf.length;i++) {
+            int a = (int)buf[i] & 0xff;
             if (a>=32 && a<128 && isacceptable[a-32]) {
                 esc.append((char)a);
             } else {
@@ -81,7 +82,7 @@ public class URLEscape {
     /**
      * converts a HEX-character to its approprtiate byte value.
      * i.e. 'A' is returned as '/011'
-     * @param c teh Hex character
+     * @param c the Hex character
      * @return the byte value as a <code>char</code>
      */
     private static char from_hex(char c) {
