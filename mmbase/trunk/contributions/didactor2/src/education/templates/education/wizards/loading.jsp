@@ -9,9 +9,18 @@
 
 <html>
 <head></head>
-    <body>
-        <img src="<mm:treefile page="/education/wizards/gfx/loading.gif" objectlist="$includePath" referids="$referids" />" alt="OK">
-    </body>
+<body>
+   <script>
+      if (top == self)
+      {
+         var loc = document.location.href;
+         loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*/,"$1wizards/index.jsp");
+         document.location.href = loc;
+      }
+   </script>
+
+   <img src="<mm:treefile page="/education/wizards/gfx/loading.gif" objectlist="$includePath" referids="$referids" />" alt="OK">
+</body>
 </html>
 </mm:cloud>
 </mm:content>
