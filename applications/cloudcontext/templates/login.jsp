@@ -9,6 +9,8 @@
 </head>
 <body class="basic">
   <h2><%=getPrompt(m, "Login")%></h2>
+  <mm:cloud method="logout" />
+
   <%-- login.p.jsp should be on a more general place --%>
   <mm:include attributes="language"  page="/mmbase/edit/basic/login.p.jsp" />
 
