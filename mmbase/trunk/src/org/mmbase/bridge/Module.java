@@ -21,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.15 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Module.java,v 1.16 2005-07-28 16:53:45 michiel Exp $
  */
 public interface Module {
 
@@ -130,9 +130,9 @@ public interface Module {
      * Returns all the Function objects of this Module.
      *
      * @since MMBase-1.8
-     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
+     * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Set getFunctions();
+    public Collection getFunctions();
 
     /**
      * Returns a Fuction object.

@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Collection;
 import org.mmbase.security.UserContext;
 import org.mmbase.util.functions.Function;
 
@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.53 2005-06-21 19:14:04 michiel Exp $
+ * @version $Id: Cloud.java,v 1.54 2005-07-28 16:53:45 michiel Exp $
  */
 public interface Cloud {
 
@@ -576,7 +576,7 @@ public interface Cloud {
     public Object getProperty(Object key);
 
     /**
-     * Sets a property for this clodu object.
+     * Sets a property for this cloud object.
      * This can be used as a kind of 'environment' variables.
      * @param key the key of the property
      * @param value the property value
@@ -595,7 +595,7 @@ public interface Cloud {
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */
-    public Set getFunctions(String setName);
+    public Collection getFunctions(String setName);
 
     /**
      * Returns a Function object from a function set.
