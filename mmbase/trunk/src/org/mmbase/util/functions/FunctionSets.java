@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.14 2005-07-25 16:09:21 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.15 2005-07-28 15:43:37 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -173,16 +173,17 @@ public class FunctionSets {
             if (functionName != null) {
 
                 Element a = reader.getElementByPath(element, "function.type");
-                String type = reader.getElementValue(a);
+
+                String type = reader.getElementValue(a); // 'class' or 'instance'
 
                 a = reader.getElementByPath(element, "function.description");
                 String description = reader.getElementValue(a);
 
                 a = reader.getElementByPath(element, "function.class");
-                String classname = reader.getElementValue(a);
+                String className = reader.getElementValue(a);
 
                 a = reader.getElementByPath(element, "function.method");
-                String methodname = reader.getElementValue(a);
+                String methodName = reader.getElementValue(a);
 
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
@@ -243,11 +244,9 @@ public class FunctionSets {
                 Parameter[] parameters = (Parameter[]) parameterList.toArray(new Parameter[0]);
 
                 try {
-                    SetFunction fun = new SetFunction(functionName, parameters, returnType);
+                    SetFunction fun = new SetFunction(functionName, parameters, returnType, className, methodName);
+                    fun.setType(type);
                     fun.setDescription(description);
-                    fun.setClassName(classname);
-                    fun.setMethodName(methodname);
-                    fun.initialize();
                     functionSet.addFunction(fun);
                 } catch (Exception e) {
                     log.error(e);

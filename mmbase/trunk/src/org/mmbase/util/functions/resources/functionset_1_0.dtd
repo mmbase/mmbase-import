@@ -7,7 +7,7 @@
 <!ELEMENT status (#PCDATA)>
 <!ELEMENT version (#PCDATA)>
 
-<!ELEMENT function (description,type,class,method,param*,return*)>
+<!ELEMENT function (description?,type?,class,method,param*,return?)>
 <!ATTLIST function name CDATA #IMPLIED>
 
 <!ELEMENT description (#PCDATA)>
