@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.13 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: ReturnType.java,v 1.14 2005-07-28 17:07:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends Parameter implements java.io.Serializable {
@@ -76,6 +76,11 @@ public class ReturnType extends Parameter implements java.io.Serializable {
      * The return type of a function that returns a Set.
      */
     public static final ReturnType SET = new ReturnType(Set.class, "Set");
+    /**
+     * The return type of a function that returns a Set.
+     */
+    public static final ReturnType COLLECTION = new ReturnType(Collection.class, "Collection");
+
     /**
      * The return type of a function that returns a Map.
      */
