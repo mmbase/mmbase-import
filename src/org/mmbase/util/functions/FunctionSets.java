@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.16 2005-07-28 16:58:49 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.17 2005-07-28 17:08:17 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -185,22 +185,18 @@ public class FunctionSets {
 
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
-               	ReturnType returnType = ReturnType.UNKNOWN;
-		if (a != null) {
-                    
+               	ReturnType returnType = null;
+		if (a != null) {                    
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");
                     if (returnTypeClassName != null) {
                         try {
                             Class returnTypeClass = getClassFromName(returnTypeClassName);
                             returnType = new ReturnType(returnTypeClass, "");
                         } catch (Exception e) {
-                            log.warn("Cannot determine return type : " + returnTypeClassName + ", using UNKNOWN");
+                            log.warn("Cannot determine return type : " + returnTypeClassName + ", will auto-detect");
                         }
                     }
-                    
-		} else {
-                    returnType = ReturnType.NONE;
-		}
+                }
                 
                 
                 /* obtaining field definitions for a result Node... useful ??
