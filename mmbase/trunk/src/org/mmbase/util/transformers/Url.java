@@ -10,19 +10,19 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.util.*;
-import org.mmbase.util.URLParamEscape;
-
 
 /**
  * Encodings related to URL's. The implementation is still in
  * ../URL*Escape. Perhaps should be migrated to here...
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  */
 
 public class Url extends ConfigurableStringTransformer implements CharTransformer {
-    
-    public final static int ESCAPE       = 1;     
+
+    public final static int ESCAPE       = 1;
+
+    // maybe should be dropped, as there is no longer a difference with ESCAPE
     public final static int PARAM_ESCAPE = 2;
 
     public Url() {
@@ -46,29 +46,28 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
 
     public String transform(String r) {
         switch(to){
+        case PARAM_ESCAPE:
         case ESCAPE:
-            try { 
+            try {
                 return java.net.URLEncoder.encode(r, "UTF-8");
-            } catch (java.io.UnsupportedEncodingException uee) { // cannot happen 
-                return r;                
-            }  
-             
-        case PARAM_ESCAPE:     return URLParamEscape.escapeurl(r);
+            } catch (java.io.UnsupportedEncodingException uee) { // cannot happen
+                return r;
+            }
         default: throw new UnknownCodingException(getClass(), to);
         }
     }
     public String transformBack(String r) {
         switch(to){
-        case ESCAPE:           
+        case ESCAPE:
+        case PARAM_ESCAPE:
             try {
                 return java.net.URLDecoder.decode(r, "UTF-8");
-            } catch (java.io.UnsupportedEncodingException uee) { // cannot happen 
-                return r;                
-            }  
-        case PARAM_ESCAPE:     return URLParamEscape.unescapeurl(r);
+            } catch (java.io.UnsupportedEncodingException uee) { // cannot happen
+                return r;
+            }
         default: throw new UnknownCodingException(getClass(), to);
         }
-    } 
+    }
     public String getEncoding() {
         switch(to){
         case ESCAPE:        return "ESCAPE_URL";
