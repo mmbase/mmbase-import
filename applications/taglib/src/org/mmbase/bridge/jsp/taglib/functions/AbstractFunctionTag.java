@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.20 2005-05-18 08:04:58 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.21 2005-07-28 12:18:58 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -99,7 +99,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (module != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
-            return  FunctionFactory.getFunction(getCloudVar().getNodeManager(nodeManager.getString(this)), functionName); // or:  nodeManager.getFunction(functionName);
+            return  getCloudVar().getNodeManager(nodeManager.getString(this)).getFunction(functionName); 
         } else if (module != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
@@ -115,8 +115,12 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 Method method = Functions.getMethodFromClass(jspClass, functionName);
                 return FunctionFactory.getFunction(method, functionName); // or: new MethodFunction(method, functionName);
             } else {
-                return FunctionFactory.getFunction(getCloudVar(), set, functionName); // return getCloud().getFunction(set, functionName);
-                // return FunctionFactory.getFunction(set, functionName); // or: FunctionSets.getFunction(set, functionName);
+                CloudProvider cp = findCloudProvider(false);
+                if (cp != null) {
+                    return FunctionFactory.getFunction(cp.getCloudVar(), set, functionName); 
+                } else {
+                    return FunctionFactory.getFunction(set, functionName); 
+                }
             }
         } else if (functionClass != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL || functionSet != Attribute.NULL) {
