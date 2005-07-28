@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.15 2005-07-28 15:43:37 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.16 2005-07-28 16:58:49 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -160,11 +160,9 @@ public class FunctionSets {
     private static void decodeFunctionSet(ResourceLoader loader, String setResource, String setName) throws IOException {
         DocumentReader reader = new DocumentReader(loader.getInputSource(setResource), FunctionSets.class);
 
-        String status         = reader.getElementValue("functionset.status");
-        String version        = reader.getElementValue("functionset.version");
         String setDescription = reader.getElementValue("functionset.description");
 
-        FunctionSet functionSet = new FunctionSet(setName, version, status, setDescription);
+        FunctionSet functionSet = new FunctionSet(setName, setDescription);
         functionSets.put(setName, functionSet);
 
         for (Iterator functionElements = reader.getChildElements("functionset", "function"); functionElements.hasNext();) {
