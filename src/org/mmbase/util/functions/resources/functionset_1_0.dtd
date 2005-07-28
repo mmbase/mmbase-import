@@ -2,7 +2,7 @@
     functionset.dtd
 -->
 
-<!ELEMENT functionset (status,version,description,function*)>
+<!ELEMENT functionset (version?,description?,function*)>
 
 <!ELEMENT status (#PCDATA)>
 <!ELEMENT version (#PCDATA)>
