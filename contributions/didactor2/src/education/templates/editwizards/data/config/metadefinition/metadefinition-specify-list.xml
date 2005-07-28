@@ -1,5 +1,5 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="metadefinition" role="specify" minoccurs="0" maxoccurs="*" orderby="metadefinition.name">
+<list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*" orderby="metadefinition.name">
   <title>Specified Metadata Definitions</title>
   <item>
     <field name="name" ftype="data">
@@ -18,7 +18,7 @@
   </item>
 
   <action type="create">
-    <relation destinationtype="metadefinition" role="specify">
+    <relation destinationtype="metadefinition" role="constraints">
      </relation>
   </action>
 
