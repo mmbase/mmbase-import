@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.25 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.26 2005-07-28 16:53:45 michiel Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -212,10 +212,10 @@ public class ModuleHandler implements Module, Comparable {
                cloudContext.equals(((Module)o).getCloudContext());
     };
 
-    public Set getFunctions() {
-        Set functions = mmbase_module.getFunctions();
+    public Collection getFunctions() {
+        Collection functions = mmbase_module.getFunctions();
         // wrap functions
-        Set functionSet = new HashSet();
+        Collection functionSet = new HashSet();
         for (Iterator i = functions.iterator(); i.hasNext(); ) {
             Function fun = (Function)i.next();
             functionSet.add(new BasicFunction(fun));

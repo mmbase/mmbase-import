@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.129 2005-07-09 11:46:11 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.130 2005-07-28 16:53:45 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -950,18 +950,18 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         properties.put(key,value);
     }
 
-    public Set getFunctions(String setName) {
+    public Collection getFunctions(String setName) {
         FunctionSet set = FunctionSets.getFunctionSet(setName);
         if (set == null) {
             throw new NotFoundException("Functionset with name " + setName + "does not exist.");
         }
         // get functions
-        Map functionMap = set.getFunctions();
+        Collection functionMap = set.getFunctions();
         // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functionMap.values().iterator(); i.hasNext(); ) {
+        Collection functionSet = new HashSet();
+        for (Iterator i = functionMap.iterator(); i.hasNext(); ) {
             Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this,fun));
+            functionSet.add(new BasicFunction(this, fun));
         }
         return functionSet;
     }
@@ -969,11 +969,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     public Function getFunction(String setName, String functionName) {
         FunctionSet set = FunctionSets.getFunctionSet(setName);
         if (set == null) {
-            throw new NotFoundException("Functionset with name " + setName + "does not exist.");
+            throw new NotFoundException("Functionset with name '" + setName + "' does not exist.");
         }
         Function fun = set.getFunction(functionName);
         if (fun == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist in function set with name "+ setName + ".");
+            throw new NotFoundException("Function with name '" + functionName + "' does not exist in function set with name "+ setName + ".");
         }
         // wrap function
         return new BasicFunction(this, fun);

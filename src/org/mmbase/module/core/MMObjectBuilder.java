@@ -56,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.323 2005-07-15 10:05:44 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.324 2005-07-28 16:54:25 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -303,7 +303,7 @@ public class MMObjectBuilder extends MMTable {
             {
                 setDescription("Returns information about available functions");
             }
-            protected Object getFunctionValue(Set functions, Parameters parameters) {
+            protected Object getFunctionValue(Collection functions, Parameters parameters) {
                 String function = (String) parameters.get("function");
                 if (function == null || function.equals("")) {
                     Map info = new HashMap();
@@ -2414,9 +2414,9 @@ public class MMObjectBuilder extends MMTable {
      * Returns all Functions which are available (or at least known to be available) on a Node.
      * @since MMBase-1.8
      */
-    protected Set getFunctions(MMObjectNode node) {
-        Set builderFunctions = getFunctions();
-        Set nodeFunctions = new HashSet();
+    protected Collection getFunctions(MMObjectNode node) {
+        Collection builderFunctions = getFunctions();
+        Collection nodeFunctions = new HashSet();
         for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
             Object function = i.next();
             if (function instanceof NodeFunction) {

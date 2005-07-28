@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.55 2005-07-06 09:07:54 michiel Exp $
+ * @version $Id: Node.java,v 1.56 2005-07-28 16:53:06 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -366,7 +366,7 @@ public interface Node extends Comparable {
      * @return           the value of the specified field
      */
     public byte[] getByteValue(String fieldName);
-    
+
 
     /**
      * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
@@ -783,9 +783,9 @@ public interface Node extends Comparable {
      * Returns all the Function objects of this Node
      *
      * @since MMBase-1.8
-     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
+     * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Set getFunctions();
+    public Collection getFunctions();
 
     /**
      * Returns a Fuction object.
