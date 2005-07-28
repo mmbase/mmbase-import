@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.4 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: NodeWrapper.java,v 1.5 2005-07-28 16:53:06 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -111,7 +111,7 @@ public abstract class NodeWrapper implements Node, Comparable {
     public boolean mayWrite() { return node.mayWrite(); }
     public boolean mayDelete() { return node.mayDelete(); }
     public boolean mayChangeContext() { return node.mayChangeContext(); }
-    public Set getFunctions() { return node.getFunctions(); }
+    public Collection getFunctions() { return node.getFunctions(); }
     public Function getFunction(String functionName) { return node.getFunction(functionName); }
     public Parameters createParameters(String functionName) { return node.createParameters(functionName); }
     public FieldValue getFunctionValue(String functionName, List parameters) { return node.getFunctionValue(functionName, parameters);}

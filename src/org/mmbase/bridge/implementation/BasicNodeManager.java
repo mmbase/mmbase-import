@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.99 2005-07-14 20:19:49 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.100 2005-07-28 16:53:06 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -217,7 +217,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public String getProperty(String name) {
-        if (builder!=null) {
+        if (builder != null) {
             return builder.getInitParameter(name);
         } else {
             return null;
@@ -225,10 +225,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Map getProperties() {
-        if (builder!=null) {
+        if (builder != null) {
             return new HashMap(builder.getInitParameters());
         } else {
-            return new HashMap();
+            return Collections.EMPTY_MAP;
         }
     }
 
@@ -499,7 +499,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         builder=null;  // invalidate (builder does not exist any more)
     }
 
-    public Set getFunctions() {
+    public Collection getFunctions() {
         Collection functions = builder.getFunctions();
         // wrap functions
         Set functionSet = new HashSet();
@@ -511,7 +511,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Function getFunction(String functionName) {
-        log.info("Getting function '" + functionName + "' for " + this);
+        if (log.isDebugEnabled()) {
+            log.debug("Getting function '" + functionName + "' for " + this);
+        }
 
         // it may be a node-function on the type-def node then
         // it may be gui on a typedef node or so.
