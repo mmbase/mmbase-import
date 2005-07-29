@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.41 2005-07-20 15:10:33 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.42 2005-07-29 12:03:42 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -65,7 +65,6 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
 
                     String value = node.getContext();
                     buffer.append("<select name=\"" + prefix("owner") + "\"");
-
                     addExtraAttributes(buffer);
                     buffer.append(" >\n");
                     StringList possibleContexts = node.getPossibleContexts();
@@ -172,7 +171,7 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
         String guiType = field.getGUIType();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (log.isDebugEnabled()) {
-            log.debug("Received " + fieldValue);
+            log.debug("Received '" + fieldValue + "' for " + field);
         }
 
         if (fieldName.equals("owner")) {
@@ -196,8 +195,8 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
         }
 
         fieldValue = tag.encode(fieldValue, field);
-        log.info("Received " + fieldValue);
-        if (fieldValue != null && ! fieldValue.equals("") && ! fieldValue.equals(node.getValue(fieldName))) {
+        if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
+            if (fieldValue.equals("") && node.getValue(fieldName) == null) return false;
             if (guiType.indexOf("password") > -1) {
                 String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
                 if (confirmValue != null) {
