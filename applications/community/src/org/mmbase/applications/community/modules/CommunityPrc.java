@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.19 2005-07-14 20:23:47 nklasens Exp $
+ * @version $Id: CommunityPrc.java,v 1.20 2005-07-29 12:13:17 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -83,17 +83,29 @@ public class CommunityPrc extends ProcessorModule {
         if (!active) {
 
             messageBuilder = (Message) mmb.getBuilder("message");
-            if (messageBuilder == null  || !messageBuilder.activate()) {
-                log.info("Community module could not (yet) be activated because message builder missing or could not be activated" + (messageBuilder == null ? "." : " (" + messageBuilder + ")."));
+            if (messageBuilder == null) {
+                log.info("Community module could not be activated because message builder missing");
+                return false;
+            }
+            if (!messageBuilder.activate()) {
+                log.info("Community module could not (yet) be activated because message builder could not be activated" + (messageBuilder == null ? "." : " (" + messageBuilder + ")."));
                 return false;
             }
             communityBuilder = (Community)mmb.getBuilder("community");
-            if (communityBuilder == null || !communityBuilder.activate()) {
-                log.info("Community builder missing or could not be activated. Communityprc can work without it though.");
+            if (communityBuilder == null) {
+                log.info("Community builder missing. Communityprc can work without it though.");
+            } else {
+                if(!communityBuilder.activate()) {
+                    log.info("Community builder could not be activated. Communityprc can work without that though.");
+                }
             }
             channelBuilder = (Channel) mmb.getBuilder("channel");
-            if (channelBuilder == null || ! channelBuilder.activate()) {
-                log.info("Channel builder missing or could not be activated. Communityprc can work without it though.");
+            if (channelBuilder == null) {
+                log.info("Channel builder missing. Communityprc can work without it though.");
+            } else {
+                if (! channelBuilder.activate()) {
+                    log.info("Channel builder could not be activated. Communityprc can work without that though.");
+                }
             }
             initializeTreeBuilder();
             active = true;
