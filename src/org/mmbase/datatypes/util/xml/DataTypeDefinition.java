@@ -7,16 +7,16 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.util.xml.datatypes;
+package org.mmbase.datatypes.util.xml;
 
 import java.util.Locale;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.util.xml.AbstractObjectDefinition;
 import org.mmbase.bridge.util.fields.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
 
@@ -24,9 +24,9 @@ import org.mmbase.util.transformers.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.4 2005-07-26 14:36:31 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.1 2005-07-29 14:52:37 pierre Exp $
  **/
-public class DataTypeDefinition extends AbstractObjectDefinition {
+public class DataTypeDefinition {
 
     private static final Logger log = Logging.getLoggerInstance(DataTypeDefinition.class);
 
@@ -34,11 +34,6 @@ public class DataTypeDefinition extends AbstractObjectDefinition {
      * The id of the data type
      */
     public String name = null;
-
-    /**
-     * the base data type
-     */
-    public DataType baseDataType = null;
 
     /**
      * the data type
@@ -58,25 +53,61 @@ public class DataTypeDefinition extends AbstractObjectDefinition {
     /**
      * Constructor.
      */
+    public DataTypeDefinition() {
+        this(null, DataTypeConfigurer.getDefaultConfigurer());
+    }
+
+    /**
+     * Constructor.
+     */
     public DataTypeDefinition(TypeSetDefinition typeSetDefinition, DataTypeConfigurer configurer) {
-        super(DataTypeConfigurer.NAMESPACE_DATATYPES);
         this.typeSetDefinition = typeSetDefinition;
         this.configurer = configurer;
+    }
+
+    /**
+     * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * default namespace
+     */
+    protected boolean hasAttribute(Element element, String localName) {
+        return DocumentReader.hasAttribute(element,DataTypeReader.NAMESPACE_DATATYPES,localName);
+    }
+
+    /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * default namespace
+     */
+    protected String getAttribute(Element element, String localName) {
+        return DocumentReader.getAttribute(element,DataTypeReader.NAMESPACE_DATATYPES,localName);
+    }
+
+    /**
+     * Returns the textual value (content) of a certain element
+     */
+    protected String getValue(Element element) {
+        return DocumentReader.getNodeTextValue(element);
     }
 
     /**
      * Configures the data type definition, using data from a DOM element
      */
     public DataTypeDefinition configure(Element dataTypeElement) {
-        if (hasAttribute(dataTypeElement,"name")) {
-            name = getAttribute(dataTypeElement,"name");
+        if (hasAttribute(dataTypeElement,"id")) {
+            name = getAttribute(dataTypeElement,"id");
         }
         String baseType = "string";
         if (hasAttribute(dataTypeElement,"base")) {
             baseType = getAttribute(dataTypeElement,"base");
         }
-        baseDataType = configurer.getDataType(baseType);
-        dataType = (DataType)baseDataType.clone(name);
+        DataType dataType = (DataType)configurer.getDataType(baseType).clone(name);
+        return configure(dataTypeElement, dataType);
+    }
+
+    /**
+     * Configures the data type definition, using data from a DOM element
+     */
+    public DataTypeDefinition configure(Element dataTypeElement, DataType dataType) {
+        this.dataType = dataType;
         configureConditions(dataTypeElement);
         return this;
     }
@@ -174,29 +205,31 @@ public class DataTypeDefinition extends AbstractObjectDefinition {
         Processor processor = null;
         NodeList childNodes = processorElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
-            Element classElement = (Element) childNodes.item(k);
-            if ("class".equals(classElement.getLocalName())) {
-                String clazString = getValue(classElement);
-                try {
-                    Class claz = Class.forName(clazString);
-                    Processor newProcessor = null;
-                    if (CharTransformer.class.isAssignableFrom(claz)) {
-                        CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueintercepter ", false);
-                        if (charTransformer != null) {
-                            newProcessor = new CharTransformerProcessor(charTransformer);
+            if (childNodes.item(k) instanceof Element) {
+                Element classElement = (Element) childNodes.item(k);
+                if ("class".equals(classElement.getLocalName())) {
+                    String clazString = getValue(classElement);
+                    try {
+                        Class claz = Class.forName(clazString);
+                        Processor newProcessor = null;
+                        if (CharTransformer.class.isAssignableFrom(claz)) {
+                            CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueintercepter ", false);
+                            if (charTransformer != null) {
+                                newProcessor = new CharTransformerProcessor(charTransformer);
+                            }
+                        } else if (Processor.class.isAssignableFrom(claz)) {
+                            newProcessor = (Processor)claz.newInstance();
+                        } else {
+                            log.error("Found class " + clazString + " is not a Processor or a CharTransformer");
                         }
-                    } else if (Processor.class.isAssignableFrom(claz)) {
-                        newProcessor = (Processor)claz.newInstance();
-                    } else {
-                        log.error("Found class " + clazString + " is not a Processor or a CharTransformer");
+                        processor = chainProcessors(processor, newProcessor);
+                    } catch (ClassNotFoundException cnfe) {
+                        log.error("Class " + clazString + " could not be found");
+                    } catch (IllegalAccessException iae) {
+                        log.error("Class " + clazString + " may  not be instantiated");
+                    } catch (InstantiationException ie) {
+                        log.error("Class " + clazString + " can not be instantiated");
                     }
-                    processor = chainProcessors(processor, newProcessor);
-                } catch (ClassNotFoundException cnfe) {
-                    log.error("Class " + clazString + " could not be found");
-                } catch (IllegalAccessException iae) {
-                    log.error("Class " + clazString + " may  not be instantiated");
-                } catch (InstantiationException ie) {
-                    log.error("Class " + clazString + " can not be instantiated");
                 }
             }
         }

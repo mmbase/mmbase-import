@@ -40,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.141 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: MMBase.java,v 1.142 2005-07-29 14:52:37 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -260,6 +260,8 @@ public class MMBase extends ProcessorModule {
     public void init() {
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
+        DataTypes.initialize();
+
         // Set the mmbaseroot singleton var
         // This prevents recursion if MMBase.getMMBase() is called while
         // this method is run
@@ -468,23 +470,6 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Loads the object builder if object.xml could be found.
-     * @return The MMObjectBuilder 'object' or null, if no object.xml was found.
-     * @since MMBase-1.7.1
-     */
-    private MMObjectBuilder loadRootBuilder() {
-        if (rootBuilder != null) return rootBuilder;
-        try {
-            rootBuilder = loadBuilder("object");
-        } catch (BuilderConfigurationException e) {
-            // object builder was not defined -
-            // builder is optional, so this is not an error
-            rootBuilder = null;
-        }
-        return rootBuilder;
-    }
-
-    /**
      * Create a new MMBase persistent storage instance.
      * The storage instance created is based on the baseName provided in the configuration file.
      * This call automatically creates an object table.
@@ -626,49 +611,12 @@ public class MMBase extends ProcessorModule {
     /**
      * Returns a reference to the Object builder.
      * The Object builder is the builder from which all other builders eventually extend.
-     * If the builder is not defined in the MMbase configuration, the system creates one.
      * @return the <code>Object</code> builder.
      * @since MMBase-1.6
      */
     public MMObjectBuilder getRootBuilder() {
-        if (loadRootBuilder() == null) {
-            log.info("No object.xml found, taking defaults.");
-            // instantiate a virtual 'object' builder if none is specified
-            rootBuilder = new MMObjectBuilder();
-            rootBuilder.setMMBase(this);
-            rootBuilder.setTableName("object");
-            List fields = new ArrayList();
-            // number field  (note: state = 'system')
-            CoreField field = Fields.createSystemField("number",Field.TYPE_INTEGER);
-            field.setGUIName("Object");
-            field.setSearchPosition(10);
-            field.setListPosition(10);
-            field.setEditPosition(1);
-            field.setStoragePosition(1);
-            field.getDataType().setRequired(true);
-            field.setParent(rootBuilder);
-            field.finish();
-            fields.add(field);
-            // otype field
-            field = Fields.createSystemField("otype",Field.TYPE_NODE);
-            field.setGUIName("Type");
-            field.setStoragePosition(2);
-            field.getDataType().setRequired(true);
-            field.setParent(rootBuilder);
-            field.finish();
-            fields.add(field);
-            // owner field
-            field = Fields.createSystemField("owner",Field.TYPE_STRING);
-            field.setGUIName("Owner");
-            field.setSearchPosition(11);
-            field.setListPosition(11);
-            field.setSize(12);
-            field.setStoragePosition(3);
-            field.getDataType().setRequired(true);
-            field.setParent(rootBuilder);
-            field.finish();
-            fields.add(field);
-            rootBuilder.setFields(fields);
+        if (rootBuilder == null) {
+            rootBuilder = loadBuilder("object");
         }
         return rootBuilder;
     }
@@ -929,7 +877,7 @@ public class MMBase extends ProcessorModule {
         // remarks:
         //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.oType, so typerel must be started after insrel and reldef. (bug #6237)
 
-        loadRootBuilder(); // loads object.xml if present.
+        getRootBuilder(); // loads object.xml if present.
 
         typeDef = (TypeDef) loadCoreBuilder("typedef");
         relDef  = (RelDef)  loadCoreBuilder("reldef");
