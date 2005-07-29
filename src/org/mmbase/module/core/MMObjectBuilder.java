@@ -56,7 +56,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.324 2005-07-28 16:54:25 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.325 2005-07-29 11:22:11 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -339,7 +339,8 @@ public class MMObjectBuilder extends MMTable {
 
 
     // contains the builder's field definitions
-    protected Map fields;
+    protected final Map fields = new HashMap();
+
 
     /**
      * Reference to the builders that this builder extends.
@@ -3602,7 +3603,7 @@ public class MMObjectBuilder extends MMTable {
      */
     protected String getURLEncode(String body) {
         String rtn="";
-        if (body!=null) {
+        if (body != null) {
             rtn = URLEncoder.encode(body);
         }
         return rtn;
@@ -3630,7 +3631,7 @@ public class MMObjectBuilder extends MMTable {
      * @param f A List with fields (as CoreField objects) as defined by MMBase. This may not be in sync with the actual database table, about which Storage will report then.
      */
     public void setFields(List f) {
-        fields = new HashMap();
+        fields.clear();
 
         Iterator i = f.iterator();
         while (i.hasNext()) {

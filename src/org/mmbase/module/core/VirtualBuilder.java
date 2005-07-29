@@ -19,7 +19,7 @@ import org.mmbase.bridge.Field;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.15 2005-07-09 11:11:48 nklasens Exp $
+ * @version $Id: VirtualBuilder.java,v 1.16 2005-07-29 11:22:11 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -34,8 +34,7 @@ public class VirtualBuilder extends MMObjectBuilder {
         this.mmb=m;
         this.tableName="virtualnodes_"+System.currentTimeMillis();
         this.description="";
-        fields=new Hashtable();
-        virtual=true;
+        virtual = true;
     }
 
     /**
@@ -45,8 +44,8 @@ public class VirtualBuilder extends MMObjectBuilder {
      */
     protected VirtualBuilder(MMBase m, String tableName) {
         this(m);
-        this.tableName=tableName;
-        m.mmobjs.put(tableName,this);
+        this.tableName = tableName;
+        m.mmobjs.put(tableName, this);
     }
 
     /**
@@ -89,7 +88,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @return A newly initialized <code>VirtualNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        VirtualNode node=new VirtualNode(this);
+        VirtualNode node = new VirtualNode(this);
         node.setValue("number",-1);
         node.setValue("owner",owner);
         node.setValue("otype",oType);
@@ -107,7 +106,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      */
      public String getGUIInicator(MMObjectNode node) {
         String s= node.getStringValue("name");
-        if (s!=null) {
+        if (s != null) {
             return s;
         } else {
             return GUI_INDICATOR;
