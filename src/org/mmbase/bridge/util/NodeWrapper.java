@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.5 2005-07-28 16:53:06 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.6 2005-07-29 14:52:37 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -34,13 +34,14 @@ public abstract class NodeWrapper implements Node, Comparable {
     public Cloud getCloud()             { return node.getCloud(); }
     public NodeManager getNodeManager() { return node.getNodeManager(); }
     public int getNumber()         { return node.getNumber(); }
-    public boolean isRelation()         { return node.isRelation(); } 
+    public boolean isRelation()         { return node.isRelation(); }
     public Relation toRelation()        { return node.toRelation(); }
     public boolean isNodeManager() { return node.isNodeManager();}
     public NodeManager toNodeManager() { return node.toNodeManager(); }
     public boolean isRelationManager() { return node.isRelationManager(); }
     public RelationManager toRelationManager() { return node.toRelationManager(); }
     public void setValue(String fieldName, Object value) { node.setValue(fieldName, value); }
+    public void setValueWithoutProcess(String fieldName, Object value) { node.setValueWithoutProcess(fieldName, value); }
     public void setObjectValue(String fieldName, Object value) { node.setObjectValue(fieldName, value); }
     public void setBooleanValue(String fieldName, boolean value) { node.setBooleanValue(fieldName, value); }
     public void setNodeValue(String fieldName, Node value) { node.setNodeValue(fieldName, value); }
@@ -68,7 +69,7 @@ public abstract class NodeWrapper implements Node, Comparable {
     public Date getDateValue(String fieldName) { return node.getDateValue(fieldName); }
     public List getListValue(String fieldName) { return node.getListValue(fieldName); }
     public FieldValue getFieldValue(String fieldName) throws NotFoundException {
-        return node.getFieldValue(fieldName); 
+        return node.getFieldValue(fieldName);
     }
     public FieldValue getFieldValue(Field field) { return node.getFieldValue(field); }
     public void commit() { node.commit(); }
@@ -119,7 +120,7 @@ public abstract class NodeWrapper implements Node, Comparable {
 
     public int hashCode() { return node.hashCode(); }
     public boolean equals(Object o) { return node.equals(o); }
-    public int compareTo(Object o) { return node.compareTo(o); } 
+    public int compareTo(Object o) { return node.compareTo(o); }
 
     public Node getNode() {
         return node;

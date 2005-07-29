@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.49 2005-07-08 08:04:26 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.50 2005-07-29 14:52:37 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -74,7 +74,7 @@ public class XMLEntityResolver implements EntityResolver {
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
         org.mmbase.bridge.util.xml.query.QueryReader.registerPublicIDs();
-        org.mmbase.bridge.util.xml.datatypes.DataTypeConfigurer.registerPublicIDs();
+        org.mmbase.datatypes.util.xml.DataTypeReader.registerPublicIDs();
     }
 
     /**

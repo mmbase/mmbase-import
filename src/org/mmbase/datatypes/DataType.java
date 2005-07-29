@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.2 2005-07-26 14:36:31 pierre Exp $
+ * @version $Id: DataType.java,v 1.3 2005-07-29 14:52:37 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -256,7 +256,20 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     }
 
     public String toString() {
-        return getTypeAsClass() + " " + getName();
+//        return getTypeAsClass() + " " + getName();
+        StringBuffer buf = new StringBuffer();
+        buf.append(getName() + " (" + getTypeAsClass() + ")\n");
+        buf.append(commitProcessor == null ? "" : "commit:" + commitProcessor.getClass().getName() + "\n");
+        for (int i =0; i < 13; i++) {
+            buf.append(getProcessor[i] == null ? "" : "\nget [" + i + "]:" + getProcessor[i].getClass().getName() + "\n");
+        }
+        for (int i =0; i < 13; i++) {
+            buf.append(setProcessor[i] == null ? "" : "\nset [" + i + "]:" + setProcessor[i].getClass().getName() + "\n");
+        }
+        if (isRequired()) {
+            buf.append("required\n");
+        }
+        return buf.toString();
     }
 
     /**
@@ -277,6 +290,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         try {
             DataType clone = (DataType)super.clone(name);
             clone.requiredProperty = (DataType.Property)getRequiredProperty().clone(clone);
+            clone.getProcessor = (Processor[])getProcessor.clone();
+            clone.setProcessor = (Processor[])setProcessor.clone();
             // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
             return clone;
@@ -387,12 +402,17 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (processor == null) processor = getProcessor(action);
         if (processor == null && action == PROCESS_SET) {
             processor = getProcessor(PROCESS_COMMIT, processingType);
-            if (processor == null) processor = getProcessor(PROCESS_COMMIT);
+            if (processor == null) {
+                processor = getProcessor(PROCESS_COMMIT);
+            }
         }
         if (processor != null) {
             if (action == PROCESS_COMMIT && processor instanceof CommitProcessor) {
+                if (log.isDebugEnabled()) log.debug("commit:" + processor.getClass().getName());
                 ((CommitProcessor)processor).commit(node, field);
+
             } else {
+                if (log.isDebugEnabled()) log.debug("process:" + processor.getClass().getName());
                 processor.process(node, field, null);
             }
         }

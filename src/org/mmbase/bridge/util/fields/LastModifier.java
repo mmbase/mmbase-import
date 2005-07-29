@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * thrown (in other words, the field is read only).
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifier.java,v 1.3 2005-01-03 12:12:11 michiel Exp $
+ * @version $Id: LastModifier.java,v 1.4 2005-07-29 14:52:37 pierre Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
@@ -31,9 +31,9 @@ public class LastModifier implements CommitProcessor, Processor {
      */
     public Object process(Node node, Field field, Object value) {
         throw new BridgeException("You cannot change the field " + field.getName());
-    }        
-  
+    }
+
     public void commit(Node node, Field field) {
-        node.getFieldValue(field).setObject(node.getCloud().getUser().getIdentifier());
-    }        
+        node.setValueWithoutProcess(field.getName(),node.getCloud().getUser().getIdentifier());
+    }
 }

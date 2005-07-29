@@ -29,21 +29,21 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * The DocumentReader class provides methods for loading a xml document in memory.
- * It serves as the base class for DocumentWriter (which adds ways to write a document), and 
+ * It serves as the base class for DocumentWriter (which adds ways to write a document), and
  * XMLBasicReader, which adds path-like methods with which to retrieve elements.
  *
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.10 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: DocumentReader.java,v 1.11 2005-07-29 14:52:37 pierre Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
-    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());     
+    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
@@ -69,7 +69,7 @@ public class DocumentReader  {
 
     private String systemId;
 
-    /**  
+    /**
      * Returns the default setting for validation for DocumentReaders.
      * @todo add a way to configure this value, so validation can be turned off in i.e. production environments
      * @return true if validation is on
@@ -77,14 +77,14 @@ public class DocumentReader  {
     protected static final boolean validate() {
         return true;
     }
-    
+
 
     /**
      * Creates an empty document reader.
      */
     protected DocumentReader() {
     }
-    
+
     /**
      * Constructs the document by reading it from a source.
      * @param source the input source from which to read the document
@@ -101,7 +101,7 @@ public class DocumentReader  {
     public DocumentReader(InputSource source, boolean validating) {
         this(source, validating, null);
     }
-    
+
     /**
      * Constructs the document by reading it from a source.
      * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
@@ -112,7 +112,7 @@ public class DocumentReader  {
     public DocumentReader(InputSource source, Class resolveBase) {
         this(source, DocumentReader.validate(), resolveBase);
     }
-    
+
     /**
      * Constructs the document by reading it from a source.
      * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
@@ -164,7 +164,7 @@ public class DocumentReader  {
                         log.warn("The XML parser does not support JAXP 1.2, XSD validation will not work.", iae);
                         warnedJAXP12 = true;
                     }
-                } 
+                }
             }
             dfactory.setNamespaceAware(true);
 
@@ -184,7 +184,7 @@ public class DocumentReader  {
     }
 
     /**
-     * Creates a DocumentBuilder with default settings for handler, resolver, or validation, 
+     * Creates a DocumentBuilder with default settings for handler, resolver, or validation,
      * obtaining it from the cache if available.
      * @return a DocumentBuilder instance, or null if none could be created
      */
@@ -201,9 +201,9 @@ public class DocumentReader  {
 
     /**
      * Creates a DocumentBuilder.
-     * DocumentBuilders that use the default error handler or entity resolver are cached (one for validating, 
+     * DocumentBuilders that use the default error handler or entity resolver are cached (one for validating,
      * one for non-validating document buidlers).
-     * @param validating if true, the documentbuilder will validate documents read 
+     * @param validating if true, the documentbuilder will validate documents read
      * @param xsd        if true, validating will be done by an XML schema definiton.
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use the default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use the default resolver
@@ -226,12 +226,12 @@ public class DocumentReader  {
 
     /**
      * Return the text value of a node.
-     * It includes the contents of all child textnodes and CDATA sections, but ignores 
+     * It includes the contents of all child textnodes and CDATA sections, but ignores
      * everything else (such as comments)
      * The code trims excessive whitespace unless it is included in a CDATA section.
-     * 
+     *
      * @param n the Node whose value to determine
-     * @return a String representing the node's textual value 
+     * @return a String representing the node's textual value
      */
     public static String getNodeTextValue(Node n) {
         NodeList nl = n.getChildNodes();
@@ -245,6 +245,26 @@ public class DocumentReader  {
             }
         }
         return res.toString();
+    }
+
+    /**
+     * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * passed namespace
+     */
+    static public boolean hasAttribute(Element element, String nameSpace, String localName) {
+        return element.hasAttributeNS(nameSpace,localName) || element.hasAttribute(localName);
+    }
+
+    /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * passed namespace
+     */
+    static public String getAttribute(Element element, String nameSpace, String localName) {
+        if (element.hasAttributeNS(nameSpace,localName)) {
+            return element.getAttributeNS(nameSpace,localName);
+        } else {
+            return element.getAttribute(localName);
+        }
     }
 
     /**
@@ -263,7 +283,7 @@ public class DocumentReader  {
      * @return Tag name of the element
      */
     public String getElementName(Element e) {
-        return e.getTagName();
+        return e.getLocalName();
     }
 
     /**
@@ -282,13 +302,23 @@ public class DocumentReader  {
      * @return Value of attribute
      */
     public String getElementAttributeValue(Element e, String attr) {
-        if (e==null)
+        if (e == null)
             return "";
         else
             return e.getAttribute(attr);
     }
 
-    
+    /**
+     * Determine the root element of the contained document
+     * @return root element
+     */
+    public Element getRootElement() {
+        if (document == null) {
+            log.error("Document is not defined, cannot get root element");
+        }
+        return document.getDocumentElement();
+    }
+
     /**
      * @param path Dot-separated list of tags describing path from root element to requested element.
      *             NB the path starts with the name of the root element.
@@ -315,13 +345,13 @@ public class DocumentReader  {
             return null;
         } else {
             String root = st.nextToken();
-            if (e.getNodeName().equals("error")) {
+            if (e.getLocalName().equals("error")) {
                 // path should start with document root element
                 log.error("Error occurred : (" + getElementValue(e) + ")");
                 return null;
-            } else if (!e.getNodeName().equals(root)) {
+            } else if (!e.getLocalName().equals(root)) {
                 // path should start with document root element
-                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getNodeName()+"): incorrect xml file" +
+                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getLocalName()+"): incorrect xml file" +
                           "("+getSystemId()+")");
                 return null;
             }
@@ -332,8 +362,8 @@ public class DocumentReader  {
                 for(int i = 0; i < nl.getLength(); i++) {
                     if (! (nl.item(i) instanceof Element)) continue;
                     e = (Element)nl.item(i);
-                    if (e.getTagName().equals(tag)) continue OUTER;
-                } 
+                    if (e.getLocalName().equals(tag)) continue OUTER;
+                }
                 // Handle error!
                 return null;
             }
@@ -349,7 +379,7 @@ public class DocumentReader  {
     public String getElementValue(String path) {
         return getElementValue(getElementByPath(path));
     }
-    
+
     /**
      * @param e Element
      * @return Text value of element
@@ -386,7 +416,7 @@ public class DocumentReader  {
     public Iterator getChildElements(String path,String tag) {
         return getChildElements(getElementByPath(path),tag);
     }
-    
+
     /**
      * @param e Element
      * @param tag tag to match ("*" means all tags")
@@ -394,14 +424,14 @@ public class DocumentReader  {
      */
     public Iterator getChildElements(Element e,String tag) {
         List v = new ArrayList();
-        boolean ignoretag=tag.equals("*");
+        boolean ignoretag = tag.equals("*");
         if (e!=null) {
             NodeList nl = e.getChildNodes();
             for (int i=0;i<nl.getLength();i++) {
                 Node n = nl.item(i);
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
-                     ((Element)n).getTagName().equalsIgnoreCase(tag))) {
+                     ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
                     v.add(n);
                 }
             }

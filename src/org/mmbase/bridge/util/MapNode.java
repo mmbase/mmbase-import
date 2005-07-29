@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.1 2005-01-27 23:36:56 michiel Exp $
+ * @version $Id: MapNode.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -32,38 +32,45 @@ public class MapNode extends NodeWrapper implements Map {
     public MapNode(Node node) {
         super(node);
     }
+
     // javadoc inherited
     public void clear() {
         // the fields of a node are fixed by it's nodemanager.
         throw new UnsupportedOperationException("You cannot remove fields from a Node.");
     }
+
     // javadoc inherited
     public boolean containsKey(Object key) {
         return getNodeManager().hasField((String) key);
     }
+
     // javadoc inherited
     // code copied from AbstractMap
     public boolean containsValue(Object value) {
         Iterator  i = entrySet().iterator();
-	if (value==null) {
-	    while (i.hasNext()) {
-		Entry e = (Entry) i.next();
-		if (e.getValue()==null)
-		    return true;
-	    }
-	} else {
-	    while (i.hasNext()) {
-		Entry  e = (Entry) i.next();
-		if (value.equals(e.getValue()))
-		    return true;
-	    }
-	}
-	return false;
+        if (value==null) {
+            while (i.hasNext()) {
+                Entry e = (Entry) i.next();
+                if (e.getValue()==null) {
+                    return true;
+                }
+            }
+        } else {
+            while (i.hasNext()) {
+                Entry  e = (Entry) i.next();
+                if (value.equals(e.getValue())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
+
     // javadoc inherited
     public Object remove(Object key) {
         throw new UnsupportedOperationException("You cannot remove fields from a Node.");
     }
+
     // javadoc inherited
     public Set entrySet() {
         return new AbstractSet() {
@@ -71,7 +78,7 @@ public class MapNode extends NodeWrapper implements Map {
                 public Iterator iterator() {
                     return new Iterator() {
                             FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}                             
+                            public boolean hasNext() { return i.hasNext();}
                             public Object  next() {
                                 return new Map.Entry() {
                                         Field field = i.nextField();
@@ -98,6 +105,7 @@ public class MapNode extends NodeWrapper implements Map {
                 }
             };
     }
+
     // javadoc inherited
     // todo: could be modifiable?
     public Collection values() {
@@ -106,7 +114,7 @@ public class MapNode extends NodeWrapper implements Map {
                 public Iterator iterator() {
                     return new Iterator() {
                             FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}                             
+                            public boolean hasNext() { return i.hasNext();}
                             public Object  next() {
                                 Field field = i.nextField();
                                 return MapNode.this.getValue(field.getName());
@@ -129,7 +137,7 @@ public class MapNode extends NodeWrapper implements Map {
                 public Iterator iterator() {
                     return new Iterator() {
                             FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}                             
+                            public boolean hasNext() { return i.hasNext();}
                             public Object  next() {
                                 Field field = i.nextField();
                                 return field.getName();
@@ -147,11 +155,11 @@ public class MapNode extends NodeWrapper implements Map {
 
     // javadoc inherited
     public void putAll(Map map) {
-	Iterator i = map.entrySet().iterator();
-	while (i.hasNext()) {
-	    Entry e = (Entry) i.next();
-	    setValue((String) e.getKey(), e.getValue());
-	}
+        Iterator i = map.entrySet().iterator();
+        while (i.hasNext()) {
+            Entry e = (Entry) i.next();
+            setValue((String) e.getKey(), e.getValue());
+        }
     }
 
     // javadoc inherited

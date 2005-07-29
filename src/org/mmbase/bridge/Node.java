@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.56 2005-07-28 16:53:06 michiel Exp $
+ * @version $Id: Node.java,v 1.57 2005-07-29 14:52:36 pierre Exp $
  */
 public interface Node extends Comparable {
 
@@ -107,6 +107,17 @@ public interface Node extends Comparable {
      * @param value      the new value for the given field
      */
     public void setValue(String fieldName, Object value);
+
+    /**
+     * Like setValue, but skips any processing that MMBase would normally perform on a field.
+     * You can use this to set data on fields that are 'system' defined, to prevent (among other
+     * things) infinite recursion. Use with care - in general processing of a field has a purpose!
+
+     * @param fieldName name of field
+     * @param value new value of the field
+     * @since MMBase-1.8
+     */
+    public void setValueWithoutProcess(String fieldName, Object value);
 
     /**
      * Sets the value of the specified field using an object, but without dispatching to the right
@@ -372,7 +383,7 @@ public interface Node extends Comparable {
      * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
      * especially usefull for large byte-array fields. By this you can avoid them to be completely
      * stored in memory.
-     */        
+     */
     public InputStream getInputStreamValue(String fieldName);
 
 
@@ -449,7 +460,7 @@ public interface Node extends Comparable {
     /**
      * Whether this Node is new (not yet commited).
      * @since MMBase-1.8
-     */    
+     */
     public boolean isNew();
 
     /**

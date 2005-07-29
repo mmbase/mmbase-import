@@ -7,22 +7,22 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.util.xml.datatypes;
+package org.mmbase.datatypes.util.xml;
 
 import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.datatypes.DataType;
-import org.mmbase.bridge.util.xml.AbstractObjectDefinition;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 
 /**
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: TypeSetDefinition.java,v 1.2 2005-07-22 12:35:46 pierre Exp $
+ * @version $Id: TypeSetDefinition.java,v 1.1 2005-07-29 14:52:37 pierre Exp $
  **/
-public class TypeSetDefinition extends AbstractObjectDefinition {
+public class TypeSetDefinition {
 
     /**
      * The id of the typeset set
@@ -43,7 +43,6 @@ public class TypeSetDefinition extends AbstractObjectDefinition {
      * Constructor.
      */
     public TypeSetDefinition(DataTypeConfigurer configurer) {
-        super(DataTypeConfigurer.NAMESPACE_DATATYPES);
         this.configurer = configurer;
         dataTypes = new HashMap();
     }
@@ -52,8 +51,8 @@ public class TypeSetDefinition extends AbstractObjectDefinition {
      * Configures the type set definition, using data from a DOM element
      */
     public TypeSetDefinition configure(Element typeSetElement) {
-        if (hasAttribute(typeSetElement,"id")) {
-            id = getAttribute(typeSetElement,"id");
+        if (DocumentReader.hasAttribute(typeSetElement,DataTypeReader.NAMESPACE_DATATYPES,"id")) {
+            id = DocumentReader.getAttribute(typeSetElement,DataTypeReader.NAMESPACE_DATATYPES,"id");
         }
         configureDataTypes(typeSetElement);
         return this;
