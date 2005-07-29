@@ -10,10 +10,18 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import java.net.*;
 import java.util.*;
-import org.mmbase.bridge.*;
+import org.xml.sax.InputSource;
+import org.w3c.dom.*;
+
+import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
+import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.logging.*;
 
 /**
  * This class contains various methods for manipulating DataType objects.
@@ -29,13 +37,62 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.2 2005-07-26 14:36:31 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.3 2005-07-29 14:52:37 pierre Exp $
  */
 
 public class DataTypes {
 
+    private static final Logger log = Logging.getLoggerInstance(DataTypes.class);
+
+    public static void initialize() {
+        // read the XML
+        try {
+            ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
+                    public void onChange(String resource) {
+                        readDataTypes(getResourceLoader(), resource);
+                    }
+                };
+            watcher.add("datatypes.xml");
+            watcher.start();
+            watcher.onChange("datatypes.xml");
+        } catch (Throwable t) {
+            log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
+        }
+    }
+
+    /**
+     * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
+     */
+    private static void readDataTypes(ResourceLoader loader, String resource) {
+        List resources = loader.getResourceList(resource);
+        log.info("Using " + resources);
+        ListIterator i = resources.listIterator();
+        while (i.hasNext()) i.next();
+        while (i.hasPrevious()) {
+            try {
+                URL u = (URL) i.previous();
+                log.info("Reading " + u);
+                URLConnection con = u.openConnection();
+                if (con.getDoInput()) {
+                    InputSource dataTypesSource = new InputSource(con.getInputStream());
+                    log.service("Reading datatypes from " + dataTypesSource.getSystemId());
+                    DocumentReader reader  = new DocumentReader(dataTypesSource, false, DataTypes.class);
+                    Element dataTypesElement = reader.getRootElement(); // fieldtypedefinitons or datatypes element
+                    DataTypeReader.readDataTypes(dataTypesElement, lockObject);
+                }
+            } catch (Exception e) {
+                log.error(e);
+                log.error(Logging.stackTrace(e));
+            }
+        }
+        log.info(finalDataTypes.values().toString());
+    }
+
     // the map containing named DataTypes for use throughout the application
     private static Map finalDataTypes = new HashMap();
+
+    // object used to lock datatypes
+    private static Object lockObject = new Object();
 
     /**
      * Determines the MMBase type of a specified class. The MMBase base type is sue dby teh storage layer to
@@ -63,7 +120,7 @@ public class DataTypes {
             return Field.TYPE_STRING;
         } else if (org.w3c.dom.Node.class.isAssignableFrom(classType)) {
             return Field.TYPE_XML;
-        } else if (Node.class.isAssignableFrom(classType) || MMObjectNode.class.isAssignableFrom(classType)) {
+        } else if (org.mmbase.bridge.Node.class.isAssignableFrom(classType) || MMObjectNode.class.isAssignableFrom(classType)) {
             return Field.TYPE_NODE;
         } else if (Date.class.isAssignableFrom(classType)) {
             return Field.TYPE_DATETIME;
@@ -155,7 +212,7 @@ public class DataTypes {
             throw new IllegalArgumentException("The datatype " + dataType + " was passed, but a type with the same name occurs as : " +
                                                finalDataTypes.get(name));
         }
-        dataType.finish();
+        dataType.finish(lockObject);
         finalDataTypes.put(name, dataType);
         return dataType;
     }
@@ -237,7 +294,7 @@ public class DataTypes {
                 dataType = getListDataType(Field.TYPE_UNKNOWN);
             } else {
                 dataType = createDataType(name, type);
-                dataType.finish();
+                dataType.finish(lockObject);
                 finalDataTypes.put(name, dataType);
             }
         }
@@ -259,7 +316,7 @@ public class DataTypes {
         if (dataType == null) {
             dataType = (ListDataType)createDataType(name, Field.TYPE_LIST);
             dataType.setItemDataType(getDataType(listItemType));
-            dataType.finish();
+            dataType.finish(lockObject);
             finalDataTypes.put(name, dataType);
         }
         return dataType;

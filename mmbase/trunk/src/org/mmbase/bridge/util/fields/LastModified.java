@@ -18,7 +18,7 @@ import java.util.Date;
  * thrown (in other words, the field is read only).
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModified.java,v 1.3 2005-01-03 12:12:11 michiel Exp $
+ * @version $Id: LastModified.java,v 1.4 2005-07-29 14:52:37 pierre Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
@@ -29,11 +29,11 @@ public class LastModified implements CommitProcessor, Processor {
      * You can plug this in on every set-action besides 'object' which will make this
      * field unmodifiable, except for set(Object) itself (which is never used from editors).
      */
-    public Object process(Node node, Field field, Object value) {        
+    public Object process(Node node, Field field, Object value) {
         throw new BridgeException("You cannot change the field " + field.getName());
-    }     
-  
+    }
+
     public void commit(Node node, Field field) {
-        node.getFieldValue(field).setObject(new Date());
-    }        
+        node.setValueWithoutProcess(field.getName(), new Date());
+    }
 }

@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: ListDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: ListDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends DataType {
@@ -146,6 +146,19 @@ public class ListDataType extends DataType {
             }
         }
     }
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer(super.toString());
+        if (getMinSize() > -1) {
+            buf.append("minSize:" + getMinSize() + "\n");
+        }
+        if (getMaxSize() > -1) {
+            buf.append("maxSize:" + getMaxSize() + "\n");
+        }
+        return buf.toString();
+    }
+
+
 
     public Object clone(String name) {
         ListDataType clone = (ListDataType)super.clone(name);

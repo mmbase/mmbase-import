@@ -458,6 +458,7 @@ builddate=${builddate}
       <fileset dir="${source-config.dir}">
         <include name="caches.xml"/>
         <include name="magic.xml"/>
+        <include name="datatypes.xml"/>
         <include name="applications/Basics.xml"/>
         <include name="builders/core/*.xml"/>
         <include name="builders/INDEX" />

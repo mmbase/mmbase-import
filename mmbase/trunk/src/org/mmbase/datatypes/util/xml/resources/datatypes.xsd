@@ -44,7 +44,7 @@
             </xsd:sequence>
         </xsd:choice>
       </xsd:sequence>
-      <xsd:attribute name="name" type="token" use="required"></xsd:attribute>
+      <xsd:attribute name="id" type="token" use="required"></xsd:attribute>
       <xsd:attribute name="base" type="token" use="optional"
           default="string">
       </xsd:attribute>

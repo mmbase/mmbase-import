@@ -163,14 +163,6 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     }
 
     /**
-     * Returns a description for this field.
-     */
-    public String toString() {
-
-        return getName() + "(" + getDataType() + ")";
-    }
-
-    /**
      * Whether this CoreField is equal to another for storage purposes (so, ignoring gui and documentation fields)
      * @since MMBase-1.7
      */

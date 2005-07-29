@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<datatypes>
+
+  <datatype id="xml">
+    <specialization id="mmxf">
+      <setprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.MmxfSetString</class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.MmxfGetString</class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="html">
+      <setprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.HtmlSetString</class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.HtmlGetString</class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="xmlfield">
+      <setprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.xml.FieldSetString</class>
+      </setprocessor>
+      <getprocessor>
+        <class>org.mmbase.bridge.util.fields.xml.FieldGetString</class>
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+
+  <datatype id="string">
+    <specialization id="lastmodifier">
+      <commitprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+      </commitprocessor>
+      <setprocessor>
+        <!-- only makes it unmodifiable -->
+        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+      </setprocessor>
+    </specialization>
+    <specialization id="md5password">
+      <setprocessor>
+        <class>org.mmbase.util.transformers.MD5</class>
+      </setprocessor>
+    </specialization>
+    <specialization id="lowercaseuppercase">
+      <!-- silly example to test
+     Strings are stored all lowercase, but showed all uppercase
+  -->
+      <setprocessor>
+        <class>org.mmbase.util.transformers.LowerCaser</class>
+      </setprocessor>
+      <getprocessor>
+        <class>org.mmbase.util.transformers.UpperCaser</class>
+      </getprocessor>
+    </specialization>
+    <specialization id="index">
+      <getprocessor>
+        <class>org.mmbase.bridge.util.fields.GetIndex</class>
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+  <datatype id="datetime">
+    <specialization id="lastmodified">
+      <commitprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModified</class>
+      </commitprocessor>
+      <setprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModified</class>
+      </setprocessor>
+    </specialization>
+  </datatype>
+
+  <datatype id="byte">
+    <specialization id="checksum">
+      <commitprocessor>
+        <class>org.mmbase.util.transformers.ChecksumFactory</class>
+      </commitprocessor>
+    </specialization>
+  </datatype>
+
+</datatypes>

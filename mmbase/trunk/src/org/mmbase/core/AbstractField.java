@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.1 2005-07-22 12:35:46 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -54,6 +54,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     protected AbstractField(String name, Field field, boolean copyDataTypeForRewrite) {
         super(name, (Descriptor)field);
         type = field.getType();
+        state = field.getState();
         listItemType = field.getListItemType();
         if (copyDataTypeForRewrite) {
             dataType = (DataType)field.getDataType().clone();
@@ -145,6 +146,15 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
 
     abstract public boolean isUnique();
 
+    /**
+     * Returns a description for this field.
+     */
+    public String toString() {
+        return getName() + ":" +
+            org.mmbase.core.util.Fields.getTypeDescription(type) + " / " +
+            org.mmbase.core.util.Fields.getStateDescription(state)+ "/" +
+            getDataType();
+    }
 
     public Object clone() {
         return clone (null, false);

@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -74,6 +74,16 @@ public class StringDataType extends BigDataType {
             }
         }
     }
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer(super.toString());
+        if (getPattern() != null) {
+            buf.append("pattern:").append(getPattern()).append("\n");
+        }
+        return buf.toString();
+    }
+
+
 
     public Object clone(String name) {
         StringDataType clone = (StringDataType)super.clone(name);

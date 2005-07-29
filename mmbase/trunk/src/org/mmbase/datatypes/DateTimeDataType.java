@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: DateTimeDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -178,6 +178,17 @@ public class DateTimeDataType extends DataType {
             Date dateValue = Casting.toDate(value);
             // Todo: check on mindate/max date, taking into account precision and inclusiveness
         }
+    }
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer(super.toString());
+        if (getMin() != null) {
+            buf.append("min:" + getMin() + " " + getMinPrecision()).append(isMinInclusive() ? " inclusive" : " exclusive").append("\n");
+        }
+        if (getMax() != null) {
+            buf.append("max:" + getMax() + " " + getMaxPrecision()).append(isMaxInclusive() ? " inclusive" : " exclusive").append("\n");
+        }
+        return buf.toString();
     }
 
     public Object clone(String name) {
