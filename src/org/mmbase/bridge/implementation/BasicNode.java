@@ -11,7 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
-import java.io.InputStream;
+import java.io.*;
+
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -33,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.155 2005-07-29 14:52:36 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.156 2005-07-29 17:14:09 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -463,11 +464,48 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         setValueWithoutProcess(fieldName, v);
     }
 
+    private static final int readLimit = 10 * 1024 * 1024;
     public void setInputStreamValue(String fieldName, final InputStream value, long size) {
         getNode().setSize(fieldName, size);
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_BINARY);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Setting binary value for " + field);
+        }
+        Object v = value;
+        try {
+            if (value.markSupported() && size < readLimit) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Mark supported and using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
+                }
+                value.mark(readLimit);
+                v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_BINARY);
+                value.reset();
+            } else {
+                if (field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY) != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Mark not supported but using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
+                    }
+                    // well, we must read it to byte-array then, first.
+                    ByteArrayOutputStream b = new ByteArrayOutputStream((int) size);
+                    int c;
+                    while((c = value.read()) > -1) {
+                        b.write(c);
+                    }
+                    byte[] byteArray = b.toByteArray();
+                    v = field.getDataType().process(DataType.PROCESS_SET, this, field, byteArray, Field.TYPE_BINARY);
+                } else {
+                    log.debug("Mark not support but no need for processing");
+                    v = value;
+                }
+            }
+        } catch (IOException ioe) {
+            log.error(ioe);
+        }
+
         setValueWithoutProcess(fieldName, v);
+
+
     }
 
     public void setStringValue(String fieldName, final String value) {
