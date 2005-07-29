@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.3 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DataType.java,v 1.4 2005-07-29 17:08:00 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -261,10 +261,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         buf.append(getName() + " (" + getTypeAsClass() + ")\n");
         buf.append(commitProcessor == null ? "" : "commit:" + commitProcessor.getClass().getName() + "\n");
         for (int i =0; i < 13; i++) {
-            buf.append(getProcessor[i] == null ? "" : "\nget [" + i + "]:" + getProcessor[i].getClass().getName() + "\n");
+            buf.append(getProcessor[i] == null ? "" : "\nget [" +  DataTypes.typeToClass(i) + "]:" + getProcessor[i].getClass().getName() + "\n");
         }
         for (int i =0; i < 13; i++) {
-            buf.append(setProcessor[i] == null ? "" : "\nset [" + i + "]:" + setProcessor[i].getClass().getName() + "\n");
+            buf.append(setProcessor[i] == null ? "" : "\nset [" + DataTypes.typeToClass(i) + "]:" + setProcessor[i].getClass().getName() + "\n");
         }
         if (isRequired()) {
             buf.append("required\n");
@@ -398,6 +398,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @return the processed value
      */
     public Object process(int action, Node node, Field field, Object value, int processingType) {
+        Object result = value;
         Processor processor = getProcessor(action, processingType);
         if (processor == null) processor = getProcessor(action);
         if (processor == null && action == PROCESS_SET) {
@@ -408,15 +409,19 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
         if (processor != null) {
             if (action == PROCESS_COMMIT && processor instanceof CommitProcessor) {
-                if (log.isDebugEnabled()) log.debug("commit:" + processor.getClass().getName());
+                if (log.isDebugEnabled()) {
+                    log.debug("commit:" + processor.getClass().getName());
+                }
                 ((CommitProcessor)processor).commit(node, field);
 
             } else {
-                if (log.isDebugEnabled()) log.debug("process:" + processor.getClass().getName());
-                processor.process(node, field, null);
+                if (log.isDebugEnabled()) { 
+                    log.debug("process:" + processor.getClass().getName());
+                }
+                result = processor.process(node, field, value);
             }
         }
-        return value;
+        return result;
     }
 
     /**
