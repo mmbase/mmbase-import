@@ -8,74 +8,96 @@ public class Unpack
 {
 
 
-   public static Exception unzipFileToFolder(String sZipFilePath, String sDestinationPath)
+   public static void unzipFileToFolder(String sZipFilePath, String sDestinationPath) throws Exception
    {
       int BUFFER = 10240;
       String sDestinationPathReady = new String(sDestinationPath);
       char chLastChar = sDestinationPath.charAt(sDestinationPath.length() - 1);
-      if((chLastChar != '/') || (chLastChar != '\\'))
+      if ( (chLastChar != '/') || (chLastChar != '\\'))
       {
          sDestinationPathReady += File.separator;
       }
 
+      sDestinationPathReady = fixPath(sDestinationPathReady);
+      ZipFile zipFile = new ZipFile(sZipFilePath);
 
-      if(File.separator.equals("\\"))
-      {//Something like Windows
-         sDestinationPathReady = sDestinationPathReady.replaceAll("/",  File.separator + File.separator);
-      }
-      else
-      {//Something like Unix
-         sDestinationPathReady = sDestinationPathReady.replaceAll("\\\\",  File.separator);
-      }
 
-      try
+      //At the begining the have to create all directories
+      Enumeration entries = zipFile.entries();
+      while (entries.hasMoreElements())
       {
-         ZipFile zipFile = new ZipFile(sZipFilePath);
-         Enumeration entries = zipFile.entries();
+         ZipEntry entry = (ZipEntry) entries.nextElement();
 
+         String dataFile = entry.getName();
+         String sPath = sDestinationPathReady + dataFile;
+         sPath = fixPath(sPath);
 
-         while(entries.hasMoreElements())
-         {
-            ZipEntry entry = (ZipEntry) entries.nextElement();
-            InputStream zis = zipFile.getInputStream(entry);
-            byte data[] = new byte[BUFFER];
-
-
-            String dataFile = entry.getName();
-            String sPath = sDestinationPathReady + dataFile;
-            if(File.separator.equals("\\"))
-            {//Something like Windows
-               sPath = sPath.replaceAll("/",  File.separator + File.separator);
-            }
-            else
-            {//Something like Unix
-               sDestinationPathReady = sDestinationPathReady.replaceAll("\\\\",  File.separator);
-            }
-
-
-            if(entry.isDirectory())
-            {//We have to create a directory
-               File file = new File(sPath);
-               file.mkdirs();
-            }
-            else
-            {//Usual file
-               int count;
-               BufferedOutputStream dest = new BufferedOutputStream(new FileOutputStream(sDestinationPathReady + dataFile), BUFFER);
-               while ( (count = zis.read(data)) > 0)
-               {
-                  dest.write(data, 0, count);
-               }
-               zis.close();
-               dest.flush();
-               dest.close();
-            }
+         if (entry.isDirectory())
+         { //We have to create a directory
+            File file = new File(sPath);
+            file.mkdirs();
          }
-         return null;
       }
-      catch(Exception e)
+
+      //Now we can extract files, all subdirs have been extracted already
+      entries = zipFile.entries();
+      while (entries.hasMoreElements())
       {
-         return e;
+         ZipEntry entry = (ZipEntry) entries.nextElement();
+         InputStream zis = zipFile.getInputStream(entry);
+         byte data[] = new byte[BUFFER];
+
+         String dataFile = entry.getName();
+         String sPath = sDestinationPathReady + dataFile;
+         sPath = fixPath(sPath);
+
+         if (!entry.isDirectory())
+         { //Usual file
+
+            String[] arrstrPathSegments;
+            if (File.separator.equals("\\"))
+            { //Something like Windows
+               arrstrPathSegments =  sPath.split("\\\\");
+            }
+            else
+            { //Something like Unix
+               arrstrPathSegments =  sPath.split("/");
+            }
+            String sPathOnlyDir = sPath.substring(0, sPath.length() - arrstrPathSegments[arrstrPathSegments.length - 1].length());
+            File fileOnlyDir = new File(sPathOnlyDir);
+            if(!fileOnlyDir.exists())
+            {
+               fileOnlyDir.mkdirs();
+            }
+
+            int count;
+            BufferedOutputStream dest = new BufferedOutputStream(new FileOutputStream(sDestinationPathReady + dataFile), BUFFER);
+            while ( (count = zis.read(data)) > 0)
+            {
+               dest.write(data, 0, count);
+            }
+            zis.close();
+            dest.flush();
+            dest.close();
+         }
       }
    }
+
+
+
+
+
+   public static String fixPath(String sPath)
+   {
+      if (File.separator.equals("\\"))
+      { //Something like Windows
+         return sPath.replaceAll("/", File.separator + File.separator);
+      }
+      else
+      { //Something like Unix
+         return sPath.replaceAll("\\\\", File.separator);
+      }
+
+   }
+
 }
