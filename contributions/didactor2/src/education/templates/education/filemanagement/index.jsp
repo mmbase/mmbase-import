@@ -10,19 +10,19 @@
 
     String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
     String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
-    
-    if (directory == null || baseUrl == null) 
+
+    if (directory == null || baseUrl == null)
     {
         throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
     }
-    
+
     boolean uploadOK = false;
     String fileName = null;
     String mtype = null;
-    if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) 
+    if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload")))
     {
 
-        if (FileUpload.isMultipartContent(request)) 
+        if (FileUpload.isMultipartContent(request))
         {
             DiskFileUpload upload = new DiskFileUpload();
             upload.setSizeMax(250*1024*1024);
@@ -30,20 +30,20 @@
             upload.setRepositoryPath(System.getProperties().getProperty("java.io.tmpdir"));
             List items = upload.parseRequest(request);
             Iterator itr = items.iterator();
-            while(itr.hasNext()) 
+            while(itr.hasNext())
             {
                 FileItem item = (FileItem) itr.next();
-                if (item.isFormField()) 
+                if (item.isFormField())
                 {
-                    if (item.getFieldName().equals("manager")) 
+                    if (item.getFieldName().equals("manager"))
                     {
                         mtype = item.getString();
                     }
                 }
-                else 
+                else
                 {
                     String fieldName = item.getFieldName();
-                    if(fieldName.equals("filename")) 
+                    if(fieldName.equals("filename"))
                     {
                         fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
                         File savedFile = new File(directory,fileName);
@@ -51,7 +51,7 @@
                         uploadOK=true;
                     }
                 }
-            }            
+            }
         }
     }
 %>
@@ -79,30 +79,30 @@
 <% request.getSession().setAttribute("mayupload","true"); %>
 <%
     String msg = "";
-    if (uploadOK && fileName != null) 
+    if (uploadOK && fileName != null)
     {
         // add link to specific builder
-        
+
         String manager = null;
 
-        if ("audio".equals(mtype)) 
+        if ("audio".equals(mtype))
         {
             manager = "audiotapes";
-        } 
-        else if ("video".equals(mtype)) 
+        }
+        else if ("video".equals(mtype))
         {
             manager = "videotapes";
-        } 
-        else if ("url".equals(mtype)) 
+        }
+        else if ("url".equals(mtype))
         {
             manager = "urls";
         }
-        
-        if (manager == null) 
+
+        if (manager == null)
         {
             msg = "Onbekend bestands type '"+mtype+"'";
         }
-        else 
+        else
         {
             Node n = cloud.getNodeManager(manager).createNode();
             n.setValue( "urls".equals(manager) ? "name" : "title" ,fileName);
@@ -111,8 +111,8 @@
         }
     }
 %>
-      
-        
+
+
 
 <html>
 <head>
@@ -148,7 +148,7 @@ if (top == self) {
          <%
             sResults = sTemplate.replaceAll("\\{\\$\\$\\$\\}", "" + farray.length);
          %>
-         <div title='<fmt:message key="FTPfiles"/>'><%= sResults %></div>
+         <div><%= sResults %></div>
       </td>
    </tr>
 </table>
@@ -191,7 +191,7 @@ if (top == self) {
             <%
                List files = new ArrayList();
 
-               for (int i = 0; i < farray.length; i++) 
+               for (int i = 0; i < farray.length; i++)
                {
                   files.add(farray[i]);
                }
@@ -200,24 +200,24 @@ if (top == self) {
                Iterator it = files.iterator();
                int fileNum = 0;
 
-               while (it.hasNext()) 
+               while (it.hasNext())
                {
                   File file = (File) it.next();
 
-                  if (file.isDirectory()) 
+                  if (file.isDirectory())
                   {
                      continue;
                   }
 
-                  if (deletefile != null && file.getName().equals(deletefile)) 
+                  if (deletefile != null && file.getName().equals(deletefile))
                   {
                      String[] managers = {"audiotapes","videotapes","urls"};
 
-                     for (int i = 0; i < managers.length; i++) 
-			   {
+                     for (int i = 0; i < managers.length; i++)
+            {
                         NodeIterator ni = cloud.getNodeManager(managers[i]).getList("url='"+baseUrl+"/"+deletefile+"'",null,null).nodeIterator();
 
-                        while(ni.hasNext()) 
+                        while(ni.hasNext())
                         {
                            ni.nextNode().delete(true); // delete next node related with this file ...
                         }
@@ -241,22 +241,22 @@ if (top == self) {
                                 <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
                            </a>
                         </td>
-                     </mm:islessthan> 
-                 
+                     </mm:islessthan>
+
                      <td class="field">
-                        <%= fileNum %> 
+                        <%= fileNum %>
                      </td>
                      <td class="field">
-                        <a href="<%= baseUrl %>/<mm:write referid="filename"/>"><mm:write referid="filename"/></a> 
+                        <a href="<%= baseUrl %>/<mm:write referid="filename"/>"><mm:write referid="filename"/></a>
                      </td>
 
                      <td class="field">
                         <%
                            String[] managers = {"audiotapes","videotapes","urls"};
-                           for (int i = 0; i < managers.length; i++) 
+                           for (int i = 0; i < managers.length; i++)
                            {
                               NodeIterator ni = cloud.getNodeManager(managers[i]).getList("url='"+baseUrl+"/"+file.getName()+"'",null,null).nodeIterator();
-                              if (ni.hasNext()) 
+                              if (ni.hasNext())
                               {
                                  %><%= managers[i] %><%
                                  break;
@@ -266,21 +266,16 @@ if (top == self) {
                      </td>
 
                      <td class="field">
-                        <% 
-                         if(file.length() > 1024 * 1024)
-                         {
-                        %>
-                        <%= (file.length() / (1024*1024)) %> MB
                         <%
-                         }
-                         else
-                         { 
-                         %>
-                         <%= (file.length() / 1024) %> KB
-                         <%
-                         }
-                         %>
-                              
+                           if(file.length() > 1024 * 1024)
+                           {
+                              out.print("" + file.length() / (1024*1024) + "MB");
+                           }
+                           else
+                           {
+                              out.print("" + file.length() / 1024 + "KB");
+                           }
+                        %>
                      </td>
 
                      <td class="field">
@@ -293,8 +288,8 @@ if (top == self) {
    </tr>
 </table>
 
-    
-    
+
+
 
 
 </body>
