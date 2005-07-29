@@ -18,12 +18,12 @@ import java.util.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.3 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: VirtualReferrerBuilder.java,v 1.4 2005-07-29 11:22:11 michiel Exp $
  * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {
 
-    private MMObjectBuilder originalBuilder=null;
+    private MMObjectBuilder originalBuilder = null;
 
     /**
      * Creates an instance of a Virtual builder.
@@ -34,9 +34,10 @@ public class VirtualReferrerBuilder extends VirtualBuilder {
      */
     public VirtualReferrerBuilder(MMObjectBuilder originalBuilder) {
         super(originalBuilder.mmb);
-        this.originalBuilder=originalBuilder;
-        this.tableName="virtual_"+originalBuilder.getTableName();
-        fields=new Hashtable(originalBuilder.fields);
+        this.originalBuilder = originalBuilder;
+        this.tableName = "virtual_" + originalBuilder.getTableName();
+        fields.clear();
+        fields.putAll(originalBuilder.fields);
     }
 
     /**
@@ -55,7 +56,7 @@ public class VirtualReferrerBuilder extends VirtualBuilder {
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
     public Object getValue(MMObjectNode node,String field) {
-        return originalBuilder.getValue(node,field);
+        return originalBuilder.getValue(node, field);
     }
 
     /**
