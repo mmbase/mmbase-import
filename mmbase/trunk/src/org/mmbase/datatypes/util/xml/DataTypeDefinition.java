@@ -21,10 +21,11 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
 
 /**
- * Defines a query and possible options for the fields to index.
+ * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.1 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.2 2005-07-29 17:15:35 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
 
@@ -152,11 +153,11 @@ public class DataTypeDefinition {
                 } else if ("unique".equals(childElement.getLocalName())) {
                     // not yet implemented
                 } else if ("getprocessor".equals(childElement.getLocalName())) {
-                    addProcessor(DataType.PROCESS_GET,childElement);
+                    addProcessor(DataType.PROCESS_GET, childElement);
                 } else if ("setprocessor".equals(childElement.getLocalName())) {
-                    addProcessor(DataType.PROCESS_SET,childElement);
+                    addProcessor(DataType.PROCESS_SET, childElement);
                 } else if ("commitprocessor".equals(childElement.getLocalName())) {
-                    addProcessor(DataType.PROCESS_COMMIT,childElement);
+                    addProcessor(DataType.PROCESS_COMMIT, childElement);
                 } else if (dataType instanceof StringDataType) {
                     addStringCondition(childElement);
                 } else if (dataType instanceof BigDataType) {
@@ -390,6 +391,10 @@ public class DataTypeDefinition {
             Double value = getDoubleValue(conditionElement);
             setPropertyData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
         }
+    }
+
+    public String toString() {
+        return "" + name + " " + dataType + " " + typeSetDefinition;
     }
 
 }
