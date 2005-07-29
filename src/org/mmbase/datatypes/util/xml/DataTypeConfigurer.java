@@ -18,7 +18,8 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeConfigurer.java,v 1.1 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DataTypeConfigurer.java,v 1.2 2005-07-29 17:15:35 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class DataTypeConfigurer {
 

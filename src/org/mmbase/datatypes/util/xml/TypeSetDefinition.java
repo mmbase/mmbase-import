@@ -20,7 +20,8 @@ import org.mmbase.util.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: TypeSetDefinition.java,v 1.1 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: TypeSetDefinition.java,v 1.2 2005-07-29 17:15:35 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class TypeSetDefinition {
 

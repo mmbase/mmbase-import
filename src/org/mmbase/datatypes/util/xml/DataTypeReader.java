@@ -21,7 +21,8 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.1 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DataTypeReader.java,v 1.2 2005-07-29 17:15:35 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class DataTypeReader {
 
@@ -40,7 +41,8 @@ public class DataTypeReader {
     public static final String NAMESPACE_DATATYPES = NAMESPACE_DATATYPES_1_0;
 
     /** XSD namespace of the enumeration query XSD, most recent version */
-    public static final String NAMESPACE_ENUMERATIONQUERY = NAMESPACE_ENUMERATIONQUERY_1_0;    public static DataTypeConfigurer defaultConfigurer = new DataTypeConfigurer();
+    public static final String NAMESPACE_ENUMERATIONQUERY = NAMESPACE_ENUMERATIONQUERY_1_0;    
+    public static DataTypeConfigurer defaultConfigurer = new DataTypeConfigurer();
 
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
@@ -61,16 +63,18 @@ public class DataTypeReader {
 
     /**
      * Initialize the data types default supported by the system.
-     * @since MMBase-1.8
      */
     public static void readDataTypes(Element dataTypesElement, Object lockObject) {
         NodeList childNodes = dataTypesElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
+                log.debug("Found child " + childElement.getTagName());
                 if ("fieldtype".equals(childElement.getLocalName()) ||  // backward compatibility
                     "datatype".equals(childElement.getLocalName())) {
                     readDataType(childElement, null, lockObject);
+                } else {
+                    log.warn("Found unknown element " + childElement.getTagName());
                 }
             }
         }
@@ -80,6 +84,7 @@ public class DataTypeReader {
     public static void readDataType(Element typeElement, DataType baseDataType, Object lockObject) {
         String typeString = getAttribute(typeElement,"id"); // name ??
         String baseString = getAttribute(typeElement,"base");
+        log.debug("Reading element " + typeString + " " + baseString);
         if ("byte".equals(typeString)) typeString = "binary";
         DataType dataType = DataTypes.getDataType(typeString);
         boolean inDataTypes = dataType != null;
@@ -105,6 +110,7 @@ public class DataTypeReader {
         if (!inDataTypes) {
             DataTypes.addFinalDataType(dataType);
         }
+        log.service("Created " + definition);
 
         NodeList childNodes = typeElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
@@ -113,6 +119,8 @@ public class DataTypeReader {
                 if ("specialization".equals(childElement.getLocalName()) ||  // backward compatibility
                     "datatype".equals(childElement.getLocalName())) {
                     readDataType(childElement, dataType, lockObject);
+                } else {
+                    log.warn("Found unknown element " + childElement.getTagName());
                 }
             }
         }
