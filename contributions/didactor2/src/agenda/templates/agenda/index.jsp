@@ -9,7 +9,7 @@
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><fmt:message key="CALENDAR" /></title>
-    <link rel="stylesheet" type="text/css" href="css/agenda.css" />
+    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids"/>" />
   </mm:param>
 </mm:treeinclude>
 <div class="rows">
@@ -59,7 +59,7 @@
 
 
 <form action="<mm:treefile page="/agenda/deleteagendaitem.jsp" objectlist="$includePath" referids="$referids,year,month,day"/>" method="post">
-<input type="hidden" name="callerpage" value="/agenda/index.jsp">
+<input type="hidden" name="callerpage" value="/agenda/index.jsp" />
 
 <div class="mainContent">
   <div class="contentHeader">
@@ -135,7 +135,8 @@
             <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEINVITATION" />"/></a>
         </mm:relatednodes>
       </mm:node>
-	    <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="listappointments">Bekijk afspraken</di:translate>" border="0"></a>
+
+      <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="listappointments">Bekijk afspraken</di:translate>" border="0" /></a>
     
 	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
     </div>
@@ -151,8 +152,8 @@
 </div>
 </form>
 
-<script>
-
+<script type="text/javascript">
+<!--
       function selectAllClicked(frm, newState) {
 	  if (frm.elements['ids'].length) {
 	    for(var count =0; count < frm.elements['ids'].length; count++ ) {
@@ -164,7 +165,7 @@
 	      frm.elements['ids'].checked=newState;
 	  }
       }
-
+//-->
 </script>
 
 

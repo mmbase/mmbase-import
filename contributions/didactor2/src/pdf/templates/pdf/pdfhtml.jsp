@@ -8,7 +8,6 @@
 <mm:import externid="number" required="true"/>
 <html>
 <head><title></title>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
 <div style="font-size: 11px;">
