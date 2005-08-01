@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorMetadata" maintainer="didactor.nl" version="18" auto-deploy="true">
+<application name="DidactorMetadata" maintainer="didactor.nl" version="22" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -17,6 +17,8 @@
         <builder maintainer="didactor.nl" version="2">metavocabulary</builder>
         <builder maintainer="didactor.nl" version="2">metadate</builder>
 	  <builder maintainer="didactor.nl" version="2">constraints</builder>
+        <builder maintainer="didactor.nl" version="2">synonym</builder>
+        <builder maintainer="didactor.nl" version="2">workgroups</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -25,7 +27,7 @@
         <reldef source="constraints" target="constraints" direction="bidirectional" guisourcename="Constraint" guitargetname="Constraint" builder="constraints" />
         <reldef source="include" target="include" direction="bidirectional" guisourcename="IncludeRel" guitargetname="IncludeRel" builder="posrel" />
         <reldef source="exclude" target="exclude" direction="bidirectional" guisourcename="ExcludeRel" guitargetname="ExcludeRel" builder="posrel" />
-        <reldef source="specify" target="specify" direction="bidirectional" guisourcename="SpecifyRel" guitargetname="SpecifyRel" builder="posrel" />
+        
     </neededreldeflist>
 
     <allowedrelationlist>
@@ -46,7 +48,7 @@
  
         <relation from="metastandard" to="metadefinition" type="related" />
         <relation from="metastandard" to="metadefinition" type="posrel" />
-        <relation from="metastandard" to="metadefinition" type="specify"/>
+        <relation from="metastandard" to="metadefinition" type="constraints"/>
         <relation from="metastandard" to="metastandard" type="posrel" />
 
         <relation from="metadefinition" to="metavocabulary" type="related" />
@@ -55,7 +57,10 @@
         <relation from="metavocabulary" to="metadefinition" type="posrel" />
 	  <relation from="metavocabulary" to="metadefinition" type="constraints" />
 
-        
+        <relation from="synonym" to="workgroups" type="related" />
+        <relation from="metastandard" to="synonym" type="related" />
+        <relation from="metadefinition" to="synonym" type="related" />
+        <relation from="metavocabulary" to="synonym" type="related" />
         
     </allowedrelationlist>
 
