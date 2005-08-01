@@ -20,7 +20,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
     <mm:import id="calmonth">0</mm:import>
   </mm:notpresent>
 
-  <script>
+  <script type="text/javascript">
   <!--
     function moveMonth(direction) {
       var href = document.location.href;

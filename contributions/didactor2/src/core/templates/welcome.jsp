@@ -7,13 +7,9 @@
   <mm:node referid="provider">
     <mm:countrelations type="flashpages" write="false">
         <mm:islessthan value="1">
-         <p>
           <h1><fmt:message key="WELCOME" /></h1>
-          </p>
           <br />
-          <p>
             <h3>Bij Didactor, de elektronische leeromgeving.</h3>
-          </p>
           <br />
           <p>
             Didactor versie 2.0 Beta

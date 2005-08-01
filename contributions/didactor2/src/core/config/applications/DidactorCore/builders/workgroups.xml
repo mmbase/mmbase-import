@@ -18,8 +18,8 @@
 
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Een werkgroep is een groep studenten.</description>
-    <description xml:lang="en">A workgroup is a group of students.</description>
+    <description xml:lang="nl">Een werkgroep is een subset van een klas, met 1 docent en meerdere studenten.</description>
+    <description xml:lang="en">A workgroup is a subset of a class, with 1 teacher and several students.</description>
   </descriptions>
 
   <properties>

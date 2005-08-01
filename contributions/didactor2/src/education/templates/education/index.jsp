@@ -64,6 +64,7 @@
 <mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 <mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 <script type="text/javascript">
+<!-- 
   var ITEM_NONE = "<mm:write referid="gfx_item_none" />";
   var ITEM_OPENED = "<mm:write referid="gfx_item_opened" />";
   var ITEM_CLOSED = "<mm:write referid="gfx_item_closed" />";
@@ -208,6 +209,7 @@
       }
     }
   }
+  //-->
 </script>
 <div class="rows">
   <div class="navigationbar">
@@ -217,7 +219,7 @@
 	</div>
 	<div class="stepNavigator">
     <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="vorige" /></a>
-	<a href="javascript:previousContent();" class="path">vorige</a><img src="gfx/spacer.gif" width=15 height=1 alt="" /><a href="javascript:nextContent();" class="path">volgende</a>
+        <a href="javascript:previousContent();" class="path">vorige</a><img src="gfx/spacer.gif" width="15" height="1" alt="" /><a href="javascript:nextContent();" class="path">volgende</a>
     <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="volgende" /></a>
     </mm:node>
 	</div>
@@ -228,10 +230,12 @@
   </div>
   <div class="folderLesBody">
 <mm:node number="$education" notfound="skip">
-  <script>
-  javascript:addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+  <script type="text/javascript">
+  <!-- 
+      addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+  //-->
   </script>
-  <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" />
+  <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" alt="" />
   <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a> 
   <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
   <mm:relatednodescontainer type="learnobjects" role="posrel">
@@ -262,9 +266,11 @@
       <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
       <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
         <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-        <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;"><script>
+        <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;"><script type="text/javascript">
+        <!--
         addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
-        </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px"/><a href="javascript:openContent( '<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+        //-->
+        </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
           <mm:node number="component.pop" notfound="skip">
             <mm:relatednodes type="providers" constraints="providers.number=$provider">
               <mm:list nodes="$user" path="people,related,pop">
@@ -285,7 +291,8 @@
     &nbsp;
   </div>
   <div class="contentBodywit">
-	<iframe width="100%" height="100%" name="content" frameborder=0></iframe>
+	<iframe width="100%" height="100%" name="content" frameborder="0">
+        </iframe>
   </div>
 </div>
 </div>
@@ -304,7 +311,7 @@
    </mm:notpresent>
 </script>
 </mm:node>
-<br>
+<br />
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
 </fmt:bundle>
 </mm:cloud>

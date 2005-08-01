@@ -171,7 +171,7 @@
     </mm:list>
     </mm:list>
     </table>
-<script>
+<script  type="text/javascript">
 
       function selectAllClicked(frm, newState) {
 	  if (frm.elements['ids'].length) {
