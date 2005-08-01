@@ -11,7 +11,7 @@
 
 <%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 
-<mm:content postprocessor="reducespace" expires="0">
+<mm:content postprocessor="reducespace" expires="0" type="text/html" encoding="UTF-8" escaper="entities">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <% //education-people connector
@@ -22,9 +22,6 @@
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-   <meta http-equiv="Content-Style-Type" content="text/css" />
-   <meta http-equiv="Content-Language" content="nl" />
    <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
    <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
    <meta name="copyright" content="" />
@@ -61,9 +58,9 @@
      </mm:node>
      <%-- only show link to public portfolios for guests --%>
      <mm:compare referid="user" value="0">
-        <p>
+        <div>
            <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
-        </p>
+        </div>
      </mm:compare>
   </div>
 

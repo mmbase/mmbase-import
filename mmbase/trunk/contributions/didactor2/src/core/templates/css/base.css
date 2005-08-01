@@ -41,6 +41,8 @@ h3 {
 	font-size: 1em;
 	color: #ED6F2C }
 
+form    {margin: 0px;}
+
 .folders a {
     text-decoration: none;
 }
@@ -285,7 +287,7 @@ input.search {
 	height: 100%;
 	left: 17em;
 	right: 17em;
-	position: absolute;
+	position: relative;
 	padding: 1.2em 1.2em 0.8em 0.8em }
 
 .columnRight {
@@ -464,7 +466,7 @@ a.path:hover {
 	width: 20%;
 	height: 100%;
 	top: 2.5em;
-	position: absolute;
+	position: relative;
 	z-index: 8;
 	background-color: #FFFFFF;
 	padding: 0.5em 0em 0em 0.5em }

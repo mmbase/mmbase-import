@@ -37,7 +37,7 @@
 </mm:isgreaterthan>
 	</div>
 
-<script language="JavaScript">
+<script language="JavaScript" type="text/javascript">
 <!--
 function printThis() {
     if (frames && frames['content']) {

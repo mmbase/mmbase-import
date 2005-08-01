@@ -67,8 +67,7 @@
 
   <di:table maxitems="10">
 
-    <di:row>
-      <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked);"></di:headercell>
+    <di:row>      <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked);" /></di:headercell>
       <di:headercell><fmt:message key="CALENDAR" /></di:headercell>
       <di:headercell sortfield="title" default="true"><fmt:message key="APPOINTMENT" /></di:headercell>
       <di:headercell><fmt:message key="STARTTIME" /></di:headercell>
@@ -137,3 +136,4 @@
 </mm:content>
 </fmt:bundle>
 
+

@@ -70,17 +70,22 @@
         <relation from="roles" to="editcontexts" type="posrel" />
   </allowedrelationlist>
 
-  <datasourcelist />
+	<datasourcelist>
+		<datasource builder="people" path="DidactorCore/people.xml" />
+		<datasource builder="roles" path="DidactorCore/roles.xml" />
+	</datasourcelist>
 
-  <relationsourcelist />
+	<relationsourcelist>
+		<relationsource builder="insrel" path="DidactorCore/insrel.xml" />
+	</relationsourcelist>
 
-  <contextsourcelist />
+	<contextsourcelist>
+		<contextsource path="DidactorCore/backup.xml" type="depth" goal="backup"/>
+	</contextsourcelist>
 
   <description><![CDATA[
     Didactor base application. Provides the base functionality.
     ]]></description>
 
-  <install-notice>
-    Installation of Didactor completed. Please install some additional Didactor applications if necessary.
-  </install-notice>
+	<install-notice><![CDATA[Installation of Didactor completed. Please install some additional Didactor applications if necessary.]]></install-notice>
 </application>
