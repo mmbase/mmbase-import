@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.util.xml;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import org.w3c.dom.*;
@@ -18,31 +21,43 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeConfigurer.java,v 1.2 2005-07-29 17:15:35 michiel Exp $
+ * @version $Id: DataTypeConfigurer.java,v 1.3 2005-08-02 14:29:26 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeConfigurer {
 
-    public static DataTypeConfigurer defaultConfigurer = new DataTypeConfigurer();
+    protected DataTypeCollector collector = null;
+
+    public DataTypeConfigurer(DataTypeCollector collector) {
+        this.collector = collector;
+    }
 
     public DataType getDataType(String name) {
-        DataType dataType = DataTypes.getDataTypeInstance(name, null);
-        if (dataType == null) {
-            throw new NotFoundException("Datatype with name " + name + " does not exist.");
+        return collector.getDataTypeInstance(name, null);
+    }
+
+    public void addDataType(DataType dataType) {
+        collector.addDataType(dataType);
+    }
+
+    public void rewrite(DataType dataType) {
+        if (collector != null) {
+            collector.rewrite(dataType);
+        } else {
+            throw new IllegalStateException("Cannot rewrite datatype, no collector present to finish it");
         }
-        return dataType;
     }
 
-    public TypeSetDefinition getTypeSetDefinition() {
-        return new TypeSetDefinition(this);
+    public void finish(DataType dataType) {
+        if (collector != null) {
+            collector.finish(dataType);
+        } else {
+            dataType.finish(null);
+        }
     }
 
-    public DataTypeDefinition getDataTypeDefinition(TypeSetDefinition typeSetDefinition) {
-        return new DataTypeDefinition(typeSetDefinition, this);
-    }
-
-    public static DataTypeConfigurer getDefaultConfigurer() {
-        return defaultConfigurer;
+    public DataTypeDefinition getDataTypeDefinition() {
+        return new DataTypeDefinition(this);
     }
 
 }
