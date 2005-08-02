@@ -12,7 +12,6 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 
-import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -38,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.59 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.60 2005-08-02 12:17:50 nklasens Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -605,7 +604,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     static class VirtualTypeRel extends TypeRel {
         static VirtualTypeRel virtualTypeRel = null;
         VirtualTypeRel(TypeRel t) {
-            fields = new Hashtable();
             mmb = t.mmb;
             CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_PERSISTENT, null);
             field.setEditPosition(2);
