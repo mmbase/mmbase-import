@@ -40,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.142 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: MMBase.java,v 1.143 2005-08-02 14:29:26 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1127,7 +1127,8 @@ public class MMBase extends ProcessorModule {
                 bul.setMaintainer(parser.getBuilderMaintainer());
                 bul.setSearchAge("" + parser.getSearchAge());
                 bul.setInitParameters(parser.getProperties());
-                bul.setFields(parser.getFields()); // temp  ?
+                parser.getDataTypes(bul.getDataTypeCollector());
+                bul.setFields(parser.getFields(bul.getDataTypeCollector())); // temp  ?
 
                 Iterator f = parser.getFunctions().iterator();
                 while (f.hasNext()) {

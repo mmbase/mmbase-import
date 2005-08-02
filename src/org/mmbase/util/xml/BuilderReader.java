@@ -12,11 +12,12 @@ package org.mmbase.util.xml;
 import java.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
-
-import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.datatypes.DataTypes;
+import org.mmbase.datatypes.DataTypeCollector;
+import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.core.CoreField;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.25 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.26 2005-08-02 14:29:26 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -278,12 +279,39 @@ public class BuilderReader extends XMLBasicReader {
     }
 
     /**
+     * Get the datatypes defined for this builder.
+     *
+     * @param builder the builder for which to retrieve the datatypes.
+     *        This builder is used to access other datatypes available in this builder (i.e. through definitions from parent builders),
+     *        and is used as a lock Object to lock datatypes read for this builder.
+     * @return a Map of all datatypes or <code>null</code> if no datatypes are defined.
+     */
+    public Map getDataTypes(DataTypeCollector collector) {
+        Element element = getElementByPath("builder.datatypes");
+        if (element != null) {
+            DataTypeReader.readDataTypes(element, collector);
+        }
+        return collector.getDataTypes();
+    }
+
+    /**
      * Get the field definitions of this builder.
      * If applicable, this includes the fields inherited from a parent builder.
      *
      * @return a List of all Fields as CoreField
      */
     public List getFields() {
+        return getFields(null);
+    }
+
+    /**
+     * Get the field definitions of this builder.
+     * If applicable, this includes the fields inherited from a parent builder.
+     *
+     * @param collector the datatype collector used to access the datatypes available for the fields to read.
+     * @return a List of all Fields as CoreField
+     */
+    public List getFields(DataTypeCollector collector) {
         List results = new ArrayList();
         Map oldset = new HashMap();
         int pos = 1;
@@ -307,14 +335,14 @@ public class BuilderReader extends XMLBasicReader {
             CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
             if (def != null) {
                 def.rewrite();
-                DataType dataType = decodeDataType(def.getName(),getElementByPath(field,"field.gui"), def.getType(), def.getListItemType(), false);
+                DataType dataType = decodeDataType(collector, def.getName(),getElementByPath(field,"field.gui"), def.getType(), def.getListItemType(), false);
                 if (dataType != null) {
                     def.setDataType(dataType); // replace datatype
                 }
                 decodeFieldDef(field, def);
                 def.finish();
             } else {
-                def = decodeFieldDef(field);
+                def = decodeFieldDef(collector,field);
                 def.setStoragePosition(pos++);
                 def.finish();
                 results.add(def);
@@ -407,7 +435,6 @@ public class BuilderReader extends XMLBasicReader {
         }
     }
 
-
     private Locale getLocale(String lang) {
         String[] loc = lang.split("_");
         Locale locale;
@@ -420,6 +447,7 @@ public class BuilderReader extends XMLBasicReader {
         }
         return locale;
     }
+
     /**
      * Alter a specified, named FieldDef object using information obtained from the buidler configuration.
      * Only GUI information is retrieved and stored (name and type of the field sg=hould already be specified).
@@ -498,7 +526,7 @@ public class BuilderReader extends XMLBasicReader {
     /**
      * detemrine a data type instance based on the given gui element
      */
-    protected DataType decodeDataType(String fieldName, Element gui, int type, int listItemType, boolean forceInstance) {
+    protected DataType decodeDataType(DataTypeCollector collector, String fieldName, Element gui, int type, int listItemType, boolean forceInstance) {
         DataType baseDataType;
         if (type == Field.TYPE_LIST) {
             baseDataType = DataTypes.getListDataType(listItemType);
@@ -512,9 +540,9 @@ public class BuilderReader extends XMLBasicReader {
             if (guiTypeElement == null) {
                 guiTypeElement = getElementByPath(gui,"gui.type");
             }
-            if (guiTypeElement != null) {
+            if (guiTypeElement != null && collector != null) {
                 String guiType = getElementValue(guiTypeElement);
-                dataType = DataTypes.getDataTypeInstance(guiType, baseDataType);
+                dataType = collector.getDataTypeInstance(guiType, baseDataType);
             }
         }
         if (dataType == null && forceInstance) {
@@ -529,7 +557,7 @@ public class BuilderReader extends XMLBasicReader {
      * @param elm The element containing the field information acc. to the buidler xml format
      * @return def The field definition to alter
      */
-    private CoreField decodeFieldDef(Element field) {
+    private CoreField decodeFieldDef(DataTypeCollector collector, Element field) {
         // create a new CoreField we need to fill
         Element db = getElementByPath(field,"field.db");
         String fieldName = getElementValue(getElementByPath(db,"db.name"));
@@ -544,7 +572,7 @@ public class BuilderReader extends XMLBasicReader {
         }
         int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        DataType dataType = decodeDataType(fieldName,getElementByPath(field,"field.gui"), type, listItemType, true);
+        DataType dataType = decodeDataType(collector,fieldName,getElementByPath(field,"field.gui"), type, listItemType, true);
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
 
         String size = getElementAttributeValue(dbtype,"size");
@@ -717,7 +745,7 @@ public class BuilderReader extends XMLBasicReader {
     }
 
     /**
-     * Whether this CoreField object is equal to another for storage purposes (so, ignoring gui and documentation fields)
+     * Whether this builderreader object is equal to another for storage purposes (so, ignoring gui and documentation fields)
      * @since MMBase-1.7
      */
     public boolean storageEquals(BuilderReader f) {

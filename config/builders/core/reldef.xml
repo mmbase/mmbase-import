@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="reldef" version="0">
-  <class>org.mmbase.module.corebuilders.RelDef</class>  
+<builder extends="object" maintainer="mmbase.org" name="reldef" version="0"
+ xmlns:ddt="http://www.mmbase.org/xmlns/datatypes"
+>
+  <class>org.mmbase.module.corebuilders.RelDef</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Relation role</singular>
@@ -20,6 +22,15 @@
     <description xml:lang="eo">Atributas rolojn al rilatotipoj</description>
     <description xml:lang="it">Definisce le relazioni</description>
   </descriptions>
+
+  <ddt:datatypes
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+    <ddt:datatype id="dirs" base="integer">
+      <ddt:minInclusive value="0" />
+      <ddt:maxInclusive value="2" />
+    </ddt:datatype>
+  </ddt:datatypes>
 
   <fieldlist>
     <field>
@@ -44,7 +55,7 @@
         <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">The role as for the destination, can only be used in combination with sname</description>
@@ -58,7 +69,7 @@
         <guitype>string</guitype>
       </gui>
       <editor>
-        <positions>          
+        <positions>
           <input>2</input>
         </positions>
       </editor>
@@ -106,7 +117,7 @@
         <guiname xml:lang="eo">Fontnomo</guiname>
         <guiname xml:lang="it">FonteGUINome</guiname>
         <guitype>string</guitype>
-      </gui>      
+      </gui>
       <editor>
         <positions>
           <list>4</list>
@@ -143,9 +154,9 @@
         <type key="false" notnull="false" size="32" state="persistent">STRING</type>
       </db>
     </field>
-    
 
-		<field>
+
+    <field>
       <descriptions>
         <description xml:lang="en">Builder which will be used by
           relations of this relation definition</description>
@@ -170,6 +181,6 @@
         <name>builder</name>
         <type key="false" notnull="true" state="persistent">NODE</type>
       </db>
-		</field>
+    </field>
   </fieldlist>
 </builder>

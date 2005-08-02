@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
-<datatypes>
+<datatypes
+ xmlns="http://www.mmbase.org/xmlns/datatypes"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
   <datatype id="xml">
     <specialization id="mmxf">

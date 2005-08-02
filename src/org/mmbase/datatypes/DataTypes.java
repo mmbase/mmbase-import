@@ -37,12 +37,15 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.3 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.4 2005-08-02 14:29:26 pierre Exp $
  */
 
 public class DataTypes {
 
     private static final Logger log = Logging.getLoggerInstance(DataTypes.class);
+
+    // the datatype collector containing named DataTypes for use throughout the application
+    private static final DataTypeCollector dataTypeCollector = DataTypeCollector.createSystemDataTypeCollector();
 
     public static void initialize() {
         // read the XML
@@ -78,22 +81,15 @@ public class DataTypes {
                     log.service("Reading datatypes from " + dataTypesSource.getSystemId());
                     DocumentReader reader  = new DocumentReader(dataTypesSource, false, DataTypes.class);
                     Element dataTypesElement = reader.getRootElement(); // fieldtypedefinitons or datatypes element
-                    DataTypeReader.readDataTypes(dataTypesElement, lockObject);
+                    DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
                 }
             } catch (Exception e) {
                 log.error(e);
                 log.error(Logging.stackTrace(e));
             }
         }
-        log.info(finalDataTypes.values().toString());
+log.info(dataTypeCollector.toString());
     }
-
-    // the map containing named DataTypes for use throughout the application
-    private static Map finalDataTypes = new HashMap();
-
-    // object used to lock datatypes
-    private static Object lockObject = new Object();
-
     /**
      * Determines the MMBase type of a specified class. The MMBase base type is sue dby teh storage layer to
      * determine how to store a field.
@@ -208,12 +204,12 @@ public class DataTypes {
         if (name == null) {
             throw new IllegalArgumentException("Passed datatype " + dataType + " does not have a name assigned.");
         }
-        if (finalDataTypes.containsKey(name)) {
+        if (dataTypeCollector.contains(name)) {
             throw new IllegalArgumentException("The datatype " + dataType + " was passed, but a type with the same name occurs as : " +
-                                               finalDataTypes.get(name));
+                                               getDataType(name));
         }
-        dataType.finish(lockObject);
-        finalDataTypes.put(name, dataType);
+        dataTypeCollector.finish(dataType);
+        dataTypeCollector.addDataType(dataType);
         return dataType;
     }
 
@@ -224,7 +220,7 @@ public class DataTypes {
      * @return A DataType instance or <code>null</code> if none can be found
      */
     public static synchronized DataType getDataType(String name) {
-        return (DataType) finalDataTypes.get(name);
+        return  dataTypeCollector.getDataType(name);
     }
 
     /**
@@ -239,14 +235,7 @@ public class DataTypes {
      * @return A DataType instance or <code>null</code> if none can be instantiated
      */
     public static synchronized DataType getDataTypeInstance(String name, DataType baseDataType) {
-        DataType dataType = (DataType) finalDataTypes.get(name);
-        if (dataType == null && baseDataType == null) {
-            return null;
-        } else if (dataType == null) {
-            return (DataType)baseDataType.clone(name);
-        } else {
-            return (DataType)dataType.clone();
-        }
+        return dataTypeCollector.getDataTypeInstance(name, baseDataType);
     }
 
     /**
@@ -288,14 +277,14 @@ public class DataTypes {
      */
     public static synchronized DataType getDataType(int type) {
         String name = Fields.getTypeDescription(type).toLowerCase();
-        DataType dataType = (DataType) finalDataTypes.get(name);
+        DataType dataType = getDataType(name);
         if (dataType == null) {
             if (type == Field.TYPE_LIST) {
                 dataType = getListDataType(Field.TYPE_UNKNOWN);
             } else {
                 dataType = createDataType(name, type);
-                dataType.finish(lockObject);
-                finalDataTypes.put(name, dataType);
+                dataTypeCollector.finish(dataType);
+                dataTypeCollector.addDataType(dataType);
             }
         }
         return dataType;
@@ -312,12 +301,12 @@ public class DataTypes {
     public static ListDataType getListDataType(int listItemType) {
         String name = Fields.getTypeDescription(Field.TYPE_LIST).toLowerCase() +
                       "[" +  Fields.getTypeDescription(listItemType).toLowerCase() + "]";
-        ListDataType dataType = (ListDataType)finalDataTypes.get(name);
+        ListDataType dataType = (ListDataType) getDataType(name);
         if (dataType == null) {
             dataType = (ListDataType)createDataType(name, Field.TYPE_LIST);
             dataType.setItemDataType(getDataType(listItemType));
-            dataType.finish(lockObject);
-            finalDataTypes.put(name, dataType);
+            dataTypeCollector.finish(dataType);
+            dataTypeCollector.addDataType(dataType);
         }
         return dataType;
     }

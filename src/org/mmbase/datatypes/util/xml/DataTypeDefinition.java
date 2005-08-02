@@ -24,7 +24,7 @@ import org.mmbase.util.transformers.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.2 2005-07-29 17:15:35 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.3 2005-08-02 14:29:26 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -32,19 +32,9 @@ public class DataTypeDefinition {
     private static final Logger log = Logging.getLoggerInstance(DataTypeDefinition.class);
 
     /**
-     * The id of the data type
-     */
-    public String name = null;
-
-    /**
      * the data type
      */
     public DataType dataType = null;
-
-    /**
-     * The type set definition belonging to this field
-     */
-    protected TypeSetDefinition typeSetDefinition = null;
 
     /**
      * The data type configurer that instantiated this definition
@@ -54,15 +44,7 @@ public class DataTypeDefinition {
     /**
      * Constructor.
      */
-    public DataTypeDefinition() {
-        this(null, DataTypeConfigurer.getDefaultConfigurer());
-    }
-
-    /**
-     * Constructor.
-     */
-    public DataTypeDefinition(TypeSetDefinition typeSetDefinition, DataTypeConfigurer configurer) {
-        this.typeSetDefinition = typeSetDefinition;
+    public DataTypeDefinition(DataTypeConfigurer configurer) {
         this.configurer = configurer;
     }
 
@@ -92,23 +74,34 @@ public class DataTypeDefinition {
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    public DataTypeDefinition configure(Element dataTypeElement) {
-        if (hasAttribute(dataTypeElement,"id")) {
-            name = getAttribute(dataTypeElement,"id");
+    public DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
+        String typeString = getAttribute(dataTypeElement,"id");
+        if ("byte".equals(typeString)) typeString = "binary";
+        String baseString = getAttribute(dataTypeElement,"base");
+        if (log.isDebugEnabled()) log.debug("Reading element " + typeString + " " + baseString);
+        if (baseString != null && !baseString.equals("")) {
+            if (baseDataType != null) {
+                log.warn("Attribute 'base' not allowed with datatype " + typeString + ".");
+            } else {
+                baseDataType = configurer.getDataType(baseString);
+                if (baseDataType == null) {
+                    log.warn("Attribute 'base' of datatype '" + typeString + "' is an unknown datatype.");
+                }
+            }
         }
-        String baseType = "string";
-        if (hasAttribute(dataTypeElement,"base")) {
-            baseType = getAttribute(dataTypeElement,"base");
+        dataType = configurer.getDataType(typeString);
+        if (dataType == null) {
+            if (baseDataType == null) {
+                log.warn("No base datatype available for datatype " + typeString + ", use 'unknown' for know.");
+                baseDataType = DataType.UNKNOWN;
+            }
+            dataType = (DataType)baseDataType.clone(typeString);
+        } else {
+            //
+            // XXX: add check on base datatype if given!
+            //
+            configurer.rewrite(dataType);
         }
-        DataType dataType = (DataType)configurer.getDataType(baseType).clone(name);
-        return configure(dataTypeElement, dataType);
-    }
-
-    /**
-     * Configures the data type definition, using data from a DOM element
-     */
-    public DataTypeDefinition configure(Element dataTypeElement, DataType dataType) {
-        this.dataType = dataType;
         configureConditions(dataTypeElement);
         return this;
     }
@@ -394,7 +387,7 @@ public class DataTypeDefinition {
     }
 
     public String toString() {
-        return "" + name + " " + dataType + " " + typeSetDefinition;
+        return dataType == null ? "NONE" : dataType.toString();
     }
 
 }
