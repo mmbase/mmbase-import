@@ -20,6 +20,8 @@ import org.mmbase.bridge.NodeManager;
 
 import org.mmbase.cache.*;
 
+import org.mmbase.datatypes.DataTypeCollector;
+
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.*;
 
@@ -56,7 +58,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.325 2005-07-29 11:22:11 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.326 2005-08-02 14:29:26 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -104,6 +106,12 @@ public class MMObjectBuilder extends MMTable {
      */
     public final static Parameter[] AGE_PARAMETERS = {};
 
+    /**
+     * Determines whether the cache need be refreshed.
+     * Seems useless, as this value is never changed (always true)
+     * @see #processSearchResults
+     */
+    public static final boolean REPLACE_CACHE = true;
 
     /**
      * The cache that contains the last X types of all requested objects
@@ -164,6 +172,17 @@ public class MMObjectBuilder extends MMTable {
     private static final Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
 
     /**
+     * Max length of a query, informix = 32.0000 so we assume a bit less for other databases (???).
+     */
+    private static final int MAX_QUERY_SIZE = 20000;
+
+    /**
+     * The string that can be used inside the builder.xml as property,
+     * to define the maximum number of nodes to return.
+     */
+    private static String  MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
+
+    /**
      * The current builder's object type
      * Retrieved from the TypeDef builder.
      * @scope private, use getObjectType()
@@ -188,13 +207,6 @@ public class MMObjectBuilder extends MMTable {
      * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
      */
     public String searchAge="31";
-
-    /**
-     * Determines whether the cache need be refreshed.
-     * Seems useless, as this value is never changed (always true)
-     * @see #processSearchResults
-     */
-    public static final boolean REPLACE_CACHE = true;
 
     /**
      * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
@@ -223,16 +235,6 @@ public class MMObjectBuilder extends MMTable {
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
      */
     Hashtable pluralNames;
-
-    /**
-     *  Set of remote observers, which are notified when a node of this type changes
-     */
-    private Set remoteObservers = Collections.synchronizedSet(new HashSet());
-
-    /**
-     * Set of local observers, which are notified when a node of this type changes
-     */
-    private Set localObservers = Collections.synchronizedSet(new HashSet());
 
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
@@ -265,10 +267,6 @@ public class MMObjectBuilder extends MMTable {
                 return wrap(val, wrappos.intValue());
             }
         };
-
-
-
-
 
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
@@ -335,12 +333,23 @@ public class MMObjectBuilder extends MMTable {
         addFunction(infoFunction);
     }
 
-
-
-
     // contains the builder's field definitions
     protected final Map fields = new HashMap();
 
+    /**
+     * Determines whether a builder is virtual (data is not stored in the storage layer).
+     */
+    protected boolean virtual=false;
+
+    /**
+     *  Set of remote observers, which are notified when a node of this type changes
+     */
+    private Set remoteObservers = Collections.synchronizedSet(new HashSet());
+
+    /**
+     * Set of local observers, which are notified when a node of this type changes
+     */
+    private Set localObservers = Collections.synchronizedSet(new HashSet());
 
     /**
      * Reference to the builders that this builder extends.
@@ -354,11 +363,6 @@ public class MMObjectBuilder extends MMTable {
      * builder file
      */
     private int version=0;
-
-    /**
-     * Determines whether a builder is virtual (data is not stored in the storage layer).
-     */
-    protected boolean virtual=false;
 
     /**
      * Contains lists of builder fields in specified order
@@ -407,15 +411,9 @@ public class MMObjectBuilder extends MMTable {
     private int maxNodesFromQuery = -1;
 
     /**
-     * Max length of a query, informix = 32.0000 so we assume a bit less for other databases (???).
+     * The datatype collector for this builder
      */
-    private static final int MAX_QUERY_SIZE = 20000;
-
-    /**
-     * The string that can be used inside the builder.xml as property,
-     * to define the maximum number of nodes to return.
-     */
-    private static String  MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
+    private DataTypeCollector dataTypeCollector = null;
 
     /**
      * Constructor.
@@ -689,6 +687,19 @@ public class MMObjectBuilder extends MMTable {
     public void setParentBuilder(MMObjectBuilder parent) {
         ancestors.addAll(parent.getAncestors());
         ancestors.push(parent);
+        getDataTypeCollector().addCollector(parent.getDataTypeCollector());
+    }
+
+    /**
+     * Returns the datatype collector belonging to this buidler.
+     * A datatype collector contains the datatypes that are local to this builder.
+     */
+    public DataTypeCollector getDataTypeCollector() {
+        if (dataTypeCollector == null) {
+            Object signature = new String(getTableName()+ "_" + System.currentTimeMillis());
+            dataTypeCollector = new DataTypeCollector(signature);
+        }
+        return dataTypeCollector;
     }
 
     /**
