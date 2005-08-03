@@ -100,4 +100,27 @@ public class Unpack
 
    }
 
+
+   public static void deleteFolderIncludeSubfolders(String sPath, boolean bDeleteOnExit)
+   {
+      File fileFolder = new File(fixPath(sPath));
+      String[] arrstrFiles = fileFolder.list();
+      for(int f = 0; f < arrstrFiles.length; f++)
+      {
+         File sSubItem = new File(fixPath(sPath) + File.separator + arrstrFiles[f]);
+         if(sSubItem.isDirectory())
+         {
+            deleteFolderIncludeSubfolders(sSubItem.getAbsolutePath(), bDeleteOnExit);
+            if(bDeleteOnExit) sSubItem.deleteOnExit();
+               else sSubItem.delete();
+         }
+         else
+         {
+            if(bDeleteOnExit) sSubItem.deleteOnExit();
+               else sSubItem.delete();
+         }
+      }
+      if(bDeleteOnExit) fileFolder.deleteOnExit();
+         else fileFolder.delete();
+   }
 }
