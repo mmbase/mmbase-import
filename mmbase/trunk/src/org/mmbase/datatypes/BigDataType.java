@@ -13,12 +13,13 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: BigDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -28,6 +29,8 @@ abstract public class BigDataType extends DataType {
 
     public static final String PROPERTY_MAXLENGTH = "maxLength";
     public static final Integer PROPERTY_MAXLENGTH_DEFAULT = new Integer(-1);
+
+    private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
     protected DataType.Property minLengthProperty = null;
     protected DataType.Property maxLengthProperty = null;
@@ -97,7 +100,7 @@ abstract public class BigDataType extends DataType {
     }
 
     public void validate(Object value, Cloud cloud) {
-        super.validate(value);
+        super.validate(value, cloud);
         if (value != null) {
             int size = -1;
             if (this instanceof BinaryDataType) {

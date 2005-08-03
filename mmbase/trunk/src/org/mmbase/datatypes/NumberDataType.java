@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: NumberDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends DataType {
@@ -26,7 +26,7 @@ abstract public class NumberDataType extends DataType {
     public static final String PROPERTY_MIN = "min";
     public static final Number PROPERTY_MIN_DEFAULT = null;
 
-    public static final String PROPERTY_MAX = "min";
+    public static final String PROPERTY_MAX = "max";
     public static final Number PROPERTY_MAX_DEFAULT = null;
 
     protected DataType.Property minProperty = null;
@@ -34,13 +34,27 @@ abstract public class NumberDataType extends DataType {
     protected DataType.Property maxProperty = null;
     protected boolean maxInclusive = true;
 
+    // keys for use with error messages to retrive from the bundle
+    private String minInclusiveErrorKey;
+    private String minExclusiveErrorKey;
+    private String maxInclusiveErrorKey;
+    private String maxExclusiveErrorKey;
+
     /**
      * Constructor for Number field.
      */
     public NumberDataType(String name, Class classType) {
         super(name, classType);
+        // Determine the key to retrieve an error message from a property's bundle
+        minInclusiveErrorKey = getBaseTypeIdentifier() + ".minInclusive.error";
+        minExclusiveErrorKey = getBaseTypeIdentifier() + ".minExclusive.error";
+        maxInclusiveErrorKey = getBaseTypeIdentifier() + ".maxInclusive.error";
+        maxExclusiveErrorKey = getBaseTypeIdentifier() + ".maxExclusive.error";
+
         minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
+        setMinInclusive(true);
         maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
+        setMaxInclusive(true);
     }
 
     protected Number getMinValue() {
@@ -94,6 +108,12 @@ abstract public class NumberDataType extends DataType {
 
     public void setMinInclusive(boolean inclusive) {
         minInclusive = inclusive;
+        // change the key for the property error description to match the inclusive status
+        if (minInclusive) {
+            minProperty.getLocalizedErrorDescription().setKey(minInclusiveErrorKey);
+        } else {
+            minProperty.getLocalizedErrorDescription().setKey(minExclusiveErrorKey);
+        }
     }
 
     /**
@@ -119,6 +139,12 @@ abstract public class NumberDataType extends DataType {
 
     public void setMaxInclusive(boolean inclusive) {
         maxInclusive = inclusive;
+        // change the key for the property error description to match the inclusive status
+        if (maxInclusive) {
+            maxProperty.getLocalizedErrorDescription().setKey(maxInclusiveErrorKey);
+        } else {
+            maxProperty.getLocalizedErrorDescription().setKey(maxExclusiveErrorKey);
+        }
     }
 
     /**
@@ -134,8 +160,8 @@ abstract public class NumberDataType extends DataType {
     }
 
     public void validate(Object value, Cloud cloud) {
-        super.validate(value);
-        if (value == null) {
+        super.validate(value, cloud);
+        if (value != null) {
             double doubleValue = Casting.toDouble(value);
             Number minimum = getMinValue();
             if (minimum != null) {
@@ -147,7 +173,7 @@ abstract public class NumberDataType extends DataType {
             Number maximum = getMaxValue();
             if (maximum != null) {
                 double maxValue = maximum.doubleValue();
-                if (maxValue > doubleValue || (!minInclusive && maxValue == doubleValue)) {
+                if (maxValue < doubleValue || (!maxInclusive && maxValue == doubleValue)) {
                     failOnValidate(getMaxProperty(), value, cloud);
                 }
             }
