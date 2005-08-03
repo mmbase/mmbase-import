@@ -9,23 +9,29 @@ public class FileSizeHandler
   {
   }
 
-  public static long fileSize(String URI_string)
+  public static Long getData(String URI_string)
   {
     try
     {
-      return (long) (new File(new URI(URI_string))).length();
+      return new Long( (new File(new URI(URI_string))).length() );
     }
     catch(Exception ex1)
     {
       ex1.printStackTrace();
-      return 0;
+      return  new Long(0);
     }
 
   }
 
+
   public static String getDataType()
   {
-    return "INTEGER";
+    return "java.lang.Long";
   }
+
+  public static String getStyle()
+   {
+     return "width:150px";
+   }
 
 }
