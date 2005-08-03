@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.4 2005-07-29 17:08:00 michiel Exp $
+ * @version $Id: DataType.java,v 1.5 2005-08-03 15:02:01 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -71,7 +71,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     /**
      * @javadoc
      */
-    public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes.properties";
+    public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
 
     private static final String PROPERTY_REQUIRED = "required";
     private static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
@@ -233,24 +233,24 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     protected final void failOnValidate(DataType.Property property, Object value, Cloud cloud) {
         String error = property.getErrorDescription(cloud==null? null : cloud.getLocale());
-        // todo; replace ${NAME} with property name (??)
-        // todo; replace ${PROPERTY} with property.getValue (??)
-        // todo; replace ${VALUE} with value .toString (??)
+        if (error != null) {
+            error = error.replaceAll("\\$\\{NAME\\}", property.getName());
+            error = error.replaceAll("\\$\\{PROPERTY\\}", ""+property.getValue());
+            error = error.replaceAll("\\$\\{VALUE\\}", ""+value);
+        }
         throw new IllegalArgumentException(error);
     }
 
     /**
-     * Checks if the passed object is of the correct type (compatible with the type of this data type),
-     * and follows the restrictions defined for this type.
+     * Checks if the passed object follows the restrictions defined for this type.
      * It throws an IllegalArgumentException with a lozalized message (dependent on the cloud) if it doesn't.
      * @param value the value to validate
      * @param cloud the cloud used to determine the locale for the error message when validation fails
      * @throws IllegalArgumentException if the value is not compatible
      */
     public void validate(Object value, Cloud cloud) {
-        checkType(value);
         // test required
-        if (value == null && isRequired() && getDefaultValue() == null) {
+        if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
             failOnValidate(getRequiredProperty(), value, cloud);
         }
     }
@@ -377,6 +377,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     /**
      * Processes a value, according to the processors set on this datatype.
+     * Also, when committing, if the value is <code>null</code>, but is required,
+     * the default value (if one exists) is assigned instead.
      * <br />
      * If you ask for a PROCESS_COMMIT action, and the commit processor is defined,
      * eitehr the commit() action is called (if the processor is a Commitprocessor),
@@ -415,11 +417,16 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
                 ((CommitProcessor)processor).commit(node, field);
 
             } else {
-                if (log.isDebugEnabled()) { 
+                if (log.isDebugEnabled()) {
                     log.debug("process:" + processor.getClass().getName());
                 }
                 result = processor.process(node, field, value);
             }
+        }
+        // only with commit: if the data is required but the value is null,
+        // set to the default value.
+        if (action == PROCESS_COMMIT && result == null && isRequired()) {
+            result = getDefaultValue();
         }
         return result;
     }

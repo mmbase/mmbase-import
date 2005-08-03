@@ -12,22 +12,27 @@ package org.mmbase.datatypes;
 import java.util.Calendar;
 import java.util.Date;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.storage.search.FieldValueDateConstraint;
 import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DateTimeDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
 
     public static final String PROPERTY_MIN = "min";
     public static final Number PROPERTY_MIN_DEFAULT = null;
+    public static final String ERROR_MIN_INCLUSIVE = "minInclusive";
+    public static final String ERROR_MIN_EXCLUSIVE = "minExclusive";
 
     public static final String PROPERTY_MAX = "max";
     public static final Number PROPERTY_MAX_DEFAULT = null;
+    public static final String ERROR_MAX_INCLUSIVE = "maxInclusive";
+    public static final String ERROR_MAX_EXCLUSIVE = "maxExclusive";
 
     protected DataType.Property minProperty = null;
     protected int minPrecision = Calendar.SECOND;
@@ -37,13 +42,27 @@ public class DateTimeDataType extends DataType {
     protected int maxPrecision = Calendar.SECOND;
     protected boolean maxInclusive = true;
 
+    // keys for use with error messages to retrive from the bundle
+    private String minInclusiveErrorKey;
+    private String minExclusiveErrorKey;
+    private String maxInclusiveErrorKey;
+    private String maxExclusiveErrorKey;
+
     /**
      * Constructor for DateTime field.
      */
     public DateTimeDataType(String name) {
         super(name, Date.class);
+        // Determine the key to retrieve an error message from a property's bundle
+        minInclusiveErrorKey = getBaseTypeIdentifier() + ".minInclusive.error";
+        minExclusiveErrorKey = getBaseTypeIdentifier() + ".minExclusive.error";
+        maxInclusiveErrorKey = getBaseTypeIdentifier() + ".maxInclusive.error";
+        maxExclusiveErrorKey = getBaseTypeIdentifier() + ".maxExclusive.error";
+
         minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
+        setMinInclusive(true);
         maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
+        setMaxInclusive(true);
     }
 
     /**
@@ -121,10 +140,17 @@ public class DateTimeDataType extends DataType {
 
     public void setMinPrecision(int precision) {
         minPrecision = precision;
+        // change the key for the property error description to match the inclusive status
     }
 
     public void setMinInclusive(boolean inclusive) {
         minInclusive = inclusive;
+        // change the key for the property error description to match the inclusive status
+        if (minInclusive) {
+            minProperty.getLocalizedErrorDescription().setKey(ERROR_MIN_INCLUSIVE);
+        } else {
+            minProperty.getLocalizedErrorDescription().setKey(ERROR_MIN_EXCLUSIVE);
+        }
     }
 
     /**
@@ -156,6 +182,11 @@ public class DateTimeDataType extends DataType {
 
     public void setMaxInclusive(boolean inclusive) {
         maxInclusive = inclusive;
+        if (maxInclusive) {
+            maxProperty.getLocalizedErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
+        } else {
+            maxProperty.getLocalizedErrorDescription().setKey(ERROR_MAX_EXCLUSIVE);
+        }
     }
 
     /**
@@ -172,11 +203,63 @@ public class DateTimeDataType extends DataType {
         return setMax(value);
     }
 
+    /**
+     * Returns a long value representing the date in milliseconds since 1/1/1970,
+     * adjusted for the precision given.
+     * @param date the date to obtain the value from
+     * @param precisison the precision, similar to the <code>java.util.Calendar</code> constants, or the
+     *        constants from {@link org.mmbase.storage.search.FieldValueDateConstraint}
+     * @returns the date as a <code>long</code>
+     */
+    protected long getDateLongValue(Date date, int precision) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        switch (precision) {
+        // 'CENTURY' does not exist in Calendar, but does in FieldValueDateConstraint
+        case FieldValueDateConstraint.CENTURY : {
+                int year = calendar.get(Calendar.YEAR);
+                year = year % 100;
+                calendar.set(Calendar.YEAR, year);
+             }
+        case FieldValueDateConstraint.YEAR: calendar.clear(Calendar.MONTH);
+        // 'Quarter' does not exist in Calendar, but does in FieldValueDateConstraint
+        case FieldValueDateConstraint.QUARTER : {
+                int month = calendar.get(Calendar.MONTH);
+                month = month % 4;
+                calendar.set(Calendar.MONTH, month);
+         }
+        case FieldValueDateConstraint.MONTH : ;
+        case FieldValueDateConstraint.WEEK : calendar.clear(Calendar.DAY_OF_MONTH);
+        case FieldValueDateConstraint.DAY_OF_MONTH : ;
+        case FieldValueDateConstraint.DAY_OF_YEAR : ;
+        case FieldValueDateConstraint.DAY_OF_WEEK : calendar.clear(Calendar.HOUR);
+        case FieldValueDateConstraint.HOUR : calendar.clear(Calendar.MINUTE);
+        case FieldValueDateConstraint.MINUTE : calendar.clear(Calendar.SECOND);
+        case FieldValueDateConstraint.SECOND : calendar.clear(Calendar.MILLISECOND);
+        }
+        return calendar.getTimeInMillis();
+    }
+
     public void validate(Object value, Cloud cloud) {
-        super.validate(value);
+        super.validate(value, cloud);
         if (value != null) {
-            Date dateValue = Casting.toDate(value);
-            // Todo: check on mindate/max date, taking into account precision and inclusiveness
+            Date date = Casting.toDate(value);
+            Date minimum = getMin();
+            if (minimum != null) {
+                long minValue = getDateLongValue(minimum, minPrecision);
+                long dateValue = getDateLongValue(date, minPrecision);
+                if (minValue > dateValue || (!minInclusive && minValue == dateValue)) {
+                    failOnValidate(getMinProperty(), value, cloud);
+                }
+            }
+            Date maximum = getMax();
+            if (maximum != null) {
+                long maxValue = getDateLongValue(maximum, maxPrecision);
+                long dateValue = getDateLongValue(date, maxPrecision);
+                if (maxValue < dateValue || (!maxInclusive && maxValue == dateValue)) {
+                    failOnValidate(getMaxProperty(), value, cloud);
+                }
+            }
         }
     }
 

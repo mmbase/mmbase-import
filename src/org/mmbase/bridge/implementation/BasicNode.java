@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.156 2005-07-29 17:14:09 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.157 2005-08-03 15:02:01 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -709,16 +709,36 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return (Element)tree.importNode(doc.getDocumentElement(), true);
     }
 
-    public void commit() {
-        if (isnew) {
-            cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
-        }
-        edit(ACTION_COMMIT);
+    protected void processCommit() {
         FieldIterator fi = nodeManager.getFields().fieldIterator();
         while (fi.hasNext()) {
             Field field = fi.nextField();
             field.getDataType().process(DataType.PROCESS_COMMIT, this, field, null);
         }
+    }
+
+    public void validate() {
+        FieldIterator fi = nodeManager.getFields().fieldIterator();
+        while (fi.hasNext()) {
+            Field field = fi.nextField();
+            field.getDataType().validate(getNode().getValue(field.getName()));
+        }
+    }
+
+    public void validate(String fieldName) {
+        if (nodeManager.hasField(fieldName)) {
+            Field field = nodeManager.getField(fieldName);
+            field.getDataType().validate(getNode().getValue(fieldName));
+        }
+    }
+
+    public void commit() {
+        if (isnew) {
+            cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
+        }
+        edit(ACTION_COMMIT);
+        processCommit();
+        validate();
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();

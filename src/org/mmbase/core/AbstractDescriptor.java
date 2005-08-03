@@ -10,19 +10,22 @@ See http://www.MMBase.org/license
 
 package org.mmbase.core;
 
+import java.util.*;
 import org.mmbase.bridge.Descriptor;
 import org.mmbase.util.LocalizedString;
-import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.1 2005-07-22 12:35:46 pierre Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.2 2005-08-03 15:02:01 pierre Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
+
+    private static final Logger log = Logging.getLoggerInstance(AbstractDescriptor.class);
 
     protected String key;
     private LocalizedString description;

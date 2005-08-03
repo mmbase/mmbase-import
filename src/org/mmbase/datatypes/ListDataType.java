@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: ListDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: ListDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends DataType {
@@ -118,7 +118,7 @@ public class ListDataType extends DataType {
     }
 
     public void validate(Object value, Cloud cloud) {
-        super.validate(value);
+        super.validate(value, cloud);
         if (value !=null) {
             List listValue = Casting.toList(value);
             int minSize = getMinSize();
@@ -138,7 +138,7 @@ public class ListDataType extends DataType {
             if (itemDataType != null) {
                 for (Iterator i = listValue.iterator(); i.hasNext(); ) {
                     try {
-                        itemDataType.validate(i.next());
+                        itemDataType.validate(i.next(), cloud);
                     } catch (ClassCastException cce) {
                         failOnValidate(getItemDataTypeProperty(), value, cloud);
                     }
