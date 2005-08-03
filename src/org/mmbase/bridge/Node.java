@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.57 2005-07-29 14:52:36 pierre Exp $
+ * @version $Id: Node.java,v 1.58 2005-08-03 15:02:01 pierre Exp $
  */
 public interface Node extends Comparable {
 
@@ -434,15 +434,35 @@ public interface Node extends Comparable {
     public FieldValue getFieldValue(Field field);
 
     /**
-    * Commit the node to the database.
-    * Makes this node and/or the changes made to this node visible to the cloud.
-    * If this method is called for the first time on this node it will make
-    * this node visible to the cloud, otherwise the modifications made to
-    * this node using the set methods will be made visible to the cloud.
-    * This action fails if the current node is not in edit mode.
-    * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
-    * @throws BridgeException
-    */
+     * Validates a node by checking the values from it's field against the constraints of
+     * each field's datatype.
+     * This method is called by the {@link #commit} method, after commit processors are run.
+     * Note that because commit processors may make necessary changes to field values, it is possible for
+     * validate() to fail when used outside the commit process if the constraints are set too strict.
+     * @throws IllegalArgumentException when a field value is not valid.
+     */
+    public void validate();
+
+    /**
+     * Validates a field of a node by checking the value against the constraints of
+     * the field's datatype.
+     * @see {@link #validate}
+     * @throws IllegalArgumentException when the field value is not valid.
+     */
+    public void validate(String fieldname);
+
+    /**
+     * Commit the node to the database.
+     * Prior to committing, the values are processed by any commit-processors associated with the datatype of the node's fields),
+     * then validated.
+     * Makes this node and/or the changes made to this node visible to the cloud.
+     * If this method is called for the first time on this node it will make
+     * this node visible to the cloud, otherwise the modifications made to
+     * this node using the set methods will be made visible to the cloud.
+     * This action fails if the current node is not in edit mode.
+     * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+     * @throws BridgeException
+     */
     public void commit();
 
     /**

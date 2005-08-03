@@ -13,18 +13,21 @@ import java.util.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
 
     public static final String PROPERTY_PATTERN = "pattern";
     public static final String PROPERTY_PATTERN_DEFAULT = null;
+
+    private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
     protected DataType.Property patternProperty = null;
 
@@ -63,7 +66,7 @@ public class StringDataType extends BigDataType {
     }
 
     public void validate(Object value, Cloud cloud) {
-        super.validate(value);
+        super.validate(value, cloud);
         if (value != null) {
             String stringValue = Casting.toString(value);
             String pattern = getPattern();

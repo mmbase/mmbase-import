@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.10 2005-07-12 15:03:36 pierre Exp $
+ * @version $Id: LocalizedString.java,v 1.11 2005-08-03 15:02:01 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -69,6 +69,20 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
     }
 
     /**
+     * Gets the key to use as a default and/or for obtaining a value from the bundle
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Sets the key to use as a default and/or for obtaining a value from the bundle
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
      * Gets the value for a certain locale. If no match is found, it falls back to the key.
      */
     public String get(Locale locale) {
@@ -113,7 +127,8 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
             try {
                 return ResourceBundle.getBundle(bundle, locale).getString(key);
             } catch (MissingResourceException mre) {
-                // fall back to key
+                // fall back to key, invalidate bundle, and log error
+                log.debug("Cannot get resource from bundle: " + bundle + ", key: " + key);
             }
         }
 
