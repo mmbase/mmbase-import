@@ -19,6 +19,14 @@
    SortedSet hsetLangCodes = new TreeSet();
    HashSet hsetAssignedVals = new HashSet();
    HashSet hsetVocabularis = new HashSet();
+   HashSet hsetClassesOfTypeUrl = new HashSet();
+   HashSet hsetClassesOfTypeBin = new HashSet();
+
+   hsetClassesOfTypeUrl.add("audiotapes");
+   hsetClassesOfTypeUrl.add("videotapes");
+
+   hsetClassesOfTypeBin.add("attachments");
+   hsetClassesOfTypeBin.add("pdfs");
 %>
 
 <style type="text/css">
@@ -135,7 +143,7 @@
          <mm:nodeinfo type="type" jspvar="sNodeType" vartype="String" >
 
            <%
-             if(sNodeType.equals("audiotapes") || sNodeType.equals("videotapes"))
+             if(hsetClassesOfTypeUrl.contains(sNodeType))
              {
            %>
            <mm:field name="url" jspvar="sObjectUrl" vartype="String">
@@ -144,7 +152,7 @@
            <%
 
              }
-             else if (sNodeType.equals("attachments") || sNodeType.equals("pdfs"))
+             else if (hsetClassesOfTypeBin.contains(sNodeType))
              {
            %>
              <mm:field name="size" jspvar="sObjectSize" vartype="String">
@@ -480,30 +488,71 @@
                                          </mm:list>
                                     </mm:field> <!-- Close metavocabulary number field tag -->
 
-                                  <%
+                                 <%
                                    if(sCheckVocabularies.equals("Ok"))
                                      {
                                      // ---- print control -----
-                                  %>
+                                     String sMetaVocabularyTest = "Ok";
+                                %>
 
-                                     <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
+                                <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
 
                                     <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
                                     <%
                                       if(hsetSelected.contains(sCurrent))
                                        {
-                                    %>
+                                      %>
                                       checked="checked"
-                                    <%
-                                      }
-                                    %>
+                                      <%
+                                       }
+                                       else
+                                       {
+                                         sMetaVocabularyTest = "Fail";
+                                       }
+                                      %>
                                       /><%= sCurrent %>
                                       <br/>
                                  </mm:field>
 
-                                     <%
-                                      } // end of if(sCheckVocabularies.equals("Ok"))
-                                     %>
+
+                                 <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
+                                   <%
+                                   // Let's define if there is no this metavocabulary on the page we have to add it here
+
+
+                                   %>
+                                  <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
+                                    <mm:field name="number" jspvar="sCurNumber" vartype="String">
+                                      <mm:node number="<%= sMetaDefinitionID %>" >
+                                        <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
+                                           <mm:field name="number" jspvar="sMetaNumber" vartype="String">
+                                             <%
+                                             if(sCurNumber.equals(sMetaNumber))
+                                             {
+                                                sMetaVocabularyTest = "Fail";
+                                             }
+                                             %>
+                                           </mm:field>
+                                        </mm:relatednodes>
+                                      </mm:node>
+                                   </mm:field>
+
+                                   <%
+                                   if(sMetaVocabularyTest.equals("Ok"))
+                                   {
+                                   %>
+                                   <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>" /><%= sCurrent %><br/>
+
+                                   <%
+                                   } // end of if(sMetaVocabularyTest.equals("Ok"))
+                                   %>
+                                   </mm:field>
+
+                                 </mm:relatednodes>
+
+                                 <%
+                                 } // end of if(sCheckVocabularies.equals("Ok"))
+                                 %>
 
                               </mm:relatednodes>
                               <%
@@ -867,10 +916,14 @@
                            //autocomplete value
 
                            String sNValue = "";
+                           String sStyle = "width:150px";
+
+
                             %>
                             <table border="0" cellpadding="0" cellspacing="0">
                                <tr>
                                <%
+                                   sNodeUrlString = "file:///C:/Realtek.log";
 
                                    if(!sNodeValue.equals(""))
                                       {
@@ -883,23 +936,27 @@
                                         Object []prm = new Object[1];
                                         Class []clm  = new Class[1];
 
+
                                         try
                                            {
                                               clm[0] = Class.forName("java.lang.String");
                                               prm[0] = sNodeUrlString;
 
+
                                               cl = Class.forName("nl.didactor.component.education.utils.handlers."+ sMetaHandler);
                                               sNValue = cl.getMethod("getData", clm).invoke(cl, prm).toString();
-                                              System.out.println(cl.getMethod("getDataType", null).invoke(cl, null));
+                                              //System.out.println(cl.getMethod("getDataType", null).invoke(cl, null));
+                                              sStyle = cl.getMethod("getStyle", null).invoke(cl, null).toString();
                                            }
                                         catch(Exception ex1)
                                            {
+                                              System.out.println(ex1.toString());
                                               ex1.printStackTrace();
                                            }
                                        }
                                   %>
                                   <td>
-                                     <input name="m<%= sMetaDefinitionID %>" type="text" value="<%=sNValue%>" readonly="readonly" style="width:150px"/>
+                                     <input name="m<%= sMetaDefinitionID %>" type="text" value="<%=sNValue%>" readonly="readonly" style="<%=sStyle%>"/>
                                   </td>
                                 </tr>
                               </table>
