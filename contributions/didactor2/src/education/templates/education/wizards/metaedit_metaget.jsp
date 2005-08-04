@@ -171,13 +171,13 @@
                                  %>
                               </mm:related>
                            <%
-                        }
+                        } // end of if(sType.equals("4"))
                      %>
                   </mm:node>
                <%
-            }
-         }
-      }
+            } // end of if (sTemplateNode != null)
+         } // end of if(bTemplatesActive)
+      } // end of if (sMetadataID == null)
 
       session.setAttribute("metadata_id", sMetadataID);
    %>
