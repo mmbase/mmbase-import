@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: ListDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: ListDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends DataType {
@@ -31,18 +31,32 @@ public class ListDataType extends DataType {
     public static final String PROPERTY_ITEMDATATYPE = "itemDataType";
     public static final Integer PROPERTY_ITEMDATATYPE_DEFAULT = null;
 
-    protected DataType.Property minSizeProperty = null;
-    protected DataType.Property maxSizeProperty = null;
-    protected DataType.Property itemDataTypeProperty = null;
+    protected DataType.Property minSizeProperty;
+    protected DataType.Property maxSizeProperty;
+    protected DataType.Property itemDataTypeProperty;
 
     /**
      * Constructor for List field.
      */
     public ListDataType(String name) {
         super(name, List.class);
+    }
+
+    public void erase() {
+        super.erase();
         minSizeProperty = createProperty(PROPERTY_MINSIZE, PROPERTY_MINSIZE_DEFAULT);
         maxSizeProperty = createProperty(PROPERTY_MAXSIZE, PROPERTY_MAXSIZE_DEFAULT);
         itemDataTypeProperty = createProperty(PROPERTY_ITEMDATATYPE, PROPERTY_ITEMDATATYPE_DEFAULT);
+    }
+
+    public void inherit(DataType origin) {
+        super.inherit(origin);
+        if (origin instanceof ListDataType) {
+            ListDataType dataType = (ListDataType)origin;
+            minSizeProperty = (DataType.Property)dataType.getMinSizeProperty().clone(this);
+            maxSizeProperty = (DataType.Property)dataType.getMaxSizeProperty().clone(this);
+            itemDataTypeProperty = (DataType.Property)dataType.getItemDataTypeProperty().clone(this);
+         }
     }
 
     /**
@@ -156,16 +170,6 @@ public class ListDataType extends DataType {
             buf.append("maxSize:" + getMaxSize() + "\n");
         }
         return buf.toString();
-    }
-
-
-
-    public Object clone(String name) {
-        ListDataType clone = (ListDataType)super.clone(name);
-        clone.minSizeProperty = (DataType.Property)getMinSizeProperty().clone(clone);
-        clone.maxSizeProperty = (DataType.Property)getMaxSizeProperty().clone(clone);
-        clone.itemDataTypeProperty = (DataType.Property)getItemDataTypeProperty().clone(clone);
-        return clone;
     }
 
 }

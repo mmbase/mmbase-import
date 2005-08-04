@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.1 2005-08-02 14:29:26 pierre Exp $
+ * @version $Id: DataTypeCollector.java,v 1.2 2005-08-04 14:14:27 pierre Exp $
  */
 
 public final class DataTypeCollector {
@@ -43,7 +43,7 @@ public final class DataTypeCollector {
      */
     public static DataTypeCollector createSystemDataTypeCollector() {
         if (systemDataTypeCollector == null) {
-            Object signature = new String( "MMBASE_" + System.currentTimeMillis());
+            Object signature = new String( "SYSTEM_" + System.currentTimeMillis());
             systemDataTypeCollector = new DataTypeCollector(signature);
             return systemDataTypeCollector;
         } else {
@@ -76,7 +76,7 @@ public final class DataTypeCollector {
      */
     public void setDataTypes(Map dataTypes) {
         this.dataTypes = dataTypes;
-log.info("DataTypes for collector with signature " + signature + ":" +dataTypes);
+        if (log.isDebugEnabled()) log.debug("DataTypes for collector with signature " + signature + ":" +dataTypes);
     }
 
     /**

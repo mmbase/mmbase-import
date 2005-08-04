@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.5 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: DataType.java,v 1.6 2005-08-04 14:14:27 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -69,7 +69,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     public static final DataType[] EMPTY  = new DataType[0];
 
     /**
-     * @javadoc
+     * The bundle used by datatype to determine default prompts for error messages when a
+     * validation fails.
      */
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
 
@@ -78,22 +79,24 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
-    protected DataType.Property requiredProperty = null;
-    private Class classType;
-    private Object defaultValue = null;
-    private Object owner = null;
+    /**
+     * The 'required' property.
+     */
+    protected DataType.Property requiredProperty;
 
-    private Processor commitProcessor = null;
-    private Processor[] getProcessor = new Processor[] {
-             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
-             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
-             null /* datetime */, null /* boolean */, null /* list    */
-        };
-    private Processor[] setProcessor = new Processor[] {
-             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
-             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
-             null /* datetime */, null /* boolean */, null /* list    */
-        };
+    /**
+     * The datatype from which this datatype originally inherited it's properties.
+     * Used to restore default values when calling the {@link clear} method.
+     */
+    protected DataType origin = null;
+
+    private Object owner;
+    private Class classType;
+    private Object defaultValue;
+
+    private Processor commitProcessor;
+    private Processor[] getProcessor;
+    private Processor[] setProcessor;
 
     /**
      * Create a data type object of unspecified class type
@@ -111,11 +114,64 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     protected DataType(String name, Class classType) {
         super(name);
         this.classType = classType;
-        requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
+        owner = null;
+        clear();
     }
 
     protected String getBaseTypeIdentifier() {
         return Fields.getTypeDescription(DataTypes.classToType(classType)).toLowerCase();
+    }
+
+    /**
+     * Clears the constraints and processors in this Datatype, setting them to the default values.
+     * If the properties were originally inherited from another datatype (such as through calling the clone method),
+     * The property values of that datatype are used instead (even if that datatype changed in the mean time).
+     * This approach allows for datatypes that depend on each other to gain the same properties if the
+     * datatype set is reloaded.
+     * <br />
+     * Otherwise, system-defined defaults are used (in most cases resulting in no restrictive properties or processors).
+     */
+    public void clear() {
+        if (origin != null) {
+            inherit(origin);
+        } else {
+            erase();
+        }
+    }
+
+    /**
+     * Clears the constraints and processors in this Datatype, setting it to the default values.
+     */
+    public void erase() {
+        edit();
+        origin = null;
+        defaultValue = null;
+        requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
+        commitProcessor = null;
+        getProcessor = new Processor[] {
+             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
+             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
+             null /* datetime */, null /* boolean */, null /* list    */
+        };
+        setProcessor = new Processor[] {
+             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
+             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
+             null /* datetime */, null /* boolean */, null /* list    */
+        };
+    }
+
+    /**
+     * Inherit properties and processors from the passed datatype and
+     * sets the passed datatype as the origin for this datatype.
+     */
+    public void inherit(DataType origin) {
+        edit();
+        this.origin = origin;
+        defaultValue = origin.defaultValue;
+        commitProcessor = origin.commitProcessor;
+        requiredProperty = (DataType.Property)getRequiredProperty().clone(this);
+        getProcessor = (Processor[])getProcessor.clone();
+        setProcessor = (Processor[])setProcessor.clone();
     }
 
     /**
@@ -186,8 +242,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @javadoc
      */
     public DataType finish() {
-        this.owner = new Object();
-        return this;
+        return finish(new Object());
     }
 
     /**
@@ -289,11 +344,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     public Object clone(String name) {
         try {
             DataType clone = (DataType)super.clone(name);
-            clone.requiredProperty = (DataType.Property)getRequiredProperty().clone(clone);
-            clone.getProcessor = (Processor[])getProcessor.clone();
-            clone.setProcessor = (Processor[])setProcessor.clone();
             // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
+            // properly inherit from this datatype (this also clones properties and processor arrays)
+            clone.inherit(this);
             return clone;
         } catch (CloneNotSupportedException cnse) {
             // should not happen

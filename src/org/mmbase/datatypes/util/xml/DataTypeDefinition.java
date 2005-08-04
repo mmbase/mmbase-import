@@ -24,7 +24,7 @@ import org.mmbase.util.transformers.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.3 2005-08-02 14:29:26 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -101,6 +101,7 @@ public class DataTypeDefinition {
             // XXX: add check on base datatype if given!
             //
             configurer.rewrite(dataType);
+            dataType.clear(); // clears datatype.
         }
         configureConditions(dataTypeElement);
         return this;

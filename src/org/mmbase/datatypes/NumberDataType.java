@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: NumberDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends DataType {
@@ -29,10 +29,10 @@ abstract public class NumberDataType extends DataType {
     public static final String PROPERTY_MAX = "max";
     public static final Number PROPERTY_MAX_DEFAULT = null;
 
-    protected DataType.Property minProperty = null;
-    protected boolean minInclusive = true;
-    protected DataType.Property maxProperty = null;
-    protected boolean maxInclusive = true;
+    protected DataType.Property minProperty;
+    protected boolean minInclusive;
+    protected DataType.Property maxProperty;
+    protected boolean maxInclusive;
 
     // keys for use with error messages to retrive from the bundle
     private String minInclusiveErrorKey;
@@ -45,6 +45,10 @@ abstract public class NumberDataType extends DataType {
      */
     public NumberDataType(String name, Class classType) {
         super(name, classType);
+    }
+
+    public void erase() {
+        super.erase();
         // Determine the key to retrieve an error message from a property's bundle
         minInclusiveErrorKey = getBaseTypeIdentifier() + ".minInclusive.error";
         minExclusiveErrorKey = getBaseTypeIdentifier() + ".minExclusive.error";
@@ -55,6 +59,18 @@ abstract public class NumberDataType extends DataType {
         setMinInclusive(true);
         maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
         setMaxInclusive(true);
+    }
+
+
+    public void inherit(DataType origin) {
+        super.inherit(origin);
+        if (origin instanceof NumberDataType) {
+            NumberDataType dataType = (NumberDataType)origin;
+            minProperty = (DataType.Property)dataType.getMinProperty().clone(this);
+            minInclusive = dataType.isMinInclusive();
+            maxProperty = (DataType.Property)dataType.getMaxProperty().clone(this);
+            maxInclusive = dataType.isMaxInclusive();
+        }
     }
 
     protected Number getMinValue() {
@@ -189,14 +205,6 @@ abstract public class NumberDataType extends DataType {
           buf.append("max:" + getMaxValue() + " ").append(isMaxInclusive() ? " inclusive" : " exclusive").append("\n");
         }
         return buf.toString();
-    }
-
-
-    public Object clone(String name) {
-        NumberDataType clone = (NumberDataType)super.clone(name);
-        clone.minProperty = (DataType.Property)getMinProperty().clone(clone);
-        clone.maxProperty = (DataType.Property)getMaxProperty().clone(clone);
-        return clone;
     }
 
 }
