@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: BigDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -32,8 +32,8 @@ abstract public class BigDataType extends DataType {
 
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
-    protected DataType.Property minLengthProperty = null;
-    protected DataType.Property maxLengthProperty = null;
+    protected DataType.Property minLengthProperty;
+    protected DataType.Property maxLengthProperty;
 
 
     /**
@@ -43,8 +43,21 @@ abstract public class BigDataType extends DataType {
      */
     public BigDataType(String name, Class classType) {
         super(name, classType);
+    }
+
+    public void erase() {
+        super.erase();
         minLengthProperty = createProperty(PROPERTY_MINLENGTH, PROPERTY_MINLENGTH_DEFAULT);
         maxLengthProperty = createProperty(PROPERTY_MAXLENGTH, PROPERTY_MAXLENGTH_DEFAULT);
+    }
+
+    public void inherit(DataType origin) {
+        super.inherit(origin);
+        if (origin instanceof BigDataType) {
+            BigDataType dataType = (BigDataType)origin;
+            minLengthProperty = (DataType.Property)dataType.getMinLengthProperty().clone(this);
+            maxLengthProperty = (DataType.Property)dataType.getMaxLengthProperty().clone(this);
+        }
     }
 
     /**
@@ -135,13 +148,6 @@ abstract public class BigDataType extends DataType {
             buf.append("minLength:" + getMaxLength() + "\n");
         }
         return buf.toString();
-    }
-
-    public Object clone(String name) {
-        BigDataType clone = (BigDataType)super.clone(name);
-        clone.minLengthProperty = (DataType.Property)getMinLengthProperty().clone(clone);
-        clone.maxLengthProperty = (DataType.Property)getMaxLengthProperty().clone(clone);
-        return clone;
     }
 
 }

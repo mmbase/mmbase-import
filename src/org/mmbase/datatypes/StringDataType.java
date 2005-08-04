@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.3 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -29,7 +29,7 @@ public class StringDataType extends BigDataType {
 
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
-    protected DataType.Property patternProperty = null;
+    protected DataType.Property patternProperty;
 
     /**
      * Constructor for string data type.
@@ -37,7 +37,19 @@ public class StringDataType extends BigDataType {
      */
     public StringDataType(String name) {
         super(name, String.class);
+    }
+
+    public void erase() {
+        super.erase();
         patternProperty = createProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
+    }
+
+    public void inherit(DataType origin) {
+        super.inherit(origin);
+        if (origin instanceof StringDataType) {
+            StringDataType dataType = (StringDataType)origin;
+            patternProperty = (DataType.Property)dataType.getPatternProperty().clone(this);
+        }
     }
 
     /**
@@ -84,14 +96,6 @@ public class StringDataType extends BigDataType {
             buf.append("pattern:").append(getPattern()).append("\n");
         }
         return buf.toString();
-    }
-
-
-
-    public Object clone(String name) {
-        StringDataType clone = (StringDataType)super.clone(name);
-        clone.patternProperty = (DataType.Property)getPatternProperty().clone(clone);
-        return clone;
     }
 
 }
