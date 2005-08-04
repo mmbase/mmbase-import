@@ -338,7 +338,7 @@ if (top == self) {
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<fmt:message key="SCORMimport"/></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/scorm/index.jsp" objectlist="$includePath" />' title="<fmt:message key="ftpUpload"/>" target="text"><fmt:message key="SCORMimport"/></a></nobr></td>
             </tr>
          </table>
       </div>
@@ -901,7 +901,7 @@ if (top == self) {
 
                         <div id="node_0_0_<%= iLearnblockCounter %>" style="display:none">
                            <mm:treeinclude write="true" page="/education/wizards/learnobject.jsp" objectlist="$includePath" referids="wizardjsp">
-                
+
                               <mm:param name="startnode"><mm:field name="number" /></mm:param>
                               <mm:param name="depth">10</mm:param>
                               <mm:last>
