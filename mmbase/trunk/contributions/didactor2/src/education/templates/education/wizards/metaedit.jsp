@@ -116,7 +116,7 @@
                      </mm:list>
 
                      <%
-                                        } // end of if
+                                        } // end of if(arrstrParameters[i]!= null && 
 
 		                         } // end of for (int i=0 ; i < arrstrParameters.length ; i++)
 
