@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="13" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="14" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
         <requires name="Resources" maintainer="didactor.nl" version="2" />
-    </requirements>  
+    </requirements>
 
     <neededbuilderlist>
         <builder maintainer="didactor.nl" version="2">learnobjects</builder>
         <builder maintainer="didactor.nl" version="2">learnblocks</builder>
-        
+
         <builder maintainer="didactor.nl" version="2">sizerel</builder>
-        
+
 
         <!-- All learnobjects -->
         <builder maintainer="didactor.nl" version="2">pages</builder>
@@ -42,15 +42,20 @@
         <builder maintainer="didactor.nl" version="2">valuequestions</builder>
         <builder maintainer="didactor.nl" version="2">valueanswers</builder>
 
-	<builder maintainer="didactor.nl" version="2">hotspotquestions</builder>
-    	<builder maintainer="didactor.nl" version="2">hotspotanswers</builder>
-	
-	<builder maintainer="didactor.nl" version="2">dropquestions</builder>
-	<builder maintainer="didactor.nl" version="2">dropanswers</builder>
-    
+        <builder maintainer="didactor.nl" version="2">hotspotquestions</builder>
+        <builder maintainer="didactor.nl" version="2">hotspotanswers</builder>
+
+        <builder maintainer="didactor.nl" version="2">dropquestions</builder>
+        <builder maintainer="didactor.nl" version="2">dropanswers</builder>
+
         <!-- Builders for saving made tests -->
         <builder maintainer="didactor.nl" version="2">givenanswers</builder>
         <builder maintainer="didactor.nl" version="2">madetests</builder>
+
+
+        <builder maintainer="didactor.nl" version="1">packages</builder>
+        <builder maintainer="didactor.nl" version="1">htmlpages</builder>
+
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -59,10 +64,10 @@
         <reldef source="sizerel" target="sizerel" direction="bidirectional" guisourcename="SizeRel" guitargetname="SizeRel" builder="sizerel" />
 
 
-	<!-- Needed for 'couplinganswers' -->
+   <!-- Needed for 'couplinganswers' -->
         <reldef source="leftanswer" target="leftanswer" direction="bidirectional" guisourcename="LeftAnswer" guitargetname="LeftAnswer" builder="posrel" />
         <reldef source="rightanswer" target="rightanswer" direction="bidirectional" guisourcename="RightAnswer" guitargetname="RightAnswer" builder="posrel" />
- 
+
         <!-- Needed for drag and drop images -->
         <reldef source="dragimagerel" target="dragimagerel" direction="bidirectional" guisourcename="DragImage" guitargetname="DragImage" builder="posrel" />
         <reldef source="dropimagerel" target="dropimagerel" direction="bidirectional" guisourcename="DropImage" guitargetname="DropImage" builder="posrel" />
@@ -75,7 +80,7 @@
         <relation from="educations" to="videotapes" type="posrel" />
         <relation from="educations" to="urls" type="posrel" />
         <relation from="educations" to="attachments" type="posrel" />
- 
+
         <relation from="learnblocks" to="learnobjects" type="posrel" />
 
         <!-- a learnblock is a learnobject too, but for clarity we
@@ -86,13 +91,13 @@
         <relation from="learnblocks" to="videotapes" type="posrel" />
         <relation from="learnblocks" to="urls" type="posrel" />
         <relation from="learnblocks" to="attachments" type="posrel" />
- 
+
         <!-- Feedback for answers,questions and tests -->
         <relation from="answers" to="feedback" type="related" /> <!-- ??? -->
         <relation from="questions" to="feedback" type="related" />
         <relation from="tests" to="feedback" type="related" />
         <relation from="feedback" to="images" type="related" />
-    
+
         <!-- pages -->
         <relation from="pages" to="images" type="sizerel" />
         <relation from="pages" to="audiotapes" type="posrel" />
@@ -100,7 +105,7 @@
         <relation from="pages" to="urls" type="posrel" />
         <relation from="pages" to="attachments" type="posrel" />
         <relation from="flashpages" to="attachments" type="related" />
-    
+
         <!-- tests -->
         <relation from="tests" to="questions" type="posrel" />
         <relation from="tests" to="mmevents" type="related" />
@@ -115,22 +120,22 @@
 
         <!-- Open questions -->
         <relation from="openquestions" to="openanswers" type="related" />
-        
+
         <!-- Value questions -->
         <relation from="valuequestions" to="valueanswers" type="posrel" />
-        
+
         <!-- Coupling questions -->
         <relation from="couplingquestions" to="couplinganswers" type="related" />
 
-	<!-- Hotspot questions -->
+        <!-- Hotspot questions -->
         <relation from="hotspotquestions" to="hotspotanswers" type="related" />
-	<relation from="hotspotquestions" to="images" type="related" />
+        <relation from="hotspotquestions" to="images" type="related" />
 
-	<!-- Drag and drop Questions -->
-	<relation from="dropquestions" to="images" type="dragimagerel" />
-	<relation from="dropquestions" to="images" type="dropimagerel" />
-	<relation from="dropquestions" to="dropanswers" type="related" />
-	
+        <!-- Drag and drop Questions -->
+        <relation from="dropquestions" to="images" type="dragimagerel" />
+        <relation from="dropquestions" to="images" type="dropimagerel" />
+        <relation from="dropquestions" to="dropanswers" type="related" />
+
         <!-- Reuse questions -->
         <relation from="reusequestions" to="valuequestions" type="related" />
         <relation from="reusequestions" to="valueanswers" type="posrel" />
@@ -141,17 +146,21 @@
         <relation from="givenanswers" to="valueanswers" type="related" />
         <relation from="givenanswers" to="couplinganswers" type="leftanswer" />
         <relation from="givenanswers" to="couplinganswers" type="rightanswer" />
-    
+
         <!-- Online / Offline -->
         <relation from="learnblocks" to="mmevents" type="related" />
         <relation from="learnobjects" to="mmevents" type="related" />
         <relation from="classes" to="mmevents" type="related" />
-    
+
         <!-- Structure for saving made tests -->
         <relation from="givenanswers" to="madetests" type="related" />
         <relation from="copybooks" to="madetests" type="related" />
         <relation from="tests" to="madetests" type="related" />
         <relation from="givenanswers" to="questions" type="related" />
+
+
+        <relation from="packages" to="educations" type="related" />
+        <relation from="learnblocks" to="htmlpages" type="posrel" />
     </allowedrelationlist>
 
     <datasourcelist>
