@@ -9,14 +9,22 @@
     
   <action type="load">
        <relation destination="metavocabulary" role="posrel" />
-       <relation destination="synonym" role="related" />
        <relation destination="metadefinition" role="constraints" />
        <relation destination="metavocabulary" role="constraints" />
+       <relation destination="synonym" role="related" />
+
   </action>
 
 
   <action type="delete" />
     
+  <lists>
+      <optionlist name="opts">
+           <option id="1">Mandatory</option>
+	   <option id="2">Limited</option>
+	   <option id="3">Forbidden</option>
+      </optionlist>
+  </lists>
   <steps>
     <step form-schema="step1" />
   </steps>
@@ -30,7 +38,7 @@
     </field>
 
 
- <list destination="metavocabulary" role="posrel" minoccurs="0" maxoccurs="*">
+  <list destination="metavocabulary" role="posrel" minoccurs="0" maxoccurs="*">
       <title>Bijbehorende Metavocabulary</title>
       <item> 
         <field name="value" ftype="data" dtminlength="1" >
@@ -38,6 +46,7 @@
         </field>
         <field fdatapath="field[@name='pos']" ftype="line" dttype="int" 
                dtmin="1" dtmax="3" dtmaxlength="1" dtminlength="1" />
+        <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
       </item> 
 
      <action type="add">
@@ -64,9 +73,9 @@
 
 
 
-</list>
+  </list>
 
-<list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
+  <list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
       <title>Beperking voor metadefinitie</title>
       <item> 
         <field name="name" ftype="data" dtminlength="1" >
@@ -75,11 +84,7 @@
 
 	<field fdatapath="field[@name='type']" ftype="enum" >
             <prompt>Constraint type</prompt>
-            <optionlist name="type">
-                  <option id="1">Mandatory</option>
-		  <option id="2">Limited</option>
-		  <option id="3">Forbidden</option>
-            </optionlist>
+            <optionlist select="opts" />
         </field>
 
  
@@ -87,6 +92,9 @@
                dttype="int" dtmin="1" dtmaxlength="4" dtminlength="1" />
         <field fdatapath="field[@name='maxvalues']" ftype="line" 
                dttype="int" dtmin="1" dtmaxlength="4" dtminlength="1" />
+
+        <field ftype="startwizard" wizardname="config/metadefinition/metadefinition" />
+
       </item> 
 
      <action type="add">
@@ -101,7 +109,7 @@
         <relation destinationtype="metadefinition" role="constraints"/>
      </action>
 
-
+   
     <command name="search" nodepath="metadefinition" fields="name" age="-1" orderby="number" 
                               directions="down"  >
       <prompt>Zoeken naar metadefinition </prompt>
@@ -111,9 +119,9 @@
         </search-filter>
     </command>
 
-    </list>
+  </list>
+  <list destination="synonym" role="related" extends="config/synonym/synonym-list.xml" />
 
-    <list destination="synonym" role="related" extends="config/synonym/synonym-list.xml" />
 
   </form-schema>
 </wizard-schema>
