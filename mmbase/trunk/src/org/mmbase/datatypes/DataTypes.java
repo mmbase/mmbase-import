@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.4 2005-08-02 14:29:26 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.5 2005-08-04 14:14:27 pierre Exp $
  */
 
 public class DataTypes {
@@ -49,6 +49,13 @@ public class DataTypes {
 
     public static void initialize() {
         // read the XML
+        // Watching will ptobably not work properly,
+        // as datatypes depend one ach other, and are are referred
+        // throughout the system.
+        // For the moment turn watching off.
+        // Not sure if it is needed anyway - it won't actually happen that often
+        readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
+/*
         try {
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
                     public void onChange(String resource) {
@@ -61,6 +68,7 @@ public class DataTypes {
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
+*/
     }
 
     /**
@@ -68,13 +76,13 @@ public class DataTypes {
      */
     private static void readDataTypes(ResourceLoader loader, String resource) {
         List resources = loader.getResourceList(resource);
-        log.info("Using " + resources);
+        if (log.isDebugEnabled()) log.debug("Using " + resources);
         ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
                 URL u = (URL) i.previous();
-                log.info("Reading " + u);
+                if (log.isDebugEnabled()) log.debug("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
@@ -88,7 +96,7 @@ public class DataTypes {
                 log.error(Logging.stackTrace(e));
             }
         }
-log.info(dataTypeCollector.toString());
+        if (log.isDebugEnabled()) log.debug(dataTypeCollector.toString());
     }
     /**
      * Determines the MMBase type of a specified class. The MMBase base type is sue dby teh storage layer to

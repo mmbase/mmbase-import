@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.2 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.3 2005-08-04 14:14:27 pierre Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
@@ -26,15 +26,27 @@ public class NodeDataType extends DataType {
     public static final String PROPERTY_MUSTEXIST = "mustExist";
     public static final Boolean PROPERTY_MUSTEXIST_DEFAULT = Boolean.TRUE;
 
-    protected DataType.Property mustExistProperty = null;
+    protected DataType.Property mustExistProperty;
 
     /**
      * Constructor for node field.
      */
     public NodeDataType(String name) {
         super(name, MMObjectNode.class);
+    }
+
+    public void erase() {
+        super.erase();
         mustExistProperty = createProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
         mustExistProperty.setFixed(true);
+    }
+
+    public void inherit(DataType origin) {
+        super.inherit(origin);
+        if (origin instanceof NodeDataType) {
+            NodeDataType dataType = (NodeDataType)origin;
+            mustExistProperty = (DataType.Property)dataType.getMustExistProperty().clone(this);
+        }
     }
 
     public DataType.Property getMustExistProperty() {
@@ -49,12 +61,6 @@ public class NodeDataType extends DataType {
                 failOnValidate(getMustExistProperty(), value, cloud);
             }
         }
-    }
-
-    public Object clone(String name) {
-        NodeDataType clone = (NodeDataType)super.clone(name);
-        clone.mustExistProperty = (DataType.Property)getMustExistProperty().clone(clone);
-        return clone;
     }
 
 }
