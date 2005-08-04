@@ -2,6 +2,7 @@ package nl.didactor.component.education.utils.handlers;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 public class LastModifiedHandler
 {
@@ -9,28 +10,29 @@ public class LastModifiedHandler
   {
   }
 
-  public static Long getData(String URI_string)
+  public static String getData(String URI_string)
  {
    try
    {
-     return new Long( (new File(new URI(URI_string))).lastModified() );
+     Date dtAuto = new Date((new File(new URI(URI_string))).lastModified() );
+     return dtAuto.toString();
    }
    catch(Exception ex1)
    {
      ex1.printStackTrace();
-     return  new Long(0);
+     return  "";
    }
 
  }
 
  public static String getDataType()
 {
-  return "java.lang.Long";
+  return "java.lang.String";
 }
 
 public static String getStyle()
  {
-   return "width:150px";
+   return "width:200px";
  }
 
 
