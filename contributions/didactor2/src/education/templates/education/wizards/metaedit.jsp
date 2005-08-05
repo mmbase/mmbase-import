@@ -552,11 +552,9 @@
                               {//Vocabulary
 
                               %>
-                                  <mm:node number="<%= sMetadataID %>">
-                                     <mm:relatednodes type="metavocabulary">
-                                         <mm:deletenode deleterelations="true"/>
-                                      </mm:relatednodes>
-                                   </mm:node>
+                                 <mm:list nodes="<%= sMetadataID %>" path="metadata,posrel,metavocabulary">
+                                    <mm:deletenode element="posrel" />
+                                 </mm:list>
                               <%
                                  String[] arrstrParameters = request.getParameterValues(sParameter);
                                  if ((arrstrParameters.length > 1) || (!arrstrParameters[0].equals(EMPTY_VALUE)))
@@ -566,12 +564,12 @@
                                        %>
                                           <mm:remove referid="vocabulary_id" />
                                           <mm:remove referid="metadata_id" />
-                                          <mm:createnode type="metavocabulary" id="vocabulary_id">
-                                             <mm:setfield name="value"><%= arrstrParameters[f] %></mm:setfield>
-                                          </mm:createnode>
-                                          <mm:node number="<%= sMetadataID %>" id="metadata_id">
-                                             <mm:createrelation source="metadata_id" destination="vocabulary_id" role="posrel" />
-                                          </mm:node>
+                                          <mm:listnodes type="metavocabulary" id="vocabulary_id" orderby="number" directions="UP"
+                                                constraints="<%= "value = '" + arrstrParameters[f] + "'" %>">
+                                             <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                                <mm:createrelation source="metadata_id" destination="vocabulary_id" role="posrel" />
+                                             </mm:node>
+                                          </mm:listnodes>
                                        <%
                                     }
                                  }
@@ -753,9 +751,9 @@
                                  if(!hsetPassedNodes.contains(sID))
                                  {// ------------ Remove old values ---------------
                                     %>
-                                       <mm:relatednodes type="metavocabulary">
-                                          <mm:deletenode deleterelations="true"/>
-                                       </mm:relatednodes>
+                                       <mm:related path="posrel,metavocabulary">
+                                          <mm:deletenode element="posrel" />
+                                       </mm:related>
                                        <mm:relatednodes type="metadate">
                                           <mm:deletenode deleterelations="true"/>
                                        </mm:relatednodes>
