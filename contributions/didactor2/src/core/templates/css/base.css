@@ -82,7 +82,8 @@ a.menubar:active {
 .content {
 	height: 100%;
 	width: 100%;
-	position: relative }
+	position: absolute
+}
 	
 table.font {
 	font-family: Tahoma, Arial, Verdana, sans-serif;
@@ -266,8 +267,10 @@ input.search {
 .columns {
 	height: 80%;
 	width: 100%;
-	position: relative;
-	background-color: #FFFFFF }
+	position: absolute;
+        top: 7.5em;
+	background-color: #FFFFFF 
+}
 	
 .columnLeft {
 	width: 16.2em;
@@ -278,7 +281,8 @@ input.search {
 	padding: 0em 0em 0em 0em;
 	overflow: hidden;
 	border-left: 1px solid #CCCCCC;
-	border-right: 1px solid #CCCCCC }
+	border-right: 1px solid #CCCCCC 
+}
 
 .columnMiddle {
 	overflow: auto;
@@ -287,8 +291,10 @@ input.search {
 	height: 100%;
 	left: 17em;
 	right: 17em;
-	position: relative;
-	padding: 1.2em 1.2em 0.8em 0.8em }
+	position: absolute;
+	padding: 1.2em 1.2em 0.8em 0.8em 
+        
+}
 
 .columnRight {
 	width: 16.2em;
@@ -299,7 +305,8 @@ input.search {
 	padding: 0em 0em 0em 0em;
 	overflow: hidden;
 	border-left: 1px solid #CCCCCC;
-	border-right: 1px solid #CCCCCC }
+	border-right: 1px solid #CCCCCC 
+}
 	
 /* ###### Cockpit: boxes and titles in left and right column ###### */
 

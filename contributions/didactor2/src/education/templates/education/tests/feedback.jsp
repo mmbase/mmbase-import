@@ -83,6 +83,21 @@
             </mm:relatednodes>
 
             <p><mm:field name="text" escape="none"/></p>
+            <mm:field name="number" id="number" write="false">
+            <mm:list nodes="$number" path="descriptionrel,learnobjects">
+                <mm:import id="description" reset="true"><mm:field name="descriptionrel.description"/></mm:import>
+                <mm:isemtpy referid="description">
+                  <mm:import id="description" reset="true"><mm:field name="learnobjects.name"/></mm:import>
+                </mm:isempty>
+                <mm:isemtpy referid="description">
+                  <mm:import id="description" reset="true">Voor meer uitleg, zie deze pagina</mm:import>
+                </mm:isempty>
+                
+                <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="learnboject"><mm:field name="learnobjects.number"/></mm:param>
+                </mm:treefile">"><mm:write referid="description"/></a>
+            </mm:list>
+            </mm:field>
          </mm:relatednodes>
       </mm:relatednodescontainer>
    </mm:isgreaterthan>
