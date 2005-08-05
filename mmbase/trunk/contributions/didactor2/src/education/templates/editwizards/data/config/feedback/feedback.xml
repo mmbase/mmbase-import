@@ -9,6 +9,9 @@
     
     <action type="load">
         <relation destination="images" role="related" />
+       <relation destination="pages" role="descriptionrel" />
+       <relation destination="flashpages" role="descriptionrel" />
+       <relation destination="learnblocks" role="descriptionrel" />
     </action>
 
     <action type="delete" />
@@ -36,6 +39,9 @@
             <description>Maximale score waarvoor deze feedback getoond wordt</description>
         </field>
 
-        <list role="related" extends="config/image/images.xml" />
+       <list role="related" extends="config/image/images.xml" />
+       <list role="descriptionrel" extends="config/learnblocks/learnblocks-described.xml" /> 
+      <list role="descriptionrel" extends="config/pages/pages-described.xml" /> 
+       <list role="descriptionrel" extends="config/flashpages/flashpages-described.xml" /> 
     </form-schema>
 </wizard-schema>

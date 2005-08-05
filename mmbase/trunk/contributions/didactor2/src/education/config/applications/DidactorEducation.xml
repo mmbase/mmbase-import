@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="14" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="16" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -12,7 +12,7 @@
         <builder maintainer="didactor.nl" version="2">learnblocks</builder>
 
         <builder maintainer="didactor.nl" version="2">sizerel</builder>
-
+        <builder maintainer="eo.nl" version="1">descriptionrel</builder>
 
         <!-- All learnobjects -->
         <builder maintainer="didactor.nl" version="2">pages</builder>
@@ -62,6 +62,7 @@
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
         <reldef source="sizerel" target="sizerel" direction="bidirectional" guisourcename="SizeRel" guitargetname="SizeRel" builder="sizerel" />
+        <reldef source="descriptionrel" target="descriptionrel" direction="bidirectional" guisourcename="DescriptionRel" guitargetname="DescriptionRel" builder="descriptionrel" />
 
 
    <!-- Needed for 'couplinganswers' -->
@@ -97,6 +98,7 @@
         <relation from="questions" to="feedback" type="related" />
         <relation from="tests" to="feedback" type="related" />
         <relation from="feedback" to="images" type="related" />
+        <relation from="feedback" to="learnobjects" type="descriptionrel"/>
 
         <!-- pages -->
         <relation from="pages" to="images" type="sizerel" />
