@@ -36,8 +36,8 @@
 
     <command name="startwizard" inline="true" wizardname="config/people/people" objectnumber="new" />
 
-    <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar studenten</prompt>
+    <command name="search" nodepath="people" fields="firstname,lastname,username" age="-1" orderby="number" directions="down" >
+        <prompt>Zoeken naar personen</prompt>
         <search-filter>
             <name>Achternaam bevat</name>
             <search-fields>lastname</search-fields>
@@ -47,8 +47,8 @@
             <search-fields>firstname</search-fields>
         </search-filter>
         <search-filter>
-            <name>Account bevat</name>
-            <search-fields>account</search-fields>
+            <name>Gebruikersnaam bevat</name>
+            <search-fields>username</search-fields>
         </search-filter>
     </command>
 </list>
