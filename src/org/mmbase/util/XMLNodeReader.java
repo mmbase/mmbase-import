@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.33 2005-07-26 19:34:13 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.34 2005-08-05 09:16:26 nklasens Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -52,12 +52,15 @@ public class XMLNodeReader extends XMLBasicReader {
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
         }
-        while (n1 != null) {
+        if (n1 != null) {
             NamedNodeMap nm = n1.getAttributes();
             if (nm != null) {
                 Node n2 = nm.getNamedItem("exportsource");
                 return (n2.getNodeValue());
             }
+        }
+        else {
+            log.warn("exportsource attribute missing");
         }
         return null;
     }
@@ -70,7 +73,7 @@ public class XMLNodeReader extends XMLBasicReader {
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
         }
-        while (n1 != null) {
+        if (n1 != null) {
             NamedNodeMap nm = n1.getAttributes();
             if (nm != null) {
                 Node n2 = nm.getNamedItem("timestamp");
@@ -85,6 +88,9 @@ public class XMLNodeReader extends XMLBasicReader {
                 }
 
             }
+        }
+        else {
+            log.warn("timestamp attribute missing");
         }
         return -1;
     }
