@@ -69,7 +69,7 @@
         <field name="remarks" ftype="line">
             <prompt>Opmerkingen</prompt>
         </field>
-        <field name="description" ftype="text">
+        <field name="description" ftype="text" dtminlength="0">
             <prompt>Omschrijving</prompt>
         </field>
 
