@@ -27,24 +27,31 @@
   <%-- Only 1 answer is given --%>
   <mm:field name="type" id="type" write="false"/>
   <mm:compare referid="type" value="0">
-    <mm:import externid="$question" id="givenanswer" />
+    <mm:import externid="$question" id="givenanswer" jspvar="sGivenAnswer" vartype="String"/>
+    <%
+        sGivenAnswer = sGivenAnswer.trim();
+    %>
 
     <%-- Search the given answer in the possible answers --%>		
     <mm:relatednodes type="mcanswers" role="posrel" orderby="posrel.pos" id="my_answers">
 
-      <mm:field id="answer" name="text" write="false"/>
+      <mm:field id="answer" name="text" write="false" />
+      <mm:import jspvar="sAnswer"><mm:field name="text" escape="none"/></mm:import>
+      <%
+        if ( sAnswer.trim().equals(sGivenAnswer)) {
+      %>
 
-      <mm:compare referid="givenanswer" referid2="answer">
         <%-- copy the correct field of the answer--%>
         <mm:field id="questioncorrect" name="correct" write="false"/>
+        
         <mm:node referid="my_givenanswers">
           <mm:setfield name="score"><mm:write referid="questioncorrect"/></mm:setfield>
         </mm:node>
         <mm:remove referid="questioncorrect" />
         
         <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
+        <% } %>
         
-      </mm:compare>
     </mm:relatednodes>
   </mm:compare>
 
@@ -57,11 +64,12 @@
       <mm:field id="answer" name="number" write="false"/>
       <mm:field id="answertext" name="text" write="false"/>
       <mm:field id="correct" name="correct" write="false"/>
- 
+       <mm:import jspvar="answerText"><mm:write referid="answertext" escape="none"/></mm:import>
       <mm:import id="givenanswer"><mm:write referid="question"/>_<mm:field name="number"/></mm:import>
-      <mm:import externid="$givenanswer" id="givenanswertext"/>
-			
-      <mm:compare referid="givenanswertext" referid2="answertext">
+
+      
+      <mm:import externid="$givenanswer" id="givenanswertext" jspvar="givenAnswerText"/>
+      <% if (givenAnswerText.trim().equals(answerText.trim())) { %>
 
         <%-- Relate each given answer to the possible answers --%>
         <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
@@ -69,16 +77,13 @@
         <mm:compare referid="correct" value="0">
           <mm:remove referid="score"/><mm:import id="score">0</mm:import>
         </mm:compare>
-      </mm:compare>
-        
-      <mm:compare referid="givenanswertext" referid2="answertext" inverse="true">
+      <% } else { %> 
         <%-- when the student had to check the button of thge correct answer, the score is incorrect --%>
         <mm:compare referid="correct" value="1">
            <mm:remove referid="score"/>
            <mm:import id="score">0</mm:import>
         </mm:compare>
-      </mm:compare>
-
+      <% } %>
       <mm:remove referid="correct"/>
       <mm:remove referid="givenanswer"/>
       <mm:remove referid="answer"/>
