@@ -315,4 +315,5 @@
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
 </fmt:bundle>
 </mm:cloud>
+
 </mm:content>
