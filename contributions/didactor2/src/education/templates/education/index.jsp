@@ -112,19 +112,19 @@
 	//    note that document.content is not supported by mozilla! 
 	//    so use frames['content'] instead
 	  
-        frames['content'].location.href='<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids"/>'+'&edu='+number;
+        frames['content'].location.href='<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&edu='+number;
         break;
       case "learnblocks":
-        frames['content'].location.href='<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "tests":
-        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "pages":
-        frames['content'].location.href='<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "flashpages":
-        frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
         break;
     }
   }
@@ -291,7 +291,7 @@
     &nbsp;
   </div>
   <div class="contentBodywit">
-	<iframe width="100%" height="100%" name="content" frameborder="0">
+	<iframe width="100%" height="100%" name="content" frameborder="0" style="height: 800px">
         </iframe>
   </div>
 </div>

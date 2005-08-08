@@ -135,6 +135,27 @@
           <b>Feedback:</b> <mm:field name="text" escape="none"/>
 
           <br/>
+        <mm:field name="text" escape="none"/>
+            <mm:field name="number" id="number" write="false">
+            <mm:list nodes="$number" path="feedback,descriptionrel,learnobjects" searchdir="both">
+                <mm:import id="description" reset="true"><mm:field name="descriptionrel.description"/></mm:import>
+                <mm:isempty referid="description">
+                  <mm:import id="description" reset="true"><mm:field name="learnobjects.name"/></mm:import>
+                </mm:isempty>
+                <mm:isempty referid="description">
+                  <mm:import id="description" reset="true">Voor meer uitleg, zie deze pagina</mm:import>
+                </mm:isempty>
+                
+                <a target="_blank" href="<mm:treefile 
+                    page="/education/index.jsp" 
+                    objectlist="$includePath" 
+                    referids="$referids">
+                    
+                        <mm:param name="learnobject"><mm:field name="learnobjects.number" /></mm:param>
+                    </mm:treefile>"><mm:write referid="description"/></a>
+            </mm:list>
+            </mm:field>
+
 
         </mm:relatednodes>
 
@@ -353,8 +374,26 @@
             <mm:last><br/></mm:last>
 
 	</mm:relatednodes>
-
         <mm:field name="text" escape="none"/>
+            <mm:field name="number" id="number" write="false">
+            <mm:list nodes="$number" path="feedback,descriptionrel,learnobjects" searchdir="both">
+                <mm:import id="description" reset="true"><mm:field name="descriptionrel.description"/></mm:import>
+                <mm:isempty referid="description">
+                  <mm:import id="description" reset="true"><mm:field name="learnobjects.name"/></mm:import>
+                </mm:isempty>
+                <mm:isempty referid="description">
+                  <mm:import id="description" reset="true">Voor meer uitleg, zie deze pagina</mm:import>
+                </mm:isempty>
+                
+                <a target="_blank" href="<mm:treefile 
+                    page="/education/index.jsp" 
+                    objectlist="$includePath" 
+                    referids="$referids">
+                    
+                        <mm:param name="learnobject"><mm:field name="learnobjects.number" /></mm:param>
+                    </mm:treefile>"><mm:write referid="description"/></a>
+            </mm:list>
+            </mm:field>
 
       </mm:relatednodes>
 
