@@ -262,7 +262,7 @@
       </div>
 </div>
 
-<div class="maincontent">
+<div class="mainContent">
 
   <div class="contentHeader">
   </div>
