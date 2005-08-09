@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.28 2005-07-09 11:13:35 nklasens Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.29 2005-08-09 14:17:29 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -243,6 +243,14 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;
+        } else if (c instanceof FieldValueDateConstraint) {
+            FieldValueDateConstraint constraint = (FieldValueDateConstraint) c;
+            Object value = constraint.getValue();
+            BasicFieldValueDateConstraint newConstraint = new BasicFieldValueDateConstraint(createNewStepField(q, constraint.getField()), value, constraint.getPart());
+            newConstraint.setOperator(constraint.getOperator());
+            newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
+            return newConstraint;
         } else if (c instanceof FieldValueConstraint) {
             FieldValueConstraint constraint = (FieldValueConstraint) c;
             Object value = constraint.getValue();
@@ -402,7 +410,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      */
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder builder = mmb.getBuilder(step.getTableName()); 
+        MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             CoreField field = (CoreField) iFields.next();
