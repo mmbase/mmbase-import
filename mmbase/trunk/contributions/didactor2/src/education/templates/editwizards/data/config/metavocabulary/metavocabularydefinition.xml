@@ -46,7 +46,7 @@
         </field>
         <field fdatapath="field[@name='pos']" ftype="line" dttype="int" 
                dtmin="1" dtmax="3" dtmaxlength="1" dtminlength="1" />
-        <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
+        <field ftype="startwizard" wizardname="config/metavocabulary/metavocabularydefinition" />
       </item> 
 
      <action type="add">
