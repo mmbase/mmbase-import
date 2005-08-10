@@ -321,7 +321,8 @@
                                                    }
                                                    catch(Exception e)
                                                    {
-                                                      if(sReq.equals("1")) {
+                                                      if(sReq.equals("1"))
+                                                      {
                                                          bFillOk = false;
                                                       }
                                                    }
@@ -339,7 +340,8 @@
                                                    }
                                                    catch(Exception e)
                                                    {
-                                                      if(sReq.equals("1")) {
+                                                      if(sReq.equals("1"))
+                                                      {
                                                          bFillOk = false;
                                                       }
                                                    }
@@ -348,11 +350,14 @@
                                           </mm:field>
                                        </mm:field>
                                     </mm:node>
+
                                  <%
+
                                  if ((bFillOk) && (hsetHaveToBeNotEmpty.contains(sMetadataDefinitionID)))
                                  {
                                     hsetHaveToBeNotEmpty.remove(sMetadataDefinitionID);
                                  }
+
                               }
                            }
 
@@ -418,7 +423,10 @@
                            //Use JS to synchronize values in tree
                            if((!bFillOk) || (!bSizeOk) || (!bConstraintOk) || (hsetHaveToBeNotEmpty.size() > 0))
                            {
+
                               %>
+
+
                                  <a href="javascript:history.go(-1)">
                                  <font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier
                                  </font>
@@ -443,7 +451,7 @@
                                 String sParList = "";
 
                                 enumParamNames = request.getParameterNames();
-                                      while(enumParamNames.hasMoreElements())
+                                while(enumParamNames.hasMoreElements())
                                 {
                                            String sParameter = (String) enumParamNames.nextElement();
                                            String[] arrstrParameters = request.getParameterValues(sParameter);
