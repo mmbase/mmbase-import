@@ -518,7 +518,7 @@
                                                            }
                                                         else
                                                           {
-                                                             sCheckVocabularies = "Ok"; %><%=sCurrentNum2%><%
+                                                             sCheckVocabularies = "Ok";
                                                            }
 
 
@@ -569,7 +569,7 @@
                                    <%
                                    // Let's define if there is no this metavocabulary on the page we have to add it here
 
-
+                                   String sRelVocNumber ="";
                                    %>
                                     <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
                                       <mm:field name="number" jspvar="sCurNumber" vartype="String">
@@ -577,6 +577,7 @@
                                           <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
                                              <mm:field name="number" jspvar="sMetaNumber" vartype="String">
                                                <%
+                                               sRelVocNumber = sCurNumber;
                                                if(sCurNumber.equals(sMetaNumber))
                                                {
                                                   sMetaVocabularyTest = "Fail";
@@ -591,7 +592,19 @@
                                    if(sMetaVocabularyTest.equals("Ok"))
                                    {
                                    %>
-                                   <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>" /><%= sCurrent %><br/>
+                                   <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+
+                                    <%
+                                    if(hsetVocabularis.contains(sRelVocNumber))
+                                       {
+                                      %>
+                                      checked="checked"
+                                      <%
+                                       }
+
+                                      %>
+                                      /><%= sCurrent %>
+                                      <br/>
 
                                    <%
                                    } // end of if(sMetaVocabularyTest.equals("Ok"))
