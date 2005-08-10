@@ -1,6 +1,6 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metavocabulary" role="constraints">
-  <title>Beperkt door metavocabulary</title>
+  <title>Beperking voor metadefinitie</title>
 
   <item>
     <field name="value" ftype="data">

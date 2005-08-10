@@ -88,17 +88,13 @@
                         if(sType.equals("1"))
                         {//vocabulary
                            %>
-                              <mm:relatednodes type="metavocabulary">
-                                 <mm:field name="value" jspvar="sLang" vartype="String" write="false">
-                                    <mm:remove referid="vocabulary_id" />
-                                    <mm:remove referid="metadata_id" />
-                                    <mm:createnode type="metavocabulary" id="vocabulary_id">
-                                       <mm:setfield name="value"><%= sLang %></mm:setfield>
-                                    </mm:createnode>
+                              <mm:relatednodes type="metavocabulary" >
+                                <mm:node id="vocabulary_id">
                                     <mm:node number="<%= sMetadataID %>" id="metadata_id">
                                        <mm:createrelation source="metadata_id" destination="vocabulary_id" role="posrel" />
                                     </mm:node>
-                                 </mm:field>
+                                 <!-- /mm:field -->
+                                 </mm:node>
                               </mm:relatednodes>
                            <%
                         }

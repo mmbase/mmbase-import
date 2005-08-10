@@ -49,11 +49,10 @@
 
      <%// List assigned metadefinitions %>
      <%
-          Enumeration enumAssignedParamNames = request.getParameterNames();
+        Enumeration enumAssignedParamNames = request.getParameterNames();
         while(enumAssignedParamNames.hasMoreElements())
         {
             String sParameter = (String) enumAssignedParamNames.nextElement();
-
 
             String[] arrstrParameters = request.getParameterValues(sParameter);
 
@@ -72,8 +71,8 @@
 
                        hsetAssignedVals.add(sMetadataDefinitionID);
                        // Let's check this metadefinition metavocabularies
-                    %>
 
+                    %>
 
                       <mm:list nodes="<%=sMetadataDefinitionID %>"  path="metadefinition,related,metavocabulary"
                                searchdir="destination" fields="metavocabulary.number,metavocabulary.value" >
@@ -83,6 +82,7 @@
                               <%
                                 if(sVocValue.equals(arrstrParameters[i]))
                                 {
+
                                    hsetVocabularis.add(sVocNumber);
 
                                 }
@@ -99,16 +99,17 @@
 
             } // end of if(sParameter.charAt(0) == 'm')
 
-           } // end of while
+      } // end of while
 
      %>
 
      <%// Get languages list %>
      <mm:listnodes type="metastandard" >
          <mm:relatednodes type="metadefinition" role="posrel">
+
             <mm:field name="handler" jspvar="sHandler" vartype="String" write="false">
                <mm:field name="number" jspvar="sID" vartype="String" write="false">
-                  <%
+                 <%
 
                      if(sHandler.equals("taal"))
                      {
@@ -130,24 +131,43 @@
          </mm:relatednodes>
       </mm:listnodes>
 
-      <%// Get all related metadata to this node %>
+      <%
+      // Get all related metadata to this node
+
+      %>
       <mm:node number="<%= sNode %>">
          <mm:relatednodes type="metadata">
             <mm:field name="number" jspvar="sID" vartype="String">
                <%
                   hsetRelatedNodes.add(sID);
-               %>
+                 %>
+
+                   <mm:list nodes="<%=sID%>" path="metadata,posrel,metavocabulary"
+                                searchdir="destination" fields="metavocabulary.number,metavocabulary.value" >
+                     <mm:field name="metavocabulary.number" jspvar="sMetaVocNum" vartype="String">
+                       <mm:field name="metavocabulary.value" jspvar="sMetaVocVal" vartype="String" >
+                         <%
+                            hsetVocabularis.add(sMetaVocNum);
+                        %>
+                        </mm:field>
+                   </mm:field>
+             </mm:list>
+
+
             </mm:field>
          </mm:relatednodes>
 
          <mm:nodeinfo type="type" jspvar="sNodeType" vartype="String" >
 
            <%
+
              if(hsetClassesOfTypeUrl.contains(sNodeType))
              {
            %>
            <mm:field name="url" jspvar="sObjectUrl" vartype="String">
-           <% sNodeUrlString = sObjectUrl; %>
+           <%
+           sNodeUrlString = sObjectUrl;
+           %>
            </mm:field>
            <%
 
@@ -210,16 +230,16 @@
                   <hr style="width:99%; height:1px; color:#CCCCCC">
 
                      <mm:relatednodes type="metadefinition" orderby="name">
-                         <%
-                           sCheckrelations = "Ok";
-                         %>
+
+                         <% sCheckrelations = "Ok"; %>
 
                         <mm:field name="number" jspvar="rNum" vartype="String">
                             <mm:list nodes="<%=rNum %>"  path="metadefinition,posrel,metadefinition2"
                                 searchdir="source" fields="metadefinition.number,metadefinition.name,posrel.pos" >
                                 <mm:field name="metadefinition2.number" jspvar="rMd" vartype="String">
                                     <mm:field name="posrel.pos" jspvar="rPos" vartype="String">
-                                                  <%
+                                        <%
+
                                           if(rPos.equals("3") && hsetAssignedVals.contains(rMd))
                                               {
                                                 sCheckrelations = "Fail";
@@ -228,9 +248,9 @@
                                               {
                                                 sCheckrelations = "Ok";
                                               }
-                                             %>
-                                      </mm:field> <%-- posrel.pos --%>
-                                 </mm:field> <%-- metadefinition2.number --%>
+                                        %>
+                                      </mm:field> <%// posrel.pos --%>
+                                 </mm:field> <%// metadefinition2.number --%>
                              </mm:list>
 
                           <!--
@@ -238,8 +258,8 @@
                            -->
 
                            <%
-                              if("Ok".equals(sCheckrelations))
-                                 {
+                           if("Ok".equals(sCheckrelations))
+                             {
 
                            %>
 
@@ -248,7 +268,8 @@
                                <mm:field name="metavocabulary.number" jspvar="rMv" vartype="String">
                                    <mm:field name="posrel.pos" jspvar="vPos" vartype="String">
 
-                                           <%
+                                        <%
+
                                         if(vPos.equals("3") && hsetVocabularis.contains(rMv))
                                             {
                                                 sCheckrelations = "Fail";
@@ -257,7 +278,7 @@
                                             {
                                                sCheckrelations = "Ok";
                                             }
-                                           %>
+                                        %>
 
                                   </mm:field>
                               </mm:field>
@@ -344,12 +365,15 @@
                               </jsp:include>
                            <%
                         }
+
                         hsetRelatedNodes.add(session.getAttribute("metadata_id"));
+
 
                         if(sDefType.equals("1"))
                         {//vocabulary
 
                            String sCheckVocabularies = "Ok";
+
 
                            if(sMaxValues.equals("1"))
                            {
@@ -362,9 +386,10 @@
                                           if(hsetRelatedNodes.contains(sID))
                                           {
 
+
                                              %>
 
-                                                <mm:relatednodes type="metavocabulary" searchdir="destination">
+                                                <mm:relatednodes type="metavocabulary" searchdir="destination" role="posrel">
                                                    <mm:field name="value" jspvar="sValue" vartype="String" write="false">
                                                       <%
                                                          sSelected = sValue;
@@ -380,9 +405,12 @@
                                      <option><%= EMPTY_VALUE %></option>
                                      <mm:relatednodes type="metavocabulary" orderby="value" searchdir="destination">
                                         <mm:field name="number" jspvar="sCurrentNum" vartype="String" write="false">
-
+                                           <mm:field name="value" jspvar="sCurrentName" vartype="String">
                                            <%-- Let's test all posrel related metavocabularies --%>
-                                           <%  sCheckVocabularies ="Ok";   %>
+                                           <%
+
+
+                                           sCheckVocabularies ="Ok";   %>
 
                                            <mm:list nodes="<%=sCurrentNum %>"  path="metavocabulary,posrel,metavocabulary2"
                                                     searchdir="source" fields="metavocabulary2.number,metavocabulary2.value,posrel.pos">
@@ -391,6 +419,7 @@
                                                       <mm:field name="posrel.pos" jspvar="sCurrentPos" vartype="String" write="false">
 
                                                            <%
+
 
                                                               if("3".equals(sCurrentPos) && hsetVocabularis.contains(sCurrentNum2))
                                                                   {
@@ -407,7 +436,7 @@
                                                </mm:field>
                                             </mm:list>
                                          </mm:field>
-
+                                       </mm:field>
                                         <%
                                          if(sCheckVocabularies.equals("Ok"))
                                          {
@@ -434,7 +463,7 @@
                                   </select>
                               <%
                               }
-                              else
+                              else // sMaxValues !=1
                               {
                                  HashSet hsetSelected = new HashSet();
 
@@ -444,25 +473,35 @@
                                      <%
                                         if(hsetRelatedNodes.contains(sID))
                                           {
+
                                              %>
                                                 <mm:relatednodes type="metavocabulary" searchdir="destination">
                                                    <mm:field name="value" jspvar="sValue" vartype="String" write="false">
+                                                     <mm:field name="number" jspvar="sNumber" vartype="String" write="false">
                                                       <%
                                                          hsetSelected.add(sValue);
+                                                         hsetVocabularis.add(sNumber);
+
                                                       %>
+                                                      </mm:field>
                                                    </mm:field>
                                                 </mm:relatednodes>
                                              <%
+
                                           }
                                       %>
                                    </mm:field>
                                </mm:relatednodes>
-                               <mm:relatednodes type="metavocabulary" searchdir="destination">
-                                    <mm:field name="number" jspvar="sCurrentNumber" vartype="String" write="false">
 
+                               <mm:relatednodes type="metavocabulary" searchdir="destination" role="related">
+
+                                 <mm:field name="number" jspvar="sCurrentNumber" vartype="String" write="false">
+                                    <mm:field name="value" jspvar="sCurrentName2" vartype="String" write="false">
 
                                       <%-- Let's test all posrel related metavocabularies --%>
-                                      <%  sCheckVocabularies ="Ok";   %>
+                                      <%
+                                      sCheckVocabularies ="Ok";
+                                      %>
 
                                       <mm:list nodes="<%=sCurrentNumber %>"  path="metavocabulary,posrel,metavocabulary2"
                                            searchdir="source" fields="metavocabulary2.number,metavocabulary2.value,posrel.pos">
@@ -472,34 +511,44 @@
                                                     <mm:field name="posrel.pos" jspvar="sCurrentPos" vartype="String" write="false">
 
                                                        <%
+
                                                         if("3".equals(sCurrentPos) && hsetVocabularis.contains(sCurrentNum2))
                                                            {
                                                              sCheckVocabularies = "Fail";
                                                            }
                                                         else
                                                           {
-                                                             sCheckVocabularies = "Ok";
+                                                             sCheckVocabularies = "Ok"; %><%=sCurrentNum2%><%
                                                            }
+
+
                                                        %>
 
                                                      </mm:field>
                                                   </mm:field>
                                              </mm:field>
-                                         </mm:list>
-                                    </mm:field> <!-- Close metavocabulary number field tag -->
+                                    </mm:list>
+
+
+                                  </mm:field> <!-- Close metavocabulary number field tag -->
+                                </mm:field>
 
                                  <%
-                                   if(sCheckVocabularies.equals("Ok"))
-                                     {
-                                     // ---- print control -----
-                                     String sMetaVocabularyTest = "Ok";
+                                if(sCheckVocabularies.equals("Ok"))
+                                   {
+                                    // ---- print control -----
+                                    String sMetaVocabularyTest = "Ok";
                                 %>
 
                                 <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
+                                <mm:field name="number" jspvar="sNumber" vartype="String" write="false">
 
                                     <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
                                     <%
-                                      if(hsetSelected.contains(sCurrent))
+
+
+                                      //if(hsetSelected.contains(sCurrent))
+                                      if(hsetVocabularis.contains(sNumber))
                                        {
                                       %>
                                       checked="checked"
@@ -513,6 +562,7 @@
                                       /><%= sCurrent %>
                                       <br/>
                                  </mm:field>
+                                 </mm:field>
 
 
                                  <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
@@ -521,21 +571,21 @@
 
 
                                    %>
-                                  <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
-                                    <mm:field name="number" jspvar="sCurNumber" vartype="String">
-                                      <mm:node number="<%= sMetaDefinitionID %>" >
-                                        <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
-                                           <mm:field name="number" jspvar="sMetaNumber" vartype="String">
-                                             <%
-                                             if(sCurNumber.equals(sMetaNumber))
-                                             {
-                                                sMetaVocabularyTest = "Fail";
-                                             }
-                                             %>
-                                           </mm:field>
-                                        </mm:relatednodes>
-                                      </mm:node>
-                                   </mm:field>
+                                    <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
+                                      <mm:field name="number" jspvar="sCurNumber" vartype="String">
+                                        <mm:node number="<%= sMetaDefinitionID %>" >
+                                          <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
+                                             <mm:field name="number" jspvar="sMetaNumber" vartype="String">
+                                               <%
+                                               if(sCurNumber.equals(sMetaNumber))
+                                               {
+                                                  sMetaVocabularyTest = "Fail";
+                                               }
+                                               %>
+                                             </mm:field>
+                                          </mm:relatednodes>
+                                        </mm:node>
+                                     </mm:field>
 
                                    <%
                                    if(sMetaVocabularyTest.equals("Ok"))
@@ -945,7 +995,6 @@
 
                                               cl = Class.forName("nl.didactor.component.education.utils.handlers."+ sMetaHandler);
                                               sNValue = cl.getMethod("getData", clm).invoke(cl, prm).toString();
-                                              //System.out.println(cl.getMethod("getDataType", null).invoke(cl, null));
                                               sStyle = cl.getMethod("getStyle", null).invoke(cl, null).toString();
                                            }
                                         catch(Exception ex1)
