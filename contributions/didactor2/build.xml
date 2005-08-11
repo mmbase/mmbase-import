@@ -38,9 +38,7 @@
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
              token="$${emailsenderdomain}"
              value="${emailsenderdomain}"/>
-
-
-
+    <ant antfile="configure.xml" target="config"/>
   </target>
 
   <target name="clean">
