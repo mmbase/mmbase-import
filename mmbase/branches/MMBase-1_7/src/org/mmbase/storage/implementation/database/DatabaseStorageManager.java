@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.16 2005-07-20 09:23:32 marcel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.17 2005-08-11 14:34:50 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -83,7 +83,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // buildername cache
     private static Set buildername_cache = null;
-    
+
 
     /**
      * Constructor
@@ -108,7 +108,7 @@ public class DatabaseStorageManager implements StorageManager {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
         }
 
-        
+
         // determine generated key buffer size
         if (bufferSize==null) {
             bufferSize = new Integer(1);
@@ -347,8 +347,8 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected String getStringValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
         String untrimmedResult = null;
-        if ( (field != null && field.getStorageType() == Types.CLOB) || 
-             (field != null && field.getStorageType() == Types.BLOB) || 
+        if ( (field != null && field.getStorageType() == Types.CLOB) ||
+             (field != null && field.getStorageType() == Types.BLOB) ||
              factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
 
             InputStream inStream = result.getBinaryStream(index);
@@ -367,7 +367,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (encoding.equalsIgnoreCase("ISO-8859-1")) {
                     // CP 1252 only fills in the 'blanks' of ISO-8859-1,
                     // so it is save to upgrade the encoding, in case accidentily those bytes occur
-                    encoding = "CP1252";                    
+                    encoding = "CP1252";
                 }
                 untrimmedResult = new String(bytes.toByteArray(), encoding);
             } catch (IOException ie) {
@@ -376,18 +376,18 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             untrimmedResult = result.getString(index);
             if (factory.hasOption(Attributes.LIE_CP1252) && untrimmedResult != null) {
-                log.trace("Lying");                
-                try {                
+                log.trace("Lying");
+                try {
                     String encoding = factory.getMMBase().getEncoding();
                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
-                        String ub = untrimmedResult;                        
+                        String ub = untrimmedResult;
                         untrimmedResult = new String(untrimmedResult.getBytes("ISO-8859-1"), "CP1252");
                     } else {
                     }
-                    
+
                  } catch(java.io.UnsupportedEncodingException uee) {
                      // cannot happen
-                     log.warn(uee);                     
+                     log.warn(uee);
                  }
             }
         }
@@ -398,8 +398,8 @@ public class DatabaseStorageManager implements StorageManager {
             if (factory.getGetSurrogator() != null) {
                 untrimmedResult = factory.getGetSurrogator().transform(untrimmedResult);
             }
-            
-            
+
+
         }
         return untrimmedResult;// now trimmed.
     }
@@ -731,8 +731,8 @@ public class DatabaseStorageManager implements StorageManager {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
             while (true) {
-                Statement s = null;                
-                ResultSet rs = null;                
+                Statement s = null;
+                ResultSet rs = null;
                 try {
                     s = activeConnection.createStatement();
                     rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
@@ -749,10 +749,10 @@ public class DatabaseStorageManager implements StorageManager {
                         // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
                         break;
                     }
-                    continue; 
+                    continue;
                 } finally {
-                    if (s != null) s.close();                    
-                    if (rs != null) rs.close();                    
+                    if (s != null) s.close();
+                    if (rs != null) rs.close();
                 }
                 break;
             }
@@ -776,7 +776,7 @@ public class DatabaseStorageManager implements StorageManager {
         logQuery(query);
         ps.executeUpdate();
         ps.close();
-        
+
     }
 
     // javadoc is inherited
@@ -856,7 +856,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setValue(PreparedStatement statement, int index, MMObjectNode node, FieldDefs field) throws StorageException, SQLException {
         String fieldName = field.getDBName();
-        Object value = node.getValue(fieldName); 
+        Object value = node.getValue(fieldName);
         switch (field.getDBType()) {
             // Store numeric values
         case FieldDefs.TYPE_INTEGER :
@@ -864,14 +864,14 @@ public class DatabaseStorageManager implements StorageManager {
         case FieldDefs.TYPE_DOUBLE :
         case FieldDefs.TYPE_LONG :
             setNumericValue(statement, index, value, field);
-            break;           
+            break;
             // Store nodes
         case FieldDefs.TYPE_NODE :
             // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
-            setNodeValue(statement, index, value, field);            
+            setNodeValue(statement, index, value, field);
             break;
             // Store strings
-        case FieldDefs.TYPE_XML : 
+        case FieldDefs.TYPE_XML :
             setXMLValue(statement, index, value, field, node);
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
@@ -977,7 +977,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
         int nodeNumber = Casting.toInt(node);
-        
+
         if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
             throw new StorageException("The NODE field with name " + field.getDBName() + " can not be NULL.");
         }
@@ -1038,10 +1038,10 @@ public class DatabaseStorageManager implements StorageManager {
         if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             byte[] rawchars = null;
             try {
-                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {                    
-                    encoding = "CP1252";                    
+                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {
+                    encoding = "CP1252";
                 } else {
-                }  
+                }
                 rawchars = value.getBytes(encoding);
                 ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
                 statement.setBinaryStream(index, stream, rawchars.length);
@@ -1067,24 +1067,24 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, setValue);
 
         }
-        if (value != null) {            
-            if (! encoding.equalsIgnoreCase("UTF-8")) {                
+        if (value != null) {
+            if (! encoding.equalsIgnoreCase("UTF-8")) {
                 try {
                     value = new String(value.getBytes(encoding), encoding);
                 } catch(java.io.UnsupportedEncodingException uee) {
                     log.error(uee);
                     // cannot happen
                 }
-            }            
+            }
             if (factory.hasOption(Attributes.TRIM_STRINGS)) {
                 value = value.trim();
             }
         }
-        
+
         if (objectValue == null) node.storeValue(field.getDBName(), value);
         return value;
     }
-    
+
     /**
      * This default implementation calls {@link #setStringValue}.
      * Override this method if you want to override this behavior.
@@ -1246,12 +1246,12 @@ public class DatabaseStorageManager implements StorageManager {
     protected Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
         try {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
-            if (field != null) {                
+            if (field != null) {
                 dbtype = field.getDBType();
             } else { // use database type.
                 dbtype = getJDBCtoMMBaseType(result.getMetaData().getColumnType(index), dbtype);
             }
-            
+
             switch (dbtype) {
                 // string-type fields
             case FieldDefs.TYPE_XML :
@@ -1332,10 +1332,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
-        if (log.isDebugEnabled()) {            
+        if (log.isDebugEnabled()) {
             log.debug("Creating a table for " + builder);
         }
-        
+
         // use the builder to get the fields and create a
         // valid create SQL string
         // for backward compatibility, fields are to be created in the order defined
@@ -1430,6 +1430,9 @@ public class DatabaseStorageManager implements StorageManager {
             logQuery(query);
             s.executeUpdate(query);
             s.close();
+
+            buildername_cache.add((String)factory.getStorageIdentifier(builder));
+
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
         } catch (SQLException se) {
@@ -1447,7 +1450,7 @@ public class DatabaseStorageManager implements StorageManager {
                 FieldDefs field = (FieldDefs)f.next();
                 if (
                     (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
-                    field.getDBType() == FieldDefs.TYPE_NODE &&  
+                    field.getDBType() == FieldDefs.TYPE_NODE &&
                     ! field.getDBName().equals("number")) {
                     String query = createIndex.format(new Object[] { this, builder, field.getDBName()});
                     try {
@@ -1599,8 +1602,10 @@ public class DatabaseStorageManager implements StorageManager {
                 s.executeUpdate(query);
                 s.close();
 
-                if(buildername_cache.contains(buildername)) 
-                    buildername_cache.remove(buildername);
+                String tableName = (String)factory.getStorageIdentifier(builder);
+                if (buildername_cache.contains(tableName)) {
+                    buildername_cache.remove(tableName);
+                }
             }
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
@@ -1675,24 +1680,24 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Queries the database metadata to test whether a given table exists.
-     * 
+     *
      * @param tableName name of the table to look for
      * @throws StorageException when the metadata could not be retrieved
      * @return <code>true</code> if the table exists
      */
     protected synchronized boolean exists(String tableName) throws StorageException {
-        if(buildername_cache == null) { 
+        if(buildername_cache == null) {
             try {
                 buildername_cache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
-                ResultSet res = 
+                ResultSet res =
                     metaData.getTables(factory.getCatalog(),null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
-                try { 
-                    while(res.next()) 
+                try {
+                    while(res.next())
                         if(!buildername_cache.add(res.getString(3)))
                             log.warn("builder already in cache("+res.getString(3)+")!");
-                } finally { 
+                } finally {
                     res.close();
                 }
             } catch(Exception e) {
@@ -1872,9 +1877,9 @@ public class DatabaseStorageManager implements StorageManager {
                     if ((colInfo == null)) {
 
                         // bug #6609, marcel
-                        if((field!=null) && (field.getDBName()!=null) && (field.getDBName().equals(id))) 
+                        if((field!=null) && (field.getDBName()!=null) && (field.getDBName().equals(id)))
                             log.error("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
-                        else 
+                        else
                             log.error("VERIFY: Field '" + field.getDBName() + "' (mapped to field '"+id+"') of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
 
                         // set field to virtual so it will not be stored -
@@ -2159,7 +2164,7 @@ public class DatabaseStorageManager implements StorageManager {
                         FieldDefs field = (FieldDefs)fields.next();
                         String fieldName = field.getDBName();
                         if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
-                            
+
                             // check whether it might be in a column
                             boolean foundColumn = false;
                             {
@@ -2184,7 +2189,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     releaseActiveConnection();
                                 }
                             }
-                            
+
                             List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
                             log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                             Iterator i = nodes.iterator();
@@ -2223,7 +2228,7 @@ public class DatabaseStorageManager implements StorageManager {
                     if (fromDatabase > 0) {
                         log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
                     }
-                    
+
                 } else {
                     log.service("Converted no fields");
                 }
