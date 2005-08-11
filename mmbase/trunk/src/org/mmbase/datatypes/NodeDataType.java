@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.3 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.4 2005-08-11 14:41:40 pierre Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
@@ -55,7 +55,7 @@ public class NodeDataType extends DataType {
 
     public void validate(Object value, Cloud cloud) {
         super.validate(value, cloud);
-        if (value != null) {
+        if (value != null && !(value instanceof Number && ((Number)value).intValue() == -1)) {
             MMObjectNode nodeValue = Casting.toNode(value,MMBase.getMMBase().getTypeDef());
             if (nodeValue == null) {
                 failOnValidate(getMustExistProperty(), value, cloud);
