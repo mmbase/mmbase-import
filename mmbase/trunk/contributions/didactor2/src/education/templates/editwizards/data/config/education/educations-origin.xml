@@ -55,7 +55,7 @@
             <prompt>Opleiding naam</prompt>
         </field>
 
-        <field name="intro" ftype="html" dtminlength="0">
+        <field name="intro" ftype="${wizards.pages.text.ftype}" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
 
