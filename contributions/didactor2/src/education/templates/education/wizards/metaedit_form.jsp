@@ -15,6 +15,9 @@
    String sNodeUrlString ="";
 
 
+   HashSet hsetMetastandards = new HashSet();
+   HashSet hsetCurMetastandards = new HashSet();
+
    HashSet hsetRelatedNodes = new HashSet();
    SortedSet hsetLangCodes = new TreeSet();
    HashSet hsetAssignedVals = new HashSet();
@@ -110,7 +113,6 @@
             <mm:field name="handler" jspvar="sHandler" vartype="String" write="false">
                <mm:field name="number" jspvar="sID" vartype="String" write="false">
                  <%
-
                      if(sHandler.equals("taal"))
                      {
                         %>
@@ -142,47 +144,42 @@
                   hsetRelatedNodes.add(sID);
                  %>
 
-                   <mm:list nodes="<%=sID%>" path="metadata,posrel,metavocabulary"
+                    <mm:list nodes="<%=sID%>" path="metadata,posrel,metavocabulary"
                                 searchdir="destination" fields="metavocabulary.number,metavocabulary.value" >
-                     <mm:field name="metavocabulary.number" jspvar="sMetaVocNum" vartype="String">
-                       <mm:field name="metavocabulary.value" jspvar="sMetaVocVal" vartype="String" >
-                         <%
-                            hsetVocabularis.add(sMetaVocNum);
-                        %>
+                       <mm:field name="metavocabulary.number" jspvar="sMetaVocNum" vartype="String">
+                         <mm:field name="metavocabulary.value" jspvar="sMetaVocVal" vartype="String" >
+                            <%
+                               hsetVocabularis.add(sMetaVocNum);
+                            %>
                         </mm:field>
-                   </mm:field>
-             </mm:list>
-
-
+                    </mm:field>
+                 </mm:list>
             </mm:field>
          </mm:relatednodes>
 
          <mm:nodeinfo type="type" jspvar="sNodeType" vartype="String" >
 
-           <%
+             <%
 
              if(hsetClassesOfTypeUrl.contains(sNodeType))
              {
-           %>
-           <mm:field name="url" jspvar="sObjectUrl" vartype="String">
-           <%
-           sNodeUrlString = sObjectUrl;
-           %>
-           </mm:field>
-           <%
-
+             %>
+               <mm:field name="url" jspvar="sObjectUrl" vartype="String">
+                  <%
+                     sNodeUrlString = sObjectUrl;
+                  %>
+                </mm:field>
+             <%
              }
              else if (hsetClassesOfTypeBin.contains(sNodeType))
              {
-           %>
-             <mm:field name="size" jspvar="sObjectSize" vartype="String">
-               <% sNodeValue =  sObjectSize; %>
-             </mm:field>
-           <%
+               %>
+                  <mm:field name="size" jspvar="sObjectSize" vartype="String">
+                     <% sNodeValue =  sObjectSize; %>
+                  </mm:field>
+               <%
              }
-
-
-           %>
+             %>
 
          </mm:nodeinfo>
 
@@ -220,6 +217,7 @@
 
                %>
                <mm:listnodes type="metastandard" orderby="name" constraints="<%= sMetastandartConstraints %>">
+                 <!--
                   <mm:first inverse="true">
                      <br/><br/>
                   </mm:first>
@@ -228,18 +226,50 @@
                   <br/>
                   <mm:field name="description"/>
                   <hr style="width:99%; height:1px; color:#CCCCCC">
+                  -->
+                    <mm:field name="number" jspvar="sNumber" vartype="String" >
 
-                     <mm:relatednodes type="metadefinition" orderby="name">
+                    <%// Let's go to this metastandard tree in the direct order ... %>
+                     <%
+                        // Tree root number ...
+                        hsetMetastandards.add(sNumber);
+                    %>
+                    </mm:field>
+                </mm:listnodes>
 
-                         <% sCheckrelations = "Ok"; %>
+                <%
 
-                        <mm:field name="number" jspvar="rNum" vartype="String">
+                for(Iterator msta = hsetMetastandards.iterator(); msta.hasNext();)
+                   {
+                     String sRootMetastandard = (String) msta.next();
+                     String sCurMetastandard = sRootMetastandard;
+                     hsetCurMetastandards.add(sRootMetastandard);
+                     %>
+                     <mm:node number="<%=sRootMetastandard%>" >
+                       <font style="font-family:arial; font-size:20px; font-weight:normal">
+                         <mm:field name="name"/>
+                       </font>
+                       <br/>
+                       <mm:field name="description"/>
+                       <hr style="width:99%; height:1px; color:#CCCCCC">
+                     </mm:node>
+
+                     <%
+                     while(hsetCurMetastandards.size()>0)
+                     {
+
+                     %>
+                     <mm:node number="<%=sCurMetastandard%>" >
+                       <mm:relatednodes type="metadefinition" orderby="name">
+
+                        <% sCheckrelations = "Ok"; %>
+
+                         <mm:field name="number" jspvar="rNum" vartype="String">
                             <mm:list nodes="<%=rNum %>"  path="metadefinition,posrel,metadefinition2"
                                 searchdir="source" fields="metadefinition.number,metadefinition.name,posrel.pos" >
                                 <mm:field name="metadefinition2.number" jspvar="rMd" vartype="String">
                                     <mm:field name="posrel.pos" jspvar="rPos" vartype="String">
                                         <%
-
                                           if(rPos.equals("3") && hsetAssignedVals.contains(rMd))
                                               {
                                                 sCheckrelations = "Fail";
@@ -258,6 +288,7 @@
                            -->
 
                            <%
+
                            if("Ok".equals(sCheckrelations))
                              {
 
@@ -285,7 +316,7 @@
                           </mm:list>
 
                          <%
-                                  } // end of if("Ok".equals(sCheckrelations))
+                           } // end of if("Ok".equals(sCheckrelations))
                          %>
 
                       </mm:field>
@@ -293,6 +324,7 @@
                      <%
                      if("Ok".equals(sCheckrelations))
                       {
+
                      %>
 
                      <a name="m<mm:field name="number"/>">
@@ -873,11 +905,7 @@
                                        }
                                     %>
                                  </mm:field>
-
-
-
-
-                              </mm:relatednodes>
+                               </mm:relatednodes> <%// metadata %>
                            <%
                            for(int f = 0; f < 2; f++)
                            {
@@ -1027,23 +1055,52 @@
 
                          } // end of if(sDefType.equals("5"))
 
+
+
                       %>
-
-                     <mm:last inverse="true">
                         <hr style="width:99%; height:1px; color:#CCCCCC">
-                     </mm:last>
+                      <%
 
-                    <%
-                     }
+                     } //if("Ok".equals(sCheckrelations))
                     %>
 
-                  </mm:relatednodes>
+               </mm:relatednodes> <%// metadefinitions %>
 
+               <%
+               // remove current metastandard ... from hash
+               hsetCurMetastandards.remove(sCurMetastandard);
+
+               // add child metastandards to the hash ...
+               %>
+
+               <mm:relatednodes type="metastandard" role="posrel" searchdir="destination" >
+                 <mm:field name="number" jspvar="sNumber" vartype="String">
+                      <%
+                         hsetCurMetastandards.add(sNumber);
+                      %>
+                 </mm:field>
+               </mm:relatednodes>
+
+              </mm:node > <%// metastandard %>
+
+              <%
+                Iterator it = hsetCurMetastandards.iterator();
+                if(it.hasNext())
+                   sCurMetastandard = (String)it.next();
+
+               }// end of while
+               %>
+               <br/><br/>
+               <hr style="width:99%; height:1px; color:#CCCCCC">
+            <%
+             } // end of for
+            %>
+                 <%/*
                   <mm:last inverse="true">
                      <hr style="width:99%; height:1px; color:#CCCCCC">
                   </mm:last>
+                  */ %>
 
-               </mm:listnodes>
 
             <style type="text/css">
                .special_buttons
