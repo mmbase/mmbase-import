@@ -88,9 +88,12 @@
              value="${chat.engine.logfile}"/>
  
  
-    <replace file="${build.wizards.dir}/data/config/pages/pages.xml"
-             token="$${wizards.pages.text.type}"
-             value="${wizards.pages.text.type}"/>
+    <replace dir="${build.wizards.dir}/data/config"
+             token="$${wizards.pages.text.ftype}"
+             value="${wizards.pages.text.ftype}"
+             summary="true"
+             includes="**/*.xml"
+    />
 
   </target>
 </project>
