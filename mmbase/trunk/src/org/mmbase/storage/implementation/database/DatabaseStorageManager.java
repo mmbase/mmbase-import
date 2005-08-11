@@ -26,6 +26,7 @@ import org.mmbase.core.util.Fields;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.transformers.*;
 
 import org.mmbase.util.logging.*;
 
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.113 2005-07-26 12:59:41 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.114 2005-08-11 14:45:05 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -47,14 +48,21 @@ public class DatabaseStorageManager implements StorageManager {
     // maximum size of the key buffer
     protected static Integer bufferSize = null;
 
+    /**
+     * This sets contains all existing tables which could by associated with MMBase builders. This
+     * is because they are queried all at once, but requested for existance only one at a time.
+     * @since MMBase-1.7.4
+     */
+    private static Set tableNameCache = null;
+
     private static final Blob BLOB_SHORTED = new InputStreamBlob(null, -1);
+
+    private static final CharTransformer UNICODE_ESCAPER = new org.mmbase.util.transformers.UnicodeEscaper();
 
     /**
      * Whether the warning about blob on legacy location was given.
      */
     private static boolean legacyWarned = false;
-
-
 
     /**
      * The factory that created this manager
@@ -89,13 +97,6 @@ public class DatabaseStorageManager implements StorageManager {
      * Pool of changed nodes in a transaction
      */
     protected Map changes;
-
-    /**
-     * This sets contains all existing tables which could by associated with MMBase builders. This
-     * is because they are queried all at once, but requested for existance only one at a time.
-     * @since MMBase-1.7.4
-     */
-    private static Set tableNameCache = null;
 
     /**
      * Constructor
@@ -795,7 +796,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during creation
      */
-    private static final org.mmbase.util.transformers.CharTransformer uni = new org.mmbase.util.transformers.UnicodeEscaper();
     protected void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // Create a String that represents the fields and values to be used in the insert.
         StringBuffer fieldNames = null;
@@ -834,7 +834,7 @@ public class DatabaseStorageManager implements StorageManager {
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
-                log.error(se.getMessage() + "during creation of " + uni.transform(node.toString()));
+                log.error(se.getMessage() + "during creation of " + UNICODE_ESCAPER.transform(node.toString()));
                 throw new StorageException(se);
             } finally {
                 releaseActiveConnection();
@@ -1770,7 +1770,7 @@ public class DatabaseStorageManager implements StorageManager {
             releaseActiveConnection();
         }
         verify(builder);
-        
+
         //create indices for key's that are not primary keys
         Scheme createIndex = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
         if (createIndex != null) {
@@ -1929,8 +1929,9 @@ public class DatabaseStorageManager implements StorageManager {
                 s.executeUpdate(query);
                 s.close();
 
-                if(tableNameCache.contains(builderName.toUpperCase())) {
-                    tableNameCache.remove(builderName.toUpperCase());
+                String tableName = factory.getStorageIdentifier(builder).toString().toUpperCase();
+                if(tableNameCache.contains(tableName)) {
+                    tableNameCache.remove(tableName);
                 }
             }
         } catch (Exception e) {
