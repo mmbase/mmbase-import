@@ -89,14 +89,13 @@
         <list role="posrel" extends="config/videotape/videotapes-posrel.xml" />
 
         <list destination="urls" role="posrel" extends="config/url/urls-posrel.xml" />
- 
-        <list destination="providers" role="related" extends="config/provider/providers.xml" />
-        <list destination="news" extends="config/news/news.xml" />
-        <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks.xml" />
-        <list destination="classes" role="related" extends="config/class/classes.xml" />
-        <!-- 05.08.03 / hh: it seems that the rolerel to people is no longer used after the roleditor has been implemented -->
-        <!-- list destination="people" role="rolerel" extends="config/people/people-education.xml" / -->
-        <list destination="urlcategories" role="related" extends="config/url/urlcategories.xml" />
+
+        <list destination="providers" role="related" extends="config/provider/providers-list.xml" />
+        <list destination="news" extends="config/news/news-list.xml" />
+        <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
+        <list destination="classes" role="related" extends="config/class/classes-list.xml" />
+
+       <list destination="urlcategories" role="related" extends="config/url/urlcategories-list.xml" />
         <list destination="people" role="rolerel" extends="config/people/people-list.xml" />
 
     </form-schema>
