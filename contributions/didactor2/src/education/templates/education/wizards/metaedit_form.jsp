@@ -98,7 +98,7 @@
                      <%
                      } // end of if(arrstrParameters[i]!= null
 
-                    }  // end of for
+                }  // end of for
 
             } // end of if(sParameter.charAt(0) == 'm')
 
@@ -243,6 +243,7 @@
                    {
                      String sRootMetastandard = (String) msta.next();
                      String sCurMetastandard = sRootMetastandard;
+                     String sPrefix = "m";
                      hsetCurMetastandards.add(sRootMetastandard);
                      %>
                      <mm:node number="<%=sRootMetastandard%>" >
@@ -257,7 +258,14 @@
                      <%
                      while(hsetCurMetastandards.size()>0)
                      {
-
+                       if(!sRootMetastandard.equals(sCurMetastandard))
+                       {
+                         sPrefix = "n";
+                       }
+                       else
+                       {
+                         sPrefix = "m";
+                       }
                      %>
                      <mm:node number="<%=sCurMetastandard%>" >
                        <mm:relatednodes type="metadefinition" orderby="name">
@@ -327,7 +335,7 @@
 
                      %>
 
-                     <a name="m<mm:field name="number"/>">
+                     <a name="<%=sPrefix%><mm:field name="number"/>">
                      <font style="font-family:arial; font-size:13px; font-weight:bold"><mm:field name="name"/></font>
                      <br/>
                      <mm:field name="description"/>
@@ -433,7 +441,7 @@
                                        %>
                                     </mm:field>
                                  </mm:relatednodes>
-                                 <select name="m<mm:field name="number"/>">
+                                 <select name="<%=sPrefix%><mm:field name="number"/>">
                                      <option><%= EMPTY_VALUE %></option>
                                      <mm:relatednodes type="metavocabulary" orderby="value" searchdir="destination">
                                         <mm:field name="number" jspvar="sCurrentNum" vartype="String" write="false">
@@ -476,7 +484,7 @@
                                         %>
 
                                        <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
-                                          <option name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+                                          <option name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<%= sCurrent %>"
                                              <%
                                                if(sSelected.equals(sCurrent))
                                                  {
@@ -575,9 +583,8 @@
                                 <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
                                 <mm:field name="number" jspvar="sNumber" vartype="String" write="false">
 
-                                    <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+                                    <input type="checkbox" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<%= sCurrent %>"
                                     <%
-
 
                                       //if(hsetSelected.contains(sCurrent))
                                       if(hsetVocabularis.contains(sNumber))
@@ -624,7 +631,7 @@
                                    if(sMetaVocabularyTest.equals("Ok"))
                                    {
                                    %>
-                                   <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+                                   <input type="checkbox" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<%= sCurrent %>"
 
                                     <%
                                     if(hsetVocabularis.contains(sRelVocNumber))
@@ -686,9 +693,9 @@
                                     <td>Minuut</td>
                                  </tr>
                                  <tr>
-                                    <td><input type="text" name="m<%= sMetaDefinitionID %>" value="<% if (date != null) out.print(date.getDate()); %>" style="width:30px;"/></td>
+                                    <td><input type="text" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<% if (date != null) out.print(date.getDate()); %>" style="width:30px;"/></td>
                                     <td>
-                                       <select name="m<%= sMetaDefinitionID %>">
+                                       <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                            <option><%= EMPTY_VALUE %></option>
                                            <%
                                               for(int i = 0; i < 12; i++)
@@ -707,10 +714,10 @@
                                            %>
                                        </select>
                                     </td>
-                                    <td><input type="text" name="m<%= sMetaDefinitionID %>" value="<% if (date != null) out.print(1900 + date.getYear()); %>" style="width:60px;"/></td>
+                                    <td><input type="text" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<% if (date != null) out.print(1900 + date.getYear()); %>" style="width:60px;"/></td>
                                     <td>&nbsp;om&nbsp;</td>
                                     <td>
-                                       <select name="m<%= sMetaDefinitionID %>">
+                                       <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                            <option><%= EMPTY_VALUE %></option>
                                            <%
                                               for(int i = 0; i < 24; i++)
@@ -736,7 +743,7 @@
                                        </select>
                                     </td>
                                     <td>
-                                       <select name="m<%= sMetaDefinitionID %>">
+                                       <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                            <option><%= EMPTY_VALUE %></option>
                                            <%
                                               for(int i = 0; i < 60; i++)
@@ -784,7 +791,7 @@
                                                             <table border="0" cellpadding="0" cellspacing="0">
                                                                <tr>
                                                                   <td>
-                                                                     <select name="m<%= sMetaDefinitionID %>">
+                                                                     <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                                                         <option style="width:20px"><%= EMPTY_VALUE %></option>
                                                                            <%
                                                                               for(Iterator it = hsetLangCodes.iterator(); it.hasNext();)
@@ -807,7 +814,7 @@
                                                                      </select>
                                                                   </td>
                                                                   <td>
-                                                                     <input name="m<%= sMetaDefinitionID %>" type="text" value="<%= sValue %>" style="width:150px"/>
+                                                                     <input name="<%=sPrefix%><%= sMetaDefinitionID %>" type="text" value="<%= sValue %>" style="width:150px"/>
                                                                   </td>
                                                                   <td>
                                                                      &nbsp;
@@ -837,7 +844,7 @@
                                        <table border="0" cellpadding="0" cellspacing="0">
                                           <tr>
                                              <td>
-                                                <select name="m<%= sMetaDefinitionID %>">
+                                                <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                                    <option style="width:20px"><%= EMPTY_VALUE %></option>
                                                       <%
                                                          boolean bFirst = true;
@@ -862,7 +869,7 @@
                                                 </select>
                                              </td>
                                              <td>
-                                                <input name="m<%= sMetaDefinitionID %>" type="text" value="" style="width:150px"/>
+                                                <input name="<%=sPrefix%><%= sMetaDefinitionID %>" type="text" value="" style="width:150px"/>
                                              </td>
                                           </tr>
                                        </table>
@@ -920,9 +927,9 @@
                                        <td>Minuut</td>
                                     </tr>
                                     <tr>
-                                       <td><input type="text" name="m<%= sMetaDefinitionID %>" value="<% if (date[f] != null) out.print(date[f].getDate()); %>" style="width:30px;"/></td>
+                                       <td><input type="text" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<% if (date[f] != null) out.print(date[f].getDate()); %>" style="width:30px;"/></td>
                                        <td>
-                                          <select name="m<%= sMetaDefinitionID %>">
+                                          <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                               <option><%= EMPTY_VALUE %></option>
                                               <%
                                                  for(int i = 0; i < 12; i++)
@@ -941,10 +948,10 @@
                                               %>
                                           </select>
                                        </td>
-                                       <td><input type="text" name="m<%= sMetaDefinitionID %>" value="<% if (date[f] != null) out.print(1900 + date[f].getYear()); %>" style="width:60px;"/></td>
+                                       <td><input type="text" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<% if (date[f] != null) out.print(1900 + date[f].getYear()); %>" style="width:60px;"/></td>
                                        <td>&nbsp;om&nbsp;</td>
                                        <td>
-                                          <select name="m<%= sMetaDefinitionID %>">
+                                          <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                               <option><%= EMPTY_VALUE %></option>
                                               <%
                                                  for(int i = 0; i < 24; i++)
@@ -970,7 +977,7 @@
                                           </select>
                                        </td>
                                        <td>
-                                          <select name="m<%= sMetaDefinitionID %>">
+                                          <select name="<%=sPrefix%><%= sMetaDefinitionID %>">
                                               <option><%= EMPTY_VALUE %></option>
                                               <%
                                                  for(int i = 0; i < 60; i++)
@@ -1014,7 +1021,6 @@
                             <table border="0" cellpadding="0" cellspacing="0">
                                <tr>
                                <%
-                                   sNodeUrlString = "file:///C:/Realtek.log";
 
                                    if(!sNodeValue.equals(""))
                                       {
@@ -1046,7 +1052,7 @@
                                        }
                                   %>
                                   <td>
-                                     <input name="m<%= sMetaDefinitionID %>" type="text" value="<%=sNValue%>" readonly="readonly" style="<%=sStyle%>"/>
+                                     <input name="<%=sPrefix%><%= sMetaDefinitionID %>" type="text" value="<%=sNValue%>" readonly="readonly" style="<%=sStyle%>"/>
                                   </td>
                                 </tr>
                               </table>
