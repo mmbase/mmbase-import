@@ -13,7 +13,7 @@
     <relation destinationtype="metadefinition" role="related" />
     <relation destinationtype="metastandard" role="related" />
     <relation destinationtype="metavocabulary" role="related" />
-    
+    <relation destinationtype="workgroups" role="related" />
   </action>
 
   <action type="delete" />
@@ -43,8 +43,8 @@
     <list destination="metavocabulary" role="exclude" extends="config/metavocabulary/metavocabularydefinition-exclude-list.xml" />
    -->
 
-    <!--<list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabularydefinition.xml" />-->
-     
+    <list destination="workgroups" role="related" extends="config/workgroup/workgroups-list.xml" />
+         
   </form-schema>
 
 </wizard-schema>
