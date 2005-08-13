@@ -91,9 +91,30 @@
                                 }
                              %>
 
+
+
+                        <mm:node number="<%=sVocNumber%>">
+                         <mm:relatednodes type="metavocabulary" role="related" searchdir="destination">
+                           <mm:field name="value" jspvar="sVocValue2" vartype="String">
+                            <mm:field name="number" jspvar="sVocNumber2" vartype="String">
+
+                              <%
+                                if(sVocValue2.equals(arrstrParameters[i]))
+                                {
+
+                                   hsetVocabularis.add(sVocNumber2);
+
+                                }
+                             %>
+                            </mm:field>
                            </mm:field>
-                         </mm:field>
-                      </mm:list>
+                         </mm:relatednodes>
+                        </mm:node>
+
+
+                       </mm:field>
+                     </mm:field>
+                   </mm:list>
 
                      <%
                      } // end of if(arrstrParameters[i]!= null
@@ -561,14 +582,12 @@
                                                              sCheckVocabularies = "Ok";
                                                            }
 
-
                                                        %>
 
                                                      </mm:field>
-                                                  </mm:field>
+                                                 </mm:field>
                                              </mm:field>
-                                    </mm:list>
-
+                                         </mm:list>
 
                                   </mm:field> <!-- Close metavocabulary number field tag -->
                                 </mm:field>
@@ -586,7 +605,6 @@
                                     <input type="checkbox" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<%= sCurrent %>"
                                     <%
 
-                                      //if(hsetSelected.contains(sCurrent))
                                       if(hsetVocabularis.contains(sNumber))
                                        {
                                       %>
