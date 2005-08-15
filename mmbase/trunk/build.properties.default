@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.13 2005-07-14 17:26:46 michiel Exp $
+# $Id: build.properties.default,v 1.14 2005-08-15 15:24:57 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -109,14 +109,14 @@ log4j.jar=${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar
 
 
 # ----- Xalan and Xerces ----------
-xalan.version=xalan-j_2_6_0
+xalan.version=xalan-j_2_7_0
 xalan.fullversion=${xalan.version}
 xalan.file=${xalan.version}-bin.tar.gz
 xalan.dest=${download.dir}/${xalan.file}
 xalan.loc=${mmbase.loc}/xalan/${xalan.file}
-xalan.jar=${expand.dir}/${xalan.fullversion}/bin/xalan.jar
-xerces.jar=${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar
-xml-apis.jar=${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar
+xalan.jar=${expand.dir}/${xalan.fullversion}/xalan.jar
+xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
+xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 
 # ----- Jakarta file upload ----------
 fileupload.version=commons-fileupload-1.0
