@@ -11,6 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -77,8 +78,8 @@ public class StringDataType extends BigDataType {
         return setProperty(getPatternProperty(), value);
     }
 
-    public void validate(Object value, Cloud cloud) {
-        super.validate(value, cloud);
+    public void validate(Object value, Field field, Cloud cloud) {
+        super.validate(value, field, cloud);
         if (value != null) {
             String stringValue = Casting.toString(value);
             String pattern = getPattern();

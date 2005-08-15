@@ -13,9 +13,10 @@ package org.mmbase.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-
 import org.mmbase.bridge.util.fields.*;
-
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.core.util.Fields;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.DataTypes;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.6 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: DataType.java,v 1.7 2005-08-15 16:38:20 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -77,12 +78,20 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     private static final String PROPERTY_REQUIRED = "required";
     private static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
 
+    private static final String PROPERTY_UNIQUE = "unique";
+    private static final Boolean PROPERTY_UNIQUE_DEFAULT = Boolean.FALSE;
+
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
     /**
      * The 'required' property.
      */
     protected DataType.Property requiredProperty;
+
+    /**
+     * The 'unique' property.
+     */
+    protected DataType.Property uniqueProperty;
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
@@ -147,6 +156,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         origin = null;
         defaultValue = null;
         requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
+        uniqueProperty = createProperty(PROPERTY_UNIQUE, PROPERTY_UNIQUE_DEFAULT);
         commitProcessor = null;
         getProcessor = new Processor[] {
              null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
@@ -170,6 +180,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         defaultValue = origin.defaultValue;
         commitProcessor = origin.commitProcessor;
         requiredProperty = (DataType.Property)getRequiredProperty().clone(this);
+        uniqueProperty = (DataType.Property)getUniqueProperty().clone(this);
         getProcessor = (Processor[])getProcessor.clone();
         setProcessor = (Processor[])setProcessor.clone();
     }
@@ -275,17 +286,6 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
     }
 
-    /**
-     * Checks if the passed object is of the correct type (compatible with the type of this data type),
-     * and follows the restrictions defined for this type.
-     * It throws an IllegalArgumentException if it doesn't.
-     * @param value the value to validate
-     * @throws IllegalArgumentException if the value is not compatible
-     */
-    public void validate(Object value) {
-        validate(value,null);
-    }
-
     protected final void failOnValidate(DataType.Property property, Object value, Cloud cloud) {
         String error = property.getErrorDescription(cloud==null? null : cloud.getLocale());
         if (error != null) {
@@ -297,16 +297,51 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     }
 
     /**
+     * Checks if the passed object is of the correct type (compatible with the type of this data type),
+     * and follows the restrictions defined for this type.
+     * It throws an IllegalArgumentException if it doesn't.
+     * @param value the value to validate
+     * @throws IllegalArgumentException if the value is not compatible
+     */
+    public void validate(Object value) {
+        validate(value, null, null);
+    }
+
+    /**
      * Checks if the passed object follows the restrictions defined for this type.
-     * It throws an IllegalArgumentException with a lozalized message (dependent on the cloud) if it doesn't.
+     * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
      * @param value the value to validate
      * @param cloud the cloud used to determine the locale for the error message when validation fails
      * @throws IllegalArgumentException if the value is not compatible
      */
     public void validate(Object value, Cloud cloud) {
-        // test required
+        validate(value, null, cloud);
+    }
+
+    /**
+     * Checks if the passed object follows the restrictions defined for this type.
+     * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
+     * @param value the value to validate
+     * @param field the field for which the datatype is checked. If not <code>null</code>, and the
+     *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
+     * @param cloud the cloud used to determine the locale for the error message when validation fails
+     * @throws IllegalArgumentException if the value is not compatible
+     */
+    public void validate(Object value, Field field, Cloud cloud) {
         if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
             failOnValidate(getRequiredProperty(), value, cloud);
+        }
+        // test uniqueness
+        if (field != null && isUnique()) {
+            // create a query and query for the value
+            NodeQuery query = field.getNodeManager().createQuery();
+            StepField stepField = query.addField(field.getName());
+            FieldValueConstraint constraint = new BasicFieldValueConstraint(stepField, value);
+            query.setConstraint(constraint);
+            log.debug(query);
+            if (Queries.count(query) > 0) {
+                failOnValidate(getUniqueProperty(), value, cloud);
+            }
         }
     }
 
@@ -323,6 +358,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
         if (isRequired()) {
             buf.append("required\n");
+        }
+        if (isUnique()) {
+            buf.append("unique\n");
         }
         return buf.toString();
     }
@@ -369,7 +407,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     /**
      * Whether data type equals to other data type. Only key and type are consided. DefaultValue and
-     * required propererties are only 'utilities'.
+     * required properties are only 'utilities'.
      * @return true if o is a DataType of which key and type equal to this' key and type.
      */
     public boolean equals(Object o) {
@@ -386,10 +424,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     /**
      * Returns whether this field is required (should have content).
-     * Note that MMBase does not generally enforce required fields to be filled -
+     * Note that the MMBase core does not generally enforce required fields to be filled -
      * If not provided, a default value (generally an empty string or the integer value -1)
      * is filled in by the system.
-     * As such, isRequired will mostly be used as an indicator for (generic) editors.
      *
      * @return  <code>true</code> if the field is required
      * @since  MMBase-1.6
@@ -414,6 +451,38 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      */
     public DataType.Property setRequired(boolean required) {
         return setProperty(getRequiredProperty(),Boolean.valueOf(required));
+    }
+
+    /**
+     * Returns whether this field has a unique constraint.
+     * Uniqueness is generally achieved through association of the datatype with one or more sets of fields.
+     * This is notably different from other datatype properties.
+     *
+     * Note that the MMBase core does not generally enforce uniqueness, but the storage layer might.
+     *
+     * @return  <code>true</code> if the field is unique
+     * @since  MMBase-1.6
+     */
+    public boolean isUnique() {
+        return Boolean.TRUE.equals(getUniqueProperty().getValue());
+    }
+
+    /**
+     * Returns the 'unique' property, containing the value, error messages, and fixed status of this attribute.
+     * @return the property as a {@link DataType#Property}
+     */
+    public DataType.Property getUniqueProperty() {
+        return uniqueProperty;
+    }
+
+    /**
+     * Sets whether the data type requires a value.
+     * @param unique <code>true</code> if a value is unique
+     * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
+     * @return the datatype property that was just set
+     */
+    public DataType.Property setUnique(boolean unique) {
+        return setProperty(getUniqueProperty(),Boolean.valueOf(unique));
     }
 
     /**

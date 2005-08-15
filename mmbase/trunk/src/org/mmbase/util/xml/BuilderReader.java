@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.27 2005-08-15 10:08:55 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.28 2005-08-15 16:38:20 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -591,7 +591,8 @@ public class BuilderReader extends XMLBasicReader {
         String notnull = getElementAttributeValue(dbtype,"notnull");
         def.getDataType().setRequired(notnull != null && notnull.equalsIgnoreCase("true"));
         String key = getElementAttributeValue(dbtype,"key");
-        def.setUnique(key != null && key.equalsIgnoreCase("true"));
+        def.getDataType().setUnique(key != null && key.equalsIgnoreCase("true"));
+        // def.setUnique(key != null && key.equalsIgnoreCase("true"));
 
         decodeFieldDef(field, def);
 
