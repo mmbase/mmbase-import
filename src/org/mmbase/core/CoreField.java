@@ -30,8 +30,6 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     private int editPosition = NO_POSITION;
     private int size = NO_POSITION;
 
-    private boolean unique = false;
-
     private MMObjectBuilder parent = null;
     private int storagePosition = -1;
     private Object storageIdentifier = null;
@@ -171,7 +169,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
             getName().equals(f.getName())
             && state == f.getState()
             && getDataType().isRequired() == f.getDataType().isRequired()
-            && unique  == f.isUnique()
+            && getDataType().isUnique()  == f.getDataType().isUnique()
             && size == f.getSize()
             && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
             && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
@@ -208,7 +206,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         result = HashCodeUtil.hashCode(result, getType());
         result = HashCodeUtil.hashCode(result, state);
         result = HashCodeUtil.hashCode(result, getDataType().isRequired());
-        result = HashCodeUtil.hashCode(result, unique);
+        result = HashCodeUtil.hashCode(result, getDataType().isUnique());
         result = HashCodeUtil.hashCode(result, parent);
         result = HashCodeUtil.hashCode(result, storagePosition);
         return result;
@@ -308,11 +306,11 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      * Retrieve whether the field is a key and thus need be unique.
      */
     public boolean isUnique() {
-        return unique;
+        return dataType.isUnique();
     }
 
-    public void setUnique(boolean b) {
-        unique = b;
+    public void setUnique(boolean unique) {
+        dataType.setUnique(unique);
     }
 
     public int getMaxLength() {

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: BigDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -112,8 +112,8 @@ abstract public class BigDataType extends DataType {
         return setProperty(getMaxLengthProperty(), new Integer(value));
     }
 
-    public void validate(Object value, Cloud cloud) {
-        super.validate(value, cloud);
+    public void validate(Object value, Field field, Cloud cloud) {
+        super.validate(value, field, cloud);
         if (value != null) {
             int size = -1;
             if (this instanceof BinaryDataType) {
