@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.20.2.1 2004-05-26 09:04:43 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.20.2.2 2005-08-15 16:34:53 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -38,12 +38,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * Can be used to construct a List for executeFunction argument
      * (new Parameters(GUI_ARGUMENTS))
      */
-    public final static Parameter[] GUI_PARAMETERS = { 
+    public final static Parameter[] GUI_PARAMETERS = {
         new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS) // example, does not make too much sense :-)
     };
 
 
-    public final static Parameter[] SERVLETPATH_PARAMETERS = { 
+    public final static Parameter[] SERVLETPATH_PARAMETERS = {
         new Parameter("session",  String.class), // For read-protection
         new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
         new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
@@ -59,6 +59,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * In this string the path to the servlet is stored.
      */
     private String servletPath = null;
+    /**
+     * Whether {@link #servletPath} represents an absolute URL (starting with http:)
+     * @since MMBase-1.7.4
+     */
+    private boolean servletPathAbsolute;
 
     /**
      * If this builder is association with a bridge servlet. If not, it should not put the
@@ -94,6 +99,15 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      */
 
     private String getServletPathWithAssociation(String association, String root) {
+        if (MMBaseContext.isInitialized()) {
+            javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
+            if (sx != null) {
+                String res = sx.getInitParameter("mmbase.servlet." + association + ".url");
+                if (res != null && ! res.equals("")) {
+                    return res;
+                }
+            }
+        }
         String result;
         List ls = MMBaseServlet.getServletMappingsByAssociation(association);
         if (ls.size()>0) {
@@ -132,21 +146,25 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      * @param root The path to the application's root.
      */
-   
-    protected String getServletPath(String root) { 
+
+    protected String getServletPath(String root) {
         if (servletPath == null) {
             servletPath = getServletPathWithAssociation(getAssociation(), "");
+            servletPathAbsolute = servletPath.startsWith("http:") || servletPath.startsWith("https");
             if (log.isServiceEnabled()) {
                 log.service(getAssociation() + " are served on: " + servletPath + "  root: " + root);
             }
         }
         String result;
-        if (root.endsWith("/") && servletPath.startsWith("/")) {
+        if (servletPathAbsolute) {
+            result = servletPath;
+        } else if (root.endsWith("/") && servletPath.startsWith("/")) {
             result = root + servletPath.substring(1);
         } else {
             result = root + servletPath;
         }
 
+        if (! MMBaseContext.isInitialized()) { servletPath = null; }
         // add '?' if it wasn't already there (only needed if not terminated with /)
         if (! result.endsWith("/")) result = result + "?";
         return result;
@@ -238,7 +256,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             String argument = (String) a.get("argument");
             // argument represents the node-number
 
-            if (argument == null) {                                
+            if (argument == null) {
                 // second argument, which field to use, can for example be 'number' (the default)
                 String fieldName   = (String) a.get("field");
                 if (fieldName == null) {
@@ -253,12 +271,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
             // ok, make the path.
             StringBuffer servlet = new StringBuffer();
-            if (context == null) { 
+            if (context == null) {
                 servlet.append(getServletPath()); // use 'absolute' path (starting with /)
             } else {
                 servlet.append(getServletPath(context));
             }
-            String fileName = node.getStringValue("filename");            
+            String fileName = node.getStringValue("filename");
             boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
 
             if (usesBridgeServlet && ! session.equals("")) {
@@ -293,11 +311,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 } else {
                     a = new Parameters(GUI_PARAMETERS, args);
                 }
-                
+
                 String  rtn = getSGUIIndicator(node, a);
                 if (rtn == null) return super.executeFunction(node, function, args);
-                return rtn;                
-            }            
+                return rtn;
+            }
         } else {
             return super.executeFunction(node, function, args);
         }
