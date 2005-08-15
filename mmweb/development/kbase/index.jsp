@@ -6,6 +6,12 @@
   response.setHeader("Cache-Controll","must-revalidate");
   response.setDateHeader("Expires",new Date().getTime());
 %>
+<%
+  Set extraParams=new HashSet();
+  extraParams.add("portal");
+  extraParams.add("page");
+  setExtraParams(request,extraParams);
+%>
 <%@include file="parts/basics.jsp"%>
 <mm:cloud jspvar="wolk" method="asis" >
 
@@ -26,16 +32,11 @@
 	 
 	 //body onload event toevoegen
 	 List l1=new ArrayList();
-   l1.add("setImageDir('"+realpath+"/img/')");
+         l1.add("setImageDir('"+realpath+"/img/')");
 	 l1.add("setCurrentFolder("+node.trim()+")");
 	 l1.add("setEditor("+isEditor(wolk)+")");
+         l1.add("setExtraParamsJs('" + getParamsFormatted("url", getExtraParams(request)) + "')");
 	 pageContext.setAttribute("bLoadEvs",l1);
-   
-  Set extraParams=new HashSet();
-  extraParams.add("portal");
-  extraParams.add("page"); 
-  setExtraParams(request,extraParams);
-
 %>
 	
 <%@include file="/includes/header.jsp" %>

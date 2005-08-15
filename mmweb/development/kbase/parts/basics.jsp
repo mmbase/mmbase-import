@@ -28,28 +28,22 @@
   //levert een string op die de extra parameters als url gedeelte of als hidde 
   //formfields bevat. de output is afhankelijk van de parmeters 'type' die 
   // de waarde 'form' of 'url' mag hebben;
-  static String getParamsFormatted(HttpServletRequest request, String type, Map paramMap){
+  static String getParamsFormatted(String type, Map paramMap){
     if(paramMap==null)return "";
-    StringBuffer output=new StringBuffer();
-    String param;
-    String[] values;
-    boolean first=true;
-    for(Iterator i=paramMap.keySet().iterator();i.hasNext();){
+    StringBuffer output = new StringBuffer();
+    String param, value;
+    boolean first = true;
+    for(Iterator i = paramMap.keySet().iterator() ; i.hasNext() ; ){
       if(!first && type.equals("url"))output.append("&");    
       first=false;
-      param=(String) i.next();
-      values=(String[])paramMap.get(param);
-      //de parameter kan een array zijn. voor iedere waarde moet er een
-      //'instantie' van de parameter worden toegevoegd
-      for(int j=0 ; j<values.length ; j++){
-        if(type.equals("url")){
-          output.append(param+"="+values[j]);
-          if(j < (values.length-1)) output.append("&");
-        }else if(type.equals("form")){
-          output.append("<input type=\"hidden\" name=\""+param+"\" value=\""+values[j]+"\" />");
+      param=(String)i.next();
+      value = (String)paramMap.get(param);; 
+      if(type.equals("url") ){
+          output.append(param + "=" + value);
+        }else if(type.equals("form") ){
+          output.append("<input type=\"hidden\" name=\""+param+"\" value=\""+value+"\" />");
           output.append("\n");
         }
-      }
     }
     return output.toString();
   }
@@ -65,36 +59,19 @@
   //request. dit zijn de parameters die apart moeten worden doorgegeven.
   //retourneerd null als er geen extra parameters zijn gedeclareerd of
   //als de gedeclareerde parameters niet in de request voorkomen 
-  //TODO: om het echt goed te doen zou ik de kbase parameters een eigen prefix moeten
   //geven.
   public static Map getExtraParams(HttpServletRequest request){
-    //Set s=(Set)request.getPageContext().getAttribute(ATTRIB_EXTRA_PARAMS,PageContext.REQUEST_SCOPE);
     Set s=(Set)request.getAttribute(ATTRIB_EXTRA_PARAMS);
     if(s==null || s.isEmpty()) return null;
-    Iterator i=s.iterator();
-    Map extraParams=extraParams=new HashMap();
-
-    // eerst een string maken van alle extra parameters.
-    StringBuffer sb=new StringBuffer(".");
-    //in het geval dat er niet op zijn mist een van de gedeclareerde parmeters
-    //werkelijk voorkomt moet de methode ook null teruggeven.
-    boolean atLeastOneFound=false;
-    String param;
-    while (i.hasNext()){
-      param=(String)i.next();
-      if(request.getParameter(param)!=null)atLeastOneFound=true;
-      sb.append(param+".");
-    }
-    if(!atLeastOneFound)return null;      //er komen dus geen extraparams in request voor
-    String extraParamNames=sb.toString();
-    
-    Map params=request.getParameterMap();
-    for(i=params.keySet().iterator();i.hasNext();){
-      param=(String)i.next();
-      if(extraParamNames.indexOf("."+param+".")>-1){    //dit is geen kbase parameter
-        extraParams.put(param, params.get(param));
-      }
-    }
+    Map extraParams = new HashMap();
+    String paramName;
+    System.out.println("hallo1");
+    for(Iterator i = s.iterator(); i.hasNext(); ){
+    	paramName = (String) i.next();
+	System.out.println("param:"+paramName+","+request.getParameter(paramName));
+	if(request.getParameter(paramName) != null)
+		extraParams.put(paramName, request.getParameter(paramName));
+	}
     return extraParams;
   }
   
