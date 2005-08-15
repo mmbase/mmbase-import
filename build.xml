@@ -1025,6 +1025,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
+           source="1.4"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/XSLTransformer.java" />
     </javac>
@@ -1086,6 +1087,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
+           source="1.4"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/DocumentationIndex.java" />
     </javac>
@@ -1135,6 +1137,7 @@ Build-compiler: ${build.compiler}
            debug="${debug}"
            optimize="${optimize}"
            nowarn="${nowarn}"
+           source="1.4"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/BuilderList.java" />
     </javac>

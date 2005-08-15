@@ -321,6 +321,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            deprecation="${deprecation}"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
+           source="1.4"
       >
       <classpath id="compile.classpath">
         <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
