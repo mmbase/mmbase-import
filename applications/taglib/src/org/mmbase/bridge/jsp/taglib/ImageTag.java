@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.45.2.2 2004-07-26 20:12:16 nico Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.3 2005-08-15 16:32:37 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -87,14 +87,18 @@ public class ImageTag extends FieldTag {
             }
         }
 
-        String number;
+        String servletArgument;
         String t = template.getString(this);
         if ("".equals(t)) {
             // the node/image itself
-            number = node.getStringValue("number");
+            servletArgument = node.getStringValue("number");
         } else {
-            // the cached image
-            number = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
+            if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"))) {
+                servletArgument = "" + node.getNumber() + "+" + t;
+            } else {
+                // the cached image
+                servletArgument = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
+            }
         }
 
         if (makeRelative == null) {            
@@ -103,17 +107,15 @@ public class ImageTag extends FieldTag {
         }
 
         String servletPath;
-        {
-            Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
-                .set("session",  sessionName)
-                .set("context",  makeRelative.booleanValue() ? 
-                     UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") :
-                     req.getContextPath()
-                     )
-                .set("argument", number)
-                ;
-            servletPath = node.getFunctionValue("servletpath", args).toString();
-        }
+        //Function servletPathFunction = node.getFunction("servletpath");        
+        Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS);
+        args.set("context",  makeRelative.booleanValue() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
+            .set("argument", servletArgument)
+            .set("session", sessionName)
+            ;
+        fillStandardParameters(args);
+        servletPath = node.getFunctionValue("servletpath", args).toString();
+
 
         helper.useEscaper(false);
         helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
