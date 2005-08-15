@@ -22,7 +22,7 @@
       
       <form method="post" action="index.jsp">
 					<%-- first the reference params --%>
-          <%=getParamsFormatted(request,"form",getExtraParams(request))%>
+          <%=getParamsFormatted("form",getExtraParams(request))%>
           <input type="hidden" name="node" value="<mm:write referid="node"/>">
           <input type="hidden" name="type" value="<mm:write referid="type"/>">
           <input type="hidden" name="action" value="<mm:write referid="action"/>">
@@ -164,7 +164,7 @@
         
         //en nu terug naar hoofdpagina
 				String qnodeParam=(request.getParameter("qnode")!=null?"&qnode="+request.getParameter("qnode"):"");
-        String extraParamsUrl=(getExtraParams(request)!=null?"&":"")+getParamsFormatted(request, "url", getExtraParams(request));
+        String extraParamsUrl=(getExtraParams(request)!=null?"&":"")+getParamsFormatted( "url", getExtraParams(request));
         String expandedParam=(expanded!=null?"&expanded="+expanded:"");
         String redirect="index.jsp?node="+node+extraParamsUrl+qnodeParam+expandedParam;
 %>

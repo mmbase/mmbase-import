@@ -4,15 +4,15 @@
 <mm:cloud jspvar="wolk" method="asis" >
 <mm:import id="realpath"><%=getRealPath(request)%></mm:import>
 <mm:import externid="qnode"/>
+<%
+  String extraParamsUrl=getParamsFormatted("url",getExtraParams(request));
+%>
 
 <script language="javascript">
   //some general stuff
   var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/></mm:present>";
   var realpath="<mm:write referid="realpath"/>";
-  <mm:present referid="portal">
-    var portalpage="portal=<mm:write referid="portal"/>&page=<mm:write referid="page"/>";
-  </mm:present>
-  <mm:notpresent referid="portal">var portalpage=""</mm:notpresent>
+  
 
   //function goThere(path){
   //  document.location=path;
@@ -21,7 +21,7 @@
   // desc   :   this function generates the link to the editpage with all the right params for adding an aswer
   //***********************************************
   function goNewAnswer(){
-    path=realpath+"/index.jsp?action=add&type=answer&"+extraParamsUrl+"&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
+    path=realpath+"/index.jsp?action=add&type=answer<%=extraParamsUrl != null ? "&" + extraParamsUrl : "" %>&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
     goThere(path);
   }
 
@@ -29,7 +29,7 @@
   // desc   :   this function generates the link to the editpage with all the right params for editing an answer
   //***********************************************  
   function goEditAnswer(whichAnswer){
-    path=realpath+"/index.jsp?action=edit&type=answer&"+extraParamsUrl+"&node="+currentFolder.getAttribute('node')+"&anode="+whichAnswer+"&expanded="+getExpandedFolders()+possibleQnode;
+    path=realpath+"/index.jsp?action=edit&type=answer<%=extraParamsUrl != null ? "&" + extraParamsUrl : "" %>&node="+currentFolder.getAttribute('node')+"&anode="+whichAnswer+"&expanded="+getExpandedFolders()+possibleQnode;
     goThere(path);
   }
   
@@ -44,7 +44,7 @@
     </tr>
   </table>
   
-  <h5>answers to this question:</h5>
+  <h5>answers to this quetion:</h5>
   <mm:relatednodes type="kb_answer" orderby="number" directions="up">
     <div style="max-height:600px;overflow:auto;margin-top:10px;">
       <mm:maycreate type="kb_answer">

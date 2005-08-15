@@ -3,7 +3,7 @@
   
   //deze variabel wordt bij body.onLoad gezet.
   var isEditor=false;
-  var extraParamsUrl="";
+  var extraParamsUrl="default";
 
 
 //******************************************
@@ -15,6 +15,10 @@
       document.location="index.jsp?"+extraParamsUrl+"&node="+currentFolder.getAttribute("node")+"&qnode="+code+"&expanded="+getExpandedFolders();
   }
   
+  function setExtraParamsJs(params){
+          //alert("setting extra params: "+params);
+	  extraParamsUrl = params;
+  }
   
   function selectFolder(node) {
     //dit is de callback functie voor als er op een folder wordt geklikt
@@ -51,11 +55,7 @@
 //einde callbacks
 //*********************************************
 
-/*
-function setExtraParams(params){
-  extraParamsUrl=params;
-}
-*/
+
 /*****************************************************************************
 Name : getExpandedFolders
 Parameters  :  none

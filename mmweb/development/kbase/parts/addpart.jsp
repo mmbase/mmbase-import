@@ -19,7 +19,7 @@
       <h3>Add a <%=type%></h3>
       <form method="post" action="index.jsp">
 					<%-- first the reference params --%>
-                <%=getParamsFormatted(request,"form",getExtraParams(request))%>
+                <%=getParamsFormatted("form",getExtraParams(request))%>
                 <input type="hidden" name="node" value="<mm:write referid="node"/>">
                 <input type="hidden" name="type" value="<mm:write referid="type"/>">
                 <input type="hidden" name="action" value="<mm:write referid="action"/>">
@@ -94,7 +94,7 @@
         }
         
        //String portalpageParam=(portal!=null?"&portal="+portal+"&page="+kb_page:"");
-       String extraParamsUrl=(getExtraParams(request)!=null?"&":"")+getParamsFormatted(request,"url",getExtraParams(request));
+       String extraParamsUrl=(getExtraParams(request)!=null?"&":"")+getParamsFormatted("url",getExtraParams(request));
        String expandedParam="&expanded="+expanded;
         //response.sendRedirect("index.jsp?node="+node+qnodeParam+expanded);
         String redirect="index.jsp"+nodeParam+qnodeParam+extraParamsUrl+expandedParam;
