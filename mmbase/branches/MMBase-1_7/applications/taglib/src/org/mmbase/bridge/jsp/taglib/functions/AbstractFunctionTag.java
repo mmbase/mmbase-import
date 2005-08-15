@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.5.2.3 2004-07-26 20:12:20 nico Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.5.2.4 2005-08-15 10:05:13 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -149,30 +149,6 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     }
 
     
-
-
-
-    protected final void fillStandardParameters(Parameters p) throws JspTagException {
-        log.debug("Filling standard parameters");
-        if (p.hasParameter(Parameter.RESPONSE)) {
-            p.set(Parameter.RESPONSE, pageContext.getResponse());
-        }
-        if (p.hasParameter(Parameter.REQUEST)) {
-            p.set(Parameter.REQUEST, pageContext.getRequest());
-        }
-        if (p.hasParameter(Parameter.LANGUAGE)) {
-            LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
-            if (localeTag != null) {
-                p.set(Parameter.LANGUAGE, localeTag.getLocale().getLanguage());
-            }
-        }
-        if (p.hasParameter(Parameter.CLOUD)) {
-            p.set(Parameter.CLOUD, getCloudVar());
-        }
-        if (p.hasParameter(Parameter.USER)) {
-            p.set(Parameter.USER, getCloudVar().getUser());
-        }
-    }
 
     protected final Object getFunctionValue() throws JspTagException {
 

@@ -15,6 +15,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
 
+import org.mmbase.util.functions.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.21.2.2 2004-07-26 20:12:16 nico Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.21.2.3 2005-08-15 10:05:13 michiel Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -129,6 +130,17 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
             return getCloudVar().getNode(n.toString());
         } else {
             throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
+        }
+    }
+
+
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
+        super.fillStandardParameters(p);
+        if (p.hasParameter(Parameter.CLOUD)) {
+            p.set(Parameter.CLOUD, getCloudVar());
+        }
+        if (p.hasParameter(Parameter.USER)) {
+            p.set(Parameter.USER, getCloudVar().getUser());
         }
     }
 
