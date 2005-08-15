@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.122.2.2 2004-06-11 17:16:43 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.122.2.3 2005-08-15 16:44:47 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -45,6 +45,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public final static Object VALUE_NULL = new Object() {
             public String toString() { return "[FIELD VALUE NULL]"; }
         };
+
+    /**
+     * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
+     * It can be set back into the field with {@link #storeValue}, to unload the field again.
+     * @since MMBase-1.7.4
+     */
+    public final static String VALUE_SHORTED = "$SHORTED";
+
 
     /**
      * @deprecated use RelationsCache.getCache().getHits()
@@ -736,7 +744,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // get mapped into a real value. this saves speed and memory
         // because every blob/text mapping is a extra request to the
         // database
-        if (tmp.indexOf("$SHORTED") == 0) {
+        if (tmp.indexOf(VALUE_SHORTED) == 0) {
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
             // multiple database support.
