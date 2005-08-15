@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
@@ -18,7 +19,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.4 2005-08-11 14:41:40 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
@@ -53,8 +54,8 @@ public class NodeDataType extends DataType {
         return mustExistProperty;
     }
 
-    public void validate(Object value, Cloud cloud) {
-        super.validate(value, cloud);
+    public void validate(Object value, Field field, Cloud cloud) {
+        super.validate(value, field, cloud);
         if (value != null && !(value instanceof Number && ((Number)value).intValue() == -1)) {
             MMObjectNode nodeValue = Casting.toNode(value,MMBase.getMMBase().getTypeDef());
             if (nodeValue == null) {

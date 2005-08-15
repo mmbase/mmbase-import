@@ -11,6 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.Calendar;
 import java.util.Date;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.storage.search.FieldValueDateConstraint;
 import org.mmbase.util.Casting;
@@ -19,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: DateTimeDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -259,8 +260,8 @@ public class DateTimeDataType extends DataType {
         return calendar.getTimeInMillis();
     }
 
-    public void validate(Object value, Cloud cloud) {
-        super.validate(value, cloud);
+    public void validate(Object value, Field field, Cloud cloud) {
+        super.validate(value, field, cloud);
         if (value != null) {
             Date date = Casting.toDate(value);
             Date minimum = getMin();

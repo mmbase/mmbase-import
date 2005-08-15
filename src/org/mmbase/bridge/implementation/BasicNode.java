@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.157 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.158 2005-08-15 16:38:20 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -721,14 +721,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         FieldIterator fi = nodeManager.getFields().fieldIterator();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            field.getDataType().validate(getNode().getValue(field.getName()));
+            field.getDataType().validate(getNode().getValue(field.getName()), field, cloud);
         }
     }
 
     public void validate(String fieldName) {
         if (nodeManager.hasField(fieldName)) {
             Field field = nodeManager.getField(fieldName);
-            field.getDataType().validate(getNode().getValue(fieldName));
+            field.getDataType().validate(getNode().getValue(fieldName), field, cloud);
         }
     }
 
