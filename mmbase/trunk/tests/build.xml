@@ -194,13 +194,12 @@
 
     <echo message="compiling" />
 
-    <javac
-      destdir="${tests.build.dir}/classes"
-      debug="true"
-      optimize="false"
-      classpathref="compile.classpath"
-      deprecation="false"
-      >
+    <javac destdir="${tests.build.dir}/classes"
+           debug="true"
+           optimize="false"
+           source="1.4"
+           classpathref="compile.classpath"
+           deprecation="false" >
       <src path="${tests.source.dir}/bridge"/>
       <src path="${tests.source.dir}/typerel"/>
       <src path="${tests.source.dir}/convertimage"/>

@@ -49,7 +49,12 @@
 <!-- (Step 1 for remote) Compile the remote generator classes            -->
 <!-- =================================================================== -->
   <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
-    <javac srcdir="src" destdir="build/classes" classpathref="classpath" debug="yes" optimize="yes">
+    <javac srcdir="src" 
+           destdir="build/classes" 
+           classpathref="classpath" 
+           debug="yes" 
+           source="1.4"
+           optimize="yes">
       <include name="org/mmbase/bridge/remote/generator/*.java"/>
       <include name="org/mmbase/servlet/rmi/*.java"/>
     </javac>
@@ -86,7 +91,11 @@
 <!-- (Step 3 for remote) Compile the remote classes                      -->
 <!-- =================================================================== -->
   <target name="compile.remote" description="Compile the remote classes" depends="init,generate.remote">
-    <javac destdir="build/classes" classpathref="classpath" debug="yes" optimize="yes">
+    <javac destdir="build/classes" 
+           classpathref="classpath" 
+           debug="yes" 
+           source="1.4"
+           optimize="yes">
       <src path="build/src"/>
       <src path="src"/>
       <include name="org/mmbase/bridge/remote/*.java"/>
@@ -99,7 +108,11 @@
         <pathelement location="build/classes"/>
       </classpath>
     </rmic>
-    <javac destdir="build/classes" classpathref="classpath" debug="yes" optimize="yes">
+    <javac destdir="build/classes"
+          classpathref="classpath"
+          debug="yes"
+          source="1.4"
+          optimize="yes">
       <src path="build/src"/>
       <src path="src"/>
       <include name="org/mmbase/bridge/ContextProvider.java"/>

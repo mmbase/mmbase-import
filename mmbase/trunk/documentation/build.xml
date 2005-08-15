@@ -132,6 +132,7 @@
            destdir="${build.dir}/classes"
            depend="true"
            debug="${debug}"
+           source="1.4"
            optimize="${optimize}"
            deprecation="${deprecation}">
       <include name="org/mmbase/util/XSLTransformer.java" />
