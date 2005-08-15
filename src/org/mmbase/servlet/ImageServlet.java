@@ -11,11 +11,15 @@ package org.mmbase.servlet;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletException;
 
 import java.util.Map;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.security.Rank;
+import org.mmbase.module.builders.Images;
 
 /**
  * ImageServlet handles nodes as images. If you want to convert an image (resize it, turn it, change
@@ -23,7 +27,7 @@ import org.mmbase.security.Rank;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.15 2003-11-12 13:23:30 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.15.2.1 2005-08-15 16:39:12 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -31,6 +35,24 @@ import org.mmbase.security.Rank;
  * @see    AttachmentServlet
  */
 public class ImageServlet extends HandleServlet {
+    private static Logger log;
+
+    /**
+     * Wheter this servlet is capable of doing transformations by itself.
+     * @since MMBase-1.7.4
+     */
+    private boolean convert = false;
+
+    public void init() throws ServletException {
+        super.init();
+        String convertParameter = getInitParameter("convert");
+        convert = "true".equals(convertParameter);
+        log = Logging.getLoggerInstance(ImageServlet.class);
+        if (convert) {
+            log.service("Image servlet will accept image conversion templates");
+        }
+    }
+
 
     public String getServletInfo()  {
         return "Serves (cached) MMBase images";
@@ -58,7 +80,7 @@ public class ImageServlet extends HandleServlet {
             if (! c.mayRead(originalNode) && c.getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
                 // try (again?) cloud from session
                 QueryParts query = readQuery(req, res); // pitty that req must be read again now, but well..
-                c = getCloud(req, res, query);
+                c = getCloud(query);
             }
             
             if (c == null || ! c.mayRead(originalNode)) {
@@ -77,5 +99,57 @@ public class ImageServlet extends HandleServlet {
         res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getFunctionValue("format", null).toString() + "\"");
         return true;
     }
+
+    /**
+     * ImageServlet can serve a icache node in stead (using the 'extra parameters'
+     *
+     * @since MMBase-1.7.4
+     */
+    protected Node getServedNode(QueryParts query, Node node) throws java.io.IOException {
+        if (node == null) {
+            return null;
+        }
+        if (node == null) {
+            return null;
+        }
+        Node n = query.getServedNode();
+        if (n != null) {
+            return n;
+        }
+        String nodeNumber     = query.getNodeNumber();
+        String nodeIdentifier = query.getNodeIdentifier();
+        if (node.getNodeManager().getName().equals("icaches")) {
+            if (! nodeNumber.equals(nodeIdentifier)) {
+                //query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot convert icache node");
+                return null;
+            } else {
+                n = getNode(query);
+                n.getFunctionValue("wait", null);
+            }
+        } else {
+            // This _is_ an original node.
+            if (! nodeNumber.equals(nodeIdentifier)) {
+                if (convert) {
+                    Parameters args = new Parameters(Images.CACHE_PARAMETERS);
+                    args.set("template", nodeIdentifier.substring(nodeNumber.length() + 1));
+                    int icacheNodeNumber = node.getFunctionValue("cache", args).toInt();
+                    Cloud cloud = node.getCloud();
+                    if (cloud == null) {
+                        return null;
+                    }
+                    Node icache = cloud.getNode(icacheNodeNumber);
+                    n = icache;
+                } else {
+                    query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "This server does not allow you to convert an image in this way");
+                    return null;
+                }
+            } else {
+                n =  getNode(query);
+            }
+        }
+        query.setServedNode(n);
+        return n;
+    }
+
 
 }

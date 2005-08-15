@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.15 2004-04-07 14:46:39 keesj Exp $
+ * @version $Id: HandleServlet.java,v 1.15.2.1 2005-08-15 16:39:12 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -89,7 +89,7 @@ public class HandleServlet extends BridgeServlet {
         // Why we don't set Content-Disposition:
         // - IE can't handle that. (IE sucks!)
 
-        res.setHeader("Content-Disposition", "attachment; filename=\""  + fn + "\"");
+        res.setHeader("Content-Disposition", "inline; filename=\""  + fn + "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
@@ -136,7 +136,15 @@ public class HandleServlet extends BridgeServlet {
      */
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        Node node = getNode(req, res);
+        QueryParts query = readQuery(req, res);
+        Node queryNode = getNode(query);
+        if (queryNode == null) {
+            return;
+        }
+
+        //res.setHeader("X-MMBase-Version", org.mmbase.Version.get());
+        Node node = getServedNode(query, queryNode);
+
         if (node == null) {
             log.debug("No node found, returning");
             return;
