@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.32.2.1 2005-01-04 12:18:51 andre Exp $
+ * @version $Id: ObjectTypes.java,v 1.32.2.2 2005-08-15 14:52:10 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -227,7 +227,7 @@ public class ObjectTypes extends TypeDef {
 	*
 	* @param builder The builder to remove
 	* @throws RuntimeException When the operation could not be performed
-	* 
+	*
 	*/
     private void testBuilderInUse(MMObjectBuilder builder) {
         if (builder == null) {
@@ -251,7 +251,7 @@ public class ObjectTypes extends TypeDef {
             }
         }
     }
-    
+
     /**
      * Remove a node from the cloud, when the represented builder was active
      * it will also be unloaded
@@ -442,18 +442,27 @@ public class ObjectTypes extends TypeDef {
             }
         }
         String message = "";
-        try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.ENCODING, mmb.getEncoding());
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
-            log.service("Saving builderconfig to file:" + file);
-            transformer.transform(new DOMSource(doc), new StreamResult(file));
-        } catch (TransformerException te) {
-            message = "Failure saving configuration to disk : " + te.getMessage() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement();
-            // throw new RuntimeException("
-            // storing the builder failed!
+        if ((file.getParentFile().canWrite() && ! file.exists()) || file.canWrite()) {
+            try {
+                log.service("Saving builderconfig to file:" + file);
+                OutputStream stream = new FileOutputStream(file);
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+                transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
+                transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
+                transformer.transform(new DOMSource(doc), new StreamResult(stream));
+                stream.close();
+            } catch (TransformerException te) {
+                message = "Failure saving configuration to disk : " + te.getMessage() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement();
+                // throw new RuntimeException("
+                // storing the builder failed!
+                
+            } catch (Exception io) {
+                message = io.getMessage();
+            }
+        } else {
+            message = "File " + file + " is not writable";
+            log.error(message);
         }
         if (! file.exists()) {
             log.error("Failed to store file " + file + ": " + message);
