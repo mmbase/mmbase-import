@@ -295,8 +295,8 @@ builddate=${builddate}
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
-    <copy file="${xerces.jar}"         todir="${release.lib.dir}" />
-    <copy file="${xml-apis.jar}"       todir="${release.lib.dir}" />
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xerces.renametojar" />
+    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
     <copy file="${log4j.jar}"          todir="${release.lib.dir}" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
@@ -304,6 +304,10 @@ builddate=${builddate}
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
+
+    <copy file="${source-documentation.dir}/releases/XERCES.README.txt" todir="${release.lib.dir}" />
+
+
     
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
