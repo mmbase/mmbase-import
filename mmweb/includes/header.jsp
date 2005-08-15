@@ -9,10 +9,27 @@
   <head>
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmmbase.css" />" />
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/navi.css" />" />
-<mm:node number="$portal"><mm:related path="posrel,templates">
-     <mm:field id="url" name="templates.url" write="false"/> 
-     <link rel="stylesheet" type="text/css" href="<mm:url page="$url"/>" />
-</mm:related></mm:node>
+     <%--
+	Add stylesheets that are set into the pageContext by the surrounding page
+     --%>
+<%
+     if(pageContext.findAttribute("cssScripts") != null){
+	Iterator cssScriptsIterator = ((List) pageContext.findAttribute("cssScripts")).iterator();
+	while(cssScriptsIterator.hasNext()){
+%>
+             <link rel="stylesheet" type="text/css" href="<%=(String)cssScriptsIterator.next()%>" />
+<%
+        }
+     }
+%>
+     <%--
+	Add stylesheets that are linked to the portal node
+     --%>
+     <mm:node number="$portal"><mm:related path="posrel,templates">
+         <mm:field id="url" name="templates.url" write="false"/> 
+             <link rel="stylesheet" type="text/css" href="<mm:url page="$url"/>" />
+         </mm:related>
+     </mm:node>
      <link rel="shortcut icon" href="/media/favicon.ico" /> 
      <title>
         <mm:node number="$portal" notfound="skipbody">
