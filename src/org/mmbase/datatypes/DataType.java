@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.7 2005-08-15 16:38:20 pierre Exp $
+ * @version $Id: DataType.java,v 1.8 2005-08-15 17:20:33 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -335,7 +335,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (field != null && isUnique()) {
             // create a query and query for the value
             NodeQuery query = field.getNodeManager().createQuery();
-            StepField stepField = query.addField(field.getName());
+            StepField stepField = query.getStepField(field);
             FieldValueConstraint constraint = new BasicFieldValueConstraint(stepField, value);
             query.setConstraint(constraint);
             log.debug(query);
