@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm" %>
 <%@include file="parts/basics.jsp"%>
 <%
-  String extraParamsUrl=getParamsFormatted(request,"url",getExtraParams(request));
+  String extraParamsUrl=getParamsFormatted("url",getExtraParams(request));
 %>
 <mm:cloud jspvar="wolk" method="asis" >
 <mm:import externid="node" jspvar="node" vartype="String"><mm:node number="kbase.root"><mm:field name="number"/></mm:node></mm:import>
@@ -28,7 +28,7 @@
     var realpath="<mm:write referid="realpath"/>/";
 
     function goThere(path){
-      //alert(path);
+      //	alert(path);
       document.location=path;
     }
 
@@ -38,7 +38,7 @@
       var path=realpath+"/index.jsp?expanded=all<%=(!extraParamsUrl.equals("")?"&":"")%><%=extraParamsUrl%>&node="+currentFolder.getAttribute('node');
       goThere(path);      
     }catch(er){
-      var path=realpath+"/index.jsp<%=(!extraParamsUrl.equals("")?"?":"")%><%=extraParamsUrl%>&expanded=all";
+      var path=realpath+"/index.jsp<%=(!extraParamsUrl.equals("") ? "?" : "")%><%=extraParamsUrl%>&expanded=all";
       goThere(path);  
     }
   }
