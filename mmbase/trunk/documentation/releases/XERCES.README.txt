@@ -1,0 +1,13 @@
+This is stuff which can be quite madding. What to do to get it working. Pick your combination.
+
+JDK version    Application server    Action                                                           According to
+-------------------------------------------------------------------------------------------------------------------
+1.5, 1.4       Tomcat  5.5           Do nothing.                                                      MM
+1.4            Tomcat  5.0           Move *.renametojar to [tomcat-dir]/common/endorsed/*.jar ?       MM
+1.5            Tomcat  5.0           Do nothing?                                                      MM
+               Orion                 I don't know, probably nothing
+               Resin                 I don't know, probably nothing
+               etc..
+
+MMBase release team
+
