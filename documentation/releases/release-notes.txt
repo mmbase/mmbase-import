@@ -22,6 +22,9 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+[1.7.4]
+- Options on servlets and image-tag to make it possible to server images from seperate server
+ (ported from 1.8). Documented in 1.8's documentation only.
 [1.7.3]
 - Cache tool in the adminpages has been made a bit better
 [1.7.2]
