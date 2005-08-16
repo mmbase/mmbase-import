@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.28 2005-08-15 16:38:20 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.29 2005-08-16 14:05:39 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -348,7 +348,7 @@ public class BuilderReader extends XMLBasicReader {
                 results.add(def);
             }
         }
-        
+
         return results;
     }
 
@@ -546,7 +546,7 @@ public class BuilderReader extends XMLBasicReader {
                 if (dataType == null) {
                     log.warn("Could not find data type for " + baseDataType + " / " + guiType);
                 } else {
-                    log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
+                    if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
                 }
             }
         }

@@ -33,11 +33,11 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.12 2005-07-06 09:14:03 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.13 2005-08-16 14:05:38 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
-    
+
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
     /**
@@ -57,7 +57,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-            
+
         case SearchQueryHandler.FEATURE_OFFSET:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
@@ -123,6 +123,9 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             break;
         case FieldValueDateConstraint.DAY_OF_WEEK:
             datePartFunction = "DOW";
+            break;
+        case FieldValueDateConstraint.MILLISECOND:
+            datePartFunction = "MILLISECONDS";
             break;
         default:
             log.debug("Unknown datePart " + datePart);
