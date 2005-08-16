@@ -27,7 +27,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.20 2005-05-09 10:03:20 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.21 2005-08-16 09:25:43 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -37,6 +37,10 @@ import org.mmbase.util.functions.*;
 public class ImageServlet extends HandleServlet {
     private static Logger log;
 
+    /**
+     * Wheter this servlet is capable of doing transformations by itself.
+     * @since MMBase-1.7.4
+     */
     private boolean convert = false;
 
     public void init() throws ServletException {
@@ -69,7 +73,7 @@ public class ImageServlet extends HandleServlet {
     protected String getMimeType(Node node) {
         return node.getFunctionValue("mimetype", null).toString();
     }
-
+    
 
     /**
      * Content-Disposition header
@@ -107,7 +111,7 @@ public class ImageServlet extends HandleServlet {
     /**
      * ImageServlet can serve a icache node in stead (using the 'extra parameters'
      *
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
     protected Node getServedNode(QueryParts query, Node node) throws java.io.IOException {
         if (node == null) {

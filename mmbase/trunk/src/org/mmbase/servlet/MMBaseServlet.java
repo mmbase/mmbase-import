@@ -38,13 +38,13 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.40 2005-07-20 08:49:26 marcel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.41 2005-08-16 09:25:43 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
-    private   static final Logger log = Logging.getLoggerInstance(MMBaseServlet.class);
+    private static final Logger log = Logging.getLoggerInstance(MMBaseServlet.class);
     /**
      * MMBase reference. While null, servlet does not accept request.
      */
@@ -100,7 +100,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     /**
      * If MMBase has not been started, a 503 is given, with this value for the 'Retry-After' header.
-     * {@see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4}
+     * {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4}
      * Defaults to 60 seconds, can be configured in web.xml with the 'retry-after' propery on the servlets.
      * @since MMBase-1.7.2
      */
