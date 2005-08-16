@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.6 2005-07-01 13:13:20 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.7 2005-08-16 13:40:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -48,24 +48,38 @@ public class IndexFunction extends FunctionProvider {
 
     static {
         indexCache.putCache();
-        MMBaseObserver observer = new MMBaseObserver() {
-                public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-                    return nodeChanged(machine, number, builder, ctype);
-                }
-                public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-                    return nodeChanged(machine, number, builder, ctype);
-                }
-                public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-                    log.info("Received change " + machine + "/" + number + "/" +  builder + "/" + ctype);
-                    indexCache.clear(); // this could be done smarter.
-                    return true;
-                }
-                
 
-            };
-        MMObjectBuilder indexRelation = MMBase.getMMBase().getBuilder("indexrel");
-        indexRelation.addLocalObserver(observer);
-        indexRelation.addRemoteObserver(observer);
+    }
+
+    private static MMBaseObserver observer = null;
+    private static synchronized void initObserver() {
+        if (observer == null) {
+            MMBaseObserver o = null;
+            try {
+                 o = new MMBaseObserver() {
+                        public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+                            return nodeChanged(machine, number, builder, ctype);
+                        }
+                        public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+                            return nodeChanged(machine, number, builder, ctype);
+                        }
+                        public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+                            log.info("Received change " + machine + "/" + number + "/" +  builder + "/" + ctype);
+                            indexCache.clear(); // this could be done smarter.
+                            return true;
+                        }
+                        
+                        
+                    };
+                MMObjectBuilder indexRelation = MMBase.getMMBase().getBuilder("indexrel");
+                indexRelation.addLocalObserver(o);
+                indexRelation.addRemoteObserver(o);
+            } catch (Exception e) {
+                log.service("" + e + " retrying later");
+                return;
+            }
+            observer = o;
+        }
     }
 
     /** 
@@ -199,6 +213,7 @@ public class IndexFunction extends FunctionProvider {
 
                 final String key = getKey(node, parameters);
 
+                initObserver();
                 String result = (String) indexCache.get(key);
                 if (result != null) return result;
 
