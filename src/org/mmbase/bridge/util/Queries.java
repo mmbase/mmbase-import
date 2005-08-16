@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.56 2005-08-16 14:05:38 pierre Exp $
+ * @version $Id: Queries.java,v 1.57 2005-08-16 14:42:48 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -364,6 +364,8 @@ abstract public class Queries {
             return FieldCompareConstraint.LESS_EQUAL;
         } else if (op.equals("=") || op.equals("EQUAL") || op.equals("")) {
             return FieldCompareConstraint.EQUAL;
+        } else if (op.equals("!=") || op.equals("NOT_EQUAL")) {
+            return FieldCompareConstraint.NOT_EQUAL;
         } else if (op.equals(">") || op.equals("GREATER")) {
             return FieldCompareConstraint.GREATER;
         } else if (op.equals(">=") || op.equals("GREATER_EQUAL")) {
