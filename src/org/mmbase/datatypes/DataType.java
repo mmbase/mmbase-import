@@ -30,35 +30,10 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.8 2005-08-15 17:20:33 pierre Exp $
+ * @version $Id: DataType.java,v 1.9 2005-08-16 14:05:17 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
-
-    // DataTypes for base MMBase field types
-    public static final DataType INTEGER  = DataTypes.getDataType(Field.TYPE_INTEGER);
-    public static final DataType LONG     = DataTypes.getDataType(Field.TYPE_LONG);
-    public static final DataType FLOAT    = DataTypes.getDataType(Field.TYPE_FLOAT);
-    public static final DataType DOUBLE   = DataTypes.getDataType(Field.TYPE_DOUBLE);
-    public static final DataType STRING   = DataTypes.getDataType(Field.TYPE_STRING);
-    public static final DataType XML      = DataTypes.getDataType(Field.TYPE_XML);
-    public static final DataType DATETIME = DataTypes.getDataType(Field.TYPE_DATETIME);
-    public static final DataType BOOLEAN  = DataTypes.getDataType(Field.TYPE_BOOLEAN);
-    public static final DataType BINARY   = DataTypes.getDataType(Field.TYPE_BINARY);
-    public static final DataType NODE     = DataTypes.getDataType(Field.TYPE_NODE);
-    public static final DataType UNKNOWN  = DataTypes.getDataType(Field.TYPE_UNKNOWN);
-
-    public static final DataType LIST_UNKNOWN = DataTypes.getListDataType(Field.TYPE_UNKNOWN);
-    public static final DataType LIST_INTEGER = DataTypes.getListDataType(Field.TYPE_INTEGER);
-    public static final DataType LIST_LONG = DataTypes.getListDataType(Field.TYPE_LONG);
-    public static final DataType LIST_FLOAT = DataTypes.getListDataType(Field.TYPE_FLOAT);
-    public static final DataType LIST_DOUBLE = DataTypes.getListDataType(Field.TYPE_DOUBLE);
-    public static final DataType LIST_STRING = DataTypes.getListDataType(Field.TYPE_STRING);
-    public static final DataType LIST_XML = DataTypes.getListDataType(Field.TYPE_XML);
-    public static final DataType LIST_DATETIME = DataTypes.getListDataType(Field.TYPE_DATETIME);
-    public static final DataType LIST_BOOLEAN = DataTypes.getListDataType(Field.TYPE_BOOLEAN);
-    public static final DataType LIST_NODE = DataTypes.getListDataType(Field.TYPE_NODE);
-
 
     public static final int PROCESS_COMMIT = 0;
     public static final int PROCESS_GET    = 1;
@@ -176,6 +151,12 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      */
     public void inherit(DataType origin) {
         edit();
+        // call erase to clear values
+        // need only be done if the origin is NOT an instance of the current class
+        // (which would mean that not all values can be inherited)
+        if (! this.getClass().isInstance(origin)) {
+            erase();
+        }
         this.origin = origin;
         defaultValue = origin.defaultValue;
         commitProcessor = origin.commitProcessor;
@@ -331,8 +312,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
             failOnValidate(getRequiredProperty(), value, cloud);
         }
+/* hmmmm... doesn't work right...
         // test uniqueness
-        if (field != null && isUnique()) {
+        if (field != null && isUnique() && ) {
             // create a query and query for the value
             NodeQuery query = field.getNodeManager().createQuery();
             StepField stepField = query.getStepField(field);
@@ -343,6 +325,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
                 failOnValidate(getUniqueProperty(), value, cloud);
             }
         }
+*/
     }
 
     public String toString() {
@@ -389,8 +372,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             return clone;
         } catch (CloneNotSupportedException cnse) {
             // should not happen
-            log.error("Cannot clone this DataType");
-            throw new RuntimeException("Cannot clone this DataType", cnse);
+            log.error("Cannot clone this DataType: " + name);
+            throw new RuntimeException("Cannot clone this DataType: " + name, cnse);
         }
     }
 
@@ -714,6 +697,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             }
             clone.setFixed(fixed);
             return clone;
+        }
+
+        public String toString() {
+            return name + " : " + value + ( fixed ? " (fixed)" : "");
         }
 
     }

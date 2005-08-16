@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
+ * @version $Id: DateTimeDataType.java,v 1.6 2005-08-16 14:05:17 pierre Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -66,10 +66,10 @@ public class DateTimeDataType extends DataType {
 
         minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
         setMinInclusive(true);
-        minPrecision = Calendar.SECOND;
+        minPrecision = Calendar.MILLISECOND;
         maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
         setMaxInclusive(true);
-        maxPrecision = Calendar.SECOND;
+        maxPrecision = Calendar.MILLISECOND;
     }
 
     public void inherit(DataType origin) {
