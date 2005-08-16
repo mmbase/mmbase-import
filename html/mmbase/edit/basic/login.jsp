@@ -1,5 +1,4 @@
-<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.DataType" 
-%><%@ include file="page_base.jsp"  
+<%@ include file="page_base.jsp"  
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0" jspvar="locale">
 <mm:write referid="style" escape="none" />
 <title>Login</title>
