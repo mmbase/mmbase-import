@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.6 2005-08-16 09:14:25 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.7 2005-08-16 14:05:17 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -133,20 +133,18 @@ public class StringDataType extends BigDataType {
 
     public Object process(int action, Node node, Field field, Object value, int processingType) {
         value = super.process(action, node, field, value, processingType);
-        if (value instanceof String) {
+        if (value instanceof String && action == PROCESS_SET) {
             Integer whiteSpace = getWhiteSpace();
             if (whiteSpace.equals(WHITESPACE_REPLACE)) {
                 // remove all whitespace
                 value = ((String)value).replaceAll("\\s"," ");
             } else if (whiteSpace.equals(WHITESPACE_COLLAPSE)) {
                 // remove all whitespace
-                value = ((String)value).replaceAll("\\s"," ");
-                value = ((String)value).trim().replaceAll("  "," ");
+                value = ((String)value).replaceAll("\\s+"," ").trim();
             }
         }
         return value;
     }
-
 
     public String toString() {
         StringBuffer buf = new StringBuffer(super.toString());
