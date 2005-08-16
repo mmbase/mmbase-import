@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.9 2005-08-16 14:05:17 pierre Exp $
+ * @version $Id: DataType.java,v 1.10 2005-08-16 14:44:37 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -312,20 +312,6 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
             failOnValidate(getRequiredProperty(), value, cloud);
         }
-/* hmmmm... doesn't work right...
-        // test uniqueness
-        if (field != null && isUnique() && ) {
-            // create a query and query for the value
-            NodeQuery query = field.getNodeManager().createQuery();
-            StepField stepField = query.getStepField(field);
-            FieldValueConstraint constraint = new BasicFieldValueConstraint(stepField, value);
-            query.setConstraint(constraint);
-            log.debug(query);
-            if (Queries.count(query) > 0) {
-                failOnValidate(getUniqueProperty(), value, cloud);
-            }
-        }
-*/
     }
 
     public String toString() {
@@ -533,6 +519,22 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         // set to the default value.
         if (action == PROCESS_COMMIT && result == null && isRequired()) {
             result = getDefaultValue();
+        }
+        // test uniqueness
+        if (action == PROCESS_SET  && node != null && field != null && value != null &&
+            isUnique() && !field.getName().equals("number")) {
+            // create a query and query for the value
+            NodeQuery query = field.getNodeManager().createQuery();
+            Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
+            Queries.addConstraint(query,constraint);
+            if (!node.isNew()) {
+                constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
+                Queries.addConstraint(query,constraint);
+            }
+            log.debug(query);
+            if (Queries.count(query) > 0) {
+                failOnValidate(getUniqueProperty(), value, node.getCloud());
+            }
         }
         return result;
     }
