@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.20 2005-08-16 13:58:45 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.21 2005-08-16 17:02:10 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -799,7 +799,7 @@ public class ResourceLoader extends ClassLoader {
      * Returns an abstract URL for a resource with given name, <code>findResource(name).toString()</code> would give an 'external' form.
      */
     public String toInternalForm(String name) {
-       return toInternalForm(findResource(name));
+        return toInternalForm(findResource(name));
 
     }
 
@@ -1171,48 +1171,48 @@ public class ResourceLoader extends ClassLoader {
         }
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (ResourceLoader.resourceBuilder != null) {
-            try {
-                NodeSearchQuery query = new NodeSearchQuery(ResourceLoader.resourceBuilder);
-                BasicFieldValueConstraint typeConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)), new Integer(type));
-                BasicFieldValueConstraint nameConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)), ResourceLoader.this.context.getPath().substring(1) + "%");
-                nameConstraint.setOperator(FieldCompareConstraint.LIKE);
+                try {
+                    NodeSearchQuery query = new NodeSearchQuery(ResourceLoader.resourceBuilder);
+                    BasicFieldValueConstraint typeConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)), new Integer(type));
+                    BasicFieldValueConstraint nameConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)), ResourceLoader.this.context.getPath().substring(1) + "%");
+                    nameConstraint.setOperator(FieldCompareConstraint.LIKE);
 
-                BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+                    BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
-                constraint.addChild(typeConstraint).addChild(nameConstraint);
+                    constraint.addChild(typeConstraint).addChild(nameConstraint);
 
 
-                query.setConstraint(constraint);
-                Iterator i = resourceBuilder.getNodes(query).iterator();
-                while (i.hasNext()) {
-                    MMObjectNode node = (MMObjectNode) i.next();
-                    String url = node.getStringValue(Resources.RESOURCENAME_FIELD);
-                    String subUrl = url.substring(ResourceLoader.this.context.getPath().length() - 1);
-                    int pos = subUrl.indexOf('/');
+                    query.setConstraint(constraint);
+                    Iterator i = resourceBuilder.getNodes(query).iterator();
+                    while (i.hasNext()) {
+                        MMObjectNode node = (MMObjectNode) i.next();
+                        String url = node.getStringValue(Resources.RESOURCENAME_FIELD);
+                        String subUrl = url.substring(ResourceLoader.this.context.getPath().length() - 1);
+                        int pos = subUrl.indexOf('/');
 
-                    if (directories) {
-                        if (pos < 0) continue; // not a directory
-                        do {
-                            String u = subUrl.substring(0, pos);
-                            if (pattern != null && ! pattern.matcher(u).matches()) {
+                        if (directories) {
+                            if (pos < 0) continue; // not a directory
+                            do {
+                                String u = subUrl.substring(0, pos);
+                                if (pattern != null && ! pattern.matcher(u).matches()) {
+                                    continue;
+                                }
+                                results.add(u);
+                                pos = subUrl.indexOf('/', pos + 1);
+                            } while (pos > 0 && recursive);
+                        } else {
+                            if (pos > 0 && ! recursive) continue;
+                            if (pattern != null && ! pattern.matcher(subUrl).matches()) {
                                 continue;
                             }
-                            results.add(u);
-                            pos = subUrl.indexOf('/', pos + 1);
-                        } while (pos > 0 && recursive);
-                    } else {
-                        if (pos > 0 && ! recursive) continue;
-                        if (pattern != null && ! pattern.matcher(subUrl).matches()) {
-                            continue;
+                            results.add(subUrl);
                         }
-                        results.add(subUrl);
-                    }
 
+                    }
+                } catch (SearchQueryException sqe) {
+                    log.warn(sqe);
                 }
-            } catch (SearchQueryException sqe) {
-                log.warn(sqe);
             }
-        }
             return results;
         }
         public String toString() {
@@ -1342,7 +1342,7 @@ public class ResourceLoader extends ClassLoader {
         public String toString() {
             return "NodeConnection " + node;
         }
-
+    
     }
 
     /**
@@ -1353,7 +1353,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * URLStreamHandler based on the servletContext object of ResourceLoader
-     */
+ */
     protected  class ServletResourceURLStreamHandler extends PathURLStreamHandler {
         private String root;
         ServletResourceURLStreamHandler(String r) {
@@ -1377,8 +1377,12 @@ public class ResourceLoader extends ClassLoader {
             }
         }
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+            if (log.isDebugEnabled()) {
+                log.debug("Getting " + (directories ? "directories" : "files") + " matching '" + pattern + "' in '" + root + "'");
+            }
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
+        
         private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
@@ -1388,10 +1392,16 @@ public class ResourceLoader extends ClassLoader {
                     if (c == null) return results;
                     Iterator j = c.iterator();
                     while (j.hasNext()) {
-                        String newResourcePath = ((String) j.next()).substring(currentRoot.length());
+                        String res = (String) j.next();
+                        if (res.equals(resourcePath + "/")) {                            
+                            // I think this is a bug in Jetty (according to javadoc this should not happen, but it does!)
+                            continue;
+                        }
+
+                        String newResourcePath = res.substring(currentRoot.length());
                         boolean isDir = newResourcePath.endsWith("/");
                         if (isDir) {
-                            // subdirs
+                            // subdirs                            
                             if (recursive != null) {
                                 getPaths(results, pattern, newResourcePath.substring(0, newResourcePath.length() - 1), directories);
                             }
