@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.20 2005-07-01 11:50:38 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.21 2005-08-16 09:25:43 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -131,7 +131,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
 
     /**
      * 
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
     public static QueryParts readServletPath(String servletPath) {
         Matcher m = FILE_PATTERN.matcher(servletPath);
@@ -145,7 +145,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
 
     /**
      * 
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
     public static QueryParts readQuery(String query) {
         String sessionName = null; // "cloud_" + getCloudName();
@@ -177,7 +177,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         log.debug("getting a cloud");
         // trying to get a cloud from the session
         Cloud cloud = null;
-         HttpSession session = qp.getRequest().getSession(false); // false: do not create a session, only use it
+        HttpSession session = qp.getRequest().getSession(false); // false: do not create a session, only use it
         if (session != null) { // there is a session
             log.debug("from session");
             String sessionName = qp.getSessionName();
@@ -297,7 +297,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * (E.g. a icache based on a url with an image node).
      * @param qp A QueryParts object, which you must have obtained by {@link readQuery}
      * @param node The node which is specified on the URL (obtained by {@link getNode}
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
     protected Node getServedNode(QueryParts qp, Node node) throws IOException {
         return node;
@@ -401,7 +401,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         }
 
         /**           
-         * @since MMBase-1.8
+         * @since MMBase-1.7.4
          */
         public String getNodeIdentifier() { 
             return nodeIdentifier; 
