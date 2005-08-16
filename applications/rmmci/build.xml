@@ -3,7 +3,12 @@
   <property file="../build.properties" />
 
   <property name="source.dir" value="../.."/>
+  <property file="${source.dir}/build.properties" />
+  <property name="build.dir"    value="${source.dir}/build" /><!-- mmbase build dir -->
+  <property name="download.dir" value="${build.dir}/download" />
+  <property name="expand.dir"   value="${download.dir}/expanded" />
   <property file="${source.dir}/build.properties.version" />
+  <property file="${source.dir}/build.properties.default" />
 
   <property name="project.jar.dir" value="build"/>
   <property name="project.zip.dir" value="${project.jar.dir}"/>
@@ -125,7 +130,7 @@
   <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
     <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
-    <unjar src="${build.dir}/lib/xml-apis.jar" dest="build/rmmcitmp"/>
+    <unjar src="${xml-apis.jar}" dest="build/rmmcitmp"/>
     <echo file="build/rmmcitmp/manifest.mf">
 Name: org/mmbase
 Vendor: MMBase Community
