@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.56 2005-07-06 11:42:23 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.57 2005-08-16 13:16:57 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -195,7 +195,7 @@ public class TypeDef extends MMObjectBuilder {
                     storeBuilderConfiguration(node);
                 } finally {
                     // clear config, so it will be refreshed later on
-                    node.storeValue("config",null);
+                    node.storeValue("config", null);
                     // load the builder again.. (will possibly create a new table)
                     loadBuilder(node);
                 }
@@ -217,18 +217,20 @@ public class TypeDef extends MMObjectBuilder {
         log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         // only delete when builder is completely empty...
         MMObjectBuilder builder = getBuilder(node);
-        testBuilderInUse(builder);
+        testBuilderRemovable(builder, node);
         builder = unloadBuilder(node);
         // now that the builder cannot be started again (since config is now really missing)
-        builder.delete();
+        if (builder != null) {
+            builder.delete();
+        }
         // try to delete the configuration file first!.....
         if (!deleteBuilderConfiguration(node)) {
             // delete-ing failed, reload the builder again...
             loadBuilder(node);
             throw new RuntimeException("Could not delete builder config");
         }
-        Integer number=node.getIntegerValue("number");
-        String name=node.getStringValue("name");
+        Integer number = node.getIntegerValue("number");
+        String name = node.getStringValue("name");
         super.removeNode(node);
         getNameToNumberCache().remove(name);
         getNumberToNameCache().remove(number);
@@ -613,12 +615,30 @@ public class TypeDef extends MMObjectBuilder {
         }
     }
 
-    private void testBuilderInUse(MMObjectBuilder builder) {
-        if (builder == null) {
-            throw new RuntimeException("Cannot delete inactive builders (because it is unknown what the state of the table in the database is)");
-        } else if (builder.size() > 0) {
+    private void testBuilderRemovable(MMObjectBuilder builder, MMObjectNode typeDefNode) {
+        if (builder != null && builder.size() > 0) {
             throw new RuntimeException("Cannot delete this builder, it still contains nodes");
-        } else {
+        } else if (builder == null) {
+            // inactive builder, does it have nodes?
+            MMObjectBuilder object = mmb.getBuilder("object");
+            NodeSearchQuery q = new NodeSearchQuery(object);
+            Integer value = new Integer(typeDefNode.getNumber());
+            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(q.getField(object.getField("otype")), value);
+            q.setConstraint(constraint);
+            q.setMaxNumber(1);
+            try {
+                List typerels = object.getNodes(q);
+                if (typerels.size() > 0) {
+                    throw new RuntimeException("Cannot delete this (inactive) builder, it still contains nodes");
+                }
+            } catch (SearchQueryException sqe) {
+                // should never happen
+                log.error(sqe);
+            }
+        }
+        
+        // check if there are relations which use this builder
+        {
             if (builder instanceof InsRel) {
                 MMObjectNode reldef = mmb.getRelDef().getDefaultForBuilder((InsRel)builder);
                 if (reldef != null) {
@@ -626,11 +646,12 @@ public class TypeDef extends MMObjectBuilder {
                 }
             }
             try {
-                NodeSearchQuery q = new NodeSearchQuery(mmb.getTypeRel());
-                Integer value = new Integer(builder.oType);
+                MMObjectBuilder typeRel = mmb.getTypeRel();
+                NodeSearchQuery q = new NodeSearchQuery(typeRel);
+                Integer value = new Integer(typeDefNode.getNumber());
                 BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-                BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), value);
-                BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), value);
+                BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(typeRel.getField("snumber")), value);
+                BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(typeRel.getField("dnumber")), value);
                 constraint.addChild(constraint1);
                 constraint.addChild(constraint2);
                 q.setConstraint(constraint);
@@ -643,6 +664,7 @@ public class TypeDef extends MMObjectBuilder {
                 log.error(sqe);
             }
         }
+
     }
 
 
@@ -699,7 +721,7 @@ public class TypeDef extends MMObjectBuilder {
             log.debug("Load builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
         String path = getBuilderPath(node);
-        log.info("Loading bulider from " + path);
+        log.info("Loading builder from " + path);
         MMObjectBuilder builder = mmb.loadBuilderFromXML(node.getStringValue("name"), path);
         if (builder == null) {
             // inactive builder?
@@ -714,7 +736,7 @@ public class TypeDef extends MMObjectBuilder {
 
     /**
      */
-    protected void storeBuilderConfiguration(MMObjectNode node) {
+    protected void storeBuilderConfiguration(MMObjectNode node) throws java.io.IOException {
         if (log.isDebugEnabled()) {
             log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
@@ -726,11 +748,8 @@ public class TypeDef extends MMObjectBuilder {
         }
         String path = getBuilderConfiguration(node);
         log.info("Storing to " + path);
-        try {
-            mmb.getBuilderLoader().storeDocument(path, doc);
-        } catch (java.io.IOException ioe) {
-            log.error("Could not store builder configuration " + ioe.getMessage());
-        }
+        mmb.getBuilderLoader().storeDocument(path, doc);
+
     }
 
     /**
