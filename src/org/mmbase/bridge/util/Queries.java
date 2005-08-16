@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.55 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: Queries.java,v 1.56 2005-08-16 14:05:38 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -397,10 +397,10 @@ abstract public class Queries {
             return FieldValueDateConstraint.CENTURY;
         } else if (sPart.equals("YEAR")) {
             return FieldValueDateConstraint.YEAR;
-        } else if (sPart.equals("MONTH")) {
-            return FieldValueDateConstraint.MONTH;
         } else if (sPart.equals("QUARTER")) {
             return FieldValueDateConstraint.QUARTER;
+        } else if (sPart.equals("MONTH")) {
+            return FieldValueDateConstraint.MONTH;
         } else if (sPart.equals("WEEK")) {
             return FieldValueDateConstraint.WEEK;
         } else if (sPart.equals("DAYOFYEAR")) {
@@ -415,6 +415,8 @@ abstract public class Queries {
             return FieldValueDateConstraint.MINUTE;
         } else if (sPart.equals("SECOND")) {
             return FieldValueDateConstraint.SECOND;
+        } else if (sPart.equals("MILLISECOND")) {
+            return FieldValueDateConstraint.MILLISECOND;
         } else {
             throw new BridgeException("Unknown datetime part '" + sPart + "'");
         }
@@ -1205,6 +1207,6 @@ abstract public class Queries {
         return q;
     }
 
-    
+
 
 }

@@ -14,7 +14,7 @@ import java.util.Calendar;
 /**
  * @javadoc
  * @author Michiel Meeuwissen
- * @version $Id: FieldValueDateConstraint.java,v 1.4 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: FieldValueDateConstraint.java,v 1.5 2005-08-16 14:05:38 pierre Exp $
  * @since MMBase-1.8
  */
 public interface FieldValueDateConstraint extends FieldValueConstraint {
@@ -52,12 +52,14 @@ public interface FieldValueDateConstraint extends FieldValueConstraint {
     static final int MINUTE       = Calendar.MINUTE;       // 12
     /** Time part: 'second' */
     static final int SECOND       = Calendar.SECOND;       // 13
+    /** Time part: 'millisecond' */
+    static final int MILLISECOND  = Calendar.MILLISECOND;  // 14
 
     /**
      * Part descriptions corresponding to the date and time part values:
      * {@link #CENTURY}, {@link #YEAR}, {@link #MONTH}, {@link #QUARTER},
      * {@link #WEEK}, {@link #DAY_OF_YEAR}, {@link #DAY_OF_MONTH}, {@link #DAY_OF_WEEK},
-     * {@link #HOUR}, {@link #MINUTE}, and {@link #SECOND}
+     * {@link #HOUR}, {@link #MINUTE}, {@link #SECOND} and {@link #MILLISECOND}
      */
     public final static String[] PART_DESCRIPTIONS = new String[] {
          "century", "year", "month", "week",
@@ -66,7 +68,7 @@ public interface FieldValueDateConstraint extends FieldValueConstraint {
          "","",
          "hour",
          "",
-         "minute", "second"
+         "minute", "second", "millisecond"
     };
 
     /**
