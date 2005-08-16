@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.7 2005-08-16 14:05:17 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.8 2005-08-16 14:43:50 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -136,10 +136,10 @@ public class StringDataType extends BigDataType {
         if (value instanceof String && action == PROCESS_SET) {
             Integer whiteSpace = getWhiteSpace();
             if (whiteSpace.equals(WHITESPACE_REPLACE)) {
-                // remove all whitespace
+                // replace all whitespace
                 value = ((String)value).replaceAll("\\s"," ");
             } else if (whiteSpace.equals(WHITESPACE_COLLAPSE)) {
-                // remove all whitespace
+                // collapse all whitespace
                 value = ((String)value).replaceAll("\\s+"," ").trim();
             }
         }
