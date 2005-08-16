@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.57 2005-08-16 13:16:57 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.58 2005-08-16 13:59:41 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -142,6 +142,7 @@ public class TypeDef extends MMObjectBuilder {
             }
         } catch (Exception e) {
             log.error(e);
+            throw new RuntimeException(e);
         }
         // try if the builder was already in TypeDef for some reason
         // this can happen when another thread was here first
@@ -740,14 +741,14 @@ public class TypeDef extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
-        log.info("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
+
         org.w3c.dom.Document doc = node.getXMLValue("config");
         if (doc == null) {
             log.error("Field config was null! Could not save the file for " + node.getStringValue("name") + Logging.stackTrace(new Throwable()));
             return;
         }
         String path = getBuilderConfiguration(node);
-        log.info("Storing to " + path);
+        log.info("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")  to " + path);
         mmb.getBuilderLoader().storeDocument(path, doc);
 
     }
