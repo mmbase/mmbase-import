@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.14 2005-08-15 15:24:57 michiel Exp $
+# $Id: build.properties.default,v 1.15 2005-08-16 15:29:33 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -115,6 +115,7 @@ xalan.file=${xalan.version}-bin.tar.gz
 xalan.dest=${download.dir}/${xalan.file}
 xalan.loc=${mmbase.loc}/xalan/${xalan.file}
 xalan.jar=${expand.dir}/${xalan.fullversion}/xalan.jar
+serializer.jar=${expand.dir}/${xalan.fullversion}/serializer.jar
 xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 

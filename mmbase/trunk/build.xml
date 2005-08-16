@@ -290,7 +290,8 @@ builddate=${builddate}
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
-    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xerces.renametojar" />
+    <copy file="${serializer.jar}"     todir="${release.lib.dir}" />
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
     <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
 
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
@@ -323,11 +324,9 @@ builddate=${builddate}
           <!--depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
 
     <mkdir dir="${compile.lib.dir}"/>
-    <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
-    <copy file="${xerces.jar}"    todir="${compile.lib.dir}" />
-    <copy file="${xml-apis.jar}"  todir="${compile.lib.dir}" />
+
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
-    <copy file="${fileupload.jar}" tofile="${compile.lib.dir}//commons-fileupload.jar" />
+    <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
     <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
     <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
