@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.util.xml;
 
-import java.util.Locale;
+import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.util.fields.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.DocumentReader;
@@ -24,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.5 2005-08-16 14:05:17 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -93,7 +94,7 @@ public class DataTypeDefinition {
         if (dataType == null) {
             if (baseDataType == null) {
                 log.warn("No base datatype available for datatype " + typeString + ", use 'unknown' for know.");
-                baseDataType = DataType.UNKNOWN;
+                baseDataType = Constants.DATATYPE_UNKNOWN;
             }
             dataType = (DataType)baseDataType.clone(typeString);
         } else {
@@ -141,11 +142,11 @@ public class DataTypeDefinition {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
                 if ("required".equals(childElement.getLocalName())) {
-                    // not yet implemented
                     boolean value = getBooleanValue(childElement, false);
                     setPropertyData(dataType.setRequired(value), childElement);
                 } else if ("unique".equals(childElement.getLocalName())) {
-                    // not yet implemented
+                    boolean value = getBooleanValue(childElement, false);
+                    setPropertyData(dataType.setUnique(value), childElement);
                 } else if ("getprocessor".equals(childElement.getLocalName())) {
                     addProcessor(DataType.PROCESS_GET, childElement);
                 } else if ("setprocessor".equals(childElement.getLocalName())) {
@@ -165,9 +166,9 @@ public class DataTypeDefinition {
                 } else if (dataType instanceof DoubleDataType) {
                     addDoubleCondition(childElement);
                 } else if (dataType instanceof DateTimeDataType) {
-                    // not yet implemented
+                    addDateTimeCondition(childElement);
                 } else if (dataType instanceof ListDataType) {
-                    // not yet implemented
+                    addListCondition(childElement);
                 }
             }
         }
@@ -283,7 +284,6 @@ public class DataTypeDefinition {
         if ("minLength".equals(localName)) {
             int value = getIntValue(conditionElement);
             setPropertyData(bDataType.setMinLength(value), conditionElement);
-            // better:
         } else if ("maxLength".equals(localName)) {
             int value = getIntValue(conditionElement);
             setPropertyData(bDataType.setMaxLength(value), conditionElement);
@@ -300,8 +300,17 @@ public class DataTypeDefinition {
         if ("pattern".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
             setPropertyData(sDataType.setPattern(value), conditionElement);
-        } else if ("whitespace".equals(localName)) {
-            // not yet implemented
+        } else if ("whiteSpace".equals(localName)) {
+            String value = getAttribute(conditionElement, "value");
+            Integer whiteSpaceValue = null;
+            if (value == null || value.equals("preserve")) {
+                whiteSpaceValue = StringDataType.WHITESPACE_PRESERVE;
+            } else if (value.equals("replace")) {
+                whiteSpaceValue = StringDataType.WHITESPACE_REPLACE;
+            } else if (value.equals("collapse")) {
+                whiteSpaceValue = StringDataType.WHITESPACE_COLLAPSE;
+            }
+            setPropertyData(sDataType.setWhiteSpace(whiteSpaceValue), conditionElement);
         } else {
             addBigDataCondition(conditionElement);
         }
@@ -384,6 +393,52 @@ public class DataTypeDefinition {
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Double value = getDoubleValue(conditionElement);
             setPropertyData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+        }
+    }
+
+    protected Date getDateTimeValue(Element element) {
+        if (hasAttribute(element, "value")) {
+            return new Date(getAttribute(element, "value"));
+        } else {
+            throw new IllegalArgumentException("no 'value' attribute");
+        }
+    }
+
+    protected int getDateTimePartValue(Element element) {
+        if (hasAttribute(element, "part")) {
+            String value = getAttribute(element, "value").toLowerCase();
+            return Queries.getDateTimePart(value);
+        } else {
+            return Calendar.MILLISECOND;
+        }
+    }
+
+    protected void addDateTimeCondition(Element conditionElement) {
+        DateTimeDataType dtDataType = (DateTimeDataType) dataType;
+        String localName = conditionElement.getLocalName();
+        if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
+            Date value = getDateTimeValue(conditionElement);
+            int precision = getDateTimePartValue(conditionElement);
+            setPropertyData(dtDataType.setMin(value, precision, "minInclusive".equals(localName)), conditionElement);
+        } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
+            Date value = getDateTimeValue(conditionElement);
+            int precision = getDateTimePartValue(conditionElement);
+            setPropertyData(dtDataType.setMax(value, precision, "maxInclusive".equals(localName)), conditionElement);
+        }
+    }
+
+    protected void addListCondition(Element conditionElement) {
+        ListDataType lDataType = (ListDataType) dataType;
+        String localName = conditionElement.getLocalName();
+        if ("minSize".equals(localName)) {
+            int value = getIntValue(conditionElement);
+            setPropertyData(lDataType.setMinSize(value), conditionElement);
+        } else if ("maxSize".equals(localName)) {
+            int value = getIntValue(conditionElement);
+            setPropertyData(lDataType.setMaxSize(value), conditionElement);
+        } else if ("itemDataType".equals(localName)) {
+            String value = getAttribute(conditionElement, "value");
+            setPropertyData(lDataType.setItemDataType(configurer.getDataType(value)), conditionElement);
         }
     }
 
