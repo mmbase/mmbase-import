@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article class="specification">
 	<!--
 		This document is a template detailing the configuration of an application.
@@ -17,7 +16,7 @@
 
 		<date>[date, format: YYYY-MM-DD ]</date>
 
-		<edition>$Id: configuration.xml,v 1.2 2004-02-05 14:05:23 pierre Exp $</edition>
+		<edition>$Id: configuration.xml,v 1.3 2005-08-16 14:22:12 michiel Exp $</edition>
 
 		<authorgroup>
 			<!-- one or more authors -->
@@ -61,23 +60,27 @@
 		<itemizedlist>
 			<title>Sections:</title>
 			<listitem>
-				<formalpara><title><link linkend="configuration_[filename]">[Configuration file/sectionname]</link></title></formalpara>
-				<para>[Place here a text describing the purpose of this file or section.]</para>
+				<formalpara>
+          <title><link linkend="configuration_filename">[Configuration file/sectionname]</link></title>
+          <para>[Place here a text describing the purpose of this file or section.]</para>
+        </formalpara>
 			</listitem>
 		</itemizedlist>
 	</section>
 
-	<section id="configuration_[filename]">
+	<section id="configuration_filename">
 		<title>[Configuration file or section name]</title>
 		<para>[Place here a text describing the structure of this file or section.]</para>
 		<itemizedlist>
 			<listitem>
-				<formalpara><title>[Configuration parameter name or xmlpath]</title></formalpara>
-				<para>[Place here a text describing the purpose of this parameter. If there is a limited set of values,  list them below.]</para>
+				<formalpara>
+          <title>[Configuration parameter name or xmlpath]</title>
+          <para>[Place here a text describing the purpose of this parameter. If there is a limited set of values,  list them below.]</para>
+        </formalpara>
 				<itemizedlist>
 					<title>Values:</title>
 					<listitem>
-						<formalpara><title>[value]</title></formalpara>
+						<formalpara><title>[value]</title><para></para></formalpara>
 						<para>[Description of the meaning of this value.]</para>
 					</listitem>
 				</itemizedlist>
