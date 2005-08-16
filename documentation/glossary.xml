@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.20 2005-03-17 18:22:44 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.21 2005-08-16 14:08:34 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -152,7 +152,7 @@
             cloud and its representation in the database.
           </remark>
           <glossseealso otherterm="nodemanager"></glossseealso>
-          <glossseealso otherterm="object type"></glossseealso>
+          <glossseealso otherterm="objecttype"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -189,12 +189,12 @@
           functionality of the bridge.</remark>
 
           <glossseealso otherterm="builder"></glossseealso>
-          <glossseealso otherterm="object type"></glossseealso>
+          <glossseealso otherterm="objecttype"></glossseealso>
           <glossseealso otherterm="bridge"></glossseealso>
         </glossdef>
       </glossentry>
 
-      <glossentry id="object type">
+      <glossentry id="objecttype">
         <glossterm>object type</glossterm>
 
         <glossdef>
@@ -287,7 +287,7 @@
           </para>
 
           <glossseealso otherterm="builder"></glossseealso>
-          <glossseealso otherterm="object type"></glossseealso>
+          <glossseealso otherterm="objecttype"></glossseealso>
           <glossseealso otherterm="reldef"></glossseealso>
         </glossdef>
       </glossentry>
