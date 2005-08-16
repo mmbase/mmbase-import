@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.19 2005-06-28 14:01:42 pierre Exp $
+ * @version $Id: ResourceLoader.java,v 1.20 2005-08-16 13:58:45 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -163,7 +163,7 @@ public class ResourceLoader extends ClassLoader {
      * supposing it is some existing file and return a file: URL. If no such file, only then a
      * MalformedURLException is thrown.
      */
-    protected  URL newURL(String url) throws MalformedURLException {
+    protected  URL newURL(final String url) throws MalformedURLException {
         // Try already installed protocols first:
         try {
             return new URL (url);
@@ -271,6 +271,7 @@ public class ResourceLoader extends ClassLoader {
      */
     public static synchronized ResourceLoader getConfigurationRoot() {
         if (configRoot == null) {
+
             configRoot = new ResourceLoader();
 
             //adds a resource that can load from nodes
@@ -292,6 +293,7 @@ public class ResourceLoader extends ClassLoader {
                 //this deserves a warning message since the setting is masked
                 log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
             }
+
             if (configPath != null) {
                 if (servletContext != null) {
                     // take into account that configpath can start at webrootdir
@@ -299,6 +301,7 @@ public class ResourceLoader extends ClassLoader {
                         configPath = servletContext.getRealPath(configPath.substring(8));
                     }
                 }
+                log.info("Adding " + configPath);
                 configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(configPath), true));
             }
 
@@ -554,7 +557,7 @@ public class ResourceLoader extends ClassLoader {
      * @returns a new 'child' ResourceLoader or the parent ResourceLoader if the context is ".."
      * @see #ResourceLoader(ResourceLoader, String)
      */
-    public ResourceLoader getChildResourceLoader(String context) {
+    public ResourceLoader getChildResourceLoader(final String context) {
         if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
             return getParentResourceLoader();
         }
@@ -595,7 +598,7 @@ public class ResourceLoader extends ClassLoader {
      * @param recursive If true, then also subdirectories are searched.
      * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
      */
-    protected Set getResourcePaths(final Pattern pattern, final boolean recursive, boolean directories) {
+    protected Set getResourcePaths(final Pattern pattern, final boolean recursive, final boolean directories) {
         Set results = new LinkedHashSet(); // a set with fixed iteration order
         Iterator i = roots.iterator();
         while (i.hasNext()) {
@@ -622,7 +625,9 @@ public class ResourceLoader extends ClassLoader {
         if (name == null || name.equals("")) {
             throw new IOException("You cannot create a resource with an empty name");
         }
-        return findResource(name).openConnection().getOutputStream();
+        URL resource = findResource(name);
+        URLConnection connection = resource.openConnection();
+        return connection.getOutputStream();
     }
 
     /**
@@ -632,7 +637,7 @@ public class ResourceLoader extends ClassLoader {
      * @param name The name of the resource to be loaded
      * @return The InputSource if succesfull, <code>null</code> otherwise.
      */
-    public InputSource getInputSource(String name)  throws IOException {
+    public InputSource getInputSource(final String name)  throws IOException {
         try {
             URL url = findResource(name);
             InputStream stream = url.openStream();
@@ -684,15 +689,6 @@ public class ResourceLoader extends ClassLoader {
         return  doc;
     }
 
-    /**
-     * Give a StreamResult for resource with given name. This can be used to write XML to a resource.
-     * @see #createResourceAsStream(String)
-     */
-    protected StreamResult getStreamResult(String name)  throws IOException {
-        OutputStream stream = createResourceAsStream(name);
-        StreamResult streamResult = new StreamResult(stream);
-        return streamResult;
-    }
 
     /**
      * Creates a resource with given name for given Source.
@@ -702,7 +698,9 @@ public class ResourceLoader extends ClassLoader {
      */
     public void storeSource(String name, Source source, DocumentType docType) throws IOException {
         try {
-            StreamResult streamResult = getStreamResult(name);
+            log.service("Storing source " + name + " for " + this);
+            OutputStream stream = createResourceAsStream(name);
+            StreamResult streamResult = new StreamResult(stream);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer serializer = tf.newTransformer();
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -713,6 +711,7 @@ public class ResourceLoader extends ClassLoader {
             // Indenting not very nice in all xslt-engines, but well, its better then depending
             // on a real xslt or lots of code.
             serializer.transform(source, streamResult);
+            stream.close();
         } catch (final TransformerException te) {
             IOException io = new IOException(te.getMessage());
             io.initCause(te);
@@ -727,7 +726,6 @@ public class ResourceLoader extends ClassLoader {
      * @see #createResourceAsStream(String)
      */
     public void  storeDocument(String name, Document doc) throws IOException {
-        log.service("Storing " + doc.getDoctype() + " in resource " + name);
         storeSource(name, new DOMSource(doc), doc.getDoctype());
     }
 
@@ -1092,11 +1090,15 @@ public class ResourceLoader extends ClassLoader {
         }
         public boolean getDoOutput() {
             if (! writeable) return false;
-            if (file.exists()) {
-                return file.canWrite();
-            } else {
-                return file.getParentFile().canWrite(); // may create
+            File f = file;
+            while (f != null) {
+                if (f.exists()) {
+                    return f.canWrite();
+                } else {
+                    f = f.getParentFile();
+                }
             }
+            return false;
         }
 
         public InputStream getInputStream() throws IOException {
@@ -1106,9 +1108,23 @@ public class ResourceLoader extends ClassLoader {
         public OutputStream getOutputStream() throws IOException {
             if (! connected) connect();
             if (! writeable) {
-                throw new UnknownServiceException("This file-connection does not allow writing");
+                throw new UnknownServiceException("This file-connection does not allow writing.");
+            }
+            // create directory if necessary.
+            File parent = file.getParentFile();
+            if (parent != null) {
+                if (! parent.exists()) {
+                    log.info("Creating subdirs for " + file);            
+                }
+                parent.mkdirs();
+                if (! parent.exists()) {
+                    log.warn("Could not create directory for " + file + ": " + parent);
+                }
+            } else {
+                log.warn("Parent of " + file + " is null ?!");
             }
             return new FileOutputStream(file) {
+
                     public void write(byte[] b) throws IOException {
                         if (b == null) {
                             file.delete();
@@ -1711,12 +1727,18 @@ public class ResourceLoader extends ClassLoader {
          * {@inheritDoc}
          */
         public OutputStream getOutputStream() throws IOException  {
-            OutputStream os = getOutputConnection().getOutputStream();
-            if (os == null) {
-                // Can find no place to store this resource. Giving up.
-                throw new IOException("Cannot create an OutputStream for " + url + " cannot be written, no resource-node could be created)");
-            } else {
-                return os;
+            try {
+                OutputStream os = getOutputConnection().getOutputStream();
+                if (os == null) {
+                    // Can find no place to store this resource. Giving up.
+                    throw new IOException("Cannot create an OutputStream for " + url + ", it can no way written, and no resource-node could be created)");
+                } else {
+                    return os;
+                }
+            } catch (Exception ioe) {
+                IOException i =  new IOException("Cannot create an OutputStream for " + url + " " + ioe.getMessage());
+                i.initCause(ioe);
+                throw i;
             }
         }
         /**
@@ -1737,8 +1759,10 @@ public class ResourceLoader extends ClassLoader {
 
         if (System.getProperty("mmbase.htmlroot") != null) {
             resourceLoader = getWebRoot();
-        } else {
+        } else if (System.getProperty("mmbase.config") != null) {
             resourceLoader = getConfigurationRoot();
+        } else {
+            resourceLoader = getSystemRoot();
         }
         try {
             if (argv.length == 0) {
@@ -1759,7 +1783,7 @@ public class ResourceLoader extends ClassLoader {
                 InputStream resource = resourceLoader.getResourceAsStream(arg);
                 if (resource == null) {
                     System.out.println("No such resource " + arg + " for " + resourceLoader.getResource(arg) + ". Creating now.");
-                    PrintWriter writer = new PrintWriter(resourceLoader.createResourceAsStream(arg));
+                    PrintWriter writer = new PrintWriter(resourceLoader.getWriter(arg));
                     writer.println("TEST");
                     writer.close();
                     return;
