@@ -29,7 +29,6 @@ import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.apache.xml.serialize.*;
 
 /**
  * Make XSL Transformations
@@ -38,7 +37,7 @@ import org.apache.xml.serialize.*;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.30 2005-06-22 23:30:34 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.31 2005-08-16 15:22:08 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -314,7 +313,6 @@ public class XSLTransformer {
             log.info("   usecache=true:     Use the Template cache or not (to speed up)");
             log.info("   exclude=<filename>:  File/directory name to exclude (can be used multiple times");
             log.info("   extension=<file extensions>:  File extensions to use in transformation results (defaults to html)");
-            log.info("   SER:  Serializes using xerces' XMLSerializer. (could also be done with XSL, but its quite impossible with namespaces and attributes)");
 
             log.info("Other options are passed to XSL-stylesheet as parameters.");
 
@@ -376,14 +374,7 @@ public class XSLTransformer {
                     NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "both");
                     generator.add(relatedNodes);
                     log.debug("transforming");
-                    if (argv[0].equals("SER")) {
-                        XMLSerializer serializer = new XMLSerializer();
-                        serializer.setNamespaces(true);
-                        serializer.setOutputByteStream(System.out);
-                        serializer.serialize(generator.getDocument());
-                    } else {
-                        transform(new DOMSource(generator.getDocument()),  new File(argv[0]), result, params, true);
-                    }
+                    transform(new DOMSource(generator.getDocument()),  new File(argv[0]), result, params, true);
                 }
             } catch (Exception ex) {
                 log.error(ex.getMessage(), ex);
