@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="htmlpages" maintainer="didactor.nl" version="1" extends="object">
+<builder name="htmlpages" maintainer="didactor.nl" version="1" extends="learnobjects">
    <status>active</status>
    <classfile>Dummy</classfile>
    <searchage>9999</searchage>
@@ -27,40 +27,6 @@
 
 
    <fieldlist>
-      <field>
-         <descriptions>
-            <!-- descriptions per language as defined by ISO 639  -->
-            <description xml:lang="nl">
-            </description>
-            <description xml:lang="en">
-            </description>
-         </descriptions>
-         <!-- gui related -->
-         <gui>
-            <guiname xml:lang="nl">Naam</guiname>
-            <guiname xml:lang="en">Name</guiname>
-            <guitype>integer</guitype>
-         </gui>
-         <!-- editor related  -->
-         <editor>
-            <positions>
-               <!-- position in the input area of the editor -->
-               <input>1</input>
-               <!-- position in list area of the editor -->
-               <list>1</list>
-               <!-- position in search area of the editor -->
-               <search>1</search>
-            </positions>
-         </editor>
-         <!-- database related  -->
-         <db>
-            <!-- name of the field in the database -->
-            <name>name</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="1024" key="false" notnull="true">STRING</type>
-         </db>
-      </field>
-
 
       <field>
          <descriptions>
