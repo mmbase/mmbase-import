@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.158 2005-08-15 16:38:20 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.159 2005-08-17 17:36:25 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -719,16 +719,28 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void validate() {
         FieldIterator fi = nodeManager.getFields().fieldIterator();
+        StringBuffer error = new StringBuffer();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            field.getDataType().validate(getNode().getValue(field.getName()), field, cloud);
+            try {
+                field.getDataType().validate(getNode().getValue(field.getName()), field, cloud);
+            } catch (IllegalArgumentException iae) {
+                error.append(field.getName() + ": " + iae.getMessage() + "\n");                
+            }
+        }
+        if(error.length() > 0) {
+            throw new IllegalArgumentException(error.toString());
         }
     }
 
     public void validate(String fieldName) {
         if (nodeManager.hasField(fieldName)) {
             Field field = nodeManager.getField(fieldName);
-            field.getDataType().validate(getNode().getValue(fieldName), field, cloud);
+            try {
+                field.getDataType().validate(getNode().getValue(fieldName), field, cloud);
+            } catch (IllegalArgumentException iae) {
+                throw new IllegalArgumentException(fieldName + ": " + iae.getMessage());
+            }
         }
     }
 
