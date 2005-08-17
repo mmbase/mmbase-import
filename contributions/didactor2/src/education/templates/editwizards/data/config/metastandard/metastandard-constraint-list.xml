@@ -1,13 +1,18 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="metastandard" role="posrel" minoccurs="0" maxoccurs="*" searchdir="destination"                                 orderby="metastandard.name"> 
+<list destination="metastandard" role="constraints" minoccurs="0" maxoccurs="*" orderby="metastandard.name"> 
 
-  <title xml:lang="en">Contained metastandards (for multilevel-metastandards)</title>
-  <title xml:lang="nl">Sub-metadata standaarden (tbv multilevel-metastandaarden)</title>
+  <title xml:lang="en">Constrained by metadata standard</title>
+  <title xml:lang="nl">Beperkt door metadata standaard</title>
   <item>
     <field name="name" ftype="data">
       <prompt>Naam</prompt>
     </field>
-    
+    <field fdatapath="field[@name='type']" ftype="enum">
+      <prompt>Constraint type</prompt>
+      <optionlist select="constraint_type" />
+    </field>
+    <field fdatapath="field[@name='minvalues']" ftype="line" dttype="int" />
+    <field fdatapath="field[@name='maxvalues']" ftype="line" dttype="int" />
     <field ftype="startwizard" wizardname="config/metastandard/metastandard" />
   </item>
 

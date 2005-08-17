@@ -20,7 +20,11 @@
   </action>
 
   <action type="delete" />
-
+  
+  <lists>
+    <optionlist include="config/option_list/constraint_type.xml" />
+  </lists>
+  
   <steps>
     <step form-schema="step1" />
   </steps>

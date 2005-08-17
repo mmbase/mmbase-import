@@ -47,17 +47,19 @@
 
   </action>
 
-
-
-  <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" constraints="type=3">
-    <prompt>Zoeken naar metadata definities</prompt>
-    <search-filter>
-      <name>Naam bevat</name>
-      <search-fields>name</search-fields>
-    </search-filter>
-    <search-filter>
-      <name>Handler</name>
-      <search-fields>handler</search-fields>
-    </search-filter>
-  </command>
+    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
+      <prompt>Zoeken naar metadata definities</prompt>
+      <search-filter>
+        <name>Naam bevat</name>
+        <search-fields>name</search-fields>
+      </search-filter>
+      <search-filter>
+        <name>Type bevat</name>
+        <search-fields>type</search-fields>
+      </search-filter>
+      <search-filter>
+        <name>Handler</name>
+        <search-fields>handler</search-fields>
+      </search-filter>
+    </command>
 </list>
