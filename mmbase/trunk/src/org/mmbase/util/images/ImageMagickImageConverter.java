@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -41,15 +41,12 @@ public class ImageMagickImageConverter implements ImageConverter {
 
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
     
-    /**
-     * The default image format.
-     */
-    protected String defaultImageFormat = "jpeg";
     
     /**
      * This function initalises this class
-     * @param params a <code>Map</code> of <code>String</string>s containing informationn, this should contina the key's
-     *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root....
+     * @param params a <code>Map</code> of <code>String</code>s containing informationn, this should contain the key's
+     *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root, and it can also contain
+     *               ImageConvert.DefaultImageFormat which can also be 'asis'.
      */
     public void init(Map params) {
         String converterRoot = "";
@@ -71,6 +68,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         if (tmp != null && ! tmp.equals("")) {
             converterCommand = tmp;
         }
+
 
         String configFile = params.get("configfile").toString();
         if (configFile == null) configFile = "images builder xml";
@@ -181,20 +179,16 @@ public class ImageMagickImageConverter implements ImageConverter {
      * @return an array of <code>byte</code>s containing the new converted image.
      *
      */
-    public byte[] convertImage(byte[] input, List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
         byte[] pict = null;
         if (commands != null && input != null) {
             ParseResult parsedCommands = getConvertCommands(commands);
-            pict = convertImage( input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
+            if (parsedCommands.format.equals("asis") && sourceFormat != null) {
+                parsedCommands.format = sourceFormat;
+            }
+            pict = convertImage(input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
-    }
-    
-    /**
-     * @deprecated Use convertImage
-     */
-    public byte[] ConvertImage(byte[] input, List commands) {
-        return convertImage(input, commands);
     }
     
     /**
@@ -227,7 +221,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         List cmds = new ArrayList();
         result.args = cmds;
         result.cwd = null;
-        result.format = defaultImageFormat;
+        result.format = Factory.getDefaultImageFormat();
         
         String key, type;
         String cmd;
@@ -362,7 +356,9 @@ public class ImageMagickImageConverter implements ImageConverter {
                         str += "" + y;
                     cmd = str;
                 } else if (type.equals("f")) {
-                    result.format = cmd;
+                    if (! (cmd.equals("asis") && result.format != null)) {
+                        result.format = cmd;
+                    }
                     continue; // ignore this one, don't add to cmds.
                 }
                 if (log.isDebugEnabled()) {
@@ -446,7 +442,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         if (pict != null && pict.length > 0) {
             cmd.add(0, "-");
             cmd.add(0, converterPath);
-            cmd.add(format + ":-");
+            cmd.add(format+ ":-");
 
             String command = cmd.toString(); // only for debugging.
             log.debug("Converting image(#" + pict.length + " bytes)  to '" + format + "' ('" + command + "')");
@@ -477,21 +473,12 @@ public class ImageMagickImageConverter implements ImageConverter {
                     // No bytes in the image -
                     // ImageMagick failed to create a proper image.
                     // return null so this image is not by accident stored in the database
-                    log.error(
-                              "Imagemagick conversion did not succeed. Returning null.");
+                    log.error("Imagemagick conversion did not succeed. Returning null.");
                     String errorMessage = errorStream.toString();
 
                     if (errorMessage.length() > 0) {
-                        log.error(
-                                  "From stderr with command '"
-                                  + command
-                                  + "' in '"
-                                  + new File("").getAbsolutePath()
-                                  + "'  --> '"
-                                  + errorMessage
-                                  + "'");
-                    }
-                    else {
+                        log.error( "From stderr with command '" + command + "' in '" + new File("").getAbsolutePath() + "'  --> '" + errorMessage + "'");
+                    } else {
                         log.debug("No information on stderr found");
                     }
                     return null;
@@ -499,27 +486,13 @@ public class ImageMagickImageConverter implements ImageConverter {
                 else {
                     // print some info and return....
                     if (log.isServiceEnabled()) {
-                        log.service(
-                                    "converted image(#"
-                                    + pict.length
-                                    + " bytes)  to '"
-                                    + format
-                                    + "'-image(#"
-                                    + image.length
-                                    + " bytes)('"
-                                    + command
-                                    + "')");
+                        log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");
                     }
                     return image;
                 }
             }
             catch (ProcessException e) {
-                log.error(
-                          "converting image with command: '"
-                          + command
-                          + "' failed  with reason: '"
-                          + e.getMessage()
-                          + "'");
+                log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'");
                 log.error(Logging.stackTrace(e));
             }
             finally {

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -99,11 +99,12 @@ public class ImageConversionRequestProcessor implements Runnable {
                 if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + node);
                 // no node gets created, so node remains 'null'.
             } else {
-                if (log.isDebugEnabled()) log.debug("processRequest : Converting : " + node);
+                if (log.isDebugEnabled()) {                    
+                    log.debug("processRequest : Converting : " + node );
+                }
 
                 List params = req.getParams();
-
-                picture = convert.convertImage(inputPicture, params);
+                picture = convert.convertImage(inputPicture, req.getInputFormat(), params);
                 if (picture != null) {
                     node.setValue(Imaging.FIELD_HANDLE, picture);
                     node.commit();
