@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: DummyImageInformer.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id: DummyImageInformer.java,v 1.1.2.1 2005-08-17 14:31:37 michiel Exp $
  */
 public class DummyImageInformer implements ImageInformer {
 
