@@ -32,15 +32,20 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.45.2.3 2005-08-15 16:32:37 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.4 2005-08-17 12:44:09 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
 
     private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
 
+    private static final int MODE_URL = 0;
+    private static final int MODE_HTML_ATTRIBUTES = 1;
+    private static final int MODE_HTML_IMG = 2;
+
     private static Boolean makeRelative = null;
     private Attribute template = Attribute.NULL;
+    private Attribute mode     = Attribute.NULL;
 
     /**
      * The transformation template
@@ -49,6 +54,30 @@ public class ImageTag extends FieldTag {
     public void setTemplate(String t) throws JspTagException {
         template = getAttribute(t);
     }
+
+    /**
+     * @since MMBase-1.7.4
+     */
+    public void setMode(String m) throws JspTagException {
+        mode = getAttribute(m);
+    }
+
+    /**
+     * @since MMBase-1.7.4
+     */
+    private int getMode() throws JspTagException {
+        String m = mode.getString(this).toLowerCase();
+        if (m.equals("") || m.equals("url")) {
+            return MODE_URL;
+        } else if (m.equals("attributes")) {
+            return MODE_HTML_ATTRIBUTES;
+        } else if (m.equals("img")) {
+            return MODE_HTML_IMG;
+        } else {
+            throw new JspTagException("Value '" + m + "' not know for 'mode' attribute");
+        }
+    }
+
 
     public int doStartTag() throws JspTagException {
         node = null;
@@ -116,9 +145,47 @@ public class ImageTag extends FieldTag {
         fillStandardParameters(args);
         servletPath = node.getFunctionValue("servletpath", args).toString();
 
-
         helper.useEscaper(false);
-        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
+
+        switch(getMode()) {
+        case MODE_URL: 
+            helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
+            //pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), template.getString(this)));
+            break;
+        case MODE_HTML_ATTRIBUTES: {
+            /*
+            List a = new ArrayList();
+            a.add(template.getString(this));
+            Dimension dim = (Dimension) getNodeVar().getFunctionValue("dimension", a).get();
+            */
+            String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            helper.setValue("src=\"" + url + "\" ");
+            //pageContext.setAttribute("dimension", dim);
+            break;
+        }
+        case MODE_HTML_IMG: {
+            /*
+            List a = new ArrayList();
+            a.add(template.getString(this));
+            Node node = getNodeVar();
+            Dimension dim = (Dimension) node.getFunctionValue("dimension", a).get();
+            */
+            String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            String alt;
+            if (node.getNodeManager().hasField("title")) {
+                alt = node.getStringValue("title"); // escaper?
+            } else if (node.getNodeManager().hasField("name")) {
+                alt = node.getStringValue("name"); // escaper?
+            } else {
+                alt = null;
+            }
+            helper.setValue("<img src=\"" + url + "\"" +
+                            (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
+                            );
+            //pageContext.setAttribute("dimension", dim);
+        }
+        }
+
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }

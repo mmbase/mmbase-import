@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.248.2.17 2005-03-15 16:46:30 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.248.2.18 2005-08-17 12:44:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3460,6 +3460,35 @@ like the parameter list or the session (where ever it is available) --&gt;
         <value>s(200)+f(gif)+paint(10)</value>
       </examplevalue>
     </attribute>
+    <attribute>
+      <name>mode</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          What to produce.
+        </p>
+      </info>
+      <possiblevalue>
+        <value>url</value>
+        <info>An URL to the image (default)</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>attributes</value>
+        <info>The attributes 'src' 'height' and 'width' for the img-tag of HTML.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>img</value>
+        <info>A img-tag of HTML</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="node" attribute="element" />
+    </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
         &lt;img src="&lt;mm:image template="s(100)" /&gt;" width="100" border="0"&gt;
@@ -3474,6 +3503,12 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="node" attribute="element" />
+    </attribute>
     <info>
       <p>
         Returns an URL to the attachment servlet. This is a NodeReferrer
