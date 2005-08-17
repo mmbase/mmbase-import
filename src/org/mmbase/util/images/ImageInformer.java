@@ -17,7 +17,7 @@ import java.util.Map;
  * Dimension} object given a certain Image byte array.
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
+ * @since MMBase-1.7.4
  */
 
 

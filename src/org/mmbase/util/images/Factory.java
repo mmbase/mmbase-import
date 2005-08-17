@@ -21,6 +21,7 @@ import org.mmbase.util.logging.Logger;
  * Loads the ImageConverters and ImageInformers.
  *
  * @author Michiel Meeuwissen
+ * @since MMBase-1.8
  */
 
 
@@ -46,6 +47,11 @@ public class Factory {
     protected static Map imageRequestTable       = new Hashtable(maxRequests);
     protected static ImageConversionRequestProcessor ireqprocessors[];
 
+    /**
+     * The default image format.
+     */
+    protected static String defaultImageFormat = "jpeg";
+
 
     public static void init(Map properties, org.mmbase.module.core.MMObjectBuilder imageCaches) {
         params.putAll(properties);
@@ -59,6 +65,11 @@ public class Factory {
             }
         }
 
+        tmp = (String) params.get("ImageConvert.DefaultImageFormat");
+        if (tmp != null && ! tmp.equals("")) {
+            defaultImageFormat = tmp;
+        }
+        
 
         ImageConverter imageConverter = loadImageConverter();
         imageInformer = loadImageInformer();
@@ -66,7 +77,7 @@ public class Factory {
 
         imageConverter.init(params);
         imageInformer.init(params);
-
+        
 
         // Startup parrallel converters
         ireqprocessors = new ImageConversionRequestProcessor[maxConcurrentRequests];
@@ -75,8 +86,11 @@ public class Factory {
             ireqprocessors[i] = new ImageConversionRequestProcessor(imageCaches, imageConverter, imageInformer, imageRequestQueue, imageRequestTable);
         }
     }
-
-
+    
+    
+    public static String getDefaultImageFormat() {
+        return defaultImageFormat;
+    }
 
     
     private static ImageConverter loadImageConverter() {
@@ -154,7 +168,7 @@ public class Factory {
     /**
      * Triggers a image-conversion.
      */
-    public static ImageConversionRequest getImageConversionRequest(List pars, byte[] in, MMObjectNode icacheNode) {
+    public static ImageConversionRequest getImageConversionRequest(List pars, byte[] in, String format,  MMObjectNode icacheNode) {
         ImageConversionRequest req;
         String ckey = icacheNode.getStringValue(Imaging.FIELD_CKEY);
         // convert the image, this will be done in an special thread,...
@@ -163,7 +177,7 @@ public class Factory {
             if (req != null) {
                 log.info("A conversion is already in progress (" + ckey + ")...  (requests=" + ( req.count() + 1) + ")");
             } else {
-                req = new ImageConversionRequest(pars, in, icacheNode);
+                req = new ImageConversionRequest(pars, in, format, icacheNode);
                 imageRequestTable.put(ckey, req);
                 imageRequestQueue.append(req);
             }

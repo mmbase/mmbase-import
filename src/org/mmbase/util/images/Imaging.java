@@ -31,6 +31,8 @@ public abstract class Imaging {
     public static final String FIELD_CKEY    = "ckey";
 
 
+
+
     /**
      * Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * @param ext A String containing the extension.
@@ -383,13 +385,13 @@ public abstract class Imaging {
                 List params = parseTemplate(template);
                 System.out.print(template + ":" + predictDimension(originalSize, params) + ":");
                 try {
-                    System.out.print(informer.getDimension(converter1.convertImage(ba, params)));
+                    System.out.print(informer.getDimension(converter1.convertImage(ba, null, params)));
                 } catch (Exception e) {
                     System.out.print(e.getMessage());
                 }
                 System.out.print(":");
                 try {
-                    System.out.print(informer.getDimension(converter2.convertImage(ba, params)));
+                    System.out.print(informer.getDimension(converter2.convertImage(ba, null, params)));
                 } catch (Exception e) {
                     System.out.print(e.getMessage());
                 }

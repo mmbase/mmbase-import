@@ -13,7 +13,7 @@ package org.mmbase.util.images;
  * Represents the `dimension' of an image, i.e. its height and width.
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
+ * @since MMBase-1.7.4
  */
 
 

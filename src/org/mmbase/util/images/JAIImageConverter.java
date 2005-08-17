@@ -26,16 +26,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id: JAIImageConverter.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
  */
 public class JAIImageConverter implements ImageConverter {
 
     private static final Logger log = Logging.getLoggerInstance(JAIImageConverter.class);
-
-    /**
-     * The default image format.
-     */
-    protected String defaultImageFormat="jpeg";
 
     /**
      * @javadoc
@@ -48,16 +43,16 @@ public class JAIImageConverter implements ImageConverter {
     /**
      * @javadoc
      */
-    public byte[] convertImage(byte[] input,List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
         String format;
         byte[] pict=null;
         try {
             ByteArraySeekableStream bin = new ByteArraySeekableStream(input);
             PlanarImage img = JAI.create("stream", bin);
 
-
             // determine outputformat
-            format=getConvertFormat(commands);
+            format = getConvertFormat(commands);
+            if (format.equals("asis")) format = sourceFormat;
 
             // correct for gif transparency
             if (! (format.equals("gif") || format.equals("png")) &&
@@ -74,12 +69,12 @@ public class JAIImageConverter implements ImageConverter {
               }
             }
 
-            img = doConvertCommands(img,commands);
+            img = doConvertCommands(img, commands);
 
-            ByteArrayOutputStream bout=new ByteArrayOutputStream();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
 
-            JAI.create("encode", img, bout,format,null);
-            pict=bout.toByteArray();
+            JAI.create("encode", img, bout, format, null);
+            pict = bout.toByteArray();
         } catch(Exception e) {
             log.error(Logging.stackTrace(e));
         }
@@ -94,22 +89,24 @@ public class JAIImageConverter implements ImageConverter {
      * @return the specified format, or the default image format is unspecified
      */
     private String getConvertFormat(List params) {
-        String format=defaultImageFormat,key,cmd,type;
-        int pos,pos2;
+        String format = null;
 
-        for (Iterator t=params.iterator();t.hasNext();) {
-            key=(String)t.next();
-            pos=key.indexOf('(');
-            pos2=key.lastIndexOf(')');
+        for (Iterator t = params.iterator(); t.hasNext();) {
+            String key=(String)t.next();
+            int pos  = key.indexOf('(');
+            int pos2 = key.lastIndexOf(')');
             if (pos!=-1 && pos2!=-1) {
-                type=key.substring(0,pos);
-                cmd=key.substring(pos+1,pos2);
+                String type = key.substring(0, pos);
+                String cmd  = key.substring(pos + 1, pos2);
                 if (type.equals("f")) {
-                    format=cmd.toLowerCase();
+                    if (! (cmd.equals("asis") && format != null)) {
+                        format = cmd.toLowerCase();
+                    }
                     break;
                 }
             }
         }
+        if (format == null) format = Factory.getDefaultImageFormat();
         // fix jpg format name
         if (format.equals("jpg")) format="jpeg";
         return format;
@@ -124,7 +121,7 @@ public class JAIImageConverter implements ImageConverter {
                 String key=(String)t.next();
                 int pos = key.indexOf('(');
                 int pos2 = key.lastIndexOf(')');
-                if (pos!=-1 && pos2!=-1) {
+                if (pos!=-1 && pos2 != -1) {
                     String type = key.substring(0, pos);
                     String cmd = key.substring(pos + 1, pos2);
                     String[] tokens = cmd.split("[x,\\n\\r]");

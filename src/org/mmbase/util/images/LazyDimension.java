@@ -18,7 +18,7 @@ import java.util.*;
  * #getWidth} or {@link #getHeight} are called for the first time. 
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
+ * @since MMBase-1.7.4
  */
 
 
