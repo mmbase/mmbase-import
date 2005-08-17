@@ -22,6 +22,9 @@ import org.mmbase.module.builders.AbstractServletBuilder;
 import org.mmbase.module.builders.Images;
 
 import org.mmbase.security.Rank;
+import org.mmbase.util.images.*;
+import java.util.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.45.2.4 2005-08-17 12:44:09 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.5 2005-08-17 14:33:18 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -150,26 +153,22 @@ public class ImageTag extends FieldTag {
         switch(getMode()) {
         case MODE_URL: 
             helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
-            //pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), template.getString(this)));
+            pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), template.getString(this)));
             break;
         case MODE_HTML_ATTRIBUTES: {
-            /*
             List a = new ArrayList();
             a.add(template.getString(this));
             Dimension dim = (Dimension) getNodeVar().getFunctionValue("dimension", a).get();
-            */
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
-            helper.setValue("src=\"" + url + "\" ");
-            //pageContext.setAttribute("dimension", dim);
+            helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
+            pageContext.setAttribute("dimension", dim);
             break;
         }
         case MODE_HTML_IMG: {
-            /*
             List a = new ArrayList();
             a.add(template.getString(this));
             Node node = getNodeVar();
             Dimension dim = (Dimension) node.getFunctionValue("dimension", a).get();
-            */
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             String alt;
             if (node.getNodeManager().hasField("title")) {
@@ -179,10 +178,10 @@ public class ImageTag extends FieldTag {
             } else {
                 alt = null;
             }
-            helper.setValue("<img src=\"" + url + "\"" +
+            helper.setValue("<img src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\" " +
                             (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
                             );
-            //pageContext.setAttribute("dimension", dim);
+            pageContext.setAttribute("dimension", dim);
         }
         }
 

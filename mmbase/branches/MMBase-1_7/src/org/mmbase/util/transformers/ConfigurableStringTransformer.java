@@ -28,6 +28,7 @@ public abstract class ConfigurableStringTransformer extends StringTransformer im
 
     public ConfigurableStringTransformer() {
         super();
+        configure(1);        
     }
 
     public ConfigurableStringTransformer(int conf) {

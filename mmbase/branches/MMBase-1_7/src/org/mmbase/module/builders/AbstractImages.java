@@ -13,13 +13,15 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.images.*;
+
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.24.2.3 2004-10-03 11:14:24 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.24.2.4 2005-08-17 14:32:19 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -147,6 +149,53 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * @return the image as a <a>byte[]</code>, or <code>null</code> if something went wrong
      */
     abstract public byte[] getImageBytes(List params);
+    private static final String FIELD_WIDTH = "width";
+    private static final String FIELD_HEIGHT = "height";
+    
+
+    /**
+     * Whether this builders has width and height fields
+     */
+    protected boolean storesDimension() {
+        return getField(FIELD_WIDTH) != null && getField(FIELD_HEIGHT) != null;
+    }
+
+
+    /**
+     * Gets the dimension of given node. Also when the fields are missing, it will result a warning then.
+     */
+    protected Dimension getDimension(MMObjectNode node) {
+        if (storesDimension()) {
+            int width  = node.getIntValue(FIELD_WIDTH);
+            int height = node.getIntValue(FIELD_HEIGHT);
+            if (width >= 0 && height > 0 ) {
+                return new Dimension(width, height);
+            }
+        }
+        byte[] data = node.getByteValue("handle");
+        if (data == null || data.length == 0) {
+            log.warn("Cannot get dimension of Node with not 'handle' " + node.getNumber());
+            return new Dimension(-1, -1);
+        }
+        ImageInformer ii = new DummyImageInformer();
+        Dimension dim;
+        try {
+            dim = ii.getDimension(data);
+            log.debug("Found dimension " + dim);
+        } catch (Exception ioe) {
+            log.error(ioe);
+            dim = new Dimension(-1, -1);
+            return dim;
+        }
+        if (storesDimension()) {
+            node.setValue(FIELD_WIDTH,  dim.getWidth());
+            node.setValue(FIELD_HEIGHT, dim.getHeight());
+        } else {
+            log.warn("Requested dimension on image object without height / width fields, this may be heavy on resources!");
+        }
+
+        return dim;        
+    }
 
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.
@@ -158,6 +207,8 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             return getImageMimeType(node);
         } else if (function.equals("format")) {
             return getImageFormat(node);
+        } else if ("dimension".equals(function)) {
+            return getDimension(node);
         } else {
             return super.executeFunction(node, function, args);
         }
