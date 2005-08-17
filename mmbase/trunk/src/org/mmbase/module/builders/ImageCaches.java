@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.42 2005-05-09 10:02:18 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.43 2005-08-17 20:55:15 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -138,8 +138,9 @@ public class ImageCaches extends AbstractImages {
             // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
             image.parent.clearBlobCache(image.getNumber());
             byte[] bytes = image.getByteValue(Imaging.FIELD_HANDLE);
+            String format = ((AbstractImages) image.parent).getImageFormat(image);
             // This triggers conversion, or waits for it to be ready.
-            ImageConversionRequest req = Factory.getImageConversionRequest(params, bytes, node);
+            ImageConversionRequest req = Factory.getImageConversionRequest(params, bytes, format, node);
             req.waitForConversion();
             
         } else {
@@ -293,8 +294,14 @@ public class ImageCaches extends AbstractImages {
             if (fi > -1) {
                 int fi2 = ckey.indexOf(")", fi);
                 return ckey.substring(fi + 2, fi2);
-            } else {
-                return "jpg";
+            } else {               
+                String r = Factory.getDefaultImageFormat();
+                if (r.equals("asis")) {
+                    MMObjectNode original = originalImage(node);
+                    return ((AbstractImages) original.parent).getImageFormat(original);
+                } else {
+                    return r;
+                }
             }
         }
     }
