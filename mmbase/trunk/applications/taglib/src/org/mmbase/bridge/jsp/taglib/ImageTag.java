@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.56 2005-06-21 19:27:11 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.57 2005-08-17 20:57:29 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -73,7 +73,7 @@ public class ImageTag extends FieldTag {
         } else if (m.equals("img")) {
             return MODE_HTML_IMG;
         } else {
-            throw new JspTagException("Value '" + m + "' not know for 'mode' attribute");
+            throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
         }
     }
 
@@ -89,12 +89,19 @@ public class ImageTag extends FieldTag {
 
         String servletArgument; // can be the node-number or a template (if that is configured to be allowed).
 
-        String t = template.getString(this);
+        String t = template.getString(this);        
+        if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.format.asis"))) {
+            if (t.length() > 0) {
+                t = t + "+f(asis)";
+            } else {
+                t = "f(asis)";
+            }
+        }
         if ("".equals(t)) {
             // the node/image itself
             servletArgument = node.getStringValue("number");
         } else {
-            if ("false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"))) {
+            if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"))) {
                 servletArgument = "" + node.getNumber() + "+" + t;
             } else {
                 // the cached image
@@ -122,11 +129,11 @@ public class ImageTag extends FieldTag {
         switch(getMode()) {
         case MODE_URL: 
             helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
-            pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), template.getString(this)));
+            pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), t));
             break;
         case MODE_HTML_ATTRIBUTES: {
             List a = new ArrayList();
-            a.add(template.getString(this));
+            a.add(t);
             Dimension dim = (Dimension) getNodeVar().getFunctionValue("dimension", a).get();
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
@@ -135,7 +142,7 @@ public class ImageTag extends FieldTag {
         }
         case MODE_HTML_IMG: {
             List a = new ArrayList();
-            a.add(template.getString(this));
+            a.add(t);
             Node node = getNodeVar();
             Dimension dim = (Dimension) node.getFunctionValue("dimension", a).get();
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
