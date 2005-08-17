@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.26 2005-07-09 11:46:10 nklasens Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.27 2005-08-17 20:55:15 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -60,7 +60,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     private String servletPath = null;
     /**
      * Whether {@link #servletPath} represents an absolute URL (starting with http:)
-     * @since MMBase-1.8.0
+     * @since MMBase-1.7.4
      */
     private boolean servletPathAbsolute;
 
