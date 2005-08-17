@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.314 2005-07-25 12:15:43 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.315 2005-08-17 21:03:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3319,8 +3319,8 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  With this you can set an attribute on the current request. Analogous to writing to the
-  session.
+        With this you can set an attribute on the current request. Analogous to writing to the
+        session.
       </info>
       <since>MMBase-1.7.4</since>
     </attribute>
@@ -3329,8 +3329,8 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  With this you can set an attribute on the current `application'. Analogous to writing to the
-  session.
+        With this you can set an attribute on the current `application'. Analogous to writing to the
+        session.
       </info>
       <since>MMBase-1.7.4</since>
     </attribute>
@@ -3837,6 +3837,12 @@ like the parameter list or the session (where ever it is available) --&gt;
         <info>A img-tag of HTML</info>
       </possiblevalue>
     </attribute>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="node" attribute="element" />
+    </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
         &lt;img src="&lt;mm:image template="s(100)" /&gt;" width="100" border="0"&gt;
@@ -3851,6 +3857,12 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="node" attribute="element" />
+    </attribute>
     <info>
       <p>
         Returns an URL to the attachment servlet. This is a NodeReferrer

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.50 2005-05-14 14:05:39 nico Exp $
+ * @version $Id: FieldTag.java,v 1.51 2005-08-17 21:03:47 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -33,10 +33,21 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     protected Field  field;
     protected String fieldName;
     protected Attribute name = Attribute.NULL;
+    private Attribute element  = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
         name = getAttribute(n);
     }
+
+    /**
+     * The element attribute is used to access elements of
+     * clusternodes.
+     * @since MMBase-1.7.4
+     */
+    public void setElement(String e) throws JspTagException {
+        element = getAttribute(e);
+    }
+
 
     // NodeProvider Implementation
     /**
@@ -50,6 +61,9 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
         if (node == null) {
             throw new JspTagException ("Did not find node in the parent node provider");
+        }
+        if (element != Attribute.NULL) {
+            node = node.getNodeValue(element.getString(this));            
         }
         return node;
     }
@@ -159,7 +173,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                     break;
                 default:
                     switch(field.getType()) {
-                    case Field.TYPE_BYTE:
+                    case Field.TYPE_BINARY:
                         value = node.getByteValue(fieldName);
                         break;
                     case Field.TYPE_INTEGER:
