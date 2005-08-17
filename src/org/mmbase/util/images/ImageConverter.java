@@ -22,7 +22,7 @@ public interface ImageConverter {
 
     void init(Map params);
 
-    byte[] convertImage(byte[] input, List commands);
+    byte[] convertImage(byte[] input, String sourceFormat, List commands);
 
 
 }

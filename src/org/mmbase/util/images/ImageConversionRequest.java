@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequest.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id: ImageConversionRequest.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
  */
 public class ImageConversionRequest {
 
@@ -29,14 +29,16 @@ public class ImageConversionRequest {
     private byte[] in;
     private int count = 0;
     private MMObjectNode icacheNode;
+    private String format;
 
     /**
      * @javadoc
      */
-    public ImageConversionRequest(List params, byte[] in, MMObjectNode icacheNode) {
+    public ImageConversionRequest(List params, byte[] in, String format, MMObjectNode icacheNode) {
         this.in = in;
         this.params = params;
         this.icacheNode = icacheNode;
+        this.format = format;
     }
 
     /**
@@ -58,6 +60,9 @@ public class ImageConversionRequest {
      */
     public MMObjectNode getNode() {
         return icacheNode;
+    }
+    public String getInputFormat() {
+        return format;
     }
 
 
