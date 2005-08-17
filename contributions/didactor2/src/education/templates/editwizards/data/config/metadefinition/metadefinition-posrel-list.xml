@@ -1,10 +1,12 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="metadefinition" role="posrel" minoccurs="0" maxoccurs="*" orderby="metadefinition.name">
+<list destination="metadefinition" role="posrel" ordertype="number" orderby="field[@name='pos']"
+   minoccurs="0" maxoccurs="*">
   <title>Bijbehorende Metadata Definitie</title>
   <item>
     <field name="name" ftype="data">
       <prompt>Naam</prompt>
     </field>
+    <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
     <field name="type" ftype="data">
      <prompt>Type</prompt>
     </field>

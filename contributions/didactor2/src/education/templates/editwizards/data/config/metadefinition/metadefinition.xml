@@ -5,7 +5,7 @@
 
   <action type="create">
     <object type="metadefinition">
-      <relation destination="{$origin}" role="related" />
+      <relation destination="{$origin}" role="posrel" />
     </object>
   </action>
 
@@ -17,26 +17,18 @@
     <field name="maxvalues"/>
     <field name="handler"/>
     <field name="description"/>
-   <relation destinationtype="synonym" role="related" />
-   <relation destinationtype="metavocabulary" role="related" />
-   <relation destinationtype="metavocabulary" role="constraints" />
+    <relation destinationtype="metastandard" role="constraints" />
+    <relation destinationtype="synonym" role="related" />
+    <relation destinationtype="metavocabulary" role="related" />
+    <relation destinationtype="metavocabulary" role="constraints" />
   </action>
 
   <action type="delete" />
 
   <lists>
-    <optionlist name="metadatatypes">
-      <option id="0">Kies het type</option>
-      <option id="1">keuzelijst</option>
-      <option id="2">datum</option>
-      <option id="3">tekenreeks</option>
-      <option id="4">duur</option>
-    </optionlist>
-
-    <optionlist name="boolean">
-      <option id="0">Nee</option>
-      <option id="1">Ja</option>
-    </optionlist>
+    <optionlist include="config/option_list/constraint_type.xml" />
+    <optionlist include="config/option_list/metadatatypes.xml" />
+    <optionlist include="config/option_list/boolean.xml" />
   </lists>
 
   <steps>
@@ -79,6 +71,7 @@
     <!-- has to be only visible if type=3, but that's not possible atm -->
     <list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabularydefinition-list.xml" />
     <list destination="metavocabulary" role="constraints" extends="config/metavocabulary/metavocabularydefinition-constraint-list.xml"/>
+    <list destination="metastandard" role="constraints" extends="config/metastandard/metastandard-constraint-list.xml"/>
     <list destination="synonym" role="related" extends="config/synonym/synonym-list.xml" />
      
     </form-schema>
