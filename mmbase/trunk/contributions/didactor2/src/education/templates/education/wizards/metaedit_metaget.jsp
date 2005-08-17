@@ -86,14 +86,13 @@
                   <mm:node number="<%= sTemplateNode %>">
                      <%
                         if(sType.equals("1"))
-                        {//vocabulary
+                        {  //vocabulary
                            %>
                               <mm:relatednodes type="metavocabulary" >
                                 <mm:node id="vocabulary_id">
                                     <mm:node number="<%= sMetadataID %>" id="metadata_id">
                                        <mm:createrelation source="metadata_id" destination="vocabulary_id" role="posrel" />
                                     </mm:node>
-                                 <!-- /mm:field -->
                                  </mm:node>
                               </mm:relatednodes>
                            <%
