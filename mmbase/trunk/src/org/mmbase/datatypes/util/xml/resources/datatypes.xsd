@@ -30,7 +30,7 @@
                 <xsd:element name="maxLength" type="Comparable"></xsd:element>
                 <xsd:element name="length" type="Comparable"></xsd:element>
                 <xsd:element name="pattern" type="Comparable"></xsd:element>
-                <xsd:element name="whitespace" type="WhiteSpace"></xsd:element>
+                <xsd:element name="whiteSpace" type="WhiteSpace"></xsd:element>
             </xsd:choice>
             <xsd:sequence>
                 <xsd:element ref="enumeration" maxOccurs="unbounded"

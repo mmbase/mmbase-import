@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.5 2005-08-16 14:05:17 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -108,28 +108,36 @@ public class DataTypeDefinition {
         return this;
     }
 
-    protected void setPropertyData(DataType.Property property, Element element) {
-        // set fixed
-        if (hasAttribute(element, "fixed")) {
-            boolean isFixed = Boolean.valueOf(getAttribute(element, "fixed")).booleanValue();
-            property.setFixed(isFixed);
-        }
-        // set errorDescriptions
+    protected LocalizedString getLocalizedDescriptions(String tagName, Element element, LocalizedString descriptions) {
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
-                if ("description".equals(childElement.getLocalName())) {
+                if (tagName.equals(childElement.getLocalName())) {
                     Locale locale = null;
                     if (hasAttribute(childElement, "xml:lang")) {
                         String language = getAttribute(childElement, "xml:lang");
                         locale = new Locale(language, null);
                     }
                     String description = getValue(childElement);
-                    property.setErrorDescription(description, locale);
+                    if (descriptions ==  null) {
+                        descriptions = new LocalizedString(description);
+                    }
+                    descriptions.set(description, locale);
                 }
             }
         }
+        return descriptions;
+    }
+
+    protected void setPropertyData(DataType.Property property, Element element) {
+        // set fixed
+        if (hasAttribute(element, "fixed")) {
+            boolean isFixed = Boolean.valueOf(getAttribute(element, "fixed")).booleanValue();
+            property.setFixed(isFixed);
+        }
+        LocalizedString descriptions = property.getLocalizedErrorDescription();
+        property.setLocalizedErrorDescription(getLocalizedDescriptions("description", element, descriptions));
     }
 
     /**
@@ -153,6 +161,8 @@ public class DataTypeDefinition {
                     addProcessor(DataType.PROCESS_SET, childElement);
                 } else if ("commitprocessor".equals(childElement.getLocalName())) {
                     addProcessor(DataType.PROCESS_COMMIT, childElement);
+                } else if ("enumeration".equals(childElement.getLocalName())) {
+                    addEnumeration(childElement);
                 } else if (dataType instanceof StringDataType) {
                     addStringCondition(childElement);
                 } else if (dataType instanceof BigDataType) {
@@ -259,6 +269,18 @@ public class DataTypeDefinition {
             } else {
                 addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
             }
+        }
+    }
+
+    protected void addEnumeration(Element enumerationElement) {
+        String value = enumerationElement.getAttribute("value");
+        if (value != null && !value.equals("")) {
+            DataType.EnumerationValue enumerationValue = dataType.addEnumerationValue(value);
+            // set display
+            LocalizedString descriptions = enumerationValue.getLocalizedDescription();
+            enumerationValue.setLocalizedDescription(getLocalizedDescriptions("display", enumerationElement, descriptions));
+        } else {
+            throw new IllegalArgumentException("no 'value' argument");
         }
     }
 

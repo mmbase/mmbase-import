@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.10 2005-08-16 14:44:37 pierre Exp $
+ * @version $Id: DataType.java,v 1.11 2005-08-18 12:21:51 pierre Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -79,8 +79,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     private Object defaultValue;
 
     private Processor commitProcessor;
-    private Processor[] getProcessor;
-    private Processor[] setProcessor;
+    private Processor[] getProcessors;
+    private Processor[] setProcessors;
+
+    private List enumerationValues;
 
     /**
      * Create a data type object of unspecified class type
@@ -130,19 +132,20 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         edit();
         origin = null;
         defaultValue = null;
-        requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
-        uniqueProperty = createProperty(PROPERTY_UNIQUE, PROPERTY_UNIQUE_DEFAULT);
+        requiredProperty = null;
+        uniqueProperty = null;
         commitProcessor = null;
-        getProcessor = new Processor[] {
-             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
-             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
-             null /* datetime */, null /* boolean */, null /* list    */
-        };
-        setProcessor = new Processor[] {
-             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
-             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
-             null /* datetime */, null /* boolean */, null /* list    */
-        };
+        enumerationValues = null;
+        getProcessors = null;
+        setProcessors = null;
+    }
+
+    protected DataType.Property inheritProperty(DataType.Property property) {
+        if (property == null) {
+            return null;
+        } else {
+            return property.clone(this);
+        }
     }
 
     /**
@@ -160,10 +163,23 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         this.origin = origin;
         defaultValue = origin.defaultValue;
         commitProcessor = origin.commitProcessor;
-        requiredProperty = (DataType.Property)getRequiredProperty().clone(this);
-        uniqueProperty = (DataType.Property)getUniqueProperty().clone(this);
-        getProcessor = (Processor[])getProcessor.clone();
-        setProcessor = (Processor[])setProcessor.clone();
+        if (origin.enumerationValues == null) {
+            enumerationValues = null;
+        } else {
+            enumerationValues = new ArrayList(origin.enumerationValues);
+        }
+        requiredProperty = inheritProperty(origin.requiredProperty);
+        uniqueProperty = inheritProperty(origin.uniqueProperty);
+        if (origin.getProcessors == null) {
+            getProcessors = null;
+        } else {
+            getProcessors = (Processor[])origin.getProcessors.clone();
+        }
+        if (origin.setProcessors == null) {
+            setProcessors = null;
+        } else {
+            setProcessors = (Processor[])origin.setProcessors.clone();
+        }
     }
 
     /**
@@ -285,7 +301,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @throws IllegalArgumentException if the value is not compatible
      */
     public void validate(Object value) {
-        validate(value, null, null);
+        validate(value, null, null, null);
     }
 
     /**
@@ -296,34 +312,74 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @throws IllegalArgumentException if the value is not compatible
      */
     public void validate(Object value, Cloud cloud) {
-        validate(value, null, cloud);
+        validate(value, null, null, cloud);
+    }
+
+    /**
+     * Checks if the value in the field of the passed node follows the restrictions defined for this type.
+     * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
+     * @param node the node for which the datatype is checked. If not <code>null</code>, and the
+     *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
+     * @param field the field for which the datatype is checked.
+     * @throws IllegalArgumentException if the value is not compatible
+     */
+    public void validate(Node node, Field field) {
+        validate(node.getValueWithoutProcess(field.getName()), node, field, node == null ? null : node.getCloud());
     }
 
     /**
      * Checks if the passed object follows the restrictions defined for this type.
      * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
      * @param value the value to validate
-     * @param field the field for which the datatype is checked. If not <code>null</code>, and the
+     * @param node the node for which the datatype is checked. If not <code>null</code>, and the
      *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
+     * @param field the field for which the datatype is checked.
      * @param cloud the cloud used to determine the locale for the error message when validation fails
+     *        if null, it is retrieved from the passed node if possible.
      * @throws IllegalArgumentException if the value is not compatible
      */
-    public void validate(Object value, Field field, Cloud cloud) {
+    public void validate(Object value, Node node, Field field, Cloud cloud) {
+        if (cloud == null && node != null) cloud = node.getCloud();
         if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
-            failOnValidate(getRequiredProperty(), value, cloud);
+            // only fail for fields users may actually edit
+            if (field == null || field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_SYSTEM_VIRTUAL) {
+                failOnValidate(getRequiredProperty(), value, cloud);
+            }
         }
+        // test uniqueness
+        if (node != null && field != null && value != null && isUnique() && !field.getName().equals("number")) {
+            // create a query and query for the value
+            NodeQuery query = field.getNodeManager().createQuery();
+            Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
+            Queries.addConstraint(query,constraint);
+            if (!node.isNew()) {
+                constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
+                Queries.addConstraint(query,constraint);
+            }
+            log.debug(query);
+            if (Queries.count(query) > 0) {
+                failOnValidate(getUniqueProperty(), value, node.getCloud());
+            }
+        }
+        // test enumerations
+        // if (enumerationValues != null && enumerationValues.size() == -1) {
+        //     ...
+        // }
     }
 
     public String toString() {
-//        return getTypeAsClass() + " " + getName();
         StringBuffer buf = new StringBuffer();
         buf.append(getName() + " (" + getTypeAsClass() + ")\n");
         buf.append(commitProcessor == null ? "" : "commit:" + commitProcessor.getClass().getName() + "\n");
-        for (int i =0; i < 13; i++) {
-            buf.append(getProcessor[i] == null ? "" : "\nget [" +  DataTypes.typeToClass(i) + "]:" + getProcessor[i].getClass().getName() + "\n");
+        if (getProcessors == null) {
+            for (int i =0; i < 13; i++) {
+                buf.append(getProcessors[i] == null ? "" : "\nget [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i].getClass().getName() + "\n");
+            }
         }
-        for (int i =0; i < 13; i++) {
-            buf.append(setProcessor[i] == null ? "" : "\nset [" + DataTypes.typeToClass(i) + "]:" + setProcessor[i].getClass().getName() + "\n");
+        if (setProcessors == null) {
+            for (int i =0; i < 13; i++) {
+                buf.append(setProcessors[i] == null ? "" : "\nset [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i].getClass().getName() + "\n");
+            }
         }
         if (isRequired()) {
             buf.append("required\n");
@@ -401,7 +457,11 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @since  MMBase-1.6
      */
     public boolean isRequired() {
-        return Boolean.TRUE.equals(getRequiredProperty().getValue());
+        if (requiredProperty == null) {
+            return PROPERTY_REQUIRED_DEFAULT.booleanValue();
+        } else {
+            return Boolean.TRUE.equals(requiredProperty.getValue());
+        }
     }
 
     /**
@@ -409,6 +469,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @return the property as a {@link DataType#Property}
      */
     public DataType.Property getRequiredProperty() {
+        if (requiredProperty == null) requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
         return requiredProperty;
     }
 
@@ -433,7 +494,11 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @since  MMBase-1.6
      */
     public boolean isUnique() {
-        return Boolean.TRUE.equals(getUniqueProperty().getValue());
+        if (uniqueProperty == null) {
+            return PROPERTY_UNIQUE_DEFAULT.booleanValue();
+        } else {
+            return Boolean.TRUE.equals(uniqueProperty.getValue());
+        }
     }
 
     /**
@@ -441,6 +506,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @return the property as a {@link DataType#Property}
      */
     public DataType.Property getUniqueProperty() {
+        if (uniqueProperty == null) uniqueProperty = createProperty(PROPERTY_UNIQUE, PROPERTY_UNIQUE_DEFAULT);
         return uniqueProperty;
     }
 
@@ -452,6 +518,23 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      */
     public DataType.Property setUnique(boolean unique) {
         return setProperty(getUniqueProperty(),Boolean.valueOf(unique));
+    }
+
+    public DataType.EnumerationValue addEnumerationValue(Object value) {
+        DataType.EnumerationValue enumerationValue = new EnumerationValue(value);
+        if (enumerationValues == null) {
+            enumerationValues = new ArrayList();
+        }
+        enumerationValues.add(enumerationValue);
+        return enumerationValue;
+    }
+
+    public List getEnumerationValues() {
+        return enumerationValues;
+    }
+
+    public void setEnumerationValues(List enumerationValues) {
+        this.enumerationValues = enumerationValues;
     }
 
     /**
@@ -485,8 +568,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * commitProcessor is, the process() method on the commit processor is called.
      * <br />
      * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
-     * @param node the node for wich the values should be processed
-     * @param field the field for wioch the values should be processed
+     * @param node the node for which the values should be processed
+     * @param field the field for wich the values should be processed
      * @param value The value to process
      * @param processingType the MMBase type defining the type of value to process
      * @return the processed value
@@ -520,37 +603,21 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (action == PROCESS_COMMIT && result == null && isRequired()) {
             result = getDefaultValue();
         }
-        // test uniqueness
-        if (action == PROCESS_SET  && node != null && field != null && value != null &&
-            isUnique() && !field.getName().equals("number")) {
-            // create a query and query for the value
-            NodeQuery query = field.getNodeManager().createQuery();
-            Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
-            Queries.addConstraint(query,constraint);
-            if (!node.isNew()) {
-                constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
-                Queries.addConstraint(query,constraint);
-            }
-            log.debug(query);
-            if (Queries.count(query) > 0) {
-                failOnValidate(getUniqueProperty(), value, node.getCloud());
-            }
-        }
         return result;
     }
 
     /**
      * Returns the default processor for this action
-     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     * @param action either {@link #PROCESS_COMMIT}, {@link #PROCESS_GET}, or {@link #PROCESS_SET}
      */
     public Processor getProcessor(int action) {
         Processor processor = null;
         if (action == PROCESS_COMMIT) {
             processor =  commitProcessor;
         } else if (action == PROCESS_GET) {
-            processor =  getProcessor[0];
+            processor =  getProcessors == null ? null : getProcessors[0];
         } else {
-            processor =  setProcessor[0];
+            processor =  setProcessors == null ? null : setProcessors[0];
         }
         return processor;
     }
@@ -568,9 +635,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             if (action == PROCESS_COMMIT) {
                 processor =  commitProcessor;
             } else if (action == PROCESS_GET) {
-                processor =  getProcessor[processingType];
+                processor =  getProcessors == null ? null : getProcessors[processingType];
             } else {
-                processor =  setProcessor[processingType];
+                processor =  setProcessors == null ? null : setProcessors[processingType];
             }
             return processor;
         }
@@ -581,13 +648,15 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
      */
     public void setProcessor(int action, Processor processor) {
-        if (action == PROCESS_COMMIT) {
-            commitProcessor = processor;
-        } else if (action == PROCESS_GET) {
-            getProcessor[0] = processor;
-        } else {
-            setProcessor[0] = processor;
-        }
+        setProcessor(action, processor, Field.TYPE_UNKNOWN);
+    }
+
+    private Processor[] newProcessorsArray() {
+        return new Processor[] {
+             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
+             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
+             null /* datetime */, null /* boolean */, null /* list    */
+        };
     }
 
     /**
@@ -597,15 +666,16 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      */
     public void setProcessor(int action, Processor processor, int processingType) {
         if (processingType == Field.TYPE_UNKNOWN) {
-            setProcessor(action, processor);
+            processingType = 0;
+        }
+        if (action == PROCESS_COMMIT) {
+            commitProcessor = processor;
+        } else if (action == PROCESS_GET) {
+            if (getProcessors == null) getProcessors = newProcessorsArray();
+            getProcessors[processingType] = processor;
         } else {
-            if (action == PROCESS_COMMIT) {
-                commitProcessor = processor;
-            } else if (action == PROCESS_GET) {
-                getProcessor[processingType] = processor;
-            } else {
-                setProcessor[processingType] = processor;
-            }
+            if (setProcessors == null) setProcessors = newProcessorsArray();
+            setProcessors[processingType] = processor;
         }
     }
 
@@ -692,7 +762,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             this.fixed = fixed;
         }
 
-        public Object clone(DataType dataType) {
+        public DataType.Property clone(DataType dataType) {
             DataType.Property clone = ((DataType)dataType).new Property(name, value);
             if (errorDescription != null) {
                 clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
@@ -707,4 +777,60 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     }
 
+    public final class EnumerationValue implements Cloneable {
+        private Object value;
+        private LocalizedString description = null;
+
+        private EnumerationValue(Object value) {
+            this.value = value;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public LocalizedString getLocalizedDescription() {
+            return description;
+        }
+
+        public void setLocalizedDescription(LocalizedString description) {
+            this.description = description;
+        }
+
+        public void setDescription(String description) {
+            setDescription(description, null);
+        }
+
+        public void setDescription(String descriptionText, Locale locale) {
+            if (description == null) {
+                description = new LocalizedString(descriptionText);
+            }
+            description.set(descriptionText, locale);
+        }
+
+        public String getDescription(Locale locale) {
+            if (description == null) {
+                return null;
+            } else {
+                return description.get(locale);
+            }
+        }
+
+        public String getDescription() {
+            return description.get(null);
+        }
+
+        public DataType.EnumerationValue clone(DataType dataType) {
+            DataType.EnumerationValue clone = ((DataType)dataType).new EnumerationValue(value);
+            if (description != null) {
+                clone.setLocalizedDescription((LocalizedString)description.clone());
+            }
+            return clone;
+        }
+
+        public String toString() {
+            return value + " : " + getDescription();
+        }
+
+    }
 }

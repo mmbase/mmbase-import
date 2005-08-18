@@ -11,9 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
@@ -21,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.8 2005-08-16 14:43:50 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.9 2005-08-18 12:21:51 pierre Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -51,16 +49,15 @@ public class StringDataType extends BigDataType {
 
     public void erase() {
         super.erase();
-        patternProperty = createProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
-        whiteSpaceProperty = createProperty(PROPERTY_WHITESPACE, PROPERTY_WHITESPACE_DEFAULT);
+        patternProperty = null;
+        whiteSpaceProperty = null;
     }
 
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
-            patternProperty = (DataType.Property)dataType.getPatternProperty().clone(this);
-            whiteSpaceProperty = (DataType.Property)dataType.getWhiteSpaceProperty().clone(this);
+            patternProperty = inheritProperty(dataType.patternProperty);
         }
     }
 
@@ -69,7 +66,11 @@ public class StringDataType extends BigDataType {
      * @return the pattern as a <code>String</code>, or <code>null</code> if there is no pattern.
      */
     public String getPattern() {
-        return (String) getPatternProperty().getValue();
+        if (patternProperty == null) {
+            return PROPERTY_PATTERN_DEFAULT;
+        } else {
+            return (String) patternProperty.getValue();
+        }
     }
 
     /**
@@ -77,6 +78,7 @@ public class StringDataType extends BigDataType {
      * @return the property as a {@link DataType#Property}
      */
     public DataType.Property getPatternProperty() {
+        if (patternProperty == null) patternProperty = createProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
         return patternProperty;
     }
 
@@ -94,7 +96,11 @@ public class StringDataType extends BigDataType {
      * @return one of the constants {@link #WHITESPACE_PRESERVE}, {@link #WHITESPACE_REPLACE},  or {@link #WHITESPACE_COLLAPSE}
      */
     public Integer getWhiteSpace() {
-        return (Integer) getWhiteSpaceProperty().getValue();
+        if (whiteSpaceProperty == null) {
+            return PROPERTY_WHITESPACE_DEFAULT;
+        } else {
+            return (Integer) whiteSpaceProperty.getValue();
+        }
     }
 
     /**
@@ -102,6 +108,7 @@ public class StringDataType extends BigDataType {
      * @return the property as a {@link DataType#Property}
      */
     public DataType.Property getWhiteSpaceProperty() {
+        if (whiteSpaceProperty == null) whiteSpaceProperty = createProperty(PROPERTY_WHITESPACE, PROPERTY_WHITESPACE_DEFAULT);
         return whiteSpaceProperty;
     }
 
@@ -118,8 +125,8 @@ public class StringDataType extends BigDataType {
         }
     }
 
-    public void validate(Object value, Field field, Cloud cloud) {
-        super.validate(value, field, cloud);
+    public void validate(Object value, Node node, Field field, Cloud cloud) {
+        super.validate(value, node, field, cloud);
         if (value != null) {
             String stringValue = Casting.toString(value);
             String pattern = getPattern();
