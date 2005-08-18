@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.3 2005-08-18 12:21:51 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -169,8 +169,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
             return clone;
         } catch (CloneNotSupportedException cnse) {
             // should not happen
-            log.error("Cannot clone this Field");
-                throw new RuntimeException("Cannot clone this Field", cnse);
+            throw new RuntimeException("Cannot clone this Field", cnse);
         }
     }
 

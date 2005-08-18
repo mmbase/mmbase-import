@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.58 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: Node.java,v 1.59 2005-08-18 12:21:51 pierre Exp $
  */
 public interface Node extends Comparable {
 
@@ -266,6 +266,16 @@ public interface Node extends Comparable {
      * @since MMBase-1.7
      */
     public Object getObjectValue(String fieldName);
+
+    /**
+     * Like getObjectValue, but skips any processing that MMBase would normally perform on a field.
+     * You can use this to get data from a field for validation purposes.
+     *
+     * @param fieldName name of field
+     * @param value new value of the field
+     * @since MMBase-1.8
+     */
+    public Object getValueWithoutProcess(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>boolean</code>.

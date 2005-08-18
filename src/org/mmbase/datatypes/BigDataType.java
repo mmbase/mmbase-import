@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
+ * @version $Id: BigDataType.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -47,16 +47,16 @@ abstract public class BigDataType extends DataType {
 
     public void erase() {
         super.erase();
-        minLengthProperty = createProperty(PROPERTY_MINLENGTH, PROPERTY_MINLENGTH_DEFAULT);
-        maxLengthProperty = createProperty(PROPERTY_MAXLENGTH, PROPERTY_MAXLENGTH_DEFAULT);
+        minLengthProperty = null;
+        maxLengthProperty = null;
     }
 
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof BigDataType) {
             BigDataType dataType = (BigDataType)origin;
-            minLengthProperty = (DataType.Property)dataType.getMinLengthProperty().clone(this);
-            maxLengthProperty = (DataType.Property)dataType.getMaxLengthProperty().clone(this);
+            minLengthProperty = inheritProperty(dataType.minLengthProperty);
+            maxLengthProperty = inheritProperty(dataType.maxLengthProperty);
         }
     }
 
@@ -65,7 +65,11 @@ abstract public class BigDataType extends DataType {
      * @return the minimum length as an <code>int</code>, or -1 if there is no minimum length.
      */
     public int getMinLength() {
-        return Casting.toInt(getMinLengthProperty().getValue());
+        if (minLengthProperty == null) {
+            return PROPERTY_MINLENGTH_DEFAULT.intValue();
+        } else {
+            return Casting.toInt(minLengthProperty.getValue());
+        }
     }
 
     /**
@@ -73,6 +77,7 @@ abstract public class BigDataType extends DataType {
      * @return the property as a {@link DataType#Property}
      */
     public DataType.Property getMinLengthProperty() {
+        if (minLengthProperty == null) minLengthProperty = createProperty(PROPERTY_MINLENGTH, PROPERTY_MINLENGTH_DEFAULT);
         return minLengthProperty;
     }
 
@@ -91,7 +96,11 @@ abstract public class BigDataType extends DataType {
      * @return the maximum length as an <code>int</code>, or -1 if there is no maximum length.
      */
     public int getMaxLength() {
-        return Casting.toInt(getMaxLengthProperty().getValue());
+        if (maxLengthProperty == null) {
+            return PROPERTY_MAXLENGTH_DEFAULT.intValue();
+        } else {
+            return Casting.toInt(getMaxLengthProperty().getValue());
+        }
     }
 
     /**
@@ -99,6 +108,7 @@ abstract public class BigDataType extends DataType {
      * @return the property as a {@link DataType#Property}
      */
     public DataType.Property getMaxLengthProperty() {
+        if (maxLengthProperty == null) maxLengthProperty = createProperty(PROPERTY_MAXLENGTH, PROPERTY_MAXLENGTH_DEFAULT);
         return maxLengthProperty;
     }
 
@@ -112,8 +122,8 @@ abstract public class BigDataType extends DataType {
         return setProperty(getMaxLengthProperty(), new Integer(value));
     }
 
-    public void validate(Object value, Field field, Cloud cloud) {
-        super.validate(value, field, cloud);
+    public void validate(Object value, Node node, Field field, Cloud cloud) {
+        super.validate(value, node, field, cloud);
         if (value != null) {
             int size = -1;
             if (this instanceof BinaryDataType) {
