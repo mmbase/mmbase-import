@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.315 2005-08-17 21:03:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.316 2005-08-18 14:40:00 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3187,6 +3187,13 @@ transaction was commited, following should result anything:
         attribute.
       </info>
     </attribute>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="node" attribute="element" />
+      <since>MMBase-1.8</since>
+    </attribute>    
     <example>&lt;mm:node number="1645"&gt;
 Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   &lt;mm:fieldlist type="edit"&gt;
@@ -3842,6 +3849,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="node" attribute="element" />
+      <since>MMBase-1.7.4</since>
     </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
@@ -3862,6 +3870,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="node" attribute="element" />
+      <since>MMBase-1.7.4</since>
     </attribute>
     <info>
       <p>

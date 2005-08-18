@@ -36,7 +36,7 @@ import org.mmbase.util.Casting;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.9 2005-05-09 10:54:36 michiel Exp $
+ * @version $Id: Functions.java,v 1.10 2005-08-18 14:40:00 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -88,6 +88,16 @@ public class Functions {
             return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
         }
     }
+
+    /*
+    public static String url(String string) {
+        try {
+            return ContentTag.getCharTransformer(escaper, null, null).transform("" + Casting.unWrap(string));
+        } catch (Exception e) {
+            return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
+        }
+    }
+    */
 
 
 
