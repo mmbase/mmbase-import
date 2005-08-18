@@ -1,0 +1,12 @@
+<mm:content
+    type="text/xml"
+    expires="-1"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:directive.page session="true" errorPage="error.jspx" />
+<mm:cloud rank="basic user">
+  TEST TEST
+</mm:cloud>
+</mm:content>
