@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.11 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: DataType.java,v 1.12 2005-08-18 15:17:42 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -371,14 +371,14 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         StringBuffer buf = new StringBuffer();
         buf.append(getName() + " (" + getTypeAsClass() + ")\n");
         buf.append(commitProcessor == null ? "" : "commit:" + commitProcessor.getClass().getName() + "\n");
-        if (getProcessors == null) {
-            for (int i =0; i < 13; i++) {
-                buf.append(getProcessors[i] == null ? "" : "\nget [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i].getClass().getName() + "\n");
+        if (getProcessors != null) {
+            for (int i = 0; i < 13; i++) {
+                buf.append(getProcessors[i] == null ? "" : ("\nget [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i].getClass().getName() + "\n"));
             }
         }
-        if (setProcessors == null) {
+        if (setProcessors != null) {
             for (int i =0; i < 13; i++) {
-                buf.append(setProcessors[i] == null ? "" : "\nset [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i].getClass().getName() + "\n");
+                buf.append(setProcessors[i] == null ? "" : ("\nset [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i].getClass().getName() + "\n"));
             }
         }
         if (isRequired()) {
