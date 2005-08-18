@@ -600,14 +600,14 @@ public class RemoteGenerator {
         StringBuffer sb2 = new StringBuffer();
         List v = new ArrayList(mmci.getClasses());
         List w = new ArrayList();
-        System.out.println("Sorting " + v);
+        // System.out.println("Sorting " + v);
 
         // now handle more specific classes
         int specificity = 0;
         int currentSize = w.size() - 1;
         while (v.size() > 0) {
             specificity++;
-            System.out.println("specificity:" + specificity);
+            // System.out.println("specificity:" + specificity);
             if (w.size() == currentSize) {
                 System.err.println("ERROR: Could not resolve order in ObjectWrapperHelper");
                 w.add(0, v);
