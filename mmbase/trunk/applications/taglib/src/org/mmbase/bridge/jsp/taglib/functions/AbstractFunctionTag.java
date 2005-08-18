@@ -16,6 +16,7 @@ import java.util.Iterator;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.FieldValue;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.22 2005-07-28 17:24:49 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.23 2005-08-18 16:55:27 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -179,6 +180,31 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     }
 
+    protected final Function getFunction() throws JspTagException {
+        String functionName = name.getString(this);
+        FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
+        if(log.isDebugEnabled()) {
+            log.debug("Getting function value. Container " + functionContainer);
+        }
+        
+        Function function;
+        if ("".equals(functionName)) {  // no name given, certainly must use container.
+            function = functionContainer.getFunction(functionContainer.getName());
+            if (function == null) {
+                throw new JspTagException("Could not determine the name of the function to be executed");
+            }
+        } else {
+            log.debug("Trying self for function " + functionName);
+            // name given, try self:
+            function = getFunction(functionName);
+            if (function == null) {
+                throw new NotFoundException("Could not find function with the name '" + functionName + "'");
+            }
+        }
+        return function;
+
+    }
+
     protected final Object getFunctionValue() throws JspTagException {
         return getFunctionValue(true);
     }
@@ -193,26 +219,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             value = getObject(getReferid());
         } else {
-            FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            if(log.isDebugEnabled()) {
-                log.debug("Getting function value. Container " + functionContainer);
-            }
-
-            Function function;
-            if ("".equals(functionName)) {  // no name given, certainly must use container.
-                function = functionContainer.getFunction(functionContainer.getName());
-                if (function == null) {
-                    throw new JspTagException("Could not determine the name of the function to be executed");
-                }
-            } else {
-                log.debug("Trying self for function " + functionName);
-                // name given, try self:
-                function = getFunction(functionName);
-                if (function == null) {
-                    throw new JspTagException("Could not find function with the name '" + functionName + "'");
-                }
-            }
-
+            Function function = getFunction();
 
             log.debug("Function to use " + function);
             Parameters params;
@@ -224,6 +231,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             params.setAutoCasting(true);
 
+            FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
             if (functionContainer != null) {
                 Iterator i = functionContainer.getParameters().iterator();
                 while (i.hasNext()) {

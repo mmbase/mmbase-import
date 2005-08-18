@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.316 2005-08-18 14:40:00 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.317 2005-08-18 16:55:26 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2214,6 +2214,24 @@ access the value of title:
     </example>
     <example>
       <include base="examples.taglib" href="codesamples/functionreferids.jsp" />
+    </example>
+  </tag>
+  <tag>
+    <name>hasfunction</name>
+    <extends>condition</extends>
+    <extends>functiontag</extends>
+    <extends>contextreader</extends>
+    <extends>containerreferrer</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.HasFunctionTag</tagclass>
+    <info>
+      <p>
+        Checks only whether certain function is available. To make it possible to make more generic code.
+      </p>
+    </info>
+    <since>MMBase-1.8</since>
+    <example>
+&lt;mm:hasfunction name="index"&gt;&lt;mm:function name="index" /&gt;&lt;/hasfunction&gt;;
     </example>
   </tag>
   <tag>
