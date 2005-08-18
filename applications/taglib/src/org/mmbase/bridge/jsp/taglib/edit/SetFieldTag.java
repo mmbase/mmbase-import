@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.31 2005-07-12 14:52:34 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.32 2005-08-18 14:40:00 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -37,7 +37,6 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
     private Attribute valueId = Attribute.NULL;
 
     public int doStartTag() throws JspTagException {
-        node = null;
         setFieldVar(name.getString(this));
         return EVAL_BODY_BUFFERED;
     }
@@ -56,11 +55,10 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
      */
     public int doEndTag() throws JspTagException {
         setFieldVar();
-
+        Node node = getNode();
         if (field == null) {
             throw new JspTagException("Cannot set field '" + name.getString(this) + "' for node '" + node + "' (it does not exist?)");
         }
-        Node node = getNodeVar();
         int type = field.getType();
 
         Object value;

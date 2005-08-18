@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.57 2005-08-17 20:57:29 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.58 2005-08-18 14:40:00 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -79,8 +79,7 @@ public class ImageTag extends FieldTag {
 
 
     public int doStartTag() throws JspTagException {
-        node = null;
-        getNodeVar();
+        Node node = getNode();
         if (!node.getNodeManager().hasField("handle")) {
             throw new JspTagException("Found parent node '" + node.getNumber() + "' of type " + node.getNodeManager().getName() + " does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
@@ -143,7 +142,6 @@ public class ImageTag extends FieldTag {
         case MODE_HTML_IMG: {
             List a = new ArrayList();
             a.add(t);
-            Node node = getNodeVar();
             Dimension dim = (Dimension) node.getFunctionValue("dimension", a).get();
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             String alt;

@@ -24,12 +24,22 @@ import org.mmbase.bridge.Cloud;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.21 2005-06-21 19:28:23 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.22 2005-08-18 14:40:00 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
 
     protected Attribute parentNodeId = Attribute.NULL;
+    private Attribute element  = Attribute.NULL;
+    /**
+     * The element attribute is used to access elements of
+     * clusternodes.
+     * @since MMBase-1.7.4
+     */
+    public void setElement(String e) throws JspTagException {
+        element = getAttribute(e);
+    }
+
 
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
@@ -64,7 +74,11 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
      */
 
     protected Node getNode() throws JspTagException {
-        return findNodeProvider().getNodeVar();
+        Node node =  findNodeProvider().getNodeVar();
+        if (node != null && element != Attribute.NULL) {
+            node = node.getNodeValue(element.getString(this));            
+        }
+        return node;
     }
 
     protected void fillStandardParameters(Parameters p) throws JspTagException {
