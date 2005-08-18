@@ -40,6 +40,8 @@
     <property name="ImageConvert.ConverterCommand">convert</property>
     <property name="ImageConvert.ConverterRoot"></property>
 
+    <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- defaults to jpeg if this option is missing here -->
+
     <!-- convert using ImageMagick example for windows -->
     <!--
     <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
@@ -159,14 +161,14 @@
       </db>
     </field>
 
-     <field>
-       <descriptions>
-         <description xml:lang="en">Filesize of the image</description>
-         <description xml:lang="nl">Filegrootte van het plaatje</description>
-       </descriptions>
-        <gui>
-          <guiname xml:lang="en">Size</guiname>
-          <guiname xml:lang="nl">Grootte</guiname>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Filesize of the image</description>
+        <description xml:lang="nl">Filegrootte van het plaatje</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Size</guiname>
+        <guiname xml:lang="nl">Grootte</guiname>
           <guiname xml:lang="fr">Taille</guiname>
           <guiname xml:lang="eo">Grando</guiname>
           <guiname xml:lang="it">Dimensione</guiname>
