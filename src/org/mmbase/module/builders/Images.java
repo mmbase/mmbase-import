@@ -16,6 +16,7 @@ import org.mmbase.util.Queue;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.images.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.94.2.3 2004-10-06 13:44:38 michiel Exp $
+ * @version $Id: Images.java,v 1.94.2.4 2005-08-18 10:46:13 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -151,10 +152,38 @@ public class Images extends AbstractImages {
                 throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
             }
             return new Integer(cacheImage(node, (String) args.get(0)));
+        } else if ("dimension".equals(function)) {
+            if (args.size() == 0) {
+                return getDimension(node);
+            } else {
+                return getDimension(node, (String) args.get(0));
+            }
         } else {
             return super.executeFunction(node, function, args);
         }
     }
+
+
+    /**
+     * @since MMBase-1.7.4
+     */
+    protected Dimension getDimension(MMObjectNode node, String template) {
+        if (template == null || template.equals("")) { // no template given, return dimension of node itself.
+            return getDimension(node);
+        }
+        ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
+        if(imageCaches == null) {
+            throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
+        }
+        MMObjectNode icacheNode = imageCaches.getLegacyCachedNode(node.getNumber(), template);
+        if (icacheNode != null) {
+            return imageCaches.getDimension(icacheNode);
+        } else {
+            // no icache available? Only return prediction. 
+            return  Imaging.predictDimension(getDimension(node), Imaging.parseTemplate(template));
+        }
+    }
+
 
     /**
      * @javadoc

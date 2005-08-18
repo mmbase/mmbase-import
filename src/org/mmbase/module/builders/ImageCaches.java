@@ -14,6 +14,7 @@ import java.util.Iterator;
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
+import org.mmbase.util.images.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -26,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.37.2.3 2005-03-24 09:40:12 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.4 2005-08-18 10:46:13 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -89,37 +90,42 @@ public class ImageCaches extends AbstractImages {
         return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
     }
 
-
     /**
-     * Given a certain ckey, return the cached image node number, if there is one, otherwise return -1.
-     * This functions always does a query. The caching must be done somewhere else.
-     * This is done because caching on ckey is not necesarry when caching templates.
-     * @since MMBase-1.6
+     * Finds a icache node in the icache table, supposing 'legacy' ckeys (where all +'s are removed).
+     * @param imageNumber The node number of the image for which it must be searched
+     * @param template     The image conversion template
+     * @return The icache node or <code>null</code> if it did not exist.
      **/
-    protected MMObjectNode getCachedNode(String ckey) {
-        List nodes;
+    protected MMObjectNode getLegacyCachedNode(int imageNumber, String ckey) {
+
+        String legacyCKey = ckey;
+        log.info("Trying legacy " + legacyCKey);
+        List legacyNodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(2); // to make sure this is a cheap query.
-            StepField ckeyField = query.getField(getField("ckey"));
-            BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey);
-            bfvc.setCaseSensitive(true);
-            query.setConstraint(bfvc);
-            nodes = getNodes(query);
+            StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
+            query.setConstraint(new BasicFieldValueConstraint(ckeyField, legacyCKey));
+            legacyNodes = getNodes(query);
+            if (legacyNodes.size() == 0) {
+                log.debug("Did not find cached images with key (" +  legacyCKey + ")");
+            }
+            if (legacyNodes.size() > 1) {
+                log.warn("Found more then one cached image with key (" + legacyCKey + ")");
+            }
+            MMObjectNode legacyNode = null;
+            Iterator i = legacyNodes.iterator();
+            while (i.hasNext()) {
+                legacyNode = (MMObjectNode) i.next();
+            }
+            return legacyNode;
         } catch (SearchQueryException e) {
             log.error(e.toString());
             return null;
         }
-
-        if (nodes.size() == 0) {
-            log.debug("Did not find cached images with key ("+ ckey +")");
-            return null;
-        }
-        if (nodes.size() > 1) {
-            log.warn("found more then one cached image with key ("+ ckey +")");
-        }
-        return (MMObjectNode) nodes.get(0);
     }
+
+
 
     /**
      * Returns the bytes of a cached image. It accepts a list, just
@@ -153,7 +159,10 @@ public class ImageCaches extends AbstractImages {
             return (ByteFieldContainer) handleCache.get(ckey);
         }
         log.debug("not found in handle cache, getting it from database.");
-        MMObjectNode node = getCachedNode(ckey);
+        int pos = 0;
+        while (Character.isDigit(ckey.charAt(pos))) pos ++;
+        int nodeNumber = Integer.parseInt(ckey.substring(0, pos));
+        MMObjectNode node = getLegacyCachedNode(nodeNumber, ckey);
         if (node == null) {
             // we dont have a cachednode yet, return null
             log.debug("cached node not found for key (" + ckey + "), returning null");
