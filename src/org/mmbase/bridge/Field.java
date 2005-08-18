@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.27 2005-07-22 12:35:46 pierre Exp $
+ * @version $Id: Field.java,v 1.28 2005-08-18 12:21:51 pierre Exp $
  */
 public interface Field extends Descriptor {
 
@@ -69,7 +69,7 @@ public interface Field extends Descriptor {
     /** A field's state is 'system virtual' if it is not persistent in storage, nor editable by users.
      *  @todo reserved but not used yet
      */
-    public final static int STATE_SYSTEM_VIRTUAL= 4;
+    public final static int STATE_SYSTEM_VIRTUAL = 4;
     /** The field's state when it is not (yet) known. */
     public final static int STATE_UNKNOWN    = -1;
 

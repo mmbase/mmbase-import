@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.29 2005-08-16 14:05:39 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.30 2005-08-18 12:21:51 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -588,11 +588,17 @@ public class BuilderReader extends XMLBasicReader {
                 log.warn("invalid value for size : " + size);
             }
         }
+        // set required property, but only if given
         String notnull = getElementAttributeValue(dbtype,"notnull");
-        def.getDataType().setRequired(notnull != null && notnull.equalsIgnoreCase("true"));
+        if (notnull != null && notnull.equalsIgnoreCase("true")) {
+            def.getDataType().setRequired(true);
+        }
+
+        // set unique property, but only if given
         String key = getElementAttributeValue(dbtype,"key");
-        def.getDataType().setUnique(key != null && key.equalsIgnoreCase("true"));
-        // def.setUnique(key != null && key.equalsIgnoreCase("true"));
+        if (key != null && key.equalsIgnoreCase("true")) {
+            def.getDataType().setUnique(true);
+        }
 
         decodeFieldDef(field, def);
 

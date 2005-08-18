@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.159 2005-08-17 17:36:25 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.160 2005-08-18 12:21:51 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -359,7 +359,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
-     * Like setValue, but without processing, this is called by the other set-values.
+     * Like setObjectValue, but without processing, this is called by the other set-values.
      * @param fieldName name of field
      * @param value new value of the field
      * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
@@ -552,9 +552,20 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     }
 
-    public Object getObjectValue(String fieldName) {
-        Object result = noderef.getValue(fieldName);
+    /**
+     * Like getObjectValue, but skips any processing that MMBase would normally perform on a field.
+     * You can use this to get data from a field for validation purposes.
+     * @param fieldName name of field
+     * @since MMBase-1.8
+     */
+    public Object getValueWithoutProcess(String fieldName) {
+        Object result = getNode().getValue(fieldName);
         if (result == MMObjectNode.VALUE_NULL) result = null;
+        return result;
+    }
+
+    public Object getObjectValue(String fieldName) {
+        Object result = getValueWithoutProcess(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             Object r = field.getDataType().process(DataType.PROCESS_GET, this, field, result);
@@ -723,7 +734,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         while (fi.hasNext()) {
             Field field = fi.nextField();
             try {
-                field.getDataType().validate(getNode().getValue(field.getName()), field, cloud);
+                field.getDataType().validate(this, field);
             } catch (IllegalArgumentException iae) {
                 error.append(field.getName() + ": " + iae.getMessage() + "\n");                
             }
@@ -737,7 +748,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) {
             Field field = nodeManager.getField(fieldName);
             try {
-                field.getDataType().validate(getNode().getValue(fieldName), field, cloud);
+                field.getDataType().validate(this, field);
             } catch (IllegalArgumentException iae) {
                 throw new IllegalArgumentException(fieldName + ": " + iae.getMessage());
             }

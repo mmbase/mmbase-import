@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.7 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: NodeWrapper.java,v 1.8 2005-08-18 12:21:51 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -56,6 +56,7 @@ public abstract class NodeWrapper implements Node, Comparable {
     public void setListValue(String fieldName, List value) { node.setListValue(fieldName, value); }
     public boolean isNull(String fieldName) { return node.isNull(fieldName); }
     public Object getValue(String fieldName) { return node.getValue(fieldName); }
+    public Object getValueWithoutProcess(String fieldName) { return node.getValueWithoutProcess(fieldName); }
     public Object getObjectValue(String fieldName) { return node.getObjectValue(fieldName); }
     public boolean getBooleanValue(String fieldName) { return node.getBooleanValue(fieldName); }
     public Node getNodeValue(String fieldName) { return node.getNodeValue(fieldName); }

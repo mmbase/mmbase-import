@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.Casting;
@@ -19,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.5 2005-08-15 16:38:20 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
@@ -38,24 +37,27 @@ public class NodeDataType extends DataType {
 
     public void erase() {
         super.erase();
-        mustExistProperty = createProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
-        mustExistProperty.setFixed(true);
+        mustExistProperty = null;
     }
 
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof NodeDataType) {
             NodeDataType dataType = (NodeDataType)origin;
-            mustExistProperty = (DataType.Property)dataType.getMustExistProperty().clone(this);
+            mustExistProperty = inheritProperty(dataType.mustExistProperty);
         }
     }
 
     public DataType.Property getMustExistProperty() {
+        if (mustExistProperty == null) {
+            mustExistProperty = createProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
+            mustExistProperty.setFixed(true);
+        }
         return mustExistProperty;
     }
 
-    public void validate(Object value, Field field, Cloud cloud) {
-        super.validate(value, field, cloud);
+    public void validate(Object value, Node node, Field field, Cloud cloud) {
+        super.validate(value, node, field, cloud);
         if (value != null && !(value instanceof Number && ((Number)value).intValue() == -1)) {
             MMObjectNode nodeValue = Casting.toNode(value,MMBase.getMMBase().getTypeDef());
             if (nodeValue == null) {
