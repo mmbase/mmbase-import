@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.17 2005-07-12 18:27:40 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.18 2005-08-18 17:02:51 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -129,7 +129,7 @@ public class MmxfSetString implements  Processor {
     private static Pattern crossElement  = Pattern.compile("a|img|div");
 
 
-    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class");
+    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type");
 
     private void copyAttributes(Element source, Element destination) {
         NamedNodeMap attributes = source.getAttributes();
@@ -397,6 +397,26 @@ public class MmxfSetString implements  Processor {
         }
     }
 
+    protected Node getUrlNode(Cloud cloud, String href, Element a) {
+        NodeManager urls = cloud.getNodeManager("urls");
+        NodeQuery q = urls.createQuery();
+        StepField urlStepField = q.getStepField(urls.getField("url"));
+        Constraint c = q.createConstraint(urlStepField, href);
+        q.setConstraint(c);
+        NodeList ul = urls.getList(q);
+        Node url;
+        if (ul.size() > 0) {
+            url = ul.getNode(0);
+            log.service("linking to exsting URL from cloud " + url); 
+        } else {                            
+            // not found, create it!
+            url = cloud.getNodeManager("urls").createNode();
+            url.setStringValue("url", href);
+            url.setStringValue("title", a.getAttribute("alt"));
+            url.commit();
+        }
+        return url;
+    }
 
     final Pattern DIV_ID = Pattern.compile("block_(.*?)_(.*)");
 
@@ -437,7 +457,7 @@ public class MmxfSetString implements  Processor {
             NodeManager icaches     = cloud.getNodeManager("icaches");
             NodeManager attachments = cloud.getNodeManager("attachments");
             NodeManager urls        = cloud.getNodeManager("urls");
-            NodeManager segments    = cloud.getNodeManager("segments");
+            NodeManager segments = cloud.hasNodeManager("semments") ? cloud.getNodeManager("segments") : null;
             NodeManager blocks      = cloud.getNodeManager("blocks");
 
             String imageServlet      = images.getFunctionValue("servletpath", null).toString();
@@ -450,8 +470,12 @@ public class MmxfSetString implements  Processor {
             NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
             NodeList usedUrls             = cloud.getCloudContext().createNodeList();
 
-            NodeList relatedSegments      = Queries.getRelatedNodes(editedNode, segments , "idrel", "destination", "id", null);
-            NodeList usedSegments         = cloud.getCloudContext().createNodeList();
+            NodeList relatedSegments = null;
+            NodeList usedSegments = null;
+            if (segments != null) {
+                relatedSegments = Queries.getRelatedNodes(editedNode, segments , "idrel", "destination", "id", null);
+                usedSegments = cloud.getCloudContext().createNodeList();
+            }
 
             NodeList relatedAttachments   = Queries.getRelatedNodes(editedNode, attachments , "idrel", "destination", "id", null);
             NodeList usedAttachments      = cloud.getCloudContext().createNodeList();
@@ -538,7 +562,7 @@ public class MmxfSetString implements  Processor {
                         a.removeAttribute("width");
                         a.removeAttribute("class");
                         a.removeAttribute("alt");
-                    } else if (href.startsWith(segmentsServlet)) {
+                    } else if (href.startsWith(segmentsServlet) && segments != null) {
                         String nodeNumber = href.substring(segmentsServlet.length());
                         if (! cloud.hasNode(nodeNumber)) {
                             log.error("No such node '" + nodeNumber + "' (deduced from " + href + ")");
@@ -665,23 +689,7 @@ public class MmxfSetString implements  Processor {
 
                             Node url;
                             if (nodeLinkedUrls.isEmpty()) {
-                                // no such related url found!
-                                // search entire cloud, too..
-                                NodeQuery q = urls.createQuery();
-                                StepField urlStepField = q.getStepField(urls.getField("url"));
-                                Constraint c = q.createConstraint(urlStepField, u);
-                                q.setConstraint(c);
-                                NodeList ul = urls.getList(q);
-                                if (ul.size() > 0) {
-                                    url = ul.getNode(0);
-                                    log.service("linking to exsting URL from cloud " + url); 
-                                } else {                            
-                                    // not found, create it!
-                                    url = cloud.getNodeManager("urls").createNode();
-                                    url.setStringValue("url", u);
-                                    url.setStringValue("title", a.getAttribute("alt"));
-                                    url.commit();
-                                }
+                                url = getUrlNode(cloud, u, a);
                             } else {
                                 url = nodeLinkedUrls.getNode(0).getNodeValue("urls");
                             }
@@ -707,7 +715,7 @@ public class MmxfSetString implements  Processor {
             log.service("Cleaning dangling idrels");
             cleanDanglingIdRels(relatedImages,   usedImages,   "images");
             cleanDanglingIdRels(relatedUrls,     usedUrls,     "urls");
-            cleanDanglingIdRels(relatedSegments, usedSegments, "segments1");
+            if (segments != null) cleanDanglingIdRels(relatedSegments, usedSegments, "segments1");
             cleanDanglingIdRels(relatedAttachments, usedAttachments, "attachments");
         }
         
@@ -734,24 +742,46 @@ public class MmxfSetString implements  Processor {
        }
     }
 
+
+
+
     /** 
      * Receives Docbook XML, and saves as MMXF. Docbook is more powerfull as MMXF so this
      * transformation will not be perfect. It is mainly meant for MMBase documentation.
      */
     protected Document parseDocBook(Node editedNode, Document source) {
+        Cloud cloud = editedNode.getCloud();
         java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/docbook2pseudommxf.xslt");
         DOMResult result = new DOMResult();
         Map params = new HashMap();
-        params.put("cloud", editedNode.getCloud());
+        params.put("cloud", cloud);
         try {
             XSLTransformer.transform(new DOMSource(source), u, result, params);
         } catch (javax.xml.transform.TransformerException te) {
             log.error(te);
         }
         Document pseudoMmxf = result.getNode().getOwnerDocument();
+        // should follow some code to remove and create cross-links, images etc.
 
-
-        // shoudl follow some code to remove and create cross-links, images etc.
+        NodeManager urls = cloud.getNodeManager("urls");
+        NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
+        NodeList usedUrls             = cloud.getCloudContext().createNodeList();
+        
+        // now find all <a href tags in the pseudo-mmxf, and fix them.
+        org.w3c.dom.NodeList nl = pseudoMmxf.getElementsByTagName("a");
+        for (int j = 0 ; j < nl.getLength(); j++) {
+            Element a = (Element) nl.item(j);
+            String href = a.getAttribute("href");
+            Node url = getUrlNode(cloud, href, a);
+            String id = "_" + indexCounter++;
+            a.setAttribute("id", id);
+            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), url.getNodeManager(), "idrel");
+            Relation newIdRel = rm.createRelation(editedNode, url);            
+            newIdRel.setStringValue("id", id);
+            newIdRel.commit();
+            a.removeAttribute("href");
+            
+        }
 
         return pseudoMmxf;
     }
@@ -770,7 +800,7 @@ public class MmxfSetString implements  Processor {
                 return  parse(xmlField.transformBack("" + value));
             }
             case Modes.DOCBOOK: {
-                log.debug("Handling wiki-input: " + value);
+                log.debug("Handling docbook-input: " + value);
                 return  parseDocBook(node, parse("" + value));
             }
             case Modes.FLAT: {
