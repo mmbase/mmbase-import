@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<isbo>
+  <student-details>
+    <student-detail>
+        <username>LOGIN1</username>
+        <password>PASSWORD</password>
+        <firstname>FIRSTNAME</firstname>
+        <initials>INITIALS</initials>
+        <suffix>SUFFIX</suffix> <!-- tussenvoegsel -->
+        <lastname>LASTNAME</lastname>
+        <address>ADDRESS</address>
+        <zipcode>ZIPCODE</zipcode>
+        <city>CITY</city>
+        <country>COUNTRY</country>
+        <telephone>TELEPHONE</telephone>
+        <mobile>TELEPHONE</mobile>
+        <email>EMAIL ADDRESS</email>
+        <website>WEBSITE</website>
+        <birthdate>YYYY-MM-DD</birthdate>
+        <externid>SOME ID</externid> <!-- optional -->
+    </student-detail>
+    <!-- repeat for as many students as are updated and added -->
+  </student-details>
+  <classes>
+    <!-- 
+        for every class that needs to be updated or added
+        add the following information
+    -->
+    <class>
+      <name>UNIQUE CLASS NAME</name>
+      <description>DESCRIPTION</description>
+      <startdate>YYYY-MM-DD</startdate>
+      <enddate>YYYY-MM-DD</enddate>
+      <education>EDUCATION NAME</education> 
+      <!-- 
+        repeat the education tag for multiple educations
+        you can set education names in the didactor editors 
+      -->
+      <students>
+        <username>LOGIN1</username>
+        <username>LOGIN2</username>
+        <username>LOGIN3</username>
+        <username>LOGIN4</username>
+        <username>LOGIN5</username>
+        <!--
+        
+            etc.
+
+            If this is an existing class, every student that isn't 
+            mentioned here will be removed from the class.
+            
+            If the student's information is already in the didactor
+            instance, the detailed info for that student need not be
+            mentioned in the student-details list.
+            
+        -->
+     </students>
+    </class>
+  </classes>
+</isbo>
+
