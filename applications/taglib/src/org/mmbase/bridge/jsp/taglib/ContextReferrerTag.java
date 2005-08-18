@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.72 2005-05-21 08:51:50 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.73 2005-08-18 14:40:00 michiel Exp $
  * @see ContextTag
  */
 
@@ -516,7 +516,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
 
     /**
-     *
+     * @since MMBase-1.7.4     
      */
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         log.debug("Filling standard parameters");

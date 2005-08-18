@@ -22,30 +22,18 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.51 2005-08-17 21:03:47 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.52 2005-08-18 14:40:00 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
     private static final Logger log = Logging.getLoggerInstance(FieldTag.class);
 
-    protected Node   node;
-    protected NodeProvider nodeProvider;
     protected Field  field;
     protected String fieldName;
     protected Attribute name = Attribute.NULL;
-    private Attribute element  = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
         name = getAttribute(n);
-    }
-
-    /**
-     * The element attribute is used to access elements of
-     * clusternodes.
-     * @since MMBase-1.7.4
-     */
-    public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
     }
 
 
@@ -55,22 +43,17 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
      */
 
     public Node getNodeVar() throws JspTagException {
-        if (node == null) {
-            nodeProvider = findNodeProvider();
-            node = nodeProvider.getNodeVar();
-        }
-        if (node == null) {
-            throw new JspTagException ("Did not find node in the parent node provider");
-        }
-        if (element != Attribute.NULL) {
-            node = node.getNodeValue(element.getString(this));            
-        }
-        return node;
-    }
-    public void setModified() {
-        nodeProvider.setModified();
+        return getNode();
     }
 
+
+    public void setModified() {
+        try {
+            findNodeProvider().setModified();
+        } catch (JspTagException jte) {
+            log.error(jte);
+        }
+    }
 
 
     public Field getFieldVar() {
@@ -80,7 +63,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     protected void setFieldVar(String n) throws JspTagException {
         if (n != null) {
             try {
-                field = getNodeVar().getNodeManager().getField(n);
+                field = getNode().getNodeManager().getField(n);
             } catch (NotFoundException e) {
                 field = null;
             }
@@ -91,7 +74,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         } else {
             if (getReferid() == null) {
                 field = getField(); // get from parent.
-                getNodeVar();       // be sure to set the nodevar too, though.
+                getNode();       // be sure to set the nodevar too, though.
                 fieldName = field.getName();
             }
         }
@@ -120,10 +103,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
     public int doStartTag() throws JspTagException {
-        node = null;
+        Node node = getNode();
         fieldName = (String) name.getValue(this);
         if ("number".equals(fieldName)) {
-            if (nodeProvider instanceof org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag) {
+            if (findNodeProvider() instanceof org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag) {
                 // WHY can't it simply return the number it _will_ get?
                 throw new JspTagException("It does not make sense to ask 'number' field on uncommited node");
             }
@@ -140,7 +123,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             if (getReferid() != null) { // referid
                 value = getObject(getReferid());
             } else {         // function
-                value = getNodeVar().getValue(fieldName);
+                value = node.getValue(fieldName);
             }
         } else {        // a field was found!
             // if direct parent is a Formatter Tag, then communicate
@@ -233,8 +216,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
         }
-        node = null;
-        nodeProvider = null;
         field = null;
         fieldName = null;
         helper.doEndTag();
