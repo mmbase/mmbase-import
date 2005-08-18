@@ -325,6 +325,10 @@ builddate=${builddate}
 
     <mkdir dir="${compile.lib.dir}"/>
 
+    <!-- including xerces/xml-apis maakes a huge difference in compile time for rmmci -->
+    <copy file="${xerces.jar}"   todir="${compile.lib.dir}" />
+    <copy file="${xml-apis.jar}"   todir="${compile.lib.dir}" />
+
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
     <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
