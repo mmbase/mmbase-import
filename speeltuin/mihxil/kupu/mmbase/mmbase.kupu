@@ -6,7 +6,12 @@
 
   <kupu:part name="tree-div">
     <div id="tree">
-      <mm:include page="tree.jspx?trunk=true" />
+      <mm:import externid="tree">tree.jspx</mm:import>
+      <mm:write referid="tree">
+        <mm:isnotempty>
+          <mm:include page="$_" />
+        </mm:isnotempty>
+      </mm:write>
     </div>
   </kupu:part>
 

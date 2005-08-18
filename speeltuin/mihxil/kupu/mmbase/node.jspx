@@ -27,7 +27,9 @@
                 <table>
                   <tr>
                     <th><a href="javascript:reloadTree();">#</a> <mm:field name="number" /></th>
-                    <th><mm:function name="index" /></th>
+                    <mm:hasfunction name="index">
+                      <th><mm:function name="index" /></th>
+                    </mm:hasfunction>
                   </tr>
                   <tr>
                     <td colspan="2">

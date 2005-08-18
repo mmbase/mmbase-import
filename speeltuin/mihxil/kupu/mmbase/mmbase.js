@@ -179,6 +179,7 @@ function loadNode(nodeNumber) {
         }
 
     }
+    
     var nodeXml = loadedNodes.get(nodeNumber);
     if (nodeXml == null) {
         kupu.logMessage(_("Getting node fields for ") + nodeNumber);
@@ -195,6 +196,8 @@ function loadNode(nodeNumber) {
         request.send('');
     }
 
+    // request to node.jspx, should have put the node in the session
+
     nodeDiv.innerHTML = nodeXml;
 
     var nodeBodyXml = loadedNodeBodies.get(nodeNumber);
@@ -209,18 +212,10 @@ function loadNode(nodeNumber) {
         kupu.logMessage(_("Loading node body ") + " " + nodeNumber);
     }
 
-    /*
-    alert("found " + Sarissa.serialize(nodeBodyXml));
-    var text = "";
-    for (i in kupu.document.getDocument()) text += "  " + i;
-    alert("" + text);
-    kupu.document.getDocument().clear();
-    kupu.document.getDocument().appendChild(nodeBodyXml);
-    */
     kupu.setHTMLBody(nodeBodyXml);
     currentNode = nodeNumber;
     currentA = document.getElementById('a_' + currentNode);
-    currentA.className = "current";
+    if (currentA != undefined) currentA.className = "current";
     adjustLayout();
 
 }
