@@ -5,7 +5,7 @@
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page session="false" errorPage="error.jspx" />
   <jsp:output omit-xml-declaration="true" />
-  <mm:import id="kupu_node" externid="node" />
+  <mm:import id="kupu_node" from="session" externid="node" />
   <mm:import id="node" externid="kupu_node" from="this,session" />
   <mm:cloud>
     <mm:notpresent referid="node">      

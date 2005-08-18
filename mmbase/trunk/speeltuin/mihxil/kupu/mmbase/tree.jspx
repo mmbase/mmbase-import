@@ -35,16 +35,14 @@
     <div class="tree" id="node_${n}">
       <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
         <mm:sortorder field="pos" />       
-        <mm:notpresent referid="trunk">
-          <mm:size>
-            <mm:isgreaterthan value="0">
-              <a href="javascript: unloadRelated(${n});">
-                <img class="icon" src="icons/map-open.gif" />
-              </a>
-            </mm:isgreaterthan>
-            <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
-          </mm:size>
-        </mm:notpresent>
+        <mm:size>
+          <mm:isgreaterthan value="0">
+            <a href="javascript: unloadRelated(${n});">
+              <img class="icon" src="icons/map-open.gif" />
+            </a>
+          </mm:isgreaterthan>
+          <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
+        </mm:size>
         <a href="javascript: loadNode(${n});" id="a_${n}"> ${n.title}</a>
         <ul>          
         <mm:listrelations id="rel">
