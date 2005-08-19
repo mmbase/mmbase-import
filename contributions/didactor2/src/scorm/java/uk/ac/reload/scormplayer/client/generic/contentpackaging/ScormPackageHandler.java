@@ -77,7 +77,7 @@ import nl.didactor.utils.zip.Unpack;
  * a sco cmi data model.
  *
  * @author Paul Sharples
- * @version $Id: ScormPackageHandler.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: ScormPackageHandler.java,v 1.2 2005-08-19 14:22:25 azemskov Exp $
  */
 public class ScormPackageHandler extends XMLDocument {
 
@@ -111,6 +111,8 @@ public class ScormPackageHandler extends XMLDocument {
    private Node nodePackage;
    private Node nodeEducation;
    private int iCurrentLevel = 0;
+   private int iCounter = 0;
+
 
    public ScormPackageHandler(File manifest, String sNodePackageID) throws JDOMException, IOException
    {
@@ -238,7 +240,16 @@ public class ScormPackageHandler extends XMLDocument {
                     //New htmlpage node
                     Node nodeHtmlPage = cloud.getNodeManager("htmlpages").createNode();
                     nodeHtmlPage.setValue("name", tempHref);
+
+
                     //read html from disk file
+                    RandomAccessFile fileHtmlPage = new RandomAccessFile(Unpack.fixPath(tempHref), "r");
+                    byte[] arrbytesHtmlPage = new byte[ (new Long(fileHtmlPage.length())).intValue() ];
+                    fileHtmlPage.readFully(arrbytesHtmlPage);
+                    fileHtmlPage.close();
+                    String sFileContent = new String(arrbytesHtmlPage);
+
+/*
                     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Unpack.fixPath(tempHref))));
                     String sFileContent = "";
                     String sLine;
@@ -246,6 +257,15 @@ public class ScormPackageHandler extends XMLDocument {
                     {
                        sFileContent += sLine;
                     }
+*/
+
+/* JS Script cleaner
+                    String sMarker = "";
+                    sFileContent = sFileContent.replaceAll("<[sS][cC][rR][iI][pP][tT][\\d\\D]*[sS][cC][rR][iI][pP][tT]\\s*>", sMarker);
+                    sFileContent = sFileContent.replaceAll("[oO][nN][cC][lL][iI][cC][kK]=\"[^\"]*\\)\"", sMarker);
+                    sFileContent = sFileContent.replaceAll("[oO][nN][lL][oO][aA][dD]=\"[^\"]*\\)\"", sMarker);
+                    sFileContent = sFileContent.replaceAll("[oO][nN][uU][nN][lL][oO][aA][dD]=\"[^\"]*\\)\"", sMarker);
+*/
 
                     nodeHtmlPage.setValue("content", sFileContent);
                     nodeHtmlPage.commit();
@@ -334,6 +354,8 @@ public class ScormPackageHandler extends XMLDocument {
            }
         }
         Iterator it = element.getChildren().iterator();
+
+        int iPosrelCounter = 0;
         while (it.hasNext())
         {
             Element child = (Element) it.next();
@@ -342,7 +364,7 @@ public class ScormPackageHandler extends XMLDocument {
 
             if (sChildName.equals(SCORM12_Core.ITEM) && isDocumentNamespace(element))
             {
-               System.out.println("---Begin of level---");
+               //System.out.println("---Begin of level---");
                iCurrentLevel++;
 
                //New learnblock node
@@ -352,13 +374,34 @@ public class ScormPackageHandler extends XMLDocument {
                nodeLearnblock.commit();
 
                //Relation to parent node (learnblok or education)
-               nodeParent.createRelation(nodeLearnblock, cloud.getRelationManager("posrel")).commit();
+               Relation relPosrel = nodeParent.createRelation(nodeLearnblock, cloud.getRelationManager("posrel"));
+               relPosrel.setValue("pos", "" + iPosrelCounter);
+               relPosrel.commit();
 
+               iPosrelCounter++;
 
-               System.out.println(sChildName);
-               System.out.println("now level is " + iCurrentLevel);
+               //System.out.println(sChildName);
+               //System.out.println("now level is " + iCurrentLevel);
 
                iterateThruManifest(child, nodeLearnblock);
+
+
+               if ((nodeParent.getNodeManager().getName().equals("learnblocks")) && (nodeLearnblock.countRelatedNodes(cloud.getNodeManager("learnblocks"), "posrel", "destination") == 0) && (nodeLearnblock.countRelatedNodes(cloud.getNodeManager("htmlpages"), "posrel", "destination") == 1))
+               {//There are no children learnblock's
+                //So removing our temporal learnblock
+
+                  //Connecting our htmlpages to parent learnblock
+                  NodeList nlHTMLPages = cloud.getList("" + nodeLearnblock.getNumber(), "learnblocks,posrel,htmlpages", "htmlpages.number,posrel.pos", null, "posrel.pos", null, "destination", false);
+
+                  iCounter = 0;
+                  for(Iterator it2 = nlHTMLPages.iterator(); it2.hasNext();)
+                  {//copy relations
+                     Relation relation = nodeParent.createRelation( cloud.getNode(((Node) it2.next()).getStringValue("htmlpages.number")), cloud.getRelationManager("posrel"));
+                     relation.setValue("pos", "" + iCounter++);
+                     relation.commit();
+                  }
+                  nodeLearnblock.delete(true);
+               }
             }
             else
             {
@@ -368,13 +411,12 @@ public class ScormPackageHandler extends XMLDocument {
 
             if (sChildName.equals(SCORM12_Core.ITEM) && isDocumentNamespace(element))
             {
-               System.out.println(sChildName);
-               System.out.println("---End of level---");
+               //System.out.println(sChildName);
+               //System.out.println("---End of level---");
                iCurrentLevel--;
-               System.out.println("now level is " + iCurrentLevel);
+               //System.out.println("now level is " + iCurrentLevel);
             }
         }
-
     }
 
 
