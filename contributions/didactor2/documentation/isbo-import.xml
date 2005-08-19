@@ -16,7 +16,7 @@
         <mobile>TELEPHONE</mobile>
         <email>EMAIL ADDRESS</email>
         <website>WEBSITE</website>
-        <birthdate>YYYY-MM-DD</birthdate>
+        <birthdate>1980-01-01</birthdate>
         <externid>SOME ID</externid> <!-- optional -->
     </student-detail>
     <!-- repeat for as many students as are updated and added -->
