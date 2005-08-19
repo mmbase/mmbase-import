@@ -3,7 +3,7 @@
 <builder name="learnblocks" maintainer="didactor.nl" version="3" extends="learnobjects">
   <status>active</status>
 
-  <classfile>Dummy</classfile>
+  <classfile>nl.didactor.versioning.builders.LOVersioningBuilder</classfile>
   <searchage>31</searchage>
 
   <names>
