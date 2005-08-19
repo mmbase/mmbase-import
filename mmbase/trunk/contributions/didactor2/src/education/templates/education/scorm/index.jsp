@@ -25,7 +25,7 @@
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <mm:import id="import_package" jspvar="requestImportPackageID" vartype="String"><%= request.getParameter("import_package") %></mm:import>
-<mm:import id="delete_package"><%= request.getParameter("delete_package") %></mm:import>
+<mm:import id="delete_package" jspvar="requestDeletePackageID" vartype="String"><%= request.getParameter("delete_package") %></mm:import>
 
 <%--
 <mm:import externid="import_package" jspvar="test" vartype="String">null</mm:import>
@@ -58,6 +58,12 @@
    <mm:compare referid="import_package" value="null" inverse="true">
       <mm:node number="<%= requestImportPackageID %>" notfound="skip">
          <%@include file="import.jsp"%>
+      </mm:node>
+   </mm:compare>
+
+   <mm:compare referid="delete_package" value="null" inverse="true">
+      <mm:node number="<%= requestDeletePackageID %>" notfound="skip">
+         <%@include file="delete.jsp"%>
       </mm:node>
    </mm:compare>
 <%
@@ -193,18 +199,6 @@
 
 <% request.getSession().setAttribute("mayupload","true"); %>
 
-<%
-   //------------- Import of new package ----------------
-
-   if (uploadOK && fileName != null)
-   {
-/*
-
-
-*/
-   }
-%>
-
 
 
 <html>
@@ -297,66 +291,47 @@ if (top == self) {
             <%
                int fileNum = 0;
             %>
-            <mm:listnodes type="packages" orderby="uploaddate">
+            <mm:listnodes type="packages" orderby="uploaddate" constraints="type LIKE 'SCORM'">
 
                <mm:import id="imported" reset="true"><mm:field name="importdate"/></mm:import>
-<%--
-                  if (deletefile != null && file.getName().equals(deletefile))
-                  {
-                     String[] managers = {"audiotapes","videotapes","urls"};
+               <%
+                  fileNum++;
+               %>
+               <tr>
+                  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
+                     <td class="deletebutton">
+                        <a
+                           href='index.jsp?delete_package=<mm:field name="number"/>'
+                           onclick="return confirm('<fmt:message key="filemanagementDeletePrompt"/>');">
+                             <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
+                        </a>
+                     </td>
+                  </mm:islessthan>
 
-                     for (int i = 0; i < managers.length; i++)
-                     {
-                        NodeIterator ni = cloud.getNodeManager(managers[i]).getList("url='"+baseUrl+"/"+deletefile+"'",null,null).nodeIterator();
-
-                        while(ni.hasNext())
-                        {
-                           ni.nextNode().delete(true); // delete next node related with this file ...
-                        }
-                     }
-                     file.delete(); // and delete file itself ...
-                     continue;
-                  }
---%>
-
-                  <%
-                     fileNum++;
-                  %>
-                     <tr>
-                        <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
-                           <td class="deletebutton">
-                              <a
-                                 href='index.jsp?deletefile=<mm:field name="number"/>'
-                                 onclick="return confirm('<fmt:message key="filemanagementDeletePrompt"/>');">
-                                   <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
-                              </a>
-                           </td>
-                        </mm:islessthan>
-
-                        <td class="field"><mm:field name="name"/></td>
-                        <td class="field"><mm:field name="filename"/></td>
-                        <td class="field"><mm:field name="version"/></td>
-                        <td>
-                           <mm:compare referid="imported" value="-1" inverse="true">
-                              <fmt:message key="scormPackageListImported"/>
-                           </mm:compare>
-                           <mm:compare referid="imported" value="-1">
-                              <fmt:message key="scormPackageListUploaded"/> (<a href="?import_package=<mm:field name="number"/>"><fmt:message key="scormPackageListImportLink"/></a>)
-                           </mm:compare>
-                        </td>
-                        <td>
-                           <mm:field name="uploaddate" jspvar="date" vartype="date">
-                              <%= df.format(date) %>
-                           </mm:field>
-                        </td>
-                        <td>
-                           <mm:compare referid="imported" value="-1" inverse="true">
-                              <mm:field name="importdate" jspvar="date" vartype="date">
-                                 <%= df.format(date) %>
-                              </mm:field>
-                           </mm:compare>
-                        </td>
-                     </tr>
+                  <td class="field"><mm:field name="name"/></td>
+                  <td class="field"><mm:field name="filename"/></td>
+                  <td class="field"><mm:field name="version"/></td>
+                  <td>
+                     <mm:compare referid="imported" value="-1" inverse="true">
+                        <fmt:message key="scormPackageListImported"/>
+                     </mm:compare>
+                     <mm:compare referid="imported" value="-1">
+                        <fmt:message key="scormPackageListUploaded"/> (<a href="?import_package=<mm:field name="number"/>"><fmt:message key="scormPackageListImportLink"/></a>)
+                     </mm:compare>
+                  </td>
+                  <td>
+                     <mm:field name="uploaddate" jspvar="date" vartype="date">
+                        <%= df.format(date) %>
+                     </mm:field>
+                  </td>
+                  <td>
+                     <mm:compare referid="imported" value="-1" inverse="true">
+                        <mm:field name="importdate" jspvar="date" vartype="date">
+                           <%= df.format(date) %>
+                        </mm:field>
+                     </mm:compare>
+                  </td>
+               </tr>
             </mm:listnodes>
          </table>
       </td>
