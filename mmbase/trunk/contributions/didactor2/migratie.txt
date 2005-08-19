@@ -1,9 +1,13 @@
 Migratie issues
 
+2005-08-19
+    ALTER TABLE mmb_htmlpages ADD showtitle TINYINT(1);
+
+
 2005-07-26
 
     To change "related" role of the metastandard relation to metadefinition, please run
-    /migrate-2005-07-26.jsp. Now it should be "posrel".  
+    /migrate-2005-07-26.jsp. Now it should be "posrel".
 
 
 2005-07-14
@@ -18,13 +22,13 @@ Migratie issues
 
 
 2005-07-12
-    
+
     Please run /migrate-2005-07-12.jsp for preset rights for roles.
 
 
 2005-06-30
-    
-    Made a new relation between workgroups and people, so workgroups 
+
+    Made a new relation between workgroups and people, so workgroups
     are independent of classes.
 
     ALTER TABLE mmb_workgroups ADD protected INT(1);
@@ -47,7 +51,7 @@ Migratie issues
 
     An extra field "description" is added for builder "competencies".
 
-    ALTER TABLE mmb_competencies ADD description BLOB DEFAULT NULL; 
+    ALTER TABLE mmb_competencies ADD description BLOB DEFAULT NULL;
 
 
 2005-06-23
@@ -81,12 +85,12 @@ Migratie issues
     ALTER TABLE mmb_urls ADD showtitle TINYINT(1);
     ALTER TABLE mmb_videotapes ADD showtitle TINYINT(1);
 
-    Please run /migrate-2005-06-15.jsp to set all titles of images, 
+    Please run /migrate-2005-06-15.jsp to set all titles of images,
     attachments, audiotapes, videotapes, urls to visible
 
 
     Layout for educations has changed:
-    
+
     alter table mmb_educations add column layout INT(11);
     alter table mmb_educations add column imagelayout INT(11);
 
@@ -104,7 +108,7 @@ Migratie issues
 
 2005-06-02
 
-    Please run /migrate-2005-06-03.jsp to set all titles of educations, 
+    Please run /migrate-2005-06-03.jsp to set all titles of educations,
     learnblocks, pages and paragraphs to visible
 
     Competence builder has got a new field.
