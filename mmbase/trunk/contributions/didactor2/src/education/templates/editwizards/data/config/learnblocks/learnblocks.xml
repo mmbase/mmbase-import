@@ -61,7 +61,7 @@
          <prompt xml:lang="en">Show title</prompt>
          <optionlist select="boolean" />
       </field>
- 
+
 
         <field name="intro" ftype="${wizards.pages.text.ftype}" dtminlength="0">
             <prompt>Tekst</prompt>
@@ -76,13 +76,13 @@
             <optionlist select="imagelayout" />
         </field>
 
-       <list role="sizerel" extends="config/image/sizedimages.xml" /> 
+       <list role="sizerel" extends="config/image/sizedimages.xml" />
         <list role="posrel" extends="config/attachment/attachments-posrel.xml" />
         <list role="posrel" extends="config/audiotape/audiotapes-posrel.xml" />
         <list role="posrel" extends="config/videotape/videotapes-posrel.xml" />
 
         <list destination="urls" role="posrel" extends="config/url/urls-posrel.xml" />
- 
+
 
         <!--
            We want to list learnobjects, but there are objects that extend learnobject that we want to show.
@@ -95,7 +95,7 @@
            Note: the 'wizard.xsl' file depends on the title being "Bijbehorende leerobjecten" in order to
            select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
         -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" 
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
             fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" searchdir="destination">
             <title>Bijbehorende leerobjecten</title>
             <item>
@@ -113,20 +113,28 @@
             </action>
 
             <command name="startwizard" inline="true" wizardname="config/learnblocks/learnblocks" objectnumber="new">
-              <prompt>Nieuw leerblok
-              </prompt>
+              <prompt xml:lang="en">New learnblock</prompt>
+              <prompt xml:lang="nl">Nieuw leerblok</prompt>
             </command>
 
             <command name="startwizard" inline="true" wizardname="config/pages/pages" objectnumber="new">
-              <prompt>Nieuwe pagina</prompt>
+              <prompt xml:lang="en">New page</prompt>
+              <prompt xml:lang="nl">Nieuwe pagina</prompt>
             </command>
 
             <command name="startwizard" inline="true" wizardname="config/flashpages/flashpages" objectnumber="new">
-              <prompt>Nieuwe flash pagina</prompt>
+              <prompt xml:lang="en">New flash page</prompt>
+              <prompt xml:lang="nl">Nieuwe flash pagina</prompt>
             </command>
 
             <command name="startwizard" inline="true" wizardname="config/tests/tests" objectnumber="new">
-              <prompt>Nieuwe toets</prompt>
+              <prompt xml:lang="en">New test</prompt>
+              <prompt xml:lang="nl">Nieuwe toets</prompt>
+            </command>
+
+            <command name="startwizard" inline="true" wizardname="config/htmlpages/htmlpages" objectnumber="new">
+              <prompt xml:lang="en">New htmlpage</prompt>
+              <prompt xml:lang="nl">Nieuwe htmlpagina</prompt>
             </command>
             <command name="search" nodepath="learnobjects" fields="name" age="-1" orderby="number" directions="down" >
                 <prompt>Zoeken naar leerobjecten</prompt>
