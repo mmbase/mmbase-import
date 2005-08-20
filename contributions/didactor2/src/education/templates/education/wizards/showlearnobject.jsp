@@ -94,6 +94,9 @@
          <mm:relatednodes type="flashpages" searchdir="destination" max="1">
             <mm:import reset="true" id="the_last_element">false</mm:import>
          </mm:relatednodes>
+         <mm:relatednodes type="htmlpages" searchdir="destination" max="1">
+            <mm:import reset="true" id="the_last_element">false</mm:import>
+         </mm:relatednodes>
 
          <%@include file="newfromtree.jsp" %>
 <%--
