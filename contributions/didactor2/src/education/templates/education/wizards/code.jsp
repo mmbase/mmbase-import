@@ -226,15 +226,15 @@ if (top == self) {
          </table>
          <mm:node number="component.isbo" notfound="skip">
             <di:hasrole role="systemadministrator">
-         <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
-               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+               <table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                     <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
 
-               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='../../isbo/index.jsp' title='<fmt:message key="isboimport"/>' target="text"><fmt:message key="isboimport"/></a></nobr></td>
-            </tr>
-         </table>
+                     <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+                     <td><nobr>&nbsp;<a href='../../isbo/index.jsp' title='<fmt:message key="isboimport"/>' target="text"><fmt:message key="isboimport"/></a></nobr></td>
+                  </tr>
+               </table>
             </di:hasrole>
          </mm:node>
       </div>
@@ -908,8 +908,7 @@ if (top == self) {
                                  <td><mm:last inverse="true"><a href='javascript:clickNode("node_0_0_<%= iLearnblockCounter %>")'><img src="gfx/tree_plus.gif" border="0" align="center" valign="middle" id="img_node_0_0_<%= iLearnblockCounter %>"/></a></mm:last><mm:last><a href='javascript:clickNode("node_0_0_<%= iLearnblockCounter %>")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_node_0_0_<%= iLearnblockCounter %>"/></a></mm:last></td>
                                  <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_node_0_0_<%= iLearnblockCounter %>'/></td>
                                  <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />" target="text"><mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"
-                                    ></a><mm:compare referid="this_node_type" value="learnblocks"><a href="<mm:treefile 
-write="true" page="/education/wizards/versioning.jsp?nodeid=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="gfx/versions.gif" border="0"></a></mm:compare></nobr></td>
+                                    ></a><mm:compare referid="this_node_type" value="learnblocks"><a href="versioning.jsp?nodeid=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="gfx/versions.gif" border="0"></a></mm:compare></nobr></td>
                               </tr>
                            </table>
                         </mm:nodeinfo>
