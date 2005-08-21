@@ -13,7 +13,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.4 2005-07-18 12:27:13 nbukharev Exp $
+     * @version  $Id: list.jsp,v 1.5 2005-08-21 12:41:17 hhangyi Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -239,17 +239,6 @@ for (int i=0; i < results.size(); i++)
 {
     Node item = results.getNode(i);
 
-    if(session.getAttribute("show_metadata_in_list") != null)
-    {
-       %>
-          <mm:node number="<%= "" + item.getNumber()%>">
-             <%@include file="/education/wizards/whichimage.jsp"%>
-          </mm:node>
-       <%
-//       item.setValue("title", item.getValue("title") + " <a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' alt='" + sAltText + "'></a>");
-       sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' alt='" + sAltText + "'></a>";
-    }
-
     org.w3c.dom.Node obj;
     if (listConfig.multilevel) {
         obj = addObject(docel, item.getIntValue(listConfig.mainObjectName+".number"), i+1 + start,
@@ -280,11 +269,16 @@ for (int i=0; i < results.size(); i++)
           value = item.getStringValue("gui(" + fieldname + ")");
         }
         addField(obj, field.getGUIName(), value , field.getGUIType());
-
-        if(session.getAttribute("show_metadata_in_list") != null)
-        {//If we are showing the metadata also, we have to add this column
-           addField(obj, "metadata", sURL,    field.getGUIType());
-        }
+    }
+    if(session.getAttribute("show_metadata_in_list") != null)
+    {  //If we are showing the metadata also, we have to add the column with the (i)-icon
+      %>
+      <mm:node number="<%= "" + item.getNumber()%>">
+         <%@include file="/education/wizards/whichimage.jsp"%>
+      </mm:node>
+      <%
+       sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' alt='" + sAltText + "'></a>";
+       addField(obj, "metadata", sURL, "string");
     }
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
