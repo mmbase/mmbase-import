@@ -26,8 +26,9 @@
     <!-- remove empty parenthesis in table definitions -->
     <option name="database-remove-empty-definitions" />
 
-    <!-- Unique index declaration -->
-    <scheme name="create-composite-key-scheme">UNIQUE ({2}) CONSTRAINT {1}_constraint</scheme>
+    <!-- Unique index declaration (is this correct ???) -->
+    <scheme name="create-unique-index-scheme">ALTER TABLE {1} ADD UNIQUE ({2}) CONSTRAINT {3}</scheme>
+
     <scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {3} ({4}) CONSTRAINT {1}_{2}_foreignkey</scheme>
 
     <!-- Informix supports extensions and uses row types -->
