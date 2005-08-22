@@ -60,7 +60,7 @@
         <!-- name of the field in the database -->
         <name>name</name>
         <!-- MMBase datatype and demands on it -->
-        <type key="true" notnull="true" size="64" state="persistent">STRING</type>
+        <type unique="true" required="true" size="64" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -95,7 +95,7 @@
         <!-- name of the field in the database -->
         <name>description</name>
         <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="true" size="128" state="persistent">STRING</type>
+        <type size="128" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -132,7 +132,7 @@
         <!-- name of the field in the database -->
         <name>destination</name>
         <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="true" state="persistent">NODE</type>
+        <type required="true" state="persistent">NODE</type>
       </db>
     </field>
 

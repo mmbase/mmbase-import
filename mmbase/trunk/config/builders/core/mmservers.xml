@@ -56,7 +56,7 @@
       </editor>
       <db>
         <name>name</name>
-        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
+        <type size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -83,7 +83,7 @@
       </editor>
       <db>
         <name>state</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -109,7 +109,7 @@
       </editor>
       <db>
         <name>atime</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -136,7 +136,7 @@
       </editor>
       <db>
         <name>host</name>
-        <type key="false" notnull="false" size="80" state="persistent">STRING</type>
+        <type size="80" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -163,7 +163,7 @@
       </editor>
       <db>
         <name>os</name>
-        <type key="false" notnull="false" size="80" state="persistent">STRING</type>
+        <type size="80" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -190,7 +190,7 @@
       </editor>
       <db>
         <name>jdk</name>
-        <type key="false" notnull="false" size="80" state="persistent">STRING</type>
+        <type size="80" state="persistent">STRING</type>
       </db>
     </field>
 
