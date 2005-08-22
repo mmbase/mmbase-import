@@ -11,7 +11,8 @@
  <input type="text" name="keywords" value="<mm:write referid="keywords"/>" />
  <input type="submit" name="zoeken" value="Search" />
  <select name="restrict" onChange="document.forms.searchform.submit();">
-   <option value="">full site</option>
+   <option value="">all indexes</option>
+   <option value="/?" <mm:compare referid="restrict" value="/?">selected="true"</mm:compare>>this website only</option>
    <option value="mmdocs" <mm:compare referid="restrict" value="mmdocs">selected="true"</mm:compare>>in documentation</option>
    <option value="mmdocs/reference/taglib/" <mm:compare referid="restrict" value="mmdocs/reference/taglib/">selected="true"</mm:compare>>in taglib documentation</option>
    <option value="lists.mmbase.org" <mm:compare referid="restrict" value="lists.mmbase.org">selected="true"</mm:compare>>mailing lists</option>
