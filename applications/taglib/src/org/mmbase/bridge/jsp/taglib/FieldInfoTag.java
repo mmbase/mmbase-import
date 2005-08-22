@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.80 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: FieldInfoTag.java,v 1.81 2005-08-22 13:08:25 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -232,12 +232,27 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (node == null) { // try to find nodeProvider
                 node = fieldProvider.getNodeVar();
             } // node can stay null.
+            if (field.getState() == Field.STATE_SYSTEM) { 
+                // This means it is 'read-only'
+                // in that case simply show gui
+                if (node != null) {
+                    infoType = TYPE_GUIVALUE;
+                } else {
+                    infoType = TYPE_UNSET;
+                }
+            }
             break;
             // these types do really need a NodeProvider somewhere:
             // so 'node' may not stay null.
-        case TYPE_VALUE:
-        case TYPE_GUIVALUE:
         case TYPE_USEINPUT:
+            if (field.getState() == Field.STATE_SYSTEM) { 
+                // This means 'read-only'
+                // in that case simply ignore useinput
+                infoType = TYPE_UNSET;
+                break;
+            }
+        case TYPE_VALUE:
+        case TYPE_GUIVALUE:            
             if (node == null) {
                 node = fieldProvider.getNodeVar();
             }
