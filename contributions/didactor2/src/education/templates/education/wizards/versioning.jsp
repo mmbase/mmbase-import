@@ -11,6 +11,8 @@
 
 <%@include file="/shared/setImports.jsp" %>
 
+<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
+
 <html>
 <head>
 <title>File manager</title>
@@ -23,6 +25,25 @@
 
 <mm:import externid="nodeid" jspvar="nodeId" vartype="String">-1</mm:import>
 <mm:node number="<%= nodeId %>" notfound="skip">
+   <table width="100%" border="0">
+      <tr bgcolor="#CCCCCC">
+         <td>
+            <fmt:message key="versionmanagement"/>: <mm:nodeinfo type="guitype" />
+            <% boolean nameShowed = false; %>
+            <mm:fieldlist fields="name?">
+               <mm:field/>
+               <% nameShowed = true; %>
+            </mm:fieldlist>
+            <% if (!nameShowed) { %>
+               <mm:fieldlist fields="title">
+                  <mm:field/>
+               </mm:fieldlist>
+            <% } %>
+         </td>
+      </tr>
+   </table>
+<fmt:message key="versioningSelectVersionToRestore"/><br />
+<b><fmt:message key="versioningNote"/>:</b> <fmt:message key="versioningNoteText"/><br />
 <table class="body">
    <tr class="listcanvas">
       <td>
@@ -30,17 +51,17 @@
             <tr class="listheader">
                <th>&nbsp;</th>
                <th>#</th>
-               <th>Datum</th>
-               <th>Created by</th>
+               <th><fmt:message key="date"/></th>
+               <th><fmt:message key="created_by"/></th>
             </tr>
             <% int archiveNum = 0; %>
             <mm:listnodes type="archives" orderby="number" directions="DOWN" constraints="<%= "original_node = '" + nodeId + "'" %>">
                <% archiveNum++; %>
                <tr>
                   <td class="deletebutton">
-                     <a 
+                     <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=delete&archiveid=<mm:field name="number"/>'
-                        onclick="return doDelete('delete?');">
+                        onclick="return doDelete('<fmt:message key="versioningDeleteWarning"/>');">
                            <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
                      </a>
                   </td>
@@ -50,12 +71,11 @@
                   </td>
                   <td class="field">
                      <mm:field name="archive_date" jspvar="date" vartype="Long">
-                        <%= date %>ffff
                         <% Date archiveDate = new Date(date.longValue()*1000); %>
                         <% SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm"); %>
                      <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=restore&archiveid=<mm:field name="number"/>'
-                        onclick="return doDelete('restore?');">
+                        onclick="return doDelete('<fmt:message key="versioningRestoreWarning"/>');">
                            <%= df.format(archiveDate) %>
                      </a>
                      </mm:field>
@@ -63,7 +83,7 @@
                   <td class="field">
                      <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=restore&archiveid=<mm:field name="number"/>'
-                        onclick="return doDelete('restore?');">
+                        onclick="return doDelete('<fmt:message key="versioningRestoreWarning"/>');">
                            <mm:field name="archived_by" jspvar="userName" vartype="String">
                               <mm:listnodes type="people" constraints="<%= "username = '" + userName + "'" %>">
                                  <mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/>
@@ -77,10 +97,12 @@
       </td>
    </tr>
 </table>
+
 </mm:node>
 
 </body>
 </html>
 
+</fmt:bundle>
 </mm:cloud>
 </mm:content>
