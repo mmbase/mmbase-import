@@ -19,7 +19,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
     <date>2002-09-02</date>
-    <edition>$Id: editwizard-reference.xml,v 1.3 2005-02-11 10:21:29 pierre Exp $</edition>
+    <edition>$Id: editwizard-reference.xml,v 1.4 2005-08-22 13:31:28 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Kars</firstname>
@@ -150,10 +150,10 @@
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>maxupload</term>
+          <term>maxsize</term>
           <listitem>
             <para>The maximum size of a file to upload. The default maximum size for files is 4MB.</para>
-            <programlisting format="linespecific">maxupload=8000000</programlisting>
+            <programlisting format="linespecific">maxsize=8000000</programlisting>
           </listitem>
         </varlistentry>
         <varlistentry>
@@ -378,10 +378,10 @@
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term>maxupload</term>
+          <term>maxsize</term>
           <listitem>
             <para>The maximum size of a file to upload. The default maximum size for files is 4MB.</para>
-            <programlisting format="linespecific">maxupload=8000000</programlisting>
+            <programlisting format="linespecific">maxsize=8000000</programlisting>
           </listitem>
         </varlistentry>
         <varlistentry>
