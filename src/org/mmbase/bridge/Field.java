@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.28 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: Field.java,v 1.29 2005-08-22 08:14:01 pierre Exp $
  */
 public interface Field extends Descriptor {
 
@@ -81,7 +81,7 @@ public interface Field extends Descriptor {
     public NodeManager getNodeManager();
 
     /**
-     * Returns this field's state identifier (virtual, persistent, system).
+     * Returns this field's state identifier (virtual, persistent, system, systemvirtual).
      *
      * @return  an <code>int</code> which identifies the state of this field
      */

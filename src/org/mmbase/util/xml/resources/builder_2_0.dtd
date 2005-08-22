@@ -1,8 +1,8 @@
 <!--
-     builder.dtd
-       - DTD for MMBase builder definitions
+     builder.dtd version 2.0
+     - DTD for MMBase builder definitions
 -->
-<!ELEMENT builder (status?,classfile?,class?,searchage?,names?,descriptions?,properties?,fieldlist?,functionlist?)>
+<!ELEMENT builder (status?,class?,searchage?,names?,descriptions?,properties?,fieldlist?,indexlist?,functionlist?)>
 <!ATTLIST builder name CDATA #REQUIRED>
 <!ATTLIST builder maintainer CDATA #IMPLIED>
 <!ATTLIST builder version CDATA #IMPLIED>
@@ -10,7 +10,6 @@
 
 <!ELEMENT status (#PCDATA)>
 
-<!ELEMENT classfile (#PCDATA)><!-- deprecated -->
 <!ELEMENT class (#PCDATA)>
 
 <!ELEMENT searchage (#PCDATA)>
@@ -35,7 +34,7 @@
 <!ELEMENT gui (guiname*,guitype?)>
 <!ELEMENT guiname (#PCDATA)>
 <!ATTLIST guiname xml:lang NMTOKEN "en">
-<!ELEMENT guitype (#PCDATA)> <!-- deprecated -->
+<!ELEMENT guitype (#PCDATA)>
 
 <!ELEMENT editor (positions*)>
 <!ELEMENT positions (input?,list?,search?)>
@@ -50,11 +49,19 @@
 <!ELEMENT name (#PCDATA)>
 
 <!ELEMENT type (#PCDATA)>
-<!ATTLIST type state (persistent|virtual|system) #REQUIRED>
+<!ATTLIST type state (persistent|virtual|system|systemvirtual) #REQUIRED>
 <!ATTLIST type size CDATA #IMPLIED>
-<!ATTLIST type key CDATA #IMPLIED>
+<!ATTLIST type unique (true|false) #IMPLIED>
+<!ATTLIST type required (true|false) #IMPLIED>
 <!ATTLIST type doctype CDATA #IMPLIED>
-<!ATTLIST type notnull CDATA #REQUIRED>
+<!ATTLIST type key (true|false) #IMPLIED>
+
+<!ELEMENT indexlist (index*)>
+<!ELEMENT index (indexfield+)>
+<!ATTLIST index name CDATA #REQUIRED>
+<!ATTLIST index unique (true|false) #IMPLIED>
+<!ELEMENT indexfield EMPTY>
+<!ATTLIST indexfield name CDATA #REQUIRED>
 
 <!ELEMENT functionlist (function*)>
 <!ELEMENT function (class) >

@@ -16,6 +16,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
+import org.mmbase.storage.util.Index;
 
 /**
  * One of the core objects. It is not itself a builder, but is used by builders. Defines one field
@@ -24,7 +25,7 @@ import org.mmbase.core.util.Fields;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.51 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.52 2005-08-22 08:14:01 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -114,11 +115,12 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     }
 
     /**
-     * Retrieve whether the field is a key and thus need be unique.
-     * @deprecated use {@link #isUnique}
+     * Retrieve whether the field is a key and thus need be 'unique'.
+     * @deprecated use {@link #isUnique} to determine if a field is unique,
+     *             use getIndexes() to return set of Index objects to which this key belongs
      */
     public boolean isKey() {
-        return isUnique();
+        return getParent() != null && getParent().isInIndex(Index.MAIN,this);
     }
     /**
      * Temporary implementation for backwards-compatibility.
@@ -345,12 +347,15 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     }
 
     /**
-     * Set whether the field is a key and thus need be unique.
+     * Set whether the field is a key and thus needs to be 'unique'.
      * @param value the value to set
-     * @deprecated use {@link #setUnique}
+     * @deprecated use {@link #setUnique} to make a field unique, use
+     *             {@link #addToIndex} to make the field part of an index
      */
     public void setDBKey(boolean value) {
-        setUnique(value);
+        if (getParent() != null) {
+            getParent().addToIndex(Index.MAIN, this);
+        }
     }
 
     /**
