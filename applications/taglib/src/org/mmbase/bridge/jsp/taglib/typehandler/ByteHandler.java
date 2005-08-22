@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.17 2005-05-02 22:24:15 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.18 2005-08-22 13:12:01 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -65,45 +65,20 @@ public class ByteHandler extends AbstractTypeHandler {
         ContextTag ct = tag.getContextTag();
         ContextContainer cc = tag.getContextProvider().getContextContainer();
         org.apache.commons.fileupload.FileItem bytes = ct.getFileItem(prefix(fieldName));
-        String fileName = null;
-        String fileType = null;
 
         if (bytes == null){
             throw new BridgeException("getBytes(" + prefix(fieldName) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
         if (bytes.getSize() > 0) {
-            Object fileNameO = cc.find(tag.getPageContext(), prefix(fieldName + "_name"));
-            if (fileNameO != null) {
-                if (fileNameO instanceof List) {
-                    List l = (List) fileNameO;
-                    if (l.size() == 1) {
-                        fileName = "" + l.get(0);
-                    } else {
-                        fileName = "" + l;
-                    }
-                } else {
-                    fileName = "" + fileNameO;
-                }
-            }
-            Object fileTypeO = cc.find(tag.getPageContext(), prefix(fieldName + "_type"));
-            if (fileTypeO != null) {
-                if (fileTypeO instanceof List) {
-                    List l = (List) fileTypeO;
-                    if (l.size() == 1) {
-                        fileType = "" + l.get(0);
-                    } else {
-                        fileType = "" + l;
-                    }
-                } else {
-                    fileType = "" + fileTypeO;
-                }
+            String fileName = bytes.getName();
+            String fileType = bytes.getContentType();
 
-            }
             try {
                 node.setInputStreamValue(fieldName, bytes.getInputStream(), bytes.getSize());
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
             }
+            log.debug("Filename : " + fileName);
             NodeManager nm = node.getNodeManager();
             if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals("")) &&
                 cc.find(tag.getPageContext(), prefix("mimetype")) == null
