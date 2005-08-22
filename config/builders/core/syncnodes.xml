@@ -43,7 +43,7 @@
       </editor>
       <db>
         <name>exportsource</name>
-        <type notnull="true" size="255" state="persistent">STRING</type>
+        <type required="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -52,7 +52,7 @@
         <description xml:lang="en">Time of the export</description>
         <description xml:lang="nl">Tijd van de export</description>
       </descriptions>
-      
+
       <gui>
         <guiname xml:lang="en">Time Stamp</guiname>
         <guiname xml:lang="nl">Tijdstempel</guiname>
@@ -69,7 +69,7 @@
       </editor>
       <db>
         <name>timestamp</name>
-        <type notnull="true" state="persistent">INTEGER</type>
+        <type required="true" state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -97,7 +97,7 @@
       </editor>
       <db>
         <name>exportnumber</name>
-        <type notnull="true" state="persistent">INTEGER</type>
+        <type required="true" state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -126,7 +126,7 @@
       </editor>
       <db>
         <name>localnumber</name>
-        <type notnull="true" state="persistent">NODE</type>
+        <type required="true" state="persistent">NODE</type>
       </db>
     </field>
 

@@ -83,7 +83,7 @@
         <!-- name of the field in the database -->
         <name>daycount</name>
         <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -121,7 +121,7 @@
         <!-- name of the field in the database -->
         <name>mark</name>
         <!-- MMBase datatype and demands on it -->
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
 
