@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.55 2005-07-09 11:13:35 nklasens Exp $
+ * @version $Id: Casting.java,v 1.56 2005-08-22 08:12:15 pierre Exp $
  */
 
 import java.util.*;
@@ -162,12 +162,12 @@ public class Casting {
      * @since MMBase-1.8
      */
     public static boolean isStringRepresentable(Class type) {
-        return 
+        return
             CharSequence.class.isAssignableFrom(type) ||
-            Number.class.isAssignableFrom(type) || 
-            Boolean.TYPE.isAssignableFrom(type) || 
-            Boolean.class.isAssignableFrom(type) || 
-            Character.class.isAssignableFrom(type) || 
+            Number.class.isAssignableFrom(type) ||
+            Boolean.TYPE.isAssignableFrom(type) ||
+            Boolean.class.isAssignableFrom(type) ||
+            Character.class.isAssignableFrom(type) ||
             Node.class.isAssignableFrom(type) ||
             MMObjectNode.class.isAssignableFrom(type) ||
             Document.class.isAssignableFrom(type) ||
@@ -327,9 +327,9 @@ public class Casting {
             return (List)o;
         } else if (o instanceof Collection) {
             return new ArrayList((Collection) o);
-        } else if (o instanceof String) {            
+        } else if (o instanceof String) {
             return StringSplitter.split((String)o);
-        } else if (o instanceof Map) {            
+        } else if (o instanceof Map) {
             return new ArrayList(((Map)o).entrySet());
         } else {
             List l = new ArrayList();
@@ -379,8 +379,8 @@ public class Casting {
             return (Collection)o;
         } else if (o instanceof Map) {
             return ((Map)o).entrySet();
-        } else if (o instanceof String) {            
-            return StringSplitter.split((String)o);      
+        } else if (o instanceof String) {
+            return StringSplitter.split((String)o);
         } else {
             List l = new ArrayList();
             if (o != null && o != MMObjectNode.VALUE_NULL) {
@@ -407,15 +407,15 @@ public class Casting {
         if (o == null || o == MMObjectNode.VALUE_NULL) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
-            // This is a laborous action, so we log it on service.
+            // This is a laborous action, so we log it on debug.
             // It will happen often if the nodes are not cached and so on.
             String xmltext = toString(o);
-            if (log.isServiceEnabled()) {
+            if (log.isDebugEnabled()) {
                 String msg = xmltext;
                 if (msg.length() > 84) {
                     msg = msg.substring(0, 80) + "...";
                 }
-                log.service("Object '" + msg + "' is not a Document, but a " + o.getClass().getName() + "");
+                log.debug("Object '" + msg + "' is not a Document, but a " + o.getClass().getName() + "");
             }
             return convertStringToXML(xmltext);
         }
@@ -442,7 +442,7 @@ public class Casting {
         if (obj instanceof InputStream) {
             return (InputStream) obj;
         } else {
-            return new ByteArrayInputStream(toByte(obj));                    
+            return new ByteArrayInputStream(toByte(obj));
         }
     }
 
@@ -797,7 +797,7 @@ public class Casting {
             DOCUMENTBUILDER = dfactory.newDocumentBuilder();
             DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
         } catch (ParserConfigurationException pce) {
-            log.error("[sax parser]: " + pce.toString() + "\n" + Logging.stackTrace(pce));            
+            log.error("[sax parser]: " + pce.toString() + "\n" + Logging.stackTrace(pce));
         }
     }
     /**
@@ -817,7 +817,7 @@ public class Casting {
             Document doc;
             final XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
             synchronized(DOCUMENTBUILDER) {
-                // dont log errors, and try to process as much as possible...                
+                // dont log errors, and try to process as much as possible...
                 DOCUMENTBUILDER.setErrorHandler(errorHandler);
                 // ByteArrayInputStream?
                 // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
@@ -948,9 +948,9 @@ public class Casting {
         StringWrapper(CharSequence s, CharTransformer e) {
             escaper = e;
             string  = s;
-            
+
         }
-       
+
         public char charAt(int index) {
             toString();
             return escaped.charAt(index);
@@ -959,7 +959,7 @@ public class Casting {
             toString();
             return escaped.length();
         }
-        
+
         public CharSequence subSequence(int start, int end) {
             toString();
             return escaped.subSequence(start, end);
