@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.110 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.111 2005-08-22 08:12:56 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -973,6 +973,7 @@ public class MMAdmin extends ProcessorModule {
      */
     boolean installRelationSources(Vector ds, String appname, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
+        InsRel insRel = mmb.getInsRel();
         if (syncbul != null) {
             List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
             for (Enumeration h = ds.elements(); h.hasMoreElements();) {
@@ -1034,32 +1035,40 @@ public class MMAdmin extends ProcessorModule {
                             newnode.setValue("dnumber", dnumber);
                             int localnumber = -1;
                             if (snumber != -1 && dnumber != -1) {
-                                // localnumber = doKeyMergeNode(syncbul, newnode, exportsource, result);
-                                localnumber = newnode.insert("import");
-                                if (localnumber != -1) {
-                                    MMObjectNode syncnode = syncbul.getNewNode("import");
-                                    syncnode.setValue("exportsource", exportsource);
-                                    syncnode.setValue("exportnumber", exportnumber);
-                                    syncnode.setValue("timestamp", timestamp);
-                                    syncnode.setValue("localnumber", localnumber);
-                                    syncnode.insert("import");
-                                    if (localnumber == newnode.getNumber()) {
+                                // test whether a relation with the proposed snumber/dnumber/rnumber already exists
+                                // if so, skip this relation
+                                MMObjectNode testNode = insRel.getRelation(snumber, dnumber, newnode.getIntValue("rnumber"));
+                                if (testNode != null) {
+                                    log.warn("Application tries to add relation which already exists :" +
+                                              testNode.getGUIIndicator() + ", skipping relation.");
+                                } else {
+                                    // localnumber = doKeyMergeNode(syncbul, newnode, exportsource, result);
+                                    localnumber = newnode.insert("import");
+                                    if (localnumber != -1) {
+                                        MMObjectNode syncnode = syncbul.getNewNode("import");
+                                        syncnode.setValue("exportsource", exportsource);
+                                        syncnode.setValue("exportnumber", exportnumber);
+                                        syncnode.setValue("timestamp", timestamp);
+                                        syncnode.setValue("localnumber", localnumber);
+                                        syncnode.insert("import");
+                                        if (localnumber == newnode.getNumber()) {
 
-                                        // determine if there were NODE fields, which need special treatment later.
-                                        Collection fields = newnode.parent.getFields();
-                                        Iterator i = fields.iterator();
-                                        while (i.hasNext()) {
-                                            CoreField def = (CoreField) i.next();
+                                            // determine if there were NODE fields, which need special treatment later.
+                                            Collection fields = newnode.parent.getFields();
+                                            Iterator i = fields.iterator();
+                                            while (i.hasNext()) {
+                                                CoreField def = (CoreField) i.next();
 
-                                            // Fields with type NODE and notnull=true will be handled
-                                            // by the doKeyMergeNode() method.
-                                            if (def.getType() == Field.TYPE_NODE
-                                                && ! def.getName().equals("number")
-                                                && ! def.isRequired()) {
+                                                // Fields with type NODE and notnull=true will be handled
+                                                // by the doKeyMergeNode() method.
+                                                if (def.getType() == Field.TYPE_NODE
+                                                    && ! def.getName().equals("number")
+                                                    && ! def.isRequired()) {
 
-                                                newnode.values.put("__exportsource", exportsource);
-                                                nodeFieldNodes.add(newnode);
-                                                break;
+                                                    newnode.values.put("__exportsource", exportsource);
+                                                    nodeFieldNodes.add(newnode);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
