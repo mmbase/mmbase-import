@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="pages" maintainer="didactor.nl" version="3" extends="learnobjects">
   <status>active</status>
-  <classfile>Dummy</classfile>
+  <classfile>nl.didactor.versioning.builders.LOVersioningBuilder</classfile>
   <searchage>31</searchage>
 
   <names>
