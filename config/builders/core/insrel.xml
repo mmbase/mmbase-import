@@ -3,9 +3,9 @@
 <builder extends="object" maintainer="mmbase.org" name="insrel" version="0">
 
   <class>org.mmbase.module.corebuilders.InsRel</class>
-  
+
   <searchage>14</searchage>
-  
+
   <names>
     <singular xml:lang="en">Relation</singular>
     <singular xml:lang="nl">Relatie</singular>
@@ -16,19 +16,19 @@
     <plural xml:lang="eo">Rilatoj</plural>
     <plural xml:lang="it">Relazioni</plural>
   </names>
-  
+
   <descriptions>
     <description xml:lang="en">Basic relation</description>
     <description xml:lang="nl">Basis relatie</description>
     <description xml:lang="eo">Baza rilato</description>
     <description xml:lang="it">Relazione base</description>
   </descriptions>
-  
+
   <fieldlist>
     <field>
       <descriptions>
-	<description xml:lang="en">Objectnumber of this relation's source</description>
-	<description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
+  <description xml:lang="en">Objectnumber of this relation's source</description>
+  <description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Source</guiname>
@@ -46,7 +46,7 @@
       </editor>
       <db>
         <name>snumber</name>
-        <type key="false" notnull="true" state="persistent">NODE</type>
+        <type required="true" state="system">NODE</type>
       </db>
     </field>
 
@@ -71,7 +71,7 @@
       </editor>
       <db>
         <name>dnumber</name>
-        <type key="false" notnull="true" state="persistent">NODE</type>
+        <type required="true" state="system">NODE</type>
       </db>
     </field>
 
@@ -96,7 +96,7 @@
       </editor>
       <db>
         <name>rnumber</name>
-        <type key="false" notnull="true" state="persistent">NODE</type>
+        <type required="true" state="system">NODE</type>
       </db>
     </field>
 
@@ -125,8 +125,17 @@
       </editor>
       <db>
         <name>dir</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
   </fieldlist>
+
+  <indexlist>
+    <index name="relation" unique="true">
+      <indexfield name="snumber" />
+      <indexfield name="dnumber" />
+      <indexfield name="rnumber" />
+    </index>
+  </indexlist>
+
 </builder>

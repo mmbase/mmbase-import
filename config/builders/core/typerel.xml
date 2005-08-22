@@ -54,13 +54,13 @@
       </editor>
       <db>
         <name>snumber</name>
-        <type key="false" notnull="false" state="persistent">NODE</type>
+        <type required="true" state="persistent">NODE</type>
       </db>
     </field>
 
     <field>
       <descriptions>
-        <description xml:lang="en">Number of the destination builder of this relationtype</description> 
+        <description xml:lang="en">Number of the destination builder of this relationtype</description>
         <description xml:lang="nl">Nummer van de doelbuilder van dit relatietype</description>
       </descriptions>
       <gui>
@@ -71,13 +71,13 @@
         <guitype>typedef</guitype>
       </gui>
       <editor>
-        <positions>            
+        <positions>
           <list>2</list>
         </positions>
       </editor>
       <db>
         <name>dnumber</name>
-        <type key="false" notnull="false" state="persistent">NODE</type>
+        <type required="true" state="persistent">NODE</type>
       </db>
     </field>
 
@@ -100,7 +100,7 @@
       </editor>
       <db>
         <name>rnumber</name>
-        <type key="false" notnull="false" state="persistent">NODE</type>
+        <type required="true" state="persistent">NODE</type>
       </db>
     </field>
 
@@ -125,7 +125,7 @@
       </editor>
       <db>
         <name>max</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
 

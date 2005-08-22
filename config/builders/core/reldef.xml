@@ -52,7 +52,7 @@
       </editor>
       <db>
         <name>sname</name>
-        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
+        <type required="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -75,7 +75,7 @@
       </editor>
       <db>
         <name>dname</name>
-        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
+        <type size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -99,7 +99,7 @@
       </editor>
       <db>
         <name>dir</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -125,7 +125,7 @@
       </editor>
       <db>
         <name>sguiname</name>
-        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
+        <type size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -151,7 +151,7 @@
       </editor>
       <db>
         <name>dguiname</name>
-        <type key="false" notnull="false" size="32" state="persistent">STRING</type>
+        <type size="32" state="persistent">STRING</type>
       </db>
     </field>
 
@@ -179,7 +179,7 @@
       </editor>
       <db>
         <name>builder</name>
-        <type key="false" notnull="true" state="persistent">NODE</type>
+        <type required="true" state="persistent">NODE</type>
       </db>
     </field>
   </fieldlist>

@@ -68,7 +68,7 @@
       </editor>
       <db>
         <name>number</name>
-        <type state="persistent" notnull="true" key="true">NODE</type>
+        <type state="system" required="true" unique="true">NODE</type>
       </db>
     </field>
 
@@ -98,7 +98,7 @@
       </editor>
       <db>
         <name>otype</name>
-        <type state="persistent" notnull="true" key="false">NODE</type>
+        <type state="system" required="true" >NODE</type>
       </db>
     </field>
 
@@ -147,7 +147,7 @@
       </editor>
       <db>
         <name>owner</name>
-        <type state="persistent" size="12" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="12" required="true">STRING</type>
       </db>
     </field>
 
