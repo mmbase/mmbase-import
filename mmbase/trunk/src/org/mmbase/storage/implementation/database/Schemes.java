@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.14 2005-07-04 14:12:18 michiel Exp $
+ * @version $Id: Schemes.java,v 1.15 2005-08-22 08:14:01 pierre Exp $
  */
 public final class Schemes {
 
@@ -46,7 +46,7 @@ public final class Schemes {
      *    <li>{3} the simple index definitions.
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined</li>
      *    <li>{4} the field definitions, including simple index definitions</li>
-     *    <li>{5} the composite index definitions
+     *    <li>{5} constraint definitions
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined,
      *            and no other field definitions.</li>
      *    <li>{6} the builder that this table extends from</li>
@@ -92,7 +92,7 @@ public final class Schemes {
      *    <li>{4} the field definitions, including simple index definitions
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined,
      *            and no other field definitions.</li>
-     *    <li>{5} the composite index definitions</li>
+     *    <li>{5} the constraint definitions</li>
      *  </ul>
      *
      * You can set up your scheme to create extended tables (i.e. in Postgresql).
@@ -107,7 +107,7 @@ public final class Schemes {
     public static final String CREATE_OBJECT_TABLE_DEFAULT = "CREATE TABLE {1} ({4} {5})";
 
     /**
-     *  Name of the scheme for creating a primary key.
+     *  Name of the partial scheme for creating a primary key.
      *  This a partial scheme that is typically included in an CREATE TABLE or ALTER TABLE
      *  scheme.
      *  The parameters accepted are:
@@ -125,32 +125,12 @@ public final class Schemes {
     public static final String CREATE_PRIMARY_KEY_DEFAULT = "PRIMARY KEY ({2})";
 
     /**
-     *  Name of the scheme for creating a unique composite key.
-     *  This a partial scheme that is typically included in an CREATE TABLE or ALTER TABLE
-     *  scheme.
+     *  Name of the partial scheme for creating a unique key.
      *  The parameters accepted are:
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to create the key for</li>
-     *    <li>{2} the field (or fieldlist) to create the key for</li>
-     *  </ul>
-     */
-    public static final String CREATE_COMPOSITE_KEY = "create-composite-key-scheme";
-
-    /**
-     *  The default scheme for creating a composite key.
-     */
-    public static final String CREATE_COMPOSITE_KEY_DEFAULT = "CONSTRAINT {1}_key UNIQUE ({2})";
-
-    /**
-     *  Name of the scheme for creating a unique key.
-     *  This a partial scheme that is typically included in an CREATE TABLE or ALTER TABLE
-     *  scheme.
-     *  The parameters accepted are:
-     *  <lu>
-     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
-     *    <li>{1} the builder to create the key for</li>
-     *    <li>{2} the field (or fieldlist) to create the key for</li>
+     *    <li>{2} the field to create the key for</li>
      *  </ul>
      */
     public static final String CREATE_UNIQUE_KEY = "create-unique-key-scheme";
@@ -158,26 +138,10 @@ public final class Schemes {
     /**
      *  The default scheme for selecting a node type.
      */
-    public static final String CREATE_UNIQUE_KEY_DEFAULT = "CONSTRAINT {2} UNIQUE ({2})";
+     public static final String CREATE_UNIQUE_KEY_DEFAULT = "CONSTRAINT {1}_{2} UNIQUE ({2})";
 
     /**
-       *  Name of the scheme for creating an index.
-       *  The parameters accepted are:
-       *  <lu>
-       *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
-       *    <li>{1} the builder to create the key for</li>
-       *    <li>{2} the field (or fieldlist) to create the key for</li>
-       *  </ul>
-       */
-    public static final String CREATE_INDEX = "create-index-scheme";
-
-    /**
-     *  The default scheme for creating an index
-     */
-    public static final String CREATE_INDEX_DEFAULT = null;
-
-    /**
-     *  Name of the scheme for creating a foreign (referential) key.
+     *  Name of the partial scheme for creating a foreign (referential) key.
      *  This a partial scheme that is typically included in an CREATE TABLE or ALTER TABLE
      *  scheme.
      *  The parameters accepted are:
@@ -195,6 +159,72 @@ public final class Schemes {
      *  The default scheme for selecting a node type.
      */
     public static final String CREATE_FOREIGN_KEY_DEFAULT = "CONSTRAINT {1}_{2}_foreign FOREIGN KEY ({2}) REFERENCES {3} ({4})";
+
+    /**
+     *  Name of the scheme for creating a unique (generally composite) index.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder to create the key for</li>
+     *    <li>{2} the fieldlist to create the key for</li>
+     *    <li>{3} the index name</li>
+     *  </ul>
+     */
+    public static final String CREATE_UNIQUE_INDEX = "create-unique-index-scheme";
+
+    /**
+     *  The default scheme for creating a composite key.
+     */
+    public static final String CREATE_UNIQUE_INDEX_DEFAULT = "ALTER TABLE {1} ADD CONSTRAINT {3} UNIQUE ({2})";
+
+    /**
+     *  Name of the scheme for deleting a unique (generally composite) index.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder of the field</li>
+     *    <li>{2} the index name</li>
+     *  </ul>
+     */
+    public static final String DELETE_UNIQUE_INDEX = "delete-unique-index-scheme";
+
+    /**
+     *  The default scheme for deleting a constraint.
+     */
+    public static final String DELETE_UNIQUE_INDEX_DEFAULT = "ALTER TABLE {1} DROP CONSTRAINT {2}";
+
+    /**
+       *  Name of the scheme for creating an index for a field.
+       *  The parameters accepted are:
+       *  <lu>
+       *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+       *    <li>{1} the builder to create the key for</li>
+       *    <li>{2} the field (or fieldlist) to create the key for</li>
+       *    <li>{3} the index name</li>
+       *  </ul>
+       */
+    public static final String CREATE_INDEX = "create-index-scheme";
+
+    /**
+     *  The default scheme for creating an index
+     */
+    public static final String CREATE_INDEX_DEFAULT = null;
+
+    /**
+     *  Name of the scheme for deleting a index.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder of the field</li>
+     *    <li>{2} the index name</li>
+     *  </ul>
+     */
+    public static final String DELETE_INDEX = "delete-index-scheme";
+
+    /**
+     *  The default scheme for deleting a constraint.
+     */
+    public static final String DELETE_INDEX_DEFAULT = null;
 
     /**
      *  Name of the scheme for selecting a node type.
@@ -431,12 +461,12 @@ public final class Schemes {
      *    <li>{2} the field definition (excluding simple index definitions)</li>
      *  </ul>
      */
-    public static final String CREATE_FIELD_SCHEME = "create-field-scheme";
+    public static final String CREATE_FIELD = "create-field-scheme";
 
     /**
      *  The default scheme for creating (adding) a field.
      */
-    public static final String CREATE_FIELD_SCHEME_DEFAULT = "ALTER TABLE {1} ADD COLUMN {2}";
+    public static final String CREATE_FIELD_DEFAULT = "ALTER TABLE {1} ADD COLUMN {2}";
 
     /**
      *  Name of the scheme for changing a field.
@@ -447,12 +477,12 @@ public final class Schemes {
      *    <li>{2} the field definition (excluding simple index definitions)</li>
      *  </ul>
      */
-    public static final String CHANGE_FIELD_SCHEME = "change-field-scheme";
+    public static final String CHANGE_FIELD = "change-field-scheme";
 
     /**
      *  The default scheme for changing a field.
      */
-    public static final String CHANGE_FIELD_SCHEME_DEFAULT = "ALTER TABLE {1} MODIFY COLUMN {2}";
+    public static final String CHANGE_FIELD_DEFAULT = "ALTER TABLE {1} MODIFY COLUMN {2}";
 
     /**
      *  Name of the scheme for deleting a field.
@@ -463,12 +493,12 @@ public final class Schemes {
      *    <li>{2} the field</li>
      *  </ul>
      */
-    public static final String DELETE_FIELD_SCHEME = "delete-field-scheme";
+    public static final String DELETE_FIELD = "delete-field-scheme";
 
     /**
      *  The default scheme for deleting a field.
      */
-    public static final String DELETE_FIELD_SCHEME_DEFAULT = "ALTER TABLE {1} DROP COLUMN {2}";
+    public static final String DELETE_FIELD_DEFAULT = "ALTER TABLE {1} DROP COLUMN {2}";
 
     /**
      *  Name of the scheme for creating (adding) a constraint, such as a key or index.
@@ -479,12 +509,12 @@ public final class Schemes {
      *    <li>{2} the constraint definition</li>
      *  </ul>
      */
-    public static final String CREATE_CONSTRAINT_SCHEME = "create-constraint-scheme";
+    public static final String CREATE_CONSTRAINT = "create-constraint-scheme";
 
     /**
      *  The default scheme for creating (adding) a constraint.
      */
-    public static final String CREATE_CONSTRAINT_SCHEME_DEFAULT = "ALTER TABLE {1} ADD {2}";
+    public static final String CREATE_CONSTRAINT_DEFAULT = "ALTER TABLE {1} ADD {2}";
 
     /**
      *  Name of the scheme for deleting a constraint, such as a key or index.
@@ -495,49 +525,11 @@ public final class Schemes {
      *    <li>{2} the constraint name</li>
      *  </ul>
      */
-    public static final String DELETE_CONSTRAINT_SCHEME = "delete-constraint-scheme";
+    public static final String DELETE_CONSTRAINT = "delete-constraint-scheme";
 
     /**
      *  The default scheme for deleting a constraint.
      */
-    public static final String DELETE_CONSTRAINT_SCHEME_DEFAULT = "ALTER TABLE {1} DROP CONSTRAINT {2}";
-
-    /**
-     *  Name of the scheme for creating a secondary index.
-     *  The parameters accepted are:
-     *  <lu>
-     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
-     *    <li>{1} the builder to add the index to (MMObjectBuilder), or the builder table name (String)</li>
-     *    <li>{2} the field to create the key for</li>
-     *  </ul>
-     *  @todo Currently not used
-     */
-    public static final String CREATE_SECONDARY_INDEX = "create-secondary-index-scheme";
-
-    /**
-     *  The default scheme for reating a secondary index.
-     *  There is no default SQL92 syntax for secondary indices, so
-     *  this default is <code>null</code>.
-     */
-    public static final String CREATE_SECONDARY_INDEX_DEFAULT = null;
-
-    /**
-     *  Name of the scheme for dropping a secondary index.
-     *  The parameters accepted are:
-     *  <lu>
-     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
-     *    <li>{1} the builder to delete the index of (MMObjectBuilder), or the builder table name (String)</li>
-     *    <li>{2} the index name</li>
-     *  </ul>
-     *  @todo Currently not used
-     */
-    public static final String DELETE_SECONDARY_INDEX = "delete-secondary-index-scheme";
-
-    /**
-     *  The default scheme for reating a secondary index.
-     *  There is no default SQL92 syntax for secondary indices, so
-     *  this default is <code>null</code>.
-     */
-    public static final String DELETE_SECONDARY_INDEX_DEFAULT = null;
+    public static final String DELETE_CONSTRAINT_DEFAULT = "ALTER TABLE {1} DROP CONSTRAINT {2}";
 
 }

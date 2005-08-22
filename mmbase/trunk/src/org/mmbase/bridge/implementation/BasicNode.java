@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.160 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.161 2005-08-22 08:14:01 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -736,7 +736,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             try {
                 field.getDataType().validate(this, field);
             } catch (IllegalArgumentException iae) {
-                error.append(field.getName() + ": " + iae.getMessage() + "\n");                
+                error.append(field.getName() + ": " + iae.getMessage() + "\n");
             }
         }
         if(error.length() > 0) {

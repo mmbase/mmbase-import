@@ -22,7 +22,7 @@ public class Fields {
     public final static int STATE_MINVALUE    = 0;
     public final static int STATE_MAXVALUE    = 3;
     private final static String[] STATES = {
-        "unknown", "virtual", "unknown", "persistent", "system"
+        "unknown", "virtual", "unknown", "persistent", "system", "systemvirtual"
     };
 
     public final static int TYPE_MINVALUE    = 1;
@@ -97,9 +97,10 @@ public class Fields {
     public static int getState(String state) {
         if (state == null) return Field.STATE_UNKNOWN;
         state = state.toLowerCase();
-        if (state.equals("persistent"))  return Field.STATE_PERSISTENT;
-        if (state.equals("virtual"))     return Field.STATE_VIRTUAL;
-        if (state.equals("system"))      return Field.STATE_SYSTEM;
+        if (state.equals("persistent"))    return Field.STATE_PERSISTENT;
+        if (state.equals("virtual"))       return Field.STATE_VIRTUAL;
+        if (state.equals("systemvirtual")) return Field.STATE_SYSTEM_VIRTUAL;
+        if (state.equals("system"))        return Field.STATE_SYSTEM;
         return Field.STATE_UNKNOWN;
     }
 
