@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.15 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.16 2005-08-22 08:14:01 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -89,7 +89,7 @@ public abstract class StorageManagerFactory {
      * @see #getSetSurrogator()
      */
     protected CharTransformer setSurrogator = null;
-    
+
     /**
      * @see #getGetSurrogator()
      */
@@ -290,7 +290,7 @@ public abstract class StorageManagerFactory {
             if (surr != null && ! surr.equals("")) {
                 setSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
             }
-            
+
             surr = (String) getAttribute(Attributes.GET_SURROGATOR);
             if (surr != null && ! surr.equals("")) {
                 getSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
@@ -534,6 +534,8 @@ public abstract class StorageManagerFactory {
             id = mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
         } else if (mmobject instanceof MMObjectNode) {
             return ((MMObjectNode)mmobject).getIntegerValue("number");
+        } else if (mmobject instanceof Index) {
+            return mmbase.getBaseName()+"_"+((Index)mmobject).getParent().getTableName() + "_" + ((Index)mmobject).getName() + "_idx";
         } else if (mmobject instanceof String || mmobject instanceof CoreField) {
             if (mmobject instanceof CoreField) {
                 id = ((CoreField)mmobject).getName();
@@ -613,7 +615,7 @@ public abstract class StorageManagerFactory {
     public CharTransformer getSetSurrogator() {
         return setSurrogator;
     }
-    
+
 
 
 }

@@ -14,14 +14,15 @@ import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.datatypes.DataTypeCollector;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.core.CoreField;
-import org.mmbase.core.util.Fields;
+import org.mmbase.storage.util.Index;
 
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.XMLEntityResolver;
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.30 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.31 2005-08-22 08:14:02 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -54,12 +55,11 @@ public class BuilderReader extends XMLBasicReader {
     /** Public ID of the Builder DTD version 2.0 */
     public static final String PUBLIC_ID_BUILDER_2_0 = "-//MMBase//DTD builder config 2.0//EN";
 
-
     /** DTD resource filename of the Builder DTD version 1.0 */
     public static final String DTD_BUILDER_1_0 = "builder_1_0.dtd";
     /** DTD resource filename of the Builder DTD version 1.1 */
     public static final String DTD_BUILDER_1_1 = "builder_1_1.dtd";
-
+    /** DTD resource filename of the Builder DTD version 2.0 */
     public static final String DTD_BUILDER_2_0 = "builder_2_0.dtd";
 
     /** Public ID of the most recent Builder DTD */
@@ -213,7 +213,7 @@ public class BuilderReader extends XMLBasicReader {
         if (!inheritanceResolved) return "inactive";
         String val=getElementValue("builder.status").toLowerCase();
         if (val.equals("")) {
-           if (parentBuilder!=null) {
+           if (parentBuilder != null) {
                return "active";
            } else {
                return "";
@@ -236,11 +236,11 @@ public class BuilderReader extends XMLBasicReader {
     public int getSearchAge() {
         int val = 30;
         String sval = getElementValue("builder.searchage");
-        if (sval.equals("") && (parentBuilder!=null)) {
-            sval=parentBuilder.getSearchAge();
+        if (sval.equals("") && (parentBuilder != null)) {
+            sval = parentBuilder.getSearchAge();
         }
         try {
-            val=Integer.parseInt(sval);
+            val = Integer.parseInt(sval);
         } catch(Exception f) {}
         return val;
     }
@@ -260,7 +260,7 @@ public class BuilderReader extends XMLBasicReader {
         }
 
         if (val.equals("")) {
-            if (parentBuilder!=null) {
+            if (parentBuilder != null) {
                 return parentBuilder.getClass().getName();
             } else {
                 return "";
@@ -301,28 +301,30 @@ public class BuilderReader extends XMLBasicReader {
      * @return a List of all Fields as CoreField
      */
     public List getFields() {
-        return getFields(null);
+        return getFields(null, null);
     }
 
     /**
      * Get the field definitions of this builder.
      * If applicable, this includes the fields inherited from a parent builder.
      *
+     * @param builder the MMObjectBuilder to which the fields will be added
      * @param collector the datatype collector used to access the datatypes available for the fields to read.
      * @return a List of all Fields as CoreField
      */
-    public List getFields(DataTypeCollector collector) {
+    public List getFields(MMObjectBuilder builder, DataTypeCollector collector) {
         List results = new ArrayList();
         Map oldset = new HashMap();
         int pos = 1;
         if (parentBuilder != null) {
             List parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
             if (parentfields != null) {
-                // have to clone the parent fields...
+                // have to clone the parent fields
                 // need clone()!
                 for (Iterator i = parentfields.iterator();i.hasNext();) {
                     CoreField f = (CoreField)i.next();
                     CoreField newField = (CoreField)f.clone(f.getName());
+                    newField.setParent(builder);
                     while(newField.getStoragePosition() >= pos) pos++;
                     newField.finish();
                     results.add(newField);
@@ -330,6 +332,7 @@ public class BuilderReader extends XMLBasicReader {
                 }
             }
         }
+
         for(Iterator ns = getChildElements("builder.fieldlist","field"); ns.hasNext(); ) {
             Element field = (Element)ns.next();
             CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
@@ -342,13 +345,78 @@ public class BuilderReader extends XMLBasicReader {
                 decodeFieldDef(field, def);
                 def.finish();
             } else {
-                def = decodeFieldDef(collector,field);
+                def = decodeFieldDef(builder, collector,field);
                 def.setStoragePosition(pos++);
                 def.finish();
                 results.add(def);
             }
         }
 
+        return results;
+    }
+
+    /**
+     * Get the named indices of this builder.
+     * Note that the 'default' index (set with the 'key' attribute) is also included
+     * in this list (with the name {@link MAIN_INDEX}).
+     *
+     * @param builder the MMObjectBuilder to which the fields will be added
+     * @return a List of all Indices
+     */
+    public List getIndices(MMObjectBuilder builder) {
+        List results = new ArrayList();
+        Index mainIndex = null;
+        if (parentBuilder != null) {
+            // create the
+            Index parentIndex = parentBuilder.getIndex(Index.MAIN);
+            if (parentIndex != null) {
+                mainIndex = new Index(builder, Index.MAIN);
+                mainIndex.setUnique(true);
+                for (Iterator i = parentIndex.iterator(); i.hasNext(); ) {
+                    Field field = (Field)i.next();
+                    mainIndex.add(builder.getField(field.getName()));
+                }
+            }
+        }
+
+        for (Iterator fields = getChildElements("builder.fieldlist","field"); fields.hasNext(); ) {
+            Element field = (Element)fields.next();
+            Element dbtype = getElementByPath(field,"field.db.type");
+            if (dbtype != null) {
+                String key = getElementAttributeValue(dbtype,"key");
+                if (key != null && key.equalsIgnoreCase("true")) {
+                    String fieldName = getElementValue(getElementByPath(field,"field.db.name"));
+                    if (mainIndex == null ) mainIndex = new Index(builder, Index.MAIN);
+                    mainIndex.add(builder.getField(fieldName));
+                }
+            }
+        }
+        if (mainIndex != null) {
+           results.add(mainIndex);
+        }
+
+        for(Iterator indices = getChildElements("builder.indexlist","index"); indices.hasNext(); ) {
+            Element indexElement   = (Element)indices.next();
+            String indexName = indexElement.getAttribute("name");
+            if (indexName != null && !indexName.equals("")) {
+                String unique = indexElement.getAttribute("unique");
+                Index index = new Index(builder, indexName);
+                index.setUnique(unique != null && unique.equals("true"));
+                for(Iterator fields = getChildElements(indexElement,"indexfield"); fields.hasNext(); ) {
+                    Element fieldElement   = (Element)fields.next();
+                    String fieldName = fieldElement.getAttribute("name");
+                    Field field = builder.getField(fieldName);
+                    if (field == null) {
+                        log.error("field '" + fieldName +"' in index '" + indexName + "' in builder " + builder.getTableName() + " does not exist");
+                    } else {
+                        index.add(field);
+                    }
+                }
+                results.add(index);
+            } else {
+                log.error("index in builder " + builder.getTableName() + " has no name");
+            }
+        }
         return results;
     }
 
@@ -562,7 +630,7 @@ public class BuilderReader extends XMLBasicReader {
      * @param elm The element containing the field information acc. to the buidler xml format
      * @return def The field definition to alter
      */
-    private CoreField decodeFieldDef(DataTypeCollector collector, Element field) {
+    private CoreField decodeFieldDef(MMObjectBuilder builder, DataTypeCollector collector, Element field) {
         // create a new CoreField we need to fill
         Element db = getElementByPath(field,"field.db");
         String fieldName = getElementValue(getElementByPath(db,"db.name"));
@@ -579,9 +647,10 @@ public class BuilderReader extends XMLBasicReader {
 
         DataType dataType = decodeDataType(collector,fieldName,getElementByPath(field,"field.gui"), type, listItemType, true);
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
+        def.setParent(builder);
 
         String size = getElementAttributeValue(dbtype,"size");
-        if (size!=null && !size.equals("")) {
+        if (size != null && !size.equals("")) {
             try {
                 def.setSize(Integer.parseInt(size));
             } catch (NumberFormatException e) {
@@ -589,14 +658,17 @@ public class BuilderReader extends XMLBasicReader {
             }
         }
         // set required property, but only if given
-        String notnull = getElementAttributeValue(dbtype,"notnull");
-        if (notnull != null && notnull.equalsIgnoreCase("true")) {
+        String required = getElementAttributeValue(dbtype,"required");
+        if (required == null || required.equals("")) {
+            required = getElementAttributeValue(dbtype,"notnull");
+        }
+        if ("true".equalsIgnoreCase(required)) {
             def.getDataType().setRequired(true);
         }
 
         // set unique property, but only if given
-        String key = getElementAttributeValue(dbtype,"key");
-        if (key != null && key.equalsIgnoreCase("true")) {
+        String unique = getElementAttributeValue(dbtype,"unique");
+        if ("true".equalsIgnoreCase(unique)) {
             def.getDataType().setUnique(true);
         }
 
@@ -612,9 +684,9 @@ public class BuilderReader extends XMLBasicReader {
      */
     public Hashtable getProperties() {
         Hashtable results=new Hashtable();
-        if (parentBuilder!=null) {
-            Map parentparams= parentBuilder.getInitParameters();
-            if (parentparams!=null) {
+        if (parentBuilder != null) {
+            Map parentparams = parentBuilder.getInitParameters();
+            if (parentparams != null) {
                 results.putAll(parentparams);
             }
         }
@@ -704,7 +776,7 @@ public class BuilderReader extends XMLBasicReader {
      */
     public int getBuilderVersion() {
         String version = getElementAttributeValue("builder","version");
-        if (version.equals("") && parentBuilder!=null) {
+        if (version.equals("") && parentBuilder != null) {
            return parentBuilder.getVersion();
         } else {
             int n = 0;

@@ -40,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.143 2005-08-02 14:29:26 pierre Exp $
+ * @version $Id: MMBase.java,v 1.144 2005-08-22 08:14:01 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -377,15 +377,15 @@ public class MMBase extends ProcessorModule {
         if (writerpath != null && !writerpath.equals("")) {
             Enumeration t = mmobjs.elements();
             while (t.hasMoreElements()) {
-                MMObjectBuilder fbul = (MMObjectBuilder)t.nextElement();
-                if (!fbul.isVirtual()) {
-                    String name = fbul.getTableName();
+                MMObjectBuilder builder = (MMObjectBuilder)t.nextElement();
+                if (!builder.isVirtual()) {
+                    String name = builder.getTableName();
                     log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
                     try {
-                        BuilderWriter builderOut = new BuilderWriter(fbul);
+                        BuilderWriter builderOut = new BuilderWriter(builder);
                         builderOut.setIncludeComments(false);
                         builderOut.setExpandBuilder(false);
-                        builderOut.writeToFile(writerpath + File.separator + fbul.getTableName() + ".xml");
+                        builderOut.writeToFile(writerpath + File.separator + builder.getTableName() + ".xml");
                     } catch (Exception ex) {
                         log.error(Logging.stackTrace(ex));
                     }
@@ -674,9 +674,9 @@ public class MMBase extends ProcessorModule {
      * @todo Evaluate whether presence of daymarks is required
      */
     public void doProbeRun() {
-        DayMarkers bul = (DayMarkers)getMMObject("daymarks");
-        if (bul != null) {
-            bul.probe();
+        DayMarkers dayMarkers = (DayMarkers)getMMObject("daymarks");
+        if (dayMarkers != null) {
+            dayMarkers.probe();
         } else {
             log.error("Can't access builder : daymarks");
         }
@@ -781,9 +781,9 @@ public class MMBase extends ProcessorModule {
      * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise.
      */
     public boolean addRemoteObserver(String type, MMBaseObserver obs) {
-        MMObjectBuilder bul = getMMObject(type);
-        if (bul != null) {
-            return bul.addRemoteObserver(obs);
+        MMObjectBuilder builder = getMMObject(type);
+        if (builder != null) {
+            return builder.addRemoteObserver(obs);
         } else {
             log.error("addRemoteObserver(): ERROR: Can't find builder : " + type);
             return false;
@@ -796,9 +796,9 @@ public class MMBase extends ProcessorModule {
      * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise.
      */
     public boolean addLocalObserver(String type, MMBaseObserver obs) {
-        MMObjectBuilder bul = getMMObject(type);
-        if (bul != null) {
-            return bul.addLocalObserver(obs);
+        MMObjectBuilder builder = getMMObject(type);
+        if (builder != null) {
+            return builder.addLocalObserver(obs);
         } else {
             log.error("addLocalObserver(): ERROR: Can't find builder : " + type);
             return false;
@@ -933,16 +933,16 @@ public class MMBase extends ProcessorModule {
         Iterator bi = mmobjs.entrySet().iterator();
         while (bi.hasNext()) {
             Map.Entry me = (Map.Entry)bi.next();
-            MMObjectBuilder fbul = (MMObjectBuilder)me.getValue();
-            log.debug("init " + fbul);
+            MMObjectBuilder builder = (MMObjectBuilder)me.getValue();
+            log.debug("init " + builder);
             try {
-                initBuilder(fbul);
+                initBuilder(builder);
             } catch (BuilderConfigurationException e) {
                 // something bad with this builder or its parents - remove it
-                log.error("Removed builder " + fbul.getTableName() + " from the builderlist, as it cannot be initialized.");
+                log.error("Removed builder " + builder.getTableName() + " from the builderlist, as it cannot be initialized.");
                 bi.remove();
             } catch (Exception ex) {
-                log.error("Something went wrong while initializing builder " + fbul.getTableName());
+                log.error("Something went wrong while initializing builder " + builder.getTableName());
                 log.info("This builder will be removed from active builder list");
                 log.error(Logging.stackTrace(ex));
                 bi.remove();
@@ -998,31 +998,31 @@ public class MMBase extends ProcessorModule {
      * If the builder already exists, the existing object is returned instead.
      * If the builder cannot be found in this path, a BuilderConfigurationException is thrown.
      * @since MMBase-1.6
-     * @param builder name of the builder to initialize
+     * @param builderName name of the builder to initialize
      * @return the initialized builder object, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
-    synchronized MMObjectBuilder loadBuilder(String builder) { // synchronized to make sure that storage initialized only once
-        return loadBuilder(builder, "");
+    synchronized MMObjectBuilder loadBuilder(String builderName) { // synchronized to make sure that storage initialized only once
+        return loadBuilder(builderName, "");
     }
 
     /**
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
      * Return the actual path.
-     * @param builder name of the builder to find
+     * @param builderName name of the builder to find
      * @param path the path to start searching. The path need be closed with a '/ character
      * @return the file path to the builder xml, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      * @todo The second argument (and perhaps the whole function) is silly, only exists because this
      *       function used to be implemented recursively (now delegated to ResourceLoader).
      */
-    public String getBuilderPath(String builder, String path) {
+    public String getBuilderPath(String builderName, String path) {
         Set builders = builderLoader.getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
         Iterator i = builders.iterator();
         if (log.isDebugEnabled()) {
-            log.debug("Found builder " + builders + " from " +  builderLoader  + " searching for " + builder);
+            log.debug("Found builder " + builders + " from " +  builderLoader  + " searching for " + builderName);
         }
-        String xml = builder + ".xml";
+        String xml = builderName + ".xml";
         while (i.hasNext()) {
             String builderXml = (String) i.next();
             if (builderXml.equals(xml)) {
@@ -1039,23 +1039,23 @@ public class MMBase extends ProcessorModule {
     /**
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
      * If the builder already exists, the existing object is returned instead.
-     * @param builder name of the builder to initialize
+     * @param builderName name of the builder to initialize
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      * @return the initialized builder object, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
-    MMObjectBuilder loadBuilder(String builder, String ipath) {
-        MMObjectBuilder bul = getMMObject(builder);
-        if (bul != null) {
-            log.debug("Builder '" + builder + "' is already loaded");
-            return bul;
+    MMObjectBuilder loadBuilder(String builderName, String ipath) {
+        MMObjectBuilder builder = getMMObject(builderName);
+        if (builder != null) {
+            log.debug("Builder '" + builderName + "' is already loaded");
+            return builder;
         }
-        String path = getBuilderPath(builder, ipath);
+        String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-            return loadBuilderFromXML(builder, path);
+            return loadBuilderFromXML(builderName, path);
         } else {
-            log.error("Cannot find specified builder " + builder);
-            throw new BuilderConfigurationException("Cannot find specified builder " + builder);
+            log.error("Cannot find specified builder " + builderName);
+            throw new BuilderConfigurationException("Cannot find specified builder " + builderName);
         }
     }
 
@@ -1065,26 +1065,25 @@ public class MMBase extends ProcessorModule {
      * If the builder already exists, the existing object is returned instead.
      * Note that the builder's init() method is NOT called (since some builders need other builders in memory when their init() is called,
      * this method is called seperately after all builders are loaded).
-     * @deprecation-used uses deprecated buidedr methods, contains commented-out code
-     * @param builder name of the builder to initialize
+     * @deprecation-used uses deprecated builder methods, contains commented-out code
+     * @param builderName name of the builder to initialize
      * @param ipath the path to start searching. The path need be closed with a '/' character.
      * @return the loaded builder object.
      */
-    public MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
-        MMObjectBuilder bul = getMMObject(builder);
-        if (bul != null) {
-            log.debug("Builder '" + builder + "' is already loaded");
-            return bul;
+    public MMObjectBuilder loadBuilderFromXML(String builderName, String ipath) {
+        MMObjectBuilder builder = getMMObject(builderName);
+        if (builder != null) {
+            log.debug("Builder '" + builderName + "' is already loaded");
+            return builder;
         }
 
-        String objectName = builder; // should this allow override in file ?
         try {
             // register the loading of this builder
-            loading.add(objectName);
-            BuilderReader parser = new BuilderReader(builderLoader.getInputSource(ipath + builder + ".xml"), this);
+            loading.add(builderName);
+            BuilderReader parser = new BuilderReader(builderLoader.getInputSource(ipath + builderName + ".xml"), this);
             String status = parser.getStatus();
             if (status.equals("active")) {
-                log.info("Starting builder : " + objectName);
+                log.info("Starting builder : " + builderName);
                 Class newclass;
                 try {
                     String classname = parser.getClassName();
@@ -1098,56 +1097,52 @@ public class MMBase extends ProcessorModule {
                     }
                     log.error(cnfe.toString() + " Falling back to " + newclass.getName());
                 }
-                bul = (MMObjectBuilder)newclass.newInstance();
+                builder = (MMObjectBuilder)newclass.newInstance();
 
-                mmobjs.put(objectName, bul);
+                mmobjs.put(builderName, builder);
 
-                bul.setXMLPath(ipath);
-                bul.setMMBase(this);
-                bul.setTableName(objectName);
+                builder.setXMLPath(ipath);
+                builder.setMMBase(this);
+                builder.setTableName(builderName);
 
                 // register the parent builder, if applicable
                 MMObjectBuilder parent = parser.getParentBuilder();
                 if (parent != null) {
-                    bul.setParentBuilder(parent);
-                } else if ((bul instanceof InsRel) && !objectName.equals("insrel")) {
-                    bul.setParentBuilder(getInsRel());
-                } else if (!objectName.equals("object")) {
-                    bul.setParentBuilder(getRootBuilder());
+                    builder.setParentBuilder(parent);
+                } else if ((builder instanceof InsRel) && !builderName.equals("insrel")) {
+                    builder.setParentBuilder(getInsRel());
+                } else if (!builderName.equals("object")) {
+                    builder.setParentBuilder(getRootBuilder());
                 }
 
                 Hashtable descriptions = parser.getDescriptions();
-                bul.setDescriptions(descriptions);
+                builder.setDescriptions(descriptions);
                 String desc = (String)descriptions.get(locale.getLanguage());
                 // XXX" set description by builder?
-                bul.setDescription(desc);
-                bul.setSingularNames(parser.getSingularNames());
-                bul.setPluralNames(parser.getPluralNames());
-                bul.setVersion(parser.getBuilderVersion());
-                bul.setMaintainer(parser.getBuilderMaintainer());
-                bul.setSearchAge("" + parser.getSearchAge());
-                bul.setInitParameters(parser.getProperties());
-                parser.getDataTypes(bul.getDataTypeCollector());
-                bul.setFields(parser.getFields(bul.getDataTypeCollector())); // temp  ?
-
+                builder.setDescription(desc);
+                builder.setSingularNames(parser.getSingularNames());
+                builder.setPluralNames(parser.getPluralNames());
+                builder.setVersion(parser.getBuilderVersion());
+                builder.setMaintainer(parser.getBuilderMaintainer());
+                builder.setSearchAge("" + parser.getSearchAge());
+                builder.setInitParameters(parser.getProperties());
+                parser.getDataTypes(builder.getDataTypeCollector());
+                builder.setFields(parser.getFields(builder, builder.getDataTypeCollector()));
+                builder.addIndices(parser.getIndices(builder));
                 Iterator f = parser.getFunctions().iterator();
                 while (f.hasNext()) {
                     org.mmbase.util.functions.Function func = (org.mmbase.util.functions.Function) f.next();
-                    bul.addFunction(func);
-                    log.service("Added " + func + " to " + bul);
+                    builder.addFunction(func);
+                    log.service("Added " + func + " to " + builder);
                 }
-                // oke set the huge hack for insert layout
-                // XXX: setDBLayout is deprecated
-                //bul.setDBLayout(fields);
-
             }
         } catch (Exception e) { // what kind of exceptions are these?
-            loading.remove(objectName);
+            loading.remove(builderName);
             log.error(Logging.stackTrace(e));
             return null;
         }
-        loading.remove(objectName);
-        return bul;
+        loading.remove(builderName);
+        return builder;
     }
 
     /**

@@ -9,7 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.util.*;
+
+import org.mmbase.bridge.Field;
 import org.mmbase.storage.*;
+import org.mmbase.storage.util.Index;
 import org.mmbase.util.functions.FunctionProvider;
 
 import org.mmbase.util.logging.Logger;
@@ -24,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.18 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMTable.java,v 1.19 2005-08-22 08:14:01 pierre Exp $
  */
 public class MMTable extends FunctionProvider {
 
@@ -41,6 +45,9 @@ public class MMTable extends FunctionProvider {
      * @scope protected
      */
     public String tableName;
+
+    // indices for the storage layer
+    private Map indices = new HashMap();
 
     /**
      * Empty constructor.
@@ -92,6 +99,53 @@ public class MMTable extends FunctionProvider {
             log.error(se.getMessage() + Logging.stackTrace(se));
             return false;
         }
+    }
+
+    public Map getIndices() {
+        return indices;
+    }
+
+    public void addIndex(Index index) {
+        if (index != null && index.getParent() == this) {
+            indices.put(index.getName(),index);
+        }
+    }
+
+    public void addIndices(List indexList) {
+        if (indexList != null ) {
+            for (Iterator i = indexList.iterator(); i.hasNext(); ) {
+                addIndex((Index)i.next());
+            }
+        }
+    }
+
+    public Index getIndex(String key) {
+        return (Index)indices.get(key);
+    }
+
+    public synchronized Index createIndex(String key) {
+        Index index = getIndex(key);
+        if (index == null) {
+            index = new Index((MMObjectBuilder)this, key);
+            indices.put(key,index);
+        }
+        return index;
+    }
+
+    public void addToIndex(String key, Field field) {
+        createIndex(key).add(field);
+    }
+
+    public void removeFromIndex(String key, Field field) {
+        Index index = createIndex(key);
+        if (index != null) {
+            index.remove(field);
+        }
+    }
+
+    public boolean isInIndex(String key, Field field) {
+        Index index = getIndex(key);
+        return index != null && index.contains(field);
     }
 
 }

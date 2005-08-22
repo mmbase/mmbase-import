@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.114 2005-08-11 14:45:05 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.115 2005-08-22 08:14:01 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -308,7 +308,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             } catch (SQLException se) {
                 log.error(Logging.stackTrace(se));
-                // wait 2 seconds, so any locks that were clainmed are released.
+                // wait 2 seconds, so any locks that were claimed are released.
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException re) {}
@@ -1663,7 +1663,7 @@ public class DatabaseStorageManager implements StorageManager {
         StringBuffer createFields = new StringBuffer();
         StringBuffer createIndices = new StringBuffer();
         StringBuffer createFieldsAndIndices = new StringBuffer();
-        StringBuffer createCompositeIndices = new StringBuffer();
+        StringBuffer createConstraints = new StringBuffer();
         // obtain the parentBuilder
         MMObjectBuilder parentBuilder = builder.getParentBuilder();
         Scheme rowtypeScheme;
@@ -1716,18 +1716,6 @@ public class DatabaseStorageManager implements StorageManager {
                 log.error("" + se.getMessage(), se);
             }
         }
-        //  composite constraints
-
-        String compConstraintDef = getCompositeConstraintDefinition(builder);
-        if (compConstraintDef != null) {
-            // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
-            // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
-            // and the comma should not be prefixed.
-            if (rowtypeScheme == null || createIndices.length() > 0) {
-                createCompositeIndices.append(", ");
-            }
-            createCompositeIndices.append(compConstraintDef);
-        }
         String query = "";
         try {
             getActiveConnection();
@@ -1746,7 +1734,7 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
             }
             // create the table
-            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createCompositeIndices.toString(), parentBuilder });
+            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder });
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
@@ -1760,43 +1748,19 @@ public class DatabaseStorageManager implements StorageManager {
 
             tableNameCache.add(factory.getStorageIdentifier(builder).toString().toUpperCase());
 
-            // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
-            // has to be done seperate
+            // create indices and unique constraints
+            for (Iterator i = builder.getIndices().values().iterator(); i.hasNext();) {
+                Index index = (Index)i.next();
+                create(index);
+            }
+
         } catch (SQLException se) {
-            log.error("query:" + query);
-            log.error(Logging.stackTrace(se));
-            throw new StorageException(se);
+            throw new StorageException(se.getMessage() + " in query:" + query, se);
         } finally {
             releaseActiveConnection();
         }
         verify(builder);
 
-        //create indices for key's that are not primary keys
-        Scheme createIndex = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
-        if (createIndex != null) {
-            for (Iterator f = fields.iterator(); f.hasNext();) {
-                CoreField field = (CoreField)f.next();
-                if (
-                    (field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_SYSTEM) &&
-                    field.getType() == Field.TYPE_NODE &&
-                    ! field.getName().equals("number")) {
-                    query = createIndex.format(new Object[] { this, builder, factory.getStorageIdentifier(field)});
-                    try {
-                        getActiveConnection();
-                        Statement s = activeConnection.createStatement();
-                        logQuery(query);
-                        s.executeUpdate(query);
-                        s.close();
-                    } catch (SQLException se) {
-                        log.error("query:" + query);
-                        log.error(Logging.stackTrace(se));
-                        throw new StorageException(se);
-                    } finally {
-                        releaseActiveConnection();
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -1829,7 +1793,7 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Creates an index definition string to be passed when creating a table.
+     * Creates an index definition string for a field to be passed when creating a table.
      * @param field the field for which to make the index definition
      * @return the index definition as a String, or <code>null</code> if no definition is available
      */
@@ -1842,7 +1806,8 @@ public class DatabaseStorageManager implements StorageManager {
                 definitions = scheme.format(new Object[] { this, field.getParent(), field });
             }
         } else {
-            if (field.isUnique() && !factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+            // the field is unique: create a unique key for it
+            if (field.isUnique()) {
                 scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
                 if (scheme != null) {
                     definitions = scheme.format(new Object[] { this, field.getParent(), field, field });
@@ -1863,36 +1828,6 @@ public class DatabaseStorageManager implements StorageManager {
         return definitions;
     }
 
-    /**
-     * Creates a composite index definition string (an index over one or more fields) to be
-     * passed when creating a table.
-     * @param builder The builder for which to make the index definition
-     * @return the index definition as a String, or <code>null</code> if no definition is available
-     */
-    protected String getCompositeConstraintDefinition(MMObjectBuilder builder) throws StorageException {
-        Scheme scheme = factory.getScheme(Schemes.CREATE_COMPOSITE_KEY, Schemes.CREATE_COMPOSITE_KEY_DEFAULT);
-        if (scheme != null) {
-            StringBuffer indices = new StringBuffer();
-            List fields = builder.getFields(NodeManager.ORDER_CREATE);
-            // obtain the parentBuilder
-            for (Iterator f = fields.iterator(); f.hasNext();) {
-                CoreField field = (CoreField)f.next();
-                if (isPartOfBuilderDefinition(field) && !"number".equals(field.getName()) && field.isUnique() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                    if (indices.length() > 0)
-                        indices.append(", ");
-                    indices.append(factory.getStorageIdentifier(field));
-                }
-            }
-            if (indices.length() > 0) {
-                return scheme.format(new Object[] { this, builder, indices.toString()});
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
     // javadoc is inherited
     public void change(MMObjectBuilder builder) throws StorageException {
         // test if you can make changes
@@ -1900,7 +1835,7 @@ public class DatabaseStorageManager implements StorageManager {
         // use metadata.getColumns(...)  to select fields
         //      (incl. name, datatype, size, null)
         // use metadata.getImportedKeys(...) to get foreign keys
-        // use metadata.getIndexInfo(...) to get composite and other indexes
+        // use metadata.getIndexInfo(...) to get composite and other indices
         // determine changes and run them
         throw new StorageException("Operation not supported");
     }
@@ -2281,60 +2216,150 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Drop a constraint for a composite index.
+     * Determines if an index exists.
      * You should have an active connection before calling this method.
-     * @param builder the builder for which to drop the composite key
-     * @throws StorageException if the composite index cannot be deleted
-     * @throws SQLException when a database error occurs
+     * @param index the index to test
+     * @throws StorageException when a database error occurs
      */
-    protected void deleteCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
-        if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-            //  TODO: We should determine if there IS an index before removing it...
-            //  Scheme: DELETE_CONSTRAINT
-            Scheme deleteIndexScheme = factory.getScheme(Schemes.DELETE_CONSTRAINT_SCHEME, Schemes.DELETE_CONSTRAINT_SCHEME_DEFAULT);
-            if (deleteIndexScheme != null) {
-                DatabaseMetaData metaData = activeConnection.getMetaData();
-                ResultSet indexSet = metaData.getIndexInfo(null, null, builder.getTableName(), true, false);
-                try {
-                    // get index information
-                    String indexName = null;
-                    while (indexSet.next()) {
-                        int indexType = indexSet.getInt("TYPE");
-                        if (indexType == DatabaseMetaData.tableIndexClustered) {
-                            indexName = indexSet.getString("INDEX_NAME");
-                        }
+    protected boolean exists(Index index) throws StorageException {
+        boolean result = false;
+        try {
+            DatabaseMetaData metaData = activeConnection.getMetaData();
+            ResultSet indexSet = metaData.getIndexInfo(null, null, index.getParent().getTableName(), index.isUnique(), false);
+            try {
+                String indexName = (String)factory.getStorageIdentifier(index);
+                while (!result && indexSet.next()) {
+                    int indexType = indexSet.getInt("TYPE");
+                    if (indexType != DatabaseMetaData.tableIndexStatistic) {
+                        result = indexName.equals(indexSet.getString("INDEX_NAME"));
                     }
-                    indexSet.close();
-                    // remove index if found
-                    if (indexName != null) {
-                        Statement s = activeConnection.createStatement();
-                        String query = deleteIndexScheme.format(new Object[] { this, builder, indexName });
-                        logQuery(query);
-                        s.executeUpdate(query);
-                        s.close();
-                    }
-                } finally {
-                    indexSet.close();
                 }
+            } finally {
+                indexSet.close();
+            }
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        }
+        return result;
+    }
+
+    /**
+     * Drop all constraints and indices that contain a specific field.
+     * You should have an active connection before calling this method.
+     * @param field the field for which to drop indices
+     * @throws StorageException when a database error occurs
+     */
+    protected void deleteIndices(CoreField field) throws StorageException {
+        for (Iterator i = field.getParent().getIndices().values().iterator(); i.hasNext();) {
+            Index index = (Index)i.next();
+            if (index.contains(field)) {
+                delete(index);
             }
         }
     }
 
     /**
-     * Create a constraint for a composite index.
-     * @param builder the builder for which to add the composite key
+     * Drop a constraint or index.
+     * You should have an active connection before calling this method.
+     * @param index the index to drop
+     * @throws StorageException when a database error occurs
      */
-    protected void createCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
-        if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-            //  Scheme: CREATE_CONSTRAINT
-            Scheme createIndexScheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
-            if (createIndexScheme != null) {
+    protected void delete(Index index) throws StorageException {
+        Scheme deleteIndexScheme;
+        if (index.isUnique()) {
+            //  Scheme: DELETE_CONSTRAINT
+            deleteIndexScheme = factory.getScheme(Schemes.DELETE_UNIQUE_INDEX, Schemes.DELETE_UNIQUE_INDEX_DEFAULT);
+        } else {
+            //  Scheme: DELETE_INDEX
+            deleteIndexScheme = factory.getScheme(Schemes.DELETE_INDEX, Schemes.DELETE_INDEX_DEFAULT);
+        }
+        if (deleteIndexScheme != null && exists(index)) {
+            // remove index
+            String query = null;
+            try {
                 Statement s = activeConnection.createStatement();
-                String constraintDef = getCompositeConstraintDefinition(builder);
-                String query = createIndexScheme.format(new Object[] { this, builder, constraintDef });
+                query = deleteIndexScheme.format(new Object[] { this, index.getParent(), index });
                 logQuery(query);
-                s.executeUpdate(query);
-                s.close();
+                try {
+                    s.executeUpdate(query);
+                } finally {
+                    s.close();
+                }
+            } catch (SQLException se) {
+                throw new StorageException(se.getMessage() + " in query:" + query, se);
+            }
+        }
+    }
+
+    /**
+     * Returns a comma seperated list of fieldnames for an index.
+     * @param index the index to create it for
+     * @return the field list definition as a String, or <code>null</code> if the index was empty, or
+     *         if it consists of a composite index and composite indices are not supported.
+     */
+    protected String getFieldList(Index index) {
+        String result = null;
+        if (index.size() == 1 || factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+            StringBuffer indexFields = new StringBuffer();
+            for (Iterator f = index.iterator(); f.hasNext();) {
+                CoreField field = (CoreField)f.next();
+                if (indexFields.length() > 0) {
+                    indexFields.append(", ");
+                }
+                indexFields.append(factory.getStorageIdentifier(field));
+            }
+            if (indexFields.length() > 0) {
+                result = indexFields.toString();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * (Re)create all constraints and indices that contain a specific field.
+     * You should have an active connection before calling this method.
+     * @param field the field for which to create indices
+     * @throws StorageException when a database error occurs
+     */
+    protected void createIndices(CoreField field) throws StorageException {
+        for (Iterator i = field.getParent().getIndices().values().iterator(); i.hasNext();) {
+            Index index = (Index)i.next();
+            if (index.contains(field)) {
+                create(index);
+            }
+        }
+    }
+
+    /**
+     * Create an index or a unique constraint.
+     * @param index the index to create
+     */
+    protected void create(Index index) throws StorageException {
+        Scheme createIndexScheme;
+        if (index.isUnique()) {
+            //  Scheme: CREATE_UNIQUE_INDEX
+            createIndexScheme = factory.getScheme(Schemes.CREATE_UNIQUE_INDEX, Schemes.CREATE_UNIQUE_INDEX_DEFAULT);
+        } else {
+            //  Scheme: CREATE_INDEX
+            createIndexScheme = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
+        }
+        // note: do not attempt to create an index if it already exists.
+        if (createIndexScheme != null && !exists(index)) {
+            String fieldlist = getFieldList(index);
+            if (fieldlist != null) {
+                String query = null;
+                try {
+                    Statement s = activeConnection.createStatement();
+                    query = createIndexScheme.format(new Object[] { this, index.getParent(), fieldlist, index });
+                    logQuery(query);
+                    try {
+                        s.executeUpdate(query);
+                    } finally {
+                        s.close();
+                    }
+                } catch (SQLException se) {
+                    throw new StorageException(se.getMessage() + " in query:" + query, se);
+                }
             }
         }
     }
@@ -2348,7 +2373,7 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException("Can not use data definiton statements (create new field) on row types.");
         }
         if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-            Scheme scheme = factory.getScheme(Schemes.CREATE_FIELD_SCHEME, Schemes.CREATE_FIELD_SCHEME_DEFAULT);
+            Scheme scheme = factory.getScheme(Schemes.CREATE_FIELD, Schemes.CREATE_FIELD_DEFAULT);
             if (scheme == null) {
                 throw new StorageException("Storage layer does not support the dynamic creation of fields");
             } else {
@@ -2364,7 +2389,7 @@ public class DatabaseStorageManager implements StorageManager {
                     // add constraints
                     String constraintDef = getConstraintDefinition(field);
                     if (constraintDef != null) {
-                        scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+                        scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT, Schemes.CREATE_CONSTRAINT_DEFAULT);
                         if (scheme != null) {
                             query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
                             s = activeConnection.createStatement();
@@ -2373,11 +2398,8 @@ public class DatabaseStorageManager implements StorageManager {
                             s.close();
                         }
                     }
-                    // if the field is a key, redefine the composite key
-                    if (field.isUnique()) {
-                        deleteCompositeIndex(field.getParent());
-                        createCompositeIndex(field.getParent());
-                    }
+                    deleteIndices(field);
+                    createIndices(field);
                 } catch (SQLException se) {
                     throw new StorageException(se);
                 } finally {
@@ -2396,19 +2418,13 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException("Can not use data definiton statements (change field) on row types.");
         }
         if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-            Scheme scheme = factory.getScheme(Schemes.CHANGE_FIELD_SCHEME, Schemes.CHANGE_FIELD_SCHEME_DEFAULT);
+            Scheme scheme = factory.getScheme(Schemes.CHANGE_FIELD, Schemes.CHANGE_FIELD_DEFAULT);
             if (scheme == null) {
                 throw new StorageException("Storage layer does not support the dynamic changing of fields");
             } else {
                 try {
                     getActiveConnection();
-                    // if the field is a key, delete the composite key
-                    // Note: changes in whether a field is part of a unique key or not cannot be
-                    // made at this moment.
-                    if (field.isUnique()) {
-                        deleteCompositeIndex(field.getParent());
-                    }
-                    // Todo: explicitly remove indices ??
+                    deleteIndices(field);
                     String fieldDef = getFieldDefinition(field);
                     String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
                     Statement s = activeConnection.createStatement();
@@ -2418,7 +2434,7 @@ public class DatabaseStorageManager implements StorageManager {
                     // add constraints
                     String constraintDef = getConstraintDefinition(field);
                     if (constraintDef != null) {
-                        scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+                        scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT, Schemes.CREATE_CONSTRAINT_DEFAULT);
                         if (scheme != null) {
                             query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
                             s = activeConnection.createStatement();
@@ -2427,10 +2443,7 @@ public class DatabaseStorageManager implements StorageManager {
                             s.close();
                         }
                     }
-                    // if the field is a key, add the composite key
-                    if (field.isUnique()) {
-                        createCompositeIndex(field.getParent());
-                    }
+                    createIndices(field);
                 } catch (SQLException se) {
                     throw new StorageException(se);
                 } finally {
@@ -2449,26 +2462,19 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException("Can not use data definiton statements (delete field) on row types.");
         }
         if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-            Scheme scheme = factory.getScheme(Schemes.DELETE_FIELD_SCHEME, Schemes.DELETE_FIELD_SCHEME_DEFAULT);
+            Scheme scheme = factory.getScheme(Schemes.DELETE_FIELD, Schemes.DELETE_FIELD_DEFAULT);
             if (scheme == null) {
                 throw new StorageException("Storage layer does not support the dynamic deleting of fields");
             } else {
                 try {
                     getActiveConnection();
-                    // if the field is a key, delete the composite key
-                    if (field.isUnique()) {
-                        deleteCompositeIndex(field.getParent());
-                    }
-                    // Todo: explicitly remove indices ??
+                    deleteIndices(field);
                     String query = scheme.format(new Object[] { this, field.getParent(), field });
                     Statement s = activeConnection.createStatement();
                     logQuery(query);
                     s.executeUpdate(query);
                     s.close();
-                    // if the field is a key, add the composite key
-                    if (field.isUnique()) {
-                        createCompositeIndex(field.getParent());
-                    }
+                    createIndices(field);
                 } catch (SQLException se) {
                     throw new StorageException(se);
                 } finally {
