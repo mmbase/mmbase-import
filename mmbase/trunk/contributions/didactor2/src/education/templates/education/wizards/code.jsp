@@ -532,7 +532,9 @@ if (top == self) {
                      </mm:last>
 
                   <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
-                  <td><nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/metastandard/metastandard&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatMetastandard"/>' target="text"><mm:field name="name" /></a>&nbsp;<a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'></a></nobr></td>
+                  <td><nobr><a href='<mm:write referid="wizardjsp"/>?wizard=config/metastandard/metastandard&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatMetastandard"/>' target="text"><mm:field name="name" /></a>
+                            <a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'></a>
+                      </nobr></td>
                </tr>
             </table>
 
@@ -839,7 +841,10 @@ if (top == self) {
                         <a href='javascript:clickNode("education_0")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_education_0"/></a>
                      </td>
                      <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
-                     <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=config/education/educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /><mm:present referid="pdfurl"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a> <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a><mm:node number="component.drm" notfound="skip"> <a target="text" href="<mm:write referid="wizardjsp"/>?wizard=educationslicense&objectnumber=<%= sEducationID %>" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a></mm:node></nobr></td>
+                     <td><nobr><a href="<mm:write referid="wizardjsp"/>?wizard=config/education/educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /><mm:present referid="pdfurl"></a> <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a>
+                               <a href="metaedit.jsp?number=<mm:field name="number"/>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a><mm:node number="component.drm" notfound="skip"> <a target="text" href="<mm:write referid="wizardjsp"/>?wizard=educationslicense&objectnumber=<%= sEducationID %>" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a></mm:node>
+                               <a href="versioning.jsp?nodeid=<mm:field name="number"/>" target="text"><img src="gfx/versions.gif" border="0"></a>
+                         </nobr></td>
                   </tr>
                </table>
 

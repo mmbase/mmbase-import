@@ -42,7 +42,7 @@ public class VersioningController
   }
 
   /**
-   * Add a new version of paragraph to the 'archives' table. All data and relations to paragraphs is 
+   * Add a new version of paragraph to the 'archives' table. All data and relations to paragraphs is
    * stored as 1 field in XML format.
    *
    * @param node - Node to create a version from
@@ -53,8 +53,8 @@ public class VersioningController
 
      log.info("addParagraphVersion: " + originalNode);
 
-     NodeManager nodeManager = cloud.getNodeManager("archives"); 
- 
+     NodeManager nodeManager = cloud.getNodeManager("archives");
+
      try {
         String data = VersioningController.fromParagraphtoXml(node);
         byte[] bytes = data.getBytes("UTF-8");
@@ -72,7 +72,45 @@ public class VersioningController
   }
 
   /**
-   * Add a new version of learnobject to the 'archives' table. All data and relations to paragraphs is 
+   * Add a new version of node to the 'archives' table. All data is stored as 1 field in XML format.
+   *
+   * @param node - Node to create a version from
+   */
+  public static int addSimpleVersion(Node node) {
+     int archiveNumber = -1;
+     String originalNode = "" + node.getNumber();
+     long now = System.currentTimeMillis()/1000 ;
+     String constraints = "archives.original_node = '" + originalNode + "' AND archives.archive_date > '"
+                          + (now-2) + "' AND archives.archive_date < '" + (now+2) + "'";
+
+     log.info("addSimpleVersion: " + originalNode);
+
+     NodeManager nodeManager = cloud.getNodeManager("archives");
+
+     if (nodeManager.getList(constraints,null,null).size()>0) {
+        log.info("addSimpleVersion: found double archiving");
+     }
+     else {
+
+        try {
+           String data = VersioningController.toXml(node);
+           byte[] bytes = data.getBytes("UTF-8");
+           Node archive = nodeManager.createNode();
+           archive.setByteValue("node_data", bytes);
+           archive.setStringValue("original_node",originalNode);
+           archive.setIntValue("archive_date", (int) (System.currentTimeMillis()/1000) );
+           archive.setStringValue("archived_by", node.getStringValue("owner"));
+           archive.commit();
+           archiveNumber = archive.getNumber();
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+     }
+     return archiveNumber;
+  }
+
+  /**
+   * Add a new version of learnobject to the 'archives' table. All data and relations to paragraphs is
    * stored as 1 field in XML format.
    *
    * @param node - Node to create a version from
@@ -81,19 +119,18 @@ public class VersioningController
      int archiveNumber = -1;
      String originalNode = "" + node.getNumber();
      long now = System.currentTimeMillis()/1000 ;
-     String constraints = "archives.original_node = '" + originalNode + "' AND archives.archive_date > '" 
+     String constraints = "archives.original_node = '" + originalNode + "' AND archives.archive_date > '"
                           + (now-2) + "' AND archives.archive_date < '" + (now+2) + "'";
-     
-     log.info("addLOVersion: " + originalNode);
-     log.info("addLOVersion: constraints:" + constraints);
 
-     NodeManager nodeManager = cloud.getNodeManager("archives"); 
+     log.info("addLOVersion: " + originalNode);
+
+     NodeManager nodeManager = cloud.getNodeManager("archives");
 
      if (nodeManager.getList(constraints,null,null).size()>0) {
         log.info("addLOVersion: found double archiving");
      }
      else {
- 
+
         try {
            String data = VersioningController.fromLOtoXml(node);
            byte[] bytes = data.getBytes("UTF-8");
@@ -110,6 +147,7 @@ public class VersioningController
      }
      return archiveNumber;
   }
+
   /**
    * Restore the data from the archive to the original node.
    * The contents of the fields are replaced, do the nodenumber doesn't change during a restore.
@@ -120,7 +158,7 @@ public class VersioningController
      String errorMsg = "";
      log.info("restore node " + archive.getNumber());
      String originalNode = archive.getStringValue("original_node");
-     
+
      if (!cloud.hasNode(originalNode)) {
         errorMsg = "cloud naven't node for restore";
      }
@@ -169,10 +207,10 @@ public class VersioningController
      }
      return "";
   }
-     
+
   private static String restoreRelations(Document document, Node n) throws Exception {
      String errorMsg = "";
-     
+
      org.w3c.dom.NodeList relations = document.getElementsByTagName("relation");
      ArrayList paragraphs = new ArrayList();
 
@@ -188,6 +226,7 @@ public class VersioningController
            }
         }
      }
+
      RelationList relatedItems = n.getRelations("posrel","paragraphs");
      for (int i=0;i<relatedItems.size();i++) {
         Relation relation = relatedItems.getRelation(i);
@@ -205,7 +244,7 @@ public class VersioningController
      errorMsg += deleteRelations(n,"pos2rel","images");
      errorMsg += deleteRelations(n,"posrel","urls");
      errorMsg += deleteRelations(n,"posrel","attachments");
-     
+
      String stype = n.getNodeManager().getName();
      for (int i=0;i<relations.getLength();i++) {
         org.w3c.dom.Node relation = relations.item(i);
@@ -235,7 +274,7 @@ public class VersioningController
               dtype = destNode.getNodeManager().getName();
            }
            RelationManager relationManager = cloud.getRelationManager(stype,dtype,role);
-           Relation relationNode = n.createRelation(destNode, relationManager);
+           Relation relationNode = cloud.getNode(n.getNumber()).createRelation(destNode, relationManager);
            if ("posrel".equals(role)) {
               relationNode.setStringValue("pos",relation.getAttributes().getNamedItem("pos").getNodeValue());
            }
@@ -277,7 +316,7 @@ public class VersioningController
 
            Element relationElement = document.createElement("relation");
            nodeElement.appendChild(relationElement);
-           
+
            relationElement.setAttribute("destination", "" + destination);
            relationElement.setAttribute("dtype", "paragraphs");
            relationElement.setAttribute("role", "posrel");
@@ -294,6 +333,25 @@ public class VersioningController
      }
      return output.toString();
    }
+
+  private static String toXml(Node n) throws Exception {
+     StringWriter output;
+     try {
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element nodeElement = document.createElement("node");
+        document.appendChild(nodeElement);
+        saveFields(document, nodeElement, n);
+
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        output = new StringWriter();
+        transformer.transform(new DOMSource(document), new StreamResult(output));
+     } catch (Exception e) {
+        e.printStackTrace();
+        throw new Exception(e);
+     }
+     return output.toString();
+  }
 
   private static String fromParagraphtoXml(Node n) throws Exception {
      StringWriter output;
@@ -316,7 +374,7 @@ public class VersioningController
         throw new Exception(e);
      }
      return output.toString();
-   }
+  }
 
   private static Element saveFields(Document document, Element root, Node n) throws Exception {
      try {
@@ -344,7 +402,7 @@ public class VersioningController
   }
 
   private static Element saveRelations(Document document, Element root, Node n, String relationManager, String nodeManager) throws Exception {
-     
+
      RelationList relatedItems = n.getRelations(relationManager,nodeManager);
      for (int i=0; i<relatedItems.size(); i++) {
         Relation relTo = relatedItems.getRelation(i);
