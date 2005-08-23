@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.45.2.5 2005-08-17 14:33:18 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.6 2005-08-23 11:50:14 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -121,6 +121,13 @@ public class ImageTag extends FieldTag {
 
         String servletArgument;
         String t = template.getString(this);
+        if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.format.asis"))) {
+            if (t.length() > 0) {
+                t = t + "+f(asis)";
+            } else {
+                t = "f(asis)";
+            }
+        }
         if ("".equals(t)) {
             // the node/image itself
             servletArgument = node.getStringValue("number");
