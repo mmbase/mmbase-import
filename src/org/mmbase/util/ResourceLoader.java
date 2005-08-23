@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.21 2005-08-16 17:02:10 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.22 2005-08-23 14:54:47 pierre Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1114,7 +1114,7 @@ public class ResourceLoader extends ClassLoader {
             File parent = file.getParentFile();
             if (parent != null) {
                 if (! parent.exists()) {
-                    log.info("Creating subdirs for " + file);            
+                    log.info("Creating subdirs for " + file);
                 }
                 parent.mkdirs();
                 if (! parent.exists()) {
@@ -1123,8 +1123,10 @@ public class ResourceLoader extends ClassLoader {
             } else {
                 log.warn("Parent of " + file + " is null ?!");
             }
-            return new FileOutputStream(file) {
-
+            if (file.isDirectory()) {
+                return new DirectoryOutputStream(file);
+            } else {
+                return new FileOutputStream(file) {
                     public void write(byte[] b) throws IOException {
                         if (b == null) {
                             file.delete();
@@ -1133,6 +1135,7 @@ public class ResourceLoader extends ClassLoader {
                         }
                     }
                 };
+            }
         }
         public long getLastModified() {
             return file.lastModified();
@@ -1142,6 +1145,18 @@ public class ResourceLoader extends ClassLoader {
             return "FileConnection " + file.toString();
         }
 
+        private class DirectoryOutputStream extends ByteArrayOutputStream {
+            File file;
+            DirectoryOutputStream(File file) {
+                super();
+                this.file = file;
+            }
+            public void write(byte[] b) throws IOException {
+                if (b == null) {
+                    file.delete();
+                }
+            }
+        }
     }
 
 
@@ -1342,7 +1357,7 @@ public class ResourceLoader extends ClassLoader {
         public String toString() {
             return "NodeConnection " + node;
         }
-    
+
     }
 
     /**
@@ -1382,7 +1397,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
-        
+
         private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
@@ -1393,7 +1408,7 @@ public class ResourceLoader extends ClassLoader {
                     Iterator j = c.iterator();
                     while (j.hasNext()) {
                         String res = (String) j.next();
-                        if (res.equals(resourcePath + "/")) {                            
+                        if (res.equals(resourcePath + "/")) {
                             // I think this is a bug in Jetty (according to javadoc this should not happen, but it does!)
                             continue;
                         }
@@ -1401,7 +1416,7 @@ public class ResourceLoader extends ClassLoader {
                         String newResourcePath = res.substring(currentRoot.length());
                         boolean isDir = newResourcePath.endsWith("/");
                         if (isDir) {
-                            // subdirs                            
+                            // subdirs
                             if (recursive != null) {
                                 getPaths(results, pattern, newResourcePath.substring(0, newResourcePath.length() - 1), directories);
                             }
