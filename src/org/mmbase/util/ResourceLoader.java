@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.22 2005-08-23 14:54:47 pierre Exp $
+ * @version $Id: ResourceLoader.java,v 1.23 2005-08-23 16:39:58 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1124,7 +1124,20 @@ public class ResourceLoader extends ClassLoader {
                 log.warn("Parent of " + file + " is null ?!");
             }
             if (file.isDirectory()) {
-                return new DirectoryOutputStream(file);
+                final File directory = file;
+                return new OutputStream() {                        
+                        public void write(byte[] b) throws IOException {
+                            if (b == null) {
+                                directory.delete();
+                            } else {
+                                super.write(b);
+                            }
+                        }
+                        public void write(int b) throws IOException {
+                            throw new UnsupportedOperationException("Cannot write bytes to a directory outputstream");
+                        }
+                    };
+                        
             } else {
                 return new FileOutputStream(file) {
                     public void write(byte[] b) throws IOException {
@@ -1145,18 +1158,6 @@ public class ResourceLoader extends ClassLoader {
             return "FileConnection " + file.toString();
         }
 
-        private class DirectoryOutputStream extends ByteArrayOutputStream {
-            File file;
-            DirectoryOutputStream(File file) {
-                super();
-                this.file = file;
-            }
-            public void write(byte[] b) throws IOException {
-                if (b == null) {
-                    file.delete();
-                }
-            }
-        }
     }
 
 
