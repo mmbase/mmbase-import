@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.37.2.5 2005-08-23 11:52:18 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.6 2005-08-23 13:45:39 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -99,7 +99,6 @@ public class ImageCaches extends AbstractImages {
     protected MMObjectNode getLegacyCachedNode(int imageNumber, String ckey) {
 
         String legacyCKey = ckey;
-        log.info("Trying legacy " + legacyCKey);
         List legacyNodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);

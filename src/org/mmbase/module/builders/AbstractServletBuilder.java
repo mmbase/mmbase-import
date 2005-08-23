@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.20.2.3 2005-08-23 11:52:18 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.20.2.4 2005-08-23 13:43:35 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -302,7 +302,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     }
                 }
             }
-            log.info("addsFileName " + addsFileName);
 
             boolean addFileName =  addsFileName > 0 ||  ( addsFileName < 0 && !servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
 
