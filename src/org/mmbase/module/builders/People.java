@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Basic [builder]
  * @author Daniel Ockeloen
- * @version $Id: People.java,v 1.7.2.1 2004-09-27 13:35:46 marcel Exp $
+ * @version $Id: People.java,v 1.7.2.2 2005-08-23 11:52:18 michiel Exp $
  */
 public class People extends MMObjectBuilder {
 
@@ -89,7 +89,7 @@ public class People extends MMObjectBuilder {
                     MMObjectNode node2=(MMObjectNode)e.nextElement();
                     if (node2!=null) {
                         int number=node2.getNumber();
-                        peopleCache.put(key,new Integer(number));
+                        peopleCache.put(key, new Integer(number));
                         return number;
                     }
                 }

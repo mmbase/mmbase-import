@@ -16,7 +16,7 @@ import org.mmbase.module.core.ByteFieldContainer;
  * Defines one Image convert request.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequest.java,v 1.6 2004-03-10 14:55:22 michiel Exp $
+ * @version $Id: ImageRequest.java,v 1.6.2.1 2005-08-23 11:52:18 michiel Exp $
  */
 public class ImageRequest {
 
@@ -28,16 +28,19 @@ public class ImageRequest {
     private ByteFieldContainer container = null;
 
     private boolean outputSet = false;
+    private String format = null;
+    
 
     /**
      * @javadoc
      */
-    public ImageRequest(int id ,String ckey, List params, byte[] in) {
+    public ImageRequest(int id ,String ckey, List params, byte[] in, String format) {
         this.id=id;
         this.ckey=ckey;
         this.in=in;
         this.container=null;
         this.params=params;
+        this.format = format;
         count=0;
     }
 
@@ -61,6 +64,10 @@ public class ImageRequest {
     public byte[] getInput() {
         return in;
     }
+    public String getInputFormat() {
+        return format;
+    }
+
 
     /**
      * @javadoc

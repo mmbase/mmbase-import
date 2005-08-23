@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since MMBase 1.6.3
  * @author Gerard van de Looi
- * @version $Id: ConvertDummy.java,v 1.2 2003-04-01 14:03:28 pierre Exp $
+ * @version $Id: ConvertDummy.java,v 1.2.2.1 2005-08-23 11:52:18 michiel Exp $
  */
 public class ConvertDummy implements ImageConvertInterface {
 
@@ -42,7 +42,7 @@ public class ConvertDummy implements ImageConvertInterface {
      * @deprecated Use convertImage.
      */
     public byte[] ConvertImage(byte[] input, List commands) {
-        return convertImage(input, commands);
+        return convertImage(input, null, commands);
     }
 
     /**
@@ -50,7 +50,7 @@ public class ConvertDummy implements ImageConvertInterface {
      * This dummy method ignores any passed commands, and simply returns the inputed list.
      * @see ImageConvertInterface#convertImage(byte[], List)
      */
-    public byte[] convertImage(byte[] input, List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
         return input;
     }
 
