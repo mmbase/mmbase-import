@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.58 2005-08-18 14:40:00 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.59 2005-08-23 13:24:42 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -101,7 +101,12 @@ public class ImageTag extends FieldTag {
             servletArgument = node.getStringValue("number");
         } else {
             if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"))) {
-                servletArgument = "" + node.getNumber() + "+" + t;
+                try {                    
+                    servletArgument = "" + node.getNumber() + "+" + java.net.URLEncoder.encode(t, "UTF-8");
+                } catch (java.io.UnsupportedEncodingException uee) {
+                    // cannot happen 'UTF-8' is supported.
+                    servletArgument = "" + node.getNumber() + "+" + t;
+                }
             } else {
                 // the cached image
                 servletArgument = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
