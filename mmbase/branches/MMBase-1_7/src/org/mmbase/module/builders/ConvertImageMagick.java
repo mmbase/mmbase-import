@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ConvertImageMagick.java,v 1.55.2.3 2004-09-16 07:44:38 jaco Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.55.2.4 2005-08-23 11:52:18 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);
@@ -70,6 +70,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
         tmp = (String) params.get("ImageConvert.ConverterCommand");
         if (tmp != null && ! tmp.equals("")) {
             converterCommand = tmp;
+        }
+
+        tmp = (String) params.get("ImageConvert.DefaultImageFormat");
+        if (tmp != null && ! tmp.equals("")) {
+            defaultImageFormat = tmp;
         }
 
         String configFile = params.get("configfile").toString();
@@ -181,10 +186,15 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return an array of <code>byte</code>s containing the new converted image.
      *
      */
-    public byte[] convertImage(byte[] input, List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
         byte[] pict = null;
         if (commands != null && input != null) {
             ParseResult parsedCommands = getConvertCommands(commands);
+            if (parsedCommands.format.equals("asis") && sourceFormat != null) {
+                parsedCommands.format = sourceFormat;
+            }
+            log.info("Converting image to " + parsedCommands.format );
+            
             pict = convertImage( input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
@@ -194,7 +204,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @deprecated Use convertImage
      */
     public byte[] ConvertImage(byte[] input, List commands) {
-        return convertImage(input, commands);
+        return convertImage(input, null, commands);
     }
     
     /**
@@ -260,7 +270,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
         List cmds = new ArrayList();
         result.args = cmds;
         result.cwd = null;
-        result.format = defaultImageFormat;
+
+        result.format = null;
         
         String key, type;
         String cmd;
@@ -402,7 +413,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         str += "" + y;
                     cmd = str;
                 } else if (type.equals("f")) {
-                    result.format = cmd;
+                    if (! (cmd.equals("asis") && result.format != null)) {
+                        result.format = cmd;
+                    }
                     continue; // ignore this one, don't add to cmds.
                 }
                 if (log.isDebugEnabled()) {
@@ -430,6 +443,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     }
                 }
             }
+        }
+        if (result.format == null) {
+            result.format = defaultImageFormat;            
         }
         return result;
     }

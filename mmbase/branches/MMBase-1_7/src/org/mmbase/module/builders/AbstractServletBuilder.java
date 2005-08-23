@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.20.2.2 2005-08-15 16:34:53 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.20.2.3 2005-08-23 11:52:18 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -73,6 +73,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected boolean usesBridgeServlet = false;
 
     /**
+     * -2: check init, base on existance of filename field.
+     * -1: based on existance of filename field
+     * 0 : no
+     * 1 : yes
+     * @since MMBase-1.7.4
+     */
+    protected int addsFileName = -2;
+    
+
+    /**
      * This functions should return a string identifying where it is
      * for. This is used when communicating with MMBaseServlet, to
      * find the right servlet.
@@ -110,7 +120,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         }
         String result;
         List ls = MMBaseServlet.getServletMappingsByAssociation(association);
-        if (ls.size()>0) {
+        log.info("Found " + ls);
+        if (ls.size() > 0) {
             result = (String) ls.get(0);
             usesBridgeServlet = MMBaseServlet.getServletByMapping(result) instanceof BridgeServlet;
             // remove mask
@@ -277,15 +288,37 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 servlet.append(getServletPath(context));
             }
             String fileName = node.getStringValue("filename");
-            boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
+            if (addsFileName == -2) {
+                javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
+                if (sx != null) {
+                    String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename").toLowerCase();
+                    if ("no".equals(res)) {
+                        addsFileName = 0;
+                    } else if ("yes".equals(res)) {
+                        addsFileName = 1;
+                    } else {
+                        log.debug("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
+                        addsFileName = -1;
+                    }
+                }
+            }
+            log.info("addsFileName " + addsFileName);
+
+            boolean addFileName =  addsFileName > 0 ||  ( addsFileName < 0 && !servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
 
             if (usesBridgeServlet && ! session.equals("")) {
                 servlet.append("session=" + session + "+");
             }
 
             if (! addFileName) {
+                log.debug("Not adding file-name");
                 return servlet.append(argument).toString();
             } else {
+
+                if (fileName.equals("")) {
+                    fileName = "image." + node.getFunctionValue("format", null);
+                }
+                log.debug("Adding filename ");
                 StringObject fn = new StringObject(fileName);
                 fn.replace(" ", "_");
                 servlet.append(argument).append('/').append(fn.toString());

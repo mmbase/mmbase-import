@@ -25,5 +25,5 @@ public interface ImageConvertInterface {
      * @deprecated Use convertImage.
      */
     public byte[] ConvertImage(byte[] input,List commands);
-    public byte[] convertImage(byte[] input,List commands);
+    public byte[] convertImage(byte[] input, String sourceFormat, List commands);
 }

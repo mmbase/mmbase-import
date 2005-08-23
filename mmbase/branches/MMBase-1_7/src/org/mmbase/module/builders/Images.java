@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.94.2.4 2005-08-18 10:46:13 michiel Exp $
+ * @version $Id: Images.java,v 1.94.2.5 2005-08-23 11:52:18 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -624,7 +624,7 @@ public class Images extends AbstractImages {
             if (req != null) {
                 log.info("ConvertImage: a conversion is already in progress (" + ckey + ")...  (requests=" + ( req.count() + 1) + ")");
             } else {
-                req = new ImageRequest(objectId, ckey, params, inputPicture);
+                req = new ImageRequest(objectId, ckey, params, inputPicture, getImageFormat(node));
                 imageRequestTable.put(ckey, req);
                 imageRequestQueue.append(req);
             }

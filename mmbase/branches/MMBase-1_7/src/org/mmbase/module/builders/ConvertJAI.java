@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: ConvertJAI.java,v 1.10 2004-03-05 12:16:34 pierre Exp $
+ * @version $Id: ConvertJAI.java,v 1.10.2.1 2005-08-23 11:52:18 michiel Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
 
@@ -47,13 +47,13 @@ public class ConvertJAI implements ImageConvertInterface {
      * @javadoc
      */
     public byte[] ConvertImage(byte[] input,List commands) {
-        return convertImage(input, commands);
+        return convertImage(input, null, commands);
     }
 
     /**
      * @javadoc
      */
-    public byte[] convertImage(byte[] input,List commands) {
+    public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
         String cmd,format;
         byte[] pict=null;
         try {

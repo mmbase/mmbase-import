@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Each one contains a Queue of Image request jobs it has to do, which is constantly watched for new jobs.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.17 2004-03-10 15:04:28 michiel Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.17.2.1 2005-08-23 11:52:18 michiel Exp $
  * @see ImageRequest
  */
 public class ImageRequestProcessor implements Runnable {
@@ -93,7 +93,7 @@ public class ImageRequestProcessor implements Runnable {
                 // no node gets created, so node remains 'null'.
             } else {
                 if (log.isDebugEnabled()) log.debug("processRequest : Converting : " + id);
-                picture = convert.convertImage(inputpicture, params);
+                picture = convert.convertImage(inputpicture, req.getInputFormat(), params);
                 if (picture != null) {
                     node = icaches.getNewNode("imagesmodule");
                     node.setValue("ckey", ckey);

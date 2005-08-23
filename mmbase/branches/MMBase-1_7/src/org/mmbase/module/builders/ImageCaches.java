@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.37.2.4 2005-08-18 10:46:13 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.5 2005-08-23 11:52:18 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -277,7 +277,14 @@ public class ImageCaches extends AbstractImages {
             if (fi > -1) {
                 int fi2 = ckey.indexOf(")", fi);
                 format = ckey.substring(fi + 2, fi2);
+                if (format.equals("asis")) {
+                    MMObjectNode original = originalImage(node);
+                    return ((AbstractImages) original.parent).getImageFormat(original);
+                } else {
+                    return format;
+                }
             }
+
         }
         return format;
     }
