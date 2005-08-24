@@ -40,7 +40,7 @@
     <property name="ImageConvert.ConverterCommand">convert</property>
     <property name="ImageConvert.ConverterRoot"></property>
 
-    <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- defaults to jpeg if this option is missing here -->
+    <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- The default format of icache-objects. Defaults to jpeg if this option is missing here. 'asis' means, same format as the images object -->
 
     <!-- convert using ImageMagick example for windows -->
     <!--
@@ -56,7 +56,7 @@
 
     <!-- generic properties for all converters -->
     <property name="MaxConcurrentRequests">3</property>
-    <property name="DefaultImageType">jpg</property>
+    <property name="DefaultImageType">jpg</property><!-- used if determination of image-type failed -->
   </properties>
 
   <fieldlist>
@@ -157,7 +157,7 @@
       </editor>
       <db>
         <name>itype</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type state="system" size="32" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
@@ -181,7 +181,7 @@
         </editor>
         <db>
           <name>filesize</name>
-          <type state="persistent" notnull="false">INTEGER</type>
+          <type state="system" notnull="false">INTEGER</type>
         </db>
      </field>
     <field>
@@ -219,7 +219,30 @@
       </editor>
       <db>
         <name>height</name>
-        <type state="persistent" notnull="false">INTEGER</type>
+        <type state="system" notnull="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
+        <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-uplaod bestand betreft</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Filename</guiname>
+        <guiname xml:lang="nl">Bestandsnaam</guiname>
+        <guiname xml:lang="eo">Dosiernomo</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>4</search><!-- I think it absurd that you can search on filename but not otherwise see it -->
+        </positions>
+      </editor>
+      <db>
+        <name>filename</name>
+        <type state="persistent" size="128" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
