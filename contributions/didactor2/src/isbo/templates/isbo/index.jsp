@@ -5,7 +5,7 @@
 
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator, java.io.InputStream, nl.didactor.isbo.ISBOReader"%>
 <%
-    InputStream xmlStream = null;
+	InputStream xmlStream = null;
     String fileName = null;
     String mtype = null;
     if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("hassysprivs")))
@@ -34,6 +34,7 @@
             }
         }
     }
+
 %>
 
 <mm:content postprocessor="reducespace">
@@ -43,10 +44,17 @@
 
 <% request.getSession().setAttribute("hassysprivs","true"); %>
 <%
-    String msg = "";
+	String errorMsg = "OK";
     if (xmlStream != null)
     {
-        new ISBOReader(cloud).parse(xmlStream);
+		try {
+        	new ISBOReader(cloud).parse(xmlStream);
+		}
+    	catch (Exception e) {
+    	    errorMsg = e.toString();
+    		e.printStackTrace(System.err);
+    	}
+
     }
 %>
 <fmt:bundle basename="nl.didactor.component.isbo.ISBOMessageBundle">
@@ -61,7 +69,7 @@
 <body>
 <h1>ISBO Importer</h1>
 <% if (xmlStream != null) { %>
-<h2>Import OK</h2>
+<h2>Import: <%= errorMsg %></h2>
 <% } %>
 <form action="index.jsp" method="POST" enctype="multipart/form-data">
 <input type="file" name="filename"/> ISBO file<br/>

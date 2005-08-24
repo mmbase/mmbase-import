@@ -9,14 +9,11 @@
 <body>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids" />
 
-<table width="1000" height="90%" align="CENTER" cellspacing="0" cellpadding="0" border="0">
+<table width="100%" height="90%" align="CENTER" cellspacing="0" cellpadding="0" border="0">
+	<tr><td height="28" colspan="2"><iframe width="100%" height="28" frameborder="1" marginheight="0" marginwidth="0" scrolling="no" src="<mm:treefile write="true" page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />"></iframe></td></tr>
    <tr>
-      <td height="90%" valign="MIDDLE">
-         <iframe width="970px" height="28" frameborder="1" marginheight="0" marginwidth="0" scrolling="no" src="<mm:treefile write="true" page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />"></iframe>
-         <br/>
-         <iframe src="<mm:treefile write="true" page="/education/wizards/code.jsp" objectlist="$includePath" />"    id="menu" name="menu" width="240" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
-         <iframe src="<mm:treefile write="true" page="/education/wizards/loading.jsp" objectlist="$includePath" />" id="text" name="text" width="730" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
-      </td>
+      <td height="90%" width="20%" valign="MIDDLE"><iframe src="<mm:treefile write="true" page="/education/wizards/code.jsp" objectlist="$includePath" />"    id="menu" name="menu" width="100%" height="90%" marginwidth="0" marginheight="0" border="1"></iframe></td>
+      <td width="80%"><iframe src="<mm:treefile write="true" page="/education/wizards/loading.jsp" objectlist="$includePath" />" id="text" name="text" width="100%" height="90%" marginwidth="0" marginheight="0" border="1"></iframe></td>
    </tr>
 </table>
 
