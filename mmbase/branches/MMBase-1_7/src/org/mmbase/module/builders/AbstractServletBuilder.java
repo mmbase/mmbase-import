@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.20.2.4 2005-08-23 13:43:35 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.20.2.5 2005-08-24 13:08:34 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -290,8 +290,10 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             String fileName = node.getStringValue("filename");
             if (addsFileName == -2) {
                 javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
-                if (sx != null) {
-                    String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename").toLowerCase();
+                if (sx != null) {                    
+                    String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
+                    if (res == null) res = "";
+                    res = res.toLowerCase();
                     if ("no".equals(res)) {
                         addsFileName = 0;
                     } else if ("yes".equals(res)) {
