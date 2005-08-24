@@ -42,6 +42,8 @@
   |
   <a href="<mm:url page="functions.jsp" />" >functions</a>
   |
+  <a href="<mm:url page="images.jsp" />" >images</a>
+  |
   <a href="<mm:url page="tipsandtricks.jsp" />" >Tips and Tricks (FAQ)</a>
   |
   <a href="<mm:url page="1.1/" />" >what's new</a>
