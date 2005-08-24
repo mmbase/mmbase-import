@@ -1,36 +1,45 @@
 package nl.didactor.isbo;
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilder;
-import org.mmbase.util.xml.DocumentReader;
-import org.mmbase.util.XMLErrorHandler;
-import org.mmbase.util.XMLEntityResolver;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import java.text.SimpleDateFormat;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class ISBOReader {
     private static Logger log = Logging.getLoggerInstance(ISBOReader.class.getName());
 
     private Cloud cloud;
-    private NodeManager studentManager;
+    private NodeManager peopleManager;
     private NodeManager classManager;
     private NodeManager educationManager;
+    private NodeManager roleManager;
     private DocumentBuilder docBuilder;
+    private org.mmbase.bridge.Node studentRoleNode;
+    private org.mmbase.bridge.Node teacherRoleNode;
     
     public ISBOReader(Cloud cloud) {
         this.cloud = cloud;
-        this.studentManager   = cloud.getNodeManager("people");
+        this.peopleManager   = cloud.getNodeManager("people");
         this.classManager     = cloud.getNodeManager("classes");
         this.educationManager = cloud.getNodeManager("educations");
-        
+        this.roleManager		= cloud.getNodeManager("roles");
+        this.studentRoleNode = roleManager.getList("name='student'",null,null).getNode(0);
+        this.teacherRoleNode = roleManager.getList("name='teacher'",null,null).getNode(0);
         docBuilder = DocumentReader.getDocumentBuilder();
     }
 
@@ -40,9 +49,9 @@ public class ISBOReader {
 
     public void processDoc(Document doc) throws Exception {
         Element root = doc.getDocumentElement();
-        NodeList studentList = root.getElementsByTagName("student-detail");
+        NodeList studentList = root.getElementsByTagName("person");
         for (int i=0; i < studentList.getLength(); i++) {
-            setStudent(studentList.item(i));
+            setPerson(studentList.item(i));
         }
         
         NodeList classList = root.getElementsByTagName("class");
@@ -51,19 +60,75 @@ public class ISBOReader {
         }
     }
     
-    private void setStudent(Node el) throws Exception {
+    private void setPerson(Node el) throws Exception {
         Map fields = new HashMap();
         NodeList nl = el.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node n = nl.item(i);
             if (n.getNodeType() == n.ELEMENT_NODE) {
-                fields.put(n.getNodeName(),n.getFirstChild().getNodeValue().trim());
+            	String fieldname = n.getNodeName();
+            	Node child = n.getFirstChild();
+            	String value = child == null ? null : child.getNodeValue().trim();
+            	fields.put(fieldname,value);
             }
         }
         String username = (String)fields.get("username");
-        log.info("Processing student "+username);
-        org.mmbase.bridge.Node student = getStudent(username,true);
-        student.setValue("password",(String) fields.get("password"));
+        if (username == null) {
+        	throw new Exception("Can't insert a person without a username");
+        }
+        log.info("Processing person "+username);
+        org.mmbase.bridge.Node student = getPerson(username,true);
+        String password = (String) fields.get("password");
+        if (password != null) {
+        	student.setValue("password",(String) fields.get("password"));
+        }
+        
+        // set the role (if specified)
+        // a student role implies NO other roles - other roles will be removed
+        // a teacher role will add the teacher role if it hasn't been added already, but
+        // will NOT remove other roles
+        
+        String role = (String) fields.get("role");
+        if ("student".equals(role)) {
+        	boolean alreadyHasRole = false;
+        	org.mmbase.bridge.NodeIterator ri = cloud.getList(
+                    student.getStringValue("number"),
+                    "people,related,roles",
+                    "related.number,roles.name",
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+            ).nodeIterator();
+        	while (ri.hasNext()) {
+        		org.mmbase.bridge.Node rr = ri.nextNode();
+        		if (rr.getStringValue("name").equals("student")) {
+        			alreadyHasRole = true;
+        		}
+        		else {
+        			cloud.getNode(rr.getStringValue("related.number")).delete();
+        		}
+        	}
+        	if (!alreadyHasRole) {
+        		student.createRelation(studentRoleNode,cloud.getRelationManager("related")).commit();
+        	}
+        }
+        else if ("teacher".equals(role)) {
+        	boolean alreadyHasRole = cloud.getList(
+                    student.getStringValue("number"),
+                    "people,related,roles",
+                    "related.number,roles.name",
+                    "roles.name='teacher'",
+                    null,
+                    null,
+                    null,
+                    true
+            ).size() > 0;
+        	if (!alreadyHasRole) {
+        		student.createRelation(teacherRoleNode,cloud.getRelationManager("related")).commit();
+        	}
+        }
         student.setValue("firstname",(String) fields.get("firstname"));
         student.setValue("lastname",(String) fields.get("lastname"));
         student.setValue("suffix",(String) fields.get("suffix"));
@@ -78,7 +143,7 @@ public class ISBOReader {
         student.setValue("website",(String) fields.get("website"));
         student.setValue("externid",(String) fields.get("externid"));
         String birthdate = (String) fields.get("birthdate");
-        if (birthdate.length() > 0) {
+        if (birthdate != null) {
             student.setIntValue("dayofbirth", parseDate(birthdate));
         }
         student.commit();
@@ -87,26 +152,35 @@ public class ISBOReader {
     private void setClass(Node el) throws Exception{
         Map fields = new HashMap();
         Set students = new HashSet();
-        Set educations = new HashSet();
+        Set newEducations = new HashSet();
         NodeList nl = el.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node n = nl.item(i);
             if (n.getNodeType() == n.ELEMENT_NODE) {
-                if ("students".equals(n.getNodeName())) {
+            	String fieldname = n.getNodeName();
+                if ("people".equals(fieldname)) {
                     NodeList sl = n.getChildNodes();
                     for (int j = 0; j < sl.getLength(); j++) {
                         Node s = sl.item(j);
-                        if ("username".equals(s.getNodeName())) {
-                            String username = s.getFirstChild().getNodeValue().trim();
-                            students.add(username);
+                        if ("username".equals(fieldname)) {
+                        	Node child = s.getFirstChild();
+                        	String value = child == null ? null : child.getNodeValue().trim();
+                            students.add(value);
                         }
                     }
                 }
-                else if ("education".equals(n.getNodeName())) {
-                    educations.add(n.getFirstChild().getNodeValue().trim());
+                else if ("education".equals(fieldname)) {
+                	Node child = n.getFirstChild();
+                	String value = child == null ? null : child.getNodeValue().trim();
+                	if (child == null || value == null) {
+                		throw new Exception("No education specified for class!");
+                	}
+                    newEducations.add(value);
                 }
                 else {
-                    fields.put(n.getNodeName(),n.getFirstChild().getNodeValue().trim());
+                	Node child = n.getFirstChild();
+                	String value = child == null ? null : child.getNodeValue().trim();
+                    fields.put(fieldname,value);
                 }
             }
         }
@@ -117,20 +191,20 @@ public class ISBOReader {
         org.mmbase.bridge.NodeIterator elist = klas.getRelatedNodes("educations").nodeIterator();
         while (elist.hasNext()) {
             org.mmbase.bridge.Node education = elist.nextNode();
-            if (educations.contains(education.getStringValue("name"))) {
-               educations.remove(education.getStringValue("name"));
-            }
+        	log.info("class already has a relation with education "+education.getStringValue("name"));
+            newEducations.remove(education.getStringValue("name"));
         }
-        Iterator i = educations.iterator();
+        Iterator i = newEducations.iterator();
         while (i.hasNext()) {
             org.mmbase.bridge.Node education = getEducation((String)i.next());
+        	log.info("coupling class to education "+education.getStringValue("name"));
             klas.createRelation(education,cloud.getRelationManager("related")).commit();
         }
 
         Map currentStudents = new HashMap();
         org.mmbase.bridge.NodeIterator si = cloud.getList(
                 klas.getStringValue("number"),
-                "classes,classrel,people",
+                "classes,classrel,people,",
                 "classrel.number,people.username",
                 null,
                 null,
@@ -146,7 +220,7 @@ public class ISBOReader {
         while (studentIterator.hasNext()) {
             String sname = (String) studentIterator.next();
             if (! currentStudents.containsKey(sname) ) {
-                klas.createRelation(getStudent(sname,false),cloud.getRelationManager("classrel")).commit();
+                klas.createRelation(getPerson(sname,false),cloud.getRelationManager("classrel")).commit();
             }
             else {
                 currentStudents.remove(sname);
@@ -160,6 +234,19 @@ public class ISBOReader {
                  n.delete(true);
              }
         }
+        
+        org.mmbase.bridge.NodeList eventNodes = klas.getRelatedNodes("mmevents");
+        org.mmbase.bridge.Node eventNode = null;
+        if (eventNodes.size() > 0) {
+        	eventNode = eventNodes.getNode(0);
+        }
+        else {
+        	eventNode = cloud.getNodeManager("mmevents").createNode();
+        	eventNode.commit();
+        	klas.createRelation(eventNode,cloud.getRelationManager("related")).commit();
+        }
+        eventNode.setIntValue("start",parseDate((String) fields.get("startdate")));
+        eventNode.setIntValue("stop",parseDate((String) fields.get("enddate")));
     }
 
     private int parseDate(String date) {
@@ -171,13 +258,14 @@ public class ISBOReader {
         }
     }
     
-    private org.mmbase.bridge.Node getStudent(String username, boolean create) throws Exception { 
-        org.mmbase.bridge.NodeList slist = studentManager.getList("username='"+username+"'",null,null);
+    private org.mmbase.bridge.Node getPerson(String username, boolean create) throws Exception { 
+        org.mmbase.bridge.NodeList slist = peopleManager.getList("username='"+username+"'",null,null);
         org.mmbase.bridge.Node student = null;
         if (slist.size() == 0) {
             if (create) {
-                student = studentManager.createNode();
+                student = peopleManager.createNode();
                 student.setValue("username",username);
+                student.commit();
             }
             else {
                 throw new Exception("Can't find student '"+username+"'");

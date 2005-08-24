@@ -38,14 +38,28 @@
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
              token="$${emailsenderdomain}"
              value="${emailsenderdomain}"/>
-    <ant antfile="configure.xml" target="config"/>
+
+     <ant antfile="configure.xml" target="config"/>
+     	<if>
+          <available file="${build.dir}/webapp/WEB-INF/config/applications" type="dir" />
+          <then>
+            <copy todir="${build.dir}/webapp/WEB-INF/config/builders" flatten="yes">
+              <fileset dir="${build.dir}/webapp/WEB-INF/config/applications">
+                <include name="**/builders/*.xml"/>
+              </fileset>
+            </copy>
+          </then>
+        </if>
+
+
+  
   </target>
 
   <target name="clean">
     <delete dir="${build.dir}" />
   </target>
 
-  <target name="webapp" depends="clean,create.dirs,build,config,copy_builders">
+  <target name="webapp" depends="clean,create.dirs,build,config">
 
   </target>
 
@@ -283,26 +297,6 @@
      <jar destfile="${build.dir}/${war.name}.war"
           basedir="${build.dir}/webapp"
      />
-   </target>
-
-   <target name="_deploy" depends="war, tomcat5.deploy"/>
-   <target name="_redeploy" depends="war, tomcat5.redeploy"/>
-
-   <!-- copy all (MMBase) builders
-   from: "./WEB-INF/config/applications/**/builders/*.xml"
-   to:   "./WEB-INF/config/builders/"
-   -->
-   <target name="copy_builders">
-       <if>
-         <available file="${build.dir}/webapp/WEB-INF/config/applications" type="dir" />
-         <then>
-           <copy todir="${build.dir}/webapp/WEB-INF/config/builders" flatten="yes">
-             <fileset dir="${build.dir}/webapp/WEB-INF/config/applications">
-               <include name="**/builders/*.xml"/>
-             </fileset>
-           </copy>
-         </then>
-       </if>
    </target>
 
 </project>

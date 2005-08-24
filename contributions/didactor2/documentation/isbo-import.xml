@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <isbo>
-  <student-details>
-    <student-detail>
+  <people>
+    <person>
+     	<role>student</role>  <!--  this may be "student" or "teacher" -->
         <username>LOGIN1</username>
         <password>PASSWORD</password>
         <firstname>FIRSTNAME</firstname>
@@ -16,11 +17,11 @@
         <mobile>TELEPHONE</mobile>
         <email>EMAIL ADDRESS</email>
         <website>WEBSITE</website>
-        <birthdate>1980-01-01</birthdate>
+        <birthdate>1980-01-01</birthdate> <!--  YYYY-MM-DD format -->
         <externid>SOME ID</externid> <!-- optional -->
-    </student-detail>
+    </person>
     <!-- repeat for as many students as are updated and added -->
-  </student-details>
+  </people>
   <classes>
     <!-- 
         for every class that needs to be updated or added
@@ -29,32 +30,28 @@
     <class>
       <name>UNIQUE CLASS NAME</name>
       <description>DESCRIPTION</description>
-      <startdate>YYYY-MM-DD</startdate>
-      <enddate>YYYY-MM-DD</enddate>
+      <startdate>2004-01-01</startdate>
+      <enddate>2008-12-21</enddate>
       <education>EDUCATION NAME</education> 
       <!-- 
         repeat the education tag for multiple educations
         you can set education names in the didactor editors 
       -->
-      <students>
+      <people>
         <username>LOGIN1</username>
-        <username>LOGIN2</username>
-        <username>LOGIN3</username>
-        <username>LOGIN4</username>
-        <username>LOGIN5</username>
         <!--
         
             etc.
 
-            If this is an existing class, every student that isn't 
+            If this is an existing class, every student/teacher that isn't 
             mentioned here will be removed from the class.
             
-            If the student's information is already in the didactor
-            instance, the detailed info for that student need not be
-            mentioned in the student-details list.
+            If the person's information is already in the didactor
+            instance, the detailed info for that person need not be
+            mentioned in the <person> list.
             
         -->
-     </students>
+     </people>
     </class>
   </classes>
 </isbo>
