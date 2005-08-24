@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.102 2005-05-09 10:02:18 michiel Exp $
+ * @version $Id: Images.java,v 1.103 2005-08-24 09:51:16 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -156,7 +156,7 @@ public class Images extends AbstractImages {
         }
     }
     /**
-     * @since MMBase-1.8
+     * @since MMBase-1.7.4
      */
     protected Dimension getDimension(MMObjectNode node, String template) {
         if (template == null || template.equals("")) { // no template given, return dimension of node itself.
@@ -166,15 +166,15 @@ public class Images extends AbstractImages {
         if(imageCaches == null) {
             throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
         }
-        MMObjectNode icacheNode = getCachedNode(node, template);
+        MMObjectNode icacheNode = imageCaches.getCachedNode(node.getNumber(), template);
         if (icacheNode != null) {
             return imageCaches.getDimension(icacheNode);
         } else {
-            log.error("No icache node could be created!!");
-            // no icaches available? Only return prediction. 
+            // no icache available? Only return prediction. 
             return  Imaging.predictDimension(getDimension(node), Imaging.parseTemplate(template));
         }
     }
+
 
     /**
      * Returns a icache node for given image node and conversion template. If such a node does not exist, it is created.
@@ -292,17 +292,18 @@ public class Images extends AbstractImages {
             "border=\"0\" alt=\"" + alt + "\"" + title + " /></a>";
     }
 
-    // javadoc copied from parent
+    // javadoc inherited
     protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters args) {
         return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
     }
 
 
-
+    // javadoc inherited
     protected String getDefaultImageType() {
         return defaultImageType;
     }
 
+    // javadoc inherited
     public boolean commit(MMObjectNode node) {
         Collection changed = node.getChanged();
         // look if we need to invalidate the image cache...
@@ -378,74 +379,6 @@ public class Images extends AbstractImages {
         templateCacheNumberCache.remove(ckey);
     }
 
-
-    /**
-    * Will return {@link #defaultImageType} as default type, or one of the strings in params, must contain the following "f(type)" where type will be returned
-     * @param params a <code>List</code> of <code>String</code>s, which could contain the "f(type)" string
-     * @return {@link #defaultImageType} by default, or the first occurence of "f(type)"
-     * @deprecated-now
-     */
-    public String getImageMimeType(List params) {
-        String format = null;
-        String key;
-
-        // WHY the itype colomn isn't used?
-
-        for (Iterator e = params.iterator() ;e.hasNext();) {
-            key = (String)e.next();
-
-            // look if our string is long enough...
-            if(key != null && key.length() > 2) {
-                // first look if we start with an "f("... format is f(gif)
-                if(key.startsWith("f(")) {
-                    // one search function remaining...
-                    int pos = key.lastIndexOf(')');
-                    // we know for sure that our "(" is at pos 1, so we can define this hard...
-                    format = key.substring(2, pos);
-                    break;
-                }
-            }
-        }
-        if (format == null) format = defaultImageType;
-        String mimetype = Imaging.getMimeTypeByExtension(format);
-        if (log.isDebugEnabled()) {
-            log.debug("getImageMimeType: mmb.getMimeType(" + format + ") = " + mimetype);
-        }
-        return mimetype;
-    }
-
-
-
-
-    /**
-     * @deprecated-now
-     */    
-    public byte[] getImageBytes(PageInfo pi, List params) {
-        int number = Integer.parseInt((String) params.remove(0));
-        MMObjectNode icacheNode = getCachedNode(getNode(number), Imaging.unparseTemplate(params));
-        icacheNode.getFunctionValue("wait", null);
-        return icacheNode.getByteValue("handle");
-    }
-
-    /**
-     * Explicity cache this image with params and return the cached node number.
-     *
-     * This function is called by servdb. So when servdb is not used
-     * for images anymore, this function can be deprecated (and the
-     * functionality moved to cacheImage(node, template).
-     *
-     * @since MMBase-1.6
-     * @deprecated-now
-     */
-    public int cacheImage(List params) {
-        if (log.isDebugEnabled()) {
-            log.debug("Caching image " + params);
-        }
-        int number = Integer.parseInt((String) params.remove(0));
-        MMObjectNode icacheNode = getCachedNode(getNode(number), Imaging.unparseTemplate(params));
-        icacheNode.getFunctionValue("wait", null);
-        return icacheNode.getNumber();
-    }
 
 
 
