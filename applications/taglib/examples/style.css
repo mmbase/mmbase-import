@@ -41,3 +41,8 @@ table.search input {
 span.google {
   background-color: yellow;
 }
+
+img {
+  /* terrible hack for IE */
+  behavior: url("../../mmbase/style/pngbehavior.htc");
+}
