@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.28 2005-08-24 09:52:11 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.29 2005-08-24 13:08:17 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -404,19 +404,21 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     if (addsFileName == -2) {
                         javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
                         if (sx != null) {                            
-                            String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename").toLowerCase();
-                            log.info("res " + res);
+                            String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
+                            if (res == null) res = "";
+                            res = res.toLowerCase();
+                            log.trace("res " + res);
                             if ("no".equals(res) || "false".equals(res)) {
                                 addsFileName = 0;
                             } else if ("yes".equals(res) || "true".equals(res)) {
                                 addsFileName = 1;
                             } else {
-                                log.info("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
+                                log.debug("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
                                 addsFileName = -1;
                             }
                         }
                     }
-                    log.info("addsFileName " + addsFileName);
+                    log.debug("addsFileName " + addsFileName);
 
                     boolean addFileName =  addsFileName > 0 ||  ( addsFileName < 0 && !servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
                     
