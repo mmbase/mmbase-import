@@ -39,7 +39,7 @@
 	<classpathentry kind="lib" path="src/core/lib/jspsmartupload.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/jstl.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/log4j.jar"/>
-	<classpathentry kind="lib" path="src/core/lib/mmbase.jar"/>
+	<classpathentry sourcepath="/home/joost/build/mmbase-src-20050201/src/" kind="lib" path="src/core/lib/mmbase.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/mmbase-crontab.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/mmbase-dove.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/mmbase-editwizard.jar"/>
