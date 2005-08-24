@@ -130,6 +130,7 @@
     </field>
   </fieldlist>
 
+  <!--
   <indexlist>
     <index name="relation" unique="true">
       <indexfield name="snumber" />
@@ -137,5 +138,6 @@
       <indexfield name="rnumber" />
     </index>
   </indexlist>
+  -->
 
 </builder>
