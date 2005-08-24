@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.33 2005-07-09 11:10:49 nklasens Exp $
+ * @version $Id: AbstractImages.java,v 1.34 2005-08-24 09:52:35 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -240,6 +240,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     }
 
 
+    /**
+     * The default image type is used when magic could not determin the type
+     */
     protected String getDefaultImageType() {
         return "jpg";
     }
