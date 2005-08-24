@@ -329,6 +329,10 @@ builddate=${builddate}
     <copy file="${xerces.jar}"   todir="${compile.lib.dir}" />
     <copy file="${xml-apis.jar}"   todir="${compile.lib.dir}" />
 
+    
+    <!-- org.apache.xpath.XPathAPI is used here and there. This dependency can be dropped in 1.5 (which includes xpath api itself) -->
+    <copy file="${xalan.jar}"          todir="${compile.lib.dir}" />
+
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}" tofile="${compile.lib.dir}/commons-fileupload.jar" />
     <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
