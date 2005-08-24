@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.40 2004-12-03 14:45:35 pierre Exp $
+ * @version $Id: Utils.java,v 1.41 2005-08-24 12:42:42 michiel Exp $
  */
 
 public class Utils {
@@ -484,6 +484,7 @@ public class Utils {
         Templates cachedXslt = cache.getTemplates(xsl, uri);
         if (cachedXslt == null) {
             cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
+            if (cachedXslt == null) throw new RuntimeException("Could not create template for " + xslFile + " and " + uri);
             cache.put(xsl, cachedXslt, uri);
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
