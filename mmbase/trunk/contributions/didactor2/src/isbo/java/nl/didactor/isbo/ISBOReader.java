@@ -189,16 +189,20 @@ public class ISBOReader {
         org.mmbase.bridge.Node klas = getClass(name);
         klas.commit();
         org.mmbase.bridge.NodeIterator elist = klas.getRelatedNodes("educations").nodeIterator();
+        Set currentEducations = new HashSet();
         while (elist.hasNext()) {
-            org.mmbase.bridge.Node education = elist.nextNode();
-        	log.info("class already has a relation with education "+education.getStringValue("name"));
-            newEducations.remove(education.getStringValue("name"));
+            String education = elist.nextNode().getStringValue("name").trim().toLowerCase();
+        	log.info("class already has a relation with education '"+education+"'");
+        	currentEducations.add(education);
         }
         Iterator i = newEducations.iterator();
         while (i.hasNext()) {
-            org.mmbase.bridge.Node education = getEducation((String)i.next());
-        	log.info("coupling class to education "+education.getStringValue("name"));
-            klas.createRelation(education,cloud.getRelationManager("related")).commit();
+        	String ename = ((String) i.next()).trim();
+        	if (!currentEducations.contains(ename.toLowerCase())) {
+        		org.mmbase.bridge.Node education = getEducation(ename);
+        		log.info("coupling class to education '"+education.getStringValue("name")+"' ("+ename+")");
+        		klas.createRelation(education,cloud.getRelationManager("related")).commit();
+        	}
         }
 
         Map currentStudents = new HashMap();
