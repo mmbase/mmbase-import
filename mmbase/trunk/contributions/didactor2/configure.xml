@@ -1,5 +1,24 @@
 <project name="didactor-config" default="config" basedir=".">
+	  <!-- We need the 'foreach' and 'if' tasks, therefore we use ant-contrib -->
+	  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	    <classpath>
+	      <pathelement location="lib/ant-contrib-1.0b1.jar"/>
+	    </classpath>
+	  </taskdef>
+
   <echo message="configuring..."/>
+	<!--
+		 my.properties is supposed to be a symlink or copy of the actual 
+		 property file to be used by default. 
+		 
+		 note that any properties set here will override any properties set
+		 in build.properties and configure.properties.
+		 
+		 if you need to override this one, use the -propertyfile option to
+		 ant
+	 -->
+
+  <property file="my.properties"/> 
   <property file="build.properties"/>
   <property file="configure.properties"/>
   <property name="build.config.dir" value="${build.dir}/webapp/WEB-INF/config" />
