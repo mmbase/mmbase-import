@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.27 2005-02-08 18:17:28 michiel Exp $
+ * @version $Id: Attribute.java,v 1.28 2005-08-25 08:25:40 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -157,7 +157,12 @@ public class Attribute {
         String val = getString(tag).toLowerCase();
         if ("true".equals(val)) return true;
         if ("false".equals(val)) return false;
-        return def;
+        if ("yes".equals(val)) return true;
+        if ("no".equals(val)) return false;
+        if ("1".equals(val)) return true;
+        if ("0".equals(val)) return false;
+        if ("".equals(val)) return def;
+        throw new JspTagException(" " + getString(tag) + " is no boolean");
     }
 
     /**
