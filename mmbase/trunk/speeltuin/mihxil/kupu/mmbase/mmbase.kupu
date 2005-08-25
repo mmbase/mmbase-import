@@ -6,7 +6,7 @@
 
   <kupu:part name="tree-div">
     <div id="tree">
-      <mm:import externid="tree">tree.jspx</mm:import>
+      <mm:import externid="tree" from="this,parameters">tree.jspx</mm:import>
       <mm:write referid="tree">
         <mm:isnotempty>
           <mm:include page="$_" />
@@ -45,7 +45,8 @@
         <fmt:message key="Richtext editor" />
         <div id="languageSelector">
           <form name="languageform" method="get" action=".">
-            <input type="hidden" name="node" value="${node}" />
+            <input type="hidden" name="objectnumber" value="${node}" />
+            <input type="hidden" name="tree" value="${tree}" />
             <select onChange="document.forms['languageform'].submit();" name="language">
               <mm:compare referid="rich_language" value="client">
                 <option value="client" selected="selected"><fmt:message key="default" /></option>
@@ -53,7 +54,7 @@
               <mm:compare referid="rich_language" value="client" inverse="true">
                 <option value="client"><fmt:message key="default" /></option>
               </mm:compare>
-              <mm:import id="languages" vartype="list">en,nl,de,fr,eo</mm:import>
+              <mm:import id="languages" vartype="list">en,zh,ja,de,fr,pt,nl,da,cs,fi,el,sr,eo</mm:import>
               <mm:stringlist referid="languages">
                 <mm:locale language="${_}" jspvar="locale">
                   <mm:compare referid2="rich_language">

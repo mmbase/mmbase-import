@@ -8,7 +8,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolboxes.kupu,v 1.6 2005-07-12 18:44:38 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolboxes.kupu,v 1.7 2005-08-25 14:39:09 michiel Exp $</kupu:id>
 
   <kupu:part name="images">
     <div class="kupu-toolbox" id="kupu-toolbox-images">
@@ -55,6 +55,8 @@
           <option value="float intermezzo">Intermezzo</option>
           <option value="float caption left">captioned left</option>
           <option value="float caption right">captioned right</option>
+          <option value="float quote right">quote right</option>
+          <option value="float quote left">quote right</option>
         </select>
         <div class="kupu-toolbox-buttons">
           <button type="button" id="kupu-div-addbutton"

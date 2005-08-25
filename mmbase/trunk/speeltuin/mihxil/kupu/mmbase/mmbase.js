@@ -185,14 +185,14 @@ function loadNode(nodeNumber) {
         kupu.logMessage(_("Getting node fields for ") + nodeNumber);
         var dom = Sarissa.getDomDocument();
         dom.async = false;
-        dom.load('node.jspx?node=' + nodeNumber);
+        dom.load('node.jspx?objectnumber=' + nodeNumber);
         nodeXml = Sarissa.serialize(dom);
         //alert("received " + nodeXml);
         loadedNodes.add(nodeNumber, nodeXml);
     } else {
         kupu.logMessage(_("Loading node fields for ") + nodeNumber);
         var request = getRequest();
-        request.open('GET', 'node.jspx?loadonly=true&node=' + nodeNumber, false);
+        request.open('GET', 'node.jspx?loadonly=true&objectnumber=' + nodeNumber, false);
         request.send('');
     }
 
@@ -227,7 +227,7 @@ function loadRelated(nodeNumber) {
     var treeXml = loadedTrees.get(nodeNumber);
     if (treeXml == null) {
         var request = getRequest();
-        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);
+        request.open('GET', 'tree.jspx?objectnumber=' + nodeNumber, false);
         request.send('');
         treeXml = serialize(request);
         loadedTrees.add(nodeNumber, treeXml);
@@ -248,7 +248,7 @@ function unloadRelated(nodeNumber) {
     if (html == null) {
         // just fall-back
         var request = getRequest();
-        request.open('GET', 'tree.jspx?node=' + nodeNumber, false);
+        request.open('GET', 'tree.jspx?objectnumber=' + nodeNumber, false);
         request.send('');
         html = serialize(request);
     }
@@ -258,7 +258,7 @@ function unloadRelated(nodeNumber) {
 
 function reloadTree() {
     var request = getRequest();
-    request.open('GET', 'tree.jspx?node=' + trunkNumber, false);
+    request.open('GET', 'tree.jspx?objectnumber=' + trunkNumber, false);
     request.send('');
     var tree = serialize(request);
     document.getElementById('tree').innerHTML = tree;
@@ -280,7 +280,7 @@ function reloadTree() {
  */
 function createSubNode(nodeNumber) {
     var request = getRequest();
-    request.open('GET', 'create-subnode.jspx?node=' + nodeNumber, false);
+    request.open('GET', 'create-subnode.jspx?objectnumber=' + nodeNumber, false);
     request.send('');
     var result = serialize(request);
     alert(result);

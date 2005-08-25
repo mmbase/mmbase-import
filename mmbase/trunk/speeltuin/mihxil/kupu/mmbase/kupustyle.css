@@ -130,6 +130,10 @@ div.intermezzo  {
   background-color: #cfc;
   font-style: normal;
 }
+div.quote { 
+  background-color: #fcc;
+  font-style: italic;
+}
 
 div.caption { 
   background-color: #ddd;
