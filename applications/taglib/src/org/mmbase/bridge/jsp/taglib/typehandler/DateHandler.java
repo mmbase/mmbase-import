@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.19 2005-04-26 15:14:16 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.20 2005-08-25 08:47:29 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -196,7 +196,7 @@ public class DateHandler extends AbstractTypeHandler {
             } else {
                 checkHour = Integer.parseInt(searchHour);
             }
-            buffer.append("&nbsp;&nbsp;<select name=\"" + hourName + "\">\n");
+            buffer.append("&#160;&#160;<select name=\"" + hourName + "\">\n");
             for (int i = 0; i <= 23; i++) {
                 if (checkHour == i) {
                     buffer.append("  <option selected=\"selected\">");
