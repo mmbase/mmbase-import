@@ -11,6 +11,13 @@ rm -rf  build.log
 	echo "debug=on" >>  build.properties
 	echo "deprecation=on"  >>  build.properties
 	echo "distro=MMBase 1.7.4-rc2" >> build.properties
+
+	#
+	# add sources to 
+	#
+        echo '450a451' > buid.xml.patch
+        echo '>         <include name="**/*.java"/>' >>  buid.xml.patch
+	patch build.xml buid.xml.patch
 	ant bindist
 ) 2>&1 | tee build.log
 exit
