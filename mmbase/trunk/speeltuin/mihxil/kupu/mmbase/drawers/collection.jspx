@@ -19,10 +19,13 @@
       <mm:isnotempty referid="upload">
         <mm:log>Uploading</mm:log>
         <mm:import id="title" externid="node_prop_caption" from="multipart"/>
-        <mm:import id="file" externid="node_prop_image" from="multipart" jspvar="hoi"  vartype="bytes" />
+        <mm:import id="file" externid="node_prop_image" from="multipart" vartype="fileitem" />
         <mm:createnode type="$nodetype">
           <mm:setfield name="title" valueid="title" />
           <mm:setfield name="handle" valueid="file" />
+          <mm:hasfield name="filename">
+            <mm:setfield name="filename">${file.name}</mm:setfield>
+          </mm:hasfield>
         </mm:createnode>
       </mm:isnotempty>
   
