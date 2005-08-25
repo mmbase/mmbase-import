@@ -21,7 +21,7 @@ import org.mmbase.bridge.Cloud;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.7 2005-05-04 22:24:51 michiel Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.8 2005-08-25 11:05:51 michiel Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -44,8 +44,6 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
 
     private int getType() throws JspTagException {
         String t = type.getString(this).toLowerCase();
-        // note: 'nodemanager' and 'guinodemanager' values are deprecated
-        // use 'type' and 'guitype' instead
         if ("name".equals(t)) {
             return TYPE_NAME;
         } else if ("user".equals(t)) {
