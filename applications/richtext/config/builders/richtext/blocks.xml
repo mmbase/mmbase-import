@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="content" maintainer="mmbase.org" name="blocks" version="0">
+<builder extends="object" maintainer="mmbase.org" name="blocks" version="0">
   <status>active</status>
   <searchage>31</searchage>
   <names>
@@ -15,6 +15,29 @@
   </descriptions>
   <properties/>
   <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Title of this object</description>
+        <description xml:lang="nl">Titel van dit object</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="fr">Titre</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="eo">Titolo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <list>5</list>
+          <search>5</search>
+        </positions>
+      </editor>
+      <db>
+        <name>title</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
     <field>
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
