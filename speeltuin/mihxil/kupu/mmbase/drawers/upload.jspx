@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<html>
+<mm:content 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    type="text/html" 
+    expires="-1">
+  <jsp:directive.page session="true" errorPage="../error.jspx" />
+  <head>
+  </head>
+
+    
+  <mm:cloud rank="basic user">
+    <mm:import externid="nodetype">images</mm:import>
+    
+    <mm:log>Uploading</mm:log>
+    <mm:import id="title" externid="node_prop_caption" from="multipart"/>
+    <mm:import id="file" externid="node_prop_image" from="multipart" vartype="fileitem" />
+    <mm:createnode type="$nodetype" id="node">
+      <mm:setfield name="title" valueid="title" />
+      <mm:setfield name="handle" valueid="file" />
+      <mm:hasfield name="filename">
+        <mm:setfield name="filename">${file.name}</mm:setfield>
+      </mm:hasfield>
+    </mm:createnode>
+    <mm:node referid="node">
+      <mm:image template="s(80)">
+        <body onLoad="window.parent.kupu.getTool('drawertool').current_drawer.finishUpload('${_}');">
+        </body>
+      </mm:image>
+    </mm:node>
+  </mm:cloud>
+</mm:content>
+</html>

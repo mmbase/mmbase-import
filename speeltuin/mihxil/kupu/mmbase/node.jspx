@@ -1,9 +1,9 @@
-<mm:content type="text/xml" 
+<mm:content type="text/xml"
 	    expires="-1"
             xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:jsp="http://java.sun.com/JSP/Page" 
+            xmlns:jsp="http://java.sun.com/JSP/Page"
             xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"            
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
             >
   <jsp:directive.page session="true" errorPage="error.jspx" />
   <jsp:output omit-xml-declaration="true" />
@@ -11,15 +11,15 @@
   <mm:locale language="$rich_language">
     <mm:cloud rank="basic user" >
       <fmt:bundle basename="org.mmbase.kupu.Messages">
-        <mm:import externid="node" />
+        <mm:import id="node" externid="objectnumber" />
         <mm:import externid="loadonly" />
-        <mm:notpresent referid="node">
+        <mm:notpresent  referid="node">
           <div class="node" title="No Node">
             <p><fmt:message key="No node" /></p>
           </div>
         </mm:notpresent>
         <mm:present referid="node">
-          
+
           <mm:param name="org.mmbase.xml-mode" value="kupu" />
           <mm:node id="node" referid="node">
             <div class="node" title="${node.number} ${node.title}">
@@ -33,7 +33,7 @@
                   </tr>
                   <tr>
                     <td colspan="2">
-                      <mm:field name="lastmodifiedby" />: 
+                      <mm:field name="lastmodifiedby" />:
                       <nobr><mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field></nobr>
                     </td>
                   </tr>
@@ -44,25 +44,29 @@
                   </mm:link>
                 </a>
                 <form>
-                  <mm:fieldlist id="field" fields="title,subtitle,intro">              
-                    <p>
-                      <mm:fieldinfo type="guiname" />
-                      <mm:fieldinfo type="name">
-                        <mm:compare value="title">
-                          <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value);'" type="input" />
-                        </mm:compare>
-                        <mm:compare value="title" inverse="true">
-                          <mm:fieldinfo  options="noempty" type="input" />
-                        </mm:compare>
-                      </mm:fieldinfo>
-                    </p>
+                  <mm:fieldlist id="field" type="edit">
+                    <mm:fieldinfo type="name">
+                      <mm:compare value="body" inverse="true">
+                        <p>
+                          <mm:fieldinfo type="guiname" />
+                          <mm:fieldinfo type="name">
+                            <mm:compare value="title">
+                              <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value);'" type="input" />
+                            </mm:compare>
+                            <mm:compare value="title" inverse="true">
+                              <mm:fieldinfo  options="noempty" type="input" />
+                            </mm:compare>
+                          </mm:fieldinfo>
+                        </p>
+                      </mm:compare>
+                    </mm:fieldinfo>
                   </mm:fieldlist>
                 </form>
               </mm:notpresent>
             </div>
           </mm:node>
           <mm:write session="kupu_node" referid="node" />
-        </mm:present>  
+        </mm:present>
       </fmt:bundle>
     </mm:cloud>
   </mm:locale>

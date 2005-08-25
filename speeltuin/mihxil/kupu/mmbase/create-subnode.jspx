@@ -8,8 +8,8 @@
   <mm:cloud rank="basic user">
     <mm:param name="org.mmbase.xml-mode" value="kupu" />
 
-    <mm:import externid="node" required="true" />
-    <mm:node id="node" referid="node">
+    <mm:import externid="objectnumber" required="true" />
+    <mm:node id="node" referid="objectnumber">
       <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
         <mm:maxnumber value="1" />
         <mm:sortorder field="pos" direction="down" />
