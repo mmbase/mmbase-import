@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.56 2005-08-22 08:12:15 pierre Exp $
+ * @version $Id: Casting.java,v 1.57 2005-08-25 12:31:39 michiel Exp $
  */
 
 import java.util.*;
@@ -428,11 +428,13 @@ public class Casting {
      * @return the value as an <code>byte[]</code> (binary/blob field)
      */
     static public byte[] toByte(Object obj) {
-        if (obj instanceof byte[]) {
+        if (obj == null || obj == MMObjectNode.VALUE_NULL) {
+            return new byte[] {};
+        } else if (obj instanceof byte[]) {
             // was allready unmapped so return the value
             return (byte[])obj;
-        } else if (obj == null || obj == MMObjectNode.VALUE_NULL) {
-            return new byte[] {};
+        } else if (obj instanceof org.apache.commons.fileupload.FileItem) {
+            return ((org.apache.commons.fileupload.FileItem) obj).get();
         } else {
             return toString(obj).getBytes();
         }
