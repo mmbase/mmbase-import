@@ -28,9 +28,9 @@
   <jsp:output omit-xml-declaration="true" />
 
   <mm:param name="org.mmbase.xml-mode" value="kupu" />
-  <mm:node number="pol_default" id="root" />
+  <mm:node number="pol_default" id="root" notfound="skip" />
   <mm:param name="org.mmbase.index-root" referid="root" />
-  <mm:import externid="node">pol_default</mm:import>
+  <mm:import id="node" externid="objectnumber">pol_default</mm:import>
   <mm:node id="n" referid="node">
     <div class="tree" id="node_${n}">
       <mm:listrelationscontainer type="segments" role="index" searchdir="destination">

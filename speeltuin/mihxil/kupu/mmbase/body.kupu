@@ -9,11 +9,23 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: body.kupu,v 1.6 2005-06-20 09:41:08 michiel Exp $</kupu:id>
+  <kupu:id>$Id: body.kupu,v 1.7 2005-08-25 14:39:09 michiel Exp $</kupu:id>
 
 
   <kupu:part name="body">
-    <mm:import externid="node" />
+    <mm:import externid="objectnumber"  />
+    <mm:import externid="tree"  />
+    <mm:compare referid="objectnumber" value="new">
+      <mm:createnode type="products" id="node">
+        <mm:fieldlist type="edit">
+          <mm:setfield>0</mm:setfield>
+        </mm:fieldlist>
+      </mm:createnode>
+      <mm:redirect referids="node@objectnumber,tree?,language?" /> 
+    </mm:compare>
+    <mm:compare referid="objectnumber" value="new" inverse="true">
+      <mm:node id="node" referid="objectnumber" />
+    </mm:compare>
     <body onload="kupu = startKupu('${lang}'); mmbaseInit('${node}');">
       <kupu:define-slot name="body" />
     </body>

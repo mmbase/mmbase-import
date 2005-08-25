@@ -10,26 +10,33 @@
   <mm:cloud>
     <mm:notpresent referid="node">      
       <mm:remove referid="node" />
-      <mm:import externid="node" from="parameters" />
-      <mm:node referid="node" id="node" />
+      <mm:import externid="objectnumber" from="parameters" />
+      <mm:node referid="objectnumber" id="node" notfound="skip" />
     </mm:notpresent>
-    
-    <mm:node  number="$node">
-      <mm:formatter xslt="xslt/mmxf2kupu.xslt" id="sent" escape="none">
-        <mm:field name="body" />
-        <mm:listrelations type="object" role="idrel" searchdir="destination" >
-          <mm:relatednode>
-            <mm:nodeinfo type="nodemanager">
-              <mm:compare value="blocks">
-                <mm:listrelations type="object" role="idrel" searchdir="destination" >
-                  <mm:relatednode />
-                </mm:listrelations>
-              </mm:compare>
-            </mm:nodeinfo>
-          </mm:relatednode>
-        </mm:listrelations>
-      </mm:formatter>
-      <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
-    </mm:node>
+
+    <mm:present referid="node">
+      <mm:node  number="$node">
+        <mm:formatter xslt="xslt/mmxf2kupu.xslt" id="sent" escape="none">
+          <mm:field name="body" />
+          <mm:listrelations type="object" role="idrel" searchdir="destination" >
+            <mm:relatednode>
+              <mm:nodeinfo type="nodemanager">
+                <mm:compare value="blocks">
+                  <mm:listrelations type="object" role="idrel" searchdir="destination" >
+                    <mm:relatednode />
+                  </mm:listrelations>
+                </mm:compare>
+              </mm:nodeinfo>
+            </mm:relatednode>
+          </mm:listrelations>
+        </mm:formatter>
+        <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
+      </mm:node>
+    </mm:present>
+
+    <mm:notpresent referid="node">
+      <p>NODE NOT FOUND</p>
+    </mm:notpresent>
+
   </mm:cloud>  
 </mm:content>
