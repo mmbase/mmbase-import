@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.318 2005-08-25 11:05:51 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.319 2005-08-25 12:33:18 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -699,6 +699,10 @@ version: $Id: mmbase-taglib.xml,v 1.318 2005-08-25 11:05:51 michiel Exp $
       <possiblevalue>
         <value>Boolean</value>
         <info>java.lang.boolean</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>fileitem</value>
+        <info>org.apache.commons.fileupload.FileItem. Can be used in multipart fileuploads (confortable in combination with EL)</info>
       </possiblevalue>
     </attribute>
     <attribute>
@@ -2239,7 +2243,6 @@ access the value of title:
     <extends>condition</extends>
     <extends>cloudreferrer</extends>
     <extends>contextreader</extends>
-    <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasNodeManagerTag</tagclass>
     <info>
@@ -2262,7 +2265,6 @@ access the value of title:
     <extends>condition</extends>
     <extends>cloudreferrer</extends>
     <extends>contextreader</extends>
-    <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.HasNodeTag</tagclass>
     <info>
@@ -2276,6 +2278,28 @@ access the value of title:
       <rtexprvalue>true</rtexprvalue>
       <info>
         Number (or alias) of the node.
+      </info>
+    </attribute>
+    <since>MMBase-1.8</since>
+  </tag>
+  <tag>
+    <name>hasfield</name>
+    <extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.HasFieldTag</tagclass>
+    <info>
+      <p>
+        Checks only whether certain field is available. To make it possible to make more generic code.
+      </p>
+    </info>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Name of the field.
       </info>
     </attribute>
     <since>MMBase-1.8</since>
