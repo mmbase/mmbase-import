@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.32 2005-08-18 14:40:00 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.33 2005-08-25 12:33:18 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -76,6 +76,8 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
             // if the field type is a byte[] then we expect a BASE64 encoded String, unless value is actualy a byte[].
             if (value instanceof byte[]) {
                 node.setByteValue(fieldName, (byte[]) value);
+            } else if (value instanceof org.apache.commons.fileupload.FileItem) {
+                node.setByteValue(fieldName, ((org.apache.commons.fileupload.FileItem) value).get());
             } else {
                 node.setByteValue(fieldName, base64.transformBack(Casting.toString(value)));
             }

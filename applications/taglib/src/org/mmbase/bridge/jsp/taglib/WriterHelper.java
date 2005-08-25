@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.75 2005-06-22 17:24:01 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.76 2005-08-25 12:33:18 michiel Exp $
  */
 
 public class WriterHelper {
@@ -52,6 +52,7 @@ public class WriterHelper {
     static final int TYPE_DECIMAL = 10;
     static final int TYPE_DATE    = 11;
 
+
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
@@ -59,6 +60,7 @@ public class WriterHelper {
     static final int TYPE_FIELDVALUE    = 24;
     static final int TYPE_BOOLEAN       = 25;
     static final int TYPE_CHARSEQUENCE  = 26;
+    static final int TYPE_FILEITEM      = 27;
 
 
     static final int stringToType(String tt) {
@@ -87,6 +89,8 @@ public class WriterHelper {
             return TYPE_LIST;
         } else if ("bytes".equals(t)) {
             return TYPE_BYTES;
+        } else if ("fileitem".equals(t)) {
+            return TYPE_FILEITEM;
         } else if ("object".equals(t)) {
             return TYPE_OBJECT;
         } else if ("date".equals(t)) {
@@ -360,6 +364,16 @@ public class WriterHelper {
                 case TYPE_NODE:
                     if (! (v instanceof org.mmbase.bridge.Node)) {
                         throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
+                    }
+                    break;
+                case TYPE_BYTES:
+                    if (! (v instanceof byte[])) {
+                        v = Casting.toByte(v);
+                    }
+                    break;
+                case TYPE_FILEITEM:
+                    if (! (v instanceof org.apache.commons.fileupload.FileItem)) {
+                        throw new JspTagException("Variable is not of type FileItem, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
                     }
                     break;
                 default:
