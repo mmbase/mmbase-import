@@ -6,7 +6,8 @@
     targetNamespace="http://www.mmbase.org/xmlns/datatypes"
     version="1.0">
   
-  <xsd:import namespace="http://www.mmbase.org/xmlns/searchquery" schemaLocation="http://www.mmbase.org/xsd/enumerationquery.xsd"></xsd:import>
+  <xsd:import namespace="http://www.mmbase.org/xmlns/searchquery" 
+              schemaLocation="http://www.mmbase.org/xmlns/enumerationquery.xsd"></xsd:import>
 
   <xsd:complexType name="DataTypes">
     <xsd:sequence>
