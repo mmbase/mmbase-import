@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/address/java"/>
+	<classpathentry kind="src" path="src/report/java"/>
 	<classpathentry kind="src" path="src/chat/java"/>
 	<classpathentry kind="src" path="src/competence/java"/>
 	<classpathentry kind="src" path="src/core/java"/>
