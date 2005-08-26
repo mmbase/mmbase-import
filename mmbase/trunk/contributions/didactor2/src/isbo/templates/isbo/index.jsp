@@ -65,16 +65,33 @@
    <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />' />
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/layout/list.css" objectlist="$includePath" referids="$referids" />" />
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/color/list.css" objectlist="$includePath" referids="$referids" />" />
+   <script>
+if (top == self) {
+    var loc = document.location.href;
+    loc = loc.replace(/&amp;/ig,'&').replace(/(education\/).*/,"$1wizards/index.jsp");
+    document.location.href = loc;
+}
+</script>
 </head>
 <body>
-<h1>ISBO Importer</h1>
-<% if (xmlStream != null) { %>
-<h2>Import: <%= errorMsg %></h2>
-<% } %>
+<table class="head">
+   <tr class="headsubtitle">
+      <td><%= xmlStream == null ? "ISBO Importer" : "Import: "+errorMsg %></td>
+    </tr>
+</table>
+<table class="body">
+   <tr class="searchcanvas">
+      <td>
+         <table class="searchcontent">
+            <tr>
+               <td>
+    
 <form action="index.jsp" method="POST" enctype="multipart/form-data">
 <input type="file" name="filename"/> ISBO file<br/>
 <input type="submit" value="Start"/>
 </form>
+</td>
+</tr></table></td></tr></table>
 </body>
 </html>
 
