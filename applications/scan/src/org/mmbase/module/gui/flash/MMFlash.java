@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.22 2005-02-24 16:03:34 michiel Exp $
+ * @version $Id: MMFlash.java,v 1.23 2005-08-26 09:09:42 michiel Exp $
  */
 public class MMFlash extends Module {
 
@@ -689,12 +689,24 @@ public class MMFlash extends Module {
         if (bul!=null) {
             // rebuild the param
             log.debug("rebuilding param");
-            StringTokenizer tok = new StringTokenizer(imageline,"+\n\r");
-            while (tok.hasMoreTokens()) {
-                params.addElement(tok.nextToken());
+            String imageId = null;
+            StringBuffer template = new StringBuffer();
+            if (imageline != null) {
+                StringTokenizer tok=new StringTokenizer(imageline,"+\n\r");
+                // rico
+                if(tok.hasMoreTokens()) {
+                    imageId = tok.nextToken();
+                    params.addElement(tok.nextToken());
+                }
+                while(tok.hasMoreTokens()) {
+                    template.append(tok.nextToken());
+                    if (tok.hasMoreTokens()) {
+                        template.append("+");
+                    }
+                }
+                
             }
-            scanpage sp=new scanpage();
-            byte[] bytes=bul.getImageBytes(sp,params);
+            byte[] bytes = bul.getCachedNode(bul.getNode(imageId), template.toString()).getByteValue("handle");
             File tempFile = createTemporaryFile("image", ".jpg");
             saveFile(tempFile.getAbsolutePath(), bytes);
             tempFiles.add(tempFile);

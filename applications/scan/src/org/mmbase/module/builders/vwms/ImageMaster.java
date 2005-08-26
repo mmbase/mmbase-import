@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.25 2004-02-23 19:05:00 pierre Exp $
+ * @version $Id: ImageMaster.java,v 1.26 2005-08-26 09:09:42 michiel Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -262,7 +262,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                         log.error("handleMirror images builder not found");
                         return true;
                     }
-                    mimetype = imagesBuilder.getImageMimeType(ckeyVec);
+                    mimetype = getImageMimeType(imagesBuilder, ckeyVec);
                     // debug("handleMirror: ckey "+ckey+" has mimetype: "+mimetype);
                     ckey=path2ckey(ckey, imagesBuilder);
                 }
@@ -483,4 +483,41 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
         }
         return ckey;
     }
+
+    /**
+    * Will return {@link #defaultImageType} as default type, or one of the strings in params, must contain the following "f(type)" where type will be returned
+     * @param params a <code>List</code> of <code>String</code>s, which could contain the "f(type)" string
+     * @return {@link #defaultImageType} by default, or the first occurence of "f(type)"
+     *
+     *
+     */
+    private String getImageMimeType(Images images, List params) {
+        String format = null;
+        String key;
+
+        // WHY the itype colomn isn't used?
+
+        for (Iterator e = params.iterator() ;e.hasNext();) {
+            key = (String)e.next();
+
+            // look if our string is long enough...
+            if(key != null && key.length() > 2) {
+                // first look if we start with an "f("... format is f(gif)
+                if(key.startsWith("f(")) {
+                    // one search function remaining...
+                    int pos = key.lastIndexOf(')');
+                    // we know for sure that our "(" is at pos 1, so we can define this hard...
+                    format = key.substring(2, pos);
+                    break;
+                }
+            }
+        }
+        if (format == null) format = images.getDefaultImageType();
+        String mimetype = org.mmbase.util.images.Imaging.getMimeTypeByExtension(format);
+        if (log.isDebugEnabled()) {
+            log.debug("getImageMimeType: mmb.getMimeType(" + format + ") = " + mimetype);
+        }
+        return mimetype;
+    }
+
 }
