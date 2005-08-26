@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.51 2005-08-26 13:33:09 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.52 2005-08-26 14:51:29 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -40,6 +40,11 @@ public class XMLEntityResolver implements EntityResolver {
     private static Map publicIDtoResource = new Hashtable();
     // This maps public id's to classes which are know to be able to parse this XML's.
     // The package of these XML's will also contain the resources with the DTD.
+
+    /**
+     * XSD's have only system ID 
+     */
+    private static Map systemIDtoResource = new Hashtable();
 
     /**
      * Container for dtd resources information
@@ -73,8 +78,8 @@ public class XMLEntityResolver implements EntityResolver {
         XMLModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
-        org.mmbase.bridge.util.xml.query.QueryReader.registerPublicIDs();
-        org.mmbase.datatypes.util.xml.DataTypeReader.registerPublicIDs();
+        org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
+        org.mmbase.datatypes.util.xml.DataTypeReader.registerSystemIDs();
     }
 
     /**
@@ -88,6 +93,15 @@ public class XMLEntityResolver implements EntityResolver {
     public static void registerPublicID(String publicID, String dtd, Class c) {
         publicIDtoResource.put(publicID, new Resource(c, dtd));
         if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
+    }
+
+    /**
+     * It seems that in XSD's you don't have public id's. So, this makes it possible to use system id.
+     * @todo EXPERIMENTAL
+     * @since MMBase-1.8
+     */
+    public static void registerSystemID(String systemID, String xsd, Class c) {
+        systemIDtoResource.put(systemID, new Resource(c, xsd));
     }
 
     private String definitionPath;
@@ -117,6 +131,25 @@ public class XMLEntityResolver implements EntityResolver {
         resolveBase = base;
     }
 
+
+    private InputStream getStream(Resource res) {
+        InputStream stream = null;
+       if (res != null) {
+           stream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
+           if (stream == null) {
+               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xmlns/" + res.getFileName());
+           }
+           if (stream == null) {
+               // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
+               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xsd/" + res.getFileName());
+           }
+           if (stream == null) {
+               stream = res.getAsStream();
+           }
+       }
+       return stream;
+    }
+
     /**
      * takes the systemId and returns the local location of the dtd/xsd
      */
@@ -131,23 +164,18 @@ public class XMLEntityResolver implements EntityResolver {
         // first try with publicID or namespace
         if (publicId != null) {
             Resource res = (Resource) publicIDtoResource.get(publicId);
-            if (res != null) {
-                definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
-                if (definitionStream == null) {
-                    definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xmlns/" + res.getFileName());
-                }
-                if (definitionStream == null) {
-                    // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
-                    definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xsd/" + res.getFileName());
-                }
-                if (definitionStream == null) {
-                    definitionStream = res.getAsStream();
-                }
-            }
+            definitionStream = getStream(res);
         }
         log.debug("Get definition stream by public id: " + definitionStream);
+        
+        if (definitionStream == null) {
+            Resource res = (Resource) systemIDtoResource.get(systemId);
+            if (res != null) {
+                definitionStream = getStream(res);
+            }
+        }
+        
         if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
-
 
             //does systemId contain a mmbase-dtd
             if ((systemId == null) || (! systemId.startsWith("http://www.mmbase.org/"))) {
