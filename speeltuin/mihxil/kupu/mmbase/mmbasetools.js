@@ -27,7 +27,7 @@ function DivsTool() {
         } else {
             child = doc.createTextNode(text);
         }        
-        var marker = doc.createTextNode("XXX");
+        var marker = doc.createTextNode("");
         div.appendChild(child);
         var currp = this.editor.getNearestParentOfType(currnode, 'p');
         if (currp) {
@@ -104,3 +104,4 @@ function DivsToolBox(insertbuttonid, classselectid, toolboxid, plainclass, activ
 };
 
 ImageToolBox.prototype = new KupuToolBox;
+

@@ -13,7 +13,7 @@
         <input type="file" name="node_prop_image" />
         <input type="submit" />
         <input type="hidden" name="upload" value="/kupuUploadImage" />
-        <input type="hidden" name="nodetype" value="images" />
+        <input type="hidden" name="nodetype" value="attachments" />
       </form>
     </body>
   </html>

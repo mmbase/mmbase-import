@@ -7,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.19 2005-07-12 18:44:38 michiel Exp $
+// $Id: kupuinit.js,v 1.20 2005-08-26 18:21:36 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -15,6 +15,8 @@
 
 // somewhy, IE needs this:
 var kupu;
+
+
 
 function initKupu(iframe) {
     // first we create a logger
@@ -175,7 +177,7 @@ function initKupu(iframe) {
 
 
    try {
-       var linklibdrawer = new LinkLibraryDrawer(linktool, 
+       var linklibdrawer = new ResourceLibraryDrawer(linktool, 
                                                  conf['link_xsl_uri'],
                                                  conf['link_libraries_uri'],
                                                  conf['search_links_uri']);
