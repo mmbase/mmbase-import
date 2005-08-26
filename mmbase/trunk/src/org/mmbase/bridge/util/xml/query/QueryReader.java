@@ -23,24 +23,22 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
+ * @version $Id: QueryReader.java,v 1.3 2005-08-26 14:54:59 michiel Exp $
  **/
 public class QueryReader {
 
-    /** XSD resource filename of the Utilities config XSD version 1.0 */
     public static final String XSD_SEARCHQUERY_1_0 = "searchquery.xsd";
-    /** XSD namespace of the Utilities config XSD version 1.0 */
     public static final String NAMESPACE_SEARCHQUERY_1_0 = "http://www.mmbase.org/xmlns/searchquery";
 
-    /** XSD namespace of the Utilities config XSD, most recent version */
+    /** most recent version */
     public static final String NAMESPACE_SEARCHQUERY = NAMESPACE_SEARCHQUERY_1_0;
 
     /**
      * Register the namespace and XSD used by QueryReader
      * This method is called by XMLEntityResolver.
      */
-    public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(NAMESPACE_SEARCHQUERY_1_0, XSD_SEARCHQUERY_1_0, QueryReader.class);
+    public static void registerSystemIDs() {
+        XMLEntityResolver.registerSystemID(NAMESPACE_SEARCHQUERY_1_0 + ".xsd",  XSD_SEARCHQUERY_1_0, QueryReader.class);
     }
 
     /**

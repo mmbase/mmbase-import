@@ -21,35 +21,31 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.4 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: DataTypeReader.java,v 1.5 2005-08-26 14:53:03 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
 
     private static final Logger log = Logging.getLoggerInstance(DataTypeReader.class);
 
-    /** XSD resource filename of the datatypes XSD version 1.0 */
     public static final String XSD_DATATYPES_1_0 = "datatypes.xsd";
-    /** XSD namespace of the datatypes XSD version 1.0 */
     public static final String NAMESPACE_DATATYPES_1_0 = "http://www.mmbase.org/xmlns/datatypes";
-    /** XSD resource filename of the enumeration query (expansion of standard searchquery) XSD version 1.0 */
-    public static final String XSD_ENUMERATIONQUERY_1_0 = "datatypes.xsd";
-    /** XSD namespace of the enumeration query XSD version 1.0 */
-    public static final String NAMESPACE_ENUMERATIONQUERY_1_0 = "http://www.mmbase.org/xmlns/datatypes";
 
-    /** XSD namespace of the datatypes XSD, most recent version */
+    /** enumeration query (expansion of standard searchquery)  */
+    public static final String XSD_ENUMERATIONQUERY_1_0 = "enumerationquery.xsd";
+    public static final String NAMESPACE_ENUMERATIONQUERY_1_0 = "http://www.mmbase.org/xmlns/enumerationquery";
+
+    /**  most recent version */
     public static final String NAMESPACE_DATATYPES = NAMESPACE_DATATYPES_1_0;
-
-    /** XSD namespace of the enumeration query XSD, most recent version */
     public static final String NAMESPACE_ENUMERATIONQUERY = NAMESPACE_ENUMERATIONQUERY_1_0;
 
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
      * This method is called by XMLEntityResolver.
      */
-    public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(NAMESPACE_DATATYPES_1_0, XSD_DATATYPES_1_0, DataTypeConfigurer.class);
-        XMLEntityResolver.registerPublicID(NAMESPACE_ENUMERATIONQUERY_1_0, XSD_ENUMERATIONQUERY_1_0, DataTypeConfigurer.class);
+    public static void registerSystemIDs() {
+        XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeConfigurer.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeConfigurer.class);
     }
 
     /**
