@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.50 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.51 2005-08-26 13:33:09 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -134,6 +134,10 @@ public class XMLEntityResolver implements EntityResolver {
             if (res != null) {
                 definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
                 if (definitionStream == null) {
+                    definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xmlns/" + res.getFileName());
+                }
+                if (definitionStream == null) {
+                    // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
                     definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xsd/" + res.getFileName());
                 }
                 if (definitionStream == null) {
@@ -168,7 +172,11 @@ public class XMLEntityResolver implements EntityResolver {
                     Class base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
                     if (base != null) {
-                        res = new Resource(base, mmResource.substring(4));  // dtd of xsd
+                        if (mmResource.startsWith("xmlns/")) {
+                            res = new Resource(base, mmResource.substring(6)); 
+                        } else {
+                            res = new Resource(base, mmResource.substring(4));  // dtd or xsd
+                        }
                     }
                     if (res != null) {
                         definitionStream = res.getAsStream();
