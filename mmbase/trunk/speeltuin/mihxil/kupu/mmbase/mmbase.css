@@ -44,6 +44,10 @@ img {
   user-input: enabled;
 }
 
+#nodefields input.mm_year { 
+  width: 5ex;
+}
+
 
 
 #tree { 

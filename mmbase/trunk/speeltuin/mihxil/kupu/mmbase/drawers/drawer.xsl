@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.10 2005-07-12 18:44:38 michiel Exp $
+$Id: drawer.xsl,v 1.11 2005-08-26 18:21:36 michiel Exp $
 -->
 <xsl:stylesheet
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -240,7 +240,7 @@ $Id: drawer.xsl,v 1.10 2005-07-12 18:44:38 michiel Exp $
   <!-- image upload form -->
   <xsl:template match="uploadbutton" mode="image-upload">
     <div id="kupu-upload-instructions" i18n:translate="upload-instructions">
-      Select an image from your computer and click ok to have it automatically uploaded to selected folder and inserted into the editor.
+      Select a file  from your computer and click ok to have it automatically uploaded to selected folder and inserted into the editor.
     </div>
     <form name="kupu_upload_form" method="POST"
           action="" scrolling="off" target="kupu_upload_form_target"

@@ -24,10 +24,19 @@
       </mm:hasfield>
     </mm:createnode>
     <mm:node referid="node">
-      <mm:image template="s(80)">
-        <body onLoad="window.parent.kupu.getTool('drawertool').current_drawer.finishUpload('${_}');">
-        </body>
-      </mm:image>
+      <mm:function name="mimetype" id="mimetype" />
+      <mm:hasfunction name="cache">
+        <mm:image template="s(80)">
+          <body onLoad="window.parent.kupu.getTool('drawertool').current_drawer.finishUpload('${_}', '${mimetype}');">
+          </body>
+        </mm:image>
+      </mm:hasfunction>
+      <mm:hasfunction name="cache" inverse="true">
+        <mm:attachment>
+          <body onLoad="window.parent.kupu.getTool('drawertool').current_drawer.finishUpload('${_}', '${mimetype}');">
+          </body>
+        </mm:attachment>
+      </mm:hasfunction>
     </mm:node>
   </mm:cloud>
 </mm:content>

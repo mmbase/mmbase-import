@@ -57,7 +57,9 @@ function adjustLayout() {
 
     var a = xGetElementsByTagName('input', xGetElementById('leftColumn'));
     for (i=0; i < a.length; i++) {
-        xWidth(a[i], leftColumnWidth - 6);
+        if (a[i].className == '') {            
+            xWidth(a[i], leftColumnWidth - 6);
+        }
     }
 
     a = xGetElementsByTagName('textarea', xGetElementById('leftColumn'));
