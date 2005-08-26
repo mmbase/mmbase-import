@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.103 2005-08-24 09:51:16 michiel Exp $
+ * @version $Id: Images.java,v 1.104 2005-08-26 09:09:16 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -181,7 +181,7 @@ public class Images extends AbstractImages {
      *
      * @since MMBase-1.8
      */
-    protected MMObjectNode getCachedNode(MMObjectNode node, String template) {
+    public MMObjectNode getCachedNode(MMObjectNode node, String template) {
         ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
         if(imageCaches == null) {
             throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
@@ -299,7 +299,7 @@ public class Images extends AbstractImages {
 
 
     // javadoc inherited
-    protected String getDefaultImageType() {
+    public String getDefaultImageType() {
         return defaultImageType;
     }
 
