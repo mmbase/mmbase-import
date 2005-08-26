@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.58 2004-11-08 12:49:08 michiel Exp $
+ * @version $Id: servdb.java,v 1.59 2005-08-26 09:09:42 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -236,24 +236,41 @@ public class servdb extends JamesServlet {
                         // img
                         // ---
 
-						boolean notANumber=false;
+                        boolean notANumber=false;
                         Vector params = getParamVector(req);
-						// Catch alias only images without parameters.
-						if (params.size()==1) {
-							try { 
-								Integer.parseInt((String)params.elementAt(0));
-							} catch (NumberFormatException e) {
-								notANumber=true;
-							}
-						}
-
+                        // Catch alias only images without parameters.
+                        if (params.size()==1) {
+                            try { 
+                                Integer.parseInt((String)params.elementAt(0));
+                            } catch (NumberFormatException e) {
+                                notANumber=true;
+                            }
+                        }
+                        
                         if (params.size() > 1 || notANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
                             // this is an image number + template, cache the image, and go ahead
                             // with the number of the cached image.
                             Images bul = (Images) mmbase.getMMObject("images");
-                            int imageNumber = bul.cacheImage(params);
+                            String imageId = null;
+                            StringBuffer template = new StringBuffer();
+                            if (req.getQueryString()!=null) {
+                                StringTokenizer tok=new StringTokenizer(req.getQueryString(),"+\n\r");
+                                // rico
+                                if(tok.hasMoreTokens()) {
+                                    imageId = tok.nextToken();
+                                    params.addElement(tok.nextToken());
+                                }
+                                while(tok.hasMoreTokens()) {
+                                    template.append(tok.nextToken());
+                                    if (tok.hasMoreTokens()) {
+                                        template.append("+");
+                                    }
+                                }
+                                
+                            }
+                            int imageNumber = bul.getCachedNode(bul.getNode(imageId), template.toString()).getNumber();
                             if (imageNumber > 0) {
                                 params.clear();
                                 params.add(new Integer(imageNumber));
