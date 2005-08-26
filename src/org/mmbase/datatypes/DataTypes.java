@@ -12,6 +12,7 @@ package org.mmbase.datatypes;
 
 import java.net.*;
 import java.util.*;
+import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.5 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: DataTypes.java,v 1.6 2005-08-26 14:52:11 michiel Exp $
  */
 
 public class DataTypes {
@@ -55,7 +56,7 @@ public class DataTypes {
         // For the moment turn watching off.
         // Not sure if it is needed anyway - it won't actually happen that often
         readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
-/*
+
         try {
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
                     public void onChange(String resource) {
@@ -68,7 +69,7 @@ public class DataTypes {
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
-*/
+
     }
 
     /**
@@ -82,13 +83,13 @@ public class DataTypes {
         while (i.hasPrevious()) {
             try {
                 URL u = (URL) i.previous();
-                if (log.isDebugEnabled()) log.debug("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
-                    log.service("Reading datatypes from " + dataTypesSource.getSystemId());
-                    DocumentReader reader  = new DocumentReader(dataTypesSource, false, DataTypes.class);
-                    Element dataTypesElement = reader.getRootElement(); // fieldtypedefinitons or datatypes element
+                    log.service("Reading datatypes from " + u);
+                    DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, DataTypeReader.class));
+                    Document doc = db.parse(dataTypesSource);
+                    Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
                 }
             } catch (Exception e) {
