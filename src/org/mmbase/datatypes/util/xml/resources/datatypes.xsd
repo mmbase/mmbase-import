@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
-   xmlns:xsd="http://www.w3.org/2001/XMLSchema"        xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"     targetNamespace="http://www.mmbase.org/xmlns/datatypes"
-   xmlns="http://www.mmbase.org/xmlns/datatypes"
-   version="1.0">
-
+<xsd:schema 
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"        
+    xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"     
+    targetNamespace="http://www.mmbase.org/xmlns/datatypes"
+    version="1.0">
+  
   <xsd:import namespace="http://www.mmbase.org/xmlns/searchquery" schemaLocation="http://www.mmbase.org/xsd/enumerationquery.xsd"></xsd:import>
 
   <xsd:complexType name="DataTypes">
-      <xsd:sequence>
-          <xsd:element ref="datatype" maxOccurs="unbounded" minOccurs="1"></xsd:element>
-      </xsd:sequence>
-      <xsd:attribute name="id" type="ID"></xsd:attribute>
-   </xsd:complexType>
+    <xsd:sequence>
+      <xsd:element ref="datatype" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="ID"></xsd:attribute>
+  </xsd:complexType>
 
   <xsd:complexType name="DataType">
-      <xsd:sequence>
-        <xsd:element name="unique" type="Condition" maxOccurs="1" minOccurs="0"></xsd:element>
-        <xsd:element name="required" type="Condition" maxOccurs="1" minOccurs="0"></xsd:element>
+    <xsd:sequence>
+      <xsd:element name="unique" type="Condition" maxOccurs="1" minOccurs="0"></xsd:element>
+      <xsd:element name="required" type="Condition" maxOccurs="1" minOccurs="0"></xsd:element>
 
-        <xsd:choice maxOccurs="1" minOccurs="0">
-            <xsd:choice maxOccurs="unbounded" minOccurs="0">
-                <xsd:element name="minExclusive" type="Comparable"></xsd:element>
-                <xsd:element name="maxExclusive" type="Comparable"></xsd:element>
-                <xsd:element name="minInclusive" type="Comparable"></xsd:element>
-                <xsd:element name="maxInclusive" type="Comparable"></xsd:element>
-            </xsd:choice>
-            <xsd:choice maxOccurs="unbounded" minOccurs="0">
-                <xsd:element name="minLength" type="Comparable"></xsd:element>
-                <xsd:element name="maxLength" type="Comparable"></xsd:element>
-                <xsd:element name="length" type="Comparable"></xsd:element>
-                <xsd:element name="pattern" type="Comparable"></xsd:element>
-                <xsd:element name="whiteSpace" type="WhiteSpace"></xsd:element>
-            </xsd:choice>
-            <xsd:sequence>
-                <xsd:element ref="enumeration" maxOccurs="unbounded"
-                    minOccurs="1">
-                </xsd:element>
-            </xsd:sequence>
-            <xsd:sequence>
-                <xsd:element ref="mmsq:query" maxOccurs="1"
-                    minOccurs="1">
-                </xsd:element>
-            </xsd:sequence>
+      <xsd:choice maxOccurs="1" minOccurs="0">
+        <xsd:choice maxOccurs="unbounded" minOccurs="0">
+          <xsd:element name="minExclusive" type="Comparable"></xsd:element>
+          <xsd:element name="maxExclusive" type="Comparable"></xsd:element>
+          <xsd:element name="minInclusive" type="Comparable"></xsd:element>
+          <xsd:element name="maxInclusive" type="Comparable"></xsd:element>
         </xsd:choice>
-      </xsd:sequence>
-      <xsd:attribute name="id" type="token" use="required"></xsd:attribute>
-      <xsd:attribute name="base" type="token" use="optional"
-          default="string">
-      </xsd:attribute>
+        <xsd:choice maxOccurs="unbounded" minOccurs="0">
+          <xsd:element name="minLength" type="Comparable"></xsd:element>
+          <xsd:element name="maxLength" type="Comparable"></xsd:element>
+          <xsd:element name="length" type="Comparable"></xsd:element>
+          <xsd:element name="pattern" type="Comparable"></xsd:element>
+          <xsd:element name="whiteSpace" type="WhiteSpace"></xsd:element>
+        </xsd:choice>
+        <xsd:sequence>
+          <xsd:element ref="enumeration" maxOccurs="unbounded"
+                       minOccurs="1">
+          </xsd:element>
+        </xsd:sequence>
+        <xsd:sequence>
+          <xsd:element ref="mmsq:query" maxOccurs="1"
+                       minOccurs="1">
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="token" use="required"></xsd:attribute>
+    <xsd:attribute name="base" type="token" use="optional"
+                   default="string">
+    </xsd:attribute>
   </xsd:complexType>
 
   <xsd:element name="datatypes" type="DataTypes"></xsd:element>
@@ -55,66 +57,66 @@
   <xsd:element name="datatype" type="DataType"></xsd:element>
 
   <xsd:complexType name="Constraint">
-      <xsd:sequence>
-          <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0"></xsd:element>
-      </xsd:sequence>
-      <xsd:attribute name="fixed" type="boolean"></xsd:attribute>
+    <xsd:sequence>
+      <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="fixed" type="boolean"></xsd:attribute>
   </xsd:complexType>
 
   <xsd:complexType name="Comparable">
-      <xsd:complexContent>
-        <xsd:extension base ="Constraint">
+    <xsd:complexContent>
+      <xsd:extension base ="Constraint">
         <xsd:attribute name="value" type="string"></xsd:attribute>
         <xsd:attribute name="precision" type="type_precision"></xsd:attribute>
-        </xsd:extension>
-      </xsd:complexContent>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="WhiteSpace">
-      <xsd:complexContent>
-        <xsd:extension base ="Constraint">
-          <xsd:attribute name="value" type="type_whitespace"></xsd:attribute>
-        </xsd:extension>
-      </xsd:complexContent>
+    <xsd:complexContent>
+      <xsd:extension base ="Constraint">
+        <xsd:attribute name="value" type="type_whitespace"></xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="Condition">
-      <xsd:complexContent>
-        <xsd:extension base ="Constraint">
-          <xsd:attribute name="value" type="boolean"></xsd:attribute>
-        </xsd:extension>
-      </xsd:complexContent>
+    <xsd:complexContent>
+      <xsd:extension base ="Constraint">
+        <xsd:attribute name="value" type="boolean"></xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:element name="description" type="string"></xsd:element>
   <xsd:simpleType name="type_precision">
-      <xsd:restriction base="string">
-          <xsd:enumeration value="seconds"></xsd:enumeration>
-          <xsd:enumeration value="minutes"></xsd:enumeration>
-          <xsd:enumeration value="hours"></xsd:enumeration>
-          <xsd:enumeration value="days"></xsd:enumeration>
-          <xsd:enumeration value="weeks"></xsd:enumeration>
-          <xsd:enumeration value="months"></xsd:enumeration>
-          <xsd:enumeration value="years"></xsd:enumeration>
-      </xsd:restriction>
+    <xsd:restriction base="string">
+      <xsd:enumeration value="seconds"></xsd:enumeration>
+      <xsd:enumeration value="minutes"></xsd:enumeration>
+      <xsd:enumeration value="hours"></xsd:enumeration>
+      <xsd:enumeration value="days"></xsd:enumeration>
+      <xsd:enumeration value="weeks"></xsd:enumeration>
+      <xsd:enumeration value="months"></xsd:enumeration>
+      <xsd:enumeration value="years"></xsd:enumeration>
+    </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="type_whitespace">
-      <xsd:restriction base="string">
-          <xsd:enumeration value="collapse"></xsd:enumeration>
-          <xsd:enumeration value="none"></xsd:enumeration>
-      </xsd:restriction>
+    <xsd:restriction base="string">
+      <xsd:enumeration value="collapse"></xsd:enumeration>
+      <xsd:enumeration value="none"></xsd:enumeration>
+    </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:element name="enumeration">
-      <xsd:complexType>
-          <xsd:sequence>
-              <xsd:element name="display" type="string"
-                  maxOccurs="unbounded" minOccurs="0">
-              </xsd:element>
-          </xsd:sequence>
-          <xsd:attribute name="value" type="string"></xsd:attribute>
-      </xsd:complexType>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="display" type="string"
+                     maxOccurs="unbounded" minOccurs="0">
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="value" type="string"></xsd:attribute>
+    </xsd:complexType>
   </xsd:element>
 
 
