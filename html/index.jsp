@@ -12,7 +12,7 @@
 
   </head>
 <body >
-<table>
+<table> 
   <tr>
     <th class="main" colspan="3">Welcome to MMBase</th>
   </tr>
@@ -40,7 +40,7 @@
       </p>
       <ul>
         <li>Evaluate all builder xmls from config/builders (and below). Remove all which you don't
-        need (the builders in 'core' should remain). You need to start with empty database then.</li>
+        need (the really essential 'core' builders are also in mmbase.jar, so it is impossible to really remove those). You need to start with empty database then.</li>
         <li>Evaluate all applications from config/applications. Remove all which you don't need.</li>
         <li>Configure another database (hsql is not really fit for production), e.g. mysql or postgresql</li>
         <li>Remove /mmexamples (it is a bit dangerous, and superfluous in production)</li>
