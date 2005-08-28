@@ -32,6 +32,19 @@
   </mm:param>
 </mm:treeinclude>
 
+
+
+<%
+   String sUserSettings_PathBaseDirectory = getServletContext().getInitParameter("filemanagementBaseDirectory");
+   String sUserSettings_BaseURL = getServletContext().getInitParameter("filemanagementBaseUrl");
+
+   if (sUserSettings_PathBaseDirectory == null || sUserSettings_BaseURL == null)
+   {
+       throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
+   }
+%>
+
+
 <div class="columns">
 
   <div class="columnLeft">

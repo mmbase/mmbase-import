@@ -61,16 +61,42 @@
             <%
          }
 
+
          for(Iterator it = arliEducations.iterator(); it.hasNext();)
          {
             String[] arrstrEducation = (String[]) it.next();
             %>
+               <% //Default type is empty - usual education %>
+               <mm:import id="education_type" reset="true"></mm:import>
+
+               <% //Check a type of the Education %>
+               <mm:node number="<%= arrstrEducation[0] %>">
+                  <mm:relatednodes type="packages">
+                     <mm:import id="education_type" reset="true"><mm:field name="type"/></mm:import>
+                     <mm:import id="package_id" reset="true"><mm:field name="number"/></mm:import>
+                  </mm:relatednodes>
+               </mm:node>
+
+
                <nobr>
                <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
+
+
+
+               <% //USUAL EDUCATION %>
+               <mm:compare referid="education_type" value="">
                <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                            <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
                            <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
                         </mm:treefile>" class="users" />
+               </mm:compare>
+
+
+               <% //SCORM PACKAGE %>
+               <mm:compare referid="education_type" value="SCORM">
+               <a href="<%= sUserSettings_BaseURL %>/scorm/<mm:write referid="package_id"/>_player/index.htm" " target="_new" class="users">
+               </mm:compare>
+
                   <%= arrstrEducation[1] %>
                   <%
                      if(arrstrEducation[2] != null)
