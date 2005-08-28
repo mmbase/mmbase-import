@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.zip.*;
 import java.util.Enumeration;
 
+import nl.didactor.utils.files.CommonUtils;
+
 public class Unpack
 {
 
@@ -18,7 +20,7 @@ public class Unpack
          sDestinationPathReady += File.separator;
       }
 
-      sDestinationPathReady = fixPath(sDestinationPathReady);
+      sDestinationPathReady = CommonUtils.fixPath(sDestinationPathReady);
       ZipFile zipFile = new ZipFile(sZipFilePath);
 
 
@@ -30,7 +32,7 @@ public class Unpack
 
          String dataFile = entry.getName();
          String sPath = sDestinationPathReady + dataFile;
-         sPath = fixPath(sPath);
+         sPath = CommonUtils.fixPath(sPath);
 
          if (entry.isDirectory())
          { //We have to create a directory
@@ -49,7 +51,7 @@ public class Unpack
 
          String dataFile = entry.getName();
          String sPath = sDestinationPathReady + dataFile;
-         sPath = fixPath(sPath);
+         sPath = CommonUtils.fixPath(sPath);
 
          if (!entry.isDirectory())
          { //Usual file
@@ -87,27 +89,14 @@ public class Unpack
 
 
 
-   public static String fixPath(String sPath)
-   {
-      if (File.separator.equals("\\"))
-      { //Something like Windows
-         return sPath.replaceAll("/", File.separator + File.separator);
-      }
-      else
-      { //Something like Unix
-         return sPath.replaceAll("\\\\", File.separator);
-      }
-
-   }
-
 
    public static void deleteFolderIncludeSubfolders(String sPath, boolean bDeleteOnExit)
    {
-      File fileFolder = new File(fixPath(sPath));
+      File fileFolder = new File(CommonUtils.fixPath(sPath));
       String[] arrstrFiles = fileFolder.list();
       for(int f = 0; f < arrstrFiles.length; f++)
       {
-         File sSubItem = new File(fixPath(sPath) + File.separator + arrstrFiles[f]);
+         File sSubItem = new File(CommonUtils.fixPath(sPath) + File.separator + arrstrFiles[f]);
          if(sSubItem.isDirectory())
          {
             deleteFolderIncludeSubfolders(sSubItem.getAbsolutePath(), bDeleteOnExit);
