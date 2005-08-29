@@ -11,6 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 
+import java.util.regex.Pattern;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.9 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: StringDataType.java,v 1.10 2005-08-29 14:32:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -29,7 +30,7 @@ public class StringDataType extends BigDataType {
     public static final Integer WHITESPACE_COLLAPSE = new Integer(2);
 
     public static final String PROPERTY_PATTERN = "pattern";
-    public static final String PROPERTY_PATTERN_DEFAULT = null;
+    public static final Pattern PROPERTY_PATTERN_DEFAULT = null;
 
     public static final String PROPERTY_WHITESPACE = "whiteSpace";
     public static final Integer PROPERTY_WHITESPACE_DEFAULT = WHITESPACE_PRESERVE;
@@ -65,11 +66,11 @@ public class StringDataType extends BigDataType {
      * Returns the regular expression pattern used to validate values for this datatype.
      * @return the pattern as a <code>String</code>, or <code>null</code> if there is no pattern.
      */
-    public String getPattern() {
+    public Pattern getPattern() {
         if (patternProperty == null) {
             return PROPERTY_PATTERN_DEFAULT;
         } else {
-            return (String) patternProperty.getValue();
+            return (Pattern) patternProperty.getValue();
         }
     }
 
@@ -84,10 +85,10 @@ public class StringDataType extends BigDataType {
 
     /**
      * Sets the regular expression pattern used to validate values for this datatype.
-     * @param pattern the pattern as a <code>String</code>, or <code>null</code> if no pattern should be applied.
+     * @param pattern the pattern as a <code>Pattern</code>, or <code>null</code> if no pattern should be applied.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setPattern(String value) {
+    public DataType.Property setPattern(Pattern value) {
         return setProperty(getPatternProperty(), value);
     }
 
@@ -129,9 +130,9 @@ public class StringDataType extends BigDataType {
         super.validate(value, node, field, cloud);
         if (value != null) {
             String stringValue = Casting.toString(value);
-            String pattern = getPattern();
+            Pattern pattern = getPattern();
             if (pattern != null) {
-                if (!stringValue.matches(pattern)) {
+                if (! pattern.matcher(stringValue).matches()) {
                     failOnValidate(getPatternProperty(), value, cloud);
                 }
             }
