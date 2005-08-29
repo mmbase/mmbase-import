@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.7 2005-08-29 13:09:47 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.8 2005-08-29 14:33:02 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -149,6 +149,9 @@ public class DataTypeDefinition {
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
+                if (childElement.getLocalName().equals("")) {
+                    continue;
+                }
                 if ("required".equals(childElement.getLocalName())) {
                     boolean value = getBooleanValue(childElement, false);
                     setPropertyData(dataType.setRequired(value), childElement);
@@ -313,6 +316,8 @@ public class DataTypeDefinition {
             int value = getIntValue(conditionElement);
             setPropertyData(bDataType.setMinLength(value), conditionElement);
             setPropertyData(bDataType.setMaxLength(value), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for bigdata.");
         }
     }
 
@@ -321,7 +326,7 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("pattern".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
-            setPropertyData(sDataType.setPattern(value), conditionElement);
+            setPropertyData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
         } else if ("whiteSpace".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
             Integer whiteSpaceValue = null;
@@ -355,6 +360,8 @@ public class DataTypeDefinition {
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Integer value = getIntegerValue(conditionElement);
             setPropertyData(iDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for integer.");
         }
     }
 
@@ -375,6 +382,8 @@ public class DataTypeDefinition {
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Long value = getLongValue(conditionElement);
             setPropertyData(lDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for long.");
         }
     }
 
@@ -395,6 +404,8 @@ public class DataTypeDefinition {
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Float value = getFloatValue(conditionElement);
             setPropertyData(fDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for float.");
         }
     }
 
@@ -415,6 +426,8 @@ public class DataTypeDefinition {
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Double value = getDoubleValue(conditionElement);
             setPropertyData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for double.");
         }
     }
 
@@ -445,8 +458,11 @@ public class DataTypeDefinition {
             setPropertyData(dtDataType.setMin(value, precision, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Date value = getDateTimeValue(conditionElement);
+            log.info("Found " + value + " for max");
             int precision = getDateTimePartValue(conditionElement);
             setPropertyData(dtDataType.setMax(value, precision, "maxInclusive".equals(localName)), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for datetime.");
         }
     }
 
@@ -462,6 +478,8 @@ public class DataTypeDefinition {
         } else if ("itemDataType".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
             setPropertyData(lDataType.setItemDataType(configurer.getDataType(value)), conditionElement);
+        } else {
+            log.error("Unsupported tag '" + localName + "' for list.");
         }
     }
 
