@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.57 2005-08-25 12:31:39 michiel Exp $
+ * @version $Id: Casting.java,v 1.58 2005-08-29 13:08:10 michiel Exp $
  */
 
 import java.util.*;
@@ -59,6 +59,9 @@ public class Casting {
     {
         ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
+
+    public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd");
+
 
     private static final Logger log = Logging.getLoggerInstance(Casting.class);
 
@@ -770,7 +773,7 @@ public class Casting {
                 if (d instanceof Number) {
                     dateInSeconds = ((Number)d).longValue();
                 } else if (d != null && d != MMObjectNode.VALUE_NULL) {
-                        dateInSeconds = Long.parseLong("" + d);
+                    dateInSeconds = Long.parseLong("" + d);
                 }
                 if (dateInSeconds == -1) {
                     date = new java.util.Date(-1);
@@ -780,9 +783,20 @@ public class Casting {
             } catch (NumberFormatException e) {
                 // not a number. hence it is likely in string format
                 try {
-                    date = ISO_8601_UTC.parse(""+d);
-                } catch (ParseException pe) {
-                    date = new java.util.Date(-1);
+                    date = ISO_8601_UTC.parse("" + d);
+                } catch (ParseException pe) {                    
+                    log.error("" + pe);
+                    try {
+                        date = ISO_8601_LOOSE.parse("" + d);
+                    } catch (ParseException pe2) {
+                        log.error("" + pe2);
+                        try {
+                            date = ISO_8601_DATE.parse("" + d);
+                        } catch (ParseException pe3) {
+                            log.error("'" + d   + "' is not parseable as a datetime");
+                            date = new java.util.Date(-1);
+                        }
+                    }
                 }
             }
         }
