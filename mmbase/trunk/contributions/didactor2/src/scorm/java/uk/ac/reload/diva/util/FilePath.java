@@ -54,7 +54,7 @@ import java.net.URL;
  * So we can wrap a File in this class and query it as we wish
  *
  * @author Phillip Beauvoir
- * @version $Id: FilePath.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: FilePath.java,v 1.2 2005-08-29 00:06:51 azemskov Exp $
  */
 public class FilePath implements ObjectPath
 {

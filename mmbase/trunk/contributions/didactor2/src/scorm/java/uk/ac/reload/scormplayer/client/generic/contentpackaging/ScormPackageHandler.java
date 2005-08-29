@@ -47,10 +47,10 @@
 
 package uk.ac.reload.scormplayer.client.generic.contentpackaging;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.io.*;
+import java.net.*;
+import java.util.Iterator;
+
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -68,6 +68,13 @@ import org.mmbase.bridge.*;
 
 
 import nl.didactor.utils.zip.Unpack;
+import nl.didactor.utils.files.CommonUtils;
+import nl.didactor.utils.http.FileDownloader;
+import nl.didactor.utils.http.exceptions.*;
+import nl.didactor.component.scorm.exceptions.*;
+import nl.didactor.component.scorm.metastandart.schema.Importer;
+import nl.didactor.component.scorm.metastandart.schema.Filter;
+import nl.didactor.component.scorm.metastandart.MetaDataImporter;
 
 
 /**
@@ -77,7 +84,7 @@ import nl.didactor.utils.zip.Unpack;
  * a sco cmi data model.
  *
  * @author Paul Sharples
- * @version $Id: ScormPackageHandler.java,v 1.2 2005-08-19 14:22:25 azemskov Exp $
+ * @version $Id: ScormPackageHandler.java,v 1.3 2005-08-29 00:06:52 azemskov Exp $
  */
 public class ScormPackageHandler extends XMLDocument {
 
@@ -108,10 +115,16 @@ public class ScormPackageHandler extends XMLDocument {
 
    private CloudProvider cloudProvider;
    private Cloud cloud;
+   NodeManager nmMetaStandart;
+   NodeManager nmMetaDefinition;
+   NodeManager nmPosrel;
+
    private Node nodePackage;
    private Node nodeEducation;
    private int iCurrentLevel = 0;
    private int iCounter = 0;
+
+   private Filter filter;
 
 
    public ScormPackageHandler(File manifest, String sNodePackageID) throws JDOMException, IOException
@@ -122,6 +135,11 @@ public class ScormPackageHandler extends XMLDocument {
       _scormCore = new SCORM12_Core(this);
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
       cloud = cloudProvider.getAdminCloud();
+      nmMetaStandart   = cloud.getNodeManager("metastandard");
+      nmMetaDefinition = cloud.getNodeManager("metadefinition");
+      nmPosrel         = cloud.getNodeManager("posrel");
+
+      filter = new Filter(cloud);
 
       nodePackage = cloud.getNode(sNodePackageID);
    }
@@ -160,7 +178,8 @@ public class ScormPackageHandler extends XMLDocument {
          iterateThruManifest(manifestRoot, nodeEducation);
       }
 
-       System.out.println("Finished");
+       // *** FINISHED ***
+       //System.out.println("Finished");
        //throw an exception if no items were found in the manifest
        if (!_hasItemsToPlay)
        {
@@ -234,19 +253,80 @@ public class ScormPackageHandler extends XMLDocument {
                        tempHref = url.substring(8, url.length()); // windows
                     }
                     tempHref = tempHref.replaceAll("%20", " ");
+
+
                     System.out.println("href=" + tempHref);
 
 
                     //New htmlpage node
                     Node nodeHtmlPage = cloud.getNodeManager("htmlpages").createNode();
-                    nodeHtmlPage.setValue("name", tempHref);
+                    nodeHtmlPage.setValue("path", tempHref);
+                    nodeHtmlPage.setValue("name", nodeParent.getValue("name"));
+                    nodeHtmlPage.commit();
+
+                    Element elemMetadata = ref_element.getChild("metadata", SCORM12_DocumentHandler.IMSCP_NAMESPACE_112);
+                    Element elemMetadataLocation = elemMetadata.getChild("location",SCORM12_DocumentHandler.ADLCP_NAMESPACE_12);
+
+
+                    //Check if the metastandart with such name already exists
+                    XMLDocument xmlDocument = new XMLDocument();
+                    File fileMetaDataLocation = new File(CommonUtils.fixPath(this.getFile().getParentFile() + File.separator + elemMetadataLocation.getText()));
+                    xmlDocument.loadDocument(fileMetaDataLocation);
+                    Element elemDataRoot = xmlDocument.getRootElement();
+
+
+                    NodeList nlMetaStandartsWithSuchName = nmMetaStandart.getList("name='" + elemDataRoot.getName() + "'", null, null);
+//                    System.out.println( ((Node) nlMetaStandartsWithSuchName.get(0)).getNumber());
+                    if(nlMetaStandartsWithSuchName.size() == 0)
+                    {
+                       try
+                       {
+                          //Getting schema from server
+                          String sSchemaContent = FileDownloader.getTextFile("http://www.imsglobal.org/xsd/imsmd_rootv1p2p1.xsd", 100);
+
+                          //Writing it to the temp file
+                          //Unfortunately XMLDocument doesn't understand String as input
+                          File fileScema = File.createTempFile("schema", null);
+                          RandomAccessFile rafileSchema = new RandomAccessFile(fileScema, "rw");
+                          rafileSchema.writeBytes(sSchemaContent);
+                          rafileSchema.close();
+
+                          //MetaStnadart parcer
+                          Importer importer = new Importer(cloud, fileScema);
+                          Node nodeRootMetastandart = importer.importScheme(elemDataRoot.getName());
+                          filter.process(nodeRootMetastandart);
+
+                          fileScema.delete();
+                       }
+                       catch(Exception e)
+                       {
+                          throw new ImportMetaStandartsException(e);
+                       }
+                    }
+
+
+
+                    try
+                    {
+                       //Get metadata and connect it to the page
+                       MetaDataImporter metaDataImporter = new MetaDataImporter(cloud, (Node) nlMetaStandartsWithSuchName.get(0));
+                       metaDataImporter.process(fileMetaDataLocation, nodeHtmlPage);
+                    }
+                    catch (Exception e)
+                    {
+                       throw new ImportMetaDataException(e);
+                    }
+
+
 
 
                     //read html from disk file
-                    RandomAccessFile fileHtmlPage = new RandomAccessFile(Unpack.fixPath(tempHref), "r");
+                    RandomAccessFile fileHtmlPage = new RandomAccessFile(CommonUtils.fixPath(tempHref), "r");
                     byte[] arrbytesHtmlPage = new byte[ (new Long(fileHtmlPage.length())).intValue() ];
                     fileHtmlPage.readFully(arrbytesHtmlPage);
                     fileHtmlPage.close();
+
+
                     String sFileContent = new String(arrbytesHtmlPage);
 
 /*
@@ -259,7 +339,8 @@ public class ScormPackageHandler extends XMLDocument {
                     }
 */
 
-/* JS Script cleaner
+/*                 *** JS Script cleaner ***
+
                     String sMarker = "";
                     sFileContent = sFileContent.replaceAll("<[sS][cC][rR][iI][pP][tT][\\d\\D]*[sS][cC][rR][iI][pP][tT]\\s*>", sMarker);
                     sFileContent = sFileContent.replaceAll("[oO][nN][cC][lL][iI][cC][kK]=\"[^\"]*\\)\"", sMarker);
@@ -390,6 +471,8 @@ public class ScormPackageHandler extends XMLDocument {
                {//There are no children learnblock's
                 //So removing our temporal learnblock
 
+/*                *** is it possible? A group of htmlpages? ***
+
                   //Connecting our htmlpages to parent learnblock
                   NodeList nlHTMLPages = cloud.getList("" + nodeLearnblock.getNumber(), "learnblocks,posrel,htmlpages", "htmlpages.number,posrel.pos", null, "posrel.pos", null, "destination", false);
 
@@ -400,8 +483,20 @@ public class ScormPackageHandler extends XMLDocument {
                      relation.setValue("pos", "" + iCounter++);
                      relation.commit();
                   }
+*/
+                  NodeList nlHtmlPages = nodeLearnblock.getRelatedNodes (cloud.getNodeManager("htmlpages"), "posrel", "destination");
+                  Node nodeHtmlPage = (Node) nlHtmlPages.get(0);
+
+                  nodeHtmlPage.setValue("name", nodeLearnblock.getValue("name"));
+                  nodeHtmlPage.commit();
+                  Relation relation = nodeParent.createRelation(nodeHtmlPage, cloud.getRelationManager("posrel"));
+                  relation.setValue("pos", this.getPosrelNode(nodeParent.getNumber(), nodeLearnblock.getNumber()).getValue("pos"));
+                  relation.commit();
+
+
                   nodeLearnblock.delete(true);
                }
+
             }
             else
             {
@@ -454,5 +549,26 @@ public class ScormPackageHandler extends XMLDocument {
       // Has to be a CP Package with a SCORM 1.2 Namespace in there
         return SCORM12_DocumentHandler.canHandle(getDocument());
     }
+
+
+
+
+   private Node getPosrelNode(String sSource, String sDestination)
+   {
+      NodeList nlPosrel = nmPosrel.getList("snumber='" + sSource + "' AND dnumber='" + sDestination + "'", null, null);
+      return (Node) nlPosrel.get(0);
+   }
+   private Node getPosrelNode(int sSource, int sDestination)
+   {
+      return this.getPosrelNode("" + sSource, "" + sDestination);
+   }
+
+
+
+   private boolean isMetaStandartAlreadyExists(File fileXML)
+   {
+      return true;
+   }
+
 
 }
