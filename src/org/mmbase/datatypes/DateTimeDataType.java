@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.8 2005-08-29 08:38:13 pierre Exp $
+ * @version $Id: DateTimeDataType.java,v 1.9 2005-08-29 13:16:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -55,6 +55,7 @@ public class DateTimeDataType extends DataType {
         super(name, Date.class);
     }
 
+    // javadoc inherited
     public void erase() {
         super.erase();
         // Determine the key to retrieve an error message from a property's bundle
@@ -135,7 +136,7 @@ public class DateTimeDataType extends DataType {
         if (maxProperty == null) {
             return PROPERTY_MAX_DEFAULT;
         } else {
-            return (Date)minProperty.getValue();
+            return (Date)maxProperty.getValue();
         }
     }
 
@@ -262,17 +263,17 @@ public class DateTimeDataType extends DataType {
         switch (precision) {
         // 'CENTURY' does not exist in Calendar, but does in FieldValueDateConstraint
         case FieldValueDateConstraint.CENTURY : {
-                int year = calendar.get(Calendar.YEAR);
-                year = year % 100;
-                calendar.set(Calendar.YEAR, year);
-             }
+            int year = calendar.get(Calendar.YEAR);
+            year %= 100;
+            calendar.set(Calendar.YEAR, year);
+        }
         case FieldValueDateConstraint.YEAR: calendar.clear(Calendar.MONTH);
-        // 'Quarter' does not exist in Calendar, but does in FieldValueDateConstraint
+            // 'Quarter' does not exist in Calendar, but does in FieldValueDateConstraint
         case FieldValueDateConstraint.QUARTER : {
-                int month = calendar.get(Calendar.MONTH);
-                month = month % 4;
-                calendar.set(Calendar.MONTH, month);
-         }
+            int month = calendar.get(Calendar.MONTH);
+            month %= 4;
+            calendar.set(Calendar.MONTH, month);
+        }
         case FieldValueDateConstraint.MONTH : ;
         case FieldValueDateConstraint.WEEK : calendar.clear(Calendar.DAY_OF_MONTH);
         case FieldValueDateConstraint.DAY_OF_MONTH : ;
