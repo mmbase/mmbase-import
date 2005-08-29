@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.7 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: DateTimeDataType.java,v 1.8 2005-08-29 08:38:13 pierre Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -113,7 +113,7 @@ public class DateTimeDataType extends DataType {
 
     /**
      * Returns the precision for comparing the minimum value for this data type.
-     * @return the minimum value as an <code>Date</code>, or <code>null</code> if there is no minimum.
+     * @return the precision value, a constant from {@link org.mmbase.storage.search.FieldValueDateConstraint}
      */
     public int getMinPrecision() {
         return minPrecision;
@@ -145,6 +145,7 @@ public class DateTimeDataType extends DataType {
      */
     public DataType.Property getMaxProperty() {
         if (maxProperty == null) maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
+        // change the key for the property error description to match the inclusive status
         if (maxInclusive) {
             maxProperty.getLocalizedErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
         } else {
@@ -155,7 +156,7 @@ public class DateTimeDataType extends DataType {
 
     /**
      * Returns the precision for comparing the maximum value for this data type.
-     * @return the minimum value as an <code>Date</code>, or <code>null</code> if there is no minimum.
+     * @return the precision value, a constant from {@link org.mmbase.storage.search.FieldValueDateConstraint}
      */
     public int getMaxPrecision() {
         return maxPrecision;
@@ -178,11 +179,18 @@ public class DateTimeDataType extends DataType {
         return setProperty(getMinProperty(), value);
     }
 
+    /**
+     * Sets the precision for comparing the minimum value for this data type.
+     * @param precision the precision value, a constant from {@link org.mmbase.storage.search.FieldValueDateConstraint}
+     */
     public void setMinPrecision(int precision) {
         minPrecision = precision;
-        // change the key for the property error description to match the inclusive status
     }
 
+    /**
+     * Sets whether the maximum value is inclusive.
+     * @param inclusive <code>true</code> if the value is inclusive
+     */
     public void setMinInclusive(boolean inclusive) {
         minInclusive = inclusive;
     }
@@ -210,10 +218,18 @@ public class DateTimeDataType extends DataType {
         return setProperty(getMaxProperty(), value);
     }
 
+    /**
+     * Sets the precision for comparing the maximum value for this data type.
+     * @param precision the precision value, a constant from {@link org.mmbase.storage.search.FieldValueDateConstraint}
+     */
     public void setMaxPrecision(int precision) {
         maxPrecision = precision;
     }
 
+    /**
+     * Sets whether the maximum value is inclusive.
+     * @param inclusive <code>true</code> if the value is inclusive
+     */
     public void setMaxInclusive(boolean inclusive) {
         maxInclusive = inclusive;
     }
