@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.52 2005-08-26 14:51:29 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.53 2005-08-29 09:05:02 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -234,6 +234,12 @@ public class XMLEntityResolver implements EntityResolver {
         hasDefinition = true;
         InputStreamReader definitionInputStreamReader = new InputStreamReader(definitionStream);
         InputSource definitionInputSource = new InputSource();
+        if (systemId != null) {
+            definitionInputSource.setSystemId(systemId);
+        }
+        if (publicId != null) {
+            definitionInputSource.setPublicId(publicId);
+        }
         definitionInputSource.setCharacterStream(definitionInputStreamReader);
         return definitionInputSource;
     }
