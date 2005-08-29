@@ -35,13 +35,15 @@ public class MenuCreator extends XMLDocument
    private SCORM12_Core scormCore;
    private Element _defaultorg;
    private String sWebAppsPath;
+   private String sPackageHref;
 
 
-   public MenuCreator(File fileManifest, String sWebAppsPath) throws Exception
+   public MenuCreator(File fileManifest, String sWebAppsPath, String sPackageHref) throws Exception
    {
       super.loadDocument(fileManifest);
       scormCore = new SCORM12_Core(this);
       this.sWebAppsPath = sWebAppsPath;
+      this.sPackageHref = sPackageHref;
    }
 
 
@@ -162,7 +164,8 @@ Unknown
                   // Only if local path add relative bit
                   if(GeneralUtils.isExternalURL(url) == false)
                   {
-                      url = "../" + url;
+//AZ                    url = "../" + url;
+                     url = sPackageHref + url;
                   }
              }
               // Absolute Paths for Previewing in-situ
