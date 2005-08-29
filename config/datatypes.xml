@@ -66,6 +66,9 @@
         <class>org.mmbase.bridge.util.fields.GetIndex</class>
       </getprocessor>
     </specialization>
+    <specialization id="dutch-zipcode">
+      <pattern value="[0-9]{4}\s[A-Z]{2}" />
+    </specialization>
   </datatype>
 
   <datatype id="datetime">
@@ -90,6 +93,7 @@
     </specialization>
 
     <specialization id="time">
+      <pattern value="HH:mm:ss" />
       <!-- I have no idea how to do this -->
     </specialization>
 
