@@ -13,8 +13,8 @@
     <xsd:complexType name="SearchQuery">
       <xsd:complexContent>
         <xsd:extension base="mmsq:SearchQuery">
-          <xsd:attribute name="value" type="string"></xsd:attribute>
-          <xsd:attribute name="display" type="string"></xsd:attribute>
+          <xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+          <xsd:attribute name="display" type="xsd:string"></xsd:attribute>
         </xsd:extension>
       </xsd:complexContent>
     </xsd:complexType>
