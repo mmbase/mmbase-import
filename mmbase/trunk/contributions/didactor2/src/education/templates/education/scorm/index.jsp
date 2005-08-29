@@ -4,6 +4,7 @@
 
 
 <%@page import="java.io.File"%>
+<%@page import="java.io.RandomAccessFile"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Date"%>
@@ -19,13 +20,21 @@
 <%@page import="org.mmbase.bridge.NodeIterator"%>
 
 <%@page import="nl.didactor.utils.zip.Unpack"%>
+<%@page import="nl.didactor.utils.files.FileCopier"%>
+<%@page import="nl.didactor.utils.files.CommonUtils"%>
+<%@page import="nl.didactor.component.scorm.player.MenuCreator"%>
+
 
 <%@page import="uk.ac.reload.jdom.XMLDocument"%>
 <%@page import="uk.ac.reload.moonunit.contentpackaging.CP_Core"%>
 
+
+
+
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
-<mm:import id="import_package" jspvar="requestImportPackageID" vartype="String"><%= request.getParameter("import_package") %></mm:import>
-<mm:import id="delete_package" jspvar="requestDeletePackageID" vartype="String"><%= request.getParameter("delete_package") %></mm:import>
+<mm:import id="import_package"  jspvar="requestImportPackageID"  vartype="String"><%= request.getParameter("import_package") %></mm:import>
+<mm:import id="delete_package"  jspvar="requestDeletePackageID"  vartype="String"><%= request.getParameter("delete_package") %></mm:import>
+<mm:import id="publish_package" jspvar="requestPublishPackageID" vartype="String"><%= request.getParameter("publish_package") %></mm:import>
 
 <%--
 <mm:import externid="import_package" jspvar="test" vartype="String">null</mm:import>
@@ -36,7 +45,7 @@
 //   System.out.println("a=" + request.);
 // String directory = getServletContext().getRealPath("/education/files");
 
-   String directory = getServletContext().getInitParameter("filemanagementBaseDirectory") + "/scorm";
+   String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
    String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
 
    if (directory == null || baseUrl == null)
@@ -44,15 +53,22 @@
        throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
    }
 
+   directory += "/scorm";
+
+
    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
    Node nodePackage = null;
    File newDir = null;
    File newDir_ = null;
    File fileStoreDir = null;
    File fileTempDir  = null;
+   File filePlayerDir  = null;
    String sFileName = null;
    String msg = "";
    String mtype = null;
+
+
+
 
 %>
    <mm:compare referid="import_package" value="null" inverse="true">
@@ -66,7 +82,15 @@
          <%@include file="delete.jsp"%>
       </mm:node>
    </mm:compare>
+
+   <mm:compare referid="publish_package" value="null" inverse="true">
+      <mm:node number="<%= requestPublishPackageID %>" notfound="skip">
+         <%@include file="publish.jsp"%>
+      </mm:node>
+   </mm:compare>
 <%
+
+
 
    boolean uploadOK = false;
    String fileName = null;
@@ -109,14 +133,14 @@
 
                   try
                   {//Internal server error
-                     newDir = new File(Unpack.fixPath(directory + File.separator + nodePackage.getNumber()));
+                     newDir = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber()));
                      newDir.mkdirs();
                      newDir_ = new File(newDir.getAbsolutePath() + "_");
                      newDir_.mkdirs();
 
-                     File savedFile = new File(Unpack.fixPath(directory) + File.separator + nodePackage.getNumber(), fileName);
+                     File savedFile = new File(CommonUtils.fixPath(directory) + File.separator + nodePackage.getNumber(), fileName);
                      item.write(savedFile);
-                     fileSrc = new File(Unpack.fixPath(directory + File.separator + fileName));
+                     fileSrc = new File(CommonUtils.fixPath(directory + File.separator + fileName));
 
                      uploadOK = true;
                      savedFile = null;
@@ -131,7 +155,7 @@
                   {// A error during unpacking .zip
                      if(uploadOK)
                      {
-                        Unpack.unzipFileToFolder(Unpack.fixPath(directory + File.separator + nodePackage.getNumber() + File.separator + fileName), Unpack.fixPath(directory + File.separator + nodePackage.getNumber() + "_"));
+                        Unpack.unzipFileToFolder(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + File.separator + fileName), CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_"));
                      }
                   }
                   catch(Exception e)
@@ -149,7 +173,7 @@
                   {
                      try
                      {
-                        File file = new File(Unpack.fixPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME));
+                        File file = new File(CommonUtils.fixPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME));
                         XMLDocument xmlDocument = new XMLDocument();
                         xmlDocument.loadDocument(file);
                         CP_Core cp_core = new CP_Core(xmlDocument);
@@ -167,10 +191,57 @@
                      }
                   }
 
+
+                  //Copying player with own package ID config
+                  try
+                  {
+
+                     filePlayerDir = new File(newDir.getAbsolutePath() + "_player");
+                     ServletContext sc = getServletConfig().getServletContext();
+
+                     FileCopier.dirCopy(new File(getServletConfig().getServletContext().getRealPath("/") + File.separator + "education" + File.separator + "scorm" + File.separator + "player"), filePlayerDir);
+
+                  }
+                  catch(Exception e)
+                  {
+                     //An error during coping server
+                  }
+
+
+                  //Get structure of menu and write it to our instance of player
+                  try
+                  {
+                     MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://");
+                     String[] arrstrJSMenu = menuCreator.parse(false, "" + nodePackage.getNumber());
+/*
+                     DidactorSettings didactorSetings = new DidactorSettings();
+                     didactorSetings.setPackageName("" + nodePackage.getNumber());
+                     didactorSetings.setSettingsFilePath("Z:/SCORM/sequence/reload-settings.xml");
+                     didactorSetings.setPackageManifestPath(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME);
+
+                     ScormManager scormManager = new ScormManager(didactorSetings);
+*/
+                     File fileMenuConfig = new File(directory + File.separator + nodePackage.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
+                     RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileMenuConfig, "rw");
+                     for(int f = 0; f < arrstrJSMenu.length; f++)
+                     {
+                        rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
+                        rafileMenuConfig.writeByte(13);
+                        rafileMenuConfig.writeByte(10);
+                     }
+                     rafileMenuConfig.close();
+
+                  }
+                  catch (Exception e)
+                  {
+                  }
+
+
+
                   if(uploadOK)
                   {
                      //Clean up the folder
-                     Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
+//                     Unpack.deleteFolderIncludeSubfolders(newDir_.getAbsolutePath(), false);
                   }
                }
             }
@@ -313,7 +384,7 @@ if (top == self) {
                   <td class="field"><mm:field name="version"/></td>
                   <td>
                      <mm:compare referid="imported" value="-1" inverse="true">
-                        <fmt:message key="scormPackageListImported"/>
+                        <fmt:message key="scormPackageListImported"/> (<a href="?publish_package=<mm:field name="number"/>"><fmt:message key="scormPackageListPublishLink"/></a>)
                      </mm:compare>
                      <mm:compare referid="imported" value="-1">
                         <fmt:message key="scormPackageListUploaded"/> (<a href="?import_package=<mm:field name="number"/>"><fmt:message key="scormPackageListImportLink"/></a>)

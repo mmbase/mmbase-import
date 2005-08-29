@@ -1,6 +1,7 @@
 <%
-   fileStoreDir = new File(Unpack.fixPath(directory + File.separator + requestDeletePackageID));
-   fileTempDir  = new File(Unpack.fixPath(directory + File.separator + requestDeletePackageID + "_"));
+   fileStoreDir  = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID));
+   fileTempDir   = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID + "_"));
+   filePlayerDir = new File(CommonUtils.fixPath(directory + File.separator + requestDeletePackageID + "_player"));
 
    try
    {
@@ -9,6 +10,9 @@
 
       Unpack.deleteFolderIncludeSubfolders(fileTempDir.getAbsolutePath(), false);
       Unpack.deleteFolderIncludeSubfolders(fileTempDir.getAbsolutePath(), true);
+
+      Unpack.deleteFolderIncludeSubfolders(filePlayerDir.getAbsolutePath(), false);
+      Unpack.deleteFolderIncludeSubfolders(filePlayerDir.getAbsolutePath(), true);
    }
    catch(Exception e)
    {//Internal server error
