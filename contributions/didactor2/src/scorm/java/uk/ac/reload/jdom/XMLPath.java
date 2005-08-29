@@ -53,7 +53,7 @@ import org.jdom.Namespace;
  * This encapsulates the JDOM XPath of a given Element and Attribute
  *
  * @author Phillip Beauvoir
- * @version $Id: XMLPath.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: XMLPath.java,v 1.2 2005-08-29 00:06:51 azemskov Exp $
  */
 public class XMLPath {
     /**

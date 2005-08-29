@@ -48,7 +48,7 @@ import uk.ac.reload.jdom.XMLDocument;
  * Core ADL SCORM 1.2 Content Package Methods and Functionality
  *
  * @author Phillip Beauvoir
- * @version $Id: SCORM12_Core.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: SCORM12_Core.java,v 1.2 2005-08-29 00:06:51 azemskov Exp $
  */
 public class SCORM12_Core
 extends CP_Core

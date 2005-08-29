@@ -62,7 +62,7 @@ import uk.ac.reload.moonunit.metadata.MD_Core;
  * Core IMS Content Package Methods and Functionality
  *
  * @author Phillip Beauvoir
- * @version $Id: CP_Core.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: CP_Core.java,v 1.2 2005-08-29 00:06:51 azemskov Exp $
  */
 public class CP_Core {
 
