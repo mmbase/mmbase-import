@@ -4,16 +4,19 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"        
     xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"     
     targetNamespace="http://www.mmbase.org/xmlns/datatypes"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"  
     version="1.0">
-  
+
   <xsd:import namespace="http://www.mmbase.org/xmlns/searchquery" 
               schemaLocation="http://www.mmbase.org/xmlns/enumerationquery.xsd" />
+
 
   <xsd:complexType name="DataTypes">
     <xsd:sequence>
       <xsd:element ref="datatype" maxOccurs="unbounded" minOccurs="1" />
     </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    <xsd:attribute name="id" type="xsd:ID" />
   </xsd:complexType>
 
   <xsd:complexType name="DataType">
@@ -42,14 +45,29 @@
           <xsd:element ref="mmsq:query" maxOccurs="1" minOccurs="1" />
         </xsd:sequence>
       </xsd:choice>
+
+      <xsd:element ref="setprocessor"    maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element ref="getprocessor"    maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element ref="commitprocessor" maxOccurs="unbounded" minOccurs="0" />
+      
+      <!-- deprecated ? -->
+      <xsd:element ref="specialization" maxOccurs="11" minOccurs="0" /> <!-- 11: number of 'type_database' -->
+
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:token" use="required" />
     <xsd:attribute name="base" type="xsd:token" use="optional" default="string" />
   </xsd:complexType>
 
+
+  <xsd:element name="specialization" type="DataType"/>
+
   <xsd:element name="datatypes" type="DataTypes" />
 
   <xsd:element name="datatype"  type="DataType" />
+
+  <xsd:element name="setprocessor"  type="Processor" />
+  <xsd:element name="getprocessor"  type="Processor" />
+  <xsd:element name="commitprocessor"  type="Processor" />
 
   <xsd:complexType name="Constraint">
     <xsd:sequence>
@@ -107,6 +125,31 @@
       <xsd:enumeration value="none" />
     </xsd:restriction>
   </xsd:simpleType>
+
+  <xsd:simpleType name="type_database">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="string" />
+      <xsd:enumeration value="integer" />
+      <xsd:enumeration value="binary" />
+      <xsd:enumeration value="float" />
+      <xsd:enumeration value="double" />
+      <xsd:enumeration value="long" />
+      <xsd:enumeration value="xml" />
+      <xsd:enumeration value="node" />
+      <xsd:enumeration value="datetime" />
+      <xsd:enumeration value="boolean" />
+      <xsd:enumeration value="list" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="Processor">
+    <xsd:sequence>
+      <xsd:element ref="class"  maxOccurs="unbounded" minOccurs="1" />
+    </xsd:sequence>
+    <xsd:attribute name="type" type="type_database" />
+  </xsd:complexType>
+
+  <xsd:element name="class" type="xsd:string"/>
 
   <xsd:element name="enumeration">
     <xsd:complexType>
