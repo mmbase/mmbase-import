@@ -49,7 +49,7 @@ package uk.ac.reload.scormplayer.client.generic.contentpackaging;
  * The NoItemFoundException Class that can be thrown for debugging<br>
  *
  * @author Paul Sharples
- * @version $Id: NoItemFoundException.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: NoItemFoundException.java,v 1.2 2005-08-29 00:06:52 azemskov Exp $
  */
 public class NoItemFoundException extends Exception{
     

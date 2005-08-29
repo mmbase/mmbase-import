@@ -55,7 +55,7 @@ import java.util.Date;
  *
  * @author Phillip Beauvoir
  * @author Paul Sharples
- * @version $Id: GeneralUtils.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: GeneralUtils.java,v 1.2 2005-08-29 00:06:51 azemskov Exp $
  */
 public final class GeneralUtils  {
 	

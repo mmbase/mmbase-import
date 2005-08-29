@@ -59,7 +59,7 @@ import org.jdom.Namespace;
  * This encapsulates the JDOM XML Document file plus helper methods.
  *
  * @author Phillip Beauvoir
- * @version $Id: XMLDocument.java,v 1.1 2005-08-04 16:57:45 azemskov Exp $
+ * @version $Id: XMLDocument.java,v 1.2 2005-08-29 00:06:51 azemskov Exp $
  */
 public class XMLDocument {
     /**
