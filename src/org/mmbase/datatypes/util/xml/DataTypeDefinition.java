@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.7 2005-08-29 13:09:47 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -82,7 +82,7 @@ public class DataTypeDefinition {
         if (log.isDebugEnabled()) log.debug("Reading element " + typeString + " " + baseString);
         if (baseString != null && !baseString.equals("")) {
             if (baseDataType != null) {
-                log.warn("Attribute 'base' not allowed with datatype " + typeString + ".");
+                log.warn("Attribute 'base' ('" + baseDataType + "') not allowed with datatype " + typeString + ".");
             } else {
                 baseDataType = configurer.getDataType(baseString);
                 if (baseDataType == null) {
@@ -420,7 +420,8 @@ public class DataTypeDefinition {
 
     protected Date getDateTimeValue(Element element) {
         if (hasAttribute(element, "value")) {
-            return new Date(getAttribute(element, "value"));
+            Date date = Casting.toDate(getAttribute(element, "value"));
+            return date;
         } else {
             throw new IllegalArgumentException("no 'value' attribute");
         }
