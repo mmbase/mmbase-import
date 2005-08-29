@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.6 2005-08-26 14:52:11 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.7 2005-08-29 12:15:09 michiel Exp $
  */
 
 public class DataTypes {
@@ -56,7 +56,8 @@ public class DataTypes {
         // For the moment turn watching off.
         // Not sure if it is needed anyway - it won't actually happen that often
         readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
-
+        
+        /*
         try {
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
                     public void onChange(String resource) {
@@ -69,6 +70,7 @@ public class DataTypes {
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
+        */
 
     }
 
@@ -86,9 +88,10 @@ public class DataTypes {
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
-                    log.service("Reading datatypes from " + u);
+                    dataTypesSource.setSystemId(u.toExternalForm());
+                    log.service("Reading datatypes from " + dataTypesSource.getSystemId());
                     DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, DataTypeReader.class));
-                    Document doc = db.parse(dataTypesSource);
+                    Document doc = db.parse(dataTypesSource); 
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
                 }
