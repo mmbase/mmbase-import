@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.58 2005-08-29 13:08:10 michiel Exp $
+ * @version $Id: Casting.java,v 1.59 2005-08-29 13:18:48 michiel Exp $
  */
 
 import java.util.*;
@@ -785,11 +785,9 @@ public class Casting {
                 try {
                     date = ISO_8601_UTC.parse("" + d);
                 } catch (ParseException pe) {                    
-                    log.error("" + pe);
                     try {
                         date = ISO_8601_LOOSE.parse("" + d);
                     } catch (ParseException pe2) {
-                        log.error("" + pe2);
                         try {
                             date = ISO_8601_DATE.parse("" + d);
                         } catch (ParseException pe3) {
