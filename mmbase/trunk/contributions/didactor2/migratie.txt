@@ -1,5 +1,8 @@
 Migratie issues
 
+2005-08-25
+    ALTER TABLE mmb_htmlpages ADD path BLOB DEFAULT NULL;
+
 2005-08-19
     ALTER TABLE mmb_htmlpages ADD showtitle TINYINT(1);
 
