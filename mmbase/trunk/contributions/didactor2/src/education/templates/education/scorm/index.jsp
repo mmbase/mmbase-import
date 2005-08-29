@@ -211,8 +211,8 @@
                   //Get structure of menu and write it to our instance of player
                   try
                   {
-                     MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://");
-                     String[] arrstrJSMenu = menuCreator.parse(false, "" + nodePackage.getNumber());
+                     MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", baseUrl + "/scorm/" + nodePackage.getNumber() + "_" + "/");
+                     String[] arrstrJSMenu = menuCreator.parse(true, "" + nodePackage.getNumber());
 /*
                      DidactorSettings didactorSetings = new DidactorSettings();
                      didactorSetings.setPackageName("" + nodePackage.getNumber());
