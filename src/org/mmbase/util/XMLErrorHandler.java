@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
  * @move org.mmbase.util.xml
  * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.16 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.17 2005-08-29 08:54:15 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -116,6 +116,8 @@ public class XMLErrorHandler implements ErrorHandler {
         String systemId = ex.getSystemId();
         if (systemId != null) {
             str.append(systemId);
+        } else {
+            str.append("[NO SYSTEM ID]");
         }
         str.append(" line:");
         str.append(ex.getLineNumber());
