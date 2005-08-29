@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <datatypes
- xmlns="http://www.mmbase.org/xmlns/datatypes"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
   <datatype id="xml">
     <specialization id="mmxf">
@@ -36,13 +36,14 @@
 
   <datatype id="string">
     <specialization id="lastmodifier">
-      <commitprocessor>
-        <class>org.mmbase.bridge.util.fields.LastModifier</class>
-      </commitprocessor>
+      <unique value="false" />
       <setprocessor>
         <!-- only makes it unmodifiable -->
         <class>org.mmbase.bridge.util.fields.LastModifier</class>
       </setprocessor>
+      <commitprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+      </commitprocessor>
     </specialization>
     <specialization id="md5password">
       <setprocessor>
@@ -51,8 +52,8 @@
     </specialization>
     <specialization id="lowercaseuppercase">
       <!-- silly example to test
-     Strings are stored all lowercase, but showed all uppercase
-  -->
+           Strings are stored all lowercase, but showed all uppercase
+      -->
       <setprocessor>
         <class>org.mmbase.util.transformers.LowerCaser</class>
       </setprocessor>
@@ -69,12 +70,30 @@
 
   <datatype id="datetime">
     <specialization id="lastmodified">
-      <commitprocessor>
-        <class>org.mmbase.bridge.util.fields.LastModified</class>
-      </commitprocessor>
       <setprocessor>
         <class>org.mmbase.bridge.util.fields.LastModified</class>
       </setprocessor>
+      <commitprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModified</class>
+      </commitprocessor>
+    </specialization>
+
+    <specialization id="datetime">
+    </specialization>
+
+    <specialization id="time">
+      <!-- I have no idea how to do this -->
+    </specialization>
+
+    <specialization id="date">
+      <!-- I have no idea how to do this -->
+    </specialization>
+
+  </datatype>
+
+  <datatype id="long">
+    <specialization id="duration">
+      <!-- I have no idea how to do this -->
     </specialization>
   </datatype>
 
