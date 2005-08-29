@@ -51,7 +51,7 @@
       </setprocessor>
     </specialization>
     <specialization id="lowercaseuppercase">
-      <!-- silly example to test
+      <!-- Silly example (also used to test)
            Strings are stored all lowercase, but showed all uppercase
       -->
       <setprocessor>
@@ -76,6 +76,14 @@
       <commitprocessor>
         <class>org.mmbase.bridge.util.fields.LastModified</class>
       </commitprocessor>
+    </specialization>
+
+    <specialization id="20th-century">
+      <!-- Silly example (also used to test)
+           Allow only dates from the previous century..
+      -->
+      <minInclusive value="1900-01-01" precision="days" />
+      <maxExclusive value="2000-01-01" precision="days" />
     </specialization>
 
     <specialization id="datetime">
