@@ -1,5 +1,3 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-
 <!--
 /**
  *  RELOAD TOOLS
@@ -42,7 +40,7 @@
  *  Web:      http://www.reload.ac.uk
  *
  *  @author Paul Sharples
- *  @version $Id: CPFrame.jsp,v 1.1 2005-08-30 13:53:21 azemskov Exp $
+ *  @version $Id: CPFrame.jsp,v 1.2 2005-08-30 21:16:59 azemskov Exp $
  */
 // -->
 <html>
@@ -209,16 +207,6 @@ function init(){
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="init()">
 
 
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
-   <%@include file="/shared/setImports.jsp" %>
-   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-      <mm:param name="extraheader">
-         <title>Reload Player</title>
-         <link rel="stylesheet" type="text/css" href="css/pop.css" />
-      </mm:param>
-   </mm:treeinclude>
-</mm:cloud>
-
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5a79ef">
 
@@ -228,8 +216,8 @@ function init(){
         <tr>
          <td><font size='2' face='verdana'><b><div id="itemTitles">&nbsp;</div></b></font></td>
          <td width="61" valign="top"><a href="#" onClick="showHideNav()"><img src="menu-images/hide.gif" name="showhide" width="61" height="20" id="showhide" border="0"></a></td>
-         <td width="61" valign="top"><a href="#" onClick="updateNavigation('prev')"><img src="menu-images/prev_disabled.gif" name="prev" width="61" height="20" id="prev" border="0"></a></td>
-         <td width="61" valign="top"><a href="#" onClick="updateNavigation('next')"><img src="menu-images/next_disabled.gif" name="next" width="61" height="20" id="next" border="0"></a></td>
+         <td width="61" valign="top"><a href="#" onClick="updateNavigation('prev')" style="color:#000000; font-size:12px; font-weight:bold"><nobr><img src="menu-images/prev_disabled.gif" name="prev" id="prev" border="0" align="">&nbsp;vorige</nobr></a></td>
+         <td width="61" valign="top"><a href="#" onClick="updateNavigation('next')" style="color:#000000; font-size:12px; font-weight:bold"><nobr>volgende&nbsp;<img src="menu-images/next_disabled.gif" name="next" id="next" border="0"></nobr></a></td>
         </tr>
         <tr bgcolor="#5a79ef">
           <td height="1" colspan="4"></td>
