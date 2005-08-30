@@ -9,20 +9,23 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
+
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.FieldValueDateConstraint;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.9 2005-08-29 13:16:31 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.10 2005-08-30 19:40:47 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
+
+    private static final Logger log = Logging.getLoggerInstance(DateTimeDataType.class);
 
     public static final String PROPERTY_MIN = "min";
     public static final Date PROPERTY_MIN_DEFAULT = null;
@@ -47,6 +50,10 @@ public class DateTimeDataType extends DataType {
     private String minExclusiveErrorKey;
     private String maxInclusiveErrorKey;
     private String maxExclusiveErrorKey;
+
+
+    // see javadoc of DateTimeFormat
+    private DateTimePattern pattern = DateTimePattern.DEFAULT;
 
     /**
      * Constructor for DateTime field.
@@ -249,6 +256,31 @@ public class DateTimeDataType extends DataType {
         return setMax(value);
     }
 
+
+    /**
+     * The 'pattern' of a 'DateTime' value gives a SimpleDateFormat object which can be used as an
+     * indication for presentation.  
+     *
+     * Basicly, this should indicate whether the objects present e.g. only a date, only a time and wheter e.g. this time includes seconds or not.
+     * 
+     * SimpleDateFormat is actually a wrapper arround a pattern, and that is used here.
+     * 
+     */
+    public DateTimePattern getPattern() {
+        return pattern;
+    }
+    public void setPattern(String p, Locale locale) {
+        if (pattern == DateTimePattern.DEFAULT) {
+            pattern = new DateTimePattern(p);
+        }  else {
+            if (locale == null || locale.equals(Locale.US)) {
+                pattern.set(p);
+            }
+        }
+        pattern.set(p, locale);
+    }
+
+
     /**
      * Returns a long value representing the date in milliseconds since 1/1/1970,
      * adjusted for the precision given.
@@ -309,13 +341,25 @@ public class DateTimeDataType extends DataType {
         }
     }
 
+    public Object clone(String name) {
+        DateTimeDataType clone = (DateTimeDataType) super.clone(name);
+        if (clone.pattern != DateTimePattern.DEFAULT) {            
+            clone.pattern = (DateTimePattern) pattern.clone();
+        }
+        return clone;
+    }
+
     public String toString() {
         StringBuffer buf = new StringBuffer(super.toString());
         if (getMin() != null) {
-            buf.append("min:" + getMin() + " " + getMinPrecision()).append(isMinInclusive() ? " inclusive" : " exclusive").append("\n");
+            buf.append(" min:" + getMin() + " " + getMinPrecision()).append(isMinInclusive() ? " inclusive" : " exclusive");
         }
         if (getMax() != null) {
-            buf.append("max:" + getMax() + " " + getMaxPrecision()).append(isMaxInclusive() ? " inclusive" : " exclusive").append("\n");
+            buf.append(" max:" + getMax() + " " + getMaxPrecision()).append(isMaxInclusive() ? " inclusive" : " exclusive");
+        }
+        
+        if (pattern != null) {
+            buf.append(" " + pattern);
         }
         return buf.toString();
     }
