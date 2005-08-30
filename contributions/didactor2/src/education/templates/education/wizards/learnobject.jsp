@@ -1,9 +1,12 @@
 <%@ page import = "java.util.HashSet" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <mm:content postprocessor="reducespace">
 <mm:import externid="wizardjsp" required="true" jspvar="wizardjsp" />
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
+
+<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <%
  String imageName = "";
  String sAltText = "";
@@ -100,5 +103,6 @@
      }
  }
 %>
+</fmt:bundle>
 </mm:cloud>
 </mm:content>
