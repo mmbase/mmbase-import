@@ -1,3 +1,5 @@
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+
 <!--
 /**
  *  RELOAD TOOLS
@@ -40,7 +42,7 @@
  *  Web:      http://www.reload.ac.uk
  *
  *  @author Paul Sharples
- *  @version $Id: CPFrame.htm,v 1.1 2005-08-29 00:02:09 azemskov Exp $
+ *  @version $Id: CPFrame.jsp,v 1.1 2005-08-30 13:53:21 azemskov Exp $
  */
 // -->
 <html>
@@ -97,12 +99,12 @@ function MM_swapImage() { //v3.0
   var i,j=0,x,a=MM_swapImage.arguments;
   document.MM_sr=new Array;
   for(i=0;i<(a.length-2);i+=3)
-	if ((x=MM_findObj(a[i]))!=null){
-   		document.MM_sr[j++]=x;
-		if(!x.oSrc)
-			x.oSrc=x.src;
-			x.src=a[i+2];
-	}
+   if ((x=MM_findObj(a[i]))!=null){
+         document.MM_sr[j++]=x;
+      if(!x.oSrc)
+         x.oSrc=x.src;
+         x.src=a[i+2];
+   }
 }
 
 
@@ -111,78 +113,78 @@ function MM_swapImage() { //v3.0
 * CPAPI functions
 */
 function updateNavigation(item){
-	if (CPAPI.orgArray(CPAPI._currentOrg)._currentItem != -1){
-		if (item == 'prev'){
-			if (CPAPI.orgArray(CPAPI._currentOrg)._currentItem != CPAPI.orgArray(CPAPI._currentOrg)._firstItem){
-				CPAPI.changeItem(CPAPI.orgArray(CPAPI._currentOrg).getPrevItem());
-			}
-		}
-		if (item == 'next'){
-			if (CPAPI.orgArray(CPAPI._currentOrg)._currentItem != CPAPI.orgArray(CPAPI._currentOrg)._lastItem){
-				CPAPI.changeItem(CPAPI.orgArray(CPAPI._currentOrg).getNextItem());
-			}
-		}
+   if (CPAPI.orgArray(CPAPI._currentOrg)._currentItem != -1){
+      if (item == 'prev'){
+         if (CPAPI.orgArray(CPAPI._currentOrg)._currentItem != CPAPI.orgArray(CPAPI._currentOrg)._firstItem){
+            CPAPI.changeItem(CPAPI.orgArray(CPAPI._currentOrg).getPrevItem());
+         }
+      }
+      if (item == 'next'){
+         if (CPAPI.orgArray(CPAPI._currentOrg)._currentItem != CPAPI.orgArray(CPAPI._currentOrg)._lastItem){
+            CPAPI.changeItem(CPAPI.orgArray(CPAPI._currentOrg).getNextItem());
+         }
+      }
 
-		if((navigator.appName == "Netscape" && parseInt(navigator.appVersion) >= 3 && navigator.userAgent.indexOf("Opera") == -1) || (navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion) >= 4) || (navigator.appName == "Opera" && parseInt(navigator.appVersion) >= 5)) {
-			var MTMCodeFrame = "code";
-			for(i = 0; i < parent.frames.length; i++) {
-				if(parent.frames[i].name == MTMCodeFrame && parent.frames[i].MTMLoaded) {
-					parent.frames[i].MTMTrack = true;
-					temp1 = parseInt(CPAPI.orgArray(CPAPI._currentOrg).itemArray(CPAPI.orgArray(CPAPI._currentOrg)._currentItem).numberInAllItems);
-					parent.frames[i].MTMTrackedItem = parseInt(temp1+1);
-					setTimeout("parent.frames[" + i + "].MTMDisplayMenu()", 50);
-					break;
-				}
-			}
-		}
-	}
+      if((navigator.appName == "Netscape" && parseInt(navigator.appVersion) >= 3 && navigator.userAgent.indexOf("Opera") == -1) || (navigator.appName == "Microsoft Internet Explorer" && parseInt(navigator.appVersion) >= 4) || (navigator.appName == "Opera" && parseInt(navigator.appVersion) >= 5)) {
+         var MTMCodeFrame = "code";
+         for(i = 0; i < parent.frames.length; i++) {
+            if(parent.frames[i].name == MTMCodeFrame && parent.frames[i].MTMLoaded) {
+               parent.frames[i].MTMTrack = true;
+               temp1 = parseInt(CPAPI.orgArray(CPAPI._currentOrg).itemArray(CPAPI.orgArray(CPAPI._currentOrg)._currentItem).numberInAllItems);
+               parent.frames[i].MTMTrackedItem = parseInt(temp1+1);
+               setTimeout("parent.frames[" + i + "].MTMDisplayMenu()", 50);
+               break;
+            }
+         }
+      }
+   }
 }
 
 function updateTitles(param){
-	var theTitles = param.replace('\\\'', '\'') ;
-	MM_setTextOfLayer('itemTitles','','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+theTitles);
+   var theTitles = param.replace('\\\'', '\'') ;
+   MM_setTextOfLayer('itemTitles','','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+theTitles);
 }
 
 function disablePrevButton(){
-	MM_swapImage('prev', '', prevLinkDisabled, 1);
-	MM_swapImage('next', '', nextLink, 1);
+   MM_swapImage('prev', '', prevLinkDisabled, 1);
+   MM_swapImage('next', '', nextLink, 1);
 }
 
 function disableNextButton(){
-	MM_swapImage('prev', '', prevLink, 1);
-	MM_swapImage('next', '', nextLinkDisabled, 1);
+   MM_swapImage('prev', '', prevLink, 1);
+   MM_swapImage('next', '', nextLinkDisabled, 1);
 }
 
 function enableBothButtons(){
-	MM_swapImage('prev', '', prevLink, 1);
-	MM_swapImage('next', '', nextLink, 1);
+   MM_swapImage('prev', '', prevLink, 1);
+   MM_swapImage('next', '', nextLink, 1);
 }
 
 function disableBothButtons(){
-	MM_swapImage('prev', '', prevLinkDisabled, 1);
-	MM_swapImage('next', '', nextLinkDisabled, 1);
+   MM_swapImage('prev', '', prevLinkDisabled, 1);
+   MM_swapImage('next', '', nextLinkDisabled, 1);
 }
 
 function showHideNav(){
 
-	var oFramesets=parent.window.document.getElementsByTagName("frameset");
-	if (isNavVisisble == "true"){
-		oFramesets.item(1).cols="1,*";
-		isNavVisisble = "false";
-		MM_swapImage('showhide', '', hideImage, 1);
-	}
-	else{
-		oFramesets.item(1).cols="300,*";
-		isNavVisisble = "true";
-		MM_swapImage('showhide', '', showImage, 1);
-	}
+   var oFramesets=parent.window.document.getElementsByTagName("frameset");
+   if (isNavVisisble == "true"){
+      oFramesets.item(1).cols="1,*";
+      isNavVisisble = "false";
+      MM_swapImage('showhide', '', hideImage, 1);
+   }
+   else{
+      oFramesets.item(1).cols="300,*";
+      isNavVisisble = "true";
+      MM_swapImage('showhide', '', showImage, 1);
+   }
 }
 
 function showSearch(){
-	if(CPAPI.showSearch == true){
-		var oFramesets=parent.window.document.getElementsByTagName("frameset");
-		oFramesets.item(2).rows="0,*,70";
-	}
+   if(CPAPI.showSearch == true){
+      var oFramesets=parent.window.document.getElementsByTagName("frameset");
+      oFramesets.item(2).rows="0,*,70";
+   }
 }
 
 /*
@@ -190,32 +192,44 @@ function showSearch(){
 * the "code" frame had loaded fully (this sometimes happen on first load into the browser)
 */
 function init(){
-	try{
-		parent.window.frames.code.startUp();
-		showSearch();
-	}
-	catch(ex){
-		alert("Please refresh your browser to view this package");
-	}
+   try{
+      parent.window.frames.code.startUp();
+      showSearch();
+   }
+   catch(ex){
+      alert("Please refresh your browser to view this package");
+   }
 }
 //-->
 </script>
 <link href="reload.css" rel="stylesheet" type="text/css">
 </head>
+
+
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="init()">
+
+
+<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+   <%@include file="/shared/setImports.jsp" %>
+   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="extraheader">
+         <title>Reload Player</title>
+         <link rel="stylesheet" type="text/css" href="css/pop.css" />
+      </mm:param>
+   </mm:treeinclude>
+</mm:cloud>
+
+
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5a79ef">
-  <tr>
-    <td height="20"><img src="menu-images/webtitle.gif" width="384" height="20"></td>
-  </tr>
 
   <tr>
     <td bgcolor="#c6d7ff">
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-			<td><font size='2' face='verdana'><b><div id="itemTitles">&nbsp;</div></b></font></td>
-			<td width="61" valign="top"><a href="#" onClick="showHideNav()"><img src="menu-images/hide.gif" name="showhide" width="61" height="20" id="showhide" border="0"></a></td>
-			<td width="61" valign="top"><a href="#" onClick="updateNavigation('prev')"><img src="menu-images/prev_disabled.gif" name="prev" width="61" height="20" id="prev" border="0"></a></td>
-			<td width="61" valign="top"><a href="#" onClick="updateNavigation('next')"><img src="menu-images/next_disabled.gif" name="next" width="61" height="20" id="next" border="0"></a></td>
+         <td><font size='2' face='verdana'><b><div id="itemTitles">&nbsp;</div></b></font></td>
+         <td width="61" valign="top"><a href="#" onClick="showHideNav()"><img src="menu-images/hide.gif" name="showhide" width="61" height="20" id="showhide" border="0"></a></td>
+         <td width="61" valign="top"><a href="#" onClick="updateNavigation('prev')"><img src="menu-images/prev_disabled.gif" name="prev" width="61" height="20" id="prev" border="0"></a></td>
+         <td width="61" valign="top"><a href="#" onClick="updateNavigation('next')"><img src="menu-images/next_disabled.gif" name="next" width="61" height="20" id="next" border="0"></a></td>
         </tr>
         <tr bgcolor="#5a79ef">
           <td height="1" colspan="4"></td>
