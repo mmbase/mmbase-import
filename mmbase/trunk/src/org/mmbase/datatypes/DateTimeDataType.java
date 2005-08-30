@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.10 2005-08-30 19:40:47 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.11 2005-08-30 21:30:51 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -53,6 +53,7 @@ public class DateTimeDataType extends DataType {
 
 
     // see javadoc of DateTimeFormat
+    private boolean weakPattern = true; // means, may not be changed, must be cloned before chaning somethin
     private DateTimePattern pattern = DateTimePattern.DEFAULT;
 
     /**
@@ -83,12 +84,15 @@ public class DateTimeDataType extends DataType {
         super.inherit(origin);
         if (origin instanceof DateTimeDataType) {
             DateTimeDataType dataType = (DateTimeDataType)origin;
-            minProperty = inheritProperty(dataType.minProperty);
+            minProperty  = inheritProperty(dataType.minProperty);
             minInclusive = dataType.isMinInclusive();
             minPrecision = dataType.getMinPrecision();
-            maxProperty = inheritProperty(dataType.maxProperty);
+            maxProperty  = inheritProperty(dataType.maxProperty);
             maxInclusive = dataType.isMaxInclusive();
             maxPrecision = dataType.getMaxPrecision();
+            if (weakPattern) {
+                pattern      = dataType.pattern;
+            }
         }
     }
 
@@ -270,8 +274,9 @@ public class DateTimeDataType extends DataType {
         return pattern;
     }
     public void setPattern(String p, Locale locale) {
-        if (pattern == DateTimePattern.DEFAULT) {
+        if (weakPattern) {
             pattern = new DateTimePattern(p);
+            weakPattern = false;
         }  else {
             if (locale == null || locale.equals(Locale.US)) {
                 pattern.set(p);
@@ -343,9 +348,7 @@ public class DateTimeDataType extends DataType {
 
     public Object clone(String name) {
         DateTimeDataType clone = (DateTimeDataType) super.clone(name);
-        if (clone.pattern != DateTimePattern.DEFAULT) {            
-            clone.pattern = (DateTimePattern) pattern.clone();
-        }
+        clone.weakPattern = true;
         return clone;
     }
 
@@ -358,9 +361,8 @@ public class DateTimeDataType extends DataType {
             buf.append(" max:" + getMax() + " " + getMaxPrecision()).append(isMaxInclusive() ? " inclusive" : " exclusive");
         }
         
-        if (pattern != null) {
-            buf.append(" " + pattern);
-        }
+        buf.append(" " + pattern);
+
         return buf.toString();
     }
 
