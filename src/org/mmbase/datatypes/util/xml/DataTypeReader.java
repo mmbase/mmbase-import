@@ -19,9 +19,10 @@ import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
+ * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.5 2005-08-26 14:53:03 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.6 2005-08-30 19:36:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -44,36 +45,30 @@ public class DataTypeReader {
      * This method is called by XMLEntityResolver.
      */
     public static void registerSystemIDs() {
-        XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeConfigurer.class);
-        XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeConfigurer.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
     }
 
     /**
      * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
      * searchquery namespace
      */
-    static public String getAttribute(Element element, String localName) {
-        return DocumentReader.getAttribute(element,NAMESPACE_DATATYPES_1_0,localName);
+    static private String getAttribute(Element element, String localName) {
+        return DocumentReader.getAttribute(element, NAMESPACE_DATATYPES_1_0, localName);
     }
+
 
     /**
      * Initialize the data types default supported by the system.
      */
     public static void readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
-        readDataTypes(dataTypesElement, new DataTypeConfigurer(collector), null);
+        readDataTypes(dataTypesElement, collector, null);
     }
 
     /**
      * Initialize the data types default supported by the system.
      */
-    public static void readDataTypes(Element dataTypesElement, DataTypeConfigurer configurer) {
-        readDataTypes(dataTypesElement, configurer, null);
-    }
-
-    /**
-     * Initialize the data types default supported by the system.
-     */
-    public static void readDataTypes(Element dataTypesElement, DataTypeConfigurer configurer, DataType baseDataType) {
+    public static void readDataTypes(Element dataTypesElement, DataTypeCollector collector, DataType baseDataType) {
         NodeList childNodes = dataTypesElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -83,9 +78,17 @@ public class DataTypeReader {
                 if ("fieldtype".equals(localName) ||  // backward compatibility
                     "specialization".equals(localName) ||  // backward compatibility
                     "datatype".equals(localName)) {
-                    DataType dataType = readDataType(childElement, baseDataType, configurer).dataType;
-                    configurer.addDataType(dataType);
-                    readDataTypes(childElement, configurer, dataType);
+                    DataType dataType = readDataType(childElement, baseDataType, collector).dataType;
+
+                    collector.addDataType(dataType);
+                    if (log.isServiceEnabled()) {
+                        log.service("Created " + dataType + " based on " + baseDataType);
+                        if (log.isDebugEnabled()) {
+                            log.trace("Now " + collector);
+                        }
+                    }
+
+                    readDataTypes(childElement, collector, dataType);
                 }
             }
         }
@@ -94,11 +97,10 @@ public class DataTypeReader {
     /**
      * Read a datatype
      */
-    public static DataTypeDefinition readDataType(Element typeElement, DataType baseDataType, DataTypeConfigurer configurer) {
-        DataTypeDefinition definition = new DataTypeDefinition(configurer);
+    protected static DataTypeDefinition readDataType(Element typeElement, DataType baseDataType, DataTypeCollector collector) {
+        DataTypeDefinition definition = new DataTypeDefinition(collector);
         definition.configure(typeElement, baseDataType);
-        configurer.finish(definition.dataType);
-        if (log.isDebugEnabled()) log.debug("Created " + definition);
+        collector.finish(definition.dataType);
         return definition;
     }
 

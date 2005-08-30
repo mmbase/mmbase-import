@@ -22,31 +22,31 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
 
 /**
- * @javadoc
+ * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.8 2005-08-29 14:33:02 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.9 2005-08-30 19:36:21 michiel Exp $
  * @since MMBase-1.8
  **/
-public class DataTypeDefinition {
+class DataTypeDefinition {
 
     private static final Logger log = Logging.getLoggerInstance(DataTypeDefinition.class);
 
     /**
      * the data type
      */
-    public DataType dataType = null;
+     DataType dataType = null;
 
     /**
-     * The data type configurer that instantiated this definition
+     * The data type collector that contains the data datatype which this definition.
      */
-    protected DataTypeConfigurer configurer = null;
+    protected final DataTypeCollector collector;
 
     /**
      * Constructor.
      */
-    public DataTypeDefinition(DataTypeConfigurer configurer) {
-        this.configurer = configurer;
+    DataTypeDefinition(DataTypeCollector collector) {
+        this.collector = collector;
     }
 
     /**
@@ -54,7 +54,7 @@ public class DataTypeDefinition {
      * default namespace
      */
     protected boolean hasAttribute(Element element, String localName) {
-        return DocumentReader.hasAttribute(element,DataTypeReader.NAMESPACE_DATATYPES,localName);
+        return DocumentReader.hasAttribute(element,DataTypeReader.NAMESPACE_DATATYPES, localName);
     }
 
     /**
@@ -62,7 +62,7 @@ public class DataTypeDefinition {
      * default namespace
      */
     protected String getAttribute(Element element, String localName) {
-        return DocumentReader.getAttribute(element,DataTypeReader.NAMESPACE_DATATYPES,localName);
+        return DocumentReader.getAttribute(element,DataTypeReader.NAMESPACE_DATATYPES, localName);
     }
 
     /**
@@ -75,7 +75,7 @@ public class DataTypeDefinition {
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    public DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
+    DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
         String typeString = getAttribute(dataTypeElement,"id");
         if ("byte".equals(typeString)) typeString = "binary";
         String baseString = getAttribute(dataTypeElement,"base");
@@ -84,13 +84,13 @@ public class DataTypeDefinition {
             if (baseDataType != null) {
                 log.warn("Attribute 'base' ('" + baseDataType + "') not allowed with datatype " + typeString + ".");
             } else {
-                baseDataType = configurer.getDataType(baseString);
+                baseDataType = collector.getDataType(baseString);
                 if (baseDataType == null) {
                     log.warn("Attribute 'base' of datatype '" + typeString + "' is an unknown datatype.");
                 }
             }
         }
-        dataType = configurer.getDataType(typeString);
+        dataType = collector.getDataType(typeString);
         if (dataType == null) {
             if (baseDataType == null) {
                 log.warn("No base datatype available for datatype " + typeString + ", use 'unknown' for know.");
@@ -101,12 +101,31 @@ public class DataTypeDefinition {
             //
             // XXX: add check on base datatype if given!
             //
-            configurer.rewrite(dataType);
+            collector.rewrite(dataType);
             dataType.clear(); // clears datatype.
         }
         configureConditions(dataTypeElement);
         return this;
     }
+
+
+    /**
+     * This utility takes care of reading the xml:lang attribute from an element
+     */
+    protected Locale getLocale(Element element) {
+        Locale loc = null;
+        String xmlLang = getAttribute(element, "xml:lang");
+        if (! xmlLang.equals("")) {
+            String[] split = xmlLang.split("-");
+            if (split.length == 1) {
+                loc = new Locale(split[0]);
+            } else {
+                loc = new Locale(split[0], split[1]);
+            }
+        }
+        return loc;
+    }
+    
 
     protected LocalizedString getLocalizedDescriptions(String tagName, Element element, LocalizedString descriptions) {
         NodeList childNodes = element.getChildNodes();
@@ -114,11 +133,7 @@ public class DataTypeDefinition {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
                 if (tagName.equals(childElement.getLocalName())) {
-                    Locale locale = null;
-                    if (hasAttribute(childElement, "xml:lang")) {
-                        String language = getAttribute(childElement, "xml:lang");
-                        locale = new Locale(language, null);
-                    }
+                    Locale locale = getLocale(childElement);
                     String description = getValue(childElement);
                     if (descriptions ==  null) {
                         descriptions = new LocalizedString(description);
@@ -139,6 +154,8 @@ public class DataTypeDefinition {
         LocalizedString descriptions = property.getLocalizedErrorDescription();
         property.setLocalizedErrorDescription(getLocalizedDescriptions("description", element, descriptions));
     }
+
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
@@ -166,6 +183,8 @@ public class DataTypeDefinition {
                     addProcessor(DataType.PROCESS_COMMIT, childElement);
                 } else if ("enumeration".equals(childElement.getLocalName())) {
                     addEnumeration(childElement);
+                } else if (nonConditions.matcher(childElement.getLocalName()).matches()) {
+                    // ignore
                 } else if (dataType instanceof StringDataType) {
                     addStringCondition(childElement);
                 } else if (dataType instanceof BigDataType) {
@@ -458,9 +477,12 @@ public class DataTypeDefinition {
             setPropertyData(dtDataType.setMin(value, precision, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Date value = getDateTimeValue(conditionElement);
-            log.info("Found " + value + " for max");
             int precision = getDateTimePartValue(conditionElement);
             setPropertyData(dtDataType.setMax(value, precision, "maxInclusive".equals(localName)), conditionElement);
+        } else if ("pattern".equals(localName)) {
+            String pattern = getAttribute(conditionElement, "value");
+            Locale locale = getLocale(conditionElement);
+            dtDataType.setPattern(pattern, locale);
         } else {
             log.error("Unsupported tag '" + localName + "' for datetime.");
         }
@@ -477,14 +499,14 @@ public class DataTypeDefinition {
             setPropertyData(lDataType.setMaxSize(value), conditionElement);
         } else if ("itemDataType".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
-            setPropertyData(lDataType.setItemDataType(configurer.getDataType(value)), conditionElement);
+            setPropertyData(lDataType.setItemDataType(collector.getDataType(value)), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for list.");
         }
     }
 
     public String toString() {
-        return dataType == null ? "NONE" : dataType.toString();
+        return "definition(" + (dataType == null ? "NONE" : dataType.toString()) + ")";
     }
 
 }
