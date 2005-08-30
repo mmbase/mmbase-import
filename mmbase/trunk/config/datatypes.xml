@@ -4,6 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
+
   <datatype id="xml">
     <specialization id="mmxf">
       <setprocessor type="string">
@@ -72,13 +73,12 @@
   </datatype>
 
   <datatype id="datetime">
-
     <pattern value="yyyy-MM-dd HH:mm" />
-    <pattern xml:lang="nl-NL" value="dd-MMMM-yyyy HH:mm" />
-
+    <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
     <getprocessor type="string">
       <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
     </getprocessor>
+
     <specialization id="lastmodified">
       <setprocessor>
         <class>org.mmbase.bridge.util.fields.LastModified</class>
@@ -87,6 +87,7 @@
         <class>org.mmbase.bridge.util.fields.LastModified</class>
       </commitprocessor>
     </specialization>
+
 
     <specialization id="time">
       <pattern value="HH:mm:ss" />
@@ -97,7 +98,7 @@
 
     <specialization id="date">
       <pattern value="yyyy-MM-dd" />
-      <pattern xml:lang="nl-NL" value="dd-MMMM-yyyy" />
+      <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
       <getprocessor type="string">
         <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
       </getprocessor>
@@ -111,10 +112,22 @@
       <maxExclusive value="2000-01-01" precision="days" />
     </specialization>
 
+    <specialization id="birthdate" base="date">
+      <!-- need better date-parser to make this work -->
+      <maxInclusive value="now" precision="days" />
+    </specialization>
+
+    <specialization id="living-birthdate" base="date">
+      <!-- need better date-parser to make thing work -->
+      <minInclusive value="now - 140 year" precision="days" />
+      <maxInclusive value="now" precision="days" />
+    </specialization>
+
 
   </datatype>
 
   <datatype id="long">
+
     <specialization id="duration">
       <!-- I have no idea how to do this -->
     </specialization>
