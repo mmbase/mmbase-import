@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.81 2005-08-22 13:08:25 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.82 2005-08-30 21:20:24 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -286,6 +286,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request", pageContext.getRequest());
+            args.set("stringvalue", node.getStringValue(field.getName()));
             show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
