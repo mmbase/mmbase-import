@@ -14,11 +14,17 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * A DataTypeCollector is a collection of named DataTypes. So, you can add and request DataType
+ * objects from this by a String. It also facilitates 'chaining' because you can add other
+ * DataTypeCollectors to it. It will delegate searching of a datatype to them, if a certain key is
+ * not available.
+ *
+ * This object also knowns how to 'lock' its DataType's using it's 'signature'. I have no idea where
+ * that is good for.
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.2 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: DataTypeCollector.java,v 1.3 2005-08-30 19:37:51 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -102,7 +108,10 @@ public final class DataTypeCollector {
      * @param dataType the datatype to add
      */
     public void addDataType(DataType dataType) {
-        dataTypes.put(dataType.getName(),dataType);
+        Object old = dataTypes.put(dataType.getName(), dataType);
+        if (old != null) {
+            log.warn("Replaced " + dataType.getName() + " " + old  + " with " + dataType);
+        }
     }
 
     /**
@@ -183,7 +192,7 @@ public final class DataTypeCollector {
     }
 
     public String toString() {
-        return signature +  ": " + dataTypes.values().toString();
+        return signature +  ": " + dataTypes.values() + " " + collectors;
     }
 
 }
