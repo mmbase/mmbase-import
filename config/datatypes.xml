@@ -72,6 +72,13 @@
   </datatype>
 
   <datatype id="datetime">
+
+    <pattern value="yyyy-MM-dd HH:mm" />
+    <pattern xml:lang="nl-NL" value="dd-MMMM-yyyy HH:mm" />
+
+    <getprocessor type="string">
+      <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
+    </getprocessor>
     <specialization id="lastmodified">
       <setprocessor>
         <class>org.mmbase.bridge.util.fields.LastModified</class>
@@ -81,7 +88,22 @@
       </commitprocessor>
     </specialization>
 
-    <specialization id="20th-century">
+    <specialization id="time">
+      <pattern value="HH:mm:ss" />
+      <getprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="date">
+      <pattern value="yyyy-MM-dd" />
+      <pattern xml:lang="nl-NL" value="dd-MMMM-yyyy" />
+      <getprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="20th-century" base="date">
       <!-- Silly example (also used to test)
            Allow only dates from the previous century..
       -->
@@ -89,17 +111,6 @@
       <maxExclusive value="2000-01-01" precision="days" />
     </specialization>
 
-    <specialization id="datetime">
-    </specialization>
-
-    <specialization id="time">
-      <pattern value="HH:mm:ss" />
-      <!-- I have no idea how to do this -->
-    </specialization>
-
-    <specialization id="date">
-      <!-- I have no idea how to do this -->
-    </specialization>
 
   </datatype>
 
