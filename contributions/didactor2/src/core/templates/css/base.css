@@ -555,7 +555,7 @@ a.treeNavigation:hover {
 	 text-decoration: underline }	
 		
 /* ###### content - header ###### */
-	
+
 .mainContent {
 	font-weight: bold;
 	color: #000000;
@@ -567,63 +567,63 @@ a.treeNavigation:hover {
 	z-index: 1;
 	padding: 0em 0em 0em 0em;
 	border-left: 1px solid #888888 }
-	
+
 .contentHeader {
-	font-weight: bold;
-	color: #FFFFFF;
-	text-indent: 0.6em;
-	height: 2em;
-	width: 100%;
-	left: 0em;
-	right: 0em;
-	position: absolute; 
-	z-index: 5;
-	padding: 0.4em 0em 0em 0em;
-	background-color: #999999;
-	border-left: 1px solid #FFFFFF }	
+   font-weight: bold;
+   color: #FFFFFF;
+   text-indent: 0.6em;
+   height: 2em;
+   width: 100%;
+   left: 0em;
+   right: 0em;
+   position: absolute;
+   z-index: 5;
+   padding: 0.4em 0em 0em 0em;
+   background-color: #FAB861;
+   border-left: 0px solid #FFFFFF }
 
 .contentSubHeader {
-	font-weight: normal;
-	color: #000000;
-	text-indent: 0.6em;
-	height: 3.2em;
-	width: 100%;
-	left: 0em;
-	right: 0em;
-	top: 2em;
-	position: absolute; 
-	z-index: 6;
-	padding: 0.5em 0em 0em 0em;
-	background-color: #ffffff;
-	border-left: 1px solid #888888 }	
+   font-weight: normal;
+   color: #000000;
+   text-indent: 0.6em;
+   height: 3.2em;
+   width: 100%;
+   left: 0em;
+   right: 0em;
+   top: 2em;
+   position: absolute;
+   z-index: 6;
+   padding: 0.5em 0em 0em 0em;
+   background-color: #ffffff;
+   border-left: 0px solid #888888 }
 
 .contentBody {
-	font-weight: normal;
-	color: #000000;
-	overflow: visible;
-	top: 5.2em;
-	height: 100%;
-	left: 0em;
-	right: 0em;
-	position: absolute; 
-	z-index: 4;
-	padding: 1em 1em 1em 1em;
-	background-color: #ffffff;
-	border-left: 1px solid #888888 }
-	
+   font-weight: normal;
+   color: #000000;
+   overflow: visible;
+   top: 5.2em;
+   height: 100%;
+   left: 0em;
+   right: 1.5em;
+   position: absolute;
+   z-index: 4;
+   padding: 1em 1em 1em 1.5em;
+   background-color: #ffffff;
+   border-left: 0px solid #888888 }
+
 .contentBodywit {
-	font-weight: normal;
-	color: #000000;
-	overflow: visible;
-	top: 5.2em;
-	height: 50em;
-	left: 0em;
-	right: 0em;
-	position: absolute;
-	z-index: 4; 
-	padding: 1em 1em 1em 1em;
-	background-color: #FFFFFF;
-	border-left: 1px solid #888888 }
+   font-weight: normal;
+   color: #000000;
+   overflow: visible;
+   top: 5.2em;
+   height: 50em;
+   left: 0em;
+   right: 1.5em;
+   position: absolute;
+   z-index: 4;
+   padding: 1em 1em 1em 1.5em;
+   background-color: #ffffff;
+   border-left: 0px solid #888888 }
 
 /* ###### input fields ###### */
 
