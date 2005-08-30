@@ -94,7 +94,7 @@
 
                <% //SCORM PACKAGE %>
                <mm:compare referid="education_type" value="SCORM">
-               <a href="<%= sUserSettings_BaseURL %>/scorm/<mm:write referid="package_id"/>_player/index.htm" class="users">
+               <a href="<%= sUserSettings_BaseURL %>/scorm/<mm:write referid="package_id"/>_player/index.jsp" class="users">
                </mm:compare>
 
                   <%= arrstrEducation[1] %>
