@@ -58,7 +58,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.326 2005-08-02 14:29:26 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.327 2005-08-30 21:18:51 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -94,7 +94,8 @@ public class MMObjectBuilder extends MMTable {
         new Parameter("session",  String.class),
         Parameter.RESPONSE,
         Parameter.REQUEST,
-        Parameter.LOCALE
+        Parameter.LOCALE,
+        new Parameter("stringvalue", String.class)
         //new Parameter("length",   Integer.class),
         //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
@@ -2068,7 +2069,7 @@ public class MMObjectBuilder extends MMTable {
 
         if (rtn == null) {
             CoreField fdef = getField(field);
-            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == Field.TYPE_DATETIME)) { // do something reasonable for this
+            if (fdef != null && ("eventtime".equals(fdef.getGUIType()))) { // do something reasonable for this
 
                 Date date;
                 if (fdef.getType() == Field.TYPE_DATETIME) {
@@ -2084,7 +2085,10 @@ public class MMObjectBuilder extends MMTable {
                     rtn += df.format(date);
                 }
             } else {
-                rtn = node.getStringValue(field);
+                rtn = (String) pars.get("stringvalue");
+                if (rtn == null) {
+                    rtn = node.getStringValue(field);
+                }
             }
         }
         return rtn;
