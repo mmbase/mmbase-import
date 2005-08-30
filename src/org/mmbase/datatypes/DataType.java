@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.13 2005-08-29 12:16:03 michiel Exp $
+ * @version $Id: DataType.java,v 1.14 2005-08-30 19:38:39 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -373,19 +373,19 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor.getClass().getName() + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
-                buf.append(getProcessors[i] == null ? "" : ("\nget [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i].getClass().getName() + "\n"));
+                buf.append(getProcessors[i] == null ? "" : ("; get [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i].getClass().getName() + ""));
             }
         }
         if (setProcessors != null) {
             for (int i =0; i < 13; i++) {
-                buf.append(setProcessors[i] == null ? "" : ("\nset [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i].getClass().getName() + "\n"));
+                buf.append(setProcessors[i] == null ? "" : ("; set [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i].getClass().getName() + ""));
             }
         }
         if (isRequired()) {
-            buf.append("required\n");
+            buf.append("  required");
         }
         if (isUnique()) {
-            buf.append("unique\n");
+            buf.append("  unique");
         }
         return buf.toString();
     }
@@ -394,8 +394,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * Returns a cloned instance of this datatype, inheriting all validation rules.
      * Unlike the original datatype though, the cloned copy is declared unfinished even if the original
      * was finished. This means that the cloned datatype can be changed.
+     * This method is final, override {@link #clone(String)} in stead.
+
      */
-    public Object clone() {
+    public final Object clone() {
         return clone (null);
     }
 
