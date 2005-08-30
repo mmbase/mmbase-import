@@ -25,19 +25,31 @@
       <xsd:element name="required" type="Condition" maxOccurs="1" minOccurs="0" />
 
       <xsd:choice maxOccurs="1" minOccurs="0">
-        <xsd:choice maxOccurs="unbounded" minOccurs="0">
-          <xsd:element name="minExclusive" type="Comparable" />
-          <xsd:element name="maxExclusive" type="Comparable" />
-          <xsd:element name="minInclusive" type="Comparable" />
-          <xsd:element name="maxInclusive" type="Comparable" />
-        </xsd:choice>
-        <xsd:choice maxOccurs="unbounded" minOccurs="0">
-          <xsd:element name="minLength" type="Comparable" />
-          <xsd:element name="maxLength" type="Comparable" />
-          <xsd:element name="length" type="Comparable" />
-          <xsd:element name="pattern" type="Comparable"/>
-          <xsd:element name="whiteSpace" type="WhiteSpace" />
-        </xsd:choice>
+        <xsd:sequence>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="minExclusive" type="Comparable" />
+            <xsd:element name="minInclusive" type="Comparable" />
+          </xsd:choice>
+          <xsd:choice minOccurs="0">
+            <xsd:element name="maxExclusive" type="Comparable" />
+            <xsd:element name="maxInclusive" type="Comparable" />
+          </xsd:choice>
+        </xsd:sequence>>
+        <xsd:sequence>
+          <xsd:element name="minLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="maxLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="length"     type="Comparable" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="pattern"    type="Comparable" minOccurs="0" maxOccurs="unbounded"> 
+            <xsd:annotation>
+              <xsd:documentation>
+                Currently, the pattern is interpreted as a Condition for Strings and for DateTimes it
+                is interpreted a format indication (like the pattern of SimpleDateFormat). In this
+                last case there can also be more than one pattern: for every locale a different one.
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="whiteSpace" type="WhiteSpace" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
         <xsd:sequence>
           <xsd:element ref="enumeration" maxOccurs="unbounded" minOccurs="1" />
         </xsd:sequence>
@@ -46,28 +58,23 @@
         </xsd:sequence>
       </xsd:choice>
 
-      <xsd:element ref="setprocessor"    maxOccurs="unbounded" minOccurs="0" />
-      <xsd:element ref="getprocessor"    maxOccurs="unbounded" minOccurs="0" />
-      <xsd:element ref="commitprocessor" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="setprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="getprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="commitprocessor" type="Processor" maxOccurs="unbounded" minOccurs="0" />
       
       <!-- deprecated ? -->
       <xsd:element ref="specialization" maxOccurs="11" minOccurs="0" /> <!-- 11: number of 'type_database' -->
 
     </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:token" use="required" />
+    <xsd:attribute name="id"   type="xsd:token" use="required" />
     <xsd:attribute name="base" type="xsd:token" use="optional" default="string" />
   </xsd:complexType>
 
 
+  <xsd:element name="datatypes"      type="DataTypes" />
+  <xsd:element name="datatype"       type="DataType" />
   <xsd:element name="specialization" type="DataType"/>
 
-  <xsd:element name="datatypes" type="DataTypes" />
-
-  <xsd:element name="datatype"  type="DataType" />
-
-  <xsd:element name="setprocessor"  type="Processor" />
-  <xsd:element name="getprocessor"  type="Processor" />
-  <xsd:element name="commitprocessor"  type="Processor" />
 
   <xsd:complexType name="Constraint">
     <xsd:sequence>
@@ -79,7 +86,7 @@
   <xsd:complexType name="Comparable">
     <xsd:complexContent>
       <xsd:extension base ="Constraint">
-        <xsd:attribute name="value" type="xsd:string" />
+        <xsd:attribute name="value"     type="xsd:string" />
         <xsd:attribute name="precision" type="type_precision" />
       </xsd:extension>
     </xsd:complexContent>
