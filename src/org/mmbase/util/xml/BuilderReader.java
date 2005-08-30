@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.31 2005-08-22 08:14:02 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.32 2005-08-30 21:32:10 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -285,6 +285,7 @@ public class BuilderReader extends XMLBasicReader {
      *        This builder is used to access other datatypes available in this builder (i.e. through definitions from parent builders),
      *        and is used as a lock Object to lock datatypes read for this builder.
      * @return a Map of all datatypes or <code>null</code> if no datatypes are defined.
+     * @since MMBase-1.8
      */
     public Map getDataTypes(DataTypeCollector collector) {
         Element element = getElementByPath("builder.datatypes");
@@ -333,12 +334,13 @@ public class BuilderReader extends XMLBasicReader {
             }
         }
 
-        for(Iterator ns = getChildElements("builder.fieldlist","field"); ns.hasNext(); ) {
-            Element field = (Element)ns.next();
-            CoreField def = (CoreField)oldset.get(getElementValue(getElementByPath(field,"field.db.name")));
+        for(Iterator ns = getChildElements("builder.fieldlist", "field"); ns.hasNext(); ) {
+            Element field = (Element) ns.next();
+            CoreField def = (CoreField) oldset.get(getElementValue(getElementByPath(field, "field.db.name")));
             if (def != null) {
                 def.rewrite();
-                DataType dataType = decodeDataType(collector, def.getName(),getElementByPath(field,"field.gui"), def.getType(), def.getListItemType(), false);
+                Element gui = getElementByPath(field, "field.gui");
+                DataType dataType = decodeDataType(collector, def.getName(), gui, def.getType(), def.getListItemType(), false);
                 if (dataType != null) {
                     def.setDataType(dataType); // replace datatype
                 }
@@ -433,6 +435,7 @@ public class BuilderReader extends XMLBasicReader {
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
 
                 Function function;
+                log.service("Using " + functionClass);
                 Class claz = Class.forName(functionClass);
                 if (Function.class.isAssignableFrom(claz)) {
                     if (!providerKey.equals("")) {
@@ -479,7 +482,7 @@ public class BuilderReader extends XMLBasicReader {
                 }
 
                 results.add(function);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
 
@@ -592,7 +595,9 @@ public class BuilderReader extends XMLBasicReader {
     }
 
     /**
-     * detemrine a data type instance based on the given gui element
+     * Determine a data type instance based on the given gui element
+     * @TODO perhaps 'guitype' must be deprecated in favour of 'datatype' element
+     * @since MMBase-1.8
      */
     protected DataType decodeDataType(DataTypeCollector collector, String fieldName, Element gui, int type, int listItemType, boolean forceInstance) {
         DataType baseDataType;
@@ -673,6 +678,7 @@ public class BuilderReader extends XMLBasicReader {
         }
 
         decodeFieldDef(field, def);
+
 
         return def;
     }
