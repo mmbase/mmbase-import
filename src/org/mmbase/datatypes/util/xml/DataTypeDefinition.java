@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.10 2005-08-31 11:39:31 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.11 2005-08-31 12:40:33 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -72,21 +72,25 @@ public class DataTypeDefinition {
         return DocumentReader.getNodeTextValue(element);
     }
 
+    private static int anonymousSequence = 1;
     /**
      * Configures the data type definition, using data from a DOM element
      */
     DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
         String typeString = getAttribute(dataTypeElement,"id");
+        if (typeString.equals("")) {
+            typeString = "ANONYMOUS" + anonymousSequence++;
+        }
         if ("byte".equals(typeString)) typeString = "binary";
         String baseString = getAttribute(dataTypeElement,"base");
         if (log.isDebugEnabled()) log.debug("Reading element " + typeString + " " + baseString);
         if (baseString != null && !baseString.equals("")) {
             if (baseDataType != null) {
-                log.warn("Attribute 'base' ('" + baseDataType + "') not allowed with datatype " + typeString + ".");
+                log.warn("Attribute 'base' ('" + baseDataType + "') not allowed with datatype '" + typeString + "'.");
             } else {
-                baseDataType = collector.getDataType(baseString);
+                baseDataType = collector.getDataType(baseString, true);
                 if (baseDataType == null) {
-                    log.warn("Attribute 'base' of datatype '" + typeString + "' is an unknown datatype.");
+                    log.warn("Attribute 'base' ('" + baseString + "') of datatype '" + typeString + "' is an unknown datatype.");
                 }
             }
         }
@@ -183,6 +187,9 @@ public class DataTypeDefinition {
                     addProcessor(DataType.PROCESS_COMMIT, childElement);
                 } else if ("enumeration".equals(childElement.getLocalName())) {
                     addEnumeration(childElement);
+                } else if ("default".equals(childElement.getLocalName())) {
+                    String value = getAttribute(childElement, "value");
+                    dataType.setDefaultValue(value);                         
                 } else if (nonConditions.matcher(childElement.getLocalName()).matches()) {
                     // ignore
                 } else if (dataType instanceof StringDataType) {
