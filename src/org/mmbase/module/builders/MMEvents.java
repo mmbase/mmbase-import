@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.18 2005-03-29 14:50:34 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.19 2005-08-31 11:46:55 nklasens Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
@@ -94,16 +94,16 @@ public class MMEvents extends MMObjectBuilder {
             return DateSupport.getTimeSec(str);
         } else if (field.indexOf("longmonth_")!=-1) {
             int str = node.getIntValue(field.substring(10));
-            return datestrings.longmonth[DateSupport.getMonthInt(str)];
+            return datestrings.getMonth(DateSupport.getMonthInt(str));
         } else if (field.indexOf("month_")!=-1) {
             int str = node.getIntValue(field.substring(6));
-            return datestrings.month[DateSupport.getMonthInt(str)];
+            return datestrings.getShortMonth(DateSupport.getMonthInt(str));
         } else if (field.indexOf("weekday_")!=-1) {
             int str = node.getIntValue(field.substring(8));
-            return datestrings.longday[DateSupport.getWeekDayInt(str)];
+            return datestrings.getDay(DateSupport.getWeekDayInt(str));
         } else if (field.indexOf("shortday_")!=-1) {
             int str = node.getIntValue(field.substring(8));
-            return datestrings.day[DateSupport.getWeekDayInt(str)];
+            return datestrings.getShortDay(DateSupport.getWeekDayInt(str));
         } else if (field.indexOf("day_")!=-1) {
             int str = node.getIntValue(field.substring(4));
             return ""+DateSupport.getDayInt(str);
