@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.60 2005-08-31 12:36:10 michiel Exp $
+ * @version $Id: Casting.java,v 1.61 2005-08-31 12:58:07 michiel Exp $
  */
 
 import java.util.*;
@@ -61,6 +61,7 @@ public class Casting {
     }
 
     public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd");
+    public final static DateFormat ISO_8601_TIME = new SimpleDateFormat("HH:mm:ss");
 
 
     private static final Logger log = Logging.getLoggerInstance(Casting.class);
@@ -768,6 +769,7 @@ public class Casting {
         if (d instanceof java.util.Date) {
             date = (java.util.Date) d;
         } else {
+            // must perhaps be delegated to specialized class, which borrows stuff from TimeTag.
             try {
                 long dateInSeconds = -1;
                 if (d instanceof Number) {
@@ -792,10 +794,15 @@ public class Casting {
                             date = ISO_8601_DATE.parse("" + d);
                         } catch (ParseException pe3) {
                             try {
-                                date = DynamicDate.getInstance("" + d);
-                            } catch (IllegalArgumentException iae) {
-                                log.error(iae);
-                                return new Date(-1);
+                                date = ISO_8601_TIME.parse("" + d);
+                            } catch (ParseException pe4) {
+                                
+                                try {
+                                    date = DynamicDate.getInstance("" + d);
+                                } catch (IllegalArgumentException iae) {
+                                    log.error(iae);
+                                    return new Date(-1);
+                                }
                             }
                         }
                     }
