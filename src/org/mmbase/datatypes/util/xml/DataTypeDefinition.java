@@ -25,10 +25,10 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.9 2005-08-30 19:36:21 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.10 2005-08-31 11:39:31 pierre Exp $
  * @since MMBase-1.8
  **/
-class DataTypeDefinition {
+public class DataTypeDefinition {
 
     private static final Logger log = Logging.getLoggerInstance(DataTypeDefinition.class);
 
@@ -45,7 +45,7 @@ class DataTypeDefinition {
     /**
      * Constructor.
      */
-    DataTypeDefinition(DataTypeCollector collector) {
+    public DataTypeDefinition(DataTypeCollector collector) {
         this.collector = collector;
     }
 
@@ -125,7 +125,7 @@ class DataTypeDefinition {
         }
         return loc;
     }
-    
+
 
     protected LocalizedString getLocalizedDescriptions(String tagName, Element element, LocalizedString descriptions) {
         NodeList childNodes = element.getChildNodes();
