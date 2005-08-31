@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.33 2005-08-31 12:34:14 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.34 2005-08-31 12:57:16 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -556,7 +556,7 @@ public class BuilderReader extends XMLBasicReader {
         if (dataTypeElement != null) {
             String base = dataTypeElement.getAttribute("base");
             DataType baseDataType = collector.getDataType("base");            
-            DataType  dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, collector);
+            DataType  dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, collector).dataType;
             def.setDataType(dataType);
             log.info("Found and set " + dataType + " for " + def);
         }
