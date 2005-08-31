@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.115 2005-08-22 08:14:01 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.116 2005-08-31 13:53:52 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -676,7 +676,7 @@ public class DatabaseStorageManager implements StorageManager {
             File binaryFile = getBinaryFile(node, fieldName);
             binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
             if (node.isNull(fieldName)) {
-                if (field.isRequired()) {
+                if (field.isNotNull()) {
                     node.storeValue(field.getName(), new ByteArrayInputStream(new byte[0]));
                 } else {
                     if (binaryFile.exists()) {
@@ -1060,7 +1060,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.7.1
      */
     protected boolean setNullValue(PreparedStatement statement, int index, Object value, CoreField field, int type) throws StorageException, SQLException {
-        boolean mayBeNull = ! field.isRequired();
+        boolean mayBeNull = ! field.isNotNull();
         if (value == null) { // value unset
             if (mayBeNull) {
                 statement.setNull(index, type);
@@ -1144,7 +1144,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setNodeValue(PreparedStatement statement, int index, Object nodeValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, nodeValue, field, java.sql.Types.INTEGER)) {
-            if (nodeValue == null && field.isRequired()) {
+            if (nodeValue == null && field.isNotNull()) {
                 throw new StorageException("The NODE field with name " + field.getClass() + " " + field.getName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
             }
             int nodeNumber = Casting.toInt(nodeValue);
@@ -1344,7 +1344,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (objectValue == null || objectValue == MMObjectNode.VALUE_NULL) {
-            if(field.isRequired()) {
+            if(field.isNotNull()) {
                 objectValue = "<p/>";
             }
         }
@@ -1393,7 +1393,7 @@ public class DatabaseStorageManager implements StorageManager {
                         File binaryFile = getBinaryFile(node, fieldName);
                         File checkedFile = checkFile(binaryFile, node, field);
                         if (checkedFile == null) {
-                            if (field.isRequired()) {
+                            if (field.isNotNull()) {
                                 log.warn("Could not find blob for field to delete '" + fieldName + "' of node " + node.getNumber() + ": " + binaryFile);
                             } else {
                                 // ok, value was probably simply 'null'.
@@ -1783,7 +1783,7 @@ public class DatabaseStorageManager implements StorageManager {
         int found = typeMappings.indexOf(mapping);
         if (found > -1) {
             String fieldDef = factory.getStorageIdentifier(field) + " " + ((TypeMapping)typeMappings.get(found)).getType(size);
-            if (field.isRequired()) {
+            if (field.isNotNull()) {
                 fieldDef += " NOT NULL";
             }
             return fieldDef;
@@ -2172,10 +2172,10 @@ public class DatabaseStorageManager implements StorageManager {
                             field.setDataType((DataType)DataTypes.getDataType(type).clone());
                         }
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
-                        if (nullable == field.getDataType().isRequired()) {
+                        if (nullable == field.isNotNull()) {
                             // only correct if storage is more restrictive
                             if (!nullable) {
-                                field.getDataType().setRequired(!nullable);
+                                field.setNotNull(!nullable);
                                 log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
                             } else {
                                 log.debug("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : notnull in storage is " + !nullable);
