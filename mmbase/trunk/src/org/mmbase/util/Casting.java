@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.59 2005-08-29 13:18:48 michiel Exp $
+ * @version $Id: Casting.java,v 1.60 2005-08-31 12:36:10 michiel Exp $
  */
 
 import java.util.*;
@@ -791,8 +791,12 @@ public class Casting {
                         try {
                             date = ISO_8601_DATE.parse("" + d);
                         } catch (ParseException pe3) {
-                            log.error("'" + d   + "' is not parseable as a datetime");
-                            date = new java.util.Date(-1);
+                            try {
+                                date = DynamicDate.getInstance("" + d);
+                            } catch (IllegalArgumentException iae) {
+                                log.error(iae);
+                                return new Date(-1);
+                            }
                         }
                     }
                 }
