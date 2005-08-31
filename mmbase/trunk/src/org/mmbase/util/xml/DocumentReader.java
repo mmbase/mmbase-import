@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.11 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: DocumentReader.java,v 1.12 2005-08-31 11:09:43 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -394,7 +394,7 @@ public class DocumentReader  {
 
     /**
      * @param path Path to the element
-     * @return Enumeration of child elements
+     * @return Iterator of child elements
      */
     public Iterator getChildElements(String path) {
         return getChildElements(getElementByPath(path));
@@ -402,7 +402,7 @@ public class DocumentReader  {
 
     /**
      * @param e Element
-     * @return Enumeration of child elements
+     * @return Iterator of child elements
      */
     public Iterator getChildElements(Element e) {
         return getChildElements(e,"*");
@@ -411,7 +411,7 @@ public class DocumentReader  {
     /**
      * @param path Path to the element
      * @param tag tag to match ("*" means all tags")
-     * @return Enumeration of child elements with the given tag
+     * @return Iterator of child elements with the given tag
      */
     public Iterator getChildElements(String path,String tag) {
         return getChildElements(getElementByPath(path),tag);
@@ -420,7 +420,8 @@ public class DocumentReader  {
     /**
      * @param e Element
      * @param tag tag to match ("*" means all tags")
-     * @return Enumeration of child elements with the given tag
+     * @return Iterator of child elements with the given tag
+     * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
      */
     public Iterator getChildElements(Element e,String tag) {
         List v = new ArrayList();
