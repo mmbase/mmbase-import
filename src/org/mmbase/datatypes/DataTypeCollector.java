@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import java.util.*;
+import org.mmbase.datatypes.util.xml.DataTypeDefinition;
 import org.mmbase.util.logging.*;
 
 /**
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.3 2005-08-30 19:37:51 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.4 2005-08-31 11:39:31 pierre Exp $
  */
 
 public final class DataTypeCollector {
@@ -63,6 +64,10 @@ public final class DataTypeCollector {
      */
     public DataTypeCollector(Object signature) {
          this.signature = signature;
+    }
+
+    public DataTypeDefinition getDataTypeDefinition() {
+        return new DataTypeDefinition(this);
     }
 
     /**
