@@ -21,6 +21,9 @@
 
   <xsd:complexType name="DataType">
     <xsd:sequence>
+      <xsd:element name="default"  maxOccurs="1" minOccurs="0">
+        <xsd:attribute name="value" type="xsd:string" />
+      </xsd:element>
       <xsd:element name="unique"   type="Condition" maxOccurs="1" minOccurs="0" />
       <xsd:element name="required" type="Condition" maxOccurs="1" minOccurs="0" />
 
