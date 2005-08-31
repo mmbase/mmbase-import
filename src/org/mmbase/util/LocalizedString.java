@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.11 2005-08-03 15:02:01 pierre Exp $
+ * @version $Id: LocalizedString.java,v 1.12 2005-08-31 12:42:47 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -179,7 +179,7 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
 
     /**
      * A resource-bundle with given name can be associated to this LocalizedString. If no
-     * translations where explicitely added, it can be used to look up the translation in the bundle,
+     * translations were explicitely added, it can be used to look up the translation in the bundle,
      * using the key.
      */
 
