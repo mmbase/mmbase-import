@@ -8,8 +8,14 @@
     attributeFormDefault="unqualified"  
     version="1.0">
 
-  <xsd:import namespace="http://www.mmbase.org/xmlns/searchquery" 
-              schemaLocation="http://www.mmbase.org/xmlns/enumerationquery.xsd" />
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+  <xsd:import
+      namespace="http://www.mmbase.org/xmlns/searchquery" 
+      schemaLocation="http://www.mmbase.org/xmlns/enumerationquery.xsd" />
 
 
   <xsd:complexType name="DataTypes">
@@ -22,7 +28,9 @@
   <xsd:complexType name="DataType">
     <xsd:sequence>
       <xsd:element name="default"  maxOccurs="1" minOccurs="0">
-        <xsd:attribute name="value" type="xsd:string" />
+        <xsd:complexType>
+          <xsd:attribute name="value" type="xsd:string" />
+        </xsd:complexType>
       </xsd:element>
       <xsd:element name="unique"   type="Condition" maxOccurs="1" minOccurs="0" />
       <xsd:element name="required" type="Condition" maxOccurs="1" minOccurs="0" />
@@ -37,12 +45,12 @@
             <xsd:element name="maxExclusive" type="Comparable" />
             <xsd:element name="maxInclusive" type="Comparable" />
           </xsd:choice>
-        </xsd:sequence>>
+        </xsd:sequence>
         <xsd:sequence>
           <xsd:element name="minLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
           <xsd:element name="maxLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
           <xsd:element name="length"     type="Comparable" minOccurs="0" maxOccurs="1" />
-          <xsd:element name="pattern"    type="Comparable" minOccurs="0" maxOccurs="unbounded"> 
+          <xsd:element name="pattern"    minOccurs="0" maxOccurs="unbounded"> 
             <xsd:annotation>
               <xsd:documentation>
                 Currently, the pattern is interpreted as a Condition for Strings and for DateTimes it
@@ -50,6 +58,13 @@
                 last case there can also be more than one pattern: for every locale a different one.
               </xsd:documentation>
             </xsd:annotation>
+            <xsd:complexType>
+              <xsd:complexContent>
+                <xsd:extension base ="Comparable">
+                  <xsd:attribute ref="xml:lang" />
+                </xsd:extension>
+              </xsd:complexContent>
+            </xsd:complexType>
           </xsd:element>
           <xsd:element name="whiteSpace" type="WhiteSpace" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
