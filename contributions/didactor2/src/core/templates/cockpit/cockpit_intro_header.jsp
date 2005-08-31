@@ -4,8 +4,12 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
+
+<%--
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+--%>
+
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<mm:write referid="lang_code" />">
   <head>
     <mm:write referid="extraheader" escape="none" />
@@ -14,10 +18,10 @@
 <%--    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids" />" />--%>
   </head>
   <body <mm:write referid="extrabody" escape="none" />>
-  	<div>
+   <div>
       <mm:treeinclude page="/cockpit/applicationbarcockpit.jsp" objectlist="$includePath" referids="$referids"/>
       <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids" />
       <mm:treeinclude page="/cockpit/educationbarcockpit.jsp" objectlist="$includePath" referids="$referids" />
-	</div>
+   </div>
 </mm:cloud>
 </mm:content>
