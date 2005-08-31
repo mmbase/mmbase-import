@@ -20,6 +20,14 @@
  *          2003-01-06	Fixed RegExp to correctly work with IE 5.0x
  *          2004-05-09  When printing revert to original
  *
+ * Added to MMBase repository: 2005-08. $Id: pngbehavior.htc,v 1.2 2005-08-31 16:44:57 michiel Exp $
+ *
+ * Add to your style:
+ * img {
+ *  /* terrible hack for IE */
+ *  behavior: url("<mm:url page="/mmbase/style/pngbehavior.htc" />");
+ * }
+ * It's also essential to specify height and with on your img-tags. This is supported by <mm:image />.
  */
 
 var supported = /MSIE ((5\.5)|[6789])/.test(navigator.userAgent) &&
