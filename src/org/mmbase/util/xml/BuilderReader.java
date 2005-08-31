@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.32 2005-08-30 21:32:10 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.33 2005-08-31 12:34:14 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -280,11 +280,8 @@ public class BuilderReader extends XMLBasicReader {
 
     /**
      * Get the datatypes defined for this builder.
-     *
-     * @param builder the builder for which to retrieve the datatypes.
-     *        This builder is used to access other datatypes available in this builder (i.e. through definitions from parent builders),
-     *        and is used as a lock Object to lock datatypes read for this builder.
-     * @return a Map of all datatypes or <code>null</code> if no datatypes are defined.
+     * @param collector A DataTypeCollector to which the newly found DataTypes will be added.
+     * @return Returns the data-types of the given collector after adding the ones which are configured
      * @since MMBase-1.8
      */
     public Map getDataTypes(DataTypeCollector collector) {
@@ -344,10 +341,10 @@ public class BuilderReader extends XMLBasicReader {
                 if (dataType != null) {
                     def.setDataType(dataType); // replace datatype
                 }
-                decodeFieldDef(field, def);
+                decodeFieldDef(field, def, collector);
                 def.finish();
             } else {
-                def = decodeFieldDef(builder, collector,field);
+                def = decodeFieldDef(builder, collector, field);
                 def.setStoragePosition(pos++);
                 def.finish();
                 results.add(def);
@@ -526,34 +523,46 @@ public class BuilderReader extends XMLBasicReader {
      * @param elm The element containing the field information acc. to the buidler xml format
      * @param def The field definition to alter
      */
-    private void decodeFieldDef(Element field, CoreField def) {
+    private void decodeFieldDef(Element field, CoreField def, DataTypeCollector collector) {
         // Gui
-        Element descriptions = getElementByPath(field,"field.descriptions");
+        Element descriptions = getElementByPath(field, "field.descriptions");
         if (descriptions!=null) {
-            for (Iterator iter = getChildElements(descriptions,"description"); iter.hasNext(); ) {
+            for (Iterator iter = getChildElements(descriptions, "description"); iter.hasNext(); ) {
                 Element tmp = (Element) iter.next();
-                String lang = getElementAttributeValue(tmp,"xml:lang");
+                String lang = getElementAttributeValue(tmp, "xml:lang");
                 def.setDescription(getElementValue(tmp), getLocale(lang));
             }
         }
 
-        Element gui = getElementByPath(field,"field.gui");
+        
+        // XXX: deprecated tag 'gui'
+        Element gui = getElementByPath(field, "field.gui");
         if (gui != null) {
-            for (Iterator iter = getChildElements(gui,"guiname"); iter.hasNext(); ) {
+            for (Iterator iter = getChildElements(gui, "guiname"); iter.hasNext(); ) {
                 Element tmp = (Element) iter.next();
-                String lang = getElementAttributeValue(tmp,"xml:lang");
+                String lang = getElementAttributeValue(tmp, "xml:lang");
                 def.setGUIName(getElementValue(tmp), getLocale(lang));
             }
-            // XXX: deprecated tag 'name'
-            for(Iterator iter = getChildElements(gui,"name"); iter.hasNext(); ) {
+            // XXX: even more deprecated
+            for(Iterator iter = getChildElements(gui, "name"); iter.hasNext(); ) {
                 Element tmp = (Element) iter.next();
-                String lang = getElementAttributeValue(tmp,"xml:lang");
+                String lang = getElementAttributeValue(tmp, "xml:lang");
                 def.setGUIName(getElementValue(tmp), getLocale(lang));
             }
         }
 
+        // since 1.8
+        Element dataTypeElement = getElementByPath(field, "field.datatype");
+        if (dataTypeElement != null) {
+            String base = dataTypeElement.getAttribute("base");
+            DataType baseDataType = collector.getDataType("base");            
+            DataType  dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, collector);
+            def.setDataType(dataType);
+            log.info("Found and set " + dataType + " for " + def);
+        }
+
         // Editor
-        Element editorpos = getElementByPath(field,"field.editor.positions.input");
+        Element editorpos = getElementByPath(field, "field.editor.positions.input");
         if (editorpos != null) {
             int inputPos = getEditorPos(editorpos);
             if (inputPos > -1) inputPositions.add(new Integer(inputPos));
@@ -568,11 +577,11 @@ public class BuilderReader extends XMLBasicReader {
             def.setEditPosition(i);
 
         }
-        editorpos = getElementByPath(field,"field.editor.positions.list");
+        editorpos = getElementByPath(field, "field.editor.positions.list");
         if (editorpos != null) {
             def.setListPosition(getEditorPos(editorpos));
         }
-        editorpos = getElementByPath(field,"field.editor.positions.search");
+        editorpos = getElementByPath(field, "field.editor.positions.search");
         if (editorpos != null) {
             int searchPos = getEditorPos(editorpos);
             if (searchPos > -1) searchPositions.add(new Integer(searchPos));
@@ -597,6 +606,12 @@ public class BuilderReader extends XMLBasicReader {
     /**
      * Determine a data type instance based on the given gui element
      * @TODO perhaps 'guitype' must be deprecated in favour of 'datatype' element
+     * @param collector The DataTypeCollector of the bulider.
+     * @param fieldName unused
+     * @param gui       The 'gui' element of the builder xml
+     * @param type      The database type of the field
+     * @param listItemType If the database type is a List, there is also a type of its element
+     * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
     protected DataType decodeDataType(DataTypeCollector collector, String fieldName, Element gui, int type, int listItemType, boolean forceInstance) {
@@ -608,10 +623,10 @@ public class BuilderReader extends XMLBasicReader {
         }
         DataType dataType = null;
         if (gui != null) {
-            Element guiTypeElement = getElementByPath(gui,"gui.guitype");
+            Element guiTypeElement = getElementByPath(gui, "gui.guitype");
             // XXX: deprecated tag 'type'
             if (guiTypeElement == null) {
-                guiTypeElement = getElementByPath(gui,"gui.type");
+                guiTypeElement = getElementByPath(gui, "gui.type");
             }
             if (guiTypeElement != null && collector != null) {
                 String guiType = getElementValue(guiTypeElement);
@@ -631,9 +646,8 @@ public class BuilderReader extends XMLBasicReader {
 
     /**
      * Construct a FieldDef object using a field Element using information
-     * obtained from the buidler configuration.
-     * @param elm The element containing the field information acc. to the buidler xml format
-     * @return def The field definition to alter
+     * obtained from the builder configuration.
+     * @since MMBase-1.8
      */
     private CoreField decodeFieldDef(MMObjectBuilder builder, DataTypeCollector collector, Element field) {
         // create a new CoreField we need to fill
@@ -645,16 +659,16 @@ public class BuilderReader extends XMLBasicReader {
         int listItemType = Field.TYPE_UNKNOWN;
         if (type == Field.TYPE_LIST) {
             if (baseType.length() > 5) {
-                listItemType = Fields.getType(baseType.substring(5,baseType.length()-1));
+                listItemType = Fields.getType(baseType.substring(5, baseType.length() - 1));
             }
         }
         int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        DataType dataType = decodeDataType(collector,fieldName,getElementByPath(field,"field.gui"), type, listItemType, true);
+        DataType dataType = decodeDataType(collector, fieldName, getElementByPath(field,"field.gui"), type, listItemType, true);
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
         def.setParent(builder);
 
-        String size = getElementAttributeValue(dbtype,"size");
+        String size = getElementAttributeValue(dbtype, "size");
         if (size != null && !size.equals("")) {
             try {
                 def.setSize(Integer.parseInt(size));
@@ -663,21 +677,21 @@ public class BuilderReader extends XMLBasicReader {
             }
         }
         // set required property, but only if given
-        String required = getElementAttributeValue(dbtype,"required");
+        String required = getElementAttributeValue(dbtype, "required");
         if (required == null || required.equals("")) {
-            required = getElementAttributeValue(dbtype,"notnull");
+            required = getElementAttributeValue(dbtype, "notnull");
         }
         if ("true".equalsIgnoreCase(required)) {
             def.getDataType().setRequired(true);
         }
 
         // set unique property, but only if given
-        String unique = getElementAttributeValue(dbtype,"unique");
+        String unique = getElementAttributeValue(dbtype, "unique");
         if ("true".equalsIgnoreCase(unique)) {
             def.getDataType().setUnique(true);
         }
 
-        decodeFieldDef(field, def);
+        decodeFieldDef(field, def, collector);
 
 
         return def;
