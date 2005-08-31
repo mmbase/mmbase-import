@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.11 2005-08-30 21:30:51 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.12 2005-08-31 12:38:58 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -61,6 +61,11 @@ public class DateTimeDataType extends DataType {
      */
     public DateTimeDataType(String name) {
         super(name, Date.class);
+    }
+
+    public DataType setDefaultValue(Object o) {
+        Date d = Casting.toDate(o);
+        return super.setDefaultValue(o);
     }
 
     // javadoc inherited
