@@ -11,4 +11,4 @@
    </mm:treeinclude>
 </mm:cloud>
 
-<iframe id="didactor_frame" name="didactor_frame" src="index.htm" width="100%" height="100%"></iframe>
+<iframe id="didactor_frame" name="didactor_frame" src="index.htm" width="100%" height="85%"></iframe>
