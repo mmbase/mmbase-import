@@ -38,9 +38,9 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.35 2005-08-31 13:53:18 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.36 2005-08-31 20:55:43 michiel Exp $
  */
-public class BuilderReader extends XMLBasicReader {
+public class BuilderReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
     /** Public ID of the Builder DTD version 1.0 */
@@ -52,20 +52,29 @@ public class BuilderReader extends XMLBasicReader {
     public static final String PUBLIC_ID_BUILDER_1_1 = "-//MMBase//DTD builder config 1.1//EN";
     private static final String PUBLIC_ID_BUILDER_1_1_FAULT = "-//MMBase/DTD builder config 1.1//EN";
 
-    /** Public ID of the Builder DTD version 2.0 */
-    public static final String PUBLIC_ID_BUILDER_2_0 = "-//MMBase//DTD builder config 2.0//EN";
 
     /** DTD resource filename of the Builder DTD version 1.0 */
     public static final String DTD_BUILDER_1_0 = "builder_1_0.dtd";
     /** DTD resource filename of the Builder DTD version 1.1 */
     public static final String DTD_BUILDER_1_1 = "builder_1_1.dtd";
-    /** DTD resource filename of the Builder DTD version 2.0 */
-    public static final String DTD_BUILDER_2_0 = "builder_2_0.dtd";
 
     /** Public ID of the most recent Builder DTD */
-    public static final String PUBLIC_ID_BUILDER = PUBLIC_ID_BUILDER_2_0;
+    public static final String PUBLIC_ID_BUILDER = PUBLIC_ID_BUILDER_1_1;
     /** DTD respource filename of the most recent Builder DTD */
-    public static final String DTD_BUILDER = DTD_BUILDER_2_0;
+    public static final String DTD_BUILDER = DTD_BUILDER_1_1;
+
+    public static final String XSD_BUILDER_2_0 = "builder.xsd";
+    public static final String NAMESPACE_BUILDER_2_0 = "http://www.mmbase.org/xmlns/builder";
+    public static final String NAMESPACE_BUILDER = NAMESPACE_BUILDER_2_0;
+
+    /**
+     * Register the namespace and XSD used by DataTypeConfigurer
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerSystemIDs() {
+        XMLEntityResolver.registerSystemID(NAMESPACE_BUILDER_2_0 + ".xsd", XSD_BUILDER_2_0, BuilderReader.class);
+    }
+
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
@@ -75,11 +84,11 @@ public class BuilderReader extends XMLBasicReader {
         // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, BuilderReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, BuilderReader.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_2_0, DTD_BUILDER_2_0, BuilderReader.class);
+        XMLEntityResolver.registerPublicID("-//MMBase/DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
 
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, BuilderReader.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_OLD, DTD_BUILDER_1_0, BuilderReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_OLD, DTD_BUILDER_1_0,       BuilderReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1_FAULT, DTD_BUILDER_1_1, BuilderReader.class);
     }
 
@@ -115,37 +124,20 @@ public class BuilderReader extends XMLBasicReader {
 
 
     /**
-     * Creates an instance by reading a builder configuration (xml) file.
-     * @since MMBase-1.6
-     * @param fileName path to the builder configuration file to parse
-     * @param mmb The MMBase instance. Used to resolve inheritance of builders
-     * @deprecated use {@link #BuilderReader(InputSource, MMBase)} in combination with {@link org.mmbase.module.core.MMBase#getBuilderLoader}
-     */
-    public BuilderReader(String fileName, MMBase mmb) {
-        super(fileName, BuilderReader.class);
-        mmbase = mmb;
-        resolveInheritance();
-    }
-
-    /**
-     * Creates an instance by reading a builder configuration (xml) file.
-     * A parser created with this constructor does not resolve inheritance, but maintains
-     * the activity status as it is set in the file.
-     * This call should be used if only the actual information in the xml file is needed.
-     * @param filename path to the builder configuration file to parse
-     * @deprecated use {@link #BuilderReader(InputSource, MMBase)} in combination with {@link org.mmbase.module.core.MMBase#getBuilderLoader}
-     */
-    public BuilderReader(String filename) {
-        this(filename, null);
-        // fake resolving inheritance
-        inheritanceResolved = true;
-    }
-
-    /**
      * @since MMBase-1.7
      */
     public BuilderReader(InputSource source, MMBase mmb) {
         super(source, BuilderReader.class);
+        mmbase = mmb;
+        resolveInheritance();
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    public BuilderReader(Document doc, MMBase mmb) {
+        super(doc);
         mmbase = mmb;
         resolveInheritance();
     }
