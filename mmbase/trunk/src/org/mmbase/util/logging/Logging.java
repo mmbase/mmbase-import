@@ -57,7 +57,7 @@ import org.mmbase.util.ResourceLoader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.33 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: Logging.java,v 1.34 2005-08-31 11:50:44 nklasens Exp $
  */
 
 
@@ -341,6 +341,47 @@ public class Logging {
         Throwable t = e.getCause();
         if (t != null) {
             buf.append(stackTrace(t, max));
+        }
+        return buf.toString();
+    }
+
+
+    public static String applicationStacktrace() {
+        Exception e = new Exception("logging.showApplicationStacktrace");
+        return applicationStacktrace(e);
+    }
+        
+    public static String applicationStacktrace(Throwable e) {
+        StringBuffer buf = new StringBuffer("Application stacktrace");
+        
+        // Get the stack trace
+        StackTraceElement stackTrace[] = e.getStackTrace();
+        // stackTrace[0] contains the method that created the exception.
+        // stackTrace[stackTrace.length-1] contains the oldest method call.
+        // Enumerate each stack element.
+        
+        boolean mmbaseClassesFound = false;
+        for (int i = 0; i < stackTrace.length; i++) {
+           String className = stackTrace[i].getClassName();
+           
+           if (className.indexOf("org.mmbase") > -1) {
+               mmbaseClassesFound = true;
+               // show mmbase taglib
+               if (className.indexOf("Tag") > -1) {    
+                   buf.append("\n        at ").append(stackTrace[i]);
+               }
+           }
+           else {
+               if (mmbaseClassesFound) {
+                   // show none mmbase method which invoked an mmbase method.   
+                   buf.append("\n        at ").append(stackTrace[i]);
+                   break;
+               }
+               // show compiled jsp lines
+               if (className.indexOf("_jsp") > -1) {
+                   buf.append("\n        at ").append(stackTrace[i]);
+               }
+           }
         }
         return buf.toString();
     } 
