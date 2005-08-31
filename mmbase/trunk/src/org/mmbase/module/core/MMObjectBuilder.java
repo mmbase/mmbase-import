@@ -58,7 +58,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.327 2005-08-30 21:18:51 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.328 2005-08-31 10:35:02 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -694,6 +694,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Returns the datatype collector belonging to this buidler.
      * A datatype collector contains the datatypes that are local to this builder.
+     * @since MMBase-1.8
      */
     public DataTypeCollector getDataTypeCollector() {
         if (dataTypeCollector == null) {
