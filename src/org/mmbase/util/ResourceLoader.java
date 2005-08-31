@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.23 2005-08-23 16:39:58 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.24 2005-08-31 20:50:29 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -663,7 +663,7 @@ public class ResourceLoader extends ClassLoader {
      * @throws IOException
      */
     public Document getDocument(String name) throws org.xml.sax.SAXException, IOException  {
-        return getDocument(name, true, false, null);
+        return getDocument(name, true, null);
     }
 
     /**
@@ -671,22 +671,47 @@ public class ResourceLoader extends ClassLoader {
      * configuration in in XML.
      *
      * @param name The name of the resource to be loaded
-     * @param validation If <code>true</code>, validate the xml
-     * @param xsd If <code>true</code>, (and validation is <code>true</code>, validate using an xml-schema
-     * @param baseClass If validation is <code>true</code>, the base calss to serach for the validating xsd or dtd
+     * @param validation If <code>true</code>, validate the xml. By dtd if one of the first lines starts with &lt;!DOCTYPE, by XSD otherwise
+     * @param baseClass If validation is <code>true</code>, the base class to serach for the validating xsd or dtd
      * @return The Document if succesful, <code>null</code> if there is no such resource.
      * @throws SAXException If the resource does not present parseable XML.
      * @throws IOException
      */
-    public Document getDocument(String name, boolean validation, boolean xsd, Class baseClass) throws org.xml.sax.SAXException, IOException  {
+    public Document getDocument(String name, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException  {
+        boolean xsd = validation;
+        if (validation) {
+            int lineNumber = 0;
+            BufferedReader reader = new BufferedReader(getReader(name));
+            String line = reader.readLine();
+            while (lineNumber < 2 && line != null) {
+                if (line.startsWith("<!DOCTYPE")) {
+                    log.info("Using DTD to validate '" + name + "'");
+                    xsd = false;
+                }
+                line = reader.readLine();
+                lineNumber++;
+            }
+            reader.close();
+        }
+
         InputSource source = getInputSource(name);
         if (source == null) return null;
-        XMLEntityResolver resolver = new XMLEntityResolver(true, baseClass);
-        DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd, null/* no error handler */, resolver);
+        XMLEntityResolver resolver = new XMLEntityResolver(validation, baseClass);
+        DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
+                                                                                         null/* default error handler */, resolver);
         if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
         if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
-        Document doc = dbuilder.parse(source);
-        return  doc;
+        try {
+            Document doc = dbuilder.parse(source);
+            return  doc;
+        } catch (java.io.IOException ioe) { // dtd or so not found?
+            if (validation) {
+                log.error(ioe);
+                return getDocument(name, false, baseClass);
+            } else {
+                throw ioe;
+            }
+        }
     }
 
 
