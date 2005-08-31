@@ -58,7 +58,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.328 2005-08-31 10:35:02 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.329 2005-08-31 11:46:55 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -694,7 +694,6 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Returns the datatype collector belonging to this buidler.
      * A datatype collector contains the datatypes that are local to this builder.
-     * @since MMBase-1.8
      */
     public DataTypeCollector getDataTypeCollector() {
         if (dataTypeCollector == null) {
@@ -2588,19 +2587,19 @@ public class MMObjectBuilder extends MMTable {
             return DateSupport.getTimeSec(v);
         } else if (function.equals("longmonth")) {        // longmonth September
             int v=node.getIntValue(field);
-            return DateStrings.longmonths[DateSupport.getMonthInt(v)];
+            return DateStrings.ENGLISH_DATESTRINGS.getMonth(DateSupport.getMonthInt(v));
         } else if (function.equals("monthnumber")) {
             int v=node.getIntValue(field);
             return ""+(DateSupport.getMonthInt(v)+1);
         } else if (function.equals("month")) {            // month Sep
             int v=node.getIntValue(field);
-            return DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
+            return DateStrings.DUTCH_DATESTRINGS.getShortMonth(DateSupport.getMonthInt(v));
         } else if (function.equals("weekday")) {        // weekday Sunday
             int v=node.getIntValue(field);
-            return DateStrings.Dutch_longdays[DateSupport.getWeekDayInt(v)];
+            return DateStrings.DUTCH_DATESTRINGS.getDay(DateSupport.getWeekDayInt(v));
         } else if (function.equals("shortday")) {        // shortday Sun
             int v=node.getIntValue(field);
-            return DateStrings.Dutch_days[DateSupport.getWeekDayInt(v)];
+            return DateStrings.DUTCH_DATESTRINGS.getShortDay(DateSupport.getWeekDayInt(v));
         } else if (function.equals("day")) {            // day 4
             int v=node.getIntValue(field);
             return ""+DateSupport.getDayInt(v);

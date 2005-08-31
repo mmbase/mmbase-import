@@ -9,80 +9,74 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+import java.text.DateFormatSymbols;
+import java.util.Locale;
+
 /**
  * The DateString class provides constant text strings for the weekday, month etc.
  *
- * @deprecated use Local and java.text.DateFormat
- * @version $Id: DateStrings.java,v 1.9 2004-09-29 14:29:23 pierre Exp $
+ * @deprecated FIX dutch days
+ * @version $Id: DateStrings.java,v 1.10 2005-08-31 11:46:55 nklasens Exp $
  */
 public class DateStrings {
-    /**
-     *  English short week day names
-     */
-    public static String days[]={ "Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun" };
-    /**
-     *  English long week day names
-     */
-    public static String longdays[]={ "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday" };
-    /**
-     *  English short month names
-     */
-    public static String months[]={ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" };
-    /**
-     *  English long month names
-     */
-    public static String longmonths[]={ "January","February","March","April","May","June","July","August","September","October","November","December" };
 
     /**
      *  Dutch short week day names
      */
-    public static String Dutch_days[]={ "zon","maa","din","woe","don","vry","zat","zon" };
-    /**
-     *  Dutch long week day names
-     */
-    public static String Dutch_longdays[]={ "zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag","zondag" };
-    /**
-     *  Dutch short month names
-     */
-    public static String Dutch_months[]={ "jan","feb","maa","apr","mei","jun","jul","aug","sep","okt","nov","dec" };
-    /**
-     *  Dutch long month names
-     */
-    public static String Dutch_longmonths[]={ "januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december" };
+    public static final String Dutch_days[]={"", "zon","maa","din","woe","don","vry","zat","zon" };
+
+    public static final DateStrings DUTCH_DATESTRINGS = new DateStrings("nl");
+    public static final DateStrings ENGLISH_DATESTRINGS = new DateStrings("en");
 
     /**
      *  Short week day names (value deoends on chosen language)
      */
-    public String day[];
+    private String day[];
     /**
      *  Long week day names (value deoends on chosen language)
      */
-    public String longday[];
+    private String longday[];
     /**
      *  Long short month names (value deoends on chosen language)
      */
-    public String month[];
+    private String month[];
     /**
      *  Long month names (value deoends on chosen language)
      */
-    public String longmonth[];
+    private String longmonth[];
 
     /**
      * Creates a DateString insatnce, configured for the specified language.
      * The name of the language  has to be an ISO 639 code.
      */
     public DateStrings(String language) {
+        Locale aLocale = new Locale(language);
+        DateFormatSymbols symbols = new DateFormatSymbols(aLocale);
+        
+        day = symbols.getShortWeekdays();
+        longday = symbols.getWeekdays();
+        month = symbols.getShortMonths();
+        longmonth = symbols.getMonths();
+        
         if (language.equals("nl")) {
             day=Dutch_days;
-            longday=Dutch_longdays;
-            month=Dutch_months;
-            longmonth=Dutch_longmonths;
-        } else {
-            // If language is unknown or English.
-            day=days;
-            longday=longdays;
-            month=months;
-            longmonth=longmonths;
         }
     }
+
+    public String getMonth(int monthInt) {
+        return longmonth[monthInt];
+    }
+
+    public String getShortMonth(int monthInt) {
+        return month[monthInt];
+    }
+
+    public String getDay(int weekDayInt) {
+        return longday[weekDayInt + 1];
+    }
+
+    public String getShortDay(int weekDayInt) {
+        return day[weekDayInt + 1];
+    }
+    
 }
