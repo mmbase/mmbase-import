@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.11 2005-08-31 12:40:33 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.12 2005-08-31 12:56:30 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -35,7 +35,7 @@ public class DataTypeDefinition {
     /**
      * the data type
      */
-     DataType dataType = null;
+    public DataType dataType = null;
 
     /**
      * The data type collector that contains the data datatype which this definition.
