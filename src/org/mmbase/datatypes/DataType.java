@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.14 2005-08-30 19:38:39 michiel Exp $
+ * @version $Id: DataType.java,v 1.15 2005-08-31 12:37:53 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -369,7 +369,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append(getName() + " (" + getTypeAsClass() + ")");
+        buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor.getClass().getName() + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
