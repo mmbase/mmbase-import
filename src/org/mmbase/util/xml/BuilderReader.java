@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.34 2005-08-31 12:57:16 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.35 2005-08-31 13:53:18 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -678,12 +678,13 @@ public class BuilderReader extends XMLBasicReader {
         }
         // set required property, but only if given
         String required = getElementAttributeValue(dbtype, "required");
-        if (required == null || required.equals("")) {
-            required = getElementAttributeValue(dbtype, "notnull");
-        }
         if ("true".equalsIgnoreCase(required)) {
             def.getDataType().setRequired(true);
         }
+
+        String notnull = getElementAttributeValue(dbtype, "notnull"); // default for notnull is value of required
+        def.setNotNull("true".equals(notnull) || ((notnull == null || "".equals(notnull)) && def.getDataType().isRequired()));
+
 
         // set unique property, but only if given
         String unique = getElementAttributeValue(dbtype, "unique");

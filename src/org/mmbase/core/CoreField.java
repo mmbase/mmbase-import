@@ -34,6 +34,8 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     private int storagePosition = -1;
     private Object storageIdentifier = null;
 
+    private boolean notNull = false;
+
     /**
      * Create a core object
      * @param name the name of the data type
@@ -69,6 +71,14 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     public Object clone(String name) {
         return super.clone(name, true);
+    }
+
+
+    public void setNotNull(boolean nl) {
+        notNull = nl;
+    }
+    public boolean isNotNull() {
+        return notNull;
     }
 
     /**
