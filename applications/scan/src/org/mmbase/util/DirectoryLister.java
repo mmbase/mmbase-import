@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Used by a device buidlers (i.e. Cameras), and by SCAN
  * @application SCAN or Devices
  * @author David V van Zeventer
- * @version $Id: DirectoryLister.java,v 1.13 2004-09-30 08:52:11 pierre Exp $
+ * @version $Id: DirectoryLister.java,v 1.14 2005-08-31 11:46:55 nklasens Exp $
  */
 public class DirectoryLister {
 
@@ -338,14 +338,14 @@ public class DirectoryLister {
      * hours, minutes, seconds, monthday, month and year in that order.
      */
     private String time2DateAndTime(int time) {
-        return DateSupport.getTime(time)+" "+DateSupport.getMonthDay(time)+" "+DateStrings.Dutch_months[DateSupport.getMonthInt(time)]+" "+DateSupport.getYear(time);
+        return DateSupport.getTime(time)+" "+DateSupport.getMonthDay(time)+" "+DateStrings.DUTCH_DATESTRINGS.getShortMonth(DateSupport.getMonthInt(time))+" "+DateSupport.getYear(time);
     }
     /**
      * Converts the integer timevalue to a String containing
      * hours, minutes, seconds, monthday, month in that order.
      */
     private String time2DateAndTime_NoYear(int time) {
-        return DateSupport.getTime(time)+" "+DateSupport.getMonthDay(time)+" "+DateStrings.Dutch_months[DateSupport.getMonthInt(time)];
+        return DateSupport.getTime(time)+" "+DateSupport.getMonthDay(time)+" "+DateStrings.DUTCH_DATESTRINGS.getShortMonth(DateSupport.getMonthInt(time));
     }
 
 

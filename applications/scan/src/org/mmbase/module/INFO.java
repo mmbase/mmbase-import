@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.50 2003-07-02 06:20:44 keesj Exp $
+ * @version $Id: INFO.java,v 1.51 2005-08-31 11:46:55 nklasens Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -257,9 +257,9 @@ public class INFO extends ProcessorModule {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (tok.hasMoreTokens()) {
-                String val = (String)tok.nextToken();
+                String val = tok.nextToken();
                 if ((tok.hasMoreTokens())||(!val.equals(""))) {
-                    String compareVal = (String)tok.nextToken();
+                    String compareVal = tok.nextToken();
                     if (cmd.equals("STARTSWITH")||cmd.equals("LEFTSTRING")) {
                         if (tok.hasMoreTokens()) {
                             int toffset = 0;
@@ -755,16 +755,16 @@ public class INFO extends ProcessorModule {
                         break;
                     case INFO.English:
                         if (cmd.equals("MONTH")) {
-                            rtn=DateStrings.longmonths[getmonth];
+                            rtn=DateStrings.ENGLISH_DATESTRINGS.getMonth(getmonth);
                         } else {
-                            rtn=DateStrings.months[getmonth];
+                            rtn=DateStrings.ENGLISH_DATESTRINGS.getShortMonth(getmonth);
                         }
                         break;
                     case INFO.Dutch:
                         if (cmd.equals("MONTH")) {
-                            rtn=DateStrings.Dutch_longmonths[getmonth];
+                            rtn=DateStrings.DUTCH_DATESTRINGS.getMonth(getmonth);
                         } else {
-                            rtn=DateStrings.Dutch_months[getmonth];
+                            rtn=DateStrings.DUTCH_DATESTRINGS.getShortMonth(getmonth);
                         }
                         break;
                 }
@@ -816,18 +816,18 @@ public class INFO extends ProcessorModule {
                             case 2:
                                 month=cal.get(Calendar.MONTH);
                                 if (cmd.equals("MONTHS")) {
-                                    rtn=DateStrings.longmonths[month];
+                                    rtn=DateStrings.ENGLISH_DATESTRINGS.getMonth(month);
                                 } else {
-                                    rtn=DateStrings.months[month];
+                                    rtn=DateStrings.ENGLISH_DATESTRINGS.getShortMonth(month);
                                 }
                                 break;
                             default:
                                 month=cal.get(Calendar.MONTH);
                                 if (cmd.equals("MONTHS")) {
-                                    rtn=DateStrings.longmonths[month];
+                                    rtn=DateStrings.ENGLISH_DATESTRINGS.getMonth(month);
                                 } else {
                                     year=cal.get(Calendar.YEAR);
-                                    rtn=DateStrings.months[month]+" "+year;
+                                    rtn=DateStrings.ENGLISH_DATESTRINGS.getShortMonth(month)+" "+year;
                                 }
                                 break;
                         }
@@ -841,18 +841,18 @@ public class INFO extends ProcessorModule {
                             case 2:
                                 month=cal.get(Calendar.MONTH);
                                 if (cmd.equals("MONTHS")) {
-                                    rtn=DateStrings.Dutch_longmonths[month];
+                                    rtn=DateStrings.DUTCH_DATESTRINGS.getMonth(month);
                                 } else {
-                                    rtn=DateStrings.Dutch_months[month];
+                                    rtn=DateStrings.DUTCH_DATESTRINGS.getShortMonth(month);
                                 }
                                 break;
                             default:
                                 month=cal.get(Calendar.MONTH);
                                 if (cmd.equals("MONTHS")) {
-                                    rtn=DateStrings.longmonths[month];
+                                    rtn=DateStrings.DUTCH_DATESTRINGS.getMonth(month);
                                 } else {
                                     year=cal.get(Calendar.YEAR);
-                                    rtn=DateStrings.Dutch_months[month]+" "+year;
+                                    rtn=DateStrings.DUTCH_DATESTRINGS.getShortMonth(month)+" "+year;
                                 }
                                 break;
                         }
@@ -877,16 +877,16 @@ public class INFO extends ProcessorModule {
                         break;
                     case INFO.English:
                         if(cmd.equals("SHORTDAYOFWEEK")) {
-                            rtn=DateStrings.days[--getday];
+                            rtn=DateStrings.ENGLISH_DATESTRINGS.getShortDay(--getday);
                         } else {
-                            rtn=DateStrings.longdays[--getday];
+                            rtn=DateStrings.ENGLISH_DATESTRINGS.getDay(--getday);
                         }
                         break;
                     case INFO.Dutch:
                         if (cmd.equals("SHORTDAYOFWEEK")) {
-                            rtn=DateStrings.Dutch_days[--getday];
+                            rtn=DateStrings.DUTCH_DATESTRINGS.getShortDay(--getday);
                         } else {
-                            rtn=DateStrings.Dutch_longdays[--getday];
+                            rtn=DateStrings.DUTCH_DATESTRINGS.getDay(--getday);
                         }
                         break;
                 }
@@ -953,13 +953,12 @@ public class INFO extends ProcessorModule {
                     iday=6;
                 }
                 d=DateSupport.Date(d.getYear(),iweek,iday);
-                rtn=d.getDate()+" "+DateStrings.Dutch_longmonths[d.getMonth()];
+                rtn=d.getDate()+" "+DateStrings.DUTCH_DATESTRINGS.getMonth(d.getMonth());
                 return rtn;
             }
             if (cmd.equals("NEXTWEEKDATE")) {
                 String sday;
                 int iday,iweek;
-                Date ad;
 
                 iweek=(days/7)+2;
                 if (tok.hasMoreTokens()) {
@@ -978,7 +977,7 @@ public class INFO extends ProcessorModule {
                     iday=6;
                 }
                 d=DateSupport.Date(d.getYear(),iweek,iday);
-                rtn=d.getDate()+" "+DateStrings.Dutch_longmonths[d.getMonth()];
+                rtn=d.getDate()+" "+DateStrings.DUTCH_DATESTRINGS.getMonth(d.getMonth());
                 return rtn;
             }
             if (cmd.equals("GWEEKDATE")) {
@@ -1003,7 +1002,7 @@ public class INFO extends ProcessorModule {
                     iday=6;
                 }
                 d=DateSupport.Date(d.getYear(),iweek,iday);
-                rtn=d.getDate()+" "+DateStrings.Dutch_longmonths[d.getMonth()];
+                rtn=d.getDate()+" "+DateStrings.DUTCH_DATESTRINGS.getMonth(d.getMonth());
                 return rtn;
             }
             if (cmd.equals("NEXTGWEEKDATE")) {
@@ -1028,7 +1027,7 @@ public class INFO extends ProcessorModule {
                     iday=6;
                 }
                 d=DateSupport.Date(d.getYear(),iweek,iday);
-                rtn=d.getDate()+" "+DateStrings.Dutch_longmonths[d.getMonth()];
+                rtn=d.getDate()+" "+DateStrings.DUTCH_DATESTRINGS.getMonth(d.getMonth());
                 return rtn;
             } else if (cmd.equals("WEEKCURTIME")) {
                 Date d2=new Date((long)ctime*1000);
@@ -1264,9 +1263,9 @@ public class INFO extends ProcessorModule {
                     if (val3>=val2 && val3<=val4) {
                         rd=new Date(val3);
                         results.addElement(DateSupport.makedbmdate(rd));
-                        results.addElement(DateStrings.Dutch_longmonths[rd.getMonth()]);
+                        results.addElement(DateStrings.DUTCH_DATESTRINGS.getMonth(rd.getMonth()));
                         results.addElement(""+rd.getDate());
-                        results.addElement(DateStrings.Dutch_longdays[rd.getDay()]);
+                        results.addElement(DateStrings.DUTCH_DATESTRINGS.getMonth(rd.getDay()));
                     }
                 }
             } else {
@@ -1276,9 +1275,9 @@ public class INFO extends ProcessorModule {
                     if (val3>=val2) {
                         rd=new Date(val3);
                         results.addElement(DateSupport.makedbmdate(rd));
-                        results.addElement(DateStrings.Dutch_longmonths[rd.getMonth()]);
+                        results.addElement(DateStrings.DUTCH_DATESTRINGS.getMonth(rd.getMonth()));
                         results.addElement(""+rd.getDate());
-                        results.addElement(DateStrings.Dutch_longdays[rd.getDay()]);
+                        results.addElement(DateStrings.DUTCH_DATESTRINGS.getMonth(rd.getDay()));
                     }
                 }
             }
