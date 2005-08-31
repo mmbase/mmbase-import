@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.12 2005-08-31 11:09:43 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.13 2005-08-31 20:51:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -137,6 +137,13 @@ public class DocumentReader  {
         }
     }
 
+    /**
+     * @since MMBase-1.8
+     */
+    public DocumentReader(Document doc) {
+        document = doc;
+    }
+
 
     private static boolean warnedJAXP12 = false;
     /**
@@ -158,7 +165,8 @@ public class DocumentReader  {
             dfactory.setValidating(validating);
             if (validating && xsd) {
                 try {
-                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
+                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", 
+                                          "http://www.w3.org/2001/XMLSchema");
                 } catch (IllegalArgumentException iae) {
                     if (! warnedJAXP12) {
                         log.warn("The XML parser does not support JAXP 1.2, XSD validation will not work.", iae);
