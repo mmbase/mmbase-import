@@ -1,11 +1,11 @@
-<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
+<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,org.mmbase.util.functions.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.57 2005-05-27 09:09:09 michiel Exp $
+     * @version  $Id: list.jsp,v 1.58 2005-08-31 13:07:28 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -220,9 +220,17 @@ for (int i=0; i < results.size(); i++) {
            if (value.equals("-1")) {
              value = "";
            }
-        } else {
-        
-          value = item.getStringValue("gui(" + fieldname + ")");
+        } else {        
+            Locale locale = new Locale(ewconfig.language);
+            Parameters args = new ParametersImpl(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
+            args.set("field",    field.getName());
+            args.set("language", locale.getLanguage());
+            args.set("locale",   locale);
+            args.set("response", pageContext.getResponse());
+            args.set("request",  pageContext.getRequest());
+            args.set("stringvalue", item.getStringValue(field.getName()));
+            value = item.getFunctionValue("gui", args).toString();
+            //value = item.getStringValue("gui(" + fieldname + ")");
         }
         addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
     }
