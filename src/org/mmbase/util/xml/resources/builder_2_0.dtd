@@ -2,7 +2,7 @@
      builder.dtd version 2.0
      - DTD for MMBase builder definitions
 -->
-<!ELEMENT builder (status?,class?,searchage?,names?,descriptions?,properties?,fieldlist?,indexlist?,functionlist?)>
+<!ELEMENT builder (status?,class?,searchage?,names?,descriptions?,properties?, datatypes?, fieldlist?,indexlist?,functionlist?)>
 <!ATTLIST builder name CDATA #REQUIRED>
 <!ATTLIST builder maintainer CDATA #IMPLIED>
 <!ATTLIST builder version CDATA #IMPLIED>
@@ -29,7 +29,7 @@
 <!ATTLIST property name CDATA #REQUIRED>
 
 <!ELEMENT fieldlist (field*)>
-<!ELEMENT field (descriptions?,gui?,editor?,specialization*,db)>
+<!ELEMENT field (descriptions?,gui?, datatype?, editor?,db)>
 
 <!ELEMENT gui (guiname*,guitype?)>
 <!ELEMENT guiname (#PCDATA)>
