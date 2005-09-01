@@ -36,10 +36,16 @@ import org.mmbase.util.logging.*;
  * {@link MMObjectNode#getNodeValue(String) getNodeValue()} method, using
  * the builder name (or step alias) as argument.
  *
+ * @todo XXXX. This 'builder' is actually singleton (only one instance is created).  It does
+ *             therefore not support getFields, so this is more or less hacked in bridge.  Perhaps in 'core' a
+ *             similar approach as now in birdge must be taken, so no ClusterBuilder, but only Virtual builders,
+ *             one for every query result.
+ *
+ *
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.74 2005-08-31 11:50:44 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.75 2005-09-01 14:16:08 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -245,8 +251,21 @@ public class ClusterBuilder extends VirtualBuilder {
                 throw new RuntimeException("No builder with name '" + builderName + "' found");
             }
             return bul.getField(getFieldNameFromField(fieldName));
+        } else {
+            // 
+            MMObjectBuilder bul = mmb.getBuilder(getTrueTableName(fieldName));
+            if (bul != null) {
+                return new FieldDefs(fieldName, FieldDefs.TYPE_NODE, -1, FieldDefs.STATE_VIRTUAL, org.mmbase.datatypes.DataTypes.getDataType("node"));
+            }
         }
         return null;
+    }
+
+    public List getFields(int order) {        
+        throw new UnsupportedOperationException("Cluster-nodes can have any field.");
+    }
+    public Collection getFields() {        
+        throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
 
     /**
