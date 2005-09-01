@@ -95,7 +95,7 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="dirs" />
+      <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>dir</name>
         <type state="persistent">INTEGER</type>
@@ -165,7 +165,6 @@
         <guiname xml:lang="nl">Relatie-type</guiname>
         <guiname xml:lang="eo">Rilato-tipo</guiname>
         <guiname xml:lang="it">Costruttore</guiname>
-        <guitype>typedef</guitype> <!-- need to fix this with datatype -->
       </gui>
       <editor>
         <positions>
@@ -174,6 +173,9 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </datatype>
       <db>
         <name>builder</name>
         <type required="true" state="persistent">NODE</type>
