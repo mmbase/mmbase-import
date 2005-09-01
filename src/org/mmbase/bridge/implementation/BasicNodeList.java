@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.34 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.35 2005-09-01 15:08:23 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -72,7 +72,14 @@ public class BasicNodeList extends BasicList implements NodeList {
                     node = new BasicRelation(coreNode, nodeManager);
                 }
             } else if (coreBuilder instanceof VirtualBuilder) {
-                node = new BasicNode(coreNode, new VirtualNodeManager(coreNode, (BasicCloud) cloud));
+                // this is a hack, because we prefer to use query to instantiate the VirtualNodeManager (fields can be determined properly then)
+                Query query = (Query) getProperty(NodeList.QUERY_PROPERTY);
+                if (query != null) {
+                    node = new BasicNode(coreNode, new VirtualNodeManager(query, cloud));
+                } else {
+                    node = new BasicNode(coreNode, new VirtualNodeManager(coreNode, cloud));
+                }
+
             } else {
                 // 'normal' node
                 if(nodeManager == null)  {
