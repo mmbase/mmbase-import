@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.61 2005-08-31 12:58:07 michiel Exp $
+ * @version $Id: Casting.java,v 1.62 2005-09-01 14:11:26 michiel Exp $
  */
 
 import java.util.*;
@@ -38,30 +38,6 @@ import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
 
 public class Casting {
-
-    /**
-     * A Date formatter that creates a date based on a ISO 8601 date and a ISO 8601 time.
-     * I.e. 2004-12-01 14:30:00.
-     * It is NOT 100% ISO 8601, as opposed to {@link #ISO_8601_UTC}, as the standard actually requires
-     * a 'T' to be placed between the date and the time.
-     * The date given is the date for the local (server) time. Use this formatter if you want to display
-     * user-friendly dates in local time.
-     */
-    public final static DateFormat ISO_8601_LOOSE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    /**
-     * A Date formatter that creates a ISO 8601 datetime according to UTC/GMT.
-     * I.e. 2004-12-01T14:30:00Z.
-     * This is 100% ISO 8601, as opposed to {@link #ISO_8601_LOOSE}.
-     * Use this formatter if you want to export dates.
-     */
-    public final static DateFormat ISO_8601_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    {
-        ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-    }
-
-    public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd");
-    public final static DateFormat ISO_8601_TIME = new SimpleDateFormat("HH:mm:ss");
 
 
     private static final Logger log = Logging.getLoggerInstance(Casting.class);
@@ -248,7 +224,12 @@ public class Casting {
         } else if (o instanceof Node) {
             return new MapNode((Node)o) {
                     public Object getValue(String fieldName) {
-                        return escape(escaper, super.getStringValue(fieldName));
+                        if (//getNodeManager().hasField(fieldName) && 
+                            getNodeManager().getField(fieldName).getType() == org.mmbase.bridge.Field.TYPE_NODE) {
+                            return wrap(getNodeValue(fieldName), escaper);
+                        } else {
+                            return escape(escaper, super.getStringValue(fieldName));
+                        }
                     }
                     public String toString() {
                         return escape(escaper, "" + node.getNumber());
@@ -263,7 +244,7 @@ public class Casting {
                     public String toString() {
                         String r;
                         if (getTime()  != -1) { // datetime not set
-                            r = ISO_8601_UTC.format((Date)o);
+                            r = DateParser.ISO_8601_UTC.format((Date)o);
                         } else {
                             r = "";
                         }
@@ -502,7 +483,8 @@ public class Casting {
         if (i instanceof Node) {
             res = (Node)i;
         } else if (i instanceof MMObjectNode) {
-            org.mmbase.bridge.NodeList list = new org.mmbase.bridge.implementation.BasicNodeList(Collections.singletonList(i), cloud);
+            org.mmbase.bridge.NodeList list = cloud.getCloudContext().createNodeList();
+            list.add(i); // proibably to utilizy 'convert'?
             res = list.getNode(0);
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
@@ -783,30 +765,7 @@ public class Casting {
                     date = new java.util.Date(dateInSeconds * 1000);
                 }
             } catch (NumberFormatException e) {
-                // not a number. hence it is likely in string format
-                try {
-                    date = ISO_8601_UTC.parse("" + d);
-                } catch (ParseException pe) {                    
-                    try {
-                        date = ISO_8601_LOOSE.parse("" + d);
-                    } catch (ParseException pe2) {
-                        try {
-                            date = ISO_8601_DATE.parse("" + d);
-                        } catch (ParseException pe3) {
-                            try {
-                                date = ISO_8601_TIME.parse("" + d);
-                            } catch (ParseException pe4) {
-                                
-                                try {
-                                    date = DynamicDate.getInstance("" + d);
-                                } catch (IllegalArgumentException iae) {
-                                    log.error(iae);
-                                    return new Date(-1);
-                                }
-                            }
-                        }
-                    }
-                }
+                return DateParser.getInstance("" + d);
             }
         }
         return date;
