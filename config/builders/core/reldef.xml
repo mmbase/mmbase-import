@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="reldef" version="0"
- xmlns:ddt="http://www.mmbase.org/xmlns/datatypes"
->
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="reldef" maintainer="mmbase.org" version="0" extends="object">
+  
   <class>org.mmbase.module.corebuilders.RelDef</class>
   <searchage>14</searchage>
   <names>
@@ -23,14 +26,12 @@
     <description xml:lang="it">Definisce le relazioni</description>
   </descriptions>
 
-  <ddt:datatypes
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
-    <ddt:datatype id="dirs" base="integer">
-      <ddt:minInclusive value="0" />
-      <ddt:maxInclusive value="2" />
-    </ddt:datatype>
-  </ddt:datatypes>
+  <datatypes xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <datatype id="dirs" base="integer">
+      <minInclusive value="0" />
+      <maxInclusive value="2" />
+    </datatype>
+  </datatypes>
 
   <fieldlist>
     <field>
@@ -43,7 +44,6 @@
         <guiname xml:lang="nl">Rol</guiname>
         <guiname xml:lang="eo">Rolo</guiname>
         <guiname xml:lang="it">Fonte</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -66,7 +66,6 @@
         <guiname xml:lang="nl">Bestemmings-rol</guiname>
         <guiname xml:lang="eo">Cel-rolo</guiname>
         <guiname xml:lang="it">Obbiettivo</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -90,13 +89,13 @@
         <guiname xml:lang="nl">Richting</guiname>
         <guiname xml:lang="eo">Direkto</guiname>
         <guiname xml:lang="it">Direzione</guiname>
-        <guitype>dirs</guitype>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>
+      <datatype base="dirs" />
       <db>
         <name>dir</name>
         <type state="persistent">INTEGER</type>
@@ -116,7 +115,6 @@
         <guiname xml:lang="nl">BronGUINaam</guiname>
         <guiname xml:lang="eo">Fontnomo</guiname>
         <guiname xml:lang="it">FonteGUINome</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -142,7 +140,6 @@
         <guiname xml:lang="nl">DoelGUINaam</guiname>
         <guiname xml:lang="eo">Celnomo</guiname>
         <guiname xml:lang="it">ObbiettivoGUINome</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -168,7 +165,7 @@
         <guiname xml:lang="nl">Relatie-type</guiname>
         <guiname xml:lang="eo">Rilato-tipo</guiname>
         <guiname xml:lang="it">Costruttore</guiname>
-        <guitype>typedef</guitype>
+        <guitype>typedef</guitype> <!-- need to fix this with datatype -->
       </gui>
       <editor>
         <positions>
