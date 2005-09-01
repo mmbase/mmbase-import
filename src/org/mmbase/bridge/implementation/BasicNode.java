@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.162 2005-08-29 14:47:00 simon Exp $
+ * @version $Id: BasicNode.java,v 1.163 2005-09-01 14:06:01 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -51,9 +51,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Reference to the NodeManager
-     * @scope private
      */
-    protected NodeManager nodeManager;
+    protected BasicNodeManager nodeManager;
 
     /**
      * Reference to the Cloud.
@@ -104,7 +103,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param nodeManager the NodeManager to use for administrating this Node
      * @throws IllegalArgumentException If node is null
      */
-    BasicNode(MMObjectNode node, NodeManager nodeManager) {
+    BasicNode(MMObjectNode node, BasicNodeManager nodeManager) {
         this.nodeManager = nodeManager;
         setNode(node);
         init();
@@ -117,8 +116,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param cloud the cloud to which this node belongs
      * @throws IllegalArgumentException If node is null
      */
-    BasicNode(MMObjectNode node, Cloud cloud) {
-        this.cloud = (BasicCloud) cloud;
+    BasicNode(MMObjectNode node, BasicCloud cloud) {
+        this.cloud =  cloud;
         setNode(node);
         init();
     }
@@ -129,8 +128,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param cloud the cloud to create the node in
      * @param id the id of the node in the temporary cloud
      */
-    BasicNode(MMObjectNode node, Cloud cloud, int id) {
-        this.cloud = (BasicCloud)cloud;
+    BasicNode(MMObjectNode node, BasicCloud cloud, int id) {
+        this.cloud = cloud;
         setNode(node);
         temporaryNodeId = id;
         isnew = true;
@@ -146,16 +145,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     protected void init() {
 
         if (cloud == null) {
-            cloud = (BasicCloud) nodeManager.getCloud();
+            cloud = nodeManager.cloud;
         }
 
         if (nodeManager == null) {
             // determine nodemanager, unless the node is the 'typedef' node
             // (needs to point towards itself)
             if (getNode().getBuilder().oType != getNode().getNumber()) {
-                nodeManager = cloud.getNodeManager(getNode().getBuilder().getTableName());
+                nodeManager = (BasicNodeManager) cloud.getNodeManager(getNode().getBuilder().getTableName());
             } else {
-                nodeManager = (NodeManager)this;
+                nodeManager = (BasicNodeManager) this;
             }
         }
 
@@ -1155,7 +1154,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         }
         if (nodeManager != null) {
-            return new BasicNodeList(mmnodes, nodeManager);
+            if (nodeManager instanceof BasicNodeManager) {
+                return new BasicNodeList(mmnodes, (BasicNodeManager) nodeManager);
+            } else {
+                return new BasicNodeList(mmnodes, cloud.getBasicNodeManager(nodeManager.getName()));
+            }
         } else {
             return new BasicNodeList(mmnodes, cloud);
         }

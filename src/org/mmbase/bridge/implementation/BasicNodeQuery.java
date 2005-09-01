@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.21 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.22 2005-09-01 14:06:01 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -38,7 +38,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     protected Step step = null;
 
-    BasicNodeQuery(Cloud c) {
+    BasicNodeQuery(BasicCloud c) {
         super(c);
     }
 
@@ -46,12 +46,12 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
      * node query.
      */
     BasicNodeQuery(BasicNodeManager nodeManager) {
-        super(nodeManager.getCloud());
+        super(nodeManager.cloud);
         query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());
         this.step = (Step) getSteps().get(0); // the only step
     }
     BasicNodeQuery(BasicNodeManager nodeManager, NodeSearchQuery q) {
-        super(nodeManager.getCloud());
+        super(nodeManager.cloud);
         query = q;
         this.step = (Step) getSteps().get(0); // the only step
     }
@@ -60,7 +60,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
      * Makes a multi-step node-query, based on a normal query. As a default, all fields of last steps are added (if at least there are steps already)
      *
      */
-    BasicNodeQuery(Cloud cloud, SearchQuery q) {
+    BasicNodeQuery(BasicCloud cloud, SearchQuery q) {
         super(cloud);
         query = new BasicSearchQuery(q);
         List steps = query.getSteps();
@@ -115,6 +115,12 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         explicitFields.clear();
         setNodeStep(step);
     }
+
+
+    public List getExtraFields() {
+        return Collections.unmodifiableList(explicitFields);
+    }
+
 
     /**
      * Adds all fields of the gives collection, unless it is a field of the 'step' itself

@@ -18,7 +18,7 @@ import org.mmbase.core.CoreField;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.22 2005-07-22 12:35:46 pierre Exp $
+ * @version $Id: BasicField.java,v 1.23 2005-09-01 14:06:01 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
@@ -26,7 +26,7 @@ public class BasicField extends AbstractField implements Field {
     CoreField coreField = null;
 
     BasicField(CoreField field, NodeManager nodeManager) {
-        super(field.getName(),field);
+        super(field.getName(), field);
         this.nodeManager = nodeManager;
         this.coreField = field;
     }

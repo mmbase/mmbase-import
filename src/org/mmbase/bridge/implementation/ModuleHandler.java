@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.26 2005-07-28 16:53:45 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.27 2005-09-01 14:06:01 michiel Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -156,19 +156,17 @@ public class ModuleHandler implements Module, Comparable {
                 cloud=(BasicCloud)cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
             }
             try {
-                Vector v=((ProcessorInterface)mmbase_module).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),command,parameters);
-                MMObjectBuilder bul=((ProcessorInterface)mmbase_module).getListBuilder(command,parameters);
-                NodeManager tempNodeManager = null;
+                Vector v = ((ProcessorInterface)mmbase_module).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),command,parameters);
+                MMObjectBuilder bul = ((ProcessorInterface)mmbase_module).getListBuilder(command, parameters);
+                BasicNodeManager tempNodeManager = null;
                 if (bul.isVirtual()) {
-                   tempNodeManager = new VirtualNodeManager(bul,cloud);
+                   tempNodeManager = new VirtualNodeManager(bul, cloud);
                 } else {
-                   tempNodeManager = cloud.getNodeManager(bul.getTableName());
+                   tempNodeManager = cloud.getBasicNodeManager(bul.getTableName());
                 }
                 return new BasicNodeList(v,tempNodeManager);
             } catch (Exception e) {
-                String message = e.getMessage() + " " + Logging.stackTrace(e);
-                log.error(message);
-                throw new BridgeException(message,e);
+                throw new BridgeException(e.getMessage(), e);
             }
         } else {
             throw new BridgeException("getList() is not supported by this module.");
