@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.30 2005-09-01 15:08:23 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.31 2005-09-01 15:19:29 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -47,6 +47,7 @@ public class VirtualNodeManager extends BasicNodeManager {
      * @todo What if the value is NULL
      * @deprecated It does not work properly, if possible use {@link #VirtualNodeManager(query, cloud)}
      */
+
     VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
         super(node.getBuilder(), cloud);
         // determine fields and field types
@@ -56,7 +57,7 @@ public class VirtualNodeManager extends BasicNodeManager {
                 Map.Entry entry = (Map.Entry) i.next();
                 String fieldName = (String) entry.getKey();
                 Object value = entry.getValue();
-                if (value == MMObjectNode.VALUE_NULL) continue; // should not a generic date-type be created becase the field _does_ exists
+                if (value == MMObjectNode.VALUE_NULL || value == null) value = new Object();
                 DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
                 int type = DataTypes.classToType(value.getClass());
                 CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
@@ -66,6 +67,7 @@ public class VirtualNodeManager extends BasicNodeManager {
             }
         }
     }
+
     /**
      * @since MMBase-1.8
      */

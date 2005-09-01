@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.102 2005-09-01 15:08:23 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.103 2005-09-01 15:19:29 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -464,7 +464,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 res.add(node);
             }
             if (res.size()>0) {
-                BasicNodeManager tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
+                BasicNodeManager tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0), cloud);
                 return new BasicNodeList(res, tempNodeManager);
             }
             return new BasicNodeList();

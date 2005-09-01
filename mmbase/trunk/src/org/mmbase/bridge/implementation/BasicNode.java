@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.163 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.164 2005-09-01 15:19:29 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1143,6 +1143,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             dir = ClusterBuilder.getSearchDir(searchDir);
         }
         // call list: note: role can be null
+        // XXX. Should perhaps not depend on core's getRelatedNodes becasue then the query remains unknown
+
         List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
         // remove the elements which may not be read:
