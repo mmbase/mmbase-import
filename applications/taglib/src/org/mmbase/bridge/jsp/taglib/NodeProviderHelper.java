@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import java.util.Stack;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -24,13 +25,16 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.9 2005-06-22 17:24:01 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.10 2005-09-01 16:15:23 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class NodeProviderHelper implements NodeProvider {
 
     private static final Logger log = Logging.getLoggerInstance(NodeProviderHelper.class);
+
+    public static final String STACK_ATTRIBUTE = "org.mmbase.bridge.jsp.taglib._nodeStack";
+    public static final String _NODE = "_node";
         
     private   Node   node;        
     private   Query  query = null;
@@ -38,6 +42,11 @@ public class NodeProviderHelper implements NodeProvider {
     private   boolean  modified = false;
     private   ContextReferrerTag thisTag;
 
+    /**
+     * 'underscore' stack, containing the values for '_node'.
+     * @since MMBase_1.8
+     */
+    private   Stack _Stack;
 
     public NodeProviderHelper(ContextReferrerTag thisTag) {
         this.thisTag     = thisTag;
@@ -108,6 +117,15 @@ public class NodeProviderHelper implements NodeProvider {
         if (jspvar != null && node != null) {
             cc.setJspVar(thisTag.getPageContext(), jspvar, WriterHelper.TYPE_NODE, node);
         }
+        PageContext pageContext = thisTag.getPageContext();
+
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
+        if (_Stack == null) {
+            _Stack = new Stack();
+            pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
+        }
+        _Stack.push(node);
+        pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)));
     }
                
     private String getSimpleReturnValueName(String fieldName){        
@@ -147,6 +165,15 @@ public class NodeProviderHelper implements NodeProvider {
         if (modified) {
             log.service("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
             node.commit();
+        }
+        if (_Stack != null) {
+            Object pop = _Stack.pop();
+            if (_Stack.empty()) {
+                thisTag.getPageContext().removeAttribute(_NODE);
+            } else {
+                thisTag.getPageContext().setAttribute(_NODE, _Stack.peek());
+            }
+            _Stack = null;
         }
         return BodyTagSupport.SKIP_BODY;
     }
