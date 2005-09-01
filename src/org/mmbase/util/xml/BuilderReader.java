@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.36 2005-08-31 20:55:43 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.37 2005-09-01 17:26:13 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
@@ -84,7 +84,7 @@ public class BuilderReader extends DocumentReader {
         // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, BuilderReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, BuilderReader.class);
-        XMLEntityResolver.registerPublicID("-//MMBase/DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
+        XMLEntityResolver.registerPublicID("-//MMBase//DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
 
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, BuilderReader.class);
@@ -807,7 +807,7 @@ public class BuilderReader extends DocumentReader {
      * @return the name fo the maintainer as a String
      */
     public String getBuilderMaintainer() {
-        String maintainer = getElementAttributeValue("builder","maintainer");
+        String maintainer = getElementAttributeValue("builder", "maintainer");
         if (maintainer.equals("")) {
             if (parentBuilder != null) {
                 maintainer = parentBuilder.getMaintainer();
@@ -855,6 +855,15 @@ public class BuilderReader extends DocumentReader {
             if (! thisField.storageEquals(otherField)) return false;
         }
         return true;
+    }
+
+    /**
+     * For testing only
+     */
+    public static void main(String[] argv) throws  org.xml.sax.SAXException, java.io.IOException {
+        org.mmbase.util.ResourceLoader rl = org.mmbase.util.ResourceLoader.getSystemRoot();
+        Document doc = rl.getDocument(argv[0], true, BuilderReader.class);
+        new BuilderReader(doc, null);
     }
 
 }
