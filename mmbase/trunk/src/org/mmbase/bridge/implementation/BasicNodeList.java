@@ -19,27 +19,26 @@ import org.mmbase.module.corebuilders.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.33 2005-04-27 14:02:31 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.34 2005-09-01 14:06:01 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
-    protected Cloud cloud;
-    protected NodeManager nodeManager = null;
+    protected BasicCloud cloud;
+    protected BasicNodeManager nodeManager = null;
 
     BasicNodeList() {
         super();
     }
 
-    // public, for util.Casting
-    public BasicNodeList(Collection c, Cloud cloud) {
+    BasicNodeList(Collection c, BasicCloud cloud) {
         super(c);
         this.cloud = cloud;
     }
 
-    BasicNodeList(Collection c, NodeManager nodeManager) {
+    BasicNodeList(Collection c, BasicNodeManager nodeManager) {
         super(c);
         this.nodeManager = nodeManager;
-        this.cloud = nodeManager.getCloud();
+        this.cloud = nodeManager.cloud;
     }
 
 
@@ -61,7 +60,7 @@ public class BasicNodeList extends BasicList implements NodeList {
             MMObjectBuilder coreBuilder = coreNode.getBuilder();
             if (coreBuilder instanceof TypeDef) {
                 // nodemanager node
-                node = new BasicNodeManager(coreNode, cloud);
+                node = new BasicNodeManager(coreNode,  cloud);
             } else if (coreBuilder instanceof RelDef || coreBuilder instanceof TypeRel) {
                 // relationmanager node
                 node = new BasicRelationManager(coreNode, cloud);
@@ -83,9 +82,8 @@ public class BasicNodeList extends BasicList implements NodeList {
 
                     }
                     node = new BasicNode(coreNode, cloud);
-                } else {
-                   
-                    NodeManager specificNodeManager = nodeManager.getCloud().getNodeManager(coreNode.getBuilder().getTableName());
+                } else {                   
+                    BasicNodeManager specificNodeManager = nodeManager.cloud.getBasicNodeManager(coreNode.getBuilder().getTableName());
                     node = new BasicNode(coreNode, specificNodeManager);
                 }
             }

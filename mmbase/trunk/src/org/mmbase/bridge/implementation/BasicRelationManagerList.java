@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.13 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.14 2005-09-01 14:06:01 michiel Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
 
@@ -26,8 +26,8 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         super();
     }
 
-    BasicRelationManagerList(Collection c, Cloud cloud) {
-        super(c,cloud);
+    BasicRelationManagerList(Collection c, BasicCloud cloud) {
+        super(c, cloud);
     }
 
     protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {

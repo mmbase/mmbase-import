@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.100 2005-07-28 16:53:06 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.101 2005-09-01 14:06:01 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -65,7 +65,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      * @param id the id of the node in the temporary cloud
      */
-    BasicNodeManager(MMObjectNode node, Cloud cloud, int nodeid) {
+    BasicNodeManager(MMObjectNode node, BasicCloud cloud, int nodeid) {
         super(node, cloud, nodeid);
         // no initialization - for a new nodes, builder is null.
     }
@@ -78,7 +78,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param node the MMObjectNode to base the NodeManager on.
      * @param Cloud the cloud to which this node belongs
      */
-    BasicNodeManager(MMObjectNode node, Cloud cloud) {
+    BasicNodeManager(MMObjectNode node, BasicCloud cloud) {
         super(node, cloud);
         initManager();
     }
@@ -184,20 +184,20 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         node.setValue("owner", cloud.getUser().getOwnerField());
 
         if (getMMObjectBuilder() instanceof TypeDef) {
-            return new BasicNodeManager(node, getCloud(), id);
+            return new BasicNodeManager(node, cloud, id);
         } else if (getMMObjectBuilder() instanceof RelDef || getMMObjectBuilder() instanceof TypeRel) {
-            return new BasicRelationManager(node, getCloud(), id);
+            return new BasicRelationManager(node, cloud, id);
         } else if (getMMObjectBuilder() instanceof InsRel) {
-            return new BasicRelation(node, getCloud() /*this*/, id);
+            return new BasicRelation(node, cloud, id);
         } else {
-            return new BasicNode(node, getCloud() /*this*/, id);
+            return new BasicNode(node, cloud, id);
         }
     }
 
     public NodeManager getParent() throws NotFoundException {
         MMObjectBuilder bul = getMMObjectBuilder().getParentBuilder();
         if (bul==null) {
-            throw new NotFoundException("Parent of nodemanager "+getName()+"does not exist");
+            throw new NotFoundException("Parent of nodemanager " + getName() + "does not exist");
         } else {
             return cloud.getNodeManager(bul.getTableName());
         }
@@ -280,7 +280,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public Field getField(String fieldName) throws NotFoundException {
         Field f = (Field) getFieldTypes().get(fieldName);
-        if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.");
+        if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'. " + builder.getClass());
         return f;
     }
 
@@ -464,8 +464,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 res.add(node);
             }
             if (res.size()>0) {
-                NodeManager tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
-                return new BasicNodeList(res,tempNodeManager);
+                BasicNodeManager tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
+                return new BasicNodeList(res, tempNodeManager);
             }
             return new BasicNodeList();
         } catch (Exception e) {
