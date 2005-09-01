@@ -17,6 +17,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class represents a virtual node type information object.
@@ -26,9 +27,10 @@ import org.mmbase.storage.search.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.29 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.30 2005-09-01 15:08:23 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
+    private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
 
     VirtualNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
         super(builder, cloud);
@@ -43,11 +45,11 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Instantiated a Virtual NodeManager, and tries its best to find reasonable values for the field-types.
      * 
      * @todo What if the value is NULL
+     * @deprecated It does not work properly, if possible use {@link #VirtualNodeManager(query, cloud)}
      */
     VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
         super(node.getBuilder(), cloud);
         // determine fields and field types
-
         synchronized(node.values) {
             Iterator i = node.values.entrySet().iterator();
             while (i.hasNext()) {
@@ -74,10 +76,26 @@ public class VirtualNodeManager extends BasicNodeManager {
         Iterator steps = query.getSteps().iterator();
         while (steps.hasNext()) {
             Step step = (Step) steps.next();            
-            NodeManager nodeManager = cloud.getNodeManager(step.getTableName());
-            
-            
-            
+            DataType nodeType  = DataTypes.getDataType("node");
+            String name = step.getAlias();
+            if (name == null) name = step.getTableName();
+            CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
+            fd.finish();
+            Field ft = new BasicField(fd, this);
+            fieldTypes.put(name, ft);
+        }
+        Iterator fields = query.getFields().iterator();
+        while(fields.hasNext()) {
+            StepField field = (StepField) fields.next();
+            Step step = field.getStep();
+            Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
+            String name = field.getAlias();
+            if (name == null) {
+                name = step.getAlias();
+                if (name == null) name = step.getTableName();
+                name += "." + field.getFieldName();            
+            }
+            fieldTypes.put(name, f);
         }
     }
 
