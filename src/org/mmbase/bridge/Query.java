@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.32 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: Query.java,v 1.33 2005-09-01 13:51:57 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -324,6 +324,11 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
      * @param node node to add
      */
     void addNode(Step s, Node node);
+
+    /** 
+     * @since MMBase-1.8
+     */
+    void addNode(Step s, int number);
 
     /**
      * Whether this query was used or not. If is was used, then you cannot modify it anymore (would
