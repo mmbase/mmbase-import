@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.13 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicNodeManagerList.java,v 1.14 2005-09-01 14:06:01 michiel Exp $
  */
 public class BasicNodeManagerList extends BasicNodeList implements NodeManagerList {
 
@@ -26,8 +26,8 @@ public class BasicNodeManagerList extends BasicNodeList implements NodeManagerLi
         super();
     }
 
-    BasicNodeManagerList(Collection c, Cloud cloud) {
-        super(c,cloud);
+    BasicNodeManagerList(Collection c, BasicCloud cloud) {
+        super(c, cloud);
     }
 
     protected Object validate(Object o) throws ClassCastException {

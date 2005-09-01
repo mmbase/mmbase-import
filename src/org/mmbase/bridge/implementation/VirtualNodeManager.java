@@ -16,6 +16,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
+import org.mmbase.storage.search.*;
 
 /**
  * This class represents a virtual node type information object.
@@ -25,7 +26,7 @@ import org.mmbase.module.core.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.28 2005-07-22 12:35:46 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.29 2005-09-01 14:06:01 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
 
@@ -37,8 +38,14 @@ public class VirtualNodeManager extends BasicNodeManager {
         super(new VirtualBuilder(BasicCloudContext.mmb), cloud);
     }
 
+
+    /**
+     * Instantiated a Virtual NodeManager, and tries its best to find reasonable values for the field-types.
+     * 
+     * @todo What if the value is NULL
+     */
     VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
-        this(cloud);
+        super(node.getBuilder(), cloud);
         // determine fields and field types
 
         synchronized(node.values) {
@@ -47,7 +54,7 @@ public class VirtualNodeManager extends BasicNodeManager {
                 Map.Entry entry = (Map.Entry) i.next();
                 String fieldName = (String) entry.getKey();
                 Object value = entry.getValue();
-                if (value == MMObjectNode.VALUE_NULL) continue;
+                if (value == MMObjectNode.VALUE_NULL) continue; // should not a generic date-type be created becase the field _does_ exists
                 DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
                 int type = DataTypes.classToType(value.getClass());
                 CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
@@ -55,6 +62,22 @@ public class VirtualNodeManager extends BasicNodeManager {
                 Field ft = new BasicField(fd, this);
                 fieldTypes.put(fieldName, ft);
             }
+        }
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    VirtualNodeManager(Query query, BasicCloud cloud) {
+        this(cloud);
+        // code to solve the fields.
+
+        Iterator steps = query.getSteps().iterator();
+        while (steps.hasNext()) {
+            Step step = (Step) steps.next();            
+            NodeManager nodeManager = cloud.getNodeManager(step.getTableName());
+            
+            
+            
         }
     }
 
@@ -65,9 +88,9 @@ public class VirtualNodeManager extends BasicNodeManager {
      */
     protected void init() {
         if (cloud == null) {
-            nodeManager = ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager("typedef");
+            nodeManager = (BasicNodeManager) ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager("typedef");
         } else {
-            nodeManager = cloud.getNodeManager("typedef");
+            nodeManager = cloud.getBasicNodeManager("typedef");
         }
         noderef = new VirtualNode(BasicCloudContext.mmb.getTypeDef());
         super.init();

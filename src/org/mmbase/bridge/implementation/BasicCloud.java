@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.130 2005-07-28 16:53:45 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.131 2005-09-01 14:06:01 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -302,7 +302,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return new BasicNodeManagerList(nodeManagers, this);
     }
 
-    public NodeManager getNodeManager(String nodeManagerName) throws NotFoundException {
+    BasicNodeManager getBasicNodeManager(String nodeManagerName) throws NotFoundException {
         MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
         // always look if builder exists, since otherwise
         if (bul == null) {
@@ -321,6 +321,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             nodeManagerCache.put(nodeManagerName, nodeManager);
         }
         return nodeManager;
+    }
+
+    public final NodeManager getNodeManager(String nodeManagerName) throws NotFoundException {
+        return getBasicNodeManager(nodeManagerName);
     }
 
     public boolean hasNodeManager(String nodeManagerName) {
@@ -643,7 +647,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 cache.put(query, resultList);
             }
             query.markUsed();
-            NodeManager tempNodeManager;
+            BasicNodeManager tempNodeManager;
             if (resultList.size() > 0) {
                 tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
             } else {
@@ -799,12 +803,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         // create resultNodeList
 
-        NodeManager tempNodeManager = null;
+        BasicNodeManager tempNodeManager = null;
         if (resultList.size() > 0) {
             tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
         } else {
             tempNodeManager = new VirtualNodeManager(this);
         }
+        
+        // wanting this
+        // BasicNodeManager  tempNodeManager = new VirtualNodeManager(query, this);
+
+
         resultNodeList = new BasicNodeList(resultList, tempNodeManager);
 
         resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
