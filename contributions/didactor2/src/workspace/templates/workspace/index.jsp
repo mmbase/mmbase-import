@@ -60,7 +60,7 @@
 <mm:compare referid="typeof" value="3">
   <mm:node number="$user" notfound="skip">
     <!-- listing workgroups for user -->
-    <mm:relatednodes type="workgroups" id="myuser" orderby="name">
+    <mm:relatednodes type="workgroups" constraints="workgroups.protected=1" id="myuser" orderby="name">
         <!-- found workgroup -->
         <mm:relatednodes type="workspaces" id="myworkspaces">
           <mm:relatednodes type="folders" orderby="name" id="myfolders">
@@ -78,6 +78,29 @@
   </mm:node>
 </mm:compare>
 
+<%-- jsp started as projectgroup documents --%>
+<mm:present referid="workgroup">
+<mm:compare referid="typeof" value="4">
+  <mm:node number="$user" notfound="skip">
+    <!-- listing workgroups for user -->
+    <mm:relatednodes type="workgroups" constraints="workgroups.number=$workgroup and workgroups.protected=0" id="myuser" orderby="name">
+        <!-- found workgroup -->
+        <mm:relatednodes type="workspaces" id="myworkspaces">
+          <mm:relatednodes type="folders" orderby="name" id="myfolders">
+            <mm:first>
+              <mm:compare referid="currentfolder" value="-1">
+
+                <mm:remove referid="currentfolder"/>
+                <mm:import id="currentfolder"><mm:field name="number"/></mm:import>
+
+              </mm:compare>
+            </mm:first>
+          </mm:relatednodes>
+        </mm:relatednodes>
+    </mm:relatednodes>
+  </mm:node>
+</mm:compare>
+</mm:present>
 
 
 <mm:import externid="action_delete.x" id="action_delete" from="parameters"/>
@@ -127,11 +150,21 @@
 <div class="folderBody">
 
 <%-- determine the folders in the used context (my documents or shared documents --%>
+
+<mm:present referid="workgroup">
+<mm:compare referid="typeof" value="4">
+  <a href="<mm:treefile page="/projectgroup/index.jsp" objectlist="$includePath" referids="$referids,workgroup"/>">
+<img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDCONTACTS" />"/>
+</a>
+</mm:compare>	     
+</mm:present>
+<br clear="all">
 <mm:listnodes referid="myuser" >
    <!-- listing workspaces for '<mm:field name="name"/>' -->
     <b><mm:field name="name"/><mm:field name="firstname"/> <mm:field name="lastname"/></b><br>
-  <mm:relatednodes type="workspaces" id="workspace">
 
+
+  <mm:relatednodes type="workspaces" id="workspace">
 
 <a href="<mm:treefile page="/workspace/createfolder.jsp" objectlist="$includePath" referids="$referids">
 	   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
