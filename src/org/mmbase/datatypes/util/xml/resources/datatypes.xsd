@@ -84,7 +84,7 @@
       <xsd:element ref="specialization" maxOccurs="11" minOccurs="0" /> <!-- 11: number of 'type_database' -->
 
     </xsd:sequence>
-    <xsd:attribute name="id"   type="xsd:token" use="required" />
+    <xsd:attribute name="id"   type="xsd:token" use="optional" /> <!-- optinal, because in builder xml exist 'anonymous' datatypes -->
     <xsd:attribute name="base" type="xsd:token" use="optional" default="string" />
   </xsd:complexType>
 
