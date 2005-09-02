@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.146 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: MMBase.java,v 1.147 2005-09-02 16:02:35 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -200,7 +200,7 @@ public class MMBase extends ProcessorModule {
      * multilevel searches.
      * @see ClusterBuilder
      */
-    private ClusterBuilder clusterBuilder;
+    private  ClusterBuilder clusterBuilder;
 
     /**
      * Currently used locale. Access using getLanguage()
@@ -954,11 +954,14 @@ public class MMBase extends ProcessorModule {
      */
     public BuilderReader getBuilderReader(String builderName) {
         try {
-            InputSource is = getBuilderLoader().getInputSource(builderName + ".xml");
-            if (is == null) return null;
-            return new BuilderReader(is, this);
-        } catch (Exception e) {
-            log.error(e);
+            org.w3c.dom.Document doc = getBuilderLoader().getDocument(builderName + ".xml", true, BuilderReader.class);
+            if (doc == null) return null;
+            return new BuilderReader(doc, this);
+        } catch (SAXException se) {
+            log.error(se);
+            return null;
+        } catch (java.io.IOException ioe) {
+            log.error(ioe);
             return null;
         }
     }
@@ -1272,12 +1275,13 @@ public class MMBase extends ProcessorModule {
     /**
      * Checks the builder version and, if needed, updates the version table.
      * Queries the xml files instead of the builder itself (?)
-     * @return always <code>true</code>.
+     * @return Returns <code>true</code> if the builder XML could be read, <code>false</code> otherwise.
      */
-    private boolean checkBuilderVersion(String buildername, Versions ver) {
+    private boolean checkBuilderVersion(String builderName, Versions ver) {
 
-        MMObjectBuilder tmp = (MMObjectBuilder)mmobjs.get(buildername);
-        BuilderReader bapp = getBuilderReader(tmp.getXMLPath() + buildername);
+        MMObjectBuilder tmp = (MMObjectBuilder) mmobjs.get(builderName);
+        BuilderReader bapp = getBuilderReader(tmp.getXMLPath() + builderName);
+
         if (bapp == null) {
             return false;
         }
@@ -1287,9 +1291,9 @@ public class MMBase extends ProcessorModule {
             String maintainer = bapp.getBuilderMaintainer();
 
             try {
-                int installedversion = ver.getInstalledVersion(buildername, "builder");
+                int installedversion = ver.getInstalledVersion(builderName, "builder");
                 if (installedversion == -1 || version > installedversion) {
-                    ver.setInstalledVersion(buildername, "builder", maintainer, version);
+                    ver.setInstalledVersion(builderName, "builder", maintainer, version);
                 }
             } catch (SearchQueryException e) {
                 log.warn(Logging.stackTrace(e));
