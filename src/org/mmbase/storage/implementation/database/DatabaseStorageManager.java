@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.116 2005-08-31 13:53:52 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.117 2005-09-02 09:13:55 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2129,7 +2129,7 @@ public class DatabaseStorageManager implements StorageManager {
                     colInfo.put("DATA_TYPE", new Integer(columnsSet.getInt("DATA_TYPE")));
                     colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
                     colInfo.put("COLUMN_SIZE", new Integer(columnsSet.getInt("COLUMN_SIZE")));
-                    colInfo.put("NULLABLE", new Boolean(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
+                    colInfo.put("NULLABLE", Boolean.valueOf(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
                     columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
                 }
             } finally {
