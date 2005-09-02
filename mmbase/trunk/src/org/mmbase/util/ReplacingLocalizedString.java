@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.1 2005-09-02 09:52:19 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.2 2005-09-02 17:02:49 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends LocalizedString {
@@ -40,10 +40,10 @@ public class ReplacingLocalizedString extends LocalizedString {
     }
 
     /**
-     * @param k The key of this String
+     * @param s The wrapped LocalizedString.
      */
     public ReplacingLocalizedString(LocalizedString s) {
-        if (s == null) s = NULL;
+        if (s == null) s = new LocalizedString("NULL");
         wrapped = s;
     }
     

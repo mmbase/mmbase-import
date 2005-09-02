@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.13 2005-09-02 12:04:05 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.14 2005-09-02 17:02:49 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -28,7 +28,6 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
-    public static final LocalizedString NULL = new LocalizedString("NULL");
     /**
      * Sets a default locale for this JVM or web-app. When not using it, the locale is the system
      * default. Several web-apps do run in one JVM however and it is very imaginable that you want a
