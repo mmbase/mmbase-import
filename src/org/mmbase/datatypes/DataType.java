@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.16 2005-09-02 09:54:32 michiel Exp $
+ * @version $Id: DataType.java,v 1.17 2005-09-02 12:33:42 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -49,23 +49,23 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      */
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
 
-    private static final String PROPERTY_REQUIRED = "required";
-    private static final Boolean PROPERTY_REQUIRED_DEFAULT = Boolean.FALSE;
+    private static final String CONSTRAINT_REQUIRED = "required";
+    private static final Boolean CONSTRAINT_REQUIRED_DEFAULT = Boolean.FALSE;
 
-    private static final String PROPERTY_UNIQUE = "unique";
-    private static final Boolean PROPERTY_UNIQUE_DEFAULT = Boolean.FALSE;
+    private static final String CONSTRAINT_UNIQUE = "unique";
+    private static final Boolean CONSTRAINT_UNIQUE_DEFAULT = Boolean.FALSE;
 
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
     /**
      * The 'required' property.
      */
-    protected DataType.Property requiredProperty;
+    protected DataType.ValueConstraint requiredConstraint;
 
     /**
      * The 'unique' property.
      */
-    protected DataType.Property uniqueProperty;
+    protected DataType.ValueConstraint uniqueConstraint;
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
@@ -131,15 +131,15 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         edit();
         origin = null;
         defaultValue = null;
-        requiredProperty = null;
-        uniqueProperty = null;
+        requiredConstraint = null;
+        uniqueConstraint = null;
         commitProcessor = null;
         enumerationValues = null;
         getProcessors = null;
         setProcessors = null;
     }
 
-    protected DataType.Property inheritProperty(DataType.Property property) {
+    protected DataType.ValueConstraint inheritConstraint(DataType.ValueConstraint property) {
         if (property == null) {
             return null;
         } else {
@@ -167,8 +167,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         } else {
             enumerationValues = new ArrayList(origin.enumerationValues);
         }
-        requiredProperty = inheritProperty(origin.requiredProperty);
-        uniqueProperty = inheritProperty(origin.uniqueProperty);
+        requiredConstraint = inheritConstraint(origin.requiredConstraint);
+        uniqueConstraint = inheritConstraint(origin.uniqueConstraint);
         if (origin.getProcessors == null) {
             getProcessors = null;
         } else {
@@ -289,13 +289,13 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
     }
 
-    protected final void failOnValidate(DataType.Property property, Object value, Cloud cloud) {
+    protected final void failOnValidate(DataType.ValueConstraint property, Object value, Cloud cloud) {
         if (property.getErrorDescription() == null) {
             throw new IllegalArgumentException("Failed " + property + " for value " + value);
         }
         ReplacingLocalizedString error = new ReplacingLocalizedString(property.getErrorDescription());
         error.replaceAll("\\$\\{NAME\\}",       property.getName());
-        error.replaceAll("\\$\\{PROPERTY\\}",   ""+property.getValue());
+        error.replaceAll("\\$\\{CONSTRAINT\\}",   ""+property.getValue());
         error.replaceAll("\\$\\{VALUE\\}",      ""+value);
         throw new IllegalArgumentException(error.get(cloud == null ? null : cloud.getLocale()));
     }
@@ -350,7 +350,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
             // only fail for fields users may actually edit
             if (field == null || field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_SYSTEM_VIRTUAL) {
-                failOnValidate(getRequiredProperty(), value, cloud);
+                failOnValidate(getRequiredConstraint(), value, cloud);
             }
         }
         // test uniqueness
@@ -365,7 +365,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             }
             log.debug(query);
             if (Queries.count(query) > 0) {
-                failOnValidate(getUniqueProperty(), value, node.getCloud());
+                failOnValidate(getUniqueConstraint(), value, node.getCloud());
             }
         }
         // test enumerations
@@ -466,20 +466,20 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @since  MMBase-1.6
      */
     public boolean isRequired() {
-        if (requiredProperty == null) {
-            return PROPERTY_REQUIRED_DEFAULT.booleanValue();
+        if (requiredConstraint == null) {
+            return CONSTRAINT_REQUIRED_DEFAULT.booleanValue();
         } else {
-            return Boolean.TRUE.equals(requiredProperty.getValue());
+            return Boolean.TRUE.equals(requiredConstraint.getValue());
         }
     }
 
     /**
      * Returns the 'required' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Property}
+     * @return the property as a {@link DataType#Constraint}
      */
-    public DataType.Property getRequiredProperty() {
-        if (requiredProperty == null) requiredProperty = createProperty(PROPERTY_REQUIRED, PROPERTY_REQUIRED_DEFAULT);
-        return requiredProperty;
+    public DataType.ValueConstraint getRequiredConstraint() {
+        if (requiredConstraint == null) requiredConstraint = new ValueConstraint(CONSTRAINT_REQUIRED, CONSTRAINT_REQUIRED_DEFAULT);
+        return requiredConstraint;
     }
 
     /**
@@ -488,8 +488,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype property that was just set
      */
-    public DataType.Property setRequired(boolean required) {
-        return setProperty(getRequiredProperty(),Boolean.valueOf(required));
+    public DataType.ValueConstraint setRequired(boolean required) {
+        return getRequiredConstraint().setValue(Boolean.valueOf(required));
     }
 
     /**
@@ -503,20 +503,20 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @since  MMBase-1.6
      */
     public boolean isUnique() {
-        if (uniqueProperty == null) {
-            return PROPERTY_UNIQUE_DEFAULT.booleanValue();
+        if (uniqueConstraint == null) {
+            return CONSTRAINT_UNIQUE_DEFAULT.booleanValue();
         } else {
-            return Boolean.TRUE.equals(uniqueProperty.getValue());
+            return Boolean.TRUE.equals(uniqueConstraint.getValue());
         }
     }
 
     /**
      * Returns the 'unique' property, containing the value, error messages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Property}
+     * @return the property as a {@link DataType#Constraint}
      */
-    public DataType.Property getUniqueProperty() {
-        if (uniqueProperty == null) uniqueProperty = createProperty(PROPERTY_UNIQUE, PROPERTY_UNIQUE_DEFAULT);
-        return uniqueProperty;
+    public DataType.ValueConstraint getUniqueConstraint() {
+        if (uniqueConstraint == null) uniqueConstraint = new ValueConstraint(CONSTRAINT_UNIQUE, CONSTRAINT_UNIQUE_DEFAULT);
+        return uniqueConstraint;
     }
 
     /**
@@ -525,8 +525,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype property that was just set
      */
-    public DataType.Property setUnique(boolean unique) {
-        return setProperty(getUniqueProperty(),Boolean.valueOf(unique));
+    public DataType.ValueConstraint setUnique(boolean unique) {
+        return getUniqueConstraint().setValue(Boolean.valueOf(unique));
     }
 
 
@@ -700,29 +700,19 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
     }
 
-    protected DataType.Property createProperty(String name, Object value) {
-        DataType.Property property =  new DataType.Property(name,value);
-        String key = getBaseTypeIdentifier() + "." + name + ".error";
-        LocalizedString localizedErrorDescription = new LocalizedString(key);
-        localizedErrorDescription.setBundle(DATATYPE_BUNDLE);
-        property.setErrorDescription(localizedErrorDescription);
-        return property;
-    }
 
-    protected DataType.Property setProperty(DataType.Property property, Object value) {
-        property.setValue(value);
-        return property;
-    }
-
-    public final class Property implements Cloneable {
+    public class ValueConstraint implements Cloneable {
         private String name;
         private Object value;
-        private LocalizedString errorDescription = LocalizedString.NULL;
+        private LocalizedString errorDescription;
         private boolean fixed = false;
 
-        private Property(String name, Object value) {
+        protected ValueConstraint(String name, Object value) {
             this.name = name;
             this.value = value;
+            String key = DataType.this.getBaseTypeIdentifier() + "." + name + ".error";
+            errorDescription = new LocalizedString(key);
+            errorDescription.setBundle(DataType.DATATYPE_BUNDLE);
         }
 
         public String getName() {
@@ -733,12 +723,13 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             return value;
         }
 
-        public void setValue(Object value) {
+        public ValueConstraint setValue(Object value) {
             DataType.this.edit();
             if (fixed) {
-                throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
+                throw new IllegalStateException("Constraint '" + name + "' is fixed, cannot be changed");
             }
             this.value = value;
+            return this;
         }
 
         public LocalizedString getErrorDescription() {
@@ -756,13 +747,22 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
         public void setFixed(boolean fixed) {
             if (this.fixed && !fixed) {
-                throw new IllegalStateException("Property '" + name + "' is fixed, cannot be changed");
+                throw new IllegalStateException("Constraint '" + name + "' is fixed, cannot be changed");
             }
             this.fixed = fixed;
         }
 
-        public DataType.Property clone(DataType dataType) {
-            DataType.Property clone = ((DataType)dataType).new Property(name, value);
+        /**
+         * Proposal: make this abstract. And see NodeDataType
+         *
+         * Validates for a given value whether this constraints applies.
+         */
+        public void validate(Object value, Node node, Field field, Cloud cloud) { 
+            throw new UnsupportedOperationException("Not supported");
+        }
+
+        public DataType.ValueConstraint clone(DataType dataType) {
+            DataType.ValueConstraint clone = ((DataType)dataType).new ValueConstraint(name, value);
             if (errorDescription != null) {
                 clone.setErrorDescription((LocalizedString)errorDescription.clone());
             }

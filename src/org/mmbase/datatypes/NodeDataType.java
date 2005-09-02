@@ -18,15 +18,12 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.7 2005-09-02 12:33:42 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
 
-    public static final String PROPERTY_MUSTEXIST = "mustExist";
-    public static final Boolean PROPERTY_MUSTEXIST_DEFAULT = Boolean.TRUE;
-
-    protected DataType.Property mustExistProperty;
+    protected  DataType.ValueConstraint mustExistConstraint = new MustExistConstraint();
 
     /**
      * Constructor for node field.
@@ -37,31 +34,46 @@ public class NodeDataType extends DataType {
 
     public void erase() {
         super.erase();
-        mustExistProperty = null;
+        if (mustExistConstraint != null) { // check because erase is called from constructor of super too, and so member can still be null.
+            mustExistConstraint.setFixed(false);
+            mustExistConstraint.setValue(Boolean.TRUE);
+        }
     }
 
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof NodeDataType) {
             NodeDataType dataType = (NodeDataType)origin;
-            mustExistProperty = inheritProperty(dataType.mustExistProperty);
+            mustExistConstraint = inheritConstraint(dataType.mustExistConstraint);
         }
     }
 
-    public DataType.Property getMustExistProperty() {
-        if (mustExistProperty == null) {
-            mustExistProperty = createProperty(PROPERTY_MUSTEXIST, PROPERTY_MUSTEXIST_DEFAULT);
-            mustExistProperty.setFixed(true);
-        }
-        return mustExistProperty;
+    public boolean mustExist() {
+        return mustExistConstraint.getValue().equals(Boolean.TRUE);
+    }
+
+    public DataType.ValueConstraint getMustExistConstraint() {
+        mustExistConstraint.setFixed(true);
+        return mustExistConstraint;
     }
 
     public void validate(Object value, Node node, Field field, Cloud cloud) {
         super.validate(value, node, field, cloud);
-        if (value != null && !(value instanceof Number && ((Number)value).intValue() == -1)) {
-            MMObjectNode nodeValue = Casting.toNode(value,MMBase.getMMBase().getTypeDef());
-            if (nodeValue == null) {
-                failOnValidate(getMustExistProperty(), value, cloud);
+        mustExistConstraint.validate(value, node, field, cloud);
+    }
+
+    private class MustExistConstraint extends ValueConstraint {
+        MustExistConstraint() {
+            super("mustExist", Boolean.TRUE);
+        }
+        public void validate(Object value, Node node, Field field, Cloud cloud) {
+            if (getValue().equals(Boolean.TRUE)) {
+                if (value != null && !(value instanceof Number && ((Number)value).intValue() == -1)) {
+                    MMObjectNode nodeValue = Casting.toNode(value,MMBase.getMMBase().getTypeDef());
+                    if (nodeValue == null) {
+                        NodeDataType.this.failOnValidate(this, value, cloud);
+                    }
+                }
             }
         }
     }

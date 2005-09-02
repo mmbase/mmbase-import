@@ -20,28 +20,28 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.13 2005-09-02 09:55:14 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.14 2005-09-02 12:33:42 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
 
     private static final Logger log = Logging.getLoggerInstance(DateTimeDataType.class);
 
-    public static final String PROPERTY_MIN = "min";
-    public static final Date PROPERTY_MIN_DEFAULT = null;
+    public static final String CONSTRAINT_MIN = "min";
+    public static final Date CONSTRAINT_MIN_DEFAULT = null;
     public static final String ERROR_MIN_INCLUSIVE = "minInclusive";
     public static final String ERROR_MIN_EXCLUSIVE = "minExclusive";
 
-    public static final String PROPERTY_MAX = "max";
-    public static final Date PROPERTY_MAX_DEFAULT = null;
+    public static final String CONSTRAINT_MAX = "max";
+    public static final Date CONSTRAINT_MAX_DEFAULT = null;
     public static final String ERROR_MAX_INCLUSIVE = "maxInclusive";
     public static final String ERROR_MAX_EXCLUSIVE = "maxExclusive";
 
-    protected DataType.Property minProperty;
+    protected DataType.ValueConstraint minConstraint;
     protected int minPrecision;
     protected boolean minInclusive;
 
-    protected DataType.Property maxProperty;
+    protected DataType.ValueConstraint maxConstraint;
     protected int maxPrecision;
     protected boolean maxInclusive;
 
@@ -77,10 +77,10 @@ public class DateTimeDataType extends DataType {
         maxInclusiveErrorKey = getBaseTypeIdentifier() + ".maxInclusive.error";
         maxExclusiveErrorKey = getBaseTypeIdentifier() + ".maxExclusive.error";
 
-        minProperty = null;
+        minConstraint = null;
         minInclusive = true;
         minPrecision = Calendar.MILLISECOND;
-        maxProperty = null;
+        maxConstraint = null;
         minInclusive = true;
         maxPrecision = Calendar.MILLISECOND;
     }
@@ -89,10 +89,10 @@ public class DateTimeDataType extends DataType {
         super.inherit(origin);
         if (origin instanceof DateTimeDataType) {
             DateTimeDataType dataType = (DateTimeDataType)origin;
-            minProperty  = inheritProperty(dataType.minProperty);
+            minConstraint  = inheritConstraint(dataType.minConstraint);
             minInclusive = dataType.isMinInclusive();
             minPrecision = dataType.getMinPrecision();
-            maxProperty  = inheritProperty(dataType.maxProperty);
+            maxConstraint  = inheritConstraint(dataType.maxConstraint);
             maxInclusive = dataType.isMaxInclusive();
             maxPrecision = dataType.getMaxPrecision();
             if (weakPattern) {
@@ -106,10 +106,10 @@ public class DateTimeDataType extends DataType {
      * @return the property defining the minimum value
      */
     public Date getMin() {
-        if (minProperty == null) {
-            return PROPERTY_MIN_DEFAULT;
+        if (minConstraint == null) {
+            return CONSTRAINT_MIN_DEFAULT;
         } else {
-            return (Date)minProperty.getValue();
+            return (Date)minConstraint.getValue();
         }
     }
 
@@ -117,15 +117,15 @@ public class DateTimeDataType extends DataType {
      * Returns the minimum value for this data type.
      * @return the minimum value as an <code>Number</code>, or <code>null</code> if there is no minimum.
      */
-    public DataType.Property getMinProperty() {
-        if (minProperty == null) minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
+    public DataType.ValueConstraint getMinConstraint() {
+        if (minConstraint == null) minConstraint = new ValueConstraint(CONSTRAINT_MIN, CONSTRAINT_MIN_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (minInclusive) {
-            minProperty.getErrorDescription().setKey(ERROR_MIN_INCLUSIVE);
+            minConstraint.getErrorDescription().setKey(ERROR_MIN_INCLUSIVE);
         } else {
-            minProperty.getErrorDescription().setKey(ERROR_MIN_EXCLUSIVE);
+            minConstraint.getErrorDescription().setKey(ERROR_MIN_EXCLUSIVE);
         }
-        return minProperty;
+        return minConstraint;
     }
 
     /**
@@ -149,10 +149,10 @@ public class DateTimeDataType extends DataType {
      * @return the maximum value as an <code>Date</code>, or <code>null</code> if there is no maximum.
      */
     public Date getMax() {
-        if (maxProperty == null) {
-            return PROPERTY_MAX_DEFAULT;
+        if (maxConstraint == null) {
+            return CONSTRAINT_MAX_DEFAULT;
         } else {
-            return (Date)maxProperty.getValue();
+            return (Date)maxConstraint.getValue();
         }
     }
 
@@ -160,15 +160,15 @@ public class DateTimeDataType extends DataType {
      * Returns the maximum value for this data type.
      * @return the property defining the maximum value
      */
-    public DataType.Property getMaxProperty() {
-        if (maxProperty == null) maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
+    public DataType.ValueConstraint getMaxConstraint() {
+        if (maxConstraint == null) maxConstraint = new ValueConstraint(CONSTRAINT_MAX, CONSTRAINT_MAX_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (maxInclusive) {
-            maxProperty.getErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
+            maxConstraint.getErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
         } else {
-            maxProperty.getErrorDescription().setKey(ERROR_MAX_EXCLUSIVE);
+            maxConstraint.getErrorDescription().setKey(ERROR_MAX_EXCLUSIVE);
         }
-        return maxProperty;
+        return maxConstraint;
     }
 
     /**
@@ -192,8 +192,8 @@ public class DateTimeDataType extends DataType {
      * @param length the minimum as an <code>Date</code>, or <code>null</code> if there is no minimum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMin(Date value) {
-        return setProperty(getMinProperty(), value);
+    public DataType.ValueConstraint setMin(Date value) {
+        return getMinConstraint().setValue(value);
     }
 
     /**
@@ -219,7 +219,7 @@ public class DateTimeDataType extends DataType {
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMin(Date value, int precision, boolean inclusive) {
+    public DataType.ValueConstraint setMin(Date value, int precision, boolean inclusive) {
         edit();
         setMinPrecision(precision);
         setMinInclusive(inclusive);
@@ -231,8 +231,8 @@ public class DateTimeDataType extends DataType {
      * @param length the maximum as an <code>Date</code>, or <code>null</code> if there is no maximum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMax(Date value) {
-        return setProperty(getMaxProperty(), value);
+    public DataType.ValueConstraint setMax(Date value) {
+        return getMaxConstraint().setValue(value);
     }
 
     /**
@@ -258,7 +258,7 @@ public class DateTimeDataType extends DataType {
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMax(Date value, int precision, boolean inclusive) {
+    public DataType.ValueConstraint setMax(Date value, int precision, boolean inclusive) {
         edit();
         setMaxPrecision(precision);
         setMaxInclusive(inclusive);
@@ -337,7 +337,7 @@ public class DateTimeDataType extends DataType {
                 long minValue = getDateLongValue(minimum, minPrecision);
                 long dateValue = getDateLongValue(date, minPrecision);
                 if (minValue > dateValue || (!minInclusive && minValue == dateValue)) {
-                    failOnValidate(getMinProperty(), value, cloud);
+                    failOnValidate(getMinConstraint(), value, cloud);
                 }
             }
             Date maximum = getMax();
@@ -345,7 +345,7 @@ public class DateTimeDataType extends DataType {
                 long maxValue = getDateLongValue(maximum, maxPrecision);
                 long dateValue = getDateLongValue(date, maxPrecision);
                 if (maxValue < dateValue || (!maxInclusive && maxValue == dateValue)) {
-                    failOnValidate(getMaxProperty(), value, cloud);
+                    failOnValidate(getMaxConstraint(), value, cloud);
                 }
             }
         }

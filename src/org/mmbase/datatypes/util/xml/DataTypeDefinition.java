@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.13 2005-09-02 09:55:14 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.14 2005-09-02 12:33:42 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -149,7 +149,7 @@ public class DataTypeDefinition {
         return descriptions;
     }
 
-    protected void setPropertyData(DataType.Property property, Element element) {
+    protected void setConstraintData(DataType.ValueConstraint property, Element element) {
         // set fixed
         if (hasAttribute(element, "fixed")) {
             boolean isFixed = Boolean.valueOf(getAttribute(element, "fixed")).booleanValue();
@@ -175,10 +175,10 @@ public class DataTypeDefinition {
                 }
                 if ("required".equals(childElement.getLocalName())) {
                     boolean value = getBooleanValue(childElement, false);
-                    setPropertyData(dataType.setRequired(value), childElement);
+                    setConstraintData(dataType.setRequired(value), childElement);
                 } else if ("unique".equals(childElement.getLocalName())) {
                     boolean value = getBooleanValue(childElement, false);
-                    setPropertyData(dataType.setUnique(value), childElement);
+                    setConstraintData(dataType.setUnique(value), childElement);
                 } else if ("getprocessor".equals(childElement.getLocalName())) {
                     addProcessor(DataType.PROCESS_GET, childElement);
                 } else if ("setprocessor".equals(childElement.getLocalName())) {
@@ -334,14 +334,14 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("minLength".equals(localName)) {
             int value = getIntValue(conditionElement);
-            setPropertyData(bDataType.setMinLength(value), conditionElement);
+            setConstraintData(bDataType.setMinLength(value), conditionElement);
         } else if ("maxLength".equals(localName)) {
             int value = getIntValue(conditionElement);
-            setPropertyData(bDataType.setMaxLength(value), conditionElement);
+            setConstraintData(bDataType.setMaxLength(value), conditionElement);
         } else if ("length".equals(localName)) {
             int value = getIntValue(conditionElement);
-            setPropertyData(bDataType.setMinLength(value), conditionElement);
-            setPropertyData(bDataType.setMaxLength(value), conditionElement);
+            setConstraintData(bDataType.setMinLength(value), conditionElement);
+            setConstraintData(bDataType.setMaxLength(value), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for bigdata.");
         }
@@ -352,7 +352,7 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("pattern".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
-            setPropertyData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
+            setConstraintData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
         } else if ("whiteSpace".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
             Integer whiteSpaceValue = null;
@@ -363,7 +363,7 @@ public class DataTypeDefinition {
             } else if (value.equals("collapse")) {
                 whiteSpaceValue = StringDataType.WHITESPACE_COLLAPSE;
             }
-            setPropertyData(sDataType.setWhiteSpace(whiteSpaceValue), conditionElement);
+            setConstraintData(sDataType.setWhiteSpace(whiteSpaceValue), conditionElement);
         } else {
             addBigDataCondition(conditionElement);
         }
@@ -382,10 +382,10 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
             Integer value = getIntegerValue(conditionElement);
-            setPropertyData(iDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+            setConstraintData(iDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Integer value = getIntegerValue(conditionElement);
-            setPropertyData(iDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+            setConstraintData(iDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for integer.");
         }
@@ -404,10 +404,10 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
             Long value = getLongValue(conditionElement);
-            setPropertyData(lDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+            setConstraintData(lDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Long value = getLongValue(conditionElement);
-            setPropertyData(lDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+            setConstraintData(lDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for long.");
         }
@@ -426,10 +426,10 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
             Float value = getFloatValue(conditionElement);
-            setPropertyData(fDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+            setConstraintData(fDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Float value = getFloatValue(conditionElement);
-            setPropertyData(fDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+            setConstraintData(fDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for float.");
         }
@@ -448,10 +448,10 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
             Double value = getDoubleValue(conditionElement);
-            setPropertyData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+            setConstraintData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Double value = getDoubleValue(conditionElement);
-            setPropertyData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+            setConstraintData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for double.");
         }
@@ -481,11 +481,11 @@ public class DataTypeDefinition {
         if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
             Date value = getDateTimeValue(conditionElement);
             int precision = getDateTimePartValue(conditionElement);
-            setPropertyData(dtDataType.setMin(value, precision, "minInclusive".equals(localName)), conditionElement);
+            setConstraintData(dtDataType.setMin(value, precision, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Date value = getDateTimeValue(conditionElement);
             int precision = getDateTimePartValue(conditionElement);
-            setPropertyData(dtDataType.setMax(value, precision, "maxInclusive".equals(localName)), conditionElement);
+            setConstraintData(dtDataType.setMax(value, precision, "maxInclusive".equals(localName)), conditionElement);
         } else if ("pattern".equals(localName)) {
             String pattern = getAttribute(conditionElement, "value");
             Locale locale = getLocale(conditionElement);
@@ -500,13 +500,13 @@ public class DataTypeDefinition {
         String localName = conditionElement.getLocalName();
         if ("minSize".equals(localName)) {
             int value = getIntValue(conditionElement);
-            setPropertyData(lDataType.setMinSize(value), conditionElement);
+            setConstraintData(lDataType.setMinSize(value), conditionElement);
         } else if ("maxSize".equals(localName)) {
             int value = getIntValue(conditionElement);
-            setPropertyData(lDataType.setMaxSize(value), conditionElement);
+            setConstraintData(lDataType.setMaxSize(value), conditionElement);
         } else if ("itemDataType".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
-            setPropertyData(lDataType.setItemDataType(collector.getDataType(value)), conditionElement);
+            setConstraintData(lDataType.setItemDataType(collector.getDataType(value)), conditionElement);
         } else {
             log.error("Unsupported tag '" + localName + "' for list.");
         }
