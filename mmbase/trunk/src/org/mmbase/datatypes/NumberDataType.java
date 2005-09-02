@@ -18,20 +18,20 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.7 2005-09-02 09:55:14 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.8 2005-09-02 12:33:42 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends DataType {
 
-    public static final String PROPERTY_MIN = "min";
-    public static final Number PROPERTY_MIN_DEFAULT = null;
+    public static final String CONSTRAINT_MIN = "min";
+    public static final Number CONSTRAINT_MIN_DEFAULT = null;
 
-    public static final String PROPERTY_MAX = "max";
-    public static final Number PROPERTY_MAX_DEFAULT = null;
+    public static final String CONSTRAINT_MAX = "max";
+    public static final Number CONSTRAINT_MAX_DEFAULT = null;
 
-    protected DataType.Property minProperty;
+    protected DataType.ValueConstraint minConstraint;
     protected boolean minInclusive;
-    protected DataType.Property maxProperty;
+    protected DataType.ValueConstraint maxConstraint;
     protected boolean maxInclusive;
 
     // keys for use with error messages to retrive from the bundle
@@ -55,9 +55,9 @@ abstract public class NumberDataType extends DataType {
         maxInclusiveErrorKey = getBaseTypeIdentifier() + ".maxInclusive.error";
         maxExclusiveErrorKey = getBaseTypeIdentifier() + ".maxExclusive.error";
 
-        minProperty = null;
+        minConstraint = null;
         setMinInclusive(true);
-        maxProperty = null;
+        maxConstraint = null;
         setMaxInclusive(true);
     }
 
@@ -66,18 +66,18 @@ abstract public class NumberDataType extends DataType {
         super.inherit(origin);
         if (origin instanceof NumberDataType) {
             NumberDataType dataType = (NumberDataType)origin;
-            minProperty = inheritProperty(dataType.minProperty);
+            minConstraint = inheritConstraint(dataType.minConstraint);
             minInclusive = dataType.isMinInclusive();
-            maxProperty = inheritProperty(dataType.maxProperty);
+            maxConstraint = inheritConstraint(dataType.maxConstraint);
             maxInclusive = dataType.isMaxInclusive();
         }
     }
 
     protected Number getMinValue() {
-        if (minProperty == null) {
-            return PROPERTY_MIN_DEFAULT;
+        if (minConstraint == null) {
+            return CONSTRAINT_MIN_DEFAULT;
         } else {
-            return (Number)minProperty.getValue();
+            return (Number)minConstraint.getValue();
         }
     }
 
@@ -85,15 +85,15 @@ abstract public class NumberDataType extends DataType {
      * Returns the minimum value for this data type.
      * @return the property defining the minimum value
      */
-    public DataType.Property getMinProperty() {
-        if (minProperty == null) minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
+    public DataType.ValueConstraint getMinConstraint() {
+        if (minConstraint == null) minConstraint = new ValueConstraint(CONSTRAINT_MIN, CONSTRAINT_MIN_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (minInclusive) {
-            minProperty.getErrorDescription().setKey(minInclusiveErrorKey);
+            minConstraint.getErrorDescription().setKey(minInclusiveErrorKey);
         } else {
-            minProperty.getErrorDescription().setKey(minExclusiveErrorKey);
+            minConstraint.getErrorDescription().setKey(minExclusiveErrorKey);
         }
-        return minProperty;
+        return minConstraint;
     }
 
     /**
@@ -105,10 +105,10 @@ abstract public class NumberDataType extends DataType {
     }
 
     protected Number getMaxValue() {
-        if (maxProperty == null) {
-            return PROPERTY_MAX_DEFAULT;
+        if (maxConstraint == null) {
+            return CONSTRAINT_MAX_DEFAULT;
         } else {
-            return (Number)maxProperty.getValue();
+            return (Number)maxConstraint.getValue();
         }
     }
 
@@ -116,15 +116,15 @@ abstract public class NumberDataType extends DataType {
      * Returns the maximum value for this data type.
      * @return the property defining the maximum value
      */
-    public DataType.Property getMaxProperty() {
-        if (maxProperty == null) maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
+    public DataType.ValueConstraint getMaxConstraint() {
+        if (maxConstraint == null) maxConstraint = new ValueConstraint(CONSTRAINT_MAX, CONSTRAINT_MAX_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (maxInclusive) {
-            maxProperty.getErrorDescription().setKey(maxInclusiveErrorKey);
+            maxConstraint.getErrorDescription().setKey(maxInclusiveErrorKey);
         } else {
-            maxProperty.getErrorDescription().setKey(maxExclusiveErrorKey);
+            maxConstraint.getErrorDescription().setKey(maxExclusiveErrorKey);
         }
-        return maxProperty;
+        return maxConstraint;
     }
 
     /**
@@ -140,8 +140,8 @@ abstract public class NumberDataType extends DataType {
      * @param length the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMin(Number value) {
-        return setProperty(getMinProperty(), value);
+    public DataType.ValueConstraint setMin(Number value) {
+        return getMinConstraint().setValue(value);
     }
 
     public void setMinInclusive(boolean inclusive) {
@@ -154,7 +154,7 @@ abstract public class NumberDataType extends DataType {
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMin(Number value, boolean inclusive) {
+    public DataType.ValueConstraint setMin(Number value, boolean inclusive) {
         edit();
         setMinInclusive(inclusive);
         return setMin(value);
@@ -165,8 +165,8 @@ abstract public class NumberDataType extends DataType {
      * @param length the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMax(Number value) {
-        return setProperty(getMaxProperty(), value);
+    public DataType.ValueConstraint setMax(Number value) {
+        return getMaxConstraint().setValue(value);
     }
 
     public void setMaxInclusive(boolean inclusive) {
@@ -179,7 +179,7 @@ abstract public class NumberDataType extends DataType {
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setMax(Number value, boolean inclusive) {
+    public DataType.ValueConstraint setMax(Number value, boolean inclusive) {
         edit();
         setMaxInclusive(inclusive);
         return setMax(value);
@@ -193,14 +193,14 @@ abstract public class NumberDataType extends DataType {
             if (minimum != null) {
                 double minValue = minimum.doubleValue();
                 if (minValue > doubleValue || (!minInclusive && minValue == doubleValue)) {
-                    failOnValidate(getMinProperty(), value, cloud);
+                    failOnValidate(getMinConstraint(), value, cloud);
                 }
             }
             Number maximum = getMaxValue();
             if (maximum != null) {
                 double maxValue = maximum.doubleValue();
                 if (maxValue < doubleValue || (!maxInclusive && maxValue == doubleValue)) {
-                    failOnValidate(getMaxProperty(), value, cloud);
+                    failOnValidate(getMaxConstraint(), value, cloud);
                 }
             }
         }

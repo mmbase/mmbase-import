@@ -19,21 +19,21 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: BigDataType.java,v 1.7 2005-09-02 12:33:42 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
 
-    public static final String PROPERTY_MINLENGTH = "minLength";
-    public static final Integer PROPERTY_MINLENGTH_DEFAULT = new Integer(-1);
+    public static final String CONSTRAINT_MINLENGTH = "minLength";
+    public static final Integer CONSTRAINT_MINLENGTH_DEFAULT = new Integer(-1);
 
-    public static final String PROPERTY_MAXLENGTH = "maxLength";
-    public static final Integer PROPERTY_MAXLENGTH_DEFAULT = new Integer(-1);
+    public static final String CONSTRAINT_MAXLENGTH = "maxLength";
+    public static final Integer CONSTRAINT_MAXLENGTH_DEFAULT = new Integer(-1);
 
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
-    protected DataType.Property minLengthProperty;
-    protected DataType.Property maxLengthProperty;
+    protected DataType.ValueConstraint minLengthConstraint;
+    protected DataType.ValueConstraint maxLengthConstraint;
 
 
     /**
@@ -47,16 +47,16 @@ abstract public class BigDataType extends DataType {
 
     public void erase() {
         super.erase();
-        minLengthProperty = null;
-        maxLengthProperty = null;
+        minLengthConstraint = null;
+        maxLengthConstraint = null;
     }
 
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof BigDataType) {
             BigDataType dataType = (BigDataType)origin;
-            minLengthProperty = inheritProperty(dataType.minLengthProperty);
-            maxLengthProperty = inheritProperty(dataType.maxLengthProperty);
+            minLengthConstraint = inheritConstraint(dataType.minLengthConstraint);
+            maxLengthConstraint = inheritConstraint(dataType.maxLengthConstraint);
         }
     }
 
@@ -65,20 +65,20 @@ abstract public class BigDataType extends DataType {
      * @return the minimum length as an <code>int</code>, or -1 if there is no minimum length.
      */
     public int getMinLength() {
-        if (minLengthProperty == null) {
-            return PROPERTY_MINLENGTH_DEFAULT.intValue();
+        if (minLengthConstraint == null) {
+            return CONSTRAINT_MINLENGTH_DEFAULT.intValue();
         } else {
-            return Casting.toInt(minLengthProperty.getValue());
+            return Casting.toInt(minLengthConstraint.getValue());
         }
     }
 
     /**
      * Returns the 'minLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Property}
+     * @return the property as a {@link DataType#Constraint}
      */
-    public DataType.Property getMinLengthProperty() {
-        if (minLengthProperty == null) minLengthProperty = createProperty(PROPERTY_MINLENGTH, PROPERTY_MINLENGTH_DEFAULT);
-        return minLengthProperty;
+    public DataType.ValueConstraint getMinLengthConstraint() {
+        if (minLengthConstraint == null) minLengthConstraint = new ValueConstraint(CONSTRAINT_MINLENGTH, CONSTRAINT_MINLENGTH_DEFAULT);
+        return minLengthConstraint;
     }
 
     /**
@@ -87,8 +87,8 @@ abstract public class BigDataType extends DataType {
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype property that was just set
      */
-    public DataType.Property setMinLength(int value) {
-        return setProperty(getMinLengthProperty(), new Integer(value));
+    public DataType.ValueConstraint setMinLength(int value) {
+        return getMinLengthConstraint().setValue(new Integer(value));
     }
 
     /**
@@ -96,20 +96,20 @@ abstract public class BigDataType extends DataType {
      * @return the maximum length as an <code>int</code>, or -1 if there is no maximum length.
      */
     public int getMaxLength() {
-        if (maxLengthProperty == null) {
-            return PROPERTY_MAXLENGTH_DEFAULT.intValue();
+        if (maxLengthConstraint == null) {
+            return CONSTRAINT_MAXLENGTH_DEFAULT.intValue();
         } else {
-            return Casting.toInt(getMaxLengthProperty().getValue());
+            return Casting.toInt(getMaxLengthConstraint().getValue());
         }
     }
 
     /**
      * Returns the 'maxLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Property}
+     * @return the property as a {@link DataType#Constraint}
      */
-    public DataType.Property getMaxLengthProperty() {
-        if (maxLengthProperty == null) maxLengthProperty = createProperty(PROPERTY_MAXLENGTH, PROPERTY_MAXLENGTH_DEFAULT);
-        return maxLengthProperty;
+    public DataType.ValueConstraint getMaxLengthConstraint() {
+        if (maxLengthConstraint == null) maxLengthConstraint = new ValueConstraint(CONSTRAINT_MAXLENGTH, CONSTRAINT_MAXLENGTH_DEFAULT);
+        return maxLengthConstraint;
     }
 
     /**
@@ -118,8 +118,8 @@ abstract public class BigDataType extends DataType {
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype property that was just set
      */
-    public DataType.Property setMaxLength(int value) {
-        return setProperty(getMaxLengthProperty(), new Integer(value));
+    public DataType.ValueConstraint setMaxLength(int value) {
+        return getMaxLengthConstraint().setValue(new Integer(value));
     }
 
     public void validate(Object value, Node node, Field field, Cloud cloud) {
@@ -136,13 +136,13 @@ abstract public class BigDataType extends DataType {
             int minLength = getMinLength();
             if (minLength > 0) {
                 if (size < minLength) {
-                    failOnValidate(getMinLengthProperty(), value, cloud);
+                    failOnValidate(getMinLengthConstraint(), value, cloud);
                 }
             }
             int maxLength = getMaxLength();
             if (maxLength > 0) {
                 if (size > maxLength) {
-                    failOnValidate(getMaxLengthProperty(), value, cloud);
+                    failOnValidate(getMaxLengthConstraint(), value, cloud);
                 }
             }
         }

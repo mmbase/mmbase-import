@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.10 2005-08-29 14:32:06 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.11 2005-09-02 12:33:42 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -29,16 +29,16 @@ public class StringDataType extends BigDataType {
     public static final Integer WHITESPACE_REPLACE = new Integer(1);
     public static final Integer WHITESPACE_COLLAPSE = new Integer(2);
 
-    public static final String PROPERTY_PATTERN = "pattern";
-    public static final Pattern PROPERTY_PATTERN_DEFAULT = null;
+    public static final String CONSTRAINT_PATTERN = "pattern";
+    public static final Pattern CONSTRAINT_PATTERN_DEFAULT = null;
 
-    public static final String PROPERTY_WHITESPACE = "whiteSpace";
-    public static final Integer PROPERTY_WHITESPACE_DEFAULT = WHITESPACE_PRESERVE;
+    public static final String CONSTRAINT_WHITESPACE = "whiteSpace";
+    public static final Integer CONSTRAINT_WHITESPACE_DEFAULT = WHITESPACE_PRESERVE;
 
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
-    protected DataType.Property patternProperty;
-    protected DataType.Property whiteSpaceProperty;
+    protected DataType.ValueConstraint patternConstraint;
+    protected DataType.ValueConstraint whiteSpaceConstraint;
 
     /**
      * Constructor for string data type.
@@ -50,15 +50,15 @@ public class StringDataType extends BigDataType {
 
     public void erase() {
         super.erase();
-        patternProperty = null;
-        whiteSpaceProperty = null;
+        patternConstraint = null;
+        whiteSpaceConstraint = null;
     }
 
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
-            patternProperty = inheritProperty(dataType.patternProperty);
+            patternConstraint = inheritConstraint(dataType.patternConstraint);
         }
     }
 
@@ -67,20 +67,20 @@ public class StringDataType extends BigDataType {
      * @return the pattern as a <code>String</code>, or <code>null</code> if there is no pattern.
      */
     public Pattern getPattern() {
-        if (patternProperty == null) {
-            return PROPERTY_PATTERN_DEFAULT;
+        if (patternConstraint == null) {
+            return CONSTRAINT_PATTERN_DEFAULT;
         } else {
-            return (Pattern) patternProperty.getValue();
+            return (Pattern) patternConstraint.getValue();
         }
     }
 
     /**
      * Returns the 'pattern' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Property}
+     * @return the property as a {@link DataType#Constraint}
      */
-    public DataType.Property getPatternProperty() {
-        if (patternProperty == null) patternProperty = createProperty(PROPERTY_PATTERN, PROPERTY_PATTERN_DEFAULT);
-        return patternProperty;
+    public DataType.ValueConstraint getPatternConstraint() {
+        if (patternConstraint == null) patternConstraint = new ValueConstraint(CONSTRAINT_PATTERN, CONSTRAINT_PATTERN_DEFAULT);
+        return patternConstraint;
     }
 
     /**
@@ -88,8 +88,8 @@ public class StringDataType extends BigDataType {
      * @param pattern the pattern as a <code>Pattern</code>, or <code>null</code> if no pattern should be applied.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setPattern(Pattern value) {
-        return setProperty(getPatternProperty(), value);
+    public DataType.ValueConstraint setPattern(Pattern value) {
+        return getPatternConstraint().setValue(value);
     }
 
     /**
@@ -97,20 +97,20 @@ public class StringDataType extends BigDataType {
      * @return one of the constants {@link #WHITESPACE_PRESERVE}, {@link #WHITESPACE_REPLACE},  or {@link #WHITESPACE_COLLAPSE}
      */
     public Integer getWhiteSpace() {
-        if (whiteSpaceProperty == null) {
-            return PROPERTY_WHITESPACE_DEFAULT;
+        if (whiteSpaceConstraint == null) {
+            return CONSTRAINT_WHITESPACE_DEFAULT;
         } else {
-            return (Integer) whiteSpaceProperty.getValue();
+            return (Integer) whiteSpaceConstraint.getValue();
         }
     }
 
     /**
      * Returns the 'whitespace' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Property}
+     * @return the property as a {@link DataType#Constraint}
      */
-    public DataType.Property getWhiteSpaceProperty() {
-        if (whiteSpaceProperty == null) whiteSpaceProperty = createProperty(PROPERTY_WHITESPACE, PROPERTY_WHITESPACE_DEFAULT);
-        return whiteSpaceProperty;
+    public DataType.ValueConstraint getWhiteSpaceConstraint() {
+        if (whiteSpaceConstraint == null) whiteSpaceConstraint = new ValueConstraint(CONSTRAINT_WHITESPACE, CONSTRAINT_WHITESPACE_DEFAULT);
+        return whiteSpaceConstraint;
     }
 
     /**
@@ -118,9 +118,9 @@ public class StringDataType extends BigDataType {
      * @param whitespace one of the constants {@link #WHITESPACE_PRESERVE}, {@link #WHITESPACE_REPLACE}, or {@link #WHITESPACE_COLLAPSE}
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
      */
-    public DataType.Property setWhiteSpace(Integer value) {
+    public DataType.ValueConstraint setWhiteSpace(Integer value) {
         if (WHITESPACE_COLLAPSE.equals(value) || WHITESPACE_PRESERVE.equals(value) || WHITESPACE_REPLACE.equals(value)) {
-            return setProperty(getWhiteSpaceProperty(), value);
+            return getWhiteSpaceConstraint().setValue(value);
         } else {
             throw new IllegalArgumentException("value should be either WHITESPACE_PRESERVE, WHITESPACE_REPLACE or WHITESPACE_COLLAPSE");
         }
@@ -133,7 +133,7 @@ public class StringDataType extends BigDataType {
             Pattern pattern = getPattern();
             if (pattern != null) {
                 if (! pattern.matcher(stringValue).matches()) {
-                    failOnValidate(getPatternProperty(), value, cloud);
+                    failOnValidate(getPatternConstraint(), value, cloud);
                 }
             }
         }
