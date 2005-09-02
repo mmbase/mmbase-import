@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.17 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: DataType.java,v 1.18 2005-09-02 17:40:45 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -759,6 +759,11 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
          */
         public void validate(Object value, Node node, Field field, Cloud cloud) { 
             throw new UnsupportedOperationException("Not supported");
+        }
+
+        protected void inherit(ValueConstraint val) {
+            value = val.value;
+            errorDescription = (LocalizedString) val.errorDescription.clone();
         }
 
         public DataType.ValueConstraint clone(DataType dataType) {
