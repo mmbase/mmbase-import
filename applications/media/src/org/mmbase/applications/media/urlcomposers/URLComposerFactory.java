@@ -99,7 +99,7 @@ public class URLComposerFactory  {
     private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
     
     private FileWatcher configWatcher = new FileWatcher(true) {
-        protected void onChange(File file) {
+        public void onChange(File file) {
             readConfiguration(file);
         }
     };

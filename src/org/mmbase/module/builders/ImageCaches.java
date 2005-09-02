@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.43 2005-08-17 20:55:15 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.44 2005-09-02 12:28:45 pierre Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -36,7 +36,7 @@ public class ImageCaches extends AbstractImages {
 
     public final static Parameter[] WAIT_PARAMETERS      =  Parameter.EMPTY;
 
-    static final String GUI_IMAGETEMPLATE = "s(100x60)"; 
+    static final String GUI_IMAGETEMPLATE = "s(100x60)";
 
     private boolean checkLegacyCkey = true;
 
@@ -98,7 +98,7 @@ public class ImageCaches extends AbstractImages {
         String field = (String) a.get("field");
         if (field == null || "".equals(field)) {
             // gui for the node itself.
-            title = ""; 
+            title = "";
         } else {
             if (storesDimension()) {
                 title = " title=\"" + getMimeType(node) + " " + getDimension(node) + "\"";
@@ -142,7 +142,7 @@ public class ImageCaches extends AbstractImages {
             // This triggers conversion, or waits for it to be ready.
             ImageConversionRequest req = Factory.getImageConversionRequest(params, bytes, format, node);
             req.waitForConversion();
-            
+
         } else {
             log.debug("no");
         }
@@ -155,7 +155,7 @@ public class ImageCaches extends AbstractImages {
      * @param template     The image conversion template
      * @return The icache node or <code>null</code> if it did not exist yet.
      **/
-    protected MMObjectNode getCachedNode(int imageNumber, String template) {
+    public MMObjectNode getCachedNode(int imageNumber, String template) {
         log.debug("Getting cached noded for " + template);
         List nodes;
         try {
@@ -184,7 +184,7 @@ public class ImageCaches extends AbstractImages {
             } else {
                 return null;
             }
-     
+
         } else {
             return (MMObjectNode) nodes.get(0);
         }
@@ -294,7 +294,7 @@ public class ImageCaches extends AbstractImages {
             if (fi > -1) {
                 int fi2 = ckey.indexOf(")", fi);
                 return ckey.substring(fi + 2, fi2);
-            } else {               
+            } else {
                 String r = Factory.getDefaultImageFormat();
                 if (r.equals("asis")) {
                     MMObjectNode original = originalImage(node);
@@ -317,7 +317,7 @@ public class ImageCaches extends AbstractImages {
         return res;
     }
 
-    
+
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.
      *
@@ -371,81 +371,6 @@ public class ImageCaches extends AbstractImages {
             return null;
         }
     }
-
-
-    /**
-     * @deprecated-now
-     */    
-    public String getImageMimeType(List params) {
-        return getMimeType(getNode("" + params.get(0)));
-    }
-
-
-
-    /**
-     * Return a {@link ByteFieldContainer} containing the bytes and object number
-     * for the cached image with a certain ckey, or null, if not cached.
-     * @param ckey the ckey to search for. But not a real ckey, because it contains +'s.
-     * @return null, or a {@link ByteFieldContainer} object
-     * @since MMBase-1.7
-     * @deprecated-now
-     */
-    public ByteFieldContainer getCkeyNode(String ckey) {
-        log.debug("getting ckey node with " + ckey);
-
-        int pos = 0;
-        while (Character.isDigit(ckey.charAt(pos))) pos ++;
-        int nodeNumber = Integer.parseInt(ckey.substring(0, pos));
-        String template   = ckey.substring(pos); 
-        if (template.charAt(0) == '=') template = template.substring(1);
-        MMObjectNode node = getCachedNode(nodeNumber, template);
-        if (node == null) {
-            // we dont have a cachednode yet, return null
-            log.debug("cached node not found for key (" + ckey + "), returning null");
-            return null;
-        }
-        // find binary data
-        byte data[] = node.getByteValue(Imaging.FIELD_HANDLE);
-        if (data == null) {
-            // if it didn't work, also cache this result, to avoid concluding that again..
-            // should this trow an exception every time? I think so, otherwise we would generate an
-            // image every time it is requested, which also net very handy...
-
-            String msg = 
-                "The node(#" + node.getNumber() + ") which should contain the cached result for ckey:" + ckey + 
-                " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
-            log.error(msg);
-            throw new RuntimeException(msg);
-        }
-
-        ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
-        return result;
-    }
-
-     /**
-     * Returns the bytes of a cached image. It accepts a list, just
-     * because it is also like this in Images.java. But of course a
-     * cached image only uses the first element (number of the node).
-     * It also works if the the node is a real image in stead of a
-     * cached image, in which case simple the unconverted image is
-     * returned.
-     *
-     * If the node does not exists, it returns empty byte array
-     * @deprecated-now
-     */    
-    public byte[] getImageBytes(List params) {
-        MMObjectNode node = getNode("" + params.get(0));
-        if (node == null) {
-            return null;
-        } else {
-            return node.getByteValue("handle");
-        }
-    }
-
-
-
-
-
 
 }
 

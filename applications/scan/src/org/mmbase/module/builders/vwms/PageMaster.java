@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PageMaster.java,v 1.15 2004-02-06 16:17:29 michiel Exp $
+ * @version $Id: PageMaster.java,v 1.16 2005-09-02 12:28:46 pierre Exp $
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -382,7 +382,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      * @param the url of the page to cache
      */
     public void calcPage(String url) {
-        scanparser m=(scanparser)Vwms.mmb.getBaseModule("SCANPARSER");
+        scanparser m=(scanparser)Vwms.mmb.getModule("SCANPARSER");
         url=url.substring(0,url.length()-5);
         url=url.replace(':','?');
         log.debug("getPage="+url);

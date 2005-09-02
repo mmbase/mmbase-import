@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.6 2003-03-07 09:30:59 pierre Exp $
+ * @version $Id: TmpObject.java,v 1.7 2005-09-02 12:28:46 pierre Exp $
  */
 public class TmpObject {
 
@@ -141,7 +141,7 @@ public class TmpObject {
        if (node.getDBType(name) == FieldDefs.TYPE_BYTE
        && value instanceof String) {
           String strValue = (String) value;
-          value = Base64.decodeToBytes(strValue);
+          value = new Encode("BASE64").decodeBytes(strValue);
        }
        node.setValue(name, value);
     }

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  *  This will run as a thread after it has been started.
  *  It will check every interval if one of it's files has been changed.
- *  When one of them has been changed, the OnChange method will be called, with the file that
+ *  When one of them has been changed, the onChange method will be called, with the file that
  *  was changed. After that the thread will stop.
  *  To stop a running thread, call the method exit();
  *
@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *	wait(100*1000);
  *	watcher.exit();
  *    </code>
- * 
+ *
  * Thanks to contributions by Mathias Bogaert.
  * Licence was changed from apache 1.1 to Mozilla.
  *
@@ -61,7 +61,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.28 2005-05-20 09:03:56 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.29 2005-09-02 12:28:46 pierre Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -109,10 +109,9 @@ public abstract class FileWatcher {
     }
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
-     * @scope public
      * @param file The file that was changed..
      */
-    abstract protected void onChange(File file);
+    abstract public void onChange(File file);
 
     /**
      * Set the delay to observe between each check of the file changes.
@@ -266,8 +265,8 @@ public abstract class FileWatcher {
         }
         return false;
     }
-    
-    
+
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -395,7 +394,7 @@ public abstract class FileWatcher {
      */
     private static class TestFileWatcher extends FileWatcher {
         int i = 0;
-        protected void onChange(java.io.File f) {
+        public void onChange(java.io.File f) {
             // do something..
             i++;
         }
