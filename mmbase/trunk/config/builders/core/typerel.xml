@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="typerel" version="0">
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="typerel" maintainer="mmbase.org" version="0" extends="object">
+
   <class>org.mmbase.module.corebuilders.TypeRel</class>
 
   <searchage>14</searchage>
@@ -45,13 +50,13 @@
         <guiname xml:lang="nl">Bron</guiname>
         <guiname xml:lang="eo">Fonto</guiname>
         <guiname xml:lang="it">Fonte</guiname>
-        <guitype>typedef</guitype>
       </gui>
       <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="typedef" />
       <db>
         <name>snumber</name>
         <type required="true" state="persistent">NODE</type>
@@ -68,13 +73,13 @@
         <guiname xml:lang="nl">Doel</guiname>
         <guiname xml:lang="eo">Celo</guiname>
         <guiname xml:lang="it">Destinazione</guiname>
-        <guitype>typedef</guitype>
       </gui>
       <editor>
         <positions>
           <list>2</list>
         </positions>
       </editor>
+      <datatype base="typedef" />
       <db>
         <name>dnumber</name>
         <type required="true" state="persistent">NODE</type>
@@ -91,13 +96,15 @@
         <guiname xml:lang="nl">Relatie</guiname>
         <guiname xml:lang="eo">Rilato</guiname>
         <guiname xml:lang="it">Relazione</guiname>
-        <guitype>reldef</guitype>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </datatype>
       <db>
         <name>rnumber</name>
         <type required="true" state="persistent">NODE</type>
@@ -114,7 +121,6 @@
         <guiname xml:lang="nl">Max Relaties</guiname>
         <guiname xml:lang="eo">Plejnombro</guiname>
         <guiname xml:lang="it">Massimo di Relazioni</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
