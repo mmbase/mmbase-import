@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.111 2005-08-22 08:12:56 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.112 2005-09-02 12:28:45 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1317,51 +1317,6 @@ public class MMAdmin extends ProcessorModule {
             return result.error("Can't get typerel builder");
         }
     }
-
-    /**
-     * @javadoc
-     * @deprecated-now not used (?)
-     */
-    /*
-    private void checkRelation(int snumber, int dnumber, String rname, int dir) {
-        InsRel insrel = mmb.getInsRel();
-        if (insrel != null) {
-            RelDef reldef = mmb.getRelDef();
-            if (reldef == null) {
-                log.warn("can't get reldef builder");
-            }
-            // figure out rnumber
-            int rnumber = reldef.getNumberByName(rname);
-            if (rnumber == -1) {
-                log.warn("no reldef : " + rname + " defined");
-                return;
-            }
-
-            MMObjectNode node = insrel.getRelation(snumber, dnumber, rnumber);
-            if (node == null) {
-                node = insrel.getNewNode("system");
-                node.setValue("snumber", snumber);
-                node.setValue("dnumber", dnumber);
-                node.setValue("rnumber", rnumber);
-                if (insrel.usesdir) {
-                    if (dir <= 0) {
-                        // have to get dir value form reldef
-                        MMObjectNode relnode = reldef.getNode(rnumber);
-                        dir = relnode.getIntValue("dir");
-                    }
-                    // correct if value is invalid
-                    if (dir <= 0)
-                        dir = 2;
-                    node.setValue("dir", dir);
-                }
-                int id = insrel.insert("system", node);
-            }
-        } else {
-            log.warn("can't get insrel builder");
-        }
-    }
-    */
-
     /**
      * @javadoc
      */

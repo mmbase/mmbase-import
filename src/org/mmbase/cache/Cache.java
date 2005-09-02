@@ -31,7 +31,7 @@ import org.mmbase.util.xml.DocumentReader;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.23 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: Cache.java,v 1.24 2005-09-02 12:28:45 pierre Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
@@ -112,7 +112,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
     * be changed which causes the caches to be reconfigured automaticly.
     */
     private static FileWatcher configWatcher = new FileWatcher (true) {
-            protected void onChange(File file) {
+            public void onChange(File file) {
                 configReader = new XMLBasicReader(file.getAbsolutePath(), Cache.class);
                 configure(configReader);
             }

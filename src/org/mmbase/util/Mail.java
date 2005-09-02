@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -17,9 +18,15 @@ import java.util.*;
  *
  * @application Mail
  * @author Rob Vermeulen
- * @version $Id: Mail.java,v 1.8 2004-09-30 08:52:16 pierre Exp $
+ * @version $Id: Mail.java,v 1.9 2005-09-02 12:28:46 pierre Exp $
  */
 public class Mail {
+
+    private static SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+
+    static {
+         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     /**
      * All the mail headers defined for this mail object.
@@ -70,8 +77,8 @@ public class Mail {
      * Sets the time of the mail
      */
     public void setDate() {
-        Date d=new Date();
-        headers.put("Date",RFC1123.makeDate(d));
+        Date d = new Date();
+        headers.put("Date",formatter.format(d));
     }
 
     /**

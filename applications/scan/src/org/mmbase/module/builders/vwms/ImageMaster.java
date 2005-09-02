@@ -16,6 +16,7 @@ import java.io.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.util.images.Imaging;
 import org.mmbase.util.logging.*;
 
 /**
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.26 2005-08-26 09:09:42 michiel Exp $
+ * @version $Id: ImageMaster.java,v 1.27 2005-09-02 12:28:46 pierre Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -204,6 +205,41 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     }
 
     /**
+     * Return a @link{ ByteFieldContainer} containing the bytes and object number
+     * for the cached image with a certain ckey, or null, if not cached.
+     * @param ckey teh ckey to search for
+     * @return null, or a @link{ ByteFieldContainer} object
+     */
+    public ByteFieldContainer getCkeyNode(ImageCaches bul, String ckey) {
+        log.debug("getting ckey node with " + ckey);
+        int pos = 0;
+        while (Character.isDigit(ckey.charAt(pos))) pos ++;
+        int nodeNumber = Integer.parseInt(ckey.substring(0, pos));
+        String template   = ckey.substring(pos);
+        if (template.charAt(0) == '=') template = template.substring(1);
+        MMObjectNode node = bul.getCachedNode(nodeNumber, template);
+        if (node == null) {
+            // we dont have a cachednode yet, return null
+            log.debug("cached node not found for key (" + ckey + "), returning  null");
+            return null;
+        }
+        // find binary data
+        byte data[] = node.getByteValue(Imaging.FIELD_HANDLE);
+        if (data == null) {
+            // if it didn't work, also cache this result, to avoid concluding that again..
+            // should this trow an exception every time? I think so, otherwise  we would generate an
+            // image every time it is requested, which also net very handy...
+            String msg =
+                "The node(#" + node.getNumber() + ") which should contain the cached result for ckey:" + ckey +
+                " had as value <null>, this means that something is really wro ng.(how can we have an cache node with node value in it?)";
+            log.error(msg);
+            throw new RuntimeException(msg);
+         }
+        ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
+        return result;
+    }
+
+    /**
      * Handles an images/mirror service request.
      * Converts images to an asis file format, then places the asis file in the files list,
      * so it will be sent to a mirror site by the ImagePusher.
@@ -268,7 +304,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                 }
 
                 log.debug("handleMirror: ckey "+ckey);
-                ByteFieldContainer container=bul.getCkeyNode(ckey);
+                ByteFieldContainer container = getCkeyNode(bul, ckey);
                 if (container == null) {
                     log.debug("handleMirror: no icaches entry yet");
                 }
@@ -513,7 +549,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
             }
         }
         if (format == null) format = images.getDefaultImageType();
-        String mimetype = org.mmbase.util.images.Imaging.getMimeTypeByExtension(format);
+        String mimetype = Imaging.getMimeTypeByExtension(format);
         if (log.isDebugEnabled()) {
             log.debug("getImageMimeType: mmb.getMimeType(" + format + ") = " + mimetype);
         }

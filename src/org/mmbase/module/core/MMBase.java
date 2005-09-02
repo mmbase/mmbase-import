@@ -40,7 +40,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.144 2005-08-22 08:14:01 pierre Exp $
+ * @version $Id: MMBase.java,v 1.145 2005-09-02 12:28:45 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -134,18 +134,6 @@ public class MMBase extends ProcessorModule {
      * The (base)path to the builder configuration files
      */
     private ResourceLoader builderLoader;
-
-    /**
-     * @deprecated-now unused
-     * @scope private
-     */
-    int delay;
-
-    /**
-     * @deprecated-now unused
-     * @scope private
-     */
-    boolean nodecachesdone = false;
 
     /**
      * A thread object that gets activated by MMbase.
@@ -447,17 +435,6 @@ public class MMBase extends ProcessorModule {
     public boolean isShutdown() {
         return  mmbaseState == STATE_SHUT_DOWN;
     }
-
-    /**
-     * Started when the module is loaded.
-     * @deprecated-now unused
-     */
-    public void onload() {}
-
-    /**
-     * @deprecated-now unused
-     */
-    public void unload() {}
 
     /**
      * Checks whether the storage to be used exists.
@@ -835,20 +812,6 @@ public class MMBase extends ProcessorModule {
     public synchronized int getDBKey() {
         return getStorageManager().createKey();
     }
-
-    /**
-     * Retrieves a (mmbase) module by name.
-     * @return the module as an <code>Object</code> if it exists, <code>null</code> otherwise
-     * @deprecated-now Use {@link #getModule} instead
-     */
-    public Object getBaseModule(String name) {
-        return getModule(name);
-    }
-
-    /**
-     * @deprecated-now not used
-     */
-    public void stop() {}
 
     /**
      * Loads a core Builder.

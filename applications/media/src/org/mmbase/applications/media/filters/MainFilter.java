@@ -49,7 +49,7 @@ public class MainFilter {
     public static final String CONFIG_FILE       = "media" + File.separator + "filters.xml";
         
     private FileWatcher configWatcher = new FileWatcher(true) {
-        protected void onChange(File file) {
+        public void onChange(File file) {
             readConfiguration(file);
         }
     };

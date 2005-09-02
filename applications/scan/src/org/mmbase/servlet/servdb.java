@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.59 2005-08-26 09:09:42 michiel Exp $
+ * @version $Id: servdb.java,v 1.60 2005-09-02 12:28:46 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -66,10 +66,10 @@ public class servdb extends JamesServlet {
         associateMapping("images","/img.db",new Integer(10));
         associateMapping("attachments","/attachment.db",new Integer(10));
     }
-    
+
 
     public void setMMBase(MMBase mmb) {
-        super.setMMBase(mmb);        
+        super.setMMBase(mmb);
 
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
@@ -98,14 +98,14 @@ public class servdb extends JamesServlet {
     // perhaps this method can simply be doGet
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         if (!checkInited(res)) {
-            return;            
+            return;
         }
 
         Date lastmod;
         String templine,templine2;
         int filesize;
 
-        incRefCount(req); // this is already done in service of MMBaseServlet, 
+        incRefCount(req); // this is already done in service of MMBaseServlet,
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
@@ -240,13 +240,13 @@ public class servdb extends JamesServlet {
                         Vector params = getParamVector(req);
                         // Catch alias only images without parameters.
                         if (params.size()==1) {
-                            try { 
+                            try {
                                 Integer.parseInt((String)params.elementAt(0));
                             } catch (NumberFormatException e) {
                                 notANumber=true;
                             }
                         }
-                        
+
                         if (params.size() > 1 || notANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
@@ -268,7 +268,7 @@ public class servdb extends JamesServlet {
                                         template.append("+");
                                     }
                                 }
-                                
+
                             }
                             int imageNumber = bul.getCachedNode(bul.getNode(imageId), template.toString()).getNumber();
                             if (imageNumber > 0) {
@@ -285,10 +285,15 @@ public class servdb extends JamesServlet {
 
                         if (params.size()>0) {
                             // good image
-	                        ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
-	                        cline.buffer   = icaches.getImageBytes(params);
-	                        cline.mimetype = icaches.getImageMimeType(params);
-	                        mimetype=cline.mimetype;
+                            ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
+                            MMObjectNode node = icaches.getNode("" + params.get(0));
+                            if (node == null) {
+                                cline.buffer = null;
+                            } else {
+                                cline.buffer = node.getByteValue("handle");
+                            }
+                            cline.mimetype = icaches.getMimeType(node);
+                            mimetype=cline.mimetype;
                         } else {
                             // return a broken image
                             cline.buffer=null;
@@ -297,7 +302,7 @@ public class servdb extends JamesServlet {
                         }
 
                         // bugfix #6558 - fix for broken IE images in scan
-                        if (mimetype.equals("image/jpeg") || mimetype.equals("image/jpg")) 
+                        if (mimetype.equals("image/jpeg") || mimetype.equals("image/jpg"))
                             cline.buffer = IECompatibleJpegInputStream.process(cline.buffer);
 
                         if (log.isDebugEnabled()) log.debug("servdb::service(img): The contenttype for this image is: "+mimetype);

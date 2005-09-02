@@ -24,11 +24,11 @@ import org.mmbase.util.logging.*;
 /**
  *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
  *  to is added or changed, it's onChange will be triggered, if not a 'more important' wil was
- *  existing already. If a file is removed, and was the most important one, it will be removed from the filewatcher. 
+ *  existing already. If a file is removed, and was the most important one, it will be removed from the filewatcher.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.4 2005-05-20 09:02:54 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.5 2005-09-02 12:28:46 pierre Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -38,7 +38,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     /**
      * All instantiated ResourceWatchers. Only used until setResourceBuilder is called. Then it
      * is set to null, and not used any more (also used in ResourceLoader).
-     * 
+     *
      */
     static  Set resourceWatchers = new HashSet();
 
@@ -59,8 +59,8 @@ public abstract class ResourceWatcher implements MMBaseObserver {
                     if (rw.mapNodeNumber(resource)) {
                         log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
                         rw.onChange(resource);
-                        
-                    }                
+
+                    }
                 }
             }
         }
@@ -100,7 +100,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     protected ResourceLoader resourceLoader;
 
 
-    /** 
+    /**
      * Constructor.
      */
     protected ResourceWatcher(ResourceLoader rl) {
@@ -111,7 +111,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             }
         }
     }
-    /** 
+    /**
      * Constructor, defaulting to the Root ResourceLoader (see {@link ResourceLoader#getConfigurationRoot}).
      */
     protected ResourceWatcher() {
@@ -121,14 +121,14 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
     /**
      * Wraps {@link #nodeChanged(String, String)}
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         return nodeChanged(number, ctype);
     }
     /**
      * Wraps {@link #nodeChanged(String, String)}
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
         return nodeChanged(number, ctype);
@@ -138,9 +138,9 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      * If a node (of the type 'resourceBuilder') changes, checks if it is a node belonging to one of the resource of this resource-watcher.
      * If so, {@link #onChange} is called.
      */
-    protected boolean nodeChanged(String number, String ctype) {       
+    protected boolean nodeChanged(String number, String ctype) {
         try {
-            if (ctype.equals("d")) { 
+            if (ctype.equals("d")) {
                 // hard..
                 String name = (String) nodeNumberToResourceName.get(number);
                 if (name != null && resources.contains(name)) {
@@ -174,7 +174,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
 
     /**
-     * @return Unmodifiable set of String of watched resources 
+     * @return Unmodifiable set of String of watched resources
      */
     public Set getResources() {
         return Collections.unmodifiableSortedSet(resources);
@@ -245,7 +245,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         } else {
             return false;
         }
-            
+
     }
 
     /**
@@ -268,7 +268,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             String resource = (String) i.next();
             resourceLoader.checkShadowedNewerResources(resource);
             mapNodeNumber(resource);
-            createFileWatcher(resource);     
+            createFileWatcher(resource);
 
         }
         observe();
@@ -310,7 +310,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     }
 
     /**
-     * Removes all resources. 
+     * Removes all resources.
      */
     public synchronized  void clear() {
         if (running) {
@@ -335,7 +335,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         if (ResourceLoader.resourceBuilder != null) {
             ResourceLoader.resourceBuilder.removeLocalObserver(this);
             ResourceLoader.resourceBuilder.removeRemoteObserver(this);
-        } 
+        }
         running = false;
     }
 
@@ -357,7 +357,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         ResourceFileWatcher(String resource) {
             this.resource = resource;
         }
-        protected void onChange(File f) {
+        public void onChange(File f) {
             URL shadower = resourceLoader.shadowed(f, resource);
             if (shadower == null) {
                 ResourceWatcher.this.onChange(resource);
@@ -366,6 +366,6 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             }
         }
     }
-            
- 
+
+
 }
