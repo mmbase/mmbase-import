@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="typedef" version="0">
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="typedef" maintainer="mmbase.org" version="0" extends="object">
+
   <class>org.mmbase.module.corebuilders.TypeDef</class>
 
   <searchage>1000</searchage>
@@ -40,7 +44,6 @@
         <guiname xml:lang="eo">Nomo</guiname>
         <guiname xml:lang="fy">Namme</guiname>
         <guiname xml:lang="it">Nome</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -65,7 +68,6 @@
         <guiname xml:lang="eo">Priskribo</guiname>
         <guiname xml:lang="fy">Beskrowing</guiname>
         <guiname xml:lang="it">Descrizione</guiname>
-        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -90,7 +92,6 @@
         <guiname xml:lang="eo">Agordo</guiname>
         <guiname xml:lang="fy">Ynstellings</guiname>
         <guiname xml:lang="it">Configurazione</guiname>
-        <guitype>field</guitype>
       </gui>
       <db>
         <name>config</name>

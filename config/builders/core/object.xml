@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder name="object" maintainer="mmbase.org" version="0" >
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="object" maintainer="mmbase.org" version="0">
   <status>active</status>
   <class>Dummy</class>
   <searchage>1000</searchage>
@@ -57,7 +60,6 @@
         <guiname xml:lang="it">Oggetto</guiname>
         <guiname xml:lang="zh">号</guiname>
         <guiname xml:lang="ja">数</guiname><!-- 'kazu', I found 6 other possibilities ... , suuzi, suu-->
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -87,7 +89,6 @@
       <gui>
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
-        <guitype>typedef</guitype>
       </gui>
       <editor>
         <positions>
@@ -96,9 +97,12 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </datatype>
       <db>
         <name>otype</name>
-        <type state="system" required="true" >NODE</type>
+        <type state="system"  required="true" >NODE</type>
       </db>
     </field>
 
@@ -116,8 +120,8 @@
           in dit veld opgeslagen.
         </description>
         <description xml:lang="es">
-        Dueño del objeto. Dependiendo de seguridad elegida esta puede significar diversas cosas.
-        Por Ejemplo, si se usa 'seguridad contexto' el contexto seguridad sera grabado aqui.
+          Dueño del objeto. Dependiendo de seguridad elegida esta puede significar diversas cosas.
+          Por Ejemplo, si se usa 'seguridad contexto' el contexto seguridad sera grabado aqui.
         </description>
         <description xml:lang="eo">
           Posedanto de la objekto. Depende de la elektita sekureca realigo, la signifo de tio povas
@@ -136,7 +140,6 @@
         <guiname xml:lang="it">Proprietario</guiname>
         <guiname xml:lang="zh">闆</guiname>
         <guiname xml:lang="ja">主勇者</guiname><!-- 'shoyuusha' -->
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="insrel" version="0">
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="insrel" maintainer="mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.module.corebuilders.InsRel</class>
 
@@ -27,15 +30,14 @@
   <fieldlist>
     <field>
       <descriptions>
-  <description xml:lang="en">Objectnumber of this relation's source</description>
-  <description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
+        <description xml:lang="en">Objectnumber of this relation's source</description>
+        <description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Source</guiname>
         <guiname xml:lang="nl">Bron</guiname>
         <guiname xml:lang="eo">Fonto</guiname>
         <guiname xml:lang="it">Fonte</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -46,7 +48,7 @@
       </editor>
       <db>
         <name>snumber</name>
-        <type required="true" state="system">NODE</type>
+        <type notnull="true" required="true" state="system">NODE</type>
       </db>
     </field>
 
@@ -60,7 +62,6 @@
         <guiname xml:lang="nl">Bestemming</guiname>
         <guiname xml:lang="eo">Celo</guiname>
         <guiname xml:lang="it">Destinazione</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -71,7 +72,7 @@
       </editor>
       <db>
         <name>dnumber</name>
-        <type required="true" state="system">NODE</type>
+        <type notnull="true" required="true" state="system">NODE</type>
       </db>
     </field>
 
@@ -85,7 +86,6 @@
         <guiname xml:lang="nl">Relatie</guiname>
         <guiname xml:lang="eo">Rilato</guiname>
         <guiname xml:lang="it">Relazione</guiname>
-        <guitype>reldef</guitype>
       </gui>
       <editor>
         <positions>
@@ -94,6 +94,9 @@
           <search>3</search>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </datatype>
       <db>
         <name>rnumber</name>
         <type required="true" state="system">NODE</type>
