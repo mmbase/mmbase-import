@@ -18,12 +18,12 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.7 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.8 2005-09-02 17:40:45 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
 
-    protected  DataType.ValueConstraint mustExistConstraint = new MustExistConstraint();
+    protected final DataType.ValueConstraint mustExistConstraint = new MustExistConstraint();
 
     /**
      * Constructor for node field.
@@ -43,8 +43,7 @@ public class NodeDataType extends DataType {
     public void inherit(DataType origin) {
         super.inherit(origin);
         if (origin instanceof NodeDataType) {
-            NodeDataType dataType = (NodeDataType)origin;
-            mustExistConstraint = inheritConstraint(dataType.mustExistConstraint);
+            mustExistConstraint.inherit(((NodeDataType)origin).mustExistConstraint);
         }
     }
 
