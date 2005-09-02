@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.12 2005-08-31 12:38:58 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.13 2005-09-02 09:55:14 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -121,9 +121,9 @@ public class DateTimeDataType extends DataType {
         if (minProperty == null) minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (minInclusive) {
-            minProperty.getLocalizedErrorDescription().setKey(ERROR_MIN_INCLUSIVE);
+            minProperty.getErrorDescription().setKey(ERROR_MIN_INCLUSIVE);
         } else {
-            minProperty.getLocalizedErrorDescription().setKey(ERROR_MIN_EXCLUSIVE);
+            minProperty.getErrorDescription().setKey(ERROR_MIN_EXCLUSIVE);
         }
         return minProperty;
     }
@@ -164,9 +164,9 @@ public class DateTimeDataType extends DataType {
         if (maxProperty == null) maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (maxInclusive) {
-            maxProperty.getLocalizedErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
+            maxProperty.getErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
         } else {
-            maxProperty.getLocalizedErrorDescription().setKey(ERROR_MAX_EXCLUSIVE);
+            maxProperty.getErrorDescription().setKey(ERROR_MAX_EXCLUSIVE);
         }
         return maxProperty;
     }
