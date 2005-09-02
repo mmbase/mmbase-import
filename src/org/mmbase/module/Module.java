@@ -11,8 +11,10 @@ package org.mmbase.module;
 
 import java.util.*;
 import java.net.*;
+import org.xml.sax.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.ModuleReader;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logging;
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.67 2005-07-11 10:06:12 michiel Exp $
+ * @version $Id: Module.java,v 1.68 2005-09-02 15:02:44 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -42,6 +44,8 @@ public abstract class Module extends FunctionProvider {
 
     // logger instance
     private static final Logger log = Logging.getLoggerInstance(Module.class);
+
+    public static final ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
 
     /**
      * This function returns the Module's version number as an Integer.
@@ -86,6 +90,27 @@ public abstract class Module extends FunctionProvider {
     public final void setName(String name) {
         if (moduleName == null) {
             moduleName = name;
+        }
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public ResourceLoader getModuleLoader() {
+        return Module.moduleLoader;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public ModuleReader getModuleReader(String moduleName) {
+        try {
+            InputSource is = getModuleLoader().getInputSource(moduleName + ".xml");
+            if (is == null) return null;
+            return new ModuleReader(is);
+        } catch (Exception e) {
+            log.error(e);
+            return null;
         }
     }
 
@@ -377,24 +402,20 @@ public abstract class Module extends FunctionProvider {
      */
     private static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
-        ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
-        Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
-        log.info("In " + rl + " the following module XML's were found " + modules);
+        Collection modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
+        log.info("In " + moduleLoader + " the following module XML's were found " + modules);
         Iterator i = modules.iterator();
         while (i.hasNext()) {
             String file = (String) i.next();
             String fileName = ResourceLoader.getName(file);
-            XMLModuleReader parser;
-            org.xml.sax.InputSource is = null;
+            ModuleReader parser = null;
             try {
-                is = rl.getInputSource(file);
-                parser = new XMLModuleReader(is);
-            } catch (Throwable t) {
-                log.error("Could not load module with xml '" + (is == null ? "NULL" : is.getSystemId()) + "': " + t.getMessage());
-                continue;
+                InputSource is = moduleLoader.getInputSource(file);
+                if (is != null) parser = new ModuleReader(is);
+            } catch (Exception e) {
+                log.error(e);
             }
-
-            if (parser.getStatus().equals("active")) {
+            if (parser != null && parser.getStatus().equals("active")) {
                 String className = parser.getClassName();
                 // try starting the module and give it its properties
                 try {
@@ -413,7 +434,7 @@ public abstract class Module extends FunctionProvider {
 
                     results.put(fileName, mod);
 
-                    mod.properties =  parser.getProperties();
+                    mod.properties = new Hashtable(parser.getProperties());
 
                     // set the module name property using the module's filename
                     // maybe we need a parser.getModuleName() function to improve on this

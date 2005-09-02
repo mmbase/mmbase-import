@@ -9,10 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-
-import org.mmbase.util.XMLModuleReader;
+import java.util.Hashtable;
+import org.mmbase.util.xml.ModuleReader;
 import org.mmbase.util.logging.*;
-
 
 /**
  * A Reloadable Module has a 'reload' method. You can extend your own modules from this. If you need
@@ -20,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.6 2005-07-11 10:06:12 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.7 2005-09-02 15:02:44 pierre Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -31,18 +30,23 @@ public abstract class ReloadableModule extends Module {
      *
      * The module cannot change class, so if you change that in the XML, an error is logged, and nothing will
      * happen.
-     * 
+     *
      * This method should be called from your extension if and when the configuration must be reloaded.
-     * 
+     *
      * @return Whether successful.
      */
 
-    protected boolean reloadConfiguration(String s) {
-        XMLModuleReader parser  = new XMLModuleReader(s);
-        return reloadConfiguration(parser);
+    protected boolean reloadConfiguration(String moduleName) {
+        ModuleReader parser = getModuleReader(moduleName);
+        if (parser == null) {
+            log.error("Configuration missing for: " + moduleName + " Canceling reload");
+            return false;
+        } else {
+            return reloadConfiguration(parser);
+        }
     }
 
-    protected boolean reloadConfiguration(XMLModuleReader parser) {
+    protected boolean reloadConfiguration(ModuleReader parser) {
         if (parser.getStatus().equals("inactive")) {
             log.error("Cannot set module to inactive. " + parser.getSystemId() + " Canceling reload");
             return false;
@@ -52,18 +56,18 @@ public abstract class ReloadableModule extends Module {
             log.error("Cannot change the class of a module. " + className + " != " + getClass().getName() + " " + parser.getSystemId()  + ". Canceling reload.");
             return false;
         }
-        
-        properties =  parser.getProperties();        
+
+        properties = new Hashtable(parser.getProperties());
         setMaintainer(parser.getModuleMaintainer());
-        setVersion(parser.getModuleVersion());        
+        setVersion(parser.getModuleVersion());
         return true;
     }
 
-    
+
     /**
      * This method should be called when the module should be reloaded. This default implementation is empty.
      */
-    
+
     public void reload() {
     }
 
