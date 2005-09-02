@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="syncnodes" version="0">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="syncnodes" maintainer="mmbase.org" version="0" extends="object">
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Synchronisation Node</singular>
@@ -32,7 +36,6 @@
         <guiname xml:lang="nl">Exportbron</guiname>
         <guiname xml:lang="eo">Eksportfonto</guiname>
         <guiname xml:lang="it">Esporta fonte</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -58,7 +61,6 @@
         <guiname xml:lang="nl">Tijdstempel</guiname>
         <guiname xml:lang="eo">Tempstampo</guiname>
         <guiname xml:lang="it">Time stamp</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -75,18 +77,18 @@
 
     <field>
       <descriptions>
-        <description xml:lang="en">Remote number of this node, the
-        remotenumber is mapped to the localnumber when importing nodes</description>
-        <description xml:lang="nl">Nummer van deze node in de externe cloud, het
-        externe nummer wordt gemapped naar het lokale nummer bij een
-        import van nodes</description>
+        <description xml:lang="en">
+          Remote number of this node, the remotenumber is mapped to the localnumber when importing nodes
+        </description>
+        <description xml:lang="nl">
+          Nummer van deze node in de externe cloud, het externe nummer wordt gemapped naar het lokale nummer bij een import van nodes
+        </description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Export Number</guiname>
         <guiname xml:lang="nl">Exportnummer</guiname>
         <guiname xml:lang="eo">Eksportnumero</guiname>
         <guiname xml:lang="it">Esport Numero</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -103,18 +105,18 @@
 
     <field>
       <descriptions>
-        <description xml:lang="en">Local number of this node, the
-        remotenumber is mapped to the localnumber when importing nodes</description>
-        <description xml:lang="nl">Lokaal nummer van deze node, het
-        externe nummer wordt gemapped naar het lokale nummer bij een
-        import van nodes</description>
+        <description xml:lang="en">
+          Local number of this node, the remotenumber is mapped to the localnumber when importing nodes
+        </description>
+        <description xml:lang="nl">
+          Lokaal nummer van deze node, het externe nummer wordt gemapped naar het lokale nummer bij een import van nodes
+        </description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Local Number</guiname>
         <guiname xml:lang="nl">Lokaal Nummer</guiname>
         <guiname xml:lang="eo">Ĉi-numero</guiname>
         <guiname xml:lang="it">Numero Locale</guiname>
-        <guitype>integer</guitype>
       </gui>
 
       <editor>
