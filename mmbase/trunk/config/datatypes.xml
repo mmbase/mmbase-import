@@ -90,6 +90,7 @@
 
 
     <specialization id="time">
+      <default value="100" />
       <pattern value="HH:mm:ss" />
       <getprocessor type="string">
         <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
@@ -97,6 +98,7 @@
     </specialization>
 
     <specialization id="date">
+      <default value="now" />
       <pattern value="yyyy-MM-dd" />
       <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
       <getprocessor type="string">
@@ -138,6 +140,12 @@
       <commitprocessor>
         <class>org.mmbase.util.transformers.ChecksumFactory</class>
       </commitprocessor>
+    </specialization>
+  </datatype>
+
+  <datatype id="node">
+    <specialization id="typedef">
+      <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
     </specialization>
   </datatype>
 
