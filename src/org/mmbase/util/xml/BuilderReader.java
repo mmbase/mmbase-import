@@ -24,7 +24,6 @@ import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
 
-import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -38,20 +37,19 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.37 2005-09-01 17:26:13 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.38 2005-09-02 15:02:44 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
-    private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_BUILDER_1_0 = "-//MMBase//DTD builder config 1.0//EN";
-    private static final String PUBLIC_ID_BUILDER_1_0_FAULT = "-//MMBase/DTD builder config 1.0//EN";
-    private static final String PUBLIC_ID_BUILDER_OLD = "/MMBase - builder//";
-
     /** Public ID of the Builder DTD version 1.1 */
     public static final String PUBLIC_ID_BUILDER_1_1 = "-//MMBase//DTD builder config 1.1//EN";
-    private static final String PUBLIC_ID_BUILDER_1_1_FAULT = "-//MMBase/DTD builder config 1.1//EN";
 
+    // deprecated builder dtds
+    private static final String PUBLIC_ID_BUILDER_1_0_FAULT = "-//MMBase/DTD builder config 1.0//EN";
+    private static final String PUBLIC_ID_BUILDER_OLD = "/MMBase - builder//";
+    private static final String PUBLIC_ID_BUILDER_1_1_FAULT = "-//MMBase/DTD builder config 1.1//EN";
 
     /** DTD resource filename of the Builder DTD version 1.0 */
     public static final String DTD_BUILDER_1_0 = "builder_1_0.dtd";
@@ -67,6 +65,8 @@ public class BuilderReader extends DocumentReader {
     public static final String NAMESPACE_BUILDER_2_0 = "http://www.mmbase.org/xmlns/builder";
     public static final String NAMESPACE_BUILDER = NAMESPACE_BUILDER_2_0;
 
+    private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
+
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
      * This method is called by XMLEntityResolver.
@@ -77,7 +77,7 @@ public class BuilderReader extends DocumentReader {
 
 
     /**
-     * Register the Public Ids for DTDs used by XMLBasicReader
+     * Register the Public Ids for DTDs used by BuilderReader
      * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
@@ -122,7 +122,6 @@ public class BuilderReader extends DocumentReader {
     private SortedSet searchPositions = new TreeSet();
     private SortedSet inputPositions  = new TreeSet();
 
-
     /**
      * @since MMBase-1.7
      */
@@ -131,7 +130,6 @@ public class BuilderReader extends DocumentReader {
         mmbase = mmb;
         resolveInheritance();
     }
-
 
     /**
      * @since MMBase-1.8
@@ -526,7 +524,7 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        
+
         // XXX: deprecated tag 'gui'
         Element gui = getElementByPath(field, "field.gui");
         if (gui != null) {
@@ -547,7 +545,7 @@ public class BuilderReader extends DocumentReader {
         Element dataTypeElement = getElementByPath(field, "field.datatype");
         if (dataTypeElement != null) {
             String base = dataTypeElement.getAttribute("base");
-            DataType baseDataType = collector.getDataType("base");            
+            DataType baseDataType = collector.getDataType("base");
             DataType  dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, collector).dataType;
             def.setDataType(dataType);
             log.info("Found and set " + dataType + " for " + def);

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Hashtable;
 
 import org.mmbase.util.xml.BuilderReader;
+import org.mmbase.util.xml.ModuleReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,7 +30,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.53 2005-08-29 09:05:02 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.54 2005-09-02 15:02:44 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -42,7 +43,7 @@ public class XMLEntityResolver implements EntityResolver {
     // The package of these XML's will also contain the resources with the DTD.
 
     /**
-     * XSD's have only system ID 
+     * XSD's have only system ID
      */
     private static Map systemIDtoResource = new Hashtable();
 
@@ -75,7 +76,7 @@ public class XMLEntityResolver implements EntityResolver {
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
         XMLApplicationReader.registerPublicIDs();
-        XMLModuleReader.registerPublicIDs();
+        ModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
         org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
@@ -167,14 +168,14 @@ public class XMLEntityResolver implements EntityResolver {
             definitionStream = getStream(res);
         }
         log.debug("Get definition stream by public id: " + definitionStream);
-        
+
         if (definitionStream == null) {
             Resource res = (Resource) systemIDtoResource.get(systemId);
             if (res != null) {
                 definitionStream = getStream(res);
             }
         }
-        
+
         if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
 
             //does systemId contain a mmbase-dtd
@@ -201,7 +202,7 @@ public class XMLEntityResolver implements EntityResolver {
                     Resource res = null;
                     if (base != null) {
                         if (mmResource.startsWith("xmlns/")) {
-                            res = new Resource(base, mmResource.substring(6)); 
+                            res = new Resource(base, mmResource.substring(6));
                         } else {
                             res = new Resource(base, mmResource.substring(4));  // dtd or xsd
                         }

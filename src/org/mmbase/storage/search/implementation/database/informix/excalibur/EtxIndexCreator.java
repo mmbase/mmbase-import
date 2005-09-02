@@ -13,50 +13,49 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-import org.mmbase.util.XMLModuleReader;
+import org.mmbase.util.xml.ModuleReader;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
  * The Etx index creator creates Excalibur Text Search indices,
  * when used with an Informix database and a Excalibur Text Search datablade.
- * This class is provided as a utility to supplement the 
+ * This class is provided as a utility to supplement the
  * {@link EtxSqlHandler EtxSqlHandler}.
  * <p>
- * When run as an application, the index creator reads a list of etx-indices 
- * from a configuration file, and creates the indices that are not present 
+ * When run as an application, the index creator reads a list of etx-indices
+ * from a configuration file, and creates the indices that are not present
  * already.
  * The configurationfile must be named <em>etxindices.xml</em> and located
- * inside the <em>databases</em> configuration directory. 
- * It's DTD is located in the directory 
+ * inside the <em>databases</em> configuration directory.
+ * It's DTD is located in the directory
  * <code>org.mmbase.storage.search.implementation.database.informix.excalibur.resources</code>
- * in the MMBase source tree and 
- * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online. 
+ * in the MMBase source tree and
+ * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.3 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: EtxIndexCreator.java,v 1.4 2005-09-02 15:02:44 pierre Exp $
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
-    
+
     /** Path to the MMBase configuration directory. */
     private String configDir = null;
-    
+
     /** Database connection. */
     private Connection con = null;
-    
-    /** 
+
+    /**
      * Creates a new instance of EtxIndexCreator, opens database connection.
      *
      * @param configDir Path to MMBase configuration directory.
      */
     public EtxIndexCreator(String configDir) throws Exception{
         this.configDir = configDir;
-        
+
         // Get database connection:
         // 1 - read database configuration
-        XMLModuleReader moduleReader = 
-            new XMLModuleReader(configDir + "/modules/jdbc.xml");
+        ModuleReader moduleReader = new ModuleReader(new InputSource(new FileInputStream(configDir + "/modules/jdbc.xml")));
         Map properties = moduleReader.getProperties();
         String url = (String) properties.get("url");
         String host = (String) properties.get("host");
@@ -87,9 +86,9 @@ public class EtxIndexCreator {
             con = DriverManager.getConnection(url, user, password);
         }
     }
-    
+
     /**
-     * Application main method. 
+     * Application main method.
      * <p>
      * Reads etxindices configuration file, and creates the etx indices
      * that are not already created.
@@ -110,7 +109,7 @@ public class EtxIndexCreator {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Executes the tasks: reads configuration file and creates indices
      * as needed, and closes database connection.
@@ -120,40 +119,40 @@ public class EtxIndexCreator {
             // Read etxindices config.
             File etxConfigFile = new File(
                 configDir + "/databases/etxindices.xml");
-            XmlEtxIndicesReader configReader = 
+            XmlEtxIndicesReader configReader =
                 new XmlEtxIndicesReader(
                     new InputSource(
                         new BufferedReader(
                             new FileReader(etxConfigFile))));
-            
+
             for (Iterator iSbspaces = configReader.getSbspaceElements(); iSbspaces.hasNext();) {
                 Element sbspace = (Element) iSbspaces.next();
                 String sbspaceName = configReader.getSbspaceName(sbspace);
-                
+
                 for (Iterator iEtxindices = configReader.getEtxindexElements(sbspace); iEtxindices.hasNext();) {
                     Element etxindex = (Element) iEtxindices.next();
                     String name = configReader.getEtxindexValue(etxindex);
                     String table = configReader.getEtxindexTable(etxindex);
                     String field = configReader.getEtxindexField(etxindex);
                     if (!etxIndexExists(name)) {
-                        createEtxIndex(sbspaceName, 
+                        createEtxIndex(sbspaceName,
                             name, table, field);
                     }
               }
             }
-            
+
         } finally {
             if (con != null) {
                 con.close();
             }
         }
     }
-    
+
     /**
      * Tests if a Etx index already exists with a specified name.
      * NOTE: Tests if the index exists, but does not verify that is is
      * indeed an Etx index.
-     * 
+     *
      * @param etxindexName The index name.
      * @return True if a Etx index already exists with this name,
      *         false otherwise.
@@ -186,7 +185,7 @@ public class EtxIndexCreator {
             }
         }
     }
-    
+
     /**
      * Creates new Etx index.
      *
@@ -196,16 +195,16 @@ public class EtxIndexCreator {
      * @param field The field.
      */
     private void createEtxIndex(String sbspace,
-        String name, String table, String field) 
+        String name, String table, String field)
         throws SQLException {
             String operatorclass = getOperatorClass(table, field);
-            String sqlCreateIndex = 
-                "CREATE INDEX " + name 
-                + " ON " + table + " (" + field + " " + operatorclass 
+            String sqlCreateIndex =
+                "CREATE INDEX " + name
+                + " ON " + table + " (" + field + " " + operatorclass
                 + ") USING etx (CHAR_SET='OVERLAP_ISO', "
                 + "PHRASE_SUPPORT='MAXIMUM', "
                 + "WORD_SUPPORT='PATTERN') IN " + sbspace;
-            
+
             Statement st = null;
             try {
                 System.out.println(sqlCreateIndex);
@@ -218,7 +217,7 @@ public class EtxIndexCreator {
                 }
             }
     }
-    
+
     /**
      * Determines the appropriate operator class for a field to be indexed,
      * based on metadata retrieved from the database.

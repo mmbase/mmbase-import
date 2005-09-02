@@ -11,6 +11,7 @@ package org.mmbase.module.core;
 
 import java.io.File;
 import java.util.*;
+import org.xml.sax.*;
 
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.Field;
@@ -40,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.145 2005-09-02 12:28:45 pierre Exp $
+ * @version $Id: MMBase.java,v 1.146 2005-09-02 15:02:44 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -87,6 +88,11 @@ public class MMBase extends ProcessorModule {
     public static final int startTime = (int) (System.currentTimeMillis() / 1000);
 
     /**
+     * The (base)path to the builder configuration files
+     */
+    private static ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
+
+    /**
      * Builds a MultiCast Thread to receive and send
      * changes from other MMBase Servers.
      * @scope private
@@ -129,11 +135,6 @@ public class MMBase extends ProcessorModule {
      * @scope private
      */
     public Hashtable mmobjs = new Hashtable();
-
-    /**
-     * The (base)path to the builder configuration files
-     */
-    private ResourceLoader builderLoader;
 
     /**
      * A thread object that gets activated by MMbase.
@@ -331,13 +332,6 @@ public class MMBase extends ProcessorModule {
         getModule("JDBC", true);
 
         initializeClustering(getInitParameter("CLUSTERING"));
-
-        String builderPath = getInitParameter("BUILDERFILE");
-        if (builderPath == null || builderPath.equals("")) {
-            builderPath = "builders";
-        }
-        log.debug("Builder path: " + builderPath);
-        builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderPath);
 
         mmbaseState = STATE_LOAD;
 
@@ -859,7 +853,7 @@ public class MMBase extends ProcessorModule {
         }
 
 
-        Set builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
+        Set builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
 
         log.info("Loading builders: " + builders);
         Iterator i = builders.iterator();
@@ -952,9 +946,22 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public ResourceLoader getBuilderLoader() {
-        return builderLoader;
+        return MMBase.builderLoader;
     }
 
+    /**
+     * @since MMBase-1.8
+     */
+    public BuilderReader getBuilderReader(String builderName) {
+        try {
+            InputSource is = getBuilderLoader().getInputSource(builderName + ".xml");
+            if (is == null) return null;
+            return new BuilderReader(is, this);
+        } catch (Exception e) {
+            log.error(e);
+            return null;
+        }
+    }
 
     /**
      * Locate one specific builder withing the main builder config path, including sub-paths.
@@ -980,10 +987,10 @@ public class MMBase extends ProcessorModule {
      *       function used to be implemented recursively (now delegated to ResourceLoader).
      */
     public String getBuilderPath(String builderName, String path) {
-        Set builders = builderLoader.getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
+        Set builders = getBuilderLoader().getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
         Iterator i = builders.iterator();
         if (log.isDebugEnabled()) {
-            log.debug("Found builder " + builders + " from " +  builderLoader  + " searching for " + builderName);
+            log.debug("Found builder " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
         }
         String xml = builderName + ".xml";
         while (i.hasNext()) {
@@ -1043,7 +1050,7 @@ public class MMBase extends ProcessorModule {
         try {
             // register the loading of this builder
             loading.add(builderName);
-            BuilderReader parser = new BuilderReader(builderLoader.getInputSource(ipath + builderName + ".xml"), this);
+            BuilderReader parser = getBuilderReader(ipath + builderName);
             String status = parser.getStatus();
             if (status.equals("active")) {
                 log.info("Starting builder : " + builderName);
@@ -1270,11 +1277,8 @@ public class MMBase extends ProcessorModule {
     private boolean checkBuilderVersion(String buildername, Versions ver) {
 
         MMObjectBuilder tmp = (MMObjectBuilder)mmobjs.get(buildername);
-        BuilderReader bapp;
-        try {
-            bapp = new BuilderReader(builderLoader.getInputSource(tmp.getXMLPath() + buildername + ".xml"), this);
-        } catch (Exception e) {
-            log.error(e);
+        BuilderReader bapp = getBuilderReader(tmp.getXMLPath() + buildername);
+        if (bapp == null) {
             return false;
         }
 

@@ -32,12 +32,12 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.43 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: XMLBasicReader.java,v 1.44 2005-09-02 15:02:44 pierre Exp $
  */
 public class XMLBasicReader extends DocumentReader {
 
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
-    
+
     public XMLBasicReader(String path) {
         super(getInputSource(path));
     }
@@ -72,13 +72,13 @@ public class XMLBasicReader extends DocumentReader {
 
     /**
      * Creates an input source for a document, based on a filepath
-     * If the file cannot be opened, the method returns an inputsource of an error document describing the condition 
+     * If the file cannot be opened, the method returns an inputsource of an error document describing the condition
      * under which this failed.
      * @param  path the path to the file containing the document
      * @return the input source to the document.
      * @deprecated
      */
-    private static InputSource getInputSource(String path) {
+    public static InputSource getInputSource(String path) {
         InputSource is;
         try {
             // remove file protocol if present to avoid errors in accessing file
@@ -96,7 +96,7 @@ public class XMLBasicReader extends DocumentReader {
                                                    "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
                                                    " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
                                                    "<error>" + path + " not found</error>"));
-         } 
+         }
         return is;
     }
 

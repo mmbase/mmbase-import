@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.112 2005-09-02 12:28:45 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.113 2005-09-02 15:02:44 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -444,33 +444,36 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     int getBuilderVersion(String bulname) {
-        BuilderReader bul = getBuilderReader(bulname);
+        int version = -1;
+        BuilderReader bul = mmb.getBuilderReader(bulname);
         if (bul != null) {
-            return bul.getBuilderVersion();
+            version = bul.getBuilderVersion();
         }
-        return -1;
+        return version;
     }
 
     /**
      * @javadoc
      */
     String getBuilderClass(String bulname) {
-        BuilderReader bul = getBuilderReader(bulname);
+        String className = "";
+        BuilderReader bul = mmb.getBuilderReader(bulname);
         if (bul != null) {
-            return bul.getClassName();
+            className = bul.getClassName();
         }
-        return "";
+        return className;
     }
 
     /**
      * @javadoc
      */
     String getModuleClass(String modname) {
-        XMLModuleReader mod = new XMLModuleReader("modules/" + modname + ".xml");
+        String className = "";
+        ModuleReader mod =getModuleReader(modname);
         if (mod != null) {
-            return mod.getClassName();
+            className = mod.getClassName();
         }
-        return "";
+        return className;
     }
 
     /**
@@ -498,20 +501,12 @@ public class MMAdmin extends ProcessorModule {
      * @todo should obtain data from the configuration file
      */
     String getModuleProperty(String modname, String key) {
-        /*
-        String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
-        XMLModuleReader mod=new XMLModuleReader(path+modname+".xml");
-        if (mod!=null) {
-            Hashtable props=mod.getProperties();
-            String value=(String)props.get(key);
-            return value;
-        }
-         */
         Module mod = (Module)getModule(modname);
         if (mod != null) {
             String value = mod.getInitParameter(key);
-            if (value != null)
+            if (value != null) {
                 return value;
+            }
         }
         return "";
 
@@ -526,32 +521,6 @@ public class MMAdmin extends ProcessorModule {
             return app.getDescription();
         }
         return "";
-
-    }
-
-
-    /**
-     * @since MMBase-1.8
-     */
-    private BuilderReader getBuilderReader(String bulName) {
-        try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("builders/" + bulName + ".xml");
-            if (is == null) return null;
-            return new BuilderReader(is, mmb);
-        } catch (Exception e) {
-            log.error(e);
-            return null;
-        }
-    }
-    private XMLModuleReader getModuleReader(String moduleName) {
-        try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("modules/" + moduleName + ".xml");
-            if (is == null) return null;
-            return new XMLModuleReader(is);
-        } catch (Exception e) {
-            log.error(e);
-            return null;
-        }
 
     }
 
@@ -579,15 +548,16 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     String getBuilderDescription(String bulname) {
-        BuilderReader bul = getBuilderReader(bulname);
+        String description = "";
+        BuilderReader bul = mmb.getBuilderReader(bulname);
         if (bul != null) {
             Hashtable desc = bul.getDescriptions();
             String english = (String)desc.get("en");
             if (english != null) {
-                return english;
+                description = english;
             }
         }
-        return "";
+        return description;
     }
 
     /**
@@ -1438,11 +1408,8 @@ public class MMAdmin extends ProcessorModule {
         while (builders.hasNext()) {
             String builderResource = (String) builders.next();
             String sname = ResourceLoader.getName(builderResource);
-            BuilderReader app;
-            try {
-                app = new BuilderReader(builderLoader.getInputSource(builderResource), mmb);
-            } catch (Exception e) {
-                log.error(e);
+            BuilderReader app = mmb.getBuilderReader(builderResource);
+            if (app == null) {
                 continue;
             }
             results.addElement(ResourceLoader.getDirectory(builderResource) + "/" + sname);
@@ -1469,16 +1436,15 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getModuleProperties(String modulename) {
         Vector results = new Vector();
-        XMLModuleReader mod = getModuleReader(modulename);
+        ModuleReader mod = mmb.getModuleReader(modulename);
         if (mod != null) {
-            Hashtable props = mod.getProperties();
-            for (Enumeration h = props.keys(); h.hasMoreElements();) {
-                String key = (String)h.nextElement();
+            Map props = mod.getProperties();
+            for (Iterator i = props.keySet().iterator(); i.hasNext();) {
+                String key = (String)i.next();
                 String value = (String)props.get(key);
                 results.addElement(key);
                 results.addElement(value);
             }
-
         }
         return results;
     }
@@ -1488,7 +1454,7 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getFields(String buildername) {
         Vector results = new Vector();
-        BuilderReader bul = getBuilderReader(buildername);
+        BuilderReader bul = mmb.getBuilderReader(buildername);
         if (bul != null) {
             List defs = bul.getFields();
             for (Iterator h = defs.iterator(); h.hasNext();) {
@@ -1503,7 +1469,6 @@ public class MMAdmin extends ProcessorModule {
                     results.add("" + size);
                 }
             }
-
         }
         return results;
     }
@@ -1521,11 +1486,9 @@ public class MMAdmin extends ProcessorModule {
         while (i.hasNext()) {
             String path = (String) i.next();
             String sname = ResourceLoader.getName(path);
-            XMLModuleReader app =  null;
-            try {
-                app = new XMLModuleReader(ResourceLoader.getConfigurationRoot().getInputSource("modules/" + path));
-            } catch (Throwable t) {
-                log.error("Could not load module with xml '" + path + "': " + t.getMessage());
+            ModuleReader app = getModuleReader(path);
+            if (app == null) {
+                log.error("Could not load module with xml '" + path + "'");
                 continue;
             }
             results.addElement(sname);
