@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.24 2005-08-31 20:50:29 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.25 2005-09-02 17:01:58 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -680,12 +680,13 @@ public class ResourceLoader extends ClassLoader {
     public Document getDocument(String name, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException  {
         boolean xsd = validation;
         if (validation) {
+            // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
             int lineNumber = 0;
             BufferedReader reader = new BufferedReader(getReader(name));
             String line = reader.readLine();
             while (lineNumber < 2 && line != null) {
                 if (line.startsWith("<!DOCTYPE")) {
-                    log.info("Using DTD to validate '" + name + "'");
+                    log.debug("Using DTD to validate '" + name + "'");
                     xsd = false;
                 }
                 line = reader.readLine();
@@ -704,9 +705,10 @@ public class ResourceLoader extends ClassLoader {
         try {
             Document doc = dbuilder.parse(source);
             return  doc;
-        } catch (java.io.IOException ioe) { // dtd or so not found?
+        } catch (IOException ioe) { // dtd or so not found?
             if (validation) {
                 log.error(ioe);
+                // try without validating too.
                 return getDocument(name, false, baseClass);
             } else {
                 throw ioe;
