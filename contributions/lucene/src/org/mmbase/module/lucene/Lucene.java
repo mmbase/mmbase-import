@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.13 2005-07-27 13:59:58 pierre Exp $
+ * @version $Id: Lucene.java,v 1.14 2005-09-02 12:34:37 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -280,7 +280,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
     protected void readConfiguration() {
         try {
-            Document config = ResourceLoader.getConfigurationRoot().getDocument(INDEX_CONFIG_FILE, true, true, Lucene.class);
+            Document config = ResourceLoader.getConfigurationRoot().getDocument(INDEX_CONFIG_FILE, true, Lucene.class);
             log.service("Reading lucene search configuration from " + INDEX_CONFIG_FILE);
             Element root = config.getDocumentElement();
             NodeList indexElements = root.getElementsByTagNameNS("*","index");
