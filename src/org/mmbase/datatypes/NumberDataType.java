@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.6 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: NumberDataType.java,v 1.7 2005-09-02 09:55:14 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends DataType {
@@ -89,9 +89,9 @@ abstract public class NumberDataType extends DataType {
         if (minProperty == null) minProperty = createProperty(PROPERTY_MIN, PROPERTY_MIN_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (minInclusive) {
-            minProperty.getLocalizedErrorDescription().setKey(minInclusiveErrorKey);
+            minProperty.getErrorDescription().setKey(minInclusiveErrorKey);
         } else {
-            minProperty.getLocalizedErrorDescription().setKey(minExclusiveErrorKey);
+            minProperty.getErrorDescription().setKey(minExclusiveErrorKey);
         }
         return minProperty;
     }
@@ -120,9 +120,9 @@ abstract public class NumberDataType extends DataType {
         if (maxProperty == null) maxProperty = createProperty(PROPERTY_MAX, PROPERTY_MAX_DEFAULT);
         // change the key for the property error description to match the inclusive status
         if (maxInclusive) {
-            maxProperty.getLocalizedErrorDescription().setKey(maxInclusiveErrorKey);
+            maxProperty.getErrorDescription().setKey(maxInclusiveErrorKey);
         } else {
-            maxProperty.getLocalizedErrorDescription().setKey(maxExclusiveErrorKey);
+            maxProperty.getErrorDescription().setKey(maxExclusiveErrorKey);
         }
         return maxProperty;
     }

@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.12 2005-08-31 12:56:30 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.13 2005-09-02 09:55:14 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -77,7 +77,7 @@ public class DataTypeDefinition {
      * Configures the data type definition, using data from a DOM element
      */
     DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
-        String typeString = getAttribute(dataTypeElement,"id");
+        String typeString = getAttribute(dataTypeElement, "id");
         if (typeString.equals("")) {
             typeString = "ANONYMOUS" + anonymousSequence++;
         }
@@ -131,7 +131,7 @@ public class DataTypeDefinition {
     }
 
 
-    protected LocalizedString getLocalizedDescriptions(String tagName, Element element, LocalizedString descriptions) {
+    protected LocalizedString getLocalizedDescription(String tagName, Element element, LocalizedString descriptions) {
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -155,8 +155,8 @@ public class DataTypeDefinition {
             boolean isFixed = Boolean.valueOf(getAttribute(element, "fixed")).booleanValue();
             property.setFixed(isFixed);
         }
-        LocalizedString descriptions = property.getLocalizedErrorDescription();
-        property.setLocalizedErrorDescription(getLocalizedDescriptions("description", element, descriptions));
+        LocalizedString descriptions = property.getErrorDescription();
+        property.setErrorDescription(getLocalizedDescription("description", element, descriptions));
     }
 
     private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype");
@@ -306,8 +306,8 @@ public class DataTypeDefinition {
         if (value != null && !value.equals("")) {
             DataType.EnumerationValue enumerationValue = dataType.addEnumerationValue(value);
             // set display
-            LocalizedString descriptions = enumerationValue.getLocalizedDescription();
-            enumerationValue.setLocalizedDescription(getLocalizedDescriptions("display", enumerationElement, descriptions));
+            LocalizedString descriptions = enumerationValue.getDescription();
+            enumerationValue.setDescription(getLocalizedDescription("display", enumerationElement, descriptions));
         } else {
             throw new IllegalArgumentException("no 'value' argument");
         }
