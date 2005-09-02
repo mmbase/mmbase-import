@@ -15,6 +15,7 @@ import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.RelationStep;
+import org.mmbase.util.Encode;
 import org.mmbase.util.logging.*;
 
 /**
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.63 2005-07-25 11:11:35 michiel Exp $
+ * @version $Id: Dove.java,v 1.64 2005-09-02 12:28:46 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -860,7 +861,7 @@ public class Dove extends AbstractDove {
                                     }
                                 } else if (!encoding.equals("")) {
                                     if (encoding.toLowerCase().equals("base64")) {
-                                        values.put(fieldname, org.mmbase.util.Base64.decodeToBytes(field.getFirstChild().getNodeValue()));
+                                        values.put(fieldname, new Encode("BASE64").decodeBytes(field.getFirstChild().getNodeValue()));
                                     }
                                 } else {
                                     if(field.getFirstChild() == null) {

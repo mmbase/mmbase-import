@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.15 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: UtilReader.java,v 1.16 2005-09-02 12:28:46 pierre Exp $
  */
 public class UtilReader {
 
@@ -99,7 +99,7 @@ public class UtilReader {
     }
     /**
      * @since MMBase-1.8
-     * @param w A unstarted WrappedFileWatcher without files. (It will be only be called from the filewatcher in this reader).
+     * @param w A unstarted ResourceWatcher without files. (It will be only be called from the filewatcher in this reader).
      */
     public UtilReader(String fileName, ResourceWatcher w) {
         String file =  CONFIG_UTILS + "/" + fileName;

@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.15 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: Format.java,v 1.16 2005-09-02 12:28:46 pierre Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -46,7 +46,7 @@ public final class Format {   // final class!!
         File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
         readMimeMapping(mimeMappingFile);
         FileWatcher watcher = new FileWatcher() {
-                protected void onChange(File file) {
+                public void onChange(File file) {
                     readMimeMapping(file);
                 }
             };

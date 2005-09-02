@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.33 2005-07-14 20:22:57 nklasens Exp $
+ * @version $Id: MMServers.java,v 1.34 2005-09-02 12:28:45 pierre Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -38,7 +38,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     public static final int ACTIVE = 1;
     public static final int INACTIVE = 2;
     public static final int ERROR = 3;
-    
+
     private boolean checkedSystem = false;
     private String javastr;
     private String osstr;
@@ -280,86 +280,6 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
-     * @deprecated-now does not add anything
-     */
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        super.nodeRemoteChanged(machine, number, builder, ctype);
-        return nodeChanged(machine, number, builder, ctype);
-    }
-
-    /**
-     * @deprecated-now does not add anything
-     */
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-        super.nodeLocalChanged(machine, number, builder, ctype);
-        return nodeChanged(machine, number, builder, ctype);
-    }
-
-    /**
-     * @deprecated-now does not add anything
-     */
-    public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        return true;
-    }
-
-    /**
-     * @javadoc
-     * @deprecated-now
-     */
-    /*
-    private void startProtocolDrivers() {
-        name2driver=new Hashtable();
-        url2driver=new Hashtable();
-        Enumeration e=search("");
-        while (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            String name=node.getStringValue("name");
-            String url=node.getStringValue("host");
-            int pos=url.indexOf("://");
-            if (pos!=-1) {
-                // do i allready have this url driver running ?
-                ProtocolDriver pd=(ProtocolDriver)url2driver.get(url);
-                if (pd!=null) {
-                    name2driver.put(name,pd);
-                } else {
-                    String tmp=url;
-                    String protocol=tmp.substring(0,pos);
-                    tmp=tmp.substring(pos+3);
-                    pos=tmp.indexOf(':');
-                    String host;
-                    int port=80;
-                    if (pos==-1) {
-                        host=tmp;
-                    } else {
-                        host=tmp.substring(0,pos);
-                        try {
-                            port=Integer.parseInt(tmp.substring(pos+1));
-                        } catch(NumberFormatException nfe) {
-                            log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
-                            log.error(nfe.getMessage());
-                            log.error(Logging.stackTrace(nfe));
-                        }
-                    }
-
-                    try {
-                        Class newclass=Class.forName("org.mmbase.module.builders.protocoldrivers."+protocol);
-                        pd = (ProtocolDriver)newclass.newInstance();
-                        pd.init(host,port);
-                        url2driver.put(url,pd);
-                        name2driver.put(name,pd);
-                        log.info("Started driver("+pd+")");
-                    } catch (Exception f) {
-                        log.error("Can't load protocolclass("+protocol+")");
-                        log.error(f.getMessage());
-                        //log.error(Logging.stackTrace(f));
-                    }
-                }
-            }
-        }
-    }
-    */
-
-    /**
      * @javadoc
      */
     public String getMMServerProperty(String mmserver, String key) {
@@ -379,7 +299,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             return null;
         }
     }
-    
+
     /**
      * @return Returns the intervalTime.
      */
@@ -392,10 +312,10 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public List getActiveServers() {
         List activeServers = new ArrayList();
-        
+
         String machineName = mmb.getMachineName();
         log.debug("getActiveServers(): machine="+machineName);
-        
+
         for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
             MMObjectNode node = (MMObjectNode) iter.next();
             String tmpname=node.getStringValue("name");

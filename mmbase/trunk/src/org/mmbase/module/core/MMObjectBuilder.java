@@ -58,7 +58,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.329 2005-08-31 11:46:55 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.330 2005-09-02 12:28:45 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3484,23 +3484,6 @@ public class MMObjectBuilder extends MMTable {
             return null;
         }
     }
-
-    /**
-     * Returns the number of the node with the specified name.
-     * Tests whether a builder table is created.
-      * Should be moved to MMTable.
-      * @deprecated-now unused, and makes no sense
-     */
-    public String getNumberFromName(String name) {
-        String number = null;
-        Enumeration e = search("name=='"+name+"'");
-        if (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            number=""+node.getNumber();
-        }
-        return number;
-    }
-
 
     /**
      *  Sets a key/value pair in the main values of this node.

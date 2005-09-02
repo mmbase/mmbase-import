@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.24 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: DateSupport.java,v 1.25 2005-09-02 12:28:46 pierre Exp $
  */
 public class DateSupport {
 
@@ -537,19 +537,6 @@ public class DateSupport {
         long l = d.getTime();
 
         return l;
-    }
-
-    /**
-     * Convert date to long with timezone-offset <br />
-     * example : <br />convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br />
-     *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
-     * @param date Date to be converted in format:  hour:minute:second day/month/year
-     * @param hour Hour-part of the timezone-offset (int)
-     * @param minutes Minutes-part of the timezone-offset (int)
-     * @deprecated-now Do not use this code ever!
-     */
-    public static long convertDateToLongWithTimeZone(String date, int hour, int minutes) {
-        return convertStringToLongWithTimeZone(date, hour, minutes);
     }
 
     /*
