@@ -20,8 +20,7 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.core.util.Fields;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.DataTypes;
-import org.mmbase.util.Casting;
-import org.mmbase.util.LocalizedString;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.15 2005-08-31 12:37:53 michiel Exp $
+ * @version $Id: DataType.java,v 1.16 2005-09-02 09:54:32 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -183,6 +182,13 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     }
 
     /**
+     * Return the DataType from which this one inherited, or <code>null</code>
+     */
+    public DataType getOrigin() {
+        return origin;
+    }
+
+    /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
@@ -284,13 +290,14 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     }
 
     protected final void failOnValidate(DataType.Property property, Object value, Cloud cloud) {
-        String error = property.getErrorDescription(cloud==null? null : cloud.getLocale());
-        if (error != null) {
-            error = error.replaceAll("\\$\\{NAME\\}", property.getName());
-            error = error.replaceAll("\\$\\{PROPERTY\\}", ""+property.getValue());
-            error = error.replaceAll("\\$\\{VALUE\\}", ""+value);
+        if (property.getErrorDescription() == null) {
+            throw new IllegalArgumentException("Failed " + property + " for value " + value);
         }
-        throw new IllegalArgumentException(error);
+        ReplacingLocalizedString error = new ReplacingLocalizedString(property.getErrorDescription());
+        error.replaceAll("\\$\\{NAME\\}",       property.getName());
+        error.replaceAll("\\$\\{PROPERTY\\}",   ""+property.getValue());
+        error.replaceAll("\\$\\{VALUE\\}",      ""+value);
+        throw new IllegalArgumentException(error.get(cloud == null ? null : cloud.getLocale()));
     }
 
     /**
@@ -362,7 +369,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             }
         }
         // test enumerations
-        // if (enumerationValues != null && enumerationValues.size() == -1) {
+        // if (enumerationValues != null && enumerationValues.size() == 0) {
         //     ...
         // }
     }
@@ -522,6 +529,11 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         return setProperty(getUniqueProperty(),Boolean.valueOf(unique));
     }
 
+
+    /**
+     * Adds a possible value. 
+     * @return The newly created {@link #EnumerationValue}. 
+     */
     public DataType.EnumerationValue addEnumerationValue(Object value) {
         DataType.EnumerationValue enumerationValue = new EnumerationValue(value);
         if (enumerationValues == null) {
@@ -531,10 +543,17 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         return enumerationValue;
     }
 
+    /**
+     * @return A List of all possible values for this datatype, wrapped in {@link #EnumerationValue}, or <code>null</code> if no restrictions apply.
+     */
     public List getEnumerationValues() {
         return enumerationValues;
     }
 
+    /**
+     * @param enumerationValues List of{@link #EnumerationValue}
+     * Set all possible values at once, for example copied from another datatype
+     */
     public void setEnumerationValues(List enumerationValues) {
         this.enumerationValues = enumerationValues;
     }
@@ -686,7 +705,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         String key = getBaseTypeIdentifier() + "." + name + ".error";
         LocalizedString localizedErrorDescription = new LocalizedString(key);
         localizedErrorDescription.setBundle(DATATYPE_BUNDLE);
-        property.setLocalizedErrorDescription(localizedErrorDescription);
+        property.setErrorDescription(localizedErrorDescription);
         return property;
     }
 
@@ -698,7 +717,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     public final class Property implements Cloneable {
         private String name;
         private Object value;
-        private LocalizedString errorDescription = null;
+        private LocalizedString errorDescription = LocalizedString.NULL;
         private boolean fixed = false;
 
         private Property(String name, Object value) {
@@ -722,36 +741,14 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             this.value = value;
         }
 
-        public LocalizedString getLocalizedErrorDescription() {
+        public LocalizedString getErrorDescription() {
             return errorDescription;
         }
 
-        public void setLocalizedErrorDescription(LocalizedString errorDescription) {
+        public void setErrorDescription(LocalizedString errorDescription) {
             this.errorDescription = errorDescription;
         }
 
-        public void setErrorDescription(String description) {
-            setErrorDescription(description, null);
-        }
-
-        public void setErrorDescription(String description, Locale locale) {
-            if (errorDescription == null) {
-                errorDescription = new LocalizedString(description);
-            }
-            errorDescription.set(description, locale);
-        }
-
-        public String getErrorDescription(Locale locale) {
-            if (errorDescription == null) {
-                return null;
-            } else {
-                return errorDescription.get(locale);
-            }
-        }
-
-        public String getErrorDescription() {
-            return errorDescription.get(null);
-        }
 
         public boolean isFixed() {
             return fixed;
@@ -767,7 +764,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         public DataType.Property clone(DataType dataType) {
             DataType.Property clone = ((DataType)dataType).new Property(name, value);
             if (errorDescription != null) {
-                clone.setLocalizedErrorDescription((LocalizedString)errorDescription.clone());
+                clone.setErrorDescription((LocalizedString)errorDescription.clone());
             }
             clone.setFixed(fixed);
             return clone;
@@ -779,6 +776,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     }
 
+    /**
+     * An Enumeration value is a wrapper around one of the possible values of a certain datatype. It
+     * includes besides this value the localized description for this value.
+     */
     public final class EnumerationValue implements Cloneable {
         private Object value;
         private LocalizedString description = null;
@@ -791,47 +792,25 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             return value;
         }
 
-        public LocalizedString getLocalizedDescription() {
+        public LocalizedString getDescription() {
             return description;
         }
 
-        public void setLocalizedDescription(LocalizedString description) {
+        public void setDescription(LocalizedString description) {
             this.description = description;
         }
 
-        public void setDescription(String description) {
-            setDescription(description, null);
-        }
-
-        public void setDescription(String descriptionText, Locale locale) {
-            if (description == null) {
-                description = new LocalizedString(descriptionText);
-            }
-            description.set(descriptionText, locale);
-        }
-
-        public String getDescription(Locale locale) {
-            if (description == null) {
-                return null;
-            } else {
-                return description.get(locale);
-            }
-        }
-
-        public String getDescription() {
-            return description.get(null);
-        }
 
         public DataType.EnumerationValue clone(DataType dataType) {
             DataType.EnumerationValue clone = ((DataType)dataType).new EnumerationValue(value);
             if (description != null) {
-                clone.setLocalizedDescription((LocalizedString)description.clone());
+                clone.setDescription((LocalizedString) description.clone());
             }
             return clone;
         }
 
         public String toString() {
-            return value + " : " + getDescription();
+            return value + " : " + description;
         }
 
     }
