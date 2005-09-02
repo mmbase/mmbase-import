@@ -15,13 +15,9 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Locale;
-
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Query;
+import java.util.*;
+import org.mmbase.bridge.*;
+import org.mmbase.datatypes.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -43,13 +39,13 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.82 2005-08-30 21:20:24 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.83 2005-09-02 09:56:53 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
 
     private static Class defaultHandler = DefaultTypeHandler.class;
-    private static Class[] handlers;
+    private static Map handlers = new HashMap(); // datatype-id --> Class
 
     static {
         try {
@@ -145,17 +141,18 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Answer the type handler for the given type.
      * The type handler is responsible for showing the html
      */
-    protected TypeHandler getTypeHandler(int type) {
-        Class handler;
-        if ((type < 0) || (type >= handlers.length)) {
-            log.warn("Could not find typehandler for type " + type + " using default");
+    protected TypeHandler getTypeHandler(Field field) {
+        DataType dataType = field.getDataType();
+        Class handler = (Class) handlers.get(dataType.getName());
+        while (handler == null) {
+            dataType = dataType.getOrigin();
+            if(dataType == null) break;
+            handler = (Class) handlers.get(dataType.getName());
+        }
+        
+        if (handler == null) {
+            log.warn("Could not find typehandler for type " + field.getDataType() + " using default");
             handler = getDefaultTypeHandler();
-        } else {
-            handler = handlers[type];
-            if (handler == null) {
-                log.warn("Could not find typehandler for type " + type + " using default");
-                handler = getDefaultTypeHandler();
-            }
         }
         if (log.isDebugEnabled()) {
             log.debug("using handler " + handler);
@@ -173,7 +170,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     private static void initializeTypeHandlers() {
         log.service("Reading taglib field-handlers");
-        handlers = new Class[org.mmbase.core.util.Fields.TYPE_MAXVALUE + 1];
+        handlers = new HashMap();
 
         Class thisClass = FieldInfoTag.class;
         InputSource fieldtypes = new InputSource(thisClass.getResourceAsStream("resources/fieldtypes.xml"));
@@ -182,15 +179,18 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         
         for (Iterator iter = reader.getChildElements(fieldtypesElement, "fieldtype"); iter.hasNext();) {
             Element element = (Element) iter.next();
-            String typeString = element.getAttribute("id");
-            int fieldType =  org.mmbase.core.util.Fields.getType(typeString);
+            String type = element.getAttribute("id");
+            DataType dataType = DataTypes.getDataType(type);
+            if (dataType == null) {
+                log.warn("'" + type + "' is not a known datatype");
+            }
             String claz = reader.getElementValue(reader.getElementByPath(element, "fieldtype.class"));
             try {
-                log.debug("Adding field handler " + claz + " for type " + fieldType);
-                handlers[fieldType] = Class.forName(claz);
+                log.debug("Adding field handler " + claz + " for type " + type);
+                handlers.put(type, Class.forName(claz));
             } catch (java.lang.ClassNotFoundException ex) {
-                log.error("Class " + claz + " could not be found for type " + fieldType);
-                handlers[fieldType] = defaultHandler;
+                log.error("Class " + claz + " could not be found for type " + type);
+                handlers.put(type, defaultHandler);
             }
         }
     }
@@ -372,7 +372,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             log.debug("field " + field.getName() + " gui type: " + field.getGUIType() + "  value: " + value);
         }
-        return getTypeHandler(field.getType()).htmlInput(node, field, search);
+        return getTypeHandler(field).htmlInput(node, field, search);
     }
 
 
@@ -381,7 +381,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
 
     private boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        return getTypeHandler(field.getType()).useHtmlInput(node, field);
+        return getTypeHandler(field).useHtmlInput(node, field);
     }
 
 
@@ -390,16 +390,16 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * @param field and this field.
      */
     private String whereHtmlInput(Field field) throws JspTagException {
-        return getTypeHandler(field.getType()).whereHtmlInput(field);
+        return getTypeHandler(field).whereHtmlInput(field);
     }
 
     private void  paramHtmlInput(ParamHandler handler, Field field) throws JspTagException {
-         getTypeHandler(field.getType()).paramHtmlInput(handler, field);
+         getTypeHandler(field).paramHtmlInput(handler, field);
     }
 
 
     private void  whereHtmlInput(Field field, Query query) throws JspTagException {
-        getTypeHandler(field.getType()).whereHtmlInput(field, query);
+        getTypeHandler(field).whereHtmlInput(field, query);
     }
 
 
