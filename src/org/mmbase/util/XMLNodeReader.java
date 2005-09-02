@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.34 2005-08-05 09:16:26 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.35 2005-09-02 07:12:13 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -120,12 +120,13 @@ public class XMLNodeReader extends XMLBasicReader {
                                 newNode = bul.getNewNode("import");
                             }
                             n4 = nm.getNamedItem("alias");
-                            if (n4 != null)
+                            if (n4 != null) {
+                                log.info("Setting alias to " + n4.getNodeValue());
                                 newNode.setAlias(n4.getNodeValue());
+                            }
                             n4 = nm.getNamedItem("number");
                             try {
                                 int num = Integer.parseInt(n4.getNodeValue());
-
                                 newNode.setValue("number", num);
                             } catch (Exception e) {}
                             Node n5 = n2.getFirstChild();
@@ -191,7 +192,7 @@ public class XMLNodeReader extends XMLBasicReader {
                                                 newNode.setValue(key, new Date(1000 * l));
                                             } catch (Exception e) {
                                                 try {
-                                                    newNode.setValue(key, Casting.ISO_8601_UTC.parse(value));
+                                                    newNode.setValue(key, DateParser.ISO_8601_UTC.parse(value));
                                                 } catch (Exception e2) {
                                                     // something else?
                                                     log.warn("error setting long-field " + e2);
