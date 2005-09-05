@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.7 2005-02-20 18:46:51 nico Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.8 2005-09-05 13:57:26 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -310,6 +310,96 @@
         <methodname>deleteRelations</methodname>).</simpara>
       </listitem>
     </itemizedlist>
+    <section id="logging">
+      <title>Logging</title>
+      <para>
+        MMBase has it's own logging facility (similar, but older than commons logging).
+      </para>
+      <para>
+        Every class has its own logger, identified with the name of the class. The logger instance
+        is final static private. It is not necessary that the logger instance is used, and therefore
+        this is perhaps the only variable which need not be removed if it is not used.
+      </para>
+      <para>
+        MMBase has the following logging levels, from low to high.
+      </para>
+      <itemizedlist>        
+        <listitem>
+          <formalpara>
+            <title>trace</title>
+            <para>
+              log.trace can be used for things which happen very often, and can be used during
+              debugging. log.trace should be protected by log.isDebugEnabled, especially if the
+              argument is costly (complicated toStrings, may concatations). In inner-loops log.trace
+              should perhaps not be used at all (or commented out).
+            </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>debug</title>
+            <para>
+              log.trace can be used for things which happen not very often, but still are only
+              interesing during debugging. log.debug should be protected by log.isDebugEnabled,
+              especially if the argument is costly (complicated toStrings, may concatations). In
+              inner-loops log.debug should not be used at all (or commented out).
+            </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>service</title>
+            <para>
+              log.service is to be used for events which can interest the interested
+              administrator. It is used for things which happen only seldomly, and which may be
+              heavy on resources (like for example sending mail or converting an image). It can also
+              be used for one-time messages during start-up and shutdown.
+            </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>info</title>
+            <para>
+              log.info is even higher then 'service'. Even uninterested adminstrators need to know
+              this, or probably want to know this. Very important things during startup and
+              shut-down or otherwise one-time only events can also be logged on info.
+            </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>warn</title>
+            <para>
+              If something's wrong, but there exist a reasonable fall-back, the event can be logged as a warning.
+            </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>error</title>
+            <para>
+              If something's wrong, and no reasonable fall-back exists, the event can be logged as an error.
+            </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>fatal</title>
+            <para>
+              Something is so wrong, that MMBase will not work any more. This can be logged as fatal
+              error. E.g. no database-connection could be acquired.
+            </para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+      <para>
+        When using the value of a variable in the log message and there exists even the tiniest
+        chance that this variable's toString evaluates to the empty String, single quotes must
+        surround the value. Make absolutely sure that not accidently an Exception (especially
+        NullPointerException) can be caused during the creation of the message.
+      </para>
+    </section>
   </section>
   <section>
     <title>Input validation</title>
