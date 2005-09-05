@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.54 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.55 2005-09-05 16:09:05 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -65,7 +65,10 @@ public class XMLEntityResolver implements EntityResolver {
         }
         InputStream getAsStream() {
             if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + getResource() + " of " + clazz.getName());
-            return clazz.getResourceAsStream(getResource());
+            return clazz != null ? clazz.getResourceAsStream(getResource()) : null;
+        }
+        public String toString() {
+            return file + ": " + clazz;
         }
 
     }
@@ -75,13 +78,20 @@ public class XMLEntityResolver implements EntityResolver {
         // the advantage of doing it this soon, is that the 1DTD are know as early as possible.
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
+        BuilderReader.registerSystemIDs();
         XMLApplicationReader.registerPublicIDs();
         ModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
         org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
         org.mmbase.datatypes.util.xml.DataTypeReader.registerSystemIDs();
+
+
+        registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
+        registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
+        registerSystemID("http://www.w3.org/2001/03/datatypes.dtd", "datatypes.dtd", null);
     }
+
 
     /**
      * Register a given publicID, binding it to a resource determined by a given class and resource filename
@@ -155,7 +165,6 @@ public class XMLEntityResolver implements EntityResolver {
      * takes the systemId and returns the local location of the dtd/xsd
      */
     public InputSource resolveEntity(String publicId, String systemId) {
-
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
@@ -222,17 +231,21 @@ public class XMLEntityResolver implements EntityResolver {
                     }
                 }
                 if (definitionStream == null) {
-                    log.error("Could not find MMBase documention definition '" + mmResource + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-                    // not sure, probably should return 'null' after all, then it will be resolved with internet.
-                    // but this can not happen, in fact...
-                    //return new InputSource(new StringReader(""));
-                    // FAILED
-                    return null;
+                    if (! validate) {
+                        return new InputSource(new StringReader(""));
+                    } else {
+                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+                        // not sure, probably should return 'null' after all, then it will be resolved with internet.
+                        // but this can not happen, in fact...
+                        //return new InputSource(new StringReader(""));
+                        // FAILED
+                        return null;
+                    }
                 }
             }
         }
-
         hasDefinition = true;
+
         InputStreamReader definitionInputStreamReader = new InputStreamReader(definitionStream);
         InputSource definitionInputSource = new InputSource();
         if (systemId != null) {
