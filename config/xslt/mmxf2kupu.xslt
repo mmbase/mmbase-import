@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.12 2005-07-18 08:49:57 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.13 2005-09-05 13:00:41 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -81,7 +81,7 @@
     <xsl:param name="relation" />
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./o:field[@name='number']), 'cachednode', 's(100x100&gt;)')" />
     <img>
-      <xsl:attribute name="src"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="src"><xsl:apply-templates select="$icache" mode="url" /></xsl:attribute>
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name='id']"  /></xsl:attribute>
