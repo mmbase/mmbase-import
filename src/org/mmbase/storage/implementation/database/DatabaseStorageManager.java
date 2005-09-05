@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.17 2005-08-11 14:34:50 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.18 2005-09-05 13:14:09 simon Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1431,7 +1431,7 @@ public class DatabaseStorageManager implements StorageManager {
             s.executeUpdate(query);
             s.close();
 
-            buildername_cache.add((String)factory.getStorageIdentifier(builder));
+            buildername_cache.add(((String) factory.getStorageIdentifier(builder)).toUpperCase());
 
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
@@ -1691,11 +1691,18 @@ public class DatabaseStorageManager implements StorageManager {
                 buildername_cache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
+                String prefixTablename = factory.getMMBase().getBaseName();
+                if (metaData.storesLowerCaseIdentifiers()) {
+                    prefixTablename = prefixTablename.toLowerCase();
+                }
+                if (metaData.storesUpperCaseIdentifiers()) {
+                    prefixTablename = prefixTablename.toUpperCase();
+                }
                 ResultSet res =
-                    metaData.getTables(factory.getCatalog(),null, factory.getMMBase().getBaseName()+"_%", new String[] { "TABLE", "VIEW" });
+                    metaData.getTables(factory.getCatalog(),null, prefixTablename + "_%", new String[] { "TABLE", "VIEW" });
                 try {
                     while(res.next())
-                        if(!buildername_cache.add(res.getString(3)))
+                        if(!buildername_cache.add(res.getString(3).toUpperCase()))
                             log.warn("builder already in cache("+res.getString(3)+")!");
                 } finally {
                     res.close();
@@ -1707,7 +1714,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-        return buildername_cache.contains(tableName);
+        return buildername_cache.contains(tableName.toUpperCase());
     }
 
     // javadoc is inherited
