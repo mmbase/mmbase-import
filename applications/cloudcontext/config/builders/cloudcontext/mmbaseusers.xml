@@ -109,7 +109,7 @@
       </editor>
       <db>
         <name>defaultcontext</name>
-        <type key="false" notnull="false" state="persistent">NODE</type>
+        <type key="false" notnull="false" required="true" state="persistent">NODE</type>
       </db>
     </field>
     <field>
