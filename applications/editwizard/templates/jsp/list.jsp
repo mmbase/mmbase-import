@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.58 2005-08-31 13:07:28 michiel Exp $
+     * @version  $Id: list.jsp,v 1.59 2005-09-05 16:33:42 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -210,9 +210,9 @@ for (int i=0; i < results.size(); i++) {
             int period=fieldname.indexOf('.');
             String nmname=fieldname.substring(0,period);
             if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
-            field=cloud.getNodeManager(nmname).getField(fieldname.substring(period+1));
+            field = cloud.getNodeManager(nmname).getField(fieldname.substring(period+1));
         } else {
-            field=item.getNodeManager().getField(fieldname);
+            field = item.getNodeManager().getField(fieldname);
         }
         if (field.getGUIType().equals("eventtime")) {
            // eventtime is formatted lateron with xslt
@@ -223,12 +223,12 @@ for (int i=0; i < results.size(); i++) {
         } else {        
             Locale locale = new Locale(ewconfig.language);
             Parameters args = new ParametersImpl(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
-            args.set("field",    field.getName());
+            args.set("field",    fieldname);
             args.set("language", locale.getLanguage());
             args.set("locale",   locale);
             args.set("response", pageContext.getResponse());
             args.set("request",  pageContext.getRequest());
-            args.set("stringvalue", item.getStringValue(field.getName()));
+            args.set("stringvalue", item.getStringValue(fieldname));
             value = item.getFunctionValue("gui", args).toString();
             //value = item.getStringValue("gui(" + fieldname + ")");
         }
