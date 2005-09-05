@@ -33,7 +33,7 @@
     -->
     <property name="encoding">MD5</property>
     <!--
-        With the option 'allowEncodedPassord' you can actually sabotage the 'encoding' of the password again.
+        With the option 'allowencodedpassword' you can actually sabotage the 'encoding' of the password again.
         When this is true, then you can also loging with name/encodedpassword, and you can provide the encoded password directly. 
         This can perhaps have been stored in a cookie.
         You may want this if the passwords are sensitive, but not necessarily only for this site.
@@ -109,7 +109,7 @@
       </editor>
       <db>
         <name>defaultcontext</name>
-        <type key="false" notnull="true" state="persistent">NODE</type>
+        <type key="false" notnull="false" state="persistent">NODE</type>
       </db>
     </field>
     <field>
