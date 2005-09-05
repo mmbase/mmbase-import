@@ -25,6 +25,8 @@ import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.*;
 import org.mmbase.module.core.MMObjectBuilder;
 
+import org.mmbase.core.util.Fields;
+
 
 import org.mmbase.bridge.jsp.taglib.typehandler.TypeHandler;
 import org.mmbase.bridge.jsp.taglib.typehandler.DefaultTypeHandler;
@@ -39,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.83 2005-09-02 09:56:53 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.84 2005-09-05 12:49:39 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -151,7 +153,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         
         if (handler == null) {
-            log.warn("Could not find typehandler for type " + field.getDataType() + " using default");
+            log.warn("Could not find typehandler for type " + field.getDataType() + " using default for type");
+            handler = (Class) handlers.get(Fields.getTypeDescription(field.getType()));
+        }
+        if (handler == null) {
+            log.error("Could not even find typehandler for type " + Fields.getTypeDescription(field.getType()) + " using default for type");
             handler = getDefaultTypeHandler();
         }
         if (log.isDebugEnabled()) {
