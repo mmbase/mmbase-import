@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.6 2005-04-25 14:11:30 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.7 2005-09-06 21:09:39 michiel Exp $
  */
 public class SortedBundle {
 
@@ -100,10 +100,10 @@ public class SortedBundle {
     }
 
     /**
-     * @param baseName A string identifying the resource. See {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale, java.lang.ClassLoader)}
-     *                 for an explanation of this string.
+     * @param baseName A string identifying the resource. See {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale, java.lang.ClassLoader)} for an explanation of this string.
+     *
      * @param locale   the locale for which a resource bundle is desired
-     * @param loader - the class loader from which to load the resource bundle
+     * @param loader   the class loader from which to load the resource bundle
      * @param constantsProvider the class of which the constants must be used to be associated with the elements of this resource.
      * @param wrapper           the keys will be wrapped in objects of this type (which must have a
      *                          constructor with the right type (String, or otherwise the type of the variable given by the constantsProvider).
@@ -111,16 +111,17 @@ public class SortedBundle {
      *                          map are meant to be integers. This can be <code>null</code>, in which case the keys will remain unwrapped
      * @param comparator        the elements will be sorted (by key) using this comparator or by natural key order if this is <code>null</code>.
      *
-     * @throws NullPointerException      if baseName or locale is null  (not if loader is null)
+     * @throws NullPointerException      if baseName or locale is <code>null</code>  (not if loader is <code>null</code>)
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      */
     public static SortedMap getResource(String baseName, Locale locale, ClassLoader loader, Class constantsProvider, Class wrapper, Comparator comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : constantsProvider.getName()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         SortedMap m = (SortedMap) knownResources.get(resourceKey);
+        if (locale == null) locale = LocalizedString.getDefault();
 
         if (m == null) { // find and make the resource
             ResourceBundle bundle;
-            if (loader != null) {
+            if (loader == null) {
                 bundle = ResourceBundle.getBundle(baseName, locale);
             } else {
                 bundle = ResourceBundle.getBundle(baseName, locale, loader);
