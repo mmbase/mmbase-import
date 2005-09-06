@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.21 2005-08-30 21:04:19 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.22 2005-09-06 17:23:09 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -83,6 +83,9 @@ public class DateHandler extends AbstractTypeHandler {
             if (node.getLongValue(field.getName()) != -1) {
                 cal.setTime(node.getDateValue(field.getName()));
             }
+        } else {
+            //if (! search)
+            cal.setTime(Casting.toDate(field.getDataType().getDefaultValue()));
         }
         buffer.append("<span class=\"mm_datetime\">");
         buffer.append("<input type=\"hidden\" name=\"");
@@ -279,11 +282,11 @@ public class DateHandler extends AbstractTypeHandler {
                 buffer.append("<select class=\"mm_day\" name=\"" + dayName + "\">\n");
                 for (int i = 1; i <= 31; i++) {
                     if (checkDay == i) {
-                        buffer.append("  <option selected=\"selected\">");
+                        buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
                         buffer.append(i);
                         buffer.append("</option>\n");
                     } else {
-                        buffer.append("  <option>");
+                        buffer.append("  <option value=\"" + i + "\">");
                         buffer.append(i);
                         buffer.append("</option>\n");
                     }
@@ -304,9 +307,9 @@ public class DateHandler extends AbstractTypeHandler {
                 buffer.append("<select class=\"mm_hour\" name=\"" + hourName + "\">\n");
                 for (int i = 0; i <= 23; i++) {
                     if (checkHour == i) {
-                        buffer.append("  <option selected=\"selected\">");
+                        buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
                     } else {
-                        buffer.append("  <option>");
+                        buffer.append("  <option value=\"" + i + "\">");
                     }
                     if (i < 10 && pattern.length() > 1) buffer.append("0");
                     buffer.append(i + "</option>\n");
@@ -329,9 +332,9 @@ public class DateHandler extends AbstractTypeHandler {
                 buffer.append("<select class=\"mm_minute\" name=\"" + minuteName + "\">\n");
                 for (int i = 0; i <= 59; i++) {
                     if (checkMinute == i) {
-                        buffer.append("  <option selected=\"selected\">");
+                        buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
                     } else {
-                        buffer.append("  <option>");
+                        buffer.append("  <option value=\"" + i + "\">");
                     }
                     if (i< 10 && pattern.length() > 1) buffer.append("0");
                     buffer.append(i + "</option>\n");
@@ -353,9 +356,9 @@ public class DateHandler extends AbstractTypeHandler {
                 buffer.append("<select class=\"mm_second\" name=\"" + secondName + "\">\n");
                 for (int i = 0; i <= 59; i++) {
                     if (checkSecond == i) {
-                        buffer.append("  <option selected=\"selected\">");
+                        buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
                     } else {
-                        buffer.append("  <option>");
+                        buffer.append("  <option value=\"" + i + "\">");
                     }
                     if (i< 10 && pattern.length() > 1) buffer.append("0");
                     buffer.append(i + "</option>\n");
