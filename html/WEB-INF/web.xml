@@ -242,13 +242,16 @@
     <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
   </taglib>
 
-  <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)-->
+  <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)
+  	This configuration should match with its counterparts in modules/sendmail.xml
+  	and your application servers server.xml
+  -->
   <!--
   <resource-ref>
     <description>
       Mail resource for MMBase
     </description>
-    <res-ref-name>mail/MMBase</res-ref-name>
+    <res-ref-name>mail/Session</res-ref-name>
     <res-type>javax.mail.Session</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
