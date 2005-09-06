@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.14 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.15 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -268,12 +268,12 @@ public class DateTimeDataType extends DataType {
 
     /**
      * The 'pattern' of a 'DateTime' value gives a SimpleDateFormat object which can be used as an
-     * indication for presentation.  
+     * indication for presentation.
      *
      * Basicly, this should indicate whether the objects present e.g. only a date, only a time and wheter e.g. this time includes seconds or not.
-     * 
+     *
      * SimpleDateFormat is actually a wrapper arround a pattern, and that is used here.
-     * 
+     *
      */
     public DateTimePattern getPattern() {
         return pattern;
@@ -328,8 +328,8 @@ public class DateTimeDataType extends DataType {
         return calendar.getTimeInMillis();
     }
 
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        super.validate(value, node, field, cloud);
+    public Collection validate(Object value, Node node, Field field) {
+        Collection errors = super.validate(value, node, field);
         if (value != null) {
             Date date = Casting.toDate(value);
             Date minimum = getMin();
@@ -337,7 +337,7 @@ public class DateTimeDataType extends DataType {
                 long minValue = getDateLongValue(minimum, minPrecision);
                 long dateValue = getDateLongValue(date, minPrecision);
                 if (minValue > dateValue || (!minInclusive && minValue == dateValue)) {
-                    failOnValidate(getMinConstraint(), value, cloud);
+                    errors = addError(errors, getMinConstraint(), value);
                 }
             }
             Date maximum = getMax();
@@ -345,10 +345,11 @@ public class DateTimeDataType extends DataType {
                 long maxValue = getDateLongValue(maximum, maxPrecision);
                 long dateValue = getDateLongValue(date, maxPrecision);
                 if (maxValue < dateValue || (!maxInclusive && maxValue == dateValue)) {
-                    failOnValidate(getMaxConstraint(), value, cloud);
+                    errors = addError(errors, getMaxConstraint(), value);
                 }
             }
         }
+        return errors;
     }
 
     public Object clone(String name) {
@@ -365,7 +366,7 @@ public class DateTimeDataType extends DataType {
         if (getMax() != null) {
             buf.append(" max:" + getMax() + " " + getMaxPrecision()).append(isMaxInclusive() ? " inclusive" : " exclusive");
         }
-        
+
         buf.append(" " + pattern);
 
         return buf.toString();
