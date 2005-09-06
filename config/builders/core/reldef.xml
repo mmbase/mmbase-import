@@ -26,13 +26,6 @@
     <description xml:lang="it">Definisce le relazioni</description>
   </descriptions>
 
-  <datatypes xmlns="http://www.mmbase.org/xmlns/datatypes">
-    <datatype id="dirs" base="integer">
-      <minInclusive value="0" />
-      <maxInclusive value="2" />
-    </datatype>
-  </datatypes>
-
   <fieldlist>
     <field>
       <descriptions>
