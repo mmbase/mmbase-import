@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.14 2005-09-02 17:02:49 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.15 2005-09-06 21:23:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -48,6 +48,17 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
      */
     public static Locale getDefault() {
         return defaultLocale != null ? defaultLocale : Locale.getDefault();
+    }
+
+    public static Collection toStrings(Collection col, Locale locale) {
+        if (col == null || col.size() == 0) return col;
+        Collection res = new ArrayList();
+        Iterator i = col.iterator();
+        while (i.hasNext()) {
+            LocalizedString s = (LocalizedString) i.next();
+            res.add(s.get(locale));
+        }
+        return res;
     }
 
     //    private final String key;
