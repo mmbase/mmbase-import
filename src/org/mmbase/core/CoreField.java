@@ -16,6 +16,7 @@ import org.mmbase.core.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
+import java.util.Collection;
 
 /**
  * @since MMBase-1.8
@@ -169,6 +170,14 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     public void setListItemType(int listItemType) {
         this.listItemType = listItemType;
     }
+
+    public void validate(Object value) {
+        Collection errors = getDataType().validate(value, null, this);
+        if (errors.size() > 0) {
+            throw new IllegalArgumentException("CORE: " + getName() + ": " + LocalizedString.toStrings(errors, parent.mmb.getLocale()));
+        }
+    }
+
 
     /**
      * Whether this CoreField is equal to another for storage purposes (so, ignoring gui and documentation fields)
