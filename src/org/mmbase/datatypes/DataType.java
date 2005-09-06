@@ -16,7 +16,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.fields.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.core.util.Fields;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.DataTypes;
@@ -29,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.18 2005-09-02 17:40:45 michiel Exp $
+ * @version $Id: DataType.java,v 1.19 2005-09-06 21:11:30 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -57,6 +56,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
+    public static final Collection VALID = Collections.unmodifiableCollection(new ArrayList());
+
     /**
      * The 'required' property.
      */
@@ -81,7 +82,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     private Processor[] getProcessors;
     private Processor[] setProcessors;
 
-    private List enumerationValues;
+    private LocalizedEntryListFactory enumerationValues = null;
 
     /**
      * Create a data type object of unspecified class type
@@ -165,7 +166,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         if (origin.enumerationValues == null) {
             enumerationValues = null;
         } else {
-            enumerationValues = new ArrayList(origin.enumerationValues);
+            enumerationValues = (LocalizedEntryListFactory) enumerationValues.clone();
         }
         requiredConstraint = inheritConstraint(origin.requiredConstraint);
         uniqueConstraint = inheritConstraint(origin.uniqueConstraint);
@@ -289,7 +290,12 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         }
     }
 
-    protected final void failOnValidate(DataType.ValueConstraint property, Object value, Cloud cloud) {
+    /**
+     * Adds a new error message to the errors collection, based on given Constraint. If this
+     * error-collection is unmodifiable (VALID), it is replace with a new empty one first.
+     */
+    protected final Collection addError(Collection errors, DataType.ValueConstraint property, Object value) {
+        if (errors == VALID) errors = new ArrayList();
         if (property.getErrorDescription() == null) {
             throw new IllegalArgumentException("Failed " + property + " for value " + value);
         }
@@ -297,60 +303,35 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         error.replaceAll("\\$\\{NAME\\}",       property.getName());
         error.replaceAll("\\$\\{CONSTRAINT\\}",   ""+property.getValue());
         error.replaceAll("\\$\\{VALUE\\}",      ""+value);
-        throw new IllegalArgumentException(error.get(cloud == null ? null : cloud.getLocale()));
+        errors.add(error);
+        return errors;
     }
 
     /**
      * Checks if the passed object is of the correct type (compatible with the type of this data type),
      * and follows the restrictions defined for this type.
-     * It throws an IllegalArgumentException if it doesn't.
+     * @return An error message if the value is not compatible. <code>null</code> if valid.
      * @param value the value to validate
-     * @throws IllegalArgumentException if the value is not compatible
      */
-    public void validate(Object value) {
-        validate(value, null, null, null);
+    public final Collection /*<LocalizedString>*/ validate(Object value) {
+        return validate(value, null, null);
     }
 
     /**
      * Checks if the passed object follows the restrictions defined for this type.
-     * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
-     * @param value the value to validate
-     * @param cloud the cloud used to determine the locale for the error message when validation fails
-     * @throws IllegalArgumentException if the value is not compatible
-     */
-    public void validate(Object value, Cloud cloud) {
-        validate(value, null, null, cloud);
-    }
-
-    /**
-     * Checks if the value in the field of the passed node follows the restrictions defined for this type.
-     * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
-     * @param node the node for which the datatype is checked. If not <code>null</code>, and the
-     *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
-     * @param field the field for which the datatype is checked.
-     * @throws IllegalArgumentException if the value is not compatible
-     */
-    public void validate(Node node, Field field) {
-        validate(node.getValueWithoutProcess(field.getName()), node, field, node == null ? null : node.getCloud());
-    }
-
-    /**
-     * Checks if the passed object follows the restrictions defined for this type.
-     * It throws an IllegalArgumentException with a localized message (dependent on the cloud) if it doesn't.
      * @param value the value to validate
      * @param node the node for which the datatype is checked. If not <code>null</code>, and the
      *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
      * @param field the field for which the datatype is checked.
-     * @param cloud the cloud used to determine the locale for the error message when validation fails
-     *        if null, it is retrieved from the passed node if possible.
-     * @throws IllegalArgumentException if the value is not compatible
+     *
+     * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
      */
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        if (cloud == null && node != null) cloud = node.getCloud();
+    public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
+        Collection errors = VALID;
         if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
             // only fail for fields users may actually edit
             if (field == null || field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_SYSTEM_VIRTUAL) {
-                failOnValidate(getRequiredConstraint(), value, cloud);
+                errors = addError(errors, getRequiredConstraint(), value);
             }
         }
         // test uniqueness
@@ -365,13 +346,14 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             }
             log.debug(query);
             if (Queries.count(query) > 0) {
-                failOnValidate(getUniqueConstraint(), value, node.getCloud());
+                errors = addError(errors, getUniqueConstraint(), value);
             }
         }
         // test enumerations
         // if (enumerationValues != null && enumerationValues.size() == 0) {
         //     ...
         // }
+        return errors;
     }
 
     public String toString() {
@@ -531,31 +513,22 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
 
     /**
-     * Adds a possible value. 
-     * @return The newly created {@link #EnumerationValue}. 
-     */
-    public DataType.EnumerationValue addEnumerationValue(Object value) {
-        DataType.EnumerationValue enumerationValue = new EnumerationValue(value);
-        if (enumerationValues == null) {
-            enumerationValues = new ArrayList();
-        }
-        enumerationValues.add(enumerationValue);
-        return enumerationValue;
-    }
-
-    /**
      * @return A List of all possible values for this datatype, wrapped in {@link #EnumerationValue}, or <code>null</code> if no restrictions apply.
      */
-    public List getEnumerationValues() {
-        return enumerationValues;
+    public Collection getEnumerationValues(Locale locale) {
+        if (enumerationValues == null || enumerationValues.size() == 0) return null;
+        return enumerationValues.get(locale);
     }
 
     /**
      * @param enumerationValues List of{@link #EnumerationValue}
      * Set all possible values at once, for example copied from another datatype
      */
-    public void setEnumerationValues(List enumerationValues) {
-        this.enumerationValues = enumerationValues;
+    public LocalizedEntryListFactory getEnumerationFactory() {
+        if(enumerationValues == null) {
+            enumerationValues = new LocalizedEntryListFactory();
+        }
+        return enumerationValues;
     }
 
     /**
@@ -752,12 +725,20 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             this.fixed = fixed;
         }
 
+        protected final Collection validate(Collection errors, Object value, Node node, Field field) {
+            if (! valid(value, node, field)) {
+                return DataType.this.addError(errors, this, value);
+            } else {
+                return errors;
+
+            }
+        }
         /**
          * Proposal: make this abstract. And see NodeDataType
          *
          * Validates for a given value whether this constraints applies.
          */
-        public void validate(Object value, Node node, Field field, Cloud cloud) { 
+        public boolean valid(Object value, Node node, Field field) {
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -765,6 +746,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
             value = val.value;
             errorDescription = (LocalizedString) val.errorDescription.clone();
         }
+
 
         public DataType.ValueConstraint clone(DataType dataType) {
             DataType.ValueConstraint clone = ((DataType)dataType).new ValueConstraint(name, value);

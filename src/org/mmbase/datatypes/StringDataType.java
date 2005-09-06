@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.11 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.12 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -126,17 +126,18 @@ public class StringDataType extends BigDataType {
         }
     }
 
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        super.validate(value, node, field, cloud);
+    public Collection validate(Object value, Node node, Field field) {
+        Collection errors = super.validate(value, node, field);
         if (value != null) {
             String stringValue = Casting.toString(value);
             Pattern pattern = getPattern();
             if (pattern != null) {
                 if (! pattern.matcher(stringValue).matches()) {
-                    failOnValidate(getPatternConstraint(), value, cloud);
+                    errors = addError(errors, getPatternConstraint(), value);
                 }
             }
         }
+        return errors;
     }
 
     public Object process(int action, Node node, Field field, Object value, int processingType) {

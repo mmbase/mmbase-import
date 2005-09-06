@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: ListDataType.java,v 1.7 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.8 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends DataType {
@@ -146,20 +146,20 @@ public class ListDataType extends DataType {
         return getItemDataTypeConstraint().setValue(value);
     }
 
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        super.validate(value, node, field, cloud);
-        if (value !=null) {
+    public Collection validate(Object value, Node node, Field field) {
+        Collection errors = super.validate(value, node, field);
+        if (value != null) {
             List listValue = Casting.toList(value);
             int minSize = getMinSize();
             if (minSize > 0) {
                 if (listValue.size() < minSize) {
-                    failOnValidate(getMinSizeConstraint(), value, cloud);
+                    errors = addError(errors, getMinSizeConstraint(), value);
                 }
             }
             int maxSize = getMaxSize();
             if (maxSize > -1) {
                 if (listValue.size() > maxSize) {
-                    failOnValidate(getMaxSizeConstraint(), value, cloud);
+                    errors = addError(errors, getMaxSizeConstraint(), value);
                 }
             }
             // test list item values
@@ -167,13 +167,18 @@ public class ListDataType extends DataType {
             if (itemDataType != null) {
                 for (Iterator i = listValue.iterator(); i.hasNext(); ) {
                     try {
-                        itemDataType.validate(i.next(), cloud);
+                        Collection col = itemDataType.validate(i.next());
+                        if (col != VALID) {
+                            if (errors == VALID) errors = new ArrayList();
+                            errors.addAll(col);
+                        }
                     } catch (ClassCastException cce) {
-                        failOnValidate(getItemDataTypeConstraint(), value, cloud);
+                        errors = addError(errors, getItemDataTypeConstraint(), value);
                     }
                 }
             }
         }
+        return errors;
     }
 
     public String toString() {
