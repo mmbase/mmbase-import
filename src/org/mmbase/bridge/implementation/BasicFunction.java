@@ -18,7 +18,7 @@ import org.mmbase.util.functions.*;
  *
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: BasicFunction.java,v 1.7 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicFunction.java,v 1.8 2005-09-06 21:14:44 michiel Exp $
  */
 public class BasicFunction extends WrappedFunction {
 
@@ -73,6 +73,6 @@ public class BasicFunction extends WrappedFunction {
     }
 
     public String toString() {
-        return "BASICFUNCTION " + wrappedFunction;
+        return "BASICFUNCTION " + (node != null ? " on node " + node.getNumber() + ": " : "") + wrappedFunction;
     }
 }
