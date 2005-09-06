@@ -135,6 +135,31 @@
     </specialization>
   </datatype>
 
+  <datatype id="boolean">
+    <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.truefalse" />
+    <specialization id="yesno">
+      <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.yesno" />
+    </specialization>
+    <specialization id="onoff">
+      <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.onoff" />
+    </specialization>
+  </datatype>
+
+  <datatype id="integer">
+    <specialization id="dirs">
+      <enumeration resource="org.mmbase.bridge.jsp.taglib.typehandler.resources.dirs" />
+    </specialization>
+    <specialization id="spells">
+      <!-- example to test -->
+      <enumeration value="1" xml:lang="nl" display="hokus pokus" />
+      <enumeration value="2" xml:lang="nl" display="simsalabim" />
+      <enumeration value="3" xml:lang="nl" display="pilatus pas" />
+      <enumeration value="2" xml:lang="en" display="simsalabim" />
+      <enumeration value="3" xml:lang="en" display="pilatus pas" />
+      <enumeration value="1" xml:lang="en" display="hocus pocus" />
+    </specialization>
+  </datatype>
+
   <datatype id="byte">
     <specialization id="checksum">
       <commitprocessor>
