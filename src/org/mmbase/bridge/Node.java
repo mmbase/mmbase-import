@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.59 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: Node.java,v 1.60 2005-09-06 21:13:44 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -450,6 +450,7 @@ public interface Node extends Comparable {
      * Note that because commit processors may make necessary changes to field values, it is possible for
      * validate() to fail when used outside the commit process if the constraints are set too strict.
      * @throws IllegalArgumentException when a field value is not valid.
+     * @since MMBase-1.8
      */
     public void validate();
 
@@ -458,6 +459,7 @@ public interface Node extends Comparable {
      * the field's datatype.
      * @see {@link #validate}
      * @throws IllegalArgumentException when the field value is not valid.
+     * @since MMBase-1.8
      */
     public void validate(String fieldname);
 
