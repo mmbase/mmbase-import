@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.29 2005-08-22 08:14:01 pierre Exp $
+ * @version $Id: Field.java,v 1.30 2005-09-06 21:16:54 michiel Exp $
  */
 public interface Field extends Descriptor {
 
@@ -188,5 +188,11 @@ public interface Field extends Descriptor {
      * @return  the maximum length of data this field can contain
      */
     public int getMaxLength();
+
+    /**
+     * Checks whether a given value is valid for this field.
+     * @since MMBase-1.8
+     */
+    public void validate(Object value);
 
 }
