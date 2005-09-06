@@ -13,12 +13,14 @@ package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.core.AbstractField;
 import org.mmbase.core.CoreField;
+import org.mmbase.util.LocalizedString;
+import java.util.Collection;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.23 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicField.java,v 1.24 2005-09-06 21:16:54 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
@@ -40,7 +42,7 @@ public class BasicField extends AbstractField implements Field {
     }
 
     public boolean isUnique(){
-        return coreField.isUnique();
+    return coreField.isUnique();
     }
 
     public int getSearchPosition(){
@@ -58,6 +60,13 @@ public class BasicField extends AbstractField implements Field {
     public int getStoragePosition(){
         return coreField.getStoragePosition();
     }
+    public void validate(Object value) {
+        Collection errors = getDataType().validate(value, null, this);
+        if (errors.size() > 0) {
+            throw new IllegalArgumentException(getName() + ": " + LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale()));
+        }
+    }
+
 
     // deprecated methods
     public int getMaxLength() {
