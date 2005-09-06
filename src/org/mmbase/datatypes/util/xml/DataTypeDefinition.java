@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.14 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.15 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -189,7 +189,7 @@ public class DataTypeDefinition {
                     addEnumeration(childElement);
                 } else if ("default".equals(childElement.getLocalName())) {
                     String value = getAttribute(childElement, "value");
-                    dataType.setDefaultValue(value);                         
+                    dataType.setDefaultValue(value);
                 } else if (nonConditions.matcher(childElement.getLocalName()).matches()) {
                     // ignore
                 } else if (dataType instanceof StringDataType) {
@@ -301,15 +301,23 @@ public class DataTypeDefinition {
         }
     }
 
+
+
     protected void addEnumeration(Element enumerationElement) {
         String value = enumerationElement.getAttribute("value");
-        if (value != null && !value.equals("")) {
-            DataType.EnumerationValue enumerationValue = dataType.addEnumerationValue(value);
-            // set display
-            LocalizedString descriptions = enumerationValue.getDescription();
-            enumerationValue.setDescription(getLocalizedDescription("display", enumerationElement, descriptions));
+        LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
+        if (!value.equals("")) {
+            Locale locale = getLocale(enumerationElement);
+            String display = enumerationElement.getAttribute("display");
+            if (display.equals("")) display = value;
+            fact.add(locale, value, display);
         } else {
-            throw new IllegalArgumentException("no 'value' argument");
+            String resource = enumerationElement.getAttribute("resource");
+            if (! resource.equals("")) {
+                fact.addBundle(resource, null, null, dataType.getTypeAsClass(), null);
+            } else {
+                throw new IllegalArgumentException("no 'value' or 'resource' attribute on enumeration element");
+            }
         }
     }
 

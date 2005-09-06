@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
@@ -18,7 +19,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NodeDataType.java,v 1.8 2005-09-02 17:40:45 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.9 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
@@ -56,24 +57,26 @@ public class NodeDataType extends DataType {
         return mustExistConstraint;
     }
 
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        super.validate(value, node, field, cloud);
-        mustExistConstraint.validate(value, node, field, cloud);
+    public Collection validate(Object value, Node node, Field field) {
+        Collection errors = super.validate(value, node, field);
+        errors = mustExistConstraint.validate(errors, value, node, field);
+        return errors;
     }
 
     private class MustExistConstraint extends ValueConstraint {
         MustExistConstraint() {
             super("mustExist", Boolean.TRUE);
         }
-        public void validate(Object value, Node node, Field field, Cloud cloud) {
+        public boolean valid(Object value, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
                 if (value != null && !(value instanceof Number && ((Number)value).intValue() == -1)) {
-                    MMObjectNode nodeValue = Casting.toNode(value,MMBase.getMMBase().getTypeDef());
+                    MMObjectNode nodeValue = Casting.toNode(value, MMBase.getMMBase().getTypeDef());
                     if (nodeValue == null) {
-                        NodeDataType.this.failOnValidate(this, value, cloud);
+                        return false;
                     }
                 }
             }
+            return true;
         }
     }
 

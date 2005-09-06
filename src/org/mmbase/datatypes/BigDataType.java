@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.7 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: BigDataType.java,v 1.8 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -122,8 +122,8 @@ abstract public class BigDataType extends DataType {
         return getMaxLengthConstraint().setValue(new Integer(value));
     }
 
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        super.validate(value, node, field, cloud);
+    public Collection validate(Object value, Node node, Field field) {
+        Collection errors = super.validate(value, node, field);
         if (value != null) {
             int size = -1;
             if (this instanceof BinaryDataType) {
@@ -136,16 +136,17 @@ abstract public class BigDataType extends DataType {
             int minLength = getMinLength();
             if (minLength > 0) {
                 if (size < minLength) {
-                    failOnValidate(getMinLengthConstraint(), value, cloud);
+                    errors = addError(errors, getMinLengthConstraint(), value);
                 }
             }
             int maxLength = getMaxLength();
             if (maxLength > 0) {
                 if (size > maxLength) {
-                    failOnValidate(getMaxLengthConstraint(), value, cloud);
+                    errors = addError(errors, getMaxLengthConstraint(), value);
                 }
             }
         }
+        return errors;
     }
 
 

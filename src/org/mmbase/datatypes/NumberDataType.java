@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.8 2005-09-02 12:33:42 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.9 2005-09-06 21:11:30 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends DataType {
@@ -185,25 +185,26 @@ abstract public class NumberDataType extends DataType {
         return setMax(value);
     }
 
-    public void validate(Object value, Node node, Field field, Cloud cloud) {
-        super.validate(value, node, field, cloud);
+    public Collection validate(Object value, Node node, Field field) {
+        Collection errors = super.validate(value, node, field);
         if (value != null) {
             double doubleValue = Casting.toDouble(value);
             Number minimum = getMinValue();
             if (minimum != null) {
                 double minValue = minimum.doubleValue();
                 if (minValue > doubleValue || (!minInclusive && minValue == doubleValue)) {
-                    failOnValidate(getMinConstraint(), value, cloud);
+                    errors = addError(errors, getMinConstraint(), value);
                 }
             }
             Number maximum = getMaxValue();
             if (maximum != null) {
                 double maxValue = maximum.doubleValue();
                 if (maxValue < doubleValue || (!maxInclusive && maxValue == doubleValue)) {
-                    failOnValidate(getMaxConstraint(), value, cloud);
+                    errors = addError(errors, getMaxConstraint(), value);
                 }
             }
         }
+        return errors;
     }
 
     public String toString() {
