@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.164 2005-09-01 15:19:29 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.165 2005-09-06 21:18:40 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -732,24 +732,22 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         StringBuffer error = new StringBuffer();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            try {
-                field.getDataType().validate(this, field);
-            } catch (IllegalArgumentException iae) {
-                error.append("builder '" + nodeManager.getName() + "' field '" + field.getName() + "': " + iae.getMessage() + "\n");
+            Collection errors = field.getDataType().validate(getValueWithoutProcess(field.getName()), this, field);
+            if (errors.size() > 0) {
+                error.append("field '" + field.getName() + "': " + LocalizedString.toStrings(errors, getCloud().getLocale()) + "\n");
             }
         }
         if(error.length() > 0) {
-            throw new IllegalArgumentException(error.toString());
+            throw new IllegalArgumentException("node " + getNumber() + ", builder '" + nodeManager.getName() + "' " + error.toString());
         }
     }
 
     public void validate(String fieldName) {
         if (nodeManager.hasField(fieldName)) {
             Field field = nodeManager.getField(fieldName);
-            try {
-                field.getDataType().validate(this, field);
-            } catch (IllegalArgumentException iae) {
-                throw new IllegalArgumentException(fieldName + ": " + iae.getMessage());
+            Collection errors = field.getDataType().validate(getValueWithoutProcess(fieldName), this, field);
+            if (errors.size() > 0) {
+                throw new IllegalArgumentException(fieldName + ": " + LocalizedString.toStrings(errors, getCloud().getLocale()));
             }
         }
     }
