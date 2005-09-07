@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.19 2005-09-06 21:11:30 michiel Exp $
+ * @version $Id: DataType.java,v 1.20 2005-09-07 13:20:00 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -513,7 +513,10 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
 
     /**
-     * @return A List of all possible values for this datatype, wrapped in {@link #EnumerationValue}, or <code>null</code> if no restrictions apply.
+     * @return A List of all possible values for this datatype, as {@link java.util.Map.Entry}s, or
+     * <code>null</code> if no restrictions apply. Every Map entry contains as key the 'value' for
+     * this datatype and as value it contains the description for this value in the given locale.
+     *
      */
     public Collection getEnumerationValues(Locale locale) {
         if (enumerationValues == null || enumerationValues.size() == 0) return null;
@@ -521,8 +524,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     }
 
     /**
-     * @param enumerationValues List of{@link #EnumerationValue}
-     * Set all possible values at once, for example copied from another datatype
+     * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
+     * #getEnumerationValues}. Never <code>null</code>. This can be used to add more possible values.
      */
     public LocalizedEntryListFactory getEnumerationFactory() {
         if(enumerationValues == null) {
@@ -763,42 +766,4 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     }
 
-    /**
-     * An Enumeration value is a wrapper around one of the possible values of a certain datatype. It
-     * includes besides this value the localized description for this value.
-     */
-    public final class EnumerationValue implements Cloneable {
-        private Object value;
-        private LocalizedString description = null;
-
-        private EnumerationValue(Object value) {
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public LocalizedString getDescription() {
-            return description;
-        }
-
-        public void setDescription(LocalizedString description) {
-            this.description = description;
-        }
-
-
-        public DataType.EnumerationValue clone(DataType dataType) {
-            DataType.EnumerationValue clone = ((DataType)dataType).new EnumerationValue(value);
-            if (description != null) {
-                clone.setDescription((LocalizedString) description.clone());
-            }
-            return clone;
-        }
-
-        public String toString() {
-            return value + " : " + description;
-        }
-
-    }
 }
