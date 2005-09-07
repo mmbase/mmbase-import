@@ -13,16 +13,16 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This Factory can produce Collections based on a Locale (The {@link #get} method is
+ * These factories can produce Collections based on a Locale (The {@link #get} method is
  * essential). The other methods besides get are methods to define these lists. There are two ways
  * to add entries to the produced collections. The first one is to explicitely add them, using the
  * {@link #add} method. This gives precise control, and the collections can have different orders
  * for different languages. The size of the collections are always the same, so if for a certain
  * locale less entries are added, these are completed with the unused keys. If for a certain locale
  * <em>no</em> entries are added, it will behave itself like as the default locale of {@link
- * LocalizedString#getDefault}. 
+ * LocalizedString#getDefault}.
  *
- * It is also possible to add entired 'bundles'. For this use {@link addBundle}. When a Collection instance
+ * It is also possible to add entire 'bundles'. For this use {@link addBundle}. When a Collection instance
  * for a certain Locale is requested these informations are used to call {@link
  * SortedBundle#getResource}.
  *
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.1 2005-09-06 21:09:39 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.2 2005-09-07 13:23:02 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements java.io.Serializable, Cloneable {
@@ -43,12 +43,15 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
     private List fallBack = new ArrayList();
     private Map unusedKeys = new HashMap(); // Locale -> unused Keys;
 
-    //public static SortedMap getResource(String baseName, Locale locale, ClassLoader loader, Class constantsProvider, Class wrapper, Comparator comparator) {
     public LocalizedEntryListFactory() {
 
     }
 
-    public Entry add(Locale locale, String key, Object value) {
+    /**
+     * Ass a value for a certain key and Locale
+     * @return The create Map.Entry.
+     */
+    public Map.Entry add(Locale locale, String key, Object value) {
         List localizedList = (List) localized.get(locale);
         List unused = (List) unusedKeys.get(locale);
         if (localizedList == null) {
@@ -73,6 +76,12 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         unused.remove(key);
         return entry;
     }
+
+    /**
+     * Adds a bundle, to the (current) end of all maintained collections. Actually, only the
+     * definition of the bundle is added, it is instantiated only later, when requested for a
+     * specific locale.
+     */
     public void addBundle(String baseName, ClassLoader classLoader, Class constantsProvider, Class wrapper, Comparator comparator) {
         // just for the count
         Bundle b = new Bundle(baseName, classLoader, constantsProvider, wrapper, comparator);
@@ -84,7 +93,12 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         }
         bundleSize += b.get(null).size();
     }
-    public Collection /* <Entry> */ get(final Locale locale) {
+    /**
+     * Returns a Collection of Map.Entries for the given Locale. The collection kind of 'virtual',
+     * it only reflects the underlying memory structures.
+     * @param locale The locale of <code>null</code> for the default locale.
+     */
+    public Collection /* <Map.Entry> */ get(final Locale locale) {
         return new AbstractCollection() {
                 public int size() {
                     return LocalizedEntryListFactory.this.size();
@@ -98,7 +112,7 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
                             private boolean fallenBack = false;
                             {
                                 if (loc == null) {
-                                    loc = (List) localized.get(LocalizedString.getDefault());
+                                   loc = (List) localized.get(LocalizedString.getDefault());
                                     uu  = (List) unusedKeys.get(LocalizedString.getDefault());
                                 }
                                 if (loc == null) loc = bundles;
@@ -126,7 +140,7 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
                                         res = new Entry(res, res);
                                     }
                                     if (res instanceof Bundle) {
-                                        subIterator = ((Bundle) res).get(locale).entrySet().iterator();
+                                        subIterator = ((Bundle) res).get(locale).iterator();
                                         res = subIterator.next();
                                     }
                                 }
@@ -144,6 +158,9 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
                 }
             };
     }
+    /**
+     * The size of the collections returned by {@link #get}
+     */
     public int size() {
         return size + bundleSize;
     }
@@ -160,13 +177,16 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         Bundle(String r, ClassLoader cl, Class cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
-        public String      resource;
-        public ClassLoader classLoader;
-        public Class       constantsProvider;
-        public Class         wrapper;
-        public Comparator  comparator;
-        SortedMap get(Locale loc) {
-            return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator);
+        private String      resource;
+        private ClassLoader classLoader;
+        private Class       constantsProvider;
+        private Class         wrapper;
+        private Comparator  comparator;
+        /**
+         * Collection of Map.Entry's
+         */
+        Collection get(Locale loc) {
+            return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
         }
     }
 
