@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.15 2005-09-06 21:11:30 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.16 2005-09-07 13:20:20 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -314,7 +314,36 @@ public class DataTypeDefinition {
         } else {
             String resource = enumerationElement.getAttribute("resource");
             if (! resource.equals("")) {
-                fact.addBundle(resource, null, null, dataType.getTypeAsClass(), null);
+                Comparator comparator = null;
+                Class wrapper    = dataType.getTypeAsClass();
+                {
+                    String sorterClass = enumerationElement.getAttribute("sorterclass");
+                    if (!sorterClass.equals("")) {
+                        try {
+                            Class sorter = Class.forName(sorterClass);
+                            if (Comparator.class.isAssignableFrom(sorter)) {
+                                comparator = (Comparator) sorter.newInstance();
+                            } else {
+                                wrapper = sorter;
+                            }
+                        } catch (Exception e) {
+                            log.error(e);
+                        }
+                    }
+                }
+                Class constantsClass = null;
+                {
+                    String javaConstants = enumerationElement.getAttribute("constantsclass");
+                    if (!javaConstants.equals("")) {
+                        try {
+                            constantsClass = Class.forName(javaConstants);
+                        } catch (Exception e) {
+                            log.error(e);
+                        }
+                    }
+                }
+                fact.addBundle(resource, getClass().getClassLoader(), constantsClass,
+                               wrapper, comparator);
             } else {
                 throw new IllegalArgumentException("no 'value' or 'resource' attribute on enumeration element");
             }
