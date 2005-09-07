@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.7 2005-09-06 21:09:39 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.8 2005-09-07 13:21:26 michiel Exp $
  */
 public class SortedBundle {
 
@@ -87,7 +87,9 @@ public class SortedBundle {
             }
             return false;
         }
-        
+        public String toString() {
+            return key;
+        }
         /**
          * @see java.lang.Object#hashCode()
          */
