@@ -7,7 +7,6 @@
 
 package nl.redspider.www.Didactor.definitions;
 
-import nl.didactor.component.redspider.dataobjects.*;
 
 public interface Didactor extends javax.xml.rpc.Service {
     public java.lang.String getDidactorPortAddress();
