@@ -182,6 +182,8 @@
       <xsd:attribute name="display" type="xsd:string" />
       <xsd:attribute ref="xml:lang" />
       <xsd:attribute name="resource" type="xsl:string" />
+      <xsd:attribute name="sorterclass"   type="xsl:string" />
+      <xsd:attribute name="javaconstants" type="xsl:string" />
     </xsd:complexType>
   </xsd:element>
 
