@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.21 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: Parameter.java,v 1.22 2005-09-08 09:40:10 michiel Exp $
  * @see Parameters
  */
 
@@ -47,6 +47,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
 
     /**
      * The parameter's data type
+     * @since MMBase-1.8
      */
     protected DataType dataType;
 
@@ -54,6 +55,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * Create a Parameter object
      * @param name the name of the parameter
      * @param dataType the datatype of the parameter to copy
+     * @since MMBase-1.8
      */
     public Parameter(String name, DataType dataType) {
         this(name, dataType, true);
@@ -65,6 +67,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @param dataType the datatype of the parameter to assign or copy
      * @param copy if <code>true</code>, teh datatype is copied. if not, it is assigned directly,
      *        that is, changing condfiitons on the parameter changes the passed datatype instance.
+     * @since MMBase-1.8
      */
     public Parameter(String name, DataType dataType, boolean copy) {
         super(name);
@@ -142,6 +145,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     /**
      * Returns the data type of this parameter.
      * @return the datatype
+     * @since MMBase-1.8
      */
     public DataType getDataType() {
         return dataType;
@@ -151,8 +155,15 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * Returns the type of values that this parameter accepts.
      * @return the type as a Class
      */
+    public Class getTypeAsClass() {
+        return dataType.getTypeAsClass();
+    }
+
+    /**
+     * @deprecated-now use getTypeAsClass
+     */
     public Class getType() {
-        return getDataType().getTypeAsClass();
+        return getTypeAsClass();
     }
 
     /**
@@ -197,7 +208,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     }
 
     public String toString() {
-        return getType().getName() + " " + getName();
+        return getTypeAsClass().getName() + " " + getName();
     }
 
     /**
