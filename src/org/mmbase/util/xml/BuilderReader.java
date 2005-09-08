@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.38 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.39 2005-09-08 11:48:46 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -661,7 +661,7 @@ public class BuilderReader extends DocumentReader {
         String size = getElementAttributeValue(dbtype, "size");
         if (size != null && !size.equals("")) {
             try {
-                def.setSize(Integer.parseInt(size));
+                def.setMaxLength(Integer.parseInt(size));
             } catch (NumberFormatException e) {
                 log.warn("invalid value for size : " + size);
             }
