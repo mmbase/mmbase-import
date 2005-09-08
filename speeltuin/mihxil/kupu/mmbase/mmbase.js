@@ -110,6 +110,15 @@ function serialize(request) {
     return Sarissa.serialize(request.responseXML);
 }
 
+var boundary = "----------mmbase-kupu-node-fields----1234567890";
+var newline  = "\x0D\x0A";
+
+function addMultiPart(content, a) {
+    content += "--" + boundary + newline;
+    content += "Content-Disposition: form-data; name=\"" + a.name + "\"" + newline + newline;
+    content += a.value + newline;
+    return content;
+}
 
 /**
  * Called by the save button.
@@ -118,25 +127,33 @@ function saveNode(button, editor) {
     kupu.logMessage(_("Saving body (kupu)") + " " + currentNode);
     editor.saveDocument(undefined, true); // kupu-part of save
     var content = "";
+    kupu.logMessage(_("Saving fields (form)") + " " + currentNode);
+
+    
     var a = xGetElementsByTagName('input', xGetElementById('nodefields'));
     for (i=0; i < a.length; i++) {
-        content += a[i].name + ':' + a[i].value + "\n";
+        content = addMultiPart(content, a[i]);
     }
-    kupu.logMessage(_("Saving fields (form)") + " " + currentNode);
-    var boundary = "----------__________----------";
-    a = xGetElementsByTagName('textarea', xGetElementById('nodefields'));
+    a = xGetElementsByTagName('select', xGetElementById('nodefields'));
     for (i=0; i < a.length; i++) {
-        content += a[i].name + ":" + boundary + "\n" + a[i].value + "\n" + boundary + "\n";
+        content = addMultiPart(content, a[i]);
     }
 
-    //alert("putting " + content);
+    a = xGetElementsByTagName('textarea', xGetElementById('nodefields'));
+    for (i=0; i < a.length; i++) {
+        content = addMultiPart(content, a[i]);
+    }
+    content += "--" + boundary + "\x2D\x2D";
+
     var request = getRequest();
-    request.open("PUT", "receive.jspx?fields=true", true);
-    request.setRequestHeader("Content-type", "text/plain");
+
+    request.open("POST", "receive.jspx?fields=true", true);
+    request.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
     request.send(content);
     //kupu.handleSaveResponse(request);
     var node = currentNode;
     currentNode = undefined;
+    //alert("Posted \n" + content);
     alert(_("saved") + " " + node);
     kupu.logMessage("Reloading " + node);
     loadedNodes.remove(node);
@@ -150,7 +167,9 @@ function saveNode(button, editor) {
  */
 function updateTree(nodeNumber, title) {
     var nodeA = document.getElementById('a_' + nodeNumber);
-    nodeA.innerHTML = title;
+    if (nodeA != null) {
+        nodeA.innerHTML = title;
+    }
 }
 
 /**
@@ -179,7 +198,7 @@ function loadNode(nodeNumber) {
         }
 
     }
-    
+
     var nodeXml = loadedNodes.get(nodeNumber);
     if (nodeXml == null) {
         kupu.logMessage(_("Getting node fields for ") + nodeNumber);

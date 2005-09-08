@@ -8,7 +8,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: toolboxes.kupu,v 1.8 2005-08-26 18:21:36 michiel Exp $</kupu:id>
+  <kupu:id>$Id: toolboxes.kupu,v 1.9 2005-09-08 08:30:31 michiel Exp $</kupu:id>
 
   <kupu:part name="images">
     <div class="kupu-toolbox" id="kupu-toolbox-images">
@@ -19,11 +19,12 @@
       </div>
       <select class="wide" id="kupu-image-float-select">
         <option value="image-inline" i18n:translate="">Inline</option>
-        <option value="image-left" i18n:translate="">Left</option>
-        <option value="image-right" i18n:translate="">Right</option>
+        <option value="image-left"   i18n:translate="">Left</option>
+        <option value="image-right"  i18n:translate="">Right</option>
         
         <option value="paragraph" i18n:translate="">Paragraph</option>
-        <option value="section" i18n:translate="">Section</option>
+        <option value="section"   i18n:translate="">Section</option>
+        <option value="node"      i18n:translate="">Node</option>
       </select>
       <div style="display: none;">
         <div class="kupu-toolbox-label">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mmbase 18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-29 21:14+0200\n"
+"POT-Creation-Date: 2005-09-05 19:12+0200\n"
 "PO-Revision-Date: 2005-06-09 00:42+0200\n"
 "Last-Translator: Michiel Meeuwissen <EMAIL@ADDRESS>\n"
 "Language-Team: German <de@li.org>\n"
@@ -16,35 +16,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mmbase.js:121
+#: mmbase.js:118
 msgid "Saving body (kupu)"
 msgstr ""
 
-#: mmbase.js:128
+#: mmbase.js:125
 msgid "Saving fields (form)"
 msgstr ""
 
-#: mmbase.js:147
+#: mmbase.js:140
 msgid "saved"
 msgstr ""
 
-#: mmbase.js:168
+#: mmbase.js:165
 msgid "RELOAD"
 msgstr ""
 
-#: mmbase.js:187
+#: mmbase.js:185
 msgid "Getting node fields for "
 msgstr ""
 
-#: mmbase.js:194
+#: mmbase.js:193
 msgid "Loading node fields for "
 msgstr ""
 
-#: mmbase.js:204
+#: mmbase.js:205
 msgid "Getting node body "
 msgstr ""
 
-#: mmbase.js:211
+#: mmbase.js:212
 msgid "Loading node body "
 msgstr ""
 
@@ -52,7 +52,7 @@ msgstr ""
 msgid "Div tool initialized"
 msgstr ""
 
-#: mmbasetools.js:23
+#: mmbasetools.js:41
 msgid "Div inserted"
 msgstr ""
 
@@ -85,9 +85,5 @@ msgid "Note right"
 msgstr ""
 
 #: phony.js:8
-msgid "Intermezzo"
-msgstr ""
-
-#: phony.js:9
 msgid "Insert block"
 msgstr ""

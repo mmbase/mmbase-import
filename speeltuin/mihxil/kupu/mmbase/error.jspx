@@ -33,6 +33,7 @@
           <p>
             Deze pagina bevat een fout.
           </p>
+          <mm:log jspvar="log"><jsp:scriptlet>log.warn(exception, exception);</jsp:scriptlet></mm:log>
           <pre>
             <jsp:scriptlet>
             if (exception != null) { 

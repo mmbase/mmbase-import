@@ -1,13 +1,13 @@
 <mm:content type="text/html" language="en" expires="-1" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"  xmlns:jsp="http://java.sun.com/JSP/Page">
 
-  <jsp:directive.page import="java.io.*,java.util.*" contentType="text/html; charset=UTF-8" session="true" errorPage="error.jspx" />
+  <jsp:directive.page import="java.io.*,java.util.*,org.apache.commons.fileupload.*" contentType="text/html; charset=UTF-8" session="true" errorPage="error.jspx" />
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
 
       <title>KUPU- receiver</title>
     </head>
     <body >
-      <mm:cloud rank="basic user">
+      <mm:cloud>
         <mm:log jspvar="log">
         <mm:import externid="kupu_node" from="session" />
         <mm:node referid="kupu_node" jspvar="node">
@@ -35,37 +35,9 @@
           </pre>
           </mm:compare>          
           <mm:compare referid="fields" value="true">
-            <jsp:scriptlet>
-              log.info("Saving fields of " + node.getNumber());
-              String boundary = "----------__________----------";
-              String fieldPrefix = "field_";                                                                               
-              BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));           
-              String line = r.readLine();                                                                                  
-              while (line != null) {                                
-                 log.debug("Reading line " + line);
-                 int colon = line.indexOf(':');
-                 String fieldName = line.substring(fieldPrefix.length(), colon);
-                 String rest      = line.substring(colon + 1);
-                 String value;                                                                                            
-                 if (rest.equals(boundary)) {                                            
-                    StringBuffer buf = new StringBuffer();                                                               
-                    line = r.readLine();                                                                      
-                    while (line != null &amp;&amp; ! line.equals(boundary)) {
-                       buf.append(line);                                                                                
-                       line = r.readLine(); 
-                       if (line != null) buf.append("\n");
-                    }                                                                                                    
-                    value = buf.toString();                                                                              
-                 } else {                                                                                                 
-                    value = rest;
-                 }                        
-                 log.debug("Setting " + fieldName + " to " + value);
-                 node.setStringValue(fieldName, value);                                                                   
-                 line = r.readLine();                                                                                     
-              }                                                                                                            
-              node.commit();
-              log.info("Commited");
-            </jsp:scriptlet>
+            <mm:fieldlist id="field" type="edit" >
+              <mm:fieldinfo type="useinput" /> 
+            </mm:fieldlist>
           </mm:compare>
         </mm:node>
         </mm:log>

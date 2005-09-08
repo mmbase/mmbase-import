@@ -4,11 +4,12 @@
     implementation="mmbase"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     >
-  <kupu:id>$Id: html.kupu,v 1.12 2005-06-15 06:47:14 michiel Exp $</kupu:id>
+  <kupu:id>$Id: html.kupu,v 1.13 2005-09-08 08:30:31 michiel Exp $</kupu:id>
   <kupu:part name="html">
     <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page" 
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
       &lt;!-- This file is automaticly generated, don't edit!! --&gt; <!-- That is, not _this_ file, but index.jspx ..-->
       <jsp:output doctype-root-element="html"
