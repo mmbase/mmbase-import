@@ -29,7 +29,9 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     private int searchPosition = NO_POSITION;
     private int listPosition = NO_POSITION;
     private int editPosition = NO_POSITION;
-    private int size = NO_POSITION;
+
+
+    private int maxLength = -1;
 
     private MMObjectBuilder parent = null;
     private int storagePosition = -1;
@@ -58,7 +60,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         setListPosition(coreField.getListPosition());
         setStoragePosition(coreField.getStoragePosition());
         setParent(coreField.getParent());
-        setSize(coreField.getSize());
+        setMaxLength(coreField.getMaxLength());
         setUnique(coreField.isUnique());
     }
 
@@ -189,7 +191,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
             && state == f.getState()
             && getDataType().isRequired() == f.getDataType().isRequired()
             && getDataType().isUnique()  == f.getDataType().isUnique()
-            && size == f.getSize()
+            && maxLength == f.getMaxLength()
             && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
             && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
             && getStorageType() == f.getStorageType() // implues equal MMBase types
@@ -294,12 +296,12 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      *
      * @return  the maximum size of data this field can contain
      */
-    public int getSize() {
-        return size;
+    public int getMaxLength() {
+        return maxLength;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setMaxLength(int size) {
+        this.maxLength = size;
         if (dataType instanceof BigDataType && size < ((BigDataType)dataType).getMaxLength()) {
             ((BigDataType)dataType).setMaxLength(size);
         } else if (dataType instanceof ListDataType && size < ((ListDataType)dataType).getMaxSize()) {
@@ -310,8 +312,13 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     public void setDataType(DataType dataType) {
         this.dataType = dataType;
         // datatype can be influenced by size
-        setSize(getSize());
+        setMaxLength(maxLength);
     }
+
+    public void setUnique(boolean unique) {
+        dataType.setUnique(unique);
+    }
+
 
     // deprecated methods
     /**
@@ -321,19 +328,5 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         return dataType.getName();
     }
 
-    /**
-     * Retrieve whether the field is a key and thus need be unique.
-     */
-    public boolean isUnique() {
-        return dataType.isUnique();
-    }
-
-    public void setUnique(boolean unique) {
-        dataType.setUnique(unique);
-    }
-
-    public int getMaxLength() {
-        return getSize();
-    }
 
 }
