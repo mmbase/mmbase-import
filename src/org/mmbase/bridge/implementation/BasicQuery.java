@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.50 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.51 2005-09-08 11:52:24 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -372,7 +372,7 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        BasicStepField sf = query.addField(step, ((BasicField)field).coreField);
+        BasicStepField sf = query.addField(step, ((BasicField)field).coreField); // XXX Casting is wrong
         explicitFields.add(sf);
         implicitFields.remove(sf); // it's explicitly added now
         return sf;
@@ -397,13 +397,13 @@ public class BasicQuery implements Query  {
     protected void addFieldImplicit(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         if (! query.isDistinct()) {
-            BasicStepField sf = query.addField(step, ((BasicField)field).coreField);
+            BasicStepField sf = query.addField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
             implicitFields.add(sf);
         }
     }
 
     public StepField createStepField(Step step, Field field) {
-        return new BasicStepField(step, ((BasicField)field).coreField);
+        return new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
     }
 
     public StepField createStepField(Step step, String fieldName) {
@@ -431,7 +431,7 @@ public class BasicQuery implements Query  {
 
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
-        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField)field).coreField, aggregationType);
+        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField)field).coreField, aggregationType); /// XXX Casting is wrong
         // aggregatedField.setAlias(field.getName());
 
         if (this instanceof NodeQuery) {
