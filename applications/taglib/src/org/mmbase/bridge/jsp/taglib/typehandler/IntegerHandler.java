@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.26 2005-06-20 16:03:38 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.27 2005-09-08 15:37:01 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -263,7 +263,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         }
         
         protected int checkYear(Integer year, String fieldName) throws JspTagException {
-            int y = super.checkYear(year, fieldName);
+            int y = super.checkYear(year.intValue(), fieldName);
             if (y < 1902 || y > 2037) {
                 throw new JspTagException("Year of field '" + fieldName + "' must be between 1901 and 2038 (now " + y + ")");
             }
