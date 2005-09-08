@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.30 2005-09-06 21:25:34 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.31 2005-09-08 15:37:01 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -38,6 +38,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public AbstractTypeHandler(FieldInfoTag tag) {
         super();
         this.tag = tag;
+        
     }
 
 
