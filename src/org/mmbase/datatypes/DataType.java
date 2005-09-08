@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.20 2005-09-07 13:20:00 michiel Exp $
+ * @version $Id: DataType.java,v 1.21 2005-09-08 16:09:40 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -56,7 +56,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     private static final Logger log = Logging.getLoggerInstance(DataType.class);
 
-    public static final Collection VALID = Collections.unmodifiableCollection(new ArrayList());
+    public static final Collection VALID = Collections.EMPTY_LIST;
 
     /**
      * The 'required' property.
@@ -595,17 +595,15 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
                 result = processor.process(node, field, value);
             }
         }
-        // only with commit: if the data is required but the value is null,
-        // set to the default value.
-        if (action == PROCESS_COMMIT && result == null && isRequired()) {
-            result = getDefaultValue();
-        }
+
         return result;
     }
+
 
     /**
      * Returns the default processor for this action
      * @param action either {@link #PROCESS_COMMIT}, {@link #PROCESS_GET}, or {@link #PROCESS_SET}
+     * XXX What exactly would be against getCommitProcessor(), getGetProcesor(), getSetProcessor() ?
      */
     public Processor getProcessor(int action) {
         Processor processor = null;

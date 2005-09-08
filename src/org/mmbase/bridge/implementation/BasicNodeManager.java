@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.103 2005-09-01 15:19:29 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.104 2005-09-08 16:09:40 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -178,7 +178,17 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         if (cloud instanceof BasicTransaction) {
             ((BasicTransaction)cloud).add(currentObjectContext);
         }
-        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
+        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), "" + id);
+        // odd this MMObjectNode does _not_ have the right builder?!
+        
+        Iterator i = node.parent.getFields().iterator();
+        while(i.hasNext()) {
+            Field f = (Field) i.next();
+            Object def = f.getDataType().getDefaultValue();
+            if (def != null) {
+                node.setValue(f.getName(), def);
+            }
+        }
 
         // set the owner to the owner field as indicated by the user
         node.setValue("owner", cloud.getUser().getOwnerField());
@@ -475,12 +485,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public boolean mayCreateNode() {
-        if (builder==null) return false;
+        if (builder == null) return false;
         return cloud.check(Operation.CREATE, builder.oType);
     }
 
     MMObjectBuilder getMMObjectBuilder() {
-        if (builder==null) {
+        if (builder == null) {
             throw new IllegalStateException("No functional instantiation exists (yet/any more) for this NodeManager.");
         }
         return builder;
