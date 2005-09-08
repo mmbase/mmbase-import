@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.22 2005-09-06 17:23:09 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.23 2005-09-08 15:37:01 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -78,20 +78,31 @@ public class DateHandler extends AbstractTypeHandler {
         StringBuffer buffer = new StringBuffer();
 
         Calendar cal = Calendar.getInstance();
-
-        if (node !=null) {
-            if (node.getLongValue(field.getName()) != -1) {
+        boolean required = field.getDataType().isRequired();
+        if (node != null) {
+            Object value = node.getValue(field.getName());
+            if (value != null) {
                 cal.setTime(node.getDateValue(field.getName()));
+            } else {
+                cal = null;
             }
         } else {
-            //if (! search)
-            cal.setTime(Casting.toDate(field.getDataType().getDefaultValue()));
+            Object def = field.getDataType().getDefaultValue();
+            if (def != null) {
+                cal.setTime(Casting.toDate(def));
+            } else {
+                if (! required) {
+                    cal = null;
+                }
+            }
         }
         buffer.append("<span class=\"mm_datetime\">");
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
-        buffer.append(Casting.toLong(cal.getTime()));
+        if (cal != null) {
+            buffer.append(Casting.toLong(cal.getTime()));
+        }
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
 
@@ -191,6 +202,7 @@ public class DateHandler extends AbstractTypeHandler {
         List parsed = dateTimePattern.getList(locale);
 
         Iterator parsedPattern = parsed.iterator();
+        boolean first = true;
         while(parsedPattern.hasNext()) {
             String pattern = (String) parsedPattern.next();
             char firstChar = pattern.charAt(0);
@@ -203,9 +215,12 @@ public class DateHandler extends AbstractTypeHandler {
                     buffer.append("<input class=\"mm_year\" type =\"text\" size=\"" + (pattern.length() + 1) + "\" name=\"");
                     buffer.append(yearName);
                     buffer.append("\" ");
+                    addExtraAttributes(buffer);
                     buffer.append("value=\"");
                     if (searchYear == null) {
-                        yearFieldValue(cal, buffer);
+                        if (cal != null) {
+                            yearFieldValue(cal, buffer);
+                        }
                     } else {
                         buffer.append(searchYear);
                     }
@@ -216,12 +231,25 @@ public class DateHandler extends AbstractTypeHandler {
                     } else {
                         buffer.append("<select class=\"mm_year\" name=\"");
                         buffer.append(yearName);
-                        buffer.append("\">\n");
+                        buffer.append("\"");
+                        addExtraAttributes(buffer);
+                        buffer.append(">");
                         int checkYear;
                         if (searchYear != null) {
                             checkYear = Integer.parseInt(searchYear);
                         } else {
-                            checkYear = cal.get(Calendar.YEAR);
+                            if (cal != null) {
+                                checkYear = cal.get(Calendar.YEAR);
+                            } else {
+                                checkYear = Integer.MAX_VALUE;
+                            }
+                        }
+                        if (! required && first) {
+                            buffer.append("<option value=\"" + Integer.MAX_VALUE + "\"");
+                            if (checkYear == Integer.MAX_VALUE) {
+                                buffer.append(" selected=\"selected\"");
+                            }
+                            buffer.append(">--</option>");
                         }
                         for (int i = startYear; i <= endYear ; i++) {
                             if (checkYear == i) {
@@ -241,13 +269,19 @@ public class DateHandler extends AbstractTypeHandler {
                 String searchMonth =  (String) container.find(tag.getPageContext(), monthName);
                 int checkMonth;
                 if (searchMonth == null) {
-                    checkMonth = cal.get(Calendar.MONTH) + 1;
+                    if (cal != null) {
+                        checkMonth = cal.get(Calendar.MONTH) + 1;
+                    } else {
+                        checkMonth = -1;
+                    }
                 } else {
                     checkMonth = Integer.parseInt(searchMonth);
                 }
                 buffer.append("<select class=\"mm_month\" name=\"");
                 buffer.append(monthName);
-                buffer.append("\">\n");
+                buffer.append("\"");
+                addExtraAttributes(buffer);
+                buffer.append(">");
 
                 int startMonth = 1;
                 int endMonth = 12;
@@ -257,6 +291,13 @@ public class DateHandler extends AbstractTypeHandler {
                 }
                 SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
                 Calendar help = Calendar.getInstance();
+                if (! required && first) {
+                    buffer.append("<option value=\"-1\"");
+                    if (checkMonth == -1) {
+                        buffer.append(" selected=\"selected\"");
+                    }
+                    buffer.append(">--</option>");
+                }
                 for (int i = startMonth; i <= endMonth; i++) {
                     help.set(Calendar.MONTH, i - 1);
                     String month = format.format(help.getTime());
@@ -275,11 +316,24 @@ public class DateHandler extends AbstractTypeHandler {
                 String searchDay =  (String) container.find(tag.getPageContext(), dayName);
                 int checkDay;
                 if (searchDay == null) {
-                    checkDay = cal.get(Calendar.DAY_OF_MONTH);
+                    if (cal != null) {
+                        checkDay = cal.get(Calendar.DAY_OF_MONTH);
+                    } else {
+                        checkDay = -1;
+                    }
                 } else {
                     checkDay = Integer.parseInt(searchDay);
                 }
-                buffer.append("<select class=\"mm_day\" name=\"" + dayName + "\">\n");
+                buffer.append("<select class=\"mm_day\" name=\"" + dayName + "\"");
+                addExtraAttributes(buffer);
+                buffer.append(">");
+                if (! required && first) {
+                    buffer.append("<option value=\"-1\"");
+                    if (checkDay == -1) {
+                        buffer.append(" selected=\"selected\"");
+                    }
+                    buffer.append(">--</option>");
+                }
                 for (int i = 1; i <= 31; i++) {
                     if (checkDay == i) {
                         buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
@@ -300,11 +354,24 @@ public class DateHandler extends AbstractTypeHandler {
                 String searchHour =  (String) container.find(tag.getPageContext(), hourName);
                 int checkHour;
                 if (searchHour == null) {
-                    checkHour = cal.get(Calendar.HOUR_OF_DAY);
+                    if (cal != null) {
+                        checkHour = cal.get(Calendar.HOUR_OF_DAY);
+                    } else {
+                        checkHour = -1;
+                    }
                 } else {
                     checkHour = Integer.parseInt(searchHour);
                 }
-                buffer.append("<select class=\"mm_hour\" name=\"" + hourName + "\">\n");
+                buffer.append("<select class=\"mm_hour\" name=\"" + hourName + "\"");
+                addExtraAttributes(buffer);
+                buffer.append(">");
+                if (! required && first) {
+                    buffer.append("<option value=\"-1\"");
+                    if (checkHour == -1) {
+                        buffer.append(" selected=\"selected\"");
+                    }
+                    buffer.append(">--</option>");
+                }
                 for (int i = 0; i <= 23; i++) {
                     if (checkHour == i) {
                         buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
@@ -324,12 +391,25 @@ public class DateHandler extends AbstractTypeHandler {
                 String searchMinute =  (String) container.find(tag.getPageContext(), minuteName);
                 int checkMinute;
                 if (searchMinute == null) {
-                    checkMinute = cal.get(Calendar.MINUTE);
+                    if (cal != null) {
+                        checkMinute = cal.get(Calendar.MINUTE);
+                    } else {
+                        checkMinute = -1;
+                    }
                 } else {
                     checkMinute = Integer.parseInt(searchMinute);
                 }
 
-                buffer.append("<select class=\"mm_minute\" name=\"" + minuteName + "\">\n");
+                buffer.append("<select class=\"mm_minute\" name=\"" + minuteName + "\"");
+                addExtraAttributes(buffer);
+                buffer.append(">");
+                if (! required && first) {
+                    buffer.append("<option value=\"-1\"");
+                    if (checkMinute == -1) {
+                        buffer.append(" selected=\"selected\"");
+                    }
+                    buffer.append(">--</option>");
+                }
                 for (int i = 0; i <= 59; i++) {
                     if (checkMinute == i) {
                         buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
@@ -348,12 +428,25 @@ public class DateHandler extends AbstractTypeHandler {
                 String searchSecond =  (String) container.find(tag.getPageContext(), secondName);
                 int checkSecond;
                 if (searchSecond == null) {
-                    checkSecond = cal.get(Calendar.SECOND);
+                    if (cal != null) {
+                        checkSecond = cal.get(Calendar.SECOND);
+                    } else {
+                        checkSecond = -1;
+                    }
                 } else {
                     checkSecond = Integer.parseInt(searchSecond);
                 }
 
-                buffer.append("<select class=\"mm_second\" name=\"" + secondName + "\">\n");
+                buffer.append("<select class=\"mm_second\" name=\"" + secondName + "\"");
+                addExtraAttributes(buffer);
+                buffer.append(">");
+                if (! required && first) {
+                    buffer.append("<option value=\"-1\"");
+                    if (checkSecond == -1) {
+                        buffer.append(" selected=\"selected\"");
+                    }
+                    buffer.append(">--</option>");
+                }
                 for (int i = 0; i <= 59; i++) {
                     if (checkSecond == i) {
                         buffer.append("  <option selected=\"selected\" value=\"" + i + "\">");
@@ -369,22 +462,22 @@ public class DateHandler extends AbstractTypeHandler {
             }
             default:
                 log.warn("unknown pattern '" + pattern + "'");
+                continue;
             }
+            first = false;
         }
 
 
-        if (! didDay)   buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_day") + "\" value=\"" + cal.get(Calendar.DAY_OF_MONTH) + "\" />");
-        if (! didMonth) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_month") + "\" value=\"" + cal.get(Calendar.MONTH) + "\" />");
-        if (! didYear) {
-            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"");
-            yearFieldValue(cal, buffer);
-            buffer.append("\" />");
-        }
-
-
+        
+        if (! didDay)   buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_day") + "\" value=\"1\" />");
+        if (! didMonth) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_month") + "\" value=\"1\" />");
+        if (! didYear)  buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"1970\" />");
+        
+        
         if (! didHours)   buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_hour") + "\" value=\"0\" />");
         if (! didMinutes) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"0\" />");
         if (! didSeconds) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"0\" />");
+        
 
 
         buffer.append("</span>");
@@ -397,8 +490,7 @@ public class DateHandler extends AbstractTypeHandler {
      * @return int
      */
 
-    protected int checkYear(Integer year, String fieldName) throws JspTagException {
-        int y = year.intValue();
+    protected int checkYear(int y, String fieldName) throws JspTagException {
         if (! EXIST_YEAR_0) {
             if (y == 0) throw new JspTagException("The year '0' does not exist and cannot be used for field '" + fieldName + "'");
             if (y < 0) y++; // This makes that year BC 1  =  -1 in stead of BC 1 = 0 (which seems to be the java way)
@@ -412,18 +504,29 @@ public class DateHandler extends AbstractTypeHandler {
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
 
         String fieldName = field.getName();
-        Calendar cal = Calendar.getInstance();
         try {
-            Integer day    = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day")));
-            Integer month  = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_month")));
-            Integer year   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_year")));
-            Integer hour   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour")));
-            Integer minute = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute")));
-            Integer second = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second")));
-            cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
-            Date oldValue = node.getDateValue(field.getName());
-            Date newValue = cal.getTime();
-            if (!oldValue.equals(newValue)) {
+            int day    = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day")));
+            int month  = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_month")));
+            int year   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_year")));
+            int hour   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour")));
+            int minute = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute")));
+            int second = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second")));
+            Calendar cal ;
+            if (day == -1 || month == -1 || year == Integer.MAX_VALUE || hour == -1 || minute == -1 || second == -1) {
+                cal = null;
+            } else {
+                cal = Calendar.getInstance();
+                cal.set(checkYear(year, fieldName), month - 1, day, hour, minute, second);
+            }
+            Object oldValue = node.getValue(field.getName());
+            if (oldValue != null) oldValue = node.getDateValue(field.getName());
+            Date newValue = cal == null ? null : cal.getTime();
+            if (oldValue == null) {
+                if (newValue != null) {
+                    node.setDateValue(fieldName, newValue);
+                    return true;
+                }                
+            } else if (!oldValue.equals(newValue)) {
                 node.setDateValue(fieldName, newValue);
                 return true;
             }
@@ -446,13 +549,13 @@ public class DateHandler extends AbstractTypeHandler {
             return NODATE;
         }
         try {
-            Integer day    = new Integer(input_day);
-            Integer month  = new Integer(input_month);
-            Integer year   = new Integer(input_year);
-            Integer hour   = new Integer(input_hour);
-            Integer minute = new Integer(input_minute);
-            Integer second = new Integer(input_second);
-            cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
+            int day    = Integer.parseInt(input_day);
+            int month  = Integer.parseInt(input_month);
+            int year   = Integer.parseInt(input_year);
+            int hour   = Integer.parseInt(input_hour);
+            int minute = Integer.parseInt(input_minute);
+            int second = Integer.parseInt(input_second);
+            cal.set(checkYear(year, fieldName), month - 1, day, hour, minute, second);
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
         }
