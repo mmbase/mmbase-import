@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.62 2005-09-01 14:11:26 michiel Exp $
+ * @version $Id: Casting.java,v 1.63 2005-09-08 13:05:13 michiel Exp $
  */
 
 import java.util.*;
@@ -483,9 +483,7 @@ public class Casting {
         if (i instanceof Node) {
             res = (Node)i;
         } else if (i instanceof MMObjectNode) {
-            org.mmbase.bridge.NodeList list = cloud.getCloudContext().createNodeList();
-            list.add(i); // proibably to utilizy 'convert'?
-            res = list.getNode(0);
+            res = cloud.getNode(((MMObjectNode)i).getNumber());
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
             if (nodenumber != -1) {
@@ -741,15 +739,14 @@ public class Casting {
      * String values are parsed to a date, if possible.
      * Numeric values are assumed to represent number of seconds since 1970.
      * All remaining values return 1969-12-31 23:59 GMT.
-     * @param i the object to convert
-     * @param def the default value if conversion is impossible
-     * @return the converted value as a <code>Date</code>
+     * @param d the object to convert
+     * @return the converted value as a <code>Date</code>, never <code>null</code>
      * @since MMBase-1.7
      */
-    static public java.util.Date toDate(Object d) {
-        java.util.Date date = null;
-        if (d instanceof java.util.Date) {
-            date = (java.util.Date) d;
+    static public Date toDate(Object d) {
+        Date date = null;
+        if (d instanceof Date) {
+            date =  (Date) d;
         } else {
             // must perhaps be delegated to specialized class, which borrows stuff from TimeTag.
             try {
@@ -760,15 +757,17 @@ public class Casting {
                     dateInSeconds = Long.parseLong("" + d);
                 }
                 if (dateInSeconds == -1) {
-                    date = new java.util.Date(-1);
+                    date = new Date(-1);
                 } else {
-                    date = new java.util.Date(dateInSeconds * 1000);
+                    date = new Date(dateInSeconds * 1000);
                 }
             } catch (NumberFormatException e) {
-                return DateParser.getInstance("" + d);
+                date =  DateParser.getInstance("" + d);
             }
         }
+        if (date == null) return new Date(-1);
         return date;
+        
     }
 
 
