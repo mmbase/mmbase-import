@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.31 2005-09-01 15:19:29 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.32 2005-09-08 11:49:54 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -97,7 +97,13 @@ public class VirtualNodeManager extends BasicNodeManager {
                 if (name == null) name = step.getTableName();
                 name += "." + field.getFieldName();            
             }
-            fieldTypes.put(name, f);
+            final String fieldName = name;
+            fieldTypes.put(name, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
+                    public String getName() {
+                        return fieldName;
+                    }
+                }); 
+
         }
     }
 
