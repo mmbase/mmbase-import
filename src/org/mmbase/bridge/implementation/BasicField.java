@@ -20,7 +20,7 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.24 2005-09-06 21:16:54 michiel Exp $
+ * @version $Id: BasicField.java,v 1.25 2005-09-08 11:50:53 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
@@ -42,7 +42,7 @@ public class BasicField extends AbstractField implements Field {
     }
 
     public boolean isUnique(){
-    return coreField.isUnique();
+        return coreField.isUnique();
     }
 
     public int getSearchPosition(){
@@ -66,13 +66,11 @@ public class BasicField extends AbstractField implements Field {
             throw new IllegalArgumentException(getName() + ": " + LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale()));
         }
     }
-
-
-    // deprecated methods
     public int getMaxLength() {
-        return coreField.getSize();
+        return coreField.getMaxLength();
     }
 
+    // deprecated methods
     public String getGUIType() {
         return coreField.getGUIType();
     }

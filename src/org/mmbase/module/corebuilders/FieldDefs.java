@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.52 2005-08-22 08:14:01 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.53 2005-09-08 11:47:31 michiel Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -100,10 +100,10 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * Retrieve size of the field.
      * This may not be specified for some field types.
-     * @deprecated Use {@link #getSize}
+     * @deprecated Use {@link #getMaxLength}
      */
     public int getDBSize() {
-        return getSize();
+        return getMaxLength();
     }
 
     /**
@@ -239,7 +239,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @deprecated use {@link #setSize}
      */
     public void setDBSize(int value) {
-        setSize(value);
+        setMaxLength(value);
     }
 
     /**
