@@ -20,7 +20,7 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.25 2005-09-08 11:50:53 michiel Exp $
+ * @version $Id: BasicField.java,v 1.26 2005-09-08 12:50:47 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
@@ -75,4 +75,7 @@ public class BasicField extends AbstractField implements Field {
         return coreField.getGUIType();
     }
 
+    public String getGUIName() {
+        return getLocalizedGUIName().get(getNodeManager().getCloud().getLocale());
+    }
 }
