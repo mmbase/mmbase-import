@@ -7,21 +7,27 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: body.kupu,v 1.7 2005-08-25 14:39:09 michiel Exp $</kupu:id>
+  <kupu:id>$Id: body.kupu,v 1.8 2005-09-08 08:30:31 michiel Exp $</kupu:id>
 
 
   <kupu:part name="body">
     <mm:import externid="objectnumber"  />
     <mm:import externid="tree"  />
+    <mm:import externid="origin"  />
+    <mm:import externid="wizard" vartype="list" />
     <mm:compare referid="objectnumber" value="new">
-      <mm:createnode type="products" id="node">
-        <mm:fieldlist type="edit">
-          <mm:setfield>0</mm:setfield>
-        </mm:fieldlist>
+      <mm:createnode type="${wizard[1]}" id="node">
+
       </mm:createnode>
-      <mm:redirect referids="node@objectnumber,tree?,language?" /> 
+      <mm:present referid="origin">
+        <mm:log>Creating relation between ${origin} and ${node}</mm:log>
+        <mm:node id="origin" referid="origin" />
+        <mm:createrelation role="related" source="origin" destination="node" />
+      </mm:present>
+      <mm:redirect referids="node@objectnumber,tree?,language?,origin?" /> 
     </mm:compare>
     <mm:compare referid="objectnumber" value="new" inverse="true">
       <mm:node id="node" referid="objectnumber" />
