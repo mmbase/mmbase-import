@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.113 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.114 2005-09-08 11:48:13 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1867,12 +1867,12 @@ public class MMAdmin extends ProcessorModule {
                 if (newSize != oldSize) {
                     def.rewrite();
                     try {
-                        def.setSize(newSize);
+                        def.setMaxLength(newSize);
                         // make change in storage
                         mmb.getStorageManager().change(def);
                         syncBuilderXML(bul, builder);
                     } catch (StorageException se) {
-                        def.setSize(oldSize);
+                        def.setMaxLength(oldSize);
                         throw se;
                     } finally {
                         def.finish();
@@ -2066,7 +2066,7 @@ public class MMAdmin extends ProcessorModule {
             value = (String)vars.get("dbsize");
             try {
                 int i = Integer.parseInt(value);
-                def.setSize(i);
+                def.setMaxLength(i);
             } catch (Exception e) {
                 log.debug("dbsize had invalid value, not setting size");
             }
