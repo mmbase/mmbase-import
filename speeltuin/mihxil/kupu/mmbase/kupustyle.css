@@ -79,6 +79,20 @@ img.image-left {
   margin-left: 0px;
   margin-right: 1ex;
 }
+img.section-inline { 
+}
+
+img.node { 
+  float: left;
+  border: solid 5px green;
+}
+img.paragraph { 
+  border: solid 1px green;
+}
+img.section { 
+  float: left;
+  border: solid 1px green;
+}
 
 strong, b 
 { 

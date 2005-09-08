@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2005-06-29 21:10:33 michiel Exp $
+# $Id: Makefile,v 1.8 2005-09-08 08:30:31 michiel Exp $
 
 
 KUPU_HOME=..
@@ -25,7 +25,7 @@ $(I18N):
 
 .PHONY:
 messages: *.js clean
-	rm phony.js
+	rm -f phony.js
 	grep -r "fmt:message" *.jspx *.kupu | sed 's/.*key="\(.*\)".*/_("\1");/g' | uniq > phony.js
 	mkdir -p i18n
 	xgettext --from-code=UTF-8 -L java -k_ -p i18n *.js 
