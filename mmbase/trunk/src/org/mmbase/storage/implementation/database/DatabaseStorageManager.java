@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.117 2005-09-02 09:13:55 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.118 2005-09-08 13:06:05 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1071,7 +1071,7 @@ public class DatabaseStorageManager implements StorageManager {
                 statement.setNull(index, type);
                 return true;
             } else {
-                log.warn("Tried to set 'null' in field '" + field.getName() + "' but the field is 'NOT NULL', it will be casted.");
+                log.debug("Tried to set 'null' in field '" + field.getName() + "' but the field is 'NOT NULL', it will be casted.");
             }
         }
         return false;
@@ -2189,7 +2189,7 @@ public class DatabaseStorageManager implements StorageManager {
                         if (cursize != -1 && size != -1 && size != cursize && cursize <= 255) {
                             if (size < cursize) {
                                 // only correct if storage is more restrictive
-                                field.setSize(size);
+                                field.setMaxLength(size);
                                 log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size + " (value corrected for this session)");
                             } else {
                                 log.debug("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size);
