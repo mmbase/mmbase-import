@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.3 2005-08-18 12:21:51 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.4 2005-09-08 11:46:38 michiel Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -134,17 +134,22 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
 
     abstract public int getStoragePosition();
 
-    // deprecated methods
+
+    /**
+     * Retrieve whether the field is a key and thus need be unique.
+     */
+    public boolean isUnique() {
+        return dataType.isUnique();
+    }
+    abstract public int getMaxLength();
+
 
     public boolean isRequired() {
         return dataType.isRequired();
     }
 
-    abstract public int getMaxLength();
 
     abstract public String getGUIType();
-
-    abstract public boolean isUnique();
 
     /**
      * Returns a description for this field.
