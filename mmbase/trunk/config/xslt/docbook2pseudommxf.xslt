@@ -1,7 +1,13 @@
 <!--
+  Converts docbook XML to 'pseudo' MMXF.
+  
+  Pseudo MMXF is MMXF in which the crosslinks remain unresolved. It must be programmaticly
+  postprocessed to generated real MMBase cross-links (relation objects).
 
+  This XSL is limited to features used in MMBase documentation.
+    
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2pseudommxf.xslt,v 1.1 2005-07-12 18:26:23 michiel Exp $
+  @version: $Id: docbook2pseudommxf.xslt,v 1.2 2005-09-08 17:09:57 michiel Exp $
   @since:   MMBase-1.8
 -->
 <xsl:stylesheet  
@@ -28,6 +34,17 @@
     <p>
       <xsl:apply-templates />
     </p>
+  </xsl:template>
+
+  <xsl:template match="formalpara">
+    <section>
+      <h>
+        <xsl:apply-templates select="title" />
+      </h>
+      <p>
+        <xsl:apply-templates select="para" />
+      </p>
+    </section>
   </xsl:template>
   <xsl:template match="listitem">
     <li>
