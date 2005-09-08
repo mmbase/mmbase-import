@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.23 2005-09-05 13:00:41 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.24 2005-09-08 17:10:41 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -63,7 +63,7 @@
   </xsl:template>
 
 
-  <xsl:template match="o:object[@type = 'images' or @type ='attachments' or @type='icaches']" mode="url">
+  <xsl:template match="o:object[@type = 'images' or @type ='attachments' or @type='icaches']" mode="url">   
     <xsl:value-of select="node:function($cloud, string(@id), 'servletpath()')" />
   </xsl:template>
 
@@ -81,9 +81,9 @@
        Produces one img-tag for an o:object of type images.
        params: relation, position, last
   -->
-  <xsl:template match="o:object" mode="img">
+  <xsl:template match="o:object[@type = 'images']" mode="img">
     <xsl:param name="relation" />
-    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./o:field[@name='number']), 'cachednode', 's(100x100&gt;)')" />
+    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', 's(100x100&gt;)')" />
     <img src="{node:function($cloud, string($icache/@id ), 'servletpath()')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
@@ -94,6 +94,9 @@
     </img>
   </xsl:template>
 
+  <xsl:template match="o:object" mode="img">
+    ???
+  </xsl:template>
 
   <!--
        Produces output for one o:object of type images.
