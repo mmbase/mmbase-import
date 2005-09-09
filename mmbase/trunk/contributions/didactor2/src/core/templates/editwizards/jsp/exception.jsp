@@ -1,4 +1,4 @@
-<%@ page isErrorPage="true" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+<%@ page isErrorPage="true" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%@ page import="org.mmbase.applications.editwizard.Config"
 %><%@ page import="org.w3c.dom.Document"

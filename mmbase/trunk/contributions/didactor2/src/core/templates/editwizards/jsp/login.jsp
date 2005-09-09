@@ -2,7 +2,7 @@
 <head>
 <title>Login</title>
 <link href="../style/login.css" type="text/css" rel="stylesheet"/>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"
 %></head>
 <body>
 

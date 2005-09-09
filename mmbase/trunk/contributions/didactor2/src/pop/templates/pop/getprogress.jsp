@@ -17,7 +17,7 @@
       <mm:relatednodescontainer type="learnobjects" role="posrel">
          <mm:sortorder field="posrel.pos" direction="up"/>
 
-         <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+         <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
             <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
 
             <mm:compare referid="nodetype" value="tests">
@@ -64,7 +64,7 @@
     <mm:import id="intake" reset="true">1</mm:import>
     <mm:relatednodescontainer type="learnobjects" role="posrel">
       <mm:sortorder field="posrel.pos" direction="up"/>
-      <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+      <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
         <mm:related path="developcomp,competencies">
           <mm:field name="competencies.number" jspvar="thisCompetencie" vartype="String">
             <% neededCompetencies += thisCompetencie + ","; %>

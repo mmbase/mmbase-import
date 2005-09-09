@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
 %><%@page import="org.mmbase.applications.editwizard.Config"
@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.2 2005-02-11 15:11:45 jdiepenmaat Exp $
+ * @version  $Id: settings.jsp,v 1.3 2005-09-09 14:20:11 jdiepenmaat Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen

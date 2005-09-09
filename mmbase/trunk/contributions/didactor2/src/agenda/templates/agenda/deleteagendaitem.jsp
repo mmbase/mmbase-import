@@ -1,5 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@page import="java.util.Calendar, java.util.Date"%>
 
 <%-- expires is set so renaming a folder does not show the old name --%>

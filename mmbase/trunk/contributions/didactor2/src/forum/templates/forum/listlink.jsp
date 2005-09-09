@@ -8,7 +8,7 @@ Parameters:
 'link' The onclick link of this image.
 
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:cloud jspvar="cloud" name="mmbase" loginpage="/login.jsp">
   <%@ include file="/shared/setImports.jsp"%>
 
