@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.10 2005-03-01 14:13:31 michiel Exp $
+ * @version $Id: Configurable.java,v 1.11 2005-09-09 15:07:50 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -68,20 +68,23 @@ public abstract class Configurable {
         this.configWatcher = configWatcher;
 
         configWatcher.setDelay(10 * 1000);
-        
-        if (configPath.startsWith("/")) {
-            configResource = "file://" + configPath;
-        } else {
-            configResource = configPath;
+
+        if (configPath != null && !configPath.equals("")) {
+            if (configPath.startsWith("/")) {
+                configResource = "file://" + configPath;
+            } else {
+                configResource = configPath;
+            }
+            
+            
+            java.util.List files = configWatcher.getResourceLoader().getFiles(configResource);
+            
+            if (files.size() > 0) {
+                configFile = (java.io.File) files.get(0);
+            }
+            
+            configWatcher.add(configResource);
         }
-
-
-        java.util.List files = configWatcher.getResourceLoader().getFiles(configResource);
-
-        if (files.size() > 0) {
-            configFile = (java.io.File) files.get(0);
-        }
-        configWatcher.add(configResource);
 
 
         load();
