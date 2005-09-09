@@ -8,28 +8,28 @@
   <datatype id="xml">
     <specialization id="mmxf">
       <setprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.xml.MmxfSetString</class>
+        <class name="org.mmbase.bridge.util.fields.xml.MmxfSetString" />
       </setprocessor>
       <getprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.xml.MmxfGetString</class>
+        <class name="org.mmbase.bridge.util.fields.xml.MmxfGetString" />
       </getprocessor>
     </specialization>
 
     <specialization id="html">
       <setprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.xml.HtmlSetString</class>
+        <class name="org.mmbase.bridge.util.fields.xml.HtmlSetString" />
       </setprocessor>
       <getprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.xml.HtmlGetString</class>
+        <class name="org.mmbase.bridge.util.fields.xml.HtmlGetString" />
       </getprocessor>
     </specialization>
 
     <specialization id="xmlfield">
       <setprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.xml.FieldSetString</class>
+        <class name="org.mmbase.bridge.util.fields.xml.FieldSetString" />
       </setprocessor>
       <getprocessor>
-        <class>org.mmbase.bridge.util.fields.xml.FieldGetString</class>
+        <class name="org.mmbase.bridge.util.fields.xml.FieldGetString" />
       </getprocessor>
     </specialization>
   </datatype>
@@ -40,15 +40,15 @@
       <unique value="false" />
       <setprocessor>
         <!-- only makes it unmodifiable -->
-        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+        <class name="org.mmbase.bridge.util.fields.LastModifier" />
       </setprocessor>
       <commitprocessor>
-        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+        <class name="org.mmbase.bridge.util.fields.LastModifier" />
       </commitprocessor>
     </specialization>
     <specialization id="md5password">
       <setprocessor>
-        <class>org.mmbase.util.transformers.MD5</class>
+        <class name="org.mmbase.util.transformers.MD5" />
       </setprocessor>
     </specialization>
     <specialization id="lowercaseuppercase">
@@ -56,15 +56,15 @@
            Strings are stored all lowercase, but showed all uppercase
       -->
       <setprocessor>
-        <class>org.mmbase.util.transformers.LowerCaser</class>
+        <class name="org.mmbase.util.transformers.LowerCaser" />
       </setprocessor>
       <getprocessor>
-        <class>org.mmbase.util.transformers.UpperCaser</class>
+        <class name="org.mmbase.util.transformers.UpperCaser" />
       </getprocessor>
     </specialization>
     <specialization id="index">
       <getprocessor>
-        <class>org.mmbase.bridge.util.fields.GetIndex</class>
+        <class name="org.mmbase.bridge.util.fields.GetIndex" />
       </getprocessor>
     </specialization>
     <specialization id="dutch-zipcode">
@@ -76,15 +76,15 @@
     <pattern value="yyyy-MM-dd HH:mm" />
     <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
     <getprocessor type="string">
-      <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
+      <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
     </getprocessor>
 
     <specialization id="lastmodified">
       <setprocessor>
-        <class>org.mmbase.bridge.util.fields.LastModified</class>
+        <class name="org.mmbase.bridge.util.fields.LastModified" />
       </setprocessor>
       <commitprocessor>
-        <class>org.mmbase.bridge.util.fields.LastModified</class>
+        <class name="org.mmbase.bridge.util.fields.LastModified" />
       </commitprocessor>
     </specialization>
 
@@ -93,7 +93,7 @@
       <default value="100" />
       <pattern value="HH:mm:ss" />
       <getprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
+        <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
       </getprocessor>
     </specialization>
 
@@ -102,28 +102,30 @@
       <pattern value="yyyy-MM-dd" />
       <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
       <getprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.FormatDateTime</class>
+        <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
       </getprocessor>
+
+      <specialization id="20th-century">
+        <!-- Silly example (also used to test)
+             Allow only dates from the previous century..
+        -->
+        <minInclusive value="1900-01-01" precision="days" />
+        <maxExclusive value="2000-01-01" precision="days" />
+      </specialization>
+      
+      <specialization id="birthdate">
+        <!-- need better date-parser to make this work -->
+        <maxInclusive value="now" precision="days" />
+      </specialization>
+
+      <specialization id="living-birthdate">
+        <!-- need better date-parser to make thing work -->
+        <minInclusive value="now - 140 year" precision="days" />
+        <maxInclusive value="now" precision="days" />
+      </specialization>
+      
     </specialization>
 
-    <specialization id="20th-century" base="date">
-      <!-- Silly example (also used to test)
-           Allow only dates from the previous century..
-      -->
-      <minInclusive value="1900-01-01" precision="days" />
-      <maxExclusive value="2000-01-01" precision="days" />
-    </specialization>
-
-    <specialization id="birthdate" base="date">
-      <!-- need better date-parser to make this work -->
-      <maxInclusive value="now" precision="days" />
-    </specialization>
-
-    <specialization id="living-birthdate" base="date">
-      <!-- need better date-parser to make thing work -->
-      <minInclusive value="now - 140 year" precision="days" />
-      <maxInclusive value="now" precision="days" />
-    </specialization>
 
 
   </datatype>
@@ -163,7 +165,10 @@
   <datatype id="byte">
     <specialization id="checksum">
       <commitprocessor>
-        <class>org.mmbase.util.transformers.ChecksumFactory</class>
+        <!-- the default 'checksum' datatype checksum the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields -->
+        <class name="org.mmbase.bridge.util.fields.ChecksumProcessorFactory">
+          <param name="field">handle</param>
+        </class>
       </commitprocessor>
     </specialization>
   </datatype>
