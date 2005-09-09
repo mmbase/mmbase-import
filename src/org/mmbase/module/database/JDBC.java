@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.41 2004-10-25 08:08:39 pierre Exp $
+ * @version $Id: JDBC.java,v 1.42 2005-09-09 15:00:37 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -36,7 +36,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private String jdbcDriver;
     private String jdbcURL;
     private String jdbcHost;
-    private int  jdbcPort;
+    private int  jdbcPort = -1;
     private int maxConnections;
     private int maxQueries;
     private String jdbcDatabase;
@@ -194,11 +194,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             defaultpassword="xxxxxx";
             log.warn("name was not set, using default: '" + defaultpassword +"'");
         }
-        try {
-            jdbcPort=Integer.parseInt(getInitParameter("port"));
-        } catch (NumberFormatException e) {
-            jdbcPort=0;
-            log.warn("portnumber was not set or a invalid integer :" + e + "(using default " + jdbcPort + ")");
+        tmp = getInitParameter("port");
+        if (tmp != null) {
+            try {
+                jdbcPort=Integer.parseInt(getInitParameter("port"));
+            } catch (NumberFormatException e) {
+                jdbcPort = 0;
+                log.warn("portnumber was not set or a invalid integer :" + e + "(using default " + jdbcPort + ")");
+            }
         }
         try {
             maxConnections=Integer.parseInt(getInitParameter("connections"));
