@@ -17,8 +17,10 @@ import java.util.*;
  *
  * Don't use! This is class is only provided to give you the possibility to help us!
  *
+ * Completely ignored.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Specialization.java,v 1.1 2003-12-09 22:36:37 michiel Exp $
+ * @version $Id: Specialization.java,v 1.2 2005-09-09 20:18:45 michiel Exp $
  * @since MMBase-1.8
  */
 interface Specialization {
