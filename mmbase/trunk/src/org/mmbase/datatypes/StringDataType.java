@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.12 2005-09-06 21:11:30 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.13 2005-09-09 20:28:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -158,13 +158,13 @@ public class StringDataType extends BigDataType {
     public String toString() {
         StringBuffer buf = new StringBuffer(super.toString());
         if (getPattern() != null) {
-            buf.append("pattern:").append(getPattern()).append("\n");
+            buf.append(" pattern:").append(getPattern()).append(" ");
         }
         Integer whiteSpace = getWhiteSpace();
         if (whiteSpace.equals(WHITESPACE_REPLACE)) {
-            buf.append("whitespace: replace\n");
+            buf.append("whitespace: replace ");
         } else if (whiteSpace.equals(WHITESPACE_COLLAPSE)) {
-            buf.append("whitespace: collapse\n");
+            buf.append("whitespace: collapse ");
         }
         return buf.toString();
     }
