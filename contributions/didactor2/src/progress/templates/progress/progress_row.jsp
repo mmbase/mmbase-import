@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:content postprocessor="reducespace" expires="0">
@@ -94,7 +94,7 @@
             <mm:relatednodescontainer type="learnobjects" role="posrel">
 
                <mm:sortorder field="posrel.pos" direction="up"/>
-               <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+               <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
                   <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
 
                   <mm:compare referid="nodetype" value="tests">

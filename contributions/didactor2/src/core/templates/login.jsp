@@ -8,7 +8,7 @@
    %>
    <fmt:setLocale value="<%=localeString%>" scope="session" />
    <fmt:setBundle basename="nl.didactor.component.core.CoreMessageBundle" scope="session" />
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
    <%@include file="/shared/setImports.jsp" %>

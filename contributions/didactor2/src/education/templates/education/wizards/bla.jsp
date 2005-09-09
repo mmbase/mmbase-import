@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:content postprocessor="reducespace">
 <mm:import externid="depth" jspvar="depth" vartype="Integer" required="true" />
 <%
