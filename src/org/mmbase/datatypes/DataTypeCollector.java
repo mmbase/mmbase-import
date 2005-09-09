@@ -19,13 +19,13 @@ import org.mmbase.util.logging.*;
  * objects from this by a String. It also facilitates 'chaining' because you can add other
  * DataTypeCollectors to it. It will delegate searching of a datatype to them, if a certain key is
  * not available.
- *
+ * <br />
  * This object also knowns how to 'lock' its DataType's using it's 'signature'. I have no idea where
  * that is good for.
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.4 2005-08-31 11:39:31 pierre Exp $
+ * @version $Id: DataTypeCollector.java,v 1.5 2005-09-09 14:53:45 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -48,7 +48,7 @@ public final class DataTypeCollector {
      * Creates the DataTypeCollector used to store datatypes accessible throughout the application.
      * Called by the {@link DataTypes} class.
      */
-    public static DataTypeCollector createSystemDataTypeCollector() {
+    static DataTypeCollector createSystemDataTypeCollector() {
         if (systemDataTypeCollector == null) {
             Object signature = new String( "SYSTEM_" + System.currentTimeMillis());
             systemDataTypeCollector = new DataTypeCollector(signature);
@@ -114,7 +114,7 @@ public final class DataTypeCollector {
      */
     public void addDataType(DataType dataType) {
         Object old = dataTypes.put(dataType.getName(), dataType);
-        if (old != null) {
+        if (old != null && old != dataType) {
             log.warn("Replaced " + dataType.getName() + " " + old  + " with " + dataType);
         }
     }
