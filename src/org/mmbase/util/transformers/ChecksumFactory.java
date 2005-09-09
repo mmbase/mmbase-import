@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
     private static final Logger log = Logging.getLoggerInstance(ChecksumFactory.class);
 
-    protected static final Parameter[] PARAMS = new Parameter[] {
+    public static final Parameter[] PARAMS = new Parameter[] {
         new Parameter("implementation", String.class, java.util.zip.Adler32.class.getName())
     };
 
