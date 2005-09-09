@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.25 2005-09-02 17:01:58 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.26 2005-09-09 09:27:09 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -681,9 +681,11 @@ public class ResourceLoader extends ClassLoader {
         boolean xsd = validation;
         if (validation) {
             // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
-            int lineNumber = 0;
-            BufferedReader reader = new BufferedReader(getReader(name));
+            Reader r = getReader(name);
+            if (r == null) return null;
+            BufferedReader reader = new BufferedReader(r);
             String line = reader.readLine();
+            int lineNumber = 0;
             while (lineNumber < 2 && line != null) {
                 if (line.startsWith("<!DOCTYPE")) {
                     log.debug("Using DTD to validate '" + name + "'");
