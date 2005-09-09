@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.150 2005-09-09 19:24:40 ernst Exp $
+ * @version $Id: MMObjectNode.java,v 1.151 2005-09-09 20:13:57 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -783,6 +783,33 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return o;
     }
 
+
+    /**
+     * If the values map contains an InputStream, care must be taken because often an InputStream can be used only once.
+     * @since MMBase-1.8
+     */ 
+    private byte[] useInputStream(String fieldName, InputStream stream) {
+        // first, convert to byte-array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        int c;
+        try {
+            while ((c = stream.read()) > -1) {
+                bos.write(c);
+            }
+        } catch (IOException ioe) {
+            log.error(ioe);
+        }
+        byte[] b = bos.toByteArray();
+        // check if we can cache it.
+        BlobCache blobs = parent.getBlobCache(fieldName);
+        String key = blobs.getKey(getNumber(), fieldName);
+        if (b.length < blobs.getMaxEntrySize()) {
+            blobs.put(key, b);
+        }
+        values.put(fieldName, b);
+        return b;
+    }
+
     /**
      * Get a binary value of a certain field.
      * @performance do not store byte values directly in node (?)
@@ -798,18 +825,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             // was already unmapped so return the value
             return (byte[]) obj;
         } else if (obj instanceof InputStream) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            int c;
-            try {
-                while ((c = ((InputStream)obj).read()) > -1) {
-                    bos.write(c);
-                }
-            } catch (IOException ioe) {
-                log.error(ioe);
-            }
-            byte[] b = bos.toByteArray();
-            values.put(fieldName, b);
-            return b;
+            return useInputStream(fieldName, (InputStream) obj);
         } else {
             byte[] b;
             if (getDBType(fieldName) == Field.TYPE_STRING) {
@@ -838,7 +854,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return new ByteArrayInputStream(new byte[0]);
         }
         if (value instanceof InputStream) {
-            return (InputStream) value;
+            // cannot return it directly, it would kill the inputstream, and perhaps it cannot be saved in db anymore then.
+            // Sad, we have a buffer always now.
+            // XXX think of something that the buffer is only needed if actually used a second time
+            //     help-file, i think
+            return new ByteArrayInputStream(useInputStream(fieldName, (InputStream) value));
         }
 
         if (VALUE_SHORTED.equals(value)) {
@@ -1595,6 +1615,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         return result;
     }
+
 
     public int getByteSize() {
         return getByteSize(new org.mmbase.util.SizeOf());
