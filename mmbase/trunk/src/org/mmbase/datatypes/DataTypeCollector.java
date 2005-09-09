@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.5 2005-09-09 14:53:45 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.6 2005-09-09 20:16:24 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -112,11 +112,12 @@ public final class DataTypeCollector {
      * Adds a datatype to this collector.
      * @param dataType the datatype to add
      */
-    public void addDataType(DataType dataType) {
-        Object old = dataTypes.put(dataType.getName(), dataType);
+    public DataType addDataType(DataType dataType) {
+        DataType old = (DataType) dataTypes.put(dataType.getName(), dataType);
         if (old != null && old != dataType) {
             log.warn("Replaced " + dataType.getName() + " " + old  + " with " + dataType);
         }
+        return old;
     }
 
     /**
