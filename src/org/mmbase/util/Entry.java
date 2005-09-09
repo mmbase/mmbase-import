@@ -11,12 +11,18 @@ package org.mmbase.util;
 
 /**
  * Represents a pair of values. Normally a 'key' and a 'value'.
+ *
  * @since MMBase-1.8
  */
-public class Entry implements java.util.Map.Entry {
+public class Entry implements java.util.Map.Entry, Cloneable, java.io.Serializable {
 
-    private final Object key;
+    private  Object key;
     private  Object value;
+
+    protected Entry() {
+        // serializable
+    }
+
     public Entry (Object k, Object v) {
         key = k ; value = v;
     }
