@@ -33,7 +33,8 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.149 2005-07-28 16:54:25 michiel Exp $
+ * @author Ernst Bunders
+ * @version $Id: MMObjectNode.java,v 1.150 2005-09-09 19:24:40 ernst Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -47,6 +48,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public final static Object VALUE_NULL = new Object() {
             public String toString() { return "[FIELD VALUE NULL]"; }
         };
+
+    /**
+     * Map which stores the current database value for fields when
+     * then change in the node. 
+     * it can be used to optimise cacheing  
+     */
+    public Map oldValues = new HashMap(20);
 
     /**
      * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
@@ -503,6 +511,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             log.debug("Setting " + fieldName + " to " +  string);
         }
+        
+        //store the old value
+        storeOldValue(fieldName, values.get(fieldName));
+        
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
 
@@ -518,6 +530,18 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         setUpdate(fieldName);
         return true;
     }
+    
+    /**
+     * this method stores a fieldvalue only once. the purpose is to
+     * store the value only the first time a field changes, so it reflects
+     * the value in the database.
+	 * @param fieldName
+	 * @param object
+	 */
+	private void storeOldValue(String fieldName, Object object) {
+		 if(oldValues.get(fieldName) == null)
+		 	oldValues.put(fieldName, object);
+	}
 
     /**
      * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
@@ -1027,6 +1051,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public boolean clearChanged() {
         changed.clear();
+        oldValues.clear();
         return true;
     }
 
