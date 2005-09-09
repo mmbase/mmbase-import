@@ -18,8 +18,10 @@ import org.mmbase.bridge.*;
  * You should also implement the {@link #process} method of a CommitProcessor as the action to peform
  * when the value is processed for setting data on the field.
  *
+ * XXX It makes little sense that this extends Processor!!
+ *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.2 2005-07-26 14:36:31 pierre Exp $
+ * @version $Id: CommitProcessor.java,v 1.3 2005-09-09 20:20:35 michiel Exp $
  * @since MMBase-1.8
  */
 
