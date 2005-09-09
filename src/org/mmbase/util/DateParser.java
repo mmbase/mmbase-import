@@ -12,8 +12,11 @@ import java.util.*;
 import java.text.*;
 
 /**
- * Utilities for date-parsing. More complicated then by java.text.* classes. Most noticabe is the
- * support for <em>relative</em> dates. Parsing is not done relative to a Locale.
+ * Utilities for date-parsing. More complicated then by java.text.* classes. Most noticable is the
+ * support for <em>relative</em> dates, like for example 'next week', which is 7 days later relative to the 
+ * time 'now'.
+ *
+ * Parsing is not done relative to a Locale, it only parses english.
  * 
  * The idea is that this is used in configuration files (e.g. to specify default values of datetime
  * fields), or e.g. when a hard time is to be specified in a jsp (and taglib).
