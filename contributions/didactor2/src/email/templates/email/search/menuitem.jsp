@@ -1,5 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
 <mm:import externid="search_component"/>
 <mm:compare referid="search_component" value="email">

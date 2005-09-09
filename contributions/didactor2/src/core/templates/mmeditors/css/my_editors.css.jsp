@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1"  prefix="mm"
 %><mm:content type="text/css">
 
 <mm:import id="myeditors">../../my_editors/img</mm:import>

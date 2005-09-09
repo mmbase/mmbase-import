@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@page import="java.util.*"%>
@@ -137,7 +137,7 @@
                      <mm:relatednodescontainer type="learnblocks" role="posrel">
                         <mm:sortorder field="posrel.pos" direction="up"/>
 
-                        <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+                        <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
                            <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
                               <%
                                  if (depth.intValue() == 2)
@@ -205,7 +205,7 @@
                         <mm:relatednodescontainer type="learnblocks" role="posrel">
                            <mm:sortorder field="posrel.pos" direction="up"/>
 
-                           <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+                           <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
                               <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
                               <%
                                  for (int i = blockName.size() - 1; i < depth.intValue() -1; i++)

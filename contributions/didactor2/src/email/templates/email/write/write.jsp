@@ -1,7 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="java.util.Calendar,
                  java.util.Enumeration"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
 <mm:content postprocessor="none"><%-- no reducespace: it messes with the textarea --%>

@@ -3,7 +3,7 @@
 <%@ page import = "java.util.HashSet" %>
 <%@ page import = "java.util.TreeMap" %>
 
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">

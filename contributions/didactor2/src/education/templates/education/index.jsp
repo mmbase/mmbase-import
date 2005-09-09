@@ -1,5 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.HashMap"%>
 <mm:content postprocessor="reducespace" expires="0">
@@ -240,7 +240,7 @@
   <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
   <mm:relatednodescontainer type="learnobjects" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
-    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up" maxdepth="15">
+    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
       <%-- TODO here... to continue... How to implement --%>
       <%-- Determine if the learnobject is active or not --%>
     
