@@ -17,6 +17,7 @@ import org.mmbase.bridge.util.fields.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
@@ -25,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.16 2005-09-07 13:20:20 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.17 2005-09-09 20:21:43 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -54,7 +55,7 @@ public class DataTypeDefinition {
      * default namespace
      */
     protected boolean hasAttribute(Element element, String localName) {
-        return DocumentReader.hasAttribute(element,DataTypeReader.NAMESPACE_DATATYPES, localName);
+        return DocumentReader.hasAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
     }
 
     /**
@@ -62,7 +63,7 @@ public class DataTypeDefinition {
      * default namespace
      */
     protected String getAttribute(Element element, String localName) {
-        return DocumentReader.getAttribute(element,DataTypeReader.NAMESPACE_DATATYPES, localName);
+        return DocumentReader.getAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
     }
 
     /**
@@ -82,22 +83,29 @@ public class DataTypeDefinition {
             typeString = "ANONYMOUS" + anonymousSequence++;
         }
         if ("byte".equals(typeString)) typeString = "binary";
-        String baseString = getAttribute(dataTypeElement,"base");
+        String baseString = getAttribute(dataTypeElement, "base");
         if (log.isDebugEnabled()) log.debug("Reading element " + typeString + " " + baseString);
-        if (baseString != null && !baseString.equals("")) {
+        if (! baseString.equals("")) {
+            DataType definedBaseDataType = collector.getDataType(baseString, true);
             if (baseDataType != null) {
-                log.warn("Attribute 'base' ('" + baseDataType + "') not allowed with datatype '" + typeString + "'.");
-            } else {
-                baseDataType = collector.getDataType(baseString, true);
-                if (baseDataType == null) {
-                    log.warn("Attribute 'base' ('" + baseString + "') of datatype '" + typeString + "' is an unknown datatype.");
-                }
+                if (baseDataType != definedBaseDataType) {
+                    log.warn("Attribute 'base' ('" + baseString+ "') not allowed with datatype '" + typeString + "', because it has already an baseDataType '" + baseDataType + "'");
+                }                
             }
+            if (definedBaseDataType == null) {
+                log.warn("Attribute 'base' ('" + baseString + "') of datatype '" + typeString + "' is an unknown datatype.");
+            } else {
+                baseDataType = definedBaseDataType;
+            }
+
+            
+            
+
         }
         dataType = collector.getDataType(typeString);
         if (dataType == null) {
             if (baseDataType == null) {
-                log.warn("No base datatype available for datatype " + typeString + ", use 'unknown' for know.");
+                log.warn("No base datatype available for datatype " + typeString + ", use 'unknown' for know.\n" + org.mmbase.util.xml.XMLWriter.write(dataTypeElement, true));
                 baseDataType = Constants.DATATYPE_UNKNOWN;
             }
             dataType = (DataType)baseDataType.clone(typeString);
@@ -236,6 +244,20 @@ public class DataTypeDefinition {
         return processor;
     }
 
+    private void fillParameters(Element paramContainer, Parameters params) {
+        NodeList childNodes = paramContainer.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if (childNodes.item(i) instanceof Element) {
+                Element paramElement = (Element) childNodes.item(i);
+                if ("param".equals(paramElement.getLocalName())) {
+                    String name = paramElement.getAttribute("name");
+                    String value = getValue(paramElement);
+                    params.set(name, value);                    
+                }
+            }
+        }     
+    }
+
     private Processor createProcessor(Element processorElement) {
         Processor processor = null;
         NodeList childNodes = processorElement.getChildNodes();
@@ -243,7 +265,11 @@ public class DataTypeDefinition {
             if (childNodes.item(k) instanceof Element) {
                 Element classElement = (Element) childNodes.item(k);
                 if ("class".equals(classElement.getLocalName())) {
-                    String clazString = getValue(classElement);
+                    String clazString = classElement.getAttribute("name");
+                    if (clazString.equals("")) {
+                        log.warn("No 'name' attribute on " + org.mmbase.util.xml.XMLWriter.write(classElement, true) + ", trying body");
+                        clazString = getValue(classElement);
+                    }
                     try {
                         Class claz = Class.forName(clazString);
                         Processor newProcessor = null;
@@ -254,17 +280,29 @@ public class DataTypeDefinition {
                             }
                         } else if (Processor.class.isAssignableFrom(claz)) {
                             newProcessor = (Processor)claz.newInstance();
+                        } else if (ParameterizedTransformerFactory.class.isAssignableFrom(claz)) {
+                            ParameterizedTransformerFactory factory = (ParameterizedTransformerFactory) claz.newInstance();
+                            Parameters params = factory.createParameters();
+                            fillParameters(classElement, params);
+                            Transformer transformer = factory.createTransformer(params);
+                            newProcessor = new CharTransformerProcessor((CharTransformer) transformer);
+                        } else if (ParameterizedProcessorFactory.class.isAssignableFrom(claz)) {
+                            ParameterizedProcessorFactory factory = (ParameterizedProcessorFactory) claz.newInstance();
+                            Parameters params = factory.createParameters();
+                            fillParameters(classElement, params);
+                            newProcessor = factory.createProcessor(params);
                         } else {
-                            log.error("Found class " + clazString + " is not a Processor or a CharTransformer");
+                            log.error("Found class " + clazString + " is not a Processor or a CharTransformer, nor a factory for those.");
                         }
                         processor = chainProcessors(processor, newProcessor);
                     } catch (ClassNotFoundException cnfe) {
-                        log.error("Class " + clazString + " could not be found");
+                        log.error("Class '" + clazString + "' could not be found");
                     } catch (IllegalAccessException iae) {
                         log.error("Class " + clazString + " may  not be instantiated");
                     } catch (InstantiationException ie) {
                         log.error("Class " + clazString + " can not be instantiated");
                     }
+
                 }
             }
         }
