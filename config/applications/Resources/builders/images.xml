@@ -1,8 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="images" maintainer="mmbase.org" version="0" extends="object">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="images" maintainer="mmbase.org" version="0" extends="object">
 
-  <classfile>Images</classfile>
+  <class>org.mmbase.module.builders.Images</class>
+
   <searchage>31</searchage>
   <names>
     <singular xml:lang="en">Image</singular>
@@ -73,7 +78,6 @@
         <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="eo">Titolo</guiname>
         <guiname xml:lang="it">Titolo</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -97,7 +101,6 @@
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
         <guiname xml:lang="it">Descrizione</guiname>
-        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -121,7 +124,6 @@
         <guiname xml:lang="nl">Plaatje</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
         <guiname xml:lang="it">Immagine</guiname>
-        <guitype>newimage</guitype>
       </gui>
       <editor>
         <positions>
@@ -145,7 +147,6 @@
         <guiname xml:lang="nl">PlaatjesType</guiname>
         <guiname xml:lang="eo">Bildotipo</guiname>
         <guiname xml:lang="it">ImmagineTipo</guiname>
-        <guitype>string</guitype>
       </gui>
 
       <editor>
@@ -172,11 +173,10 @@
           <guiname xml:lang="fr">Taille</guiname>
           <guiname xml:lang="eo">Grando</guiname>
           <guiname xml:lang="it">Dimensione</guiname>
-          <guitype>integer</guitype>
         </gui>
         <editor>
           <positions>
-             <input>5</input><list>5</list><search>5</search>
+             <list>5</list>
           </positions>
         </editor>
         <db>
@@ -192,15 +192,10 @@
       <gui>
         <guiname xml:lang="en">Width</guiname>
         <guiname xml:lang="nl">Breedte</guiname>
-        <guitype>string</guitype>
       </gui>
-
-      <editor>
-        <positions><input>-1</input><list>-1</list><search>-1</search></positions>
-      </editor>
       <db>
         <name>width</name>
-        <type state="persistent" notnull="false">INTEGER</type>
+        <type state="system" notnull="false">INTEGER</type>
       </db>
     </field>
     <field>
@@ -211,12 +206,7 @@
       <gui>
         <guiname xml:lang="en">Height</guiname>
         <guiname xml:lang="nl">Hoogte</guiname>
-        <guitype>string</guitype>
       </gui>
-
-      <editor>
-        <positions><input>-1</input><list>-1</list><search>-1</search></positions>
-      </editor>
       <db>
         <name>height</name>
         <type state="system" notnull="false">INTEGER</type>
@@ -231,20 +221,29 @@
         <guiname xml:lang="en">Filename</guiname>
         <guiname xml:lang="nl">Bestandsnaam</guiname>
         <guiname xml:lang="eo">Dosiernomo</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>-1</input>
-          <list>-1</list>
-          <search>4</search><!-- I think it absurd that you can search on filename but not otherwise see it -->
-        </positions>
-      </editor>
       <db>
         <name>filename</name>
-        <type state="persistent" size="128" notnull="true" key="false">STRING</type>
+        <type state="system" size="128" notnull="true" key="false">STRING</type>
       </db>
     </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Checksum of byte array</description>
+        <description xml:lang="nl">Checksum van de bytes</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Checksum</guiname>
+        <guiname xml:lang="nl">Checsum</guiname>
+      </gui>
+      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>checksum</name>
+        <type state="system" size="255" unique="true" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
 
   </fieldlist>
 
