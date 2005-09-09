@@ -25,6 +25,7 @@ import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
+ * <p>
  * This class contains various methods for manipulating DataType objects.
  * It contains a static set of named DataType objects, with which it is possible to craete a set
  * of datatypes that are accessable throught the MMBase application.
@@ -32,13 +33,14 @@ import org.mmbase.util.logging.*;
  * 'MMBase' type, i.e. integer, string, etc).
  * There can be only one DataType in a set with a given name, so it is not possible to have multiple
  * registered datatypes with the same name.
- * <br />
+ * </p>
+ * <p>
  * A number of other methods in this class deal with conversion, creating datatypes, and 'finishing'
  * datatypes (locking a datatype to protect it form being changed).
- *
+ *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.7 2005-08-29 12:15:09 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.8 2005-09-09 14:50:13 michiel Exp $
  */
 
 public class DataTypes {
@@ -55,6 +57,8 @@ public class DataTypes {
         // throughout the system.
         // For the moment turn watching off.
         // Not sure if it is needed anyway - it won't actually happen that often
+        log.trace("" + Constants.class); // make sure its static init is called
+        log.debug("Reading datatypes " + dataTypeCollector);
         readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
         
         /*
@@ -82,7 +86,7 @@ public class DataTypes {
         if (log.isDebugEnabled()) log.debug("Using " + resources);
         ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
-        while (i.hasPrevious()) {
+         while (i.hasPrevious()) {
             try {
                 URL u = (URL) i.previous();
                 URLConnection con = u.openConnection();
