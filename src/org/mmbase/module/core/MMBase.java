@@ -10,27 +10,53 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.io.File;
-import java.util.*;
-import org.xml.sax.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.mmbase.datatypes.DataType;
-import org.mmbase.bridge.Field;
-import org.mmbase.datatypes.DataTypes;
 import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
-import org.mmbase.core.CoreField;
-import org.mmbase.core.util.Fields;
-import org.mmbase.module.*;
-import org.mmbase.module.builders.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.event.AbstractEventBroker;
+import org.mmbase.core.event.Event;
+import org.mmbase.core.event.EventListener;
+import org.mmbase.core.event.NodeEventListener;
+import org.mmbase.core.event.RelationEventListener;
+import org.mmbase.core.event.TypedNodeEventListenerWrapper;
+import org.mmbase.core.event.TypedRelationEventWrapper;
+import org.mmbase.datatypes.DataTypes;
+import org.mmbase.module.ProcessorModule;
+import org.mmbase.module.SendMailInterface;
+import org.mmbase.module.builders.DayMarkers;
+import org.mmbase.module.builders.Versions;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.OAlias;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.module.corebuilders.TypeRel;
 import org.mmbase.security.MMBaseCop;
-import org.mmbase.storage.*;
+import org.mmbase.storage.StorageConfigurationException;
+import org.mmbase.storage.StorageError;
+import org.mmbase.storage.StorageException;
+import org.mmbase.storage.StorageManager;
+import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.search.SearchQueryHandler;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.mmbase.util.platform.setUser;
-import org.mmbase.util.xml.*;
+import org.mmbase.util.xml.BuilderReader;
+import org.mmbase.util.xml.BuilderWriter;
+import org.xml.sax.SAXException;
 
 /**
  * The module which provides access to the MMBase storage defined
@@ -41,7 +67,8 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.147 2005-09-02 16:02:35 michiel Exp $
+ * @author Ernst Bunders
+ * @version $Id: MMBase.java,v 1.148 2005-09-09 19:24:40 ernst Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -172,6 +199,12 @@ public class MMBase extends ProcessorModule {
      * @scope private
      */
     String cookieDomain = null;
+    
+	/**
+	 * the collection of event brokers. There is one for every event type
+	 * that can be sent/received
+	 */
+	private List eventBrokers = Collections.synchronizedList(new ArrayList());
 
     /**
      * The storage manager factory to use. Retrieve using getStorageManagerFactory();
@@ -1303,6 +1336,157 @@ public class MMBase extends ProcessorModule {
         return true;
     }
 
+	/**
+	 * add an event  broker for a specific type of event  
+	 * @param broker
+	 * @since MMBase-1.8
+	 */
+	public void addEventBroker(AbstractEventBroker broker){
+		synchronized(eventBrokers){
+			eventBrokers.add(broker);
+		}
+	}
+	
+	/**
+	 * remove a broker for a specific type of event
+	 * @param broker
+	 * @since MMBase-1.8
+	 */
+	public void removeEventBroker(AbstractEventBroker broker){
+		synchronized(eventBrokers){
+			eventBrokers.remove(broker);
+		}
+	}
+	
+	/**
+	 * @param listener 
+	 * @since MMBase-1.8
+	 */
+	public void addEventListener(EventListener listener){
+		System.out.println("adding listnerer of type : " + listener.getClass().getName());
+		synchronized(eventBrokers){
+			AbstractEventBroker[] brokers = findBrokersFor(listener);
+			if(brokers != null){
+				for (int i = 0; i < brokers.length; i++) {
+					brokers[i].addListener(listener);
+					System.out.println("listener added");
+				}
+				
+			}
+		}
+	}
+
+    /**
+     * @param listener
+     * @since MMBase-1.8
+     */
+    public void removeEventListener(EventListener listener){
+    	System.out.println("removing listnerer of type : " + listener.getClass().getName());
+    	synchronized(eventBrokers){
+    		AbstractEventBroker[] brokers = findBrokersFor(listener);
+    		if(brokers != null){
+    			for (int i = 0; i < brokers.length; i++) {
+    				brokers[i].removeListener(listener);
+    			}
+    		}
+    	}
+    }
+	
+	/**
+	 * This method will propagate the given event to all the aproprate listeners.
+	 * what makes a listener apropriate is determined by it's type (class) and
+	 * by possible constraint properties (if the handling broker supports those
+	 * @see AbstractEventBroker
+	 * @param event
+	 * @since MMBase-1.8
+	 */
+	public void propagateEvent(Event event){
+	    synchronized(eventBrokers){
+	    	for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
+                AbstractEventBroker broker = (AbstractEventBroker) i.next();
+                if(broker.canBrokerForEvent(event)){
+                    broker.notifyForEvent(event);
+                    System.out.println("event: "+event.toString()+" has been accepted by broker " +
+                            broker.toString());
+                }
+            }
+	    }
+	}
+	
+	
+	/**
+	 * This is a conveniance method to help you register listeners to node and 
+	 * relation events. Becouse they are now separate listeners the method accepts
+	 * an object that may have implemented either NodeEvent
+	 * or RelationEvent. This method checks and registers accordingly. <br/>
+	 * the purpose of this method is that a straight node or relation event listeren 
+	 * will listen to any node or relation event. This method will wrap your event
+	 * listener to make shure only the requested event types are forwarded.
+	 * @see TypedRelationEventWrapper
+	 * @see TypedNodeEventListenerWrapper
+	 * @see NodeEventListener
+	 * @see RelationEventListener
+	 * @param builder should be a valid builder name, the type for which you want to 
+	 * receive events
+	 * @param listener some object implementing NodeEventListener, RelationEventListener,
+	 * or both
+	 * @since MMBase-1.8
+	 */
+	public void addNodeRelatedEventsListener(String builder, Object listener){
+	    if(getBuilder(builder) != null){
+	        if(listener instanceof NodeEventListener){
+	            TypedNodeEventListenerWrapper tnelr = 
+	                new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
+	            addEventListener(tnelr);
+	        }
+	        if(listener instanceof RelationEventListener){
+	            TypedRelationEventWrapper trelr = 
+	                new TypedRelationEventWrapper(builder, (RelationEventListener)listener);
+	            addEventListener(trelr);
+	        }
+	    }
+	}
+	
+	/**
+	 * @param builder
+	 * @param listener
+	 * @since MMBase-1.8
+	 */
+	public void removeNodeRelatedEventsListener(String builder, Object listener){
+	    if(getBuilder(builder) != null){
+	        if(listener instanceof NodeEventListener){
+	            TypedNodeEventListenerWrapper tnelr = 
+	                new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
+	            removeEventListener(tnelr);
+	        }
+	        if(listener instanceof RelationEventListener){
+	            TypedRelationEventWrapper trelr = 
+	                new TypedRelationEventWrapper(builder, (RelationEventListener)listener);
+	            removeEventListener(trelr);
+	        }
+	    }
+	}
+
+	
+	/**
+	 * @param listener
+	 * @since MMBase-1.8
+	 */
+	private AbstractEventBroker[] findBrokersFor(EventListener listener) {
+		System.out.println("try to find broker for listener " + listener.getClass().getName());
+		
+		List result = new ArrayList();
+		for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
+			AbstractEventBroker broker = (AbstractEventBroker) i.next();
+			System.out.println("evaluating broker "+broker.getClass().getName());
+			if(broker.canBrokerForListener(listener)){
+				System.out.println("broker "+broker.getClass()+" matches eventlistener.");
+				result.add(broker);
+			}
+		}
+		if(result.size() > 0)return  (AbstractEventBroker[]) result.toArray(new AbstractEventBroker[result.size()]);
+		return null;
+	}
 
 
 }
