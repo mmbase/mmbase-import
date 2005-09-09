@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.8 2005-08-31 12:56:30 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.9 2005-09-09 20:21:43 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -75,13 +75,13 @@ public class DataTypeReader {
                 Element childElement = (Element) childNodes.item(k);
                 String localName = childElement.getLocalName();
                 if (log.isDebugEnabled()) log.debug("Found child " + childElement.getTagName());
-                if ("fieldtype".equals(localName) ||  // backward compatibility
+                if ("fieldtype".equals(localName) ||  // backward compatibility   XXXX DO WE NEED BACKWARDS COMPATIBILITY??!
                     "specialization".equals(localName) ||  // backward compatibility
                     "datatype".equals(localName)) {
                     DataType dataType = readDataType(childElement, baseDataType, collector).dataType;
-                    collector.addDataType(dataType);
+                    DataType old = collector.addDataType(dataType);
                     if (log.isServiceEnabled()) {
-                        log.service("Created " + dataType + " based on " + baseDataType);
+                        log.service((old == null ? "Created "  : "Configured ") + dataType + " based on " + baseDataType);
                         if (log.isDebugEnabled()) {
                             log.trace("Now " + collector);
                         }
