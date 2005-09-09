@@ -85,7 +85,7 @@
 
     </xsd:sequence>
     <xsd:attribute name="id"   type="xsd:token" use="optional" /> <!-- optinal, because in builder xml exist 'anonymous' datatypes -->
-    <xsd:attribute name="base" type="xsd:token" use="optional" default="string" />
+    <xsd:attribute name="base" type="xsd:token" use="optional" default="" />
   </xsd:complexType>
 
 
@@ -181,9 +181,9 @@
       <xsd:attribute name="value" type="xsd:string" />
       <xsd:attribute name="display" type="xsd:string" />
       <xsd:attribute ref="xml:lang" />
-      <xsd:attribute name="resource" type="xsl:string" />
-      <xsd:attribute name="sorterclass"   type="xsl:string" />
-      <xsd:attribute name="javaconstants" type="xsl:string" />
+      <xsd:attribute name="resource" type="xsd:string" />
+      <xsd:attribute name="sorterclass"   type="xsd:string" />
+      <xsd:attribute name="javaconstants" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 
