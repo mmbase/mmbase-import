@@ -58,7 +58,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.330 2005-09-02 12:28:45 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.331 2005-09-09 19:24:40 ernst Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3932,7 +3932,25 @@ public class MMObjectBuilder extends MMTable {
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
     }
+    
+    /**
+     * simple way to register a NodeEvent listener and a RelationEventListener
+     * at the same time.
+     * @see MMBase#addNodeRelatedEventsListener(String, Object)
+     * @param listener
+     * @since MMBase-1.8
+     */
+    public void addEventListener(Object listener){
+        mmb.addNodeRelatedEventsListener(getTableName(), listener);
+    }
 
+    /**
+     * @param listener
+     * @since MMBase-1.8
+     */
+    public void removeEventListener(Object listener){
+        mmb.removeNodeRelatedEventsListener(getTableName(), listener);
+    }
 }
 
 
