@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.39 2005-09-08 11:48:46 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.40 2005-09-09 20:14:59 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -84,7 +84,7 @@ public class BuilderReader extends DocumentReader {
         // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, BuilderReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, BuilderReader.class);
-        XMLEntityResolver.registerPublicID("-//MMBase//DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
+        //XMLEntityResolver.registerPublicID("-//MMBase//DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
 
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, BuilderReader.class);
@@ -545,10 +545,18 @@ public class BuilderReader extends DocumentReader {
         Element dataTypeElement = getElementByPath(field, "field.datatype");
         if (dataTypeElement != null) {
             String base = dataTypeElement.getAttribute("base");
-            DataType baseDataType = collector.getDataType("base");
+            if (base.equals("")) {
+                base = getElementValue(getElementByPath(field, "field.db.type")).toLowerCase();
+                log.debug("No base defined, using '" + base + "'");
+            }
+            DataType baseDataType = collector.getDataType(base, true);
+            if (baseDataType == null) {
+                baseDataType = collector.getDataType(getElementValue(getElementByPath(field, "field.db.type")).toLowerCase(), true);
+                log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType);
+            }
             DataType  dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, collector).dataType;
             def.setDataType(dataType);
-            log.info("Found and set " + dataType + " for " + def);
+            log.debug("Found and set " + dataType + " for " + def);
         }
 
         // Editor
