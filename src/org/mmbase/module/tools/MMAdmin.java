@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.115 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.116 2005-09-12 15:49:19 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1396,13 +1396,6 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    Vector getBuildersList() {
-        return getBuildersList(null);
-    }
-
-    /**
-     * @javadoc
-     */
     Vector getBuildersList(StringTokenizer tok) {
         String subpath = "";
         if ((tok != null) && (tok.hasMoreTokens())) {
@@ -1414,20 +1407,21 @@ public class MMAdmin extends ProcessorModule {
             return null;
         }
         Vector results = new Vector();
-        ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
+        ResourceLoader builderLoader = mmb.getBuilderLoader();
         Iterator builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
         while (builders.hasNext()) {
             String builderResource = (String) builders.next();
-            String sname = ResourceLoader.getName(builderResource);
-            BuilderReader reader = mmb.getBuilderReader(builderResource);
+            String builderName = ResourceLoader.getName(builderResource);
+            String builderPath = ResourceLoader.getDirectory(builderResource) + "/";
+            BuilderReader reader = mmb.getBuilderReader(builderPath + builderName);
             if (reader == null) {
                 continue;
             }
-            results.add(ResourceLoader.getDirectory(builderResource) + "/" + sname);
+            results.add(builderPath + builderName);
             results.add("" + reader.getVersion());
             int installedversion = -1;
             try {
-                installedversion = ver.getInstalledVersion(sname, "builder");
+                installedversion = ver.getInstalledVersion(builderName, "builder");
             } catch (SearchQueryException e) {
                 log.warn(Logging.stackTrace(e));
             }
@@ -1440,7 +1434,6 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
 
     /**
      * @javadoc
