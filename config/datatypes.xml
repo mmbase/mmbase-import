@@ -6,6 +6,7 @@
 
 
   <datatype id="xml">
+    <class name="org.mmbase.datatypes.XmlDataType" />
     <specialization id="mmxf">
       <setprocessor type="string">
         <class name="org.mmbase.bridge.util.fields.xml.MmxfSetString" />
@@ -16,6 +17,7 @@
     </specialization>
 
     <specialization id="html">
+      <pattern value=".*" />
       <setprocessor type="string">
         <class name="org.mmbase.bridge.util.fields.xml.HtmlSetString" />
       </setprocessor>
@@ -32,10 +34,18 @@
         <class name="org.mmbase.bridge.util.fields.xml.FieldGetString" />
       </getprocessor>
     </specialization>
+
+    <specialization id="owner">
+      <class name="org.mmbase.datatypes.SecurityContextDataType" />
+    </specialization>
+
   </datatype>
 
 
   <datatype id="string">
+    <class name="org.mmbase.datatypes.StringDataType" />
+
+    <pattern value="(?s)[^\n\r]*" />
     <specialization id="lastmodifier">
       <unique value="false" />
       <setprocessor>
@@ -70,9 +80,15 @@
     <specialization id="dutch-zipcode">
       <pattern value="[0-9]{4}\s[A-Z]{2}" />
     </specialization>
+
+    <specialization id="field">
+      <pattern value="(?s).*" />
+    </specialization>
   </datatype>
 
   <datatype id="datetime">
+    <class name="org.mmbase.datatypes.DateTimeDataType" />
+
     <pattern value="yyyy-MM-dd HH:mm" />
     <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
     <getprocessor type="string">
@@ -131,13 +147,14 @@
   </datatype>
 
   <datatype id="long">
-
+    <class name="org.mmbase.datatypes.LongDataType" />
     <specialization id="duration">
       <!-- I have no idea how to do this -->
     </specialization>
   </datatype>
 
   <datatype id="boolean">
+    <class name="org.mmbase.datatypes.BooleanDataType" />
     <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.truefalse" />
     <specialization id="yesno">
       <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.yesno" />
@@ -148,6 +165,7 @@
   </datatype>
 
   <datatype id="integer">
+    <class name="org.mmbase.datatypes.IntegerDataType" />
     <specialization id="dirs">
       <enumeration resource="org.mmbase.bridge.jsp.taglib.typehandler.resources.dirs" />
     </specialization>
@@ -162,7 +180,8 @@
     </specialization>
   </datatype>
 
-  <datatype id="byte">
+  <datatype id="binary">
+    <class name="org.mmbase.datatypes.BinaryDataType" />
     <specialization id="checksum">
       <commitprocessor>
         <!-- the default 'checksum' datatype checksum the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields -->
@@ -174,6 +193,7 @@
   </datatype>
 
   <datatype id="node">
+    <class name="org.mmbase.datatypes.NodeDataType" />
     <specialization id="typedef">
       <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
     </specialization>
