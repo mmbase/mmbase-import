@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.41 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.42 2005-09-12 17:12:21 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -541,23 +541,6 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        // since 1.8
-        Element dataTypeElement = getElementByPath(field, "field.datatype");
-        if (dataTypeElement != null) {
-            String base = dataTypeElement.getAttribute("base");
-            if (base.equals("")) {
-                base = getElementValue(getElementByPath(field, "field.db.type")).toLowerCase();
-                log.debug("No base defined, using '" + base + "'");
-            }
-            DataType baseDataType = collector.getDataType(base, true);
-            if (baseDataType == null) {
-                baseDataType = collector.getDataType(getElementValue(getElementByPath(field, "field.db.type")).toLowerCase(), true);
-                log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType);
-            }
-            DataType  dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, collector).dataType;
-            def.setDataType(dataType);
-            log.debug("Found and set " + dataType + " for " + def);
-        }
 
         // Editor
         Element editorpos = getElementByPath(field, "field.editor.positions.input");
@@ -606,13 +589,13 @@ public class BuilderReader extends DocumentReader {
      * @TODO perhaps 'guitype' must be deprecated in favour of 'datatype' element
      * @param collector The DataTypeCollector of the bulider.
      * @param fieldName unused
-     * @param gui       The 'gui' element of the builder xml
+     * @param field     The 'field' element of the builder xml
      * @param type      The database type of the field
      * @param listItemType If the database type is a List, there is also a type of its element
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
-    protected DataType decodeDataType(DataTypeCollector collector, String fieldName, Element gui, int type, int listItemType, boolean forceInstance) {
+    protected DataType decodeDataType(DataTypeCollector collector, String fieldName, Element field, int type, int listItemType, boolean forceInstance) {
         DataType baseDataType;
         if (type == Field.TYPE_LIST) {
             baseDataType = DataTypes.getListDataType(listItemType);
@@ -620,22 +603,43 @@ public class BuilderReader extends DocumentReader {
             baseDataType = DataTypes.getDataType(type);
         }
         DataType dataType = null;
-        if (gui != null) {
-            Element guiTypeElement = getElementByPath(gui, "gui.guitype");
-            // XXX: deprecated tag 'type'
-            if (guiTypeElement == null) {
-                guiTypeElement = getElementByPath(gui, "gui.type");
-            }
-            if (guiTypeElement != null && collector != null) {
-                String guiType = getElementValue(guiTypeElement);
-                dataType = collector.getDataTypeInstance(guiType, baseDataType);
-                if (dataType == null) {
-                    log.warn("Could not find data type for " + baseDataType + " / " + guiType);
-                } else {
-                    if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
-                }
+        Element guiTypeElement = getElementByPath(field, "field.gui.guitype");
+        
+        // XXX: deprecated tag 'type'
+        if (guiTypeElement == null) {
+            guiTypeElement = getElementByPath(field, "field.gui.type");
+        }
+        
+        if (guiTypeElement != null && collector != null) {
+            String guiType = getElementValue(guiTypeElement);
+            dataType = collector.getDataTypeInstance(guiType, baseDataType);
+            if (dataType == null) {
+                log.warn("Could not find data type for " + baseDataType + " / " + guiType);
+            } else {
+                if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
             }
         }
+
+        Element dataTypeElement = getElementByPath(field, "field.datatype");
+        if (dataTypeElement != null) {
+            if (dataType != null) {
+                log.warn("Using both deprecated 'gui/guitime' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
+            }
+            String base = dataTypeElement.getAttribute("base");
+            if (base.equals("")) {
+                log.debug("No base defined, using '" + baseDataType + "'");
+            } else {
+                DataType newBaseDataType = collector.getDataType(base, true);
+                if (newBaseDataType != null) {
+                    baseDataType = newBaseDataType;
+                } else {                    
+                    log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType);
+                }
+            }
+            dataType = (DataType) DataTypeReader.readDataType(dataTypeElement, baseDataType, collector).dataType.clone();
+            // must do a clone because readDataType somewhy returns a 'finished' datatype.
+        }
+
         if (dataType == null && forceInstance) {
             dataType = (DataType)baseDataType.clone();
         }
@@ -662,9 +666,11 @@ public class BuilderReader extends DocumentReader {
         }
         int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        DataType dataType = decodeDataType(collector, fieldName, getElementByPath(field,"field.gui"), type, listItemType, true);
+        DataType dataType = decodeDataType(collector, fieldName, field, type, listItemType, true);
+
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
         def.setParent(builder);
+
 
         String size = getElementAttributeValue(dbtype, "size");
         if (size != null && !size.equals("")) {
@@ -674,6 +680,7 @@ public class BuilderReader extends DocumentReader {
                 log.warn("invalid value for size : " + size);
             }
         }
+
         // set required property, but only if given
         String required = getElementAttributeValue(dbtype, "required");
         if ("true".equalsIgnoreCase(required)) {
