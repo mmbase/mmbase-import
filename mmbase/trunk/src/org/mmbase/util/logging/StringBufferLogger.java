@@ -17,7 +17,7 @@ package org.mmbase.util.logging;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: StringBufferLogger.java,v 1.1 2005-09-12 14:06:12 pierre Exp $
+ * @version $Id: StringBufferLogger.java,v 1.2 2005-09-12 15:07:42 pierre Exp $
  * @since   MMBase-1.4
  */
 
@@ -32,13 +32,6 @@ public class StringBufferLogger implements Logger {
 
     public StringBufferLogger(Level level) {
         this.level = level.toInt();
-    }
-
-    /**
-     * @deprecated use setLevel
-     */
-    public void setPriority(Level p) {
-        setLevel(p);
     }
 
     public void setLevel(Level p) {

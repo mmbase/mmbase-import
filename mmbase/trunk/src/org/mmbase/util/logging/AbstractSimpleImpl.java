@@ -24,13 +24,6 @@ abstract public class AbstractSimpleImpl  {
     // nog be too good for performance I think.
     protected static int  level = Level.INFO_INT;
 
-    /**
-     * @deprecated use setLevel
-     */
-    public void setPriority(Level p) {
-        setLevel(p);
-    }
-
     public void setLevel(Level p) {
         level = p.toInt();
     }
