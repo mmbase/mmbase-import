@@ -180,12 +180,4 @@ public interface Logger {
 
     public void setLevel(Level p);
 
-    /**
-     * @deprecated Use setLevel.
-     */
-
-    public void setPriority(Level p);
-
-
-
 }

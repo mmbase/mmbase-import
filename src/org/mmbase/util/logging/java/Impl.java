@@ -82,7 +82,7 @@ public final class Impl implements Logger {
                 log.info("logging configurationfile : " + s);
 
                 ResourceLoader rl = Logging.getResourceLoader();
-        
+
                 log.info("using " + rl + " for resolving " + s);
                 configWatcher = new ResourceWatcher (rl) {
                         public void onChange(String s) {
@@ -94,23 +94,15 @@ public final class Impl implements Logger {
                             }
                         }
                     };
-                
+
                 configWatcher.add(s);
                 configWatcher.start();
-            
+
                 java.util.logging.LogManager.getLogManager().readConfiguration(rl.getResourceAsStream(s));
             } catch (IOException ioe) {
                 log.error(ioe);
             }
         }
-    }
-
-    /**
-     * @deprecated use setLevel
-     **/
-
-    public void setPriority(Level p) {
-        setLevel(p);
     }
 
     // javadoc inherited
@@ -191,7 +183,7 @@ public final class Impl implements Logger {
         return (getLevel().intValue() <= java.util.logging.Level.CONFIG.intValue());
     }
 
-    
+
 
 }
 

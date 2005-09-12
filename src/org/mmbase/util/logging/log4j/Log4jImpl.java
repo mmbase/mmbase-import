@@ -47,7 +47,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     // It's enough to instantiate a factory once and for all.
     private final static org.apache.log4j.spi.LoggerRepository repository = new LoggerRepository(getRootLogger());
     private static Logger log = Logging.getLoggerInstance(Log4jImpl.class);
-    //private static File configurationFile = null;
 
     private static final String classname = Log4jImpl.class.getName();
 
@@ -56,13 +55,9 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     /**
      * Constructor, like the constructor of {@link org.apache.log4j.Logger}.
      */
-
     protected Log4jImpl(String name) {
         super(name);
-        // not needed.
     }
-
-
 
     /**
      * As getLogger, but casted to MMBase Logger already. And the possible
@@ -96,7 +91,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         log.info("logging configurationfile : " + s);
 
         ResourceLoader rl = Logging.getResourceLoader();
-        
+
         log.info("using " + rl + " for resolving " + s);
         configWatcher = new ResourceWatcher (rl) {
                 public void onChange(String s) {
@@ -121,14 +116,14 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         }
     }
 
-    protected static void doConfigure(InputStream i) {        
+    protected static void doConfigure(InputStream i) {
         DOMConfigurator domConfigurator = new DOMConfigurator();
         domConfigurator.doConfigure(i, repository);
     }
     /**
      * Performs the actual parsing of the log4j configuration file and handles the errors
      */
-    protected static void doConfigure(File f) {        
+    protected static void doConfigure(File f) {
         log.info("Parsing " + f.getAbsolutePath());
         try {
             doConfigure(new FileInputStream(f));
@@ -138,14 +133,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     }
 
-
-    /**
-     * @deprecated use setLevel
-     **/
-
-    public void setPriority(Level p) {
-        setLevel(p);
-    }
     public void setLevel(Level p) {
         switch (p.toInt()) {
         case Level.TRACE_INT:   setLevel(Level.TRACE);   break;
@@ -157,7 +144,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         case Level.FATAL_INT:   setLevel(Level.FATAL);   break;
         default: break;
         }
-
     }
 
     /**
@@ -167,7 +153,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     public static org.apache.log4j.Category getInstance(String name) {
         return getLogger(name);
     }
-    public static org.apache.log4j.Logger  getLogger(String name) {
+
+    public static org.apache.log4j.Logger getLogger(String name) {
         return repository.getLogger(name);
     }
 
@@ -285,8 +272,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
                 log.warn(s.toString());
             }
         }
-        //public void write(byte[] buf) { }
-        //public void write(byte[] b, int off, int len) { }
 
     }
 
