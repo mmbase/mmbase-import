@@ -18,11 +18,11 @@ package org.mmbase.util.logging;
 
 public final class Level implements java.io.Serializable {
 
-    /** 
+    /**
      * A possible result of {@link #toInt}
      */
 
-    public final static int 
+    public final static int
         TRACE_INT   = 5000,
         DEBUG_INT   = 10000,
         SERVICE_INT = 15000,
@@ -33,27 +33,29 @@ public final class Level implements java.io.Serializable {
         OFF_INT     = Integer.MAX_VALUE;
 
 
-    /** 
+    /**
      * A constant. Main use is for the method {@link Logger#setPriority}
      */
-    public final static Level 
-        TRACE   = new Level(TRACE_INT), 
-        DEBUG   = new Level(DEBUG_INT),
-        SERVICE = new Level(SERVICE_INT),
-        INFO    = new Level(INFO_INT),
-        WARN    = new Level(WARN_INT),
-        ERROR   = new Level(ERROR_INT),
-        FATAL   = new Level(FATAL_INT),
-        OFF     = new Level(OFF_INT);   
+    public final static Level
+        TRACE   = new Level(TRACE_INT, "TRACE"),
+        DEBUG   = new Level(DEBUG_INT, "DEBUG"),
+        SERVICE = new Level(SERVICE_INT, "SERVICE"),
+        INFO    = new Level(INFO_INT, "INFO"),
+        WARN    = new Level(WARN_INT, "WARN"),
+        ERROR   = new Level(ERROR_INT, "ERROR"),
+        FATAL   = new Level(FATAL_INT, "FATAL"),
+        OFF     = new Level(OFF_INT, "OFF");
 
     private int level;
-    
-    private Level (int p) {
+    private String string;
+
+    private Level (int p, String s) {
         level = p;
+        string = s;
     }
 
     public static Level toLevel (String level) {
-        
+
         String s = level.toUpperCase();
         if (s.equals("TRACE") )   return TRACE;
         if (s.equals("DEBUG") )   return DEBUG;
@@ -65,15 +67,18 @@ public final class Level implements java.io.Serializable {
         if (s.equals("OFF") )     return OFF;
 
         return DEBUG;
-        
+
     }
-    
+
     /**
-     * Makes an integer from this object. 
+     * Makes an integer from this object.
      */
     public final int toInt() {
         return level;
     }
-    
-    
+
+    public final String toString() {
+        return string;
+    }
+
 }

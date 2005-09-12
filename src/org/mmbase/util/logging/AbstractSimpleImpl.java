@@ -29,114 +29,125 @@ abstract public class AbstractSimpleImpl  implements Logger {
     }
 
     // override one of these two
+    /**
+     * How to write one string. Only to be called by {@link #log(String, Level)}. Default this does
+     * nothing, you must override this, or {@link #log(String, Level)}.
+     */
     protected void log (String s) {
     }
 
+    /**
+     * Logs a message for a certain string. Default calls {@link #log(String)} where the string is
+     * prefixed with the level. Override this one if you want it differently.
+     */
     protected void log(String s, Level level) {
-        log(s);
+        log(level.toString() + " " + s);
+    }
+
+
+    /**
+     * Override to implement different stringification of objects to log. (default "" + s)
+     * @since MMBase-1.8
+     */
+    protected void log(Object s, Level level) {
+        log("" + s, level);
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected void log (Object s, Throwable t) {
+        log("" + s + "\n"  + Logging.stackTrace(t));
     }
 
     /**
      * @since MMBase-1.8
      */
-    protected String message(String level, String message) {
-        return level + " " + message;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected void log (String s, Throwable t) {
-        log(s + "\n"  + Logging.stackTrace(t));
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected void log(String s, Level level, Throwable t) {
+    protected void log(Object s, Level level, Throwable t) {
         log(s, t);
     }
 
     public void trace (Object m) {
         if (level <= Level.TRACE_INT) {
-            log(message("TRACE",  m),  Level.TRACE);
+            log(m,  Level.TRACE);
         }
     }
 
     public void trace (Object m, Throwable t) {
         if (level <= Level.TRACE_INT) {
-            log(message("TRACE",  m),  Level.TRACE, t);
+            log(m,  Level.TRACE, t);
         }
     }
 
     public void debug (Object m) {
         if (level <= Level.DEBUG_INT) {
-            log(message("DEBUG",  m), Level.DEBUG);
+            log(m, Level.DEBUG);
         }
     }
     public void debug (Object m, Throwable t) {
         if (level <= Level.DEBUG_INT) {
-            log(message("DEBUG", m), Level.DEBUG, t);
+            log(m, Level.DEBUG, t);
         }
     }
 
     public void service (Object m) {
         if (level <= Level.SERVICE_INT) {
-            log(message("SERVICE", m), Level.SERVICE);
+            log(m, Level.SERVICE);
         }
     }
 
     public void service (Object m, Throwable t) {
         if (level <= Level.SERVICE_INT) {
-            log(message("SERVICE",  m), Level.SERVICE, t);
+            log(m, Level.SERVICE, t);
         }
     }
 
     public void info    (Object m) {
         if (level <= Level.INFO_INT) {
-            log(message("INFO", m), Level.INFO);
+            log(m, Level.INFO);
         }
     }
 
     public void info    (Object m, Throwable t) {
         if (level <= Level.INFO_INT) {
-            log(message("INFO", m), Level.INFO, t);
+            log(m, Level.INFO, t);
         }
     }
 
     public void warn    (Object m) {
         if (level <= Level.WARN_INT) {
-            log(message("WARN", m), Level.WARN);
+            log(m, Level.WARN);
         }
     }
 
     public void warn    (Object m, Throwable t) {
         if (level <= Level.WARN_INT) {
-            log(message("WARN", m), Level.WARN, t);
+            log(m, Level.WARN, t);
         }
     }
 
     public void error   (Object m) {
         if (level <= Level.ERROR_INT) {
-            log(message("ERROR", m), Level.ERROR);
+            log(m, Level.ERROR);
         }
     }
 
     public void error   (Object m, Throwable t) {
         if (level <= Level.ERROR_INT) {
-            log(message("ERROR", m), Level.ERROR, t);
+            log(m, Level.ERROR, t);
         }
     }
 
     public void fatal   (Object m) {
         if (level <= Level.FATAL_INT) {
-            log(message("FATAL", m), Level.FATAL);
+            log(m, Level.FATAL);
         }
     }
 
     public void fatal   (Object m, Throwable t) {
         if (level <= Level.FATAL_INT) {
-            log(message("FATAL", m), Level.FATAL, t);
+            log(m, Level.FATAL, t);
         }
     }
 
