@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.117 2005-09-12 17:33:08 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.118 2005-09-12 22:16:21 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1338,14 +1338,15 @@ public class MMAdmin extends ProcessorModule {
         ApplicationReader reader = getApplicationReader(name);
         ApplicationWriter writer = new ApplicationWriter(reader, mmb);
         writer.setIncludeComments(includeComments);
-        StringBufferLogger logger = new StringBufferLogger();
+        java.io.Writer w = new java.io.StringWriter();
+        Logger logger = new WriterLogger(w);
         try {
             writer.writeToPath(targetPath, logger);
             lastmsg = "Application saved oke\n\n";
         } catch (Exception e) {
             lastmsg = "Saving application failed\n\n" + Logging.stackTrace(e) + "\n\n";
         }
-        lastmsg += "Some statistics on the save : \n\n" + logger.getStringBuffer().toString();
+        lastmsg += "Some statistics on the save : \n\n" + w.toString();
         return true;
     }
 
