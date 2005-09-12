@@ -15,6 +15,7 @@ import java.io.StringReader;
 import java.util.Map;
 import java.util.Hashtable;
 
+import org.mmbase.util.xml.ApplicationReader;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.ModuleReader;
 import org.mmbase.util.logging.Logger;
@@ -30,9 +31,14 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.55 2005-09-05 16:09:05 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.56 2005-09-12 14:07:39 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
+
+    public static final String DOMAIN = "http://www.mmbase.org/";
+    public static final String DTD_SUBPATH = "dtd/";
+    public static final String XMLNS_SUBPATH = "xmlns/";
+    private static final String XSD_SUBPATH = "xsd/"; // deprecated
 
     private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class);
 
@@ -79,7 +85,7 @@ public class XMLEntityResolver implements EntityResolver {
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
         BuilderReader.registerSystemIDs();
-        XMLApplicationReader.registerPublicIDs();
+        ApplicationReader.registerPublicIDs();
         ModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
@@ -146,13 +152,13 @@ public class XMLEntityResolver implements EntityResolver {
     private InputStream getStream(Resource res) {
         InputStream stream = null;
        if (res != null) {
-           stream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
+           stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(DTD_SUBPATH + res.getFileName());
            if (stream == null) {
-               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xmlns/" + res.getFileName());
+               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XMLNS_SUBPATH + res.getFileName());
            }
            if (stream == null) {
                // XXX I think this was deprecated in favour in xmlns/ (all in 1.8), so perhaps this can be dropped
-               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xsd/" + res.getFileName());
+               stream = ResourceLoader.getConfigurationRoot().getResourceAsStream(XSD_SUBPATH + res.getFileName());
            }
            if (stream == null) {
                stream = res.getAsStream();
@@ -188,7 +194,7 @@ public class XMLEntityResolver implements EntityResolver {
         if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
 
             //does systemId contain a mmbase-dtd
-            if ((systemId == null) || (! systemId.startsWith("http://www.mmbase.org/"))) {
+            if ((systemId == null) || (! systemId.startsWith(DOMAIN))) {
                 if (! validate) {
                     log.debug("Not validating, cannot resolve,  returning empty resource");
                     return new InputSource(new StringReader(""));

@@ -21,7 +21,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.1 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: ModuleReader.java,v 1.2 2005-09-12 14:07:39 pierre Exp $
  */
 public class ModuleReader extends DocumentReader {
 
@@ -63,7 +63,7 @@ public class ModuleReader extends DocumentReader {
     }
 
     /**
-     * get the status of this builder
+     * Get the status of this module
      */
     public String getStatus() {
         Element e = getElementByPath("module.status");
@@ -71,9 +71,9 @@ public class ModuleReader extends DocumentReader {
     }
 
     /**
-     * get the version of this application
+     * Get the version of this module
      */
-    public int getModuleVersion() {
+    public int getVersion() {
         Element e = getElementByPath("module");
         String version = getElementAttributeValue(e, "version");
         int n = 0;
@@ -90,11 +90,10 @@ public class ModuleReader extends DocumentReader {
     }
 
     /**
-     * get the version of this application
+     * Get the maintainer of this module
      */
-    public String getModuleMaintainer() {
+    public String getMaintainer() {
         Element e = getElementByPath("module");
-
         String tmp = getElementAttributeValue(e, "maintainer");
         if (tmp != null && !tmp.equals("")) {
             return (tmp);

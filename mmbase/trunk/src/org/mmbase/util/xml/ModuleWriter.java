@@ -11,19 +11,20 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import org.mmbase.module.Module;
+import org.mmbase.util.XMLEntityResolver;
 
 import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.7 2005-05-14 14:04:45 nico Exp $
+ * @version $Id: ModuleWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
 
     /**
      * Hold a reference to the module for which to create an XML document.
      */
-    private Module module;
+    protected Module module;
 
     /**
      * Constructs the document writer.
@@ -31,8 +32,9 @@ public class ModuleWriter extends DocumentWriter  {
      * @param module the module for which to create an XML document.
      */
     public ModuleWriter(Module module) throws DOMException {
-        super("module", "-//MMBase/DTD module config 1.0//EN","http://www.mmbase.org/dtd/module_1_0.dtd");
-        this.module=module;
+        super("module", ModuleReader.PUBLIC_ID_MODULE,
+                        XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + ModuleReader.DTD_MODULE);
+        this.module = module;
         getMessageRetriever("org.mmbase.util.xml.resources.modulewriter");
     }
 
@@ -41,7 +43,7 @@ public class ModuleWriter extends DocumentWriter  {
      * @throws DOMException when an error occurred during generation
      */
     protected void generate() throws DOMException {
-        Element root=document.getDocumentElement();
+        Element root = document.getDocumentElement();
         addComment("module.configuration",module.getName(),module.getModuleInfo(),root);
         root.setAttribute("maintainer",module.getMaintainer());
         root.setAttribute("version",""+module.getVersion());
@@ -58,12 +60,11 @@ public class ModuleWriter extends DocumentWriter  {
         // properties.property
         Map datamap=module.getInitParameters();
         for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next(); 
+            Map.Entry entry = (Map.Entry) i.next();
             String propname = (String) entry.getKey();
             String propvalue = (String) entry.getValue();
             Element elm=addContentElement("property",propvalue,properties);
             elm.setAttribute("name",propname);
         }
-
     }
 }
