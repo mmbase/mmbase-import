@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.22 2005-09-08 15:37:01 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.23 2005-09-12 17:32:45 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -39,11 +39,11 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
      * @param tag
      * @since MMBase-1.8
      */
-    public EnumHandler(FieldInfoTag tag,  Field field) throws JspTagException {
+    public EnumHandler(FieldInfoTag tag, Node node,  Field field) throws JspTagException {
         super(tag);
         DataType dataType = field.getDataType();
         Locale locale = tag.getLocale();
-        bundle = dataType.getEnumerationValues(locale);
+        bundle = dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
         if (bundle == null) {
             // backwards compatibility mode
             String enumType = field.getGUIType();
@@ -90,7 +90,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    protected EnumHandler getEnumHandler(Field field) throws JspTagException {
+    protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
         return null;
     }
     public boolean isAvailable() {
