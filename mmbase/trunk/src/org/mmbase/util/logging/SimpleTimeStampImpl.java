@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
  * Like SimpleImpl, but also adds timestamps.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleTimeStampImpl.java,v 1.1 2004-02-19 17:32:10 michiel Exp $
+ * @version $Id: SimpleTimeStampImpl.java,v 1.2 2005-09-12 23:23:47 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -44,42 +44,42 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
      * @param A string, which can contain the output (stdout or
      * stderr) and the priority (e.g. 'info')
      */
-   
+
     public static  void configure(String c) {
 
         if (c == null) {
             return; // everything default
         }
-        
-        StringTokenizer t    = new StringTokenizer(c, ","); 
+
+        StringTokenizer t    = new StringTokenizer(c, ",");
         while (t.hasMoreTokens()) {
             String token = t.nextToken();
             if (token.equals("stderr")) {
-                ps = System.err;             
+                ps = System.err;
             }
             if (token.equals("stdout")) {
-                ps = System.out;             
+                ps = System.out;
             }
             if (token.equals("trace")) {
-                level = Level.TRACE_INT;
+                root.setLevel(Level.TRACE);
             }
             if (token.equals("debug")) {
-                level = Level.DEBUG_INT;
+                root.setLevel(Level.DEBUG);
             }
             if (token.equals("service")) {
-                level = Level.SERVICE_INT;
+                root.setLevel(Level.SERVICE);
             }
             if (token.equals("info")) {
-                level = Level.INFO_INT;
+                root.setLevel(Level.INFO);
             }
             if (token.equals("warn")) {
-                level = Level.WARN_INT;
+                root.setLevel(Level.WARN);
             }
             if (token.equals("error")) {
-                level = Level.ERROR_INT;
+                root.setLevel(Level.ERROR);
             }
             if (token.equals("fatal")) {
-                level = Level.FATAL_INT;
+                root.setLevel(Level.FATAL);
             }
         }
     }

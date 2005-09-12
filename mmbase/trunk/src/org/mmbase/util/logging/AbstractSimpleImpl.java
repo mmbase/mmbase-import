@@ -11,7 +11,7 @@ package org.mmbase.util.logging;
 
 /**
  * Base class for simple Logger implementations (no patterns and so
- * on). A static protected level is provided, so even all categories has to be the same.
+ * on). 
  *
  *
  * @author Michiel Meeuwissen
@@ -20,9 +20,10 @@ package org.mmbase.util.logging;
 
 abstract public class AbstractSimpleImpl  implements Logger {
 
-    // could of cause be generalized to an abstract 'getLevel()', but this would
-    // nog be too good for performance I think.
-    protected static int  level = Level.INFO_INT;
+    /**
+     * @since MMBase-1.8
+     */
+    protected int level;
 
     public void setLevel(Level p) {
         level = p.toInt();
