@@ -14,14 +14,13 @@ import org.w3c.dom.DOMException;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.xml.*;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.WriterLogger;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  * @deprecated-now use {@link org.mmbase.util.xml.ApplicationWriter}
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationWriter.java,v 1.29 2005-09-12 22:12:24 michiel Exp $
+ * @version $Id: XMLApplicationWriter.java,v 1.30 2005-09-12 22:33:05 michiel Exp $
  */
 public class XMLApplicationWriter extends ApplicationWriter {
 
