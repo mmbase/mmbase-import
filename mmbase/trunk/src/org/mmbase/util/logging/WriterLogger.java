@@ -14,7 +14,7 @@ import java.io.Writer;
  * java.io.StringWriter} if you want to create one String.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: WriterLogger.java,v 1.1 2005-09-12 22:11:13 michiel Exp $
+ * @version $Id: WriterLogger.java,v 1.2 2005-09-12 22:43:50 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -31,16 +31,11 @@ public class WriterLogger extends AbstractSimpleImpl {
         writer = w;
     }
 
-    protected final void log(String s) {
+    protected final void log(String s, Level level) {
         try {
             writer.write(s); writer.write('\n');
         } catch (java.io.IOException ioe) {
             // should not happen
         }
     }
-
-    protected String message(String level, String message) {
-        return "" + message;
-    }
-
 }
