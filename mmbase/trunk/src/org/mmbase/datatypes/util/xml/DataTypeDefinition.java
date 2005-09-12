@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.17 2005-09-09 20:21:43 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.18 2005-09-12 17:29:52 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -73,18 +73,72 @@ public class DataTypeDefinition {
         return DocumentReader.getNodeTextValue(element);
     }
 
+    private  DataType getImplementation(Element dataTypeElement, String id, DataType baseDataType) {
+        DataType dt = collector.getDataType(id);
+        NodeList childNodes = dataTypeElement.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if (childNodes.item(i) instanceof Element) {
+                Element childElement = (Element) childNodes.item(i);
+                if (childElement.getLocalName().equals("class")) {
+                    if (dt != null) {
+                        log.error("Already defained " + id);                        
+                    } else {
+                        try {
+                            String className = childElement.getAttribute("name");
+                            Class claz = Class.forName(className);
+                            java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
+                            dt = (DataType) constructor.newInstance(new Object[] { id });
+                        } catch (Exception e) {
+                            log.error(e);
+                        }
+                    }
+                    break;
+                } else {
+                    continue;
+                }              
+            }
+        }
+        if (dt == null) {
+            if (baseDataType == null) {
+                log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + org.mmbase.util.xml.XMLWriter.write(dataTypeElement, true));
+                baseDataType = Constants.DATATYPE_UNKNOWN;
+            }
+            dt = (DataType)baseDataType.clone(id);
+        } else {
+            //
+            // XXX: add check on base datatype if given!
+            //
+            collector.rewrite(dt);
+            dt.clear(); // clears datatype.
+        }
+        return dt;
+
+        
+    }
+
     private static int anonymousSequence = 1;
     /**
      * Configures the data type definition, using data from a DOM element
      */
     DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
+
         String typeString = getAttribute(dataTypeElement, "id");
         if (typeString.equals("")) {
-            typeString = "ANONYMOUS" + anonymousSequence++;
+            if (baseDataType == null) {
+                typeString = "ANONYMOUS" + anonymousSequence++;
+            } else {
+                typeString = baseDataType.getName() + "." + anonymousSequence++;
+            }
         }
-        if ("byte".equals(typeString)) typeString = "binary";
+        if ("byte".equals(typeString)) {
+            log.warn("Found for datatype id 'byte', supposing that 'binary' is meant");
+            typeString = "binary"; // hmmmmm
+        }
+
         String baseString = getAttribute(dataTypeElement, "base");
-        if (log.isDebugEnabled()) log.debug("Reading element " + typeString + " " + baseString);
+        if (log.isDebugEnabled()) {
+            log.debug("Reading element " + typeString + " " + baseString);
+        }
         if (! baseString.equals("")) {
             DataType definedBaseDataType = collector.getDataType(baseString, true);
             if (baseDataType != null) {
@@ -97,25 +151,10 @@ public class DataTypeDefinition {
             } else {
                 baseDataType = definedBaseDataType;
             }
-
-            
-            
-
         }
-        dataType = collector.getDataType(typeString);
-        if (dataType == null) {
-            if (baseDataType == null) {
-                log.warn("No base datatype available for datatype " + typeString + ", use 'unknown' for know.\n" + org.mmbase.util.xml.XMLWriter.write(dataTypeElement, true));
-                baseDataType = Constants.DATATYPE_UNKNOWN;
-            }
-            dataType = (DataType)baseDataType.clone(typeString);
-        } else {
-            //
-            // XXX: add check on base datatype if given!
-            //
-            collector.rewrite(dataType);
-            dataType.clear(); // clears datatype.
-        }
+
+        dataType = getImplementation(dataTypeElement, typeString, baseDataType);
+
         configureConditions(dataTypeElement);
         return this;
     }
