@@ -8,10 +8,7 @@ See http://www.MMBase.org/license
 -->
 <project>
 	<extend>../../maven-base/project.xml</extend>
-    <id>${pom.groupId}:${pom.artifactId}</id>
     <artifactId>mmbase-application</artifactId>
-    <name>${pom.artifactId}</name>
-    <groupId>mmbase</groupId>
     <dependencies>
         <dependency>
             <groupId>mmbase</groupId>

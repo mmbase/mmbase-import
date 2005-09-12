@@ -8,10 +8,6 @@ See http://www.MMBase.org/license
 -->
 <project>
     <extend>${basedir}/maven-base/project.xml</extend>
-    <pomVersion>3</pomVersion>
-    <id>mmbase:mmbase</id>
     <artifactId>mmbase</artifactId>
-    <name>mmbase</name>
-    <groupId>mmbase</groupId>
 </project>
 
