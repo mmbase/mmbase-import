@@ -135,13 +135,14 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     public void setLevel(Level p) {
         switch (p.toInt()) {
-        case Level.TRACE_INT:   setLevel(Level.TRACE);   break;
-        case Level.DEBUG_INT:   setLevel(Level.DEBUG);   break;
+        case Level.TRACE_INT:   setLevel(Log4jLevel.TRACE);   break;
+        case Level.DEBUG_INT:   setLevel(Log4jLevel.DEBUG);   break;
         case Level.SERVICE_INT: setLevel(Log4jLevel.SERVICE); break;
-        case Level.INFO_INT:    setLevel(Level.INFO);    break;
-        case Level.WARN_INT:    setLevel(Level.WARN);    break;
-        case Level.ERROR_INT:   setLevel(Level.ERROR);   break;
-        case Level.FATAL_INT:   setLevel(Level.FATAL);   break;
+        case Level.INFO_INT:    setLevel(Log4jLevel.INFO);    break;
+        case Level.WARN_INT:    setLevel(Log4jLevel.WARN);    break;
+        case Level.ERROR_INT:   setLevel(Log4jLevel.ERROR);   break;
+        case Level.FATAL_INT:   setLevel(Log4jLevel.FATAL);   break;
+        case Level.OFF_INT:     setLevel(Log4jLevel.OFF);   break;
         default: break;
         }
     }
