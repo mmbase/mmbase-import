@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.116 2005-09-12 15:49:19 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.117 2005-09-12 17:33:08 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -479,7 +479,7 @@ public class MMAdmin extends ProcessorModule {
      */
     String getModuleClass(String modname) {
         String className = "";
-        ModuleReader mod =getModuleReader(modname);
+        ModuleReader mod = getModuleReader(modname);
         if (mod != null) {
             className = mod.getClassName();
         }
@@ -1440,7 +1440,7 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getModuleProperties(String modulename) {
         Vector results = new Vector();
-        ModuleReader mod = mmb.getModuleReader(modulename);
+        ModuleReader mod = getModuleReader(modulename);
         if (mod != null) {
             Map props = mod.getProperties();
             for (Iterator i = props.keySet().iterator(); i.hasNext();) {
@@ -1482,15 +1482,14 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getModulesList() {
         Vector results = new Vector();
-        ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
-        // new code checks all the *.xml files in builder dir
-
+        ResourceLoader moduleLoader = getModuleLoader();
+        // new code checks all the *.xml files in modules dir
         Set modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false);
         Iterator i = modules.iterator();
         while (i.hasNext()) {
             String path = (String) i.next();
             String sname = ResourceLoader.getName(path);
-            ModuleReader reader = getModuleReader(path);
+            ModuleReader reader = getModuleReader(sname);
             if (reader == null) {
                 log.error("Could not load module with xml '" + path + "'");
                 continue;
