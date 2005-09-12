@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.26 2005-07-14 13:07:40 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.27 2005-09-12 14:07:39 pierre Exp $
  */
 public class NodeWriter{
 
@@ -33,7 +33,7 @@ public class NodeWriter{
     private static Logger log = Logging.getLoggerInstance(NodeWriter.class.getName());
 
     private MMBase mmb;
-    private Vector resultsmsgs;
+    private Logger logger;
     private String directory;
     private String builderName;
     private boolean isRelationNode;
@@ -46,18 +46,18 @@ public class NodeWriter{
      * The file opened for writing is [directory]/[buildername].xml.
      *
      * @param mmb MMBase object for retrieving type information
-     * @param resultsmsgs vector of strings fro reporting results.
+     * @param logger place to log results.
      * @param directory  the directory to write the files to (including the
      *                   trailing slash).
      * @param buildername name of the builder to export
      * @param isRelationNode if <code>true</code>, the source to write is a relationsource.
      *        Otherwise, a datasource is written.
      */
-    NodeWriter(MMBase mmb, Vector resultsmsgs, String directory,
+    NodeWriter(MMBase mmb, Logger logger, String directory,
                String builderName, boolean isRelationNode) {
         // store parameters
         this.mmb = mmb;
-        this.resultsmsgs = resultsmsgs;
+        this.logger = logger;
         this.directory = directory;
         this.builderName = builderName;
         this.isRelationNode = isRelationNode;
@@ -67,7 +67,7 @@ public class NodeWriter{
             log.debug("Opening " + file + " for writing.");
             fw = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
         } catch (Exception e) {
-            resultsmsgs.addElement("Failed opening file " + file);
+            logger.error("Failed opening file " + file);
         }
         // Write the header
         write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
@@ -168,13 +168,13 @@ public class NodeWriter{
     public void done() {
         // write the footer
         write("</"+ builderName + ">\n");
-        resultsmsgs.addElement("Saving " + nrOfNodes + " " + builderName
+        logger.info("Saving " + nrOfNodes + " " + builderName
                                + " to : " + file);
         try {
             log.debug("Closing file " + file);
             fw.close();
         } catch (Exception e) {
-            resultsmsgs.addElement("Failed closing file " + file);
+            logger.error("Failed closing file " + file);
         }
     }
 
@@ -186,7 +186,7 @@ public class NodeWriter{
         try {
             fw.write(s);
         } catch (Exception e) {
-            resultsmsgs.addElement("Failed writing to file " + file);
+            logger.error("Failed writing to file " + file);
         }
     }
 

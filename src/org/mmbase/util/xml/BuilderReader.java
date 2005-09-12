@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.40 2005-09-09 20:14:59 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.41 2005-09-12 14:07:39 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -155,7 +155,7 @@ public class BuilderReader extends DocumentReader {
      * @throws RuntimeException when the builder to extend from is not allowed as parent
      */
     protected boolean resolveInheritance() {
-        String buildername = getBuilderExtends();
+        String buildername = getExtends();
         if (buildername.equals("")) {
             parentBuilder = null;
             inheritanceResolved = true;
@@ -781,19 +781,19 @@ public class BuilderReader extends DocumentReader {
 
     /**
      * Get the name of the builder that this builder extends
-     *
-     * @since MMBase-1.6
+     * @since MMBase-1.8
      * @return the name of the parent builder
      */
-    public String getBuilderExtends() {
+    public String getExtends() {
         return getElementAttributeValue("builder", "extends");
     }
 
     /**
      * Retrieve the (major) version number of this builder
+     * @since MMBase-1.8
      * @return the version as an integer.
      */
-    public int getBuilderVersion() {
+    public int getVersion() {
         String version = getElementAttributeValue("builder","version");
         if (version.equals("") && parentBuilder != null) {
            return parentBuilder.getVersion();
@@ -810,9 +810,10 @@ public class BuilderReader extends DocumentReader {
 
     /**
      * Retrieve the name of the maintainer of this builder
+     * @since MMBase-1.8
      * @return the name fo the maintainer as a String
      */
-    public String getBuilderMaintainer() {
+    public String getMaintainer() {
         String maintainer = getElementAttributeValue("builder", "maintainer");
         if (maintainer.equals("")) {
             if (parentBuilder != null) {
@@ -824,6 +825,35 @@ public class BuilderReader extends DocumentReader {
         return maintainer;
     }
 
+
+    /**
+     * Get the name of the builder that this builder extends
+     * @deprecated-now use getMaintainer()
+     * @since MMBase-1.6
+     * @return the name of the parent builder
+     */
+    public String getBuilderExtends() {
+        return getExtends();
+    }
+
+    /**
+     * Retrieve the (major) version number of this builder
+     * @deprecated-now use getMaintainer()
+     * @return the version as an integer.
+     */
+    public int getBuilderVersion() {
+        return getVersion();
+    }
+
+    /**
+     * Retrieve the name of the maintainer of this builder
+     * @deprecated-now use getMaintainer()
+     * @return the name fo the maintainer as a String
+     */
+    public String getBuilderMaintainer() {
+        return getMaintainer();
+    }
+
     /**
      * {@inheritDoc}
      * @since MMBase-1.7
@@ -833,9 +863,9 @@ public class BuilderReader extends DocumentReader {
             BuilderReader b = (BuilderReader) o;
             return
                 getFields().equals(b.getFields()) &&
-                getBuilderMaintainer().equals(b.getBuilderMaintainer()) &&
-                getBuilderVersion() == b.getBuilderVersion() &&
-                getBuilderExtends().equals(b.getBuilderExtends()) &&
+                getMaintainer().equals(b.getMaintainer()) &&
+                getVersion() == b.getVersion() &&
+                getExtends().equals(b.getExtends()) &&
                 getSingularNames().equals(b.getSingularNames()) &&
                 getPluralNames().equals(b.getPluralNames()) &&
                 getDescriptions().equals(b.getDescriptions()) &&

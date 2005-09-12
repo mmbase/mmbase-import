@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.xml.ApplicationReader;
 
 /**
  * This class is used to write (export) a selection of nodes to xml format.
@@ -24,15 +25,15 @@ import org.mmbase.module.corebuilders.*;
  * with a seperate class for handling contexts.
  * Note that because of it's static nature, no object instance need be made (in fact, none CAN be made) of this class.<br />
  * To use this class in stead of the old XMLContextDepthWriter, replace the following lines in
- * util/XMLApplicationWriter.java:
+ * util/xml/ApplicationWriter.java:
  * <blockquote>
- *     XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb,resultmsgs);
+ *     XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb,logger);
  *     XMLContextDepthWriter.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
  * </blockquote>
  * with:
  * <blockquote>
  *     in writeDateSources :
- *     XMLContextDepthWriterII.writeContext(app,capp,targetpath,mmb,resultmsgs);
+ *     XMLContextDepthWriterII.writeContext(app,capp,targetpath,mmb,logger);
  *     in writeContextSources :
  *     XMLContextDepthWriterII.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
  * </blockquote>
@@ -44,7 +45,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: XMLContextDepthWriterII.java,v 1.10 2005-04-28 12:07:54 keesj Exp $
+ * @version $Id: XMLContextDepthWriterII.java,v 1.11 2005-09-12 14:07:39 pierre Exp $
  */
 public class XMLContextDepthWriterII  {
 
@@ -57,19 +58,20 @@ public class XMLContextDepthWriterII  {
      * Writes an application's nodes, according to that application's contexts, to a path.
      * The files written are stored in a subdirectory (named after the application), and contain the datasource (xml) files for
      * both datanodes and relation nodes.
-     * @param app A <code>XMLApplicationReader</code> initialised to read the application's description (xml) file
+     * @param app A <code>ApplicationReader</code> initialised to read the application's description (xml) file
      *		This object is used to retrieve what builder and relations are needed, and in which files data should be stored.
      * @param capp A <code>XMLContextDepthReader</code> initialised to read the application's context file
      *		This object is used to retrieve information regarding search depth and starting nodes for
      *		the search tree whoch determines what nodes are part of this application.
      * @param targetpath The path where to save the application
      * @param mmb Reference to the MMbase processormodule. Used to retrieve the nodes to write.
-     * @param resultmsgs Storage for messages which can be displayed to the user.
+     * @param logger Storage for messages which can be displayed to the user.
      * @return Returns true if succesful, false if no valid depth or startnode could be found
      *		Failure of the export itself is not detected, though may be visible in the messages returned.
+     * @throws IOException if one or more files could not be written
      */
-    public static boolean writeContext(XMLApplicationReader app,XMLContextDepthReader capp,String targetpath,
-                                       MMBase mmb,Vector resultmsgs) {
+    public static boolean writeContext(ApplicationReader app, XMLContextDepthReader capp,String targetpath,
+                                       MMBase mmb, Logger logger) throws IOException {
         // First determine the startnodes, following the specs in the current context reader.
         int startnode=getStartNode(capp,mmb);
         if (startnode==-1) {
@@ -88,72 +90,68 @@ public class XMLContextDepthWriterII  {
         HashSet nodes = new HashSet();
         getSubNodes(startnode,depth,fb, nodes,relnodes,mmb);
 
-        resultmsgs.addElement("Context found : "+nodes.size()+" nodes in application, "+relnodes.size()+" relations.");
+        logger.info("Context found : "+nodes.size()+" nodes in application, "+relnodes.size()+" relations.");
 
         // create the dir for the Data & resource files
-        File file = new File(targetpath+"/"+app.getApplicationName());
-        try {
-            file.mkdirs();
-        } catch(Exception e) {
-            log.error("Can't create dir : "+targetpath+"/"+app.getApplicationName());
-        }
+        File file = new File(targetpath+"/"+app.getName());
+        file.mkdirs();
         // write DataSources
-        writeDataSources(app,nodes,targetpath,mmb,resultmsgs);
+        writeDataSources(app,nodes,targetpath,mmb,logger);
         // write relationSources
-        writeRelationSources(app,relnodes,targetpath,mmb,resultmsgs);
+        writeRelationSources(app,relnodes,targetpath,mmb,logger);
 
         return true;
     }
 
     /**
      * Writes the required datasources to their corresponding xml files by calling writeNodes()
-     * @param app The XMLApplicationReader object, which is used to retrieve what datasources to write (and to what file).
+     * @param app The ApplicationReader object, which is used to retrieve what datasources to write (and to what file).
      * @param nodes The nodes that are part of the application. Those that are of a type compatible with the datasources are exported.
      * @param targetpath Path where the xml files are written
      * @param mmb MMBase object used to retrieve builder information
-     * @param resultmsgs Used to store messages that can be showmn to the user
+     * @param logger Used to store messages that can be showmn to the user
      */
-    static void writeDataSources(XMLApplicationReader app, HashSet nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
-        writeNodes(app, nodes, targetpath, mmb, resultmsgs, false);
+    static void writeDataSources(ApplicationReader app, HashSet nodes, String targetpath,MMBase mmb, Logger logger) {
+        writeNodes(app, nodes, targetpath, mmb, logger, false);
    }
 
 
     /**
      * Writes the required relation sources to their corresponding xml files by calling writeNodes()
-     * @param app The XMLApplicationReader object, which is used to retrieve what relationsources to write (and to what file).
+     * @param app The ApplicationReader object, which is used to retrieve what relationsources to write (and to what file).
      * @param nodes The relation nodes that are part of the application. Those that are of a type compatible with the relationsources are exported.
      * @param targetpath Path where the xml files are written
      * @param mmb MMBase object used to retrieve builder information
-     * @param resultmsgs Used to store messages that can be showmn to the user
+     * @param logger Used to store messages that can be showmn to the user
      */
-    static void writeRelationSources(XMLApplicationReader app, HashSet nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
-        writeNodes(app, nodes, targetpath, mmb, resultmsgs, true);
+    static void writeRelationSources(ApplicationReader app, HashSet nodes, String targetpath,MMBase mmb, Logger logger) {
+        writeNodes(app, nodes, targetpath, mmb, logger, true);
    }
 
     /**
      * Writes the nodes to their corresponding xml files
-     * @param app The XMLApplicationReader object, which is used to retrieve what sources to write (and to what file).
+     * @param app The ApplicationReader object, which is used to retrieve what sources to write (and to what file).
      * @param nodes The nodes that are part of the application. Those that are of a type compatible with the sources are exported.
      * @param targetpath Path where the xml files are written
      * @param mmb MMBase object used to retrieve builder information
-     * @param resultmsgs Used to store messages that can be showmn to the user
+     * @param logger Used to store messages that can be showmn to the user
      * @param isRelation Indicates whether the nodes to write are data (false) or relation (true) nodes
      */
-    static void writeNodes(XMLApplicationReader app, HashSet nodes, String targetpath, MMBase mmb, Vector resultmsgs,
+    static void writeNodes(ApplicationReader app, HashSet nodes, String targetpath, MMBase mmb, Logger logger,
             boolean isRelation) {
 
         //before we write the data first sort the list
         //so that node fields that point to the same node type
         //have more chance to exist. A example of this is the community
         //where the message nodes contain a thread nodefield
-        //upon creation there first must exist a thread message 
+        //upon creation there first must exist a thread message
         //so the "thread message" will have a lower number
         List list = new Vector();
         list.addAll(nodes);
         Collections.sort(list, new Comparator(){
             public int compare(Object o1, Object o2) {
                 return ((Integer)o1).compareTo((Integer)o2);
-            }            
+            }
         }
         );
         // Retrieve an enumeration of sources to write
@@ -165,7 +163,7 @@ public class XMLContextDepthWriterII  {
             res=app.getDataSources().elements();
         }
         // determine target path subdirectory
-        String subtargetpath=targetpath+"/"+app.getApplicationName()+"/";
+        String subtargetpath=targetpath+"/"+app.getName()+"/";
 
         // create a list of writer objects for the nodes
         Hashtable nodeWriters = new Hashtable();
@@ -174,7 +172,7 @@ public class XMLContextDepthWriterII  {
             String name = (String)bset.get("builder");
 
             // Create nodewriter for this builder
-            NodeWriter nw = new NodeWriter(mmb, resultmsgs, subtargetpath, name, isRelation);
+            NodeWriter nw = new NodeWriter(mmb, logger, subtargetpath, name, isRelation);
             // and store in table
             nodeWriters.put(name, nw);
         }

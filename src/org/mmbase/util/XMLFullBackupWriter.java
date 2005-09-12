@@ -15,6 +15,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.ApplicationReader;
 
 /**
  * This is used to export a full backup, by writing all nodes to XML.
@@ -36,18 +37,18 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
 
     /**
      * Writes all nodes to XML.
-     * @param app A <code>XMLApplicationReader</code> initialised to read
+     * @param app A <code>ApplicationReader</code> initialised to read
      *        the application's description (xml) file
      * @param targetpath The path where to save the application
      * @param mmb Reference to the MMbase processormodule. Used to retrieve the nodes to write.
-     * @param resultmsgs Storage for messages which can be displayed to the user.
+     * @param logger Storage for messages which can be displayed to the user.
      * @return Returns true if succesful, false otherwise.
      */
-    public static boolean writeContext(XMLApplicationReader app, String targetpath, MMBase mmb, Vector resultmsgs) {
+    public static boolean writeContext(ApplicationReader app, String targetpath, MMBase mmb, Logger logger) {
 
         try {
             // Create directory for data files.
-            String subTargetPath = targetpath + "/" + app.getApplicationName() + "/";
+            String subTargetPath = targetpath + "/" + app.getName() + "/";
             File file = new File(subTargetPath);
             try {
                 file.mkdirs();
@@ -56,17 +57,17 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
             }
 
             // Write the nodes
-            writeNodes(subTargetPath, mmb, resultmsgs);
+            writeNodes(subTargetPath, mmb, logger);
 
-            resultmsgs.addElement("Full backup finished.");
+            logger.info("Full backup finished.");
 
             //            // write DataSources
-            //            writeDataSources(app,nodes,targetpath,mmb,resultmsgs);
+            //            writeDataSources(app,nodes,targetpath,mmb,logger);
             //            // write relationSources
-            //            writeRelationSources(app,relnodes,targetpath,mmb,resultmsgs);
+            //            writeRelationSources(app,relnodes,targetpath,mmb,logger);
         } catch (Exception e) {
-            resultmsgs.addElement("Backup failed, exception: " + e);
-            log.error("Backup failed: " + Logging.stackTrace(e));
+            logger.error("Backup failed, exception: " + e);
+            log.error("Backup failed", e);
         }
 
         return true;
@@ -85,10 +86,10 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      *			nodes already in this set are skipped (optimization). After return, the set has been expanded
      *			with all nodes found while traversing the cloud
      * @param mmb MMBase object used to retrieve builder information
-     * @param resultmsgs
+     * @param logger
      * @todo update javadoc
      */
-    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs) {
+    static void writeNodes(String subTargetPath, MMBase mmb, Logger logger) {
 
         InsRel insrel = mmb.getInsRel();
 
@@ -123,7 +124,7 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
 
             // Add this builder's nodes to set (by nodenumber).
             List nodes = builder.searchList("otype==" + builder.getObjectType());
-            writeNodes(subTargetPath, mmb, resultmsgs, builder, nodes, isRelation);
+            writeNodes(subTargetPath, mmb, logger, builder, nodes, isRelation);
         }
     }
 
@@ -133,13 +134,13 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      * @param nodes The nodes, must type corresponding to the builder.
      * @param subTargetPath Path where the XML file is written.
      * @param mmb MMBase object used to retrieve builder information
-     * @param resultmsgs Used to store messages that can be showmn to the user
+     * @param logger Used to store messages that can be shown to the user
      * @param isRelation Indicates whether the nodes to write are data (false) or relation (true) nodes
      */
-    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs, MMObjectBuilder builder, List nodes, boolean isRelation) {
+    static void writeNodes(String subTargetPath, MMBase mmb, Logger logger, MMObjectBuilder builder, List nodes, boolean isRelation) {
 
         // Create nodewriter for this builder
-        NodeWriter nodeWriter = new NodeWriter(mmb, resultmsgs, subTargetPath, builder.getTableName(), isRelation);
+        NodeWriter nodeWriter = new NodeWriter(mmb, logger, subTargetPath, builder.getTableName(), isRelation);
 
         Iterator iNodes = nodes.iterator();
         int nrWritten = 0;
