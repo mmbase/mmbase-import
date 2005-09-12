@@ -15,13 +15,13 @@ import org.w3c.dom.DOMException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.StringBufferLogger;
+import org.mmbase.util.logging.WriterLogger;
 
 /**
  * @javadoc
  * @deprecated-now use {@link org.mmbase.util.xml.ApplicationWriter}
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationWriter.java,v 1.28 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: XMLApplicationWriter.java,v 1.29 2005-09-12 22:12:24 michiel Exp $
  */
 public class XMLApplicationWriter extends ApplicationWriter {
 
@@ -38,14 +38,15 @@ public class XMLApplicationWriter extends ApplicationWriter {
     public static Vector writeXMLFile(ApplicationReader reader, String targetPath, String goal, MMBase mmbase) {
         ApplicationWriter appOut = new ApplicationWriter(reader, mmbase);
         appOut.setIncludeComments(true);
-        StringBufferLogger logger = new StringBufferLogger();
+        java.io.Writer writer = new java.io.StringWriter();
+        Logger logger = new WriterLogger(writer);
         try {
             appOut.writeToPath(targetPath, logger);
         } catch (Exception e) {
             logger.error("Application export went wrong",e);
         }
         Vector messages = new Vector();
-        messages.add(logger.getStringBuffer().toString());
+        messages.add(writer.toString());
         return messages;
     }
 
