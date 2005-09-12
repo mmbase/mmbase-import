@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.21 2005-09-08 16:09:40 michiel Exp $
+ * @version $Id: DataType.java,v 1.22 2005-09-12 17:28:04 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -310,7 +310,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     /**
      * Checks if the passed object is of the correct type (compatible with the type of this data type),
      * and follows the restrictions defined for this type.
-     * @return An error message if the value is not compatible. <code>null</code> if valid.
+     * @return An error message if the value is not compatible. An empty collection if valid.
      * @param value the value to validate
      */
     public final Collection /*<LocalizedString>*/ validate(Object value) {
@@ -516,9 +516,14 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @return A List of all possible values for this datatype, as {@link java.util.Map.Entry}s, or
      * <code>null</code> if no restrictions apply. Every Map entry contains as key the 'value' for
      * this datatype and as value it contains the description for this value in the given locale.
+     * 
+     * @param locale for which locale to produce
+     * @param node   Possibly the possible values depend on a cloud (security)
+     * @param node   Possibly the possible values depend on an actual node (this may be, and in the default implementation is, ignored)
+     * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      *
      */
-    public Collection getEnumerationValues(Locale locale) {
+    public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
         if (enumerationValues == null || enumerationValues.size() == 0) return null;
         return enumerationValues.get(locale);
     }
