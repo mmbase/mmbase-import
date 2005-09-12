@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.42 2005-09-12 17:12:21 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.43 2005-09-12 20:08:12 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -326,8 +326,7 @@ public class BuilderReader extends DocumentReader {
             CoreField def = (CoreField) oldset.get(getElementValue(getElementByPath(field, "field.db.name")));
             if (def != null) {
                 def.rewrite();
-                Element gui = getElementByPath(field, "field.gui");
-                DataType dataType = decodeDataType(collector, def.getName(), gui, def.getType(), def.getListItemType(), false);
+                DataType dataType = decodeDataType(collector, def.getName(), field, def.getType(), def.getListItemType(), false);
                 if (dataType != null) {
                     def.setDataType(dataType); // replace datatype
                 }
