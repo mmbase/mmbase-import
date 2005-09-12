@@ -100,8 +100,8 @@ public interface Logger {
 
     /**
      * Logs the message m with info priority. As `service', but
-     * focussed on things system administrators are ussually most
-     * interesed in, like authorisation issues. For example changes on
+     * focussed on things system administrators are usually most
+     * interested in, like authorisation issues. For example changes on
      * the database could be logged, such that one can see in the logs
      * what happened.
      */

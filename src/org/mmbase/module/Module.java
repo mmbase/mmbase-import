@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.68 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: Module.java,v 1.69 2005-09-12 14:07:39 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -437,11 +437,11 @@ public abstract class Module extends FunctionProvider {
                     mod.properties = new Hashtable(parser.getProperties());
 
                     // set the module name property using the module's filename
-                    // maybe we need a parser.getModuleName() function to improve on this
+                    // maybe we need a parser.getName() function to improve on this
                     mod.setName(fileName);
 
-                    mod.setMaintainer(parser.getModuleMaintainer());
-                    mod.setVersion(parser.getModuleVersion());
+                    mod.setMaintainer(parser.getMaintainer());
+                    mod.setVersion(parser.getVersion());
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
                               "which was specified in the module:'" + file + " '(" + cnfe + ")" );

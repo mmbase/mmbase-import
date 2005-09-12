@@ -6,248 +6,56 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package org.mmbase.util;
 
-import java.util.*;
-
-import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import org.mmbase.util.xml.ApplicationReader;
 
 /**
  * @javadoc
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ApplicationReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
- * @author Case Roole
- * @author Rico Jansen
+ * @deprecated-now use org.mmbase.util.xml.ApplicationReader
+ * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.24 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.25 2005-09-12 14:07:39 pierre Exp $
  */
-public class XMLApplicationReader extends XMLBasicReader {
-
-    /** Public ID of the Application DTD version 1.0 */
-    public static final String PUBLIC_ID_APPLICATION_1_0 = "-//MMBase//DTD application config 1.0//EN";
-    private static final String PUBLIC_ID_APPLICATION_1_0_FAULT = "-//MMBase/DTD application config 1.0//EN";
-    /** Public ID of the Application DTD version 1.1 */
-    public static final String PUBLIC_ID_APPLICATION_1_1 = "-//MMBase//DTD application config 1.1//EN";
-
-    /** DTD resource filename of the Application DTD version 1.0 */
-    public static final String DTD_APPLICATION_1_0 = "application_1_0.dtd";
-    /** DTD resource filename of the Application DTD version 1.1 */
-    public static final String DTD_APPLICATION_1_1 = "application_1_1.dtd";
-
-    /** Public ID of the most recent Application DTD */
-    public static final String PUBLIC_ID_APPLICATION = PUBLIC_ID_APPLICATION_1_1;
-    /** DTD resource filename of the most Application DTD */
-    public static final String DTD_APPLICATION = DTD_APPLICATION_1_1;
-
-    /**
-     * Register the Public Ids for DTDs used by XMLApplicationReader
-     * This method is called by XMLEntityResolve
-     * @since MMBase-1.7
-     */
-    public static void registerPublicIDs() {
-        // various builder dtd versions
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0, DTD_APPLICATION_1_0, XMLApplicationReader.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_1, DTD_APPLICATION_1_1, XMLApplicationReader.class);
-
-        // legacy public IDs (wrong, don't use these)
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0_FAULT, DTD_APPLICATION_1_0, XMLApplicationReader.class);
-    }
-
-    private Element root;
+public class XMLApplicationReader extends ApplicationReader {
 
     public XMLApplicationReader(String filename) {
-        super(filename, XMLApplicationReader.class);
-        root=getElementByPath("application");
+        super(XMLBasicReader.getInputSource(filename));
     }
-    public XMLApplicationReader(org.xml.sax.InputSource is) {
-        super(is, XMLApplicationReader.class);
-        root=getElementByPath("application");
+
+    public XMLApplicationReader(InputSource is) {
+        super(is);
     }
 
     /**
      * Get the name of this application
      */
     public String getApplicationName() {
-        return getElementAttributeValue(root,"name");
+        return getName();
     }
-
 
     /**
      * Get the version of this application
      */
     public int getApplicationVersion() {
-        String ver=getElementAttributeValue(root,"version");
-        if (!ver.equals(""))
-            try {
-                return Integer.parseInt(ver);
-            } catch (Exception e) {
-                return -1;
-            }
-        else
-            return -1;
+        return getVersion();
     }
 
     /**
      * Get the auto-deploy value of this application
      */
     public boolean getApplicationAutoDeploy() {
-        return getElementAttributeValue(root,"auto-deploy").equals("true");
+        return hasAutoDeploy();
     }
 
     /**
      * Get the maintainer of this application
      */
     public String getApplicationMaintainer() {
-        return getElementAttributeValue(root,"maintainer");
+        return getMaintainer();
     }
 
-    /**
-     * Get the applicationlist required by this application
-     * @since MMBase-1.7
-     */
-    public List getRequirements() {
-        List results=new Vector();
-        for(Iterator ns=getChildElements("application.requirements","requires");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Map bset=new HashMap();
-            bset.put("name",getElementAttributeValue(n3,"name"));
-            addAttribute(bset,n3,"maintainer");
-            addAttribute(bset,n3,"version");
-            addAttribute(bset,n3,"type");
-            results.add(bset);
-        }
-        return results;
-    }
-
-    private void addAttribute(Map bset, Element n, String attribute) {
-        String val=n.getAttribute(attribute);
-        if (!val.equals("")) {
-            bset.put(attribute,val);
-        }
-    }
-
-    /**
-     * Get the Builders needed for this application
-     */
-    public Vector getNeededBuilders() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.neededbuilderlist","builder");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
-            bset.put("name",getElementValue(n3));
-            addAttribute(bset,n3,"maintainer");
-            addAttribute(bset,n3,"version");
-            results.addElement(bset);
-        }
-        return results;
-    }
-
-
-    /**
-     * Get the RelDefs needed for this application
-     */
-    public Vector getNeededRelDefs() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.neededreldeflist","reldef");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
-            addAttribute(bset,n3,"source");
-            addAttribute(bset,n3,"target");
-            addAttribute(bset,n3,"direction");
-            addAttribute(bset,n3,"guisourcename");
-            addAttribute(bset,n3,"guitargetname");
-            addAttribute(bset,n3,"builder");
-            results.addElement(bset);
-        }
-        return results;
-    }
-
-
-    /**
-     * Get allowed relations for this application
-     */
-    public Vector getAllowedRelations() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.allowedrelationlist","relation");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
-            addAttribute(bset,n3,"from");
-            addAttribute(bset,n3,"to");
-            addAttribute(bset,n3,"type");
-            results.addElement(bset);
-        }
-        return results;
-    }
-
-    /**
-     * Get datasources attached to this application
-     */
-    public Vector getDataSources() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.datasourcelist","datasource");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
-            addAttribute(bset,n3,"path");
-            addAttribute(bset,n3,"builder");
-            results.addElement(bset);
-        }
-        return results;
-    }
-
-
-    /**
-     * Get relationsources attached to this application
-     */
-    public Vector getRelationSources() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.relationsourcelist","relationsource");
-            ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
-            addAttribute(bset,n3,"path");
-            addAttribute(bset,n3,"builder");
-            results.addElement(bset);
-        }
-        return results;
-    }
-
-    /**
-     * contextsources attached to this application
-     */
-    public Vector getContextSources() {
-        Vector results=new Vector();
-        for(Iterator ns=getChildElements("application.contextsourcelist","contextsource"); ns.hasNext(); ) {
-            Element n3=(Element)ns.next();
-            Hashtable bset=new Hashtable();
-            addAttribute(bset,n3,"path");
-            addAttribute(bset,n3,"type");
-            addAttribute(bset,n3,"goal");
-            results.addElement(bset);
-        }
-        return results;
-    }
-
-    /**
-     * Get the installation notices for this application
-     */
-    public String getInstallNotice() {
-        return getElementValue("application.install-notice");
-    }
-
-
-    /**
-     * Get the description for this application
-     */
-    public String getDescription() {
-        return getElementValue("application.description");
-    }
 
 }

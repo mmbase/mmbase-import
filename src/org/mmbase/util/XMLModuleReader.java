@@ -17,7 +17,7 @@ import org.mmbase.util.xml.ModuleReader;
  * @deprecated-now use org.mmbase.util.xml.ModuleReader
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: XMLModuleReader.java,v 1.17 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: XMLModuleReader.java,v 1.18 2005-09-12 14:07:39 pierre Exp $
  */
 public class XMLModuleReader extends ModuleReader {
 
@@ -27,6 +27,20 @@ public class XMLModuleReader extends ModuleReader {
 
     public XMLModuleReader(InputSource is) {
         super(is);
+    }
+
+    /**
+     * Get the version of this module
+     */
+    public int getModuleVersion() {
+        return getVersion();
+    }
+
+    /**
+     * Get the maintainer of this module
+     */
+    public String getModuleMaintainer() {
+        return getMaintainer();
     }
 
 }

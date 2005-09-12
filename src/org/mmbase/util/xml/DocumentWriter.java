@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.7 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: DocumentWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -74,7 +74,7 @@ abstract public class DocumentWriter extends DocumentReader {
         document=domImpl.createDocument(null,qualifiedName,doctype);
     }
 
-    
+
     /**
      * Constructs the document by reading it from a source.
      * @param source the input source from which to read the document
@@ -108,7 +108,7 @@ abstract public class DocumentWriter extends DocumentReader {
         try {
             messageRB = ResourceBundle.getBundle(resourcelocation);
         } catch (MissingResourceException e) {
-            log.error("Resource for XMLBuilderWriter is missing: "+resourcelocation);
+            log.error("Resource for DocumentWriter is missing: "+resourcelocation);
         }
     }
 
@@ -156,7 +156,7 @@ abstract public class DocumentWriter extends DocumentReader {
             args[2] = a3;
             return java.text.MessageFormat.format(message, args);
         } catch (MissingResourceException e) {
-            log.error("Resource for XMLBuilderWriter is broken. There is no " + key + " key in resource.");
+            log.error("Resource for DocumentWriter is broken. There is no " + key + " key in resource.");
         }
         return null;
     }
@@ -170,9 +170,9 @@ abstract public class DocumentWriter extends DocumentReader {
      * @return the newly created element
      */
     protected Element addContentElement(String tagname,String content, Element out) {
-        Element el=document.createElement(tagname);
-        if (content==null) content="";
-        Text tel=document.createTextNode(content);
+        Element el = document.createElement(tagname);
+        if (content == null) content="";
+        Text tel = document.createTextNode(content);
         el.appendChild(tel);
         out.appendChild(el);
         return el;
@@ -280,12 +280,13 @@ abstract public class DocumentWriter extends DocumentReader {
      * Gets whether the document will include comments
      * @return  if true, the document will include comments
      */
-    public boolean getIncludeComments() {
+    public boolean includeComments() {
         return includeComments;
     }
 
     /**
      * Generates the document and returns it as a string.
+     * @throws TransformerException if the document is malformed
      */
     public String writeToString() throws TransformerException {
         StringWriter strw=new StringWriter(500);
@@ -296,6 +297,8 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Generates the document and store it as a file in the given path.
      * @param filename the filepath where the configuration is to be stored
+     * @throws TransformerException if the document is malformed
+     * @throws IOException if the file cannot be written
      */
     public void writeToFile(String filename) throws IOException, TransformerException {
         writeToStream(new FileOutputStream(filename));
