@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.8 2005-09-09 14:50:13 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.9 2005-09-12 12:21:34 michiel Exp $
  */
 
 public class DataTypes {
@@ -86,7 +86,7 @@ public class DataTypes {
         if (log.isDebugEnabled()) log.debug("Using " + resources);
         ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
-         while (i.hasPrevious()) {
+        while (i.hasPrevious()) {
             try {
                 URL u = (URL) i.previous();
                 URLConnection con = u.openConnection();
@@ -100,8 +100,7 @@ public class DataTypes {
                     DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
                 }
             } catch (Exception e) {
-                log.error(e);
-                log.error(Logging.stackTrace(e));
+                log.error(e.getMessage(), e);
             }
         }
         if (log.isDebugEnabled()) log.debug(dataTypeCollector.toString());
