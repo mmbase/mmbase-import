@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.63 2005-09-08 13:05:13 michiel Exp $
+ * @version $Id: Casting.java,v 1.64 2005-09-12 08:52:03 michiel Exp $
  */
 
 import java.util.*;
@@ -516,7 +516,13 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Date) {
             long timeValue = ((Date)i).getTime();
-            if (timeValue!=-1) timeValue = timeValue / 1000;
+            if (timeValue !=-1) timeValue = timeValue / 1000;
+            if (timeValue > Integer.MAX_VALUE) {
+                timeValue = Integer.MAX_VALUE;
+            }
+            if (timeValue < Integer.MIN_VALUE) {
+                timeValue = Integer.MIN_VALUE;
+            }
             res = (int) timeValue;
         } else if (i instanceof Number) {
             res = ((Number)i).intValue();
