@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.42 2005-07-29 12:03:42 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.43 2005-09-12 17:32:45 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
 
-private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
 
     /**
      * Constructor for StringHandler.
@@ -48,114 +48,82 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
 
         String guiType = field.getGUIType();
         if (guiType.indexOf('.') > 0) {
-            EnumHandler eh = new EnumHandler(tag, field);
+            EnumHandler eh = new EnumHandler(tag, node, field);
             if (eh.isAvailable()) {
                 return eh.htmlInput(node, field, search);
             }
         }
         StringBuffer buffer = new StringBuffer();
         if(! search) {
-            if (field.getName().equals("owner")) {
-                Cloud cloud = tag.getCloudVar();
-                if (node == null) {
-                    buffer.append(cloud.getUser().getOwnerField());
-                } else if (! node.mayChangeContext()) {
-                    buffer.append(node.getContext());
-                } else {
-
-                    String value = node.getContext();
-                    buffer.append("<select name=\"" + prefix("owner") + "\"");
+            if (field.getDataType().validate("\n").isEmpty()) {
+                if(field.getMaxLength() > 2048)  {
+                    // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
+                    buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
                     addExtraAttributes(buffer);
-                    buffer.append(" >\n");
-                    StringList possibleContexts = node.getPossibleContexts();
-
-                    if (! possibleContexts.contains(value)) {
-                        possibleContexts.add(0, value);
-                    }
-                    StringIterator i = possibleContexts.stringIterator();
-                    while (i.hasNext()) {
-                        String listContext = i.nextString();
-                        buffer.append("  <option ");
-                        if (value.equals(listContext)){
-                            buffer.append("selected=\"selected\"");
-                        }
-                        buffer.append("value=\"" + listContext+ "\">");
-                        buffer.append(listContext);
-                        buffer.append("</option>\n");
-                    }
-                    buffer.append("</select>");
-                }
-            } else { // not 'owner'
-
-                if (guiType.equals("field") || guiType.equals("html") || field.getType() == Field.TYPE_XML) {
-                    if(field.getMaxLength() > 2048)  {
-                        // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
-                        addExtraAttributes(buffer);
-                        buffer.append(" name=\"");
-                        buffer.append(prefix(field.getName()));
-                        buffer.append("\">");
-                        String value = "";
-                        if (node != null) {
-                            value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
-                        }
-                        if (value.equals("")) {
-                            String opt = tag.getOptions();
-                            if (opt != null && opt.indexOf("noempty") > -1) {
-                                value = " ";
-                            }
-                        }
-                        buffer.append(value);
-                        buffer.append("</textarea>");
-                    } else {
-                        buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
-                        addExtraAttributes(buffer);
-                        buffer.append(" name=\"");
-                        buffer.append(prefix(field.getName()));
-                        buffer.append("\">");
-                        String value = "";
-                        if (node != null) {
-                            value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
-                        }
-                        if (value.equals("")) {
-                            String opt = tag.getOptions();
-                            if (opt != null && opt.indexOf("noempty") > -1) {
-                                value = " ";
-                            }
-                        }
-                        buffer.append(value);
-                        buffer.append("</textarea>");
-                    } 
-                } else { // not 'field' perhaps it's 'string'.
-                    String value;
-                    if (guiType.indexOf("password") > -1) {
-                        buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
-                        buffer.append("name=\"");
-                        if (guiType.indexOf("md5") > -1) {
-                            value = "";
-                        } else {
-                            value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
-                        }
-                    } else {
-                        buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
-                        if (guiType.indexOf("confirmpassword") > -1) {
-                            value = " ";
-                        } else {
-                            value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
-                        }
-                    }
+                    buffer.append(" name=\"");
                     buffer.append(prefix(field.getName()));
-                    buffer.append("\" ");
-                    String opt = tag.getOptions();
-                    if (opt != null && opt.indexOf("noautocomplete") > -1) { 
-                        buffer.append("autocomplete=\"off\" ");
-                    }                    
-                    addExtraAttributes(buffer);
-                    buffer.append(" value=\"");
+                    buffer.append("\">");
+                    String value = "";
+                    if (node != null) {
+                        value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
+                    }
+                    if (value.equals("")) {
+                        String opt = tag.getOptions();
+                        if (opt != null && opt.indexOf("noempty") > -1) {
+                            value = " ";
+                        }
+                    }
                     buffer.append(value);
-                    buffer.append("\" />");
+                    buffer.append("</textarea>");
+                } else {
+                    buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
+                    addExtraAttributes(buffer);
+                    buffer.append(" name=\"");
+                    buffer.append(prefix(field.getName()));
+                    buffer.append("\">");
+                    String value = "";
+                    if (node != null) {
+                        value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
+                    }
+                    if (value.equals("")) {
+                        String opt = tag.getOptions();
+                        if (opt != null && opt.indexOf("noempty") > -1) {
+                            value = " ";
+                        }
+                    }
+                    buffer.append(value);
+                    buffer.append("</textarea>");
+                } 
+            } else { // not 'field' perhaps it's 'string'.
+                String value;
+                if (guiType.indexOf("password") > -1) {
+                    buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
+                    buffer.append("name=\"");
+                    if (guiType.indexOf("md5") > -1) {
+                        value = "";
+                    } else {
+                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
+                    }
+                } else {
+                    buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
+                    if (guiType.indexOf("confirmpassword") > -1) {
+                        value = " ";
+                    } else {
+                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
+                    }
                 }
+                buffer.append(prefix(field.getName()));
+                buffer.append("\" ");
+                String opt = tag.getOptions();
+                if (opt != null && opt.indexOf("noautocomplete") > -1) { 
+                    buffer.append("autocomplete=\"off\" ");
+                }                    
+                addExtraAttributes(buffer);
+                buffer.append(" value=\"");
+                buffer.append(value);
+                buffer.append("\" />");
             }
+            
             return buffer.toString();
         } else { // in case of search
             return super.htmlInput(node, field, search);
@@ -174,23 +142,14 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
             log.debug("Received '" + fieldValue + "' for " + field);
         }
 
-        if (fieldName.equals("owner")) {
-            if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
-                node.setContext(fieldValue);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            if (guiType.indexOf("confirmpassword") > -1) {
-                // do not store 'confirm password' fields
-                return true;
-            }
-            if (guiType.indexOf('.') > 0) {
-                EnumHandler eh = new EnumHandler(tag, field);
-                if (eh.isAvailable()) {
-                    return eh.useHtmlInput(node, field);
-                }
+        if (guiType.indexOf("confirmpassword") > -1) {
+            // do not store 'confirm password' fields
+            return true;
+        }
+        if (guiType.indexOf('.') > 0) {
+            EnumHandler eh = new EnumHandler(tag, node, field);
+            if (eh.isAvailable()) {
+                return eh.useHtmlInput(node, field);
             }
         }
 
@@ -221,7 +180,7 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
 
         String guiType = field.getGUIType();
         if (guiType.indexOf('.') > 0) {
-            EnumHandler eh = new EnumHandler(tag, field);
+            EnumHandler eh = new EnumHandler(tag, null, field);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field);
             }
@@ -241,7 +200,7 @@ private static final Logger log = Logging.getLoggerInstance(StringHandler.class)
    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
        String guiType = field.getGUIType();
        if (guiType.indexOf('.') > 0) {
-           EnumHandler eh = new EnumHandler(tag, field);
+           EnumHandler eh = new EnumHandler(tag, null, field);
            if (eh.isAvailable()) {
                return eh.whereHtmlInput(field, query);
            }
