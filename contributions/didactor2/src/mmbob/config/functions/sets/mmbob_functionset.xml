@@ -303,6 +303,18 @@
 		</return> 
 	</function>
 
+	<function name="newAdministrator">
+		<description>Add a administrator within a forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>newAdministrator</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="String" description="MMBase node number of current Poster (on the page)" />
+		<param name="newadministrator" type="String" description="MMBase node number of moderator you want to add" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="getPostAreaInfo">
 		<description>Provide general info on this postarea within the given forum</description>
 		<type>class</type>
