@@ -13,7 +13,7 @@ import java.util.Properties;
  * @since MMBase-1.8
  * 
  */
-public class TypedRelationEventWrapper implements RelationEventListener {
+public class TypedRelationEventListenerWrapper implements RelationEventListener {
     private String nodeType;
 
     private RelationEventListener wrappedListener;
@@ -22,7 +22,7 @@ public class TypedRelationEventWrapper implements RelationEventListener {
      * @param nodeType should be a valid builder name
      * @param wrappedListener the relation event listener you want to wrap
      */
-    public TypedRelationEventWrapper(String nodeType,
+    public TypedRelationEventListenerWrapper(String nodeType,
             RelationEventListener wrappedListener) {
         this.nodeType = nodeType;
         this.wrappedListener = wrappedListener;
@@ -33,8 +33,8 @@ public class TypedRelationEventWrapper implements RelationEventListener {
      * 
      * @see org.mmbase.core.event.RelationEventListener#fire(org.mmbase.core.event.RelationEvent)
      */
-    public void fire(RelationEvent event) {
-        wrappedListener.fire(event);
+    public void notify(RelationEvent event) {
+        wrappedListener.notify(event);
     }
 
     /*

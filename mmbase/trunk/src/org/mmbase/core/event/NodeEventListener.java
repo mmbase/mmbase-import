@@ -10,5 +10,5 @@ package org.mmbase.core.event;
  * @since MMBase-1.8
  */
 public interface NodeEventListener extends EventListener {
-	public void fire(NodeEvent event);
+	public void notify(NodeEvent event);
 }

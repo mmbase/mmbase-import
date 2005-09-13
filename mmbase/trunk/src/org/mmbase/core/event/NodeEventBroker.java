@@ -52,13 +52,13 @@ public class NodeEventBroker extends AbstractEventBroker {
 		if(p != null){
 		    String nodeType = p.getProperty(PROPERTY_NODETYPE);
 		    if(nodeType.equals(ne.getBuilderName())){
-		        nel.fire(ne);
+		        nel.notify(ne);
 		    }else{
 		        log.debug("the constraints set by "+nel+" were not met by event "+ne);
 		    }
 		}else{
 		    //no constraints
-		    nel.fire(ne);
+		    nel.notify(ne);
 		}
 	}
 
