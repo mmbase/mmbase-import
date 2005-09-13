@@ -50,13 +50,13 @@ public class RelationEventBroker extends AbstractEventBroker {
 			if(p != null){
 			    String nodeType = p.getProperty(PROPERTY_NODETYPE);
 			    if(nodeType.equals(re.getRelationSourceType()) || nodeType.equals(re.getRelationDestinationType())){
-			        rel.fire(re);
+			        rel.notify(re);
 			    }else{
 			        log.debug("the constraints set by "+rel+" were not met by event "+re);
 			    }
 			}else{
 			    //no constraints
-			    rel.fire(re);
+			    rel.notify(re);
 			}
 
 	}
