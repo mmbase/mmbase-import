@@ -125,6 +125,7 @@
              <include name="editwizards/**"/>
              <include name="gfx/**"/>
              <include name="help/**"/>
+             <include name="mmbase/**"/>
              <include name="mmeditors/**"/>
              <include name="shared/**"/>
              <include name="users/**"/>
@@ -294,7 +295,7 @@
 
     <property name="tomcat5-antlet.deploy.archive" value= "${build.dir}/didactor.war"/>
    <target name="war" depends="webapp">
-     <jar destfile="${build.dir}/${war.name}.war"
+     <jar destfile="${build.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
           basedir="${build.dir}/webapp"
      />
    </target>
