@@ -30,8 +30,8 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
     /* (non-Javadoc)
      * @see org.mmbase.core.event.NodeEventListener#fire(org.mmbase.core.event.NodeEvent)
      */
-    public void fire(NodeEvent event) {
-        wrappedListener.fire(event);
+    public void notify(NodeEvent event) {
+        wrappedListener.notify(event);
     }
 
     /* (non-Javadoc)

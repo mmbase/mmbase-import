@@ -9,5 +9,5 @@ package org.mmbase.core.event;
  * @since MMBase-1.8
  */
 public interface RelationEventListener extends EventListener {
-	public void fire(RelationEvent event); 
+	public void notify(RelationEvent event); 
 }
