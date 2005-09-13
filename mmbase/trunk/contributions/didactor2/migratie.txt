@@ -1,5 +1,29 @@
 Migratie issues
 
+2005-09-12
+    ALTER TABLE mmb_components ADD mayrelateclasses TINYINT(1);
+
+    Please run /migrate-2005-09-12.jsp
+
+2005-09-11
+
+    1.place new update 
+    2.place *.xml from didactor/WEB-INF/config/applications/MMBob/old-xml/ to didactor/WEB-INF/config/builders/ 
+    3.start Tomcat
+    4.run /migrate-2005-09-11.jsp to remove old forum
+    5.stop Tomcat
+    6.run SQL to drop tables:
+      DROP TABLE mmb_forums;
+      DROP TABLE mmb_forumthreads;
+      DROP TABLE mmb_forummessages;
+
+    7.delete forums.xml , forumthreads.xml , forummessages.xml from didactor/WEB-INF/config/builders/
+    8.place forums.xml from didactor/WEB-INF/config/applications/MMBob/builders/ to didactor/WEB-INF/config/builders/
+    9.start Tomcat
+
+2005-09-10
+    ALTER TABLE mmb_rolerel ADD role VARCHAR(255);
+
 2005-08-25
     ALTER TABLE mmb_htmlpages ADD path BLOB DEFAULT NULL;
 

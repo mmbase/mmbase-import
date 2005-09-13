@@ -48,6 +48,11 @@
                         <mm:write referid="link" escape="none"/><mm:nodeinfo type="type"/></a>
 
                      </mm:relatednodes>
+
+                     <mm:relatednodes type="classes" max="1">
+                        <mm:write referid="link" escape="none"/><mm:nodeinfo type="type"/></a>
+
+                     </mm:relatednodes>
                   </di:cell>
 
                   <di:cell><mm:write referid="link" escape="none"/><mm:field name="name"/></a></di:cell>

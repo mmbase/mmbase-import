@@ -96,7 +96,39 @@
          </mm:notpresent>
 
       </mm:relatednodes>
-  </mm:listnodes>
+      <mm:node number="$component" notfound="skip">
+         <mm:field name="mayrelateclasses">
+            <mm:compare value="1">
+               <mm:list nodes="$p" path="providers,educations,classes" fields="classes.number" distinct="true">
+                  <mm:remove referid="isrelated"/>
+                  <mm:node element="classes" id="c">
+                     <mm:related path="settingrel,components" constraints="components.number=$component" max="1">
+                        <mm:import id="isrelated"><mm:field name="settingrel.number"/></mm:import>
+                     </mm:related>
+               
+                     <mm:remove referid="levelnum"/>
+                     <mm:field name="number" id="levelnum"/>
+                     <mm:remove referid="level"/>
+                     <mm:import externid="level$levelnum"/>
+
+                     <mm:present referid="level$levelnum">
+                        <mm:notpresent referid="isrelated">
+                           <mm:createrelation role="settingrel" source="component" destination="c"/>
+                        </mm:notpresent>
+                     </mm:present>
+
+                     <mm:notpresent referid="level$levelnum">
+                        <mm:present referid="isrelated">
+                           <mm:deletenode number="$isrelated"/>
+                        </mm:present>
+                     </mm:notpresent>
+                  </mm:node>
+
+               </mm:list>
+            </mm:compare>
+         </mm:field>
+      </mm:node>
+   </mm:listnodes>
 
   <mm:redirect referids="$referids,component" page="$callerpage"/>
 
@@ -191,6 +223,23 @@
                         <td><mm:field name="name"/></td>
                      </tr>
                   </mm:relatednodes>
+                  <mm:node number="$component" notfound="skip">
+                     <mm:field name="mayrelateclasses">
+                        <mm:compare value="1">
+                           <mm:list nodes="$p" path="providers,educations,classes" orderby="classes.name" fields="classes.number" distinct="true">
+                              <mm:node element="classes" id="c">
+                                 <tr>
+                                    <td></td>
+                                    <td>
+                                       <input type="checkbox" name="level<mm:field name="number"/>" value="on" <mm:list nodes="$c" path="classes,settingrel,components" constraints="components.number=${component}" max="1">checked="checked"</mm:list>/>
+                                    </td>
+                                    <td><mm:field name="name"/></td>
+                                 </tr>
+                              </mm:node>
+                           </mm:list>
+                        </mm:compare>
+                     </mm:field>
+                  </mm:node>
                </mm:listnodes>
             </table>
 
@@ -218,7 +267,7 @@
 </mm:compare>
 <mm:compare referid="components_show_cockpit" value="true" inverse="true">
       </body>
-   </html
+   </html>
 </mm:compare>
 
 </mm:cloud>
