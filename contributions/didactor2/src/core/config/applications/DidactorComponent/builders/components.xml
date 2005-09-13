@@ -107,5 +107,36 @@
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
+    <field>
+      <!-- field descriptions (help texts) -->
+      <descriptions>
+        <description xml:lang="nl">Kan het component worden geconfigureerd voor klassen?</description>
+        <description xml:lang="en">Can it be configured component for classes?</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">MagKlassenToevoegen</guiname>
+        <guiname xml:lang="en">MayRelateClasses</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>-1</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>mayrelateclasses</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" size="5" state="persistent">STRING</type>
+      </db>
+    </field>
   </fieldlist>
 </builder>

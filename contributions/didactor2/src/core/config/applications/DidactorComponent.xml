@@ -20,6 +20,7 @@
 	<allowedrelationlist>
 		<relation from="providers" to="components" type="settingrel" />
 		<relation from="educations" to="components" type="settingrel" />
+		<relation from="classes" to="components" type="settingrel" />
 		<relation from="people" to="components" type="settingrel" />
 		<relation from="settingrel" to="settings" type="related" />
 	</allowedrelationlist>
