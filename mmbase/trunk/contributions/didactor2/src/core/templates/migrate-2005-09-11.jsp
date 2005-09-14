@@ -30,7 +30,7 @@
    <mm:listnodes type="typerel" constraints="dnumber='forumthreads'">
       <mm:deletenode deleterelations="true"/>
    </mm:listnodes>
-   <mm:lisnodes type="typerel" constraints="snumber='forumthreads'">
+   <mm:listnodes type="typerel" constraints="snumber='forumthreads'">
       <mm:deletenode deleterelations="true"/>
    </mm:listnodes>
 
