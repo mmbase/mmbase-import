@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.165 2005-09-06 21:18:40 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.166 2005-09-14 11:38:31 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -389,8 +389,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     protected void setValueWithoutChecks(String fieldName, Object value) {
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
-        if ("unknown".equals(result)) {
-            throw new BridgeException("Can't change unknown field '" + fieldName + "'.");
+        if (TemporaryNodeManager.UNKNOWN == result) {
+            throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + " of nodeManager '" + getNodeManager().getName() +"'");
         }
         changed = true;
     }
