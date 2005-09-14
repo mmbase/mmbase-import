@@ -1,6 +1,10 @@
-<?xml version="1.0"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="insrel" maintainer="mmbase.org" name="idrel" version="0">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="idrel" maintainer="mmbase.org" version="0" extends="insrel">
 
   <class>org.mmbase.module.builders.IdRel</class>
 
@@ -32,7 +36,6 @@
         <guiname xml:lang="en">ID</guiname>
         <guiname xml:lang="nl">ID</guiname>
         <guiname xml:lang="eo">ID</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -55,7 +58,6 @@
         <guiname xml:lang="en">Destination ID</guiname>
         <guiname xml:lang="nl">Doel-ID</guiname>
         <guiname xml:lang="eo">Cela ID</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -70,14 +72,13 @@
     </field>
     <field>
       <descriptions>
-        <description xml:lang="en">Class</description>
-        <description xml:lang="nl">Klasse</description>
+        <description xml:lang="en">CSS Class</description>
+        <description xml:lang="nl">CSS-Klasse</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Class</guiname>
         <guiname xml:lang="nl">Klasse</guiname>
         <guiname xml:lang="eo">Klaso</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
