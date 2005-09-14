@@ -4,10 +4,8 @@
 <mm:node number="$user" notfound="skip">
     <mm:import id="dummy" reset="true"><mm:field name="username"/></mm:import>
     <mm:relatednodes type="posters">
-        <mm:remove referid="posterid" />
-        <mm:import id="posterid"><mm:field name="number"/></mm:import>
+        <mm:import id="haveposter" reset="true">yes</mm:import>
     </mm:relatednodes>
-    <mm:compare referid="posterid" value="-1">
         <mm:import id="account"><mm:field name="username" /></mm:import>
         <mm:import id="password">blank</mm:import>
         <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
@@ -27,8 +25,10 @@
             <mm:remove referid="posterid" />
             <mm:import id="posterid"><mm:field name="posters.number"/></mm:import>
         </mm:list>
-        <mm:createrelation role="related" source="user" destination="posterid" />
-    </mm:compare>
+        <mm:notpresent referid="haveposter">
+            <mm:createrelation role="related" source="user" destination="posterid" />
+        </mm:notpresent>
+
 </mm:node>
 
 <mm:compare referid="posterid" value="">
