@@ -48,9 +48,7 @@
     <mm:import id="dummy" reset="true"><mm:write referid="posterid"/></mm:import>
     <mm:import id="posterid" reset="true"><mm:write referid="adminposter"/></mm:import>
     <mm:import id="newadministrator" reset="true"><mm:write referid="dummy"/></mm:import>
-    +<mm:write referid="forumid"/>|<mm:write referid="posterid"/>|<mm:write referid="newadministrator"/>+<br>
-    <mm:import id="feedback" reset="true"><mm:booleanfunction set="mmbob" name="newAdministrator" referids="forumid,posterid,newadministrator"/>
-    </mm:import>aaa<mm:write referid="feedback"/>fsdf
+    <mm:booleanfunction set="mmbob" name="newAdministrator" referids="forumid,posterid,newadministrator"/>
     <mm:import id="posterid" reset="true"><mm:write referid="dummy"/></mm:import>
   </di:hasrole>
 
