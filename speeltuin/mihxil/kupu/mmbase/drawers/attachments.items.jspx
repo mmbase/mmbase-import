@@ -7,8 +7,9 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
     id="drawer" scope="request">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:listnodescontainer referid="query">
-    <items>
+  <mm:content type="text/xml">
+    <mm:listnodescontainer referid="query">
+      <items>
       <mm:listnodes id="attachment">
         <resource id="${attachment.number}">          
           <uri><mm:attachment /> </uri>
@@ -17,6 +18,7 @@
           <icon><mm:function name="iconurl" /></icon>
         </resource>
       </mm:listnodes>
-    </items>
+      </items>
   </mm:listnodescontainer>
+  </mm:content>
 </mm:context>

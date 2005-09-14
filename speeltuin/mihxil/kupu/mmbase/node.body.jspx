@@ -30,7 +30,9 @@
             </mm:relatednode>
           </mm:listrelations>
         </mm:formatter>
+        <!--
         <mm:log>Sending <mm:write referid="sent" escape="none" /></mm:log>
+        -->
       </mm:node>
     </mm:present>
 

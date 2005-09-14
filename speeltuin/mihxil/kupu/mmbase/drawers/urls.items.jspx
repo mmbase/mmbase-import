@@ -7,16 +7,18 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
     id="drawer" scope="request">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:listnodescontainer referid="query">
-    <items>
-      <mm:listnodes id="url">
-        <resource id="${url.number}">   
-          <uri><mm:field name="url" /></uri>
-          <title><mm:field name="title"><mm:write /><mm:isempty><mm:field name="url"><mm:write /><mm:isempty>No title</mm:isempty></mm:field></mm:isempty></mm:field></title>
-          <description><mm:field name="url" /></description>
+  <mm:content type="text/xml">
+    <mm:listnodescontainer referid="query">
+      <items>
+        <mm:listnodes id="url">
+          <resource id="${url.number}">   
+            <uri><mm:field name="url" /></uri>
+            <title><mm:field name="title"><mm:write /><mm:isempty><mm:field name="url"><mm:write /><mm:isempty>No title</mm:isempty></mm:field></mm:isempty></mm:field></title>
+            <description><mm:field name="url" /></description>
           <icon>kupuimages/link.png</icon>
-        </resource>
-      </mm:listnodes>
-    </items>
-  </mm:listnodescontainer>
+          </resource>
+        </mm:listnodes>
+      </items>
+    </mm:listnodescontainer>
+  </mm:content>
 </mm:context>

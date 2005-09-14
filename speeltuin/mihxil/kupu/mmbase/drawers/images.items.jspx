@@ -7,25 +7,27 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
     id="drawer" scope="request">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:listnodescontainer referid="query">
-    <items>
-      <mm:listnodes id="image">
-        <resource id="${image.number}">          
-          <uri><mm:image template="s(80)" /></uri>
-          <title><mm:field name="title" /></title>
-          <size><mm:field name="filesize" />b</size>
-          <mm:image>
-            <height>${dimension.height}</height>
-            <width>${dimension.width}</width>
-          </mm:image>
-          <mm:image template="s(100)">
-            <preview height="${dimension.height}" width="${dimension.width}">${_}</preview>
-          </mm:image>
-          <mm:image template="s(40)">
-            <icon height="${dimension.height}" width="${dimension.width}">${_}</icon>
-          </mm:image>
-        </resource>
-      </mm:listnodes>
-    </items>
-  </mm:listnodescontainer>
+  <mm:content type="text/xml">
+    <mm:listnodescontainer referid="query">
+      <items>
+        <mm:listnodes id="image">
+          <resource id="${image.number}">          
+            <uri><mm:image template="s(80)" /></uri>
+            <title><mm:field name="title" /></title>
+            <size><mm:field name="filesize" />b</size>
+            <mm:image>
+              <height>${dimension.height}</height>
+              <width>${dimension.width}</width>
+            </mm:image>
+            <mm:image template="s(100)">
+              <preview height="${dimension.height}" width="${dimension.width}">${_}</preview>
+            </mm:image>
+            <mm:image template="s(40)">
+              <icon height="${dimension.height}" width="${dimension.width}">${_}</icon>
+            </mm:image>
+          </resource>
+        </mm:listnodes>
+      </items>
+    </mm:listnodescontainer>
+  </mm:content>
 </mm:context>
