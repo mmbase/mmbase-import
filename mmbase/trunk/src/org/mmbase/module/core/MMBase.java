@@ -10,44 +10,19 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
-import org.mmbase.core.event.AbstractEventBroker;
-import org.mmbase.core.event.Event;
-import org.mmbase.core.event.EventListener;
-import org.mmbase.core.event.NodeEventListener;
-import org.mmbase.core.event.RelationEventListener;
-import org.mmbase.core.event.TypedNodeEventListenerWrapper;
-import org.mmbase.core.event.TypedRelationEventWrapper;
+import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.builders.Versions;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.corebuilders.OAlias;
-import org.mmbase.module.corebuilders.RelDef;
-import org.mmbase.module.corebuilders.TypeDef;
-import org.mmbase.module.corebuilders.TypeRel;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
-import org.mmbase.storage.StorageConfigurationException;
-import org.mmbase.storage.StorageError;
-import org.mmbase.storage.StorageException;
-import org.mmbase.storage.StorageManager;
-import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.storage.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
@@ -68,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.148 2005-09-09 19:24:40 ernst Exp $
+ * @version $Id: MMBase.java,v 1.149 2005-09-14 09:10:47 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
