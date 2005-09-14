@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.64 2005-09-12 08:52:03 michiel Exp $
+ * @version $Id: Casting.java,v 1.65 2005-09-14 14:00:56 michiel Exp $
  */
 
 import java.util.*;
@@ -224,11 +224,11 @@ public class Casting {
         } else if (o instanceof Node) {
             return new MapNode((Node)o) {
                     public Object getValue(String fieldName) {
-                        if (//getNodeManager().hasField(fieldName) && 
-                            getNodeManager().getField(fieldName).getType() == org.mmbase.bridge.Field.TYPE_NODE) {
-                            return wrap(getNodeValue(fieldName), escaper);
-                        } else {
-                            return escape(escaper, super.getStringValue(fieldName));
+                        switch(getNodeManager().getField(fieldName).getType()) {
+                        case org.mmbase.bridge.Field.TYPE_NODE:     return wrap(getNodeValue(fieldName), escaper);
+                        case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
+                        case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
+                        default: return escape(escaper, super.getStringValue(fieldName));
                         }
                     }
                     public String toString() {
