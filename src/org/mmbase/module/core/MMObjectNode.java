@@ -18,6 +18,7 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.DynamicDate;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.w3c.dom.Document;
@@ -34,7 +35,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.151 2005-09-09 20:13:57 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.152 2005-09-14 14:34:02 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -499,6 +500,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             // make sure this value remains not in the blob-cache.
             BlobCache blobs = parent.getBlobCache(fieldName);
             blobs.remove(blobs.getKey(getNumber(), fieldName));
+        }
+
+        if (fieldValue instanceof DynamicDate) {
+            // 'dynamic' values can of course not be stored in database, and that is not the intentention too, so 
+            // store a static version
+            fieldValue = new Date(((Date) fieldValue).getTime());
         }
 
         if (log.isDebugEnabled()) {
