@@ -1,7 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="object" maintainer="mmbase.org" name="blocks" version="0">
-  <status>active</status>
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="blocks" maintainer="mmbase.org" version="0" extends="object">
   <searchage>31</searchage>
   <names>
     <singular xml:lang="nl">Blok</singular>
@@ -13,7 +16,7 @@
     <description xml:lang="nl">Blokken in een tekst (noten en zo)</description>
     <description xml:lang="en">Blocks in a text (like notes)</description>
   </descriptions>
-  <properties/>
+
   <fieldlist>
     <field>
       <descriptions>
@@ -42,7 +45,6 @@
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
-        <guitype>mmxf</guitype>
       </gui>
       <editor>
         <positions>
@@ -51,8 +53,10 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
+        <type key="false" notnull="false" size="64000" state="persistent">XML</type>
       </db>
     </field>
   </fieldlist>
