@@ -20,14 +20,17 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.39 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.40 2005-09-14 11:36:51 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
-    // logging
     private static final Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class);
 
-    // MMBase module
+    /**
+     * Return value for setObjectField
+     */
+    public static final String UNKNOWN = "unknown";
+
     private MMBase mmbase;
 
     /**
@@ -147,10 +150,11 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
     /**
      * @javadoc
+     * @return An empty string if succesfull, the string {@link #UNKNOWN} if the field was not found in the node.
      */
-    public String setObjectField(String owner,String key,String field,Object value) {
+    public String setObjectField(String owner, String key, String field, Object value) {
         String stringValue;
-        MMObjectNode node = getNode(owner,key);
+        MMObjectNode node = getNode(owner, key);
         if (node != null) {
             int type = node.getDBType(field);
             if (type >= 0) {
@@ -164,8 +168,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                     case Field.TYPE_NODE:
                     case Field.TYPE_INTEGER:
                         try {
-                            int i=-1;
-                            if (!stringValue.equals("")) i=Integer.parseInt(stringValue);
+                            int i = -1;
+                            if (!stringValue.equals("")) i = Integer.parseInt(stringValue);
                             node.setValue(field,i);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
@@ -208,7 +212,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         // test if this is numeric
                         try {
                             if (!stringValue.equals("")) {
-                                Long l=Long.getLong(stringValue);
+                                Long l = Long.getLong(stringValue);
                                 node.setValue(field, Casting.toBoolean(l));
                             } else {
                                 node.setValue(field, false);
@@ -218,7 +222,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         }
                         break;
                     default:
-                        log.error("Unknown type for field "+field);
+                        log.error("Unknown type for field " + field);
                         break;
                     }
                 } else {
@@ -227,7 +231,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
             } else {
                 node.setValue(field, value);
                 log.warn("Invalid type for field " + field);
-                return "unknown";
+                return UNKNOWN;
             }
         } else {
             log.error("setObjectField(): Can't find node : "+key);
