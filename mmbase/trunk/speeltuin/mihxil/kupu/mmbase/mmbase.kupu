@@ -34,6 +34,7 @@
   </kupu:part>
   <kupu:part name="header">
     <div id="header">
+      <mm:import id="back" externid="kupu_back" from="session"><jsp:expression>request.getHeader("Referer")</jsp:expression></mm:import>
       <fmt:bundle basename="org.mmbase.kupu.Messages">
         <div id="back">
           <a href="javascript:history.back()">

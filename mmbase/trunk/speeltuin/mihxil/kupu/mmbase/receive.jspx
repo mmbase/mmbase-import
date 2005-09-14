@@ -15,7 +15,7 @@
           <mm:compare referid="fields" value="false">
             <mm:param name="org.mmbase.xml-mode" value="kupu" />
             <jsp:scriptlet>
-              log.info("Saving body of " + node.getNumber());
+              log.service("Saving body of " + node.getNumber());
               StringBuffer received = new StringBuffer();
               BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
               String line = r.readLine();
@@ -25,7 +25,7 @@
               }
               node.setStringValue("body", received.toString());
               node.commit();
-              log.info("Saved " + received.toString());
+              log.debug("Saved " + received.toString());
             </jsp:scriptlet>
             <p>
               Received:

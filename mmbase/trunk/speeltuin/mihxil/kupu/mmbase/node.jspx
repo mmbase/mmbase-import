@@ -31,12 +31,14 @@
                       <th><mm:function name="index" /></th>
                     </mm:hasfunction>
                   </tr>
-                  <tr>
-                    <td colspan="2">
-                      <mm:field name="lastmodifiedby" />:
-                      <nobr><mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field></nobr>
-                    </td>
-                  </tr>
+                  <mm:hasfield name="lastmodifiedby">
+                    <tr>
+                      <td colspan="2">
+                        <mm:field name="lastmodifiedby" />:
+                        <nobr><mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field></nobr>
+                      </td>
+                    </tr>
+                  </mm:hasfield>
                 </table>
                 <a class="create" title="New" href="javascript: createSubNode(${node});">
                   <mm:link page="/mmbase/style/images/create.gif">
@@ -51,10 +53,10 @@
                           <mm:fieldinfo type="guiname" />
                           <mm:fieldinfo type="name">
                             <mm:compare value="title">
-                              <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value);'" type="input" />
+                              <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value); kupu.content_changed=true;'" type="input" />
                             </mm:compare>
                             <mm:compare value="title" inverse="true">
-                              <mm:fieldinfo  options="noempty" type="input" />
+                              <mm:fieldinfo  options="noempty,extra:onChange='kupu.content_changed=true;'" type="input" />
                             </mm:compare>
                           </mm:fieldinfo>
                         </p>
