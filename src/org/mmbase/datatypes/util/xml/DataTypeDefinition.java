@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.18 2005-09-12 17:29:52 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.19 2005-09-14 11:01:26 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -127,7 +127,7 @@ public class DataTypeDefinition {
             if (baseDataType == null) {
                 typeString = "ANONYMOUS" + anonymousSequence++;
             } else {
-                typeString = baseDataType.getName() + "." + anonymousSequence++;
+                typeString = baseDataType.getName() + "_" + anonymousSequence++;
             }
         }
         if ("byte".equals(typeString)) {
