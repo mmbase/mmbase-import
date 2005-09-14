@@ -5,9 +5,35 @@
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"            
             >
   <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="java.io.*,org.mmbase.util.*,org.mmbase.util.externalprocess.CommandLauncher" session="true" errorPage="error.jspx" />
 
-  <mm:import externid="text" />
-  <mm:locale language="$rich_language">
+  <mm:import externid="text" jspvar="text" vartype="string" />
+  <spellcheck_result>
+    <jsp:scriptlet>      
+      CommandLauncher launcher = new CommandLauncher("SpellChecker");
+      ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+      InputStream inputStream = new ByteArrayInputStream(text.getBytes("UTF-8"));
 
-  </mm:locale>
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); // XXXX TODO should use piping here, and perhaps even pooling
+      launcher.execute(new String[]{"aspell", "-a", "-H", "--lang=nl", "--encoding=utf-8"});
+      launcher.waitAndWrite(inputStream, outputStream, errorStream);
+
+      BufferedReader output = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray()), "UTF-8"));
+      String line = output.readLine();
+      while (line != null) {
+        if (line.startsWith("&amp; ")) {
+          int colon = line.indexOf(":");
+          int wordEnd = line.substring(2).indexOf(" ");
+    </jsp:scriptlet>
+    <incorrect>
+      <word><jsp:expression>line.substring(2, wordEnd + 2)</jsp:expression></word>
+      <replacements><jsp:expression>line.substring(colon + 1)</jsp:expression></replacements>
+    </incorrect>    
+    <jsp:scriptlet>
+        }
+        line = output.readLine();
+      }
+    </jsp:scriptlet>
+    <error><jsp:expression>new String(errorStream.toByteArray(), "UTF-8")</jsp:expression></error>
+  </spellcheck_result> 
 </mm:content>
