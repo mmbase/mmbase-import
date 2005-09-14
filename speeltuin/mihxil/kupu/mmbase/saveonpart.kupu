@@ -6,10 +6,10 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
     >
-  <kupu:id>$Id: saveonpart.kupu,v 1.2 2005-04-19 21:23:58 michiel Exp $</kupu:id>
+  <kupu:id>$Id: saveonpart.kupu,v 1.3 2005-09-14 17:24:31 michiel Exp $</kupu:id>
 
   <kupu:part name="jsincludes">
-    <script type="text/javascript" src="${kupu_common}/kupusaveonpart.js"><jsp:text> </jsp:text></script>
+    <!-- saveonpart function is in mmbase.js -->
   </kupu:part>
 
 </kupu:feature>

@@ -1,5 +1,9 @@
 var divids = 0;
 
+/**
+ * This tool is to create 'blocks'
+ */
+
 function DivsTool() {
     /* tool to add 'divs' */
 
@@ -24,16 +28,19 @@ function DivsTool() {
         var child;
         if (! text || text == '') {
             child = doc.createElement("p");
+            child.appendChild(doc.createTextNode(".")); // should not be empty, otherwise doesn't work well in firefox
         } else {
             child = doc.createTextNode(text);
         }        
-        var marker = doc.createTextNode("");
+        var marker = doc.createTextNode(""); 
         div.appendChild(child);
         var currp = this.editor.getNearestParentOfType(currnode, 'p');
         if (currp) {
+            this.editor.logMessage(_("Found paragraph"));
             currp.parentNode.insertBefore(div, currp);
-            this.editor.insertNodeAtSelection(doc.createTextNode(""), 1);
+            this.editor.insertNodeAtSelection(doc.createTextNode(""), 1); 
         } else {
+            this.editor.logMessage(_("Didn't find paragraph"));
             div = this.editor.insertNodeAtSelection(div, 1);
         }
         this.editor.insertNodeAtSelection(marker, 1);

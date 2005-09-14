@@ -19,6 +19,7 @@ function Map() {
     }
 }
 
+
 /**
  * Caches of loaded nodes (represented in HTML)
  */
@@ -86,10 +87,10 @@ function mmbaseInit(node) {
     KupuZoomTool.prototype.commandfunc = function(button, editor) {
         this.origcommandfunc(button, editor);
         if (this.zoomed == true) {
-            xGetElementById("leftColumn").style.display = "none";
-            //xGetElementById("header").style.display = "none";
+            document.getElementById("leftColumn").style.display = "none";
+            //document.getElementById("header").style.display = "none";
         } else {
-            xGetElementById("leftColumn").style.display = "block";
+            document.getElementById("leftColumn").style.display = "block";
             adjustLayout();
         }
     }
@@ -124,22 +125,23 @@ function addMultiPart(content, a) {
  * Called by the save button.
  */
 function saveNode(button, editor) {
+    // hmm, i think editor == kupu
     kupu.logMessage(_("Saving body (kupu)") + " " + currentNode);
     editor.saveDocument(undefined, true); // kupu-part of save
     var content = "";
     kupu.logMessage(_("Saving fields (form)") + " " + currentNode);
 
     
-    var a = xGetElementsByTagName('input', xGetElementById('nodefields'));
+    var a = document.getElementsByTagName('input', document.getElementById('nodefields'));
     for (i=0; i < a.length; i++) {
         content = addMultiPart(content, a[i]);
     }
-    a = xGetElementsByTagName('select', xGetElementById('nodefields'));
+    a = document.getElementsByTagName('select', document.getElementById('nodefields'));
     for (i=0; i < a.length; i++) {
         content = addMultiPart(content, a[i]);
     }
 
-    a = xGetElementsByTagName('textarea', xGetElementById('nodefields'));
+    a = document.getElementsByTagName('textarea', document.getElementById('nodefields'));
     for (i=0; i < a.length; i++) {
         content = addMultiPart(content, a[i]);
     }
@@ -161,6 +163,7 @@ function saveNode(button, editor) {
     loadNode(node);
 
 }
+
 
 /**
  * If title is edited, tree must be updated (used in onKeyUp)
@@ -309,4 +312,14 @@ function createSubNode(nodeNumber) {
 }
 
 
-
+/**
+ * our own version to also save the other fields 
+ */
+function saveOnPart() {
+    /* ask the user if (s)he wants to save the document before leaving */
+    if (kupu.content_changed && 
+        confirm(_('You have unsaved changes. Do you want to save before leaving the page?'))) {
+        kupu.config.reload_src = 0;
+        saveNode(null, kupu);
+    };
+};

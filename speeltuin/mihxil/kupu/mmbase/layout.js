@@ -5,10 +5,10 @@ if (document.getElementById || document.all) { // minimum dhtml support required
   window.onload = winOnLoad;
 }
 function winOnLoad() {
-  var ele = xGetElementById('leftColumn');
+  var ele = document.getElementById('leftColumn');
   if (ele && xDef(ele.style, ele.offsetHeight)) { // another compatibility check
     adjustLayout();
-    xAddEventListener(window, 'resize', winOnResize, false);
+    addEventHandler(window, 'resize', winOnResize, window);
   }
 }
 function winOnResize() {
@@ -17,7 +17,7 @@ function winOnResize() {
 
 function rePosition(id) {
     // This seems to be only necessary in Mozilla.
-    var el = xGetElementById(id);
+    var el = document.getElementById(id);
     el.style.position = "absolute";
     el.style.left = (xClientWidth() - 202) + "px";
 }
@@ -55,14 +55,14 @@ function adjustLayout() {
     xHeight('centerColumn', maxHeight);
     xWidth('centerColumn', maxWidth);
 
-    var a = xGetElementsByTagName('input', xGetElementById('leftColumn'));
+    var a = document.getElementById('leftColumn').getElementsByTagName('input');    
     for (i=0; i < a.length; i++) {
         if (a[i].className == '') {            
             xWidth(a[i], leftColumnWidth - 6);
         }
     }
 
-    a = xGetElementsByTagName('textarea', xGetElementById('leftColumn'));
+    a = document.getElementById('leftColumn').getElementsByTagName('textarea');
     for (i=0; i < a.length; i++) {
         xWidth(a[i], leftColumnWidth - 6);
     }
