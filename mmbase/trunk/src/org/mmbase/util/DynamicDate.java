@@ -8,9 +8,8 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
+import org.mmbase.util.dateparser.*;
 import java.util.*;
-import java.text.*;
-
 /**
  * A DynamicDate is a Date object that has no fixed value, like 'now'. It is unmodifiable, so all
  * set-methods throw exceptions. There is no public constructor, but a public static {@link #getInstance}.
@@ -18,71 +17,24 @@ import java.text.*;
  * @author  Michiel Meeuwissen
  * @since MMBase-1.8
  */
-public abstract class DynamicDate extends Date {
+public class DynamicDate extends Date {
 
-    private static final int DAY = 1000 * 60 * 60 * 24;
-
-
-    public static final DynamicDate NOW = new DynamicDate("now") {
-            protected Date evalDate() {
-                return new Date();
-            }
-        };
-    public static final DynamicDate TOMORROW = new DynamicDate("tomorrow") {
-            protected Date evalDate() {
-                return DateParser.getBeginOfDay(System.currentTimeMillis() + DAY); 
-            }
-        };
-    public static final DynamicDate YESTERDAY = new DynamicDate("yesterday") {
-            protected Date evalDate() {
-                return DateParser.getBeginOfDay(System.currentTimeMillis() - DAY);
-            }
-        };
-    public static final DynamicDate TODAY = new DynamicDate("today") {
-            protected Date evalDate() {
-                return DateParser.getBeginOfDay(System.currentTimeMillis());
-            }
-        };
-
-    
 
     /**
      * Parses a format string and returns a DynamicDate instance. Not necessary a new one, which
      * does not matter, because these objects are unmodifiable anyway.
      */
-    static DynamicDate getInstance(final String format) {
-        if (format.equals(NOW.date)) {
-            return NOW;
-        } else if (format.equals(TOMORROW.date)) {
-            return TOMORROW;
-        } else if (format.equals(YESTERDAY.date)) {
-            return YESTERDAY;
-        } else if (format.equals(TODAY.date)) {
-            return TODAY;
-        } 
-        if (DateParser.days.containsKey(format)) {
-            int day = ((Integer) DateParser.days.get(format)).intValue();
-            return getDay(new Date(), day);
-        } 
-        return null;
-    }
+    static Date getInstance(final String format) throws ParseException {
+        DateParser parser = new DateParser(new java.io.StringReader(format));
+        
+        parser.start();
+        if (parser.dynamic()) {
+            return new DynamicDate(format);
+        } else {
+            return parser.toDate();
+        }
 
-    static DynamicDate getInstance(final Date d, final long offset) {
-        return new DynamicDate(d.toString() + " + " + offset) {
-                public Date evalDate() {
-                    return new Date(d.getTime() + offset);
-                }
-            };
     }
-
-    static DynamicDate getDay(final Date relative, final int day) {
-        return new DynamicDate("day" + day) {
-                protected Date evalDate() {
-                    return DateParser.getDay(relative, day);
-                }
-            };
-    }
-
 
     /**
      * The original string by which this instance was gotten.
@@ -96,7 +48,15 @@ public abstract class DynamicDate extends Date {
     /**
      * This produces a normal Date object, and is called everytime when that is needed. Users can call it too, if they want to fixated 
      */
-    protected abstract Date evalDate();
+    protected  Date evalDate() {
+        DateParser parser = new DateParser(new java.io.StringReader(date));
+        try {
+            parser.start();
+            return parser.toDate();
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            return new Date();
+        }
+    }
 
 
     // all methods of Date itself are simply wrapped..
@@ -110,7 +70,11 @@ public abstract class DynamicDate extends Date {
     }
     
     public Object clone() {
-        return getInstance(date);
+        try {
+            return getInstance(date);
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            return new Date();
+        }
     }
     public int  compareTo(Date anotherDate) {
         return evalDate().compareTo(anotherDate);
@@ -189,8 +153,17 @@ public abstract class DynamicDate extends Date {
         return date + ": " + evalDate().toString();
     }
 
-
-
+    public static void main(String argv[]) throws java.text.ParseException, ParseException {
+        //System.out.println("" + Arrays.asList(TimeZone.getAvailableIDs()));
+        //System.out.println(TimeZone.getDefault());
+        Date d1 = getInstance(argv[0]);
+        Date d2 = Casting.ISO_8601_UTC.parse(argv[0]);
+        Date d3 = new Date(0);
+        System.out.println("" + d1 + " " + d1.getTime());
+        System.out.println("" + d2 + " " + d2.getTime());
+        System.out.println("" + d3 + " " + d3.getTime());
+    }
+    
 }
 
 
