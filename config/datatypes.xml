@@ -35,9 +35,6 @@
       </getprocessor>
     </specialization>
 
-    <specialization id="owner">
-      <class name="org.mmbase.datatypes.SecurityContextDataType" />
-    </specialization>
 
   </datatype>
 
@@ -84,6 +81,11 @@
     <specialization id="field">
       <pattern value="(?s).*" />
     </specialization>
+
+    <specialization id="owner">
+      <class name="org.mmbase.datatypes.SecurityContextDataType" />
+    </specialization>
+
   </datatype>
 
   <datatype id="datetime">
@@ -91,6 +93,7 @@
 
     <pattern value="yyyy-MM-dd HH:mm" />
     <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
+    <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
     <getprocessor type="string">
       <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
     </getprocessor>
@@ -180,6 +183,13 @@
     </specialization>
   </datatype>
 
+  <datatype id="float">
+    <class name="org.mmbase.datatypes.FloatDataType" />
+  </datatype>
+  <datatype id="double">
+    <class name="org.mmbase.datatypes.DoubleDataType" />
+  </datatype>
+
   <datatype id="binary">
     <class name="org.mmbase.datatypes.BinaryDataType" />
     <specialization id="checksum">
@@ -195,7 +205,11 @@
   <datatype id="node">
     <class name="org.mmbase.datatypes.NodeDataType" />
     <specialization id="typedef">
+      <!-- this doesn't work yet -->
       <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+    </specialization>
+    <specialization id="reldef">
+      <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
     </specialization>
   </datatype>
 
