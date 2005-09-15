@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.35 2005-09-02 07:12:13 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.36 2005-09-15 19:50:41 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -186,19 +186,8 @@ public class XMLNodeReader extends XMLBasicReader {
                                                 log.warn("error setting long-field " + e);
                                                 newNode.setValue(key, -1);
                                             }
-                                        } else if (type == Field.TYPE_DATETIME) {
-                                            try {
-                                                long l = Long.parseLong(value);
-                                                newNode.setValue(key, new Date(1000 * l));
-                                            } catch (Exception e) {
-                                                try {
-                                                    newNode.setValue(key, DateParser.ISO_8601_UTC.parse(value));
-                                                } catch (Exception e2) {
-                                                    // something else?
-                                                    log.warn("error setting long-field " + e2);
-                                                    newNode.setValue(key, -1);
-                                                }
-                                            }
+                                        } else if (type == Field.TYPE_DATETIME) {                                            
+                                            newNode.setValue(key, Casting.toDate(value));
                                         } else if (type == Field.TYPE_BINARY) {
                                             NamedNodeMap nm2 = n5.getAttributes();
                                             Node n7 = nm2.getNamedItem("file");
