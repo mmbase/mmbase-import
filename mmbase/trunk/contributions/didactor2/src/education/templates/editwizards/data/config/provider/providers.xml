@@ -4,6 +4,7 @@
    <title>Aanbieder editor</title>
    <action type="load">
       <relation destination="flashpages" role="related"/>
+      <relation destination="pages" role="posrel"/>
    </action>
    <lists>
    </lists>
@@ -16,6 +17,6 @@
    <prompt>name</prompt></field>
 
    <list extends="config/welcompage/welcomepages-list.xml"/>
-
+   <list extends="config/pages/pages-list.xml"/>
 </form-schema>
 </wizard-schema>
