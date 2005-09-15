@@ -6,13 +6,16 @@
             <prompt>Naam</prompt>
             <description>Naam van de pagina</description>
         </field>
-   <field fdatapath="field[@name='pos']"  ftype="line" />
+	   <field fdatapath="field[@name='pos']"  ftype="line" />
+       <field wizardname="config/pages/pages" ftype="startwizard" />
     </item>
+
 
     <action type="create">
         <relation destinationtype="pages" role="posrel">
           <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
         </relation>
+    
     </action>
 
     <command name="startwizard" inline="true" wizardname="config/pages/pages" objectnumber="new" />
