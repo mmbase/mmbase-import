@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.64 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: Dove.java,v 1.65 2005-09-15 09:42:42 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -148,7 +148,7 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (type == Field.TYPE_DATETIME) {
+                    } else if (f.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType) {
                         fel = addContentElement(FIELD, "" + node.getDateValue(fname).getTime() / 1000, out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
