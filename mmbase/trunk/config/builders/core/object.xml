@@ -70,7 +70,7 @@
       </editor>
       <db>
         <name>number</name>
-        <type state="system" required="true" unique="true">NODE</type>
+        <type state="system" notnull="true" required="true" unique="true">NODE</type><!-- must this be NODE, foreign key to itself??! -->
       </db>
     </field>
 
@@ -102,7 +102,7 @@
       </datatype>
       <db>
         <name>otype</name>
-        <type state="system"  required="true" >NODE</type>
+        <type state="system"  notnull="false" required="true" >NODE</type>
       </db>
     </field>
 
@@ -148,9 +148,10 @@
           <search>101</search>
         </positions>
       </editor>
+      <datatype base="owner" />
       <db>
         <name>owner</name>
-        <type state="persistent" size="12" required="true">STRING</type>
+        <type state="persistent" size="12" notnull="true" required="true">STRING</type>
       </db>
     </field>
 
