@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.13 2005-09-09 20:28:52 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.14 2005-09-15 15:05:02 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
@@ -30,7 +30,7 @@ public class StringDataType extends BigDataType {
     public static final Integer WHITESPACE_COLLAPSE = new Integer(2);
 
     public static final String CONSTRAINT_PATTERN = "pattern";
-    public static final Pattern CONSTRAINT_PATTERN_DEFAULT = null;
+    public static final Pattern CONSTRAINT_PATTERN_DEFAULT = Pattern.compile(".*");
 
     public static final String CONSTRAINT_WHITESPACE = "whiteSpace";
     public static final Integer CONSTRAINT_WHITESPACE_DEFAULT = WHITESPACE_PRESERVE;
@@ -64,7 +64,7 @@ public class StringDataType extends BigDataType {
 
     /**
      * Returns the regular expression pattern used to validate values for this datatype.
-     * @return the pattern as a <code>String</code>, or <code>null</code> if there is no pattern.
+     * @return the pattern.
      */
     public Pattern getPattern() {
         if (patternConstraint == null) {

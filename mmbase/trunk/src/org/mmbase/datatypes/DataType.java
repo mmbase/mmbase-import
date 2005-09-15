@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.22 2005-09-12 17:28:04 michiel Exp $
+ * @version $Id: DataType.java,v 1.23 2005-09-15 15:05:02 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -286,7 +286,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      */
     protected void edit() {
         if (isFinished()) {
-            throw new IllegalStateException("This data type is finished and can not longer be changed.");
+            throw new IllegalStateException("This data type '" + getName() + "' is finished and can no longer be changed.");
         }
     }
 
@@ -362,12 +362,12 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor.getClass().getName() + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
-                buf.append(getProcessors[i] == null ? "" : ("; get [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i].getClass().getName() + ""));
+                buf.append(getProcessors[i] == null ? "" : ("; get [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i] + " "));
             }
         }
         if (setProcessors != null) {
             for (int i =0; i < 13; i++) {
-                buf.append(setProcessors[i] == null ? "" : ("; set [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i].getClass().getName() + ""));
+                buf.append(setProcessors[i] == null ? "" : ("; set [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i] + " "));
             }
         }
         if (isRequired()) {
@@ -595,8 +595,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("process:" + processor.getClass().getName());
+                    log.debug("process for " + this + processor.getClass().getName());
                 }
+
                 result = processor.process(node, field, value);
             }
         }
