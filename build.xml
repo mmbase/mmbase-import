@@ -491,11 +491,11 @@ mmadmin.xml
     </echo>
   </target>
 
-  <target name="compile" description="Compile the source directory"  depends="init.compile">
+  <target name="compile" description="Compile the source directory"  depends="init.compile,javacc">
 
     <echo message="java version: ${ant.java.version}" />
 
-    <javac srcdir="${source-src.dir}"
+    <javac 
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
            debug="${debug}"
@@ -503,6 +503,8 @@ mmadmin.xml
            source="1.4"
            nowarn="${nowarn}"
            deprecation="${deprecation}">
+      <src path="${source-src.dir}"/>
+      <src path="${generated-source-src.dir}" />
     </javac>
     <tstamp/>
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${builddate}</echo>
@@ -1222,6 +1224,24 @@ Build-compiler: ${build.compiler}
     <!-- delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"/>
     <delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"/>
     <delete file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"/ -->
+  </target>
+
+  <target name="javacc.install">
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${javacc.loc}"/>
+      <param name="destfile" value="${javacc.dest}"/>
+      <param name="expandedfile" value="${javacc.dir}"/>
+    </antcall>
+  </target>
+
+  <target name="javacc" depends="javacc.install">
+    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/dateparser"/>
+    <echo message="${javacc.dir}" />
+    <javacc
+        target="${source-src.dir}/org/mmbase/util/DateParser.jj"
+        outputdirectory="${generated-source-src.dir}/org/mmbase/util/dateparser"
+        javacchome="${javacc.dir}"
+        />
   </target>
 
   <!-- =================================================================== -->
