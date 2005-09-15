@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
@@ -51,7 +52,7 @@ public class NodeEvent extends Event implements Serializable{
 	
 
 	public NodeEvent(MMObjectNode node, int eventType){
-		init(node, eventType, null);
+		init(node, eventType, MMBase.getMMBase().getMachineName());
 	}
 	
 	public NodeEvent(MMObjectNode node, int eventType, String machine){
@@ -140,25 +141,66 @@ public class NodeEvent extends Event implements Serializable{
 		for(Iterator i = changedFieldIterator(); i.hasNext();){
 			changedFields = changedFields + (String)i.next() + ",";
 		}
-		return "eventtype: " + getEventName(eventType) + ", node: " + nodeNumber 
+		return "eventtype: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber 
 		+ ", nodetype: " + eventSource + ", changedfields: " + changedFields;		
 	}
+    
+    protected  String getEventTypeGuiName(int eventType){
+        switch(eventType){
+            case NodeEvent.EVENT_TYPE_CHANGED:
+                return "node changed";
+            case NodeEvent.EVENT_TYPE_DELETE:
+                return "node deleted";
+            case NodeEvent.EVENT_TYPE_NEW:
+                return "new node";
+            case NodeEvent.EVENT_TYPE_RELATION_CHANGED:
+                return "relation changed";
+            default:
+                throw new RuntimeException("HELP! event of type "+eventType+
+                        " is unknown. This should not happen");
+        }
+    }
 	
-	protected String getEventName(int event){
-		switch(event){
+	/**
+     * For conveneance: conversion of the new event type indication to the old style
+	 * @param eventType must be c,d,n or r
+	 * @return
+	 */
+	public static  String newTypeToOldType(int eventType){
+		switch(eventType){
 			case NodeEvent.EVENT_TYPE_CHANGED:
-				return "changed";
+				return "c";
 			case NodeEvent.EVENT_TYPE_DELETE:
-				return "deleted";
+				return "d";
 			case NodeEvent.EVENT_TYPE_NEW:
-				return "new";
+				return "n";
 			case NodeEvent.EVENT_TYPE_RELATION_CHANGED:
-				return "relation-changed";
+				return "r";
 			default:
-				throw new RuntimeException("HELP! event of type "+event+
+				throw new RuntimeException("HELP! event of type "+eventType+
 						" is unknown. This should not happen");
 		}
 	}
+    
+    /**
+     * For conveneance: conversion of the old event type indication to the new style
+     * @param eventType
+     * @return
+     */
+    public static int oldTypeToNewType(String eventType){
+        if(eventType.equals("c")){
+            return NodeEvent.EVENT_TYPE_CHANGED;
+        }else if(eventType.equals("d")){
+            return NodeEvent.EVENT_TYPE_DELETE;
+        }else if(eventType.equals("n")){
+            return NodeEvent.EVENT_TYPE_NEW;
+        }else if(eventType.equals("r")){
+            return NodeEvent.EVENT_TYPE_RELATION_CHANGED;
+        }else{
+            throw new RuntimeException("HELP! event of type "+eventType+
+            " is unknown. This should not happen");
+        }
+    }
 	/**
 	 * @return Returns the nodeNumber.
 	 */
@@ -171,4 +213,5 @@ public class NodeEvent extends Event implements Serializable{
 	public String getMachine() {
 		return machine;
 	}
+  
 }

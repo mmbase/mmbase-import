@@ -6,6 +6,8 @@ package org.mmbase.core.event;
 
 import java.util.Properties;
 
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -49,17 +51,21 @@ public class NodeEventBroker extends AbstractEventBroker {
 		NodeEvent ne = (NodeEvent)event;
 		NodeEventListener nel = (NodeEventListener)listener;
 		Properties p = nel.getConstraintsForEvent(ne);
-		if(p != null){
-		    String nodeType = p.getProperty(PROPERTY_NODETYPE);
-		    if(nodeType.equals(ne.getBuilderName())){
-		        nel.notify(ne);
-		    }else{
-		        log.debug("the constraints set by "+nel+" were not met by event "+ne);
-		    }
-		}else{
-		    //no constraints
-		    nel.notify(ne);
-		}
+      MMBase mmb = MMBase.getMMBase();
+      MMObjectBuilder builder = mmb.getBuilder(ne.getBuilderName());
+      if(builder.broadcastChanges){
+         if(p != null){
+             String nodeType = p.getProperty(PROPERTY_NODETYPE);
+             if(nodeType.equals(ne.getBuilderName())){
+                 nel.notify(ne);
+             }else{
+                 log.debug("the constraints set by "+nel+" were not met by event "+ne);
+             }
+         }else{
+             //no constraints
+             nel.notify(ne);
+         }
+      }
 	}
 
 }

@@ -112,7 +112,7 @@ public class RelationEvent extends NodeEvent implements Serializable{
 	}
 	
 	 public String toString(){
-		return super.toString() + ", relation eventtype: " + getEventName(relationEventType) +
+		return super.toString() + ", relation eventtype: " + getEventTypeGuiName(relationEventType) +
 			", sourcetype: " + relationSourceType + ", destinationtype: " +
 			relationDestinationType + ", source-node number: " + relationSourceNumber +
 			", destination-node number: " + relationDestinationNumber; 

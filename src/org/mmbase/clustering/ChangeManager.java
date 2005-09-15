@@ -11,6 +11,8 @@ package org.mmbase.clustering;
 
 import java.util.*;
 
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 
@@ -19,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangeManager.java,v 1.2 2005-09-15 20:26:23 ernst Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -62,17 +64,31 @@ public final class ChangeManager {
     public void commit(MMObjectNode node, String change) {
         node.clearChanged();
         MMObjectBuilder builder = node.getBuilder();
+        MMBase mmbase = MMBase.getMMBase();
         if (builder.broadcastChanges) {
-            mmc.changedNode(node.getNumber(), builder.getTableName(), change);
+           mmc.changedNode(new NodeEvent(node, mapEventType(change)));
             if (builder instanceof InsRel) {
                 // figure out tables to send the changed relations
-                MMObjectNode n1 = node.getNodeValue("snumber");
-                MMObjectNode n2 = node.getNodeValue("dnumber");
-                n1.delRelationsCache();
-                n2.delRelationsCache();
-                mmc.changedNode(n1.getNumber(), n1.getBuilder().getTableName(), "r");
-                mmc.changedNode(n2.getNumber(), n2.getBuilder().getTableName(), "r");
+                mmc.changedNode(new RelationEvent(node, mapEventType(change)));
+                
             }
         }
+        node.clearChanged();
     }
+    
+    	/**
+	 * @param change
+	 * @return
+	 */
+	private int mapEventType(String change) {
+		 if("c".equals(change)){
+		 	return NodeEvent.EVENT_TYPE_CHANGED;
+		 }else if("d".equals(change)){
+		 	return NodeEvent.EVENT_TYPE_DELETE;
+		 }else if ("n".equals(change)){
+		 	return NodeEvent.EVENT_TYPE_NEW;
+		 }
+       //this should never happen. But what to do when it dous?
+		throw new IllegalArgumentException("change type "+change+" is not supported");
+	}
 }

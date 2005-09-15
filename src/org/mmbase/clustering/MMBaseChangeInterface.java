@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 
@@ -16,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.2 2005-09-15 20:26:23 ernst Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {
@@ -27,13 +29,8 @@ public interface MMBaseChangeInterface {
 	 */
 	void init(MMBase mmb);
 
-    /**
-	 * @param nodenr Node number
-	 * @param tableName Node type (tablename)
-	 * @param type the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
-	 * @return <code>true</code> if added to queue
-	 */
-	boolean changedNode(int nodenr,String tableName,String type);
+
+   void changedNode(NodeEvent event);
     
 	/** 
      * Wait until the node change notification is completed.
@@ -41,4 +38,13 @@ public interface MMBaseChangeInterface {
 	 * @return <code>true</code> if done waiting
 	 */
 	boolean waitUntilNodeChanged(MMObjectNode node);
+
+
+    /**
+     * @param number
+     * @param tableName
+     * @param ctype
+     * @deprecated (i think) fire an event in stead
+     */
+    void changedNode(int number, String tableName, String ctype);
 }
