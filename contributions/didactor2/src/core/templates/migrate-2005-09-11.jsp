@@ -7,7 +7,7 @@
 
 <di:hasrole role="systemadministrator">
 
-   Deleting forums...
+  Deleting forums...
    <mm:listnodes type="forums">
       <mm:deletenode deleterelations="true"/>
    </mm:listnodes>
@@ -16,10 +16,14 @@
    <mm:listnodes type="forumthreads">
       <mm:deletenode deleterelations="true"/>
    </mm:listnodes>
-   done. <br>
-   Deleting forummessages...
+   done. <br> 
+   Deleting forummessages that aren't linked to anything anymore...
    <mm:listnodes type="forummessages">
-      <mm:deletenode deleterelations="true"/>
+   		<mm:countrelations>
+   			<mm:isgreaterthan value="0">
+	   		  <mm:deletenode deleterelations="true"/>
+    		 </mm:isgreaterthan>
+ 		 </mm:countrelations>
    </mm:listnodes>
    done. <br>
 
