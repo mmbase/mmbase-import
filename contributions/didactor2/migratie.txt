@@ -15,9 +15,8 @@ Migratie issues
     6.run SQL to drop tables:
       DROP TABLE mmb_forums;
       DROP TABLE mmb_forumthreads;
-      DROP TABLE mmb_forummessages;
 
-    7.delete forums.xml , forumthreads.xml , forummessages.xml from didactor/WEB-INF/config/builders/
+    7.delete forums.xml , forumthreads.xml from didactor/WEB-INF/config/builders/
     8.place forums.xml from didactor/WEB-INF/config/applications/MMBob/builders/ to didactor/WEB-INF/config/builders/
     9.start Tomcat
 
