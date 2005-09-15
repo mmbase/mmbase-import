@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.43 2005-09-12 17:32:45 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.44 2005-09-15 15:54:08 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -45,14 +45,11 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
-
-        String guiType = field.getGUIType();
-        if (guiType.indexOf('.') > 0) {
-            EnumHandler eh = new EnumHandler(tag, node, field);
-            if (eh.isAvailable()) {
-                return eh.htmlInput(node, field, search);
-            }
+        EnumHandler eh = getEnumHandler(node, field);
+        if (eh != null) {
+            return eh.htmlInput(node, field, search);
         }
+
         StringBuffer buffer = new StringBuffer();
         if(! search) {
             if (field.getDataType().validate("\n").isEmpty()) {
@@ -95,8 +92,11 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append("</textarea>");
                 } 
             } else { // not 'field' perhaps it's 'string'.
+                String guiType = field.getGUIType();
+
                 String value;
-                if (guiType.indexOf("password") > -1) {
+                // need something generic for these password fields!!
+                if (guiType.indexOf("password") > -1) { 
                     buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
                     buffer.append("name=\"");
                     if (guiType.indexOf("md5") > -1) {
@@ -175,16 +175,12 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
+        EnumHandler eh = getEnumHandler(null, field);
+        if (eh != null) {
+            return eh.whereHtmlInput(field);
+        }
         String search =  findString(field);
         if (search == null) return null;
-
-        String guiType = field.getGUIType();
-        if (guiType.indexOf('.') > 0) {
-            EnumHandler eh = new EnumHandler(tag, null, field);
-            if (eh.isAvailable()) {
-                return eh.whereHtmlInput(field);
-            }
-        }
 
         Sql sql = new Sql(Sql.ESCAPE_QUOTES);
         return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
@@ -198,13 +194,10 @@ public class StringHandler extends AbstractTypeHandler {
         return "%" + string.toUpperCase() + "%";
     }
    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-       String guiType = field.getGUIType();
-       if (guiType.indexOf('.') > 0) {
-           EnumHandler eh = new EnumHandler(tag, null, field);
-           if (eh.isAvailable()) {
-               return eh.whereHtmlInput(field, query);
-           }
-       }
+        EnumHandler eh = getEnumHandler(null, field);
+        if (eh != null) {
+            return eh.whereHtmlInput(field, query);
+        }
        Constraint cons =  super.whereHtmlInput(field, query);
 
        if (cons != null) {
