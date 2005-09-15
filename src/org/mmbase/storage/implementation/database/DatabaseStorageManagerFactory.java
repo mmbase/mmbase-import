@@ -28,8 +28,8 @@ import org.xml.sax.InputSource;
 /**
  * A storage manager factory for database storages.
  * This factory sets up a datasource for connecting to the database.
- * If you specify the datasource URI in the 'dataource' property in mmbaseroot.xml configuration file,
- * the factory attempts to obtain the datasource from the appplication server. If this fails, or no datasource URI is given,
+ * If you specify the datasource URI in the 'datasource' property in mmbaseroot.xml configuration file,
+ * the factory attempts to obtain the datasource from the application server. If this fails, or no datasource URI is given,
  * it attempts to use the connectivity offered by the JDBC Module, which is then wrapped in a datasource.
  * Note that if you provide a datasource you should make the JDBC Module inactive to prevent the module from
  * interfering with the storage layer.
@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.22 2005-07-09 11:46:11 nklasens Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.23 2005-09-15 10:55:06 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -247,7 +247,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     if(databaseResourcePath == null) {
                         // TODO: ask the lookup for a string containing all information on which the lookup could verify and display this instead of the classname
                         throw new StorageConfigurationException("No filter found in " + lookup.getSystemId() + " for driver class:" + metadata.getConnection().getClass().getName() + "\n");
-                    }                    
+                    }
                 } catch (SQLException sqle) {
                     throw new StorageInaccessibleException(sqle);
                 } finally {
