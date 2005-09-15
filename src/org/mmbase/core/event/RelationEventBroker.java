@@ -4,7 +4,7 @@
  */
 package org.mmbase.core.event;
 import java.util.Properties;
-
+import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -44,20 +44,25 @@ public class RelationEventBroker extends AbstractEventBroker {
 	 */
 	protected void notifyEventListener(Event event, EventListener listener)
 			throws ClassCastException {
-		 RelationEvent re = (RelationEvent) event;
-		 RelationEventListener rel = (RelationEventListener) listener;
+         RelationEvent re = (RelationEvent) event;
+         RelationEventListener rel = (RelationEventListener) listener;
 			Properties p = rel.getConstraintsForEvent(re);
-			if(p != null){
-			    String nodeType = p.getProperty(PROPERTY_NODETYPE);
-			    if(nodeType.equals(re.getRelationSourceType()) || nodeType.equals(re.getRelationDestinationType())){
-			        rel.notify(re);
-			    }else{
-			        log.debug("the constraints set by "+rel+" were not met by event "+re);
-			    }
-			}else{
-			    //no constraints
-			    rel.notify(re);
-			}
+         
+	      MMBase mmb = MMBase.getMMBase();
+         MMObjectBuilder builder = mmb.getBuilder(re.getBuilderName());
+         if(builder.broadcastChanges){
+            if(p != null){
+                String nodeType = p.getProperty(PROPERTY_NODETYPE);
+                if(nodeType.equals(re.getRelationSourceType()) || nodeType.equals(re.getRelationDestinationType())){
+                    rel.notify(re);
+                }else{
+                    log.debug("the constraints set by "+rel+" were not met by event "+re);
+                }
+            }else{
+                //no constraints
+                rel.notify(re);
+            }
+         }
 
 	}
 
