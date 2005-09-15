@@ -57,7 +57,7 @@ import org.mmbase.util.ResourceLoader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.34 2005-08-31 11:50:44 nklasens Exp $
+ * @version $Id: Logging.java,v 1.35 2005-09-15 12:07:50 michiel Exp $
  */
 
 
@@ -67,8 +67,8 @@ public class Logging {
     private static boolean configured = false;
     private static final Logger log = getLoggerInstance(Logging.class); // logger for this class itself
 
-    /**
-     * The category for logging info about pages (like stop / start). Also if pages take the
+   /**
+    * The category for logging info about pages (like stop / start). Also if pages take the
      * initiative for logging themselves they should log below this category.
      * @since MMBase-1.7
      */
@@ -136,7 +136,7 @@ public class Logging {
         }
 
         String classToUse    = "org.mmbase.util.logging.SimpleImpl"; // default
-        String configuration = "stderr,debug";                        // default
+        String configuration = "stderr,service";                     // default
         try { // to read the XML configuration file            
            String claz = reader.getElementValue("logging.class");
             if (claz != null) {
