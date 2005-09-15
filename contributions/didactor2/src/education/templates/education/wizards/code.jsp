@@ -329,7 +329,7 @@ if (top == self) {
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                      <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/provider/providers&nodepath=providers&searchfields=name&fields=name&orderby=name' target="text">Bewerk welkom pagina</a></nobr></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>?wizard=config/provider/providers&nodepath=providers&searchfields=name&fields=name&orderby=name' target="text">Content paginas (CMS)</a></nobr></td>
                   </tr>
                </table>
 
