@@ -24,7 +24,7 @@ import java.util.*;
  * are removed from the query-caches.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.1 2005-04-25 09:02:40 pierre Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.2 2005-09-15 10:54:16 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -64,7 +64,7 @@ public class HugeNodeListIterator implements NodeIterator {
      * Constructor for this Iterator. The 'batchSize' is taken from the query's 'maxnumber'
      * properties, or, it that is not set, it is defaulted to 10000.
      *
-     * @param query      The query which is used as a base for the querie(s) to be executed.
+     * @param query The query which is used as a base for the querie(s) to be executed.
      */
     public HugeNodeListIterator(Query query) {
         if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
@@ -180,32 +180,6 @@ public class HugeNodeListIterator implements NodeIterator {
     public int nextIndex() {
         return nextIndex;
     }
-
-    /**
-     * Used by nextNode and previousNode. Does a field-by-field compare of two Node objects to check
-     * if they are equal. One would expect the equals-member function of Node to be useable for
-     * this, but that seems not to be the case.
-     */
-     /*
-    protected boolean equals(Node node1, Node node2) {
-        if (node1 == null) return node2 == null;
-        if (node2 == null) return node1 == null;
-        Iterator i = node1.getNodeManager().getFields().iterator();
-        while (i.hasNext()) {
-            Field f = (Field) i.next();
-            String name = f.getName();
-            Object value = node1.getValue(name);
-            if (value == null) {
-                if (node2.getValue(name) != null) return false;
-            } else {
-                if (! value.equals(node2.getValue(name))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    */
 
     /**
      * Used by nextNode and previousNode. Does a field-by-field compare of two Node objects, on
