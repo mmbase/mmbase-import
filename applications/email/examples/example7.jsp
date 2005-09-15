@@ -3,10 +3,10 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>E-mail attachments</title>
+    <title>E-mail attachments</title>
 <style type="text/css" media="screen">
 /* <![CDATA[ */
-body { font-family: "Lucida Grande", Arial, sans-serif;	font-size: 0.8em; }
+body { font-family: "Lucida Grande", Arial, sans-serif; font-size: 0.8em; }
 label { font-weight: bold; }
 fieldset { width: 360px; }
 /* ]]> */
@@ -16,13 +16,13 @@ fieldset { width: 360px; }
 /* Toggle a div's visibility */
 function toggle(targetId){
   if (document.getElementById){
-  		target = document.getElementById(targetId);
-  			if (target.style.display == "none"){
-  				target.style.display = "";
-  			} else {
-  				target.style.display = "none";
-  			}
-  	}
+        target = document.getElementById(targetId);
+            if (target.style.display == "none"){
+                target.style.display = "";
+            } else {
+                target.style.display = "none";
+            }
+    }
 }
 // ]]>
 </script>
@@ -53,23 +53,23 @@ function toggle(targetId){
   <label for="file1">File(s)</label><br />
   Click <img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /> to add more files.
   <div id="f1">
-	<input name="file1" type="file" tabindex="6" />
-	<a href="#" onclick="toggle('f2');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
+    <input name="file1" type="file" tabindex="6" />
+    <a href="#" onclick="toggle('f2');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
   </div>
   <div id="f2" style="display: none;">
-	<input name="file2" type="file" tabindex="7" />
-	<a href="#" onclick="toggle('f3');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
+    <input name="file2" type="file" tabindex="7" />
+    <a href="#" onclick="toggle('f3');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
   </div>
   <div id="f3" style="display: none;">
-	<input name="file3" type="file" tabindex="8" />
-	<a href="#" onclick="toggle('f4');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
+    <input name="file3" type="file" tabindex="8" />
+    <a href="#" onclick="toggle('f4');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
   </div>
   <div id="f4" style="display: none;">
-	<input name="file4" type="file" tabindex="9" />
-	<a href="#" onclick="toggle('f5');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
+    <input name="file4" type="file" tabindex="9" />
+    <a href="#" onclick="toggle('f5');return false;"><img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /></a>
   </div>
   <div id="f5" style="display: none;" >
-	<input name="file5" type="file" tabindex="10" />
+    <input name="file5" type="file" tabindex="10" />
   </div>
   <input name="action" id="action" type="submit" value="Send" tabindex="11" accesskey="7" />
 </fieldset>
