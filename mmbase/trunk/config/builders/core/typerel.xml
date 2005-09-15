@@ -56,7 +56,7 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="typedef" />
+      <datatype base="typedef"  xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>snumber</name>
         <type required="true" state="persistent">NODE</type>
@@ -79,7 +79,7 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="typedef" />
+      <datatype base="typedef"  xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>dnumber</name>
         <type required="true" state="persistent">NODE</type>
@@ -102,9 +102,7 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
-      </datatype>
+      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>rnumber</name>
         <type required="true" state="persistent">NODE</type>
