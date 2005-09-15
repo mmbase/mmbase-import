@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.19 2005-09-14 11:01:26 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.20 2005-09-15 15:05:02 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -34,9 +34,14 @@ public class DataTypeDefinition {
     private static final Logger log = Logging.getLoggerInstance(DataTypeDefinition.class);
 
     /**
-     * the data type
+     * The data type which will be produced
      */
     public DataType dataType = null;
+
+    /**
+     * The base data type on which it was based, or <code>null</code>
+     */
+    private DataType baseDataType = null;
 
     /**
      * The data type collector that contains the data datatype which this definition.
@@ -73,21 +78,51 @@ public class DataTypeDefinition {
         return DocumentReader.getNodeTextValue(element);
     }
 
-    private  DataType getImplementation(Element dataTypeElement, String id, DataType baseDataType) {
-        DataType dt = collector.getDataType(id);
+    private static int anonymousSequence = 1;
+
+    private String getId(String id) {
+        if (id.equals("")) {
+            if (baseDataType == null) {
+                return "ANONYMOUS" + anonymousSequence++;
+            } else {
+                return  baseDataType.getName() + anonymousSequence++;
+            }
+        } else {
+            return id;
+        }
+    }
+    /**
+     * If id was empty string, then this can still be equal to baseDataType, and nothing changed. Never <code>null</code>
+     * @param   dataTypeElement piece of XML used to configure. Only the 'class' subelements are explored in this method.
+     * @param   id              the new id or empty string (which means that is still identical to baseDataType)
+     * 
+     */
+    private  void getImplementation(Element dataTypeElement, String id) { 
+        DataType dt = id.equals("") ? null : collector.getDataType(id);
+        if (dt != null) {
+            collector.rewrite(dt);
+        }
+
         NodeList childNodes = dataTypeElement.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
                 Element childElement = (Element) childNodes.item(i);
                 if (childElement.getLocalName().equals("class")) {
                     if (dt != null) {
-                        log.error("Already defained " + id);                        
-                    } else {
+                        log.debug("Already defined " + id);
+                        if (childElement.getAttribute("name").equals(dt.getClass().getName())) {
+                            log.error("Cannot change class!");
+                        }
+                    } else {                        
                         try {
                             String className = childElement.getAttribute("name");
                             Class claz = Class.forName(className);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
-                            dt = (DataType) constructor.newInstance(new Object[] { id });
+                            dt = (DataType) constructor.newInstance(new Object[] { getId(id) });
+                            if (baseDataType != null) {
+                                // should check class here, perhaps
+                                dt.inherit(baseDataType);
+                            }
                         } catch (Exception e) {
                             log.error(e);
                         }
@@ -103,59 +138,54 @@ public class DataTypeDefinition {
                 log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + org.mmbase.util.xml.XMLWriter.write(dataTypeElement, true));
                 baseDataType = Constants.DATATYPE_UNKNOWN;
             }
-            dt = (DataType)baseDataType.clone(id);
+            if (id.equals("")) {
+                dataType = baseDataType;
+            } else {
+                dataType = (DataType) baseDataType.clone(id);
+                dataType.clear(); // clears datatype.
+            }
         } else {
-            //
-            // XXX: add check on base datatype if given!
-            //
-            collector.rewrite(dt);
-            dt.clear(); // clears datatype.
+            dataType = dt;
         }
-        return dt;
-
         
     }
 
-    private static int anonymousSequence = 1;
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    DataTypeDefinition configure(Element dataTypeElement, DataType baseDataType) {
+    DataTypeDefinition configure(Element dataTypeElement, DataType requestBaseDataType) {
 
-        String typeString = getAttribute(dataTypeElement, "id");
-        if (typeString.equals("")) {
-            if (baseDataType == null) {
-                typeString = "ANONYMOUS" + anonymousSequence++;
-            } else {
-                typeString = baseDataType.getName() + "_" + anonymousSequence++;
-            }
-        }
-        if ("byte".equals(typeString)) {
+        String id = getAttribute(dataTypeElement, "id");
+
+        if ("byte".equals(id)) {
             log.warn("Found for datatype id 'byte', supposing that 'binary' is meant");
-            typeString = "binary"; // hmmmmm
+            id = "binary"; // hmmmmm
         }
 
-        String baseString = getAttribute(dataTypeElement, "base");
+        String base = getAttribute(dataTypeElement, "base");
         if (log.isDebugEnabled()) {
-            log.debug("Reading element " + typeString + " " + baseString);
+            log.debug("Reading element id='" + id + "' base='" + base + "'");
         }
-        if (! baseString.equals("")) {
-            DataType definedBaseDataType = collector.getDataType(baseString, true);
-            if (baseDataType != null) {
-                if (baseDataType != definedBaseDataType) {
-                    log.warn("Attribute 'base' ('" + baseString+ "') not allowed with datatype '" + typeString + "', because it has already an baseDataType '" + baseDataType + "'");
+        if (! base.equals("")) { // also specified, let's see if it is correct
+
+            DataType definedBaseDataType = collector.getDataType(base, true);
+            if (requestBaseDataType != null) { 
+                if (requestBaseDataType != definedBaseDataType) {
+                    log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + baseDataType + "'");
                 }                
             }
             if (definedBaseDataType == null) {
-                log.warn("Attribute 'base' ('" + baseString + "') of datatype '" + typeString + "' is an unknown datatype.");
+                log.warn("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype.");
             } else {
-                baseDataType = definedBaseDataType;
+                requestBaseDataType = definedBaseDataType;
             }
         }
+        
+        baseDataType = requestBaseDataType;
 
-        dataType = getImplementation(dataTypeElement, typeString, baseDataType);
-
+        getImplementation(dataTypeElement, id);
         configureConditions(dataTypeElement);
+
         return this;
     }
 
@@ -206,7 +236,7 @@ public class DataTypeDefinition {
         property.setErrorDescription(getLocalizedDescription("description", element, descriptions));
     }
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
@@ -220,24 +250,29 @@ public class DataTypeDefinition {
                 if (childElement.getLocalName().equals("")) {
                     continue;
                 }
-                if ("required".equals(childElement.getLocalName())) {
+                if (dataType == baseDataType) {
+                    dataType = (DataType) baseDataType.clone(getId(""));
+                }
+                String childTag = childElement.getLocalName();
+
+                if ("required".equals(childTag)) {
                     boolean value = getBooleanValue(childElement, false);
                     setConstraintData(dataType.setRequired(value), childElement);
-                } else if ("unique".equals(childElement.getLocalName())) {
+                } else if ("unique".equals(childTag)) {
                     boolean value = getBooleanValue(childElement, false);
                     setConstraintData(dataType.setUnique(value), childElement);
-                } else if ("getprocessor".equals(childElement.getLocalName())) {
+                } else if ("getprocessor".equals(childTag)) {
                     addProcessor(DataType.PROCESS_GET, childElement);
-                } else if ("setprocessor".equals(childElement.getLocalName())) {
+                } else if ("setprocessor".equals(childTag)) {
                     addProcessor(DataType.PROCESS_SET, childElement);
-                } else if ("commitprocessor".equals(childElement.getLocalName())) {
+                } else if ("commitprocessor".equals(childTag)) {
                     addProcessor(DataType.PROCESS_COMMIT, childElement);
-                } else if ("enumeration".equals(childElement.getLocalName())) {
+                } else if ("enumeration".equals(childTag)) {
                     addEnumeration(childElement);
-                } else if ("default".equals(childElement.getLocalName())) {
+                } else if ("default".equals(childTag)) {
                     String value = getAttribute(childElement, "value");
                     dataType.setDefaultValue(value);
-                } else if (nonConditions.matcher(childElement.getLocalName()).matches()) {
+                } else if (nonConditions.matcher(childTag).matches()) {
                     // ignore
                 } else if (dataType instanceof StringDataType) {
                     addStringCondition(childElement);
@@ -354,14 +389,15 @@ public class DataTypeDefinition {
         dataType.setProcessor(action, newProcessor, processingType);
     }
 
+
     protected void addProcessor(int action, Element processorElement) {
         Processor newProcessor = createProcessor(processorElement);
         if (newProcessor != null) {
             if (action != DataType.PROCESS_COMMIT) {
                 String type = processorElement.getAttribute("type");
-                if (type != null && !type.equals("") && !type.equals("*")) {
+                if (!type.equals("") && !type.equals("*")) { // "" was not equal to "*" !
                     int processingType = Field.TYPE_UNKNOWN;
-                    DataType basicDataType = DataTypes.getDataType(type);
+                    DataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
                     if (basicDataType != null) {
                         processingType = DataTypes.classToType(basicDataType.getTypeAsClass());
                     } else {
