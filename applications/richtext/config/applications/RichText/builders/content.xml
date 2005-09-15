@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="content" maintainer="mmbase.org" version="0" extends="object">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="content" maintainer="mmbase.org" version="0" extends="object">
   <names>
     <singular xml:lang="nl">Inhoudsobject</singular>
     <singular xml:lang="en">Content object</singular>
@@ -19,7 +23,6 @@
       <gui>
         <guiname xml:lang="nl">Online op</guiname>
         <guiname xml:lang="en">Online on</guiname>
-        <guitype>datetime</guitype>
       </gui>
       <editor>
         <positions>
@@ -28,6 +31,9 @@
           <search>10</search>
         </positions>
       </editor>
+      <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="now" />
+      </datatype>
       <db>
         <name>begin</name>
         <type key="false" notnull="false" state="persistent">DATETIME</type>
@@ -37,7 +43,6 @@
       <gui>
         <guiname xml:lang="nl">Offline op</guiname>
         <guiname xml:lang="en">Offline on</guiname>
-        <guitype>datetime</guitype>
       </gui>
       <editor>
         <positions>
@@ -45,28 +50,14 @@
           <search>11</search>
         </positions>
       </editor>
+      <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="next month" />
+      </datatype>
       <db>
         <name>end</name>
         <type key="false" notnull="false" state="persistent">DATETIME</type>
       </db>
     </field>
-    <field>
-      <gui>
-        <guiname xml:lang="nl">Tonen</guiname>
-        <guiname xml:lang="en">Show</guiname>
-        <guitype>integer</guitype><!-- should be an enum -->
-      </gui>
-      <editor>
-        <positions>
-          <input>12</input>
-          <search>12</search>
-        </positions>
-      </editor>
-      <db>
-        <name>visible</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
-      </db>
-    </field>    
     <field>
       <descriptions>
         <description xml:lang="en">Last modified by</description>
@@ -76,7 +67,6 @@
         <guiname xml:lang="en">Last modifier</guiname>
         <guiname xml:lang="nl">Laatste veranderaar</guiname>
         <guiname xml:lang="eo">Lasta ŝanĝinto</guiname>
-        <guitype>lastmodifier</guitype>
       </gui>
       <editor>
         <positions>
@@ -84,6 +74,7 @@
           <list>98</list>
         </positions>
       </editor>
+      <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastmodifiedby</name>
         <type key="false" notnull="false" size="255" state="system">STRING</type>
@@ -98,7 +89,6 @@
         <guiname xml:lang="en">Last modified time</guiname>
         <guiname xml:lang="nl">Laatste verandering</guiname>
         <guiname xml:lang="eo">Lasta ŝanĝo</guiname>
-        <guitype>lastmodified</guitype>
       </gui>
       <editor>
         <positions>
@@ -106,6 +96,7 @@
           <list>99</list>
         </positions>
       </editor>
+      <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastmodified</name>
         <type state="system" notnull="false" key="false">DATETIME</type>

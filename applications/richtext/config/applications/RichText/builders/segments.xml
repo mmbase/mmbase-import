@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder extends="content" maintainer="mmbase.org" name="segments" version="0">
-  <status>active</status>
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="segments" maintainer="mmbase.org" version="0" extends="content">
+
   <searchage>31</searchage>
   <names>
     <singular xml:lang="nl">Hoofdstuk</singular>
@@ -15,11 +19,11 @@
   </descriptions>
   <properties/>
   <fieldlist>
+
     <field>
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
-        <guitype>mmxf</guitype>
       </gui>
       <editor>
         <positions>
@@ -28,16 +32,19 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
+        <type key="false" notnull="false" size="64000" state="persistent">XML</type>
       </db>
     </field>
-    <!-- forward compatible 'version' field -->
+
+    <!-- forward compatible 'version' field  (unfinished -->
     <field>
       <gui>
         <guiname xml:lang="nl">Versie</guiname>
         <guiname xml:lang="en">Version</guiname>
-        <guitype>string</guitype>
+
       </gui>
       <db>
         <name>version</name>
@@ -45,6 +52,7 @@
       </db>
     </field>
   </fieldlist>
+
   <functionlist>
     <function name="index">
       <class>org.mmbase.util.functions.IndexFunction</class>
@@ -53,4 +61,5 @@
       <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
   </functionlist>
+
 </builder>
