@@ -25,7 +25,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.37 2005-09-02 07:11:35 michiel Exp $
+ * @version $Id: Generator.java,v 1.38 2005-09-15 15:20:49 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -217,7 +217,7 @@ public class Generator {
             break;
         case Field.TYPE_DATETIME :
             // shoudlw e use ISO_8601_LOOSE here or ISO_8601_UTC?
-            field.appendChild(document.createTextNode(org.mmbase.util.DateParser.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
+            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
             break;
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
