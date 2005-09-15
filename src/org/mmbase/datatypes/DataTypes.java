@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.9 2005-09-12 12:21:34 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.10 2005-09-15 15:05:02 michiel Exp $
  */
 
 public class DataTypes {
@@ -57,7 +57,8 @@ public class DataTypes {
         // throughout the system.
         // For the moment turn watching off.
         // Not sure if it is needed anyway - it won't actually happen that often
-        log.trace("" + Constants.class); // make sure its static init is called
+        log.trace("" + Constants.class); // make sure its static init is called, otherwise it goes horribly wrong.
+
         log.debug("Reading datatypes " + dataTypeCollector);
         readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
         
