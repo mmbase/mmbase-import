@@ -23,7 +23,7 @@ abstract public class AbstractSimpleImpl  implements Logger {
     /**
      * @since MMBase-1.8
      */
-    protected int level;
+    protected int level = Level.SERVICE_INT;
 
     public void setLevel(Level p) {
         level = p.toInt();
