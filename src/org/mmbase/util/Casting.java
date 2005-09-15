@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.65 2005-09-14 14:00:56 michiel Exp $
+ * @version $Id: Casting.java,v 1.66 2005-09-15 15:19:50 michiel Exp $
  */
 
 import java.util.*;
@@ -38,6 +38,36 @@ import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
 
 public class Casting {
+
+    /**
+     * A Date formatter that creates a date based on a ISO 8601 date and a ISO 8601 time.
+     * I.e. 2004-12-01 14:30:00.
+     * It is NOT 100% ISO 8601, as opposed to {@link #ISO_8601_UTC}, as the standard actually requires
+     * a 'T' to be placed between the date and the time.
+     * The date given is the date for the local (server) time. Use this formatter if you want to display
+     * user-friendly dates in local time.
+
+     * XXX: According to http://en.wikipedia.org/wiki/ISO_8601, the standard allows ' ' in stead of
+     * 'T' if no misunderstanding arises, which is the case here. So I don't think this is 'loose'.
+     */
+    public final static DateFormat ISO_8601_LOOSE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+    /**
+     * A Date formatter that creates a ISO 8601 datetime according to UTC/GMT.
+     * I.e. 2004-12-01T14:30:00Z.
+     * This is 100% ISO 8601, as opposed to {@link #ISO_8601_LOOSE}.
+     * Use this formatter if you want to export dates.
+     *
+     * XXX: Hmm, we parse with UTC now, while we don't store them as such.
+     */
+    public final static DateFormat ISO_8601_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+    static {
+        ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
+    public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    public final static DateFormat ISO_8601_TIME = new SimpleDateFormat("HH:mm:ss", Locale.US);
+
 
 
     private static final Logger log = Logging.getLoggerInstance(Casting.class);
@@ -244,7 +274,7 @@ public class Casting {
                     public String toString() {
                         String r;
                         if (getTime()  != -1) { // datetime not set
-                            r = DateParser.ISO_8601_UTC.format((Date)o);
+                            r = ISO_8601_UTC.format((Date)o);
                         } else {
                             r = "";
                         }
@@ -768,7 +798,12 @@ public class Casting {
                     date = new Date(dateInSeconds * 1000);
                 }
             } catch (NumberFormatException e) {
-                date =  DateParser.getInstance("" + d);
+                try {
+                    date =  DynamicDate.getInstance("" + d);
+                } catch (org.mmbase.util.dateparser.ParseException pe) {
+                    log.error(pe);
+                    return new Date(-1);
+                }
             }
         }
         if (date == null) return new Date(-1);
