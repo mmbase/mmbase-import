@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.6 2005-07-07 16:48:20 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.7 2005-09-16 11:58:23 michiel Exp $
  */
 public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
@@ -375,6 +375,11 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
             nodedata = nodedata.substring(nodedata.indexOf(endtoken) + endtoken.length());
             bpos = nodedata.indexOf("<");
         }
+    }
+
+    
+    public void changedNode(org.mmbase.core.event.NodeEvent event) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
     
 }
