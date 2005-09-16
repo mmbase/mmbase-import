@@ -112,6 +112,10 @@ void date() :  {}
     | "tomorrow" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
     | "yesterday" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
     | "duration" { beginOfYear(); date.set(Calendar.YEAR, 1970); }
+    | "borreltijd"  { beginOfDay(); date.set(Calendar.HOUR_OF_DAY, 17); date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY); 
+                     if (Calendar.getInstance().after(date)) date.add(Calendar.WEEK_OF_YEAR, 1);
+    
+    }
 }
 
 void time_zone() : {} 
