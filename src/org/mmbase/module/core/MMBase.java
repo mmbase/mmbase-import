@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.151 2005-09-16 09:02:43 ernst Exp $
+ * @version $Id: MMBase.java,v 1.152 2005-09-16 14:53:26 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1343,13 +1343,13 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public void addEventListener(EventListener listener){
-        System.out.println("adding listnerer of type : " + listener.getClass().getName());
+        log.service("adding listnerer of type : " + listener.getClass().getName());
         synchronized(eventBrokers){
             AbstractEventBroker[] brokers = findBrokersFor(listener);
             if(brokers != null){
                 for (int i = 0; i < brokers.length; i++) {
                     brokers[i].addListener(listener);
-                    System.out.println("listener added");
+                    log.debug("listener added");
                 }
                 
             }
@@ -1361,7 +1361,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public void removeEventListener(EventListener listener){
-        System.out.println("removing listnerer of type : " + listener.getClass().getName());
+        log.service("removing listnerer of type : " + listener.getClass().getName());
         synchronized(eventBrokers){
             AbstractEventBroker[] brokers = findBrokersFor(listener);
             if(brokers != null){
@@ -1386,8 +1386,7 @@ public class MMBase extends ProcessorModule {
                 AbstractEventBroker broker = (AbstractEventBroker) i.next();
                 if(broker.canBrokerForEvent(event)){
                     broker.notifyForEvent(event);
-                    System.out.println("event: "+event.toString()+" has been accepted by broker " +
-                            broker.toString());
+                    log.debug("event: "+event.toString()+" has been accepted by broker " + broker.toString());
                 }
             }
         }
@@ -1453,7 +1452,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     private AbstractEventBroker[] findBrokersFor(EventListener listener) {
-        System.out.println("try to find broker for listener " + listener.getClass().getName());
+        log.service("try to find broker for listener " + listener.getClass().getName());
         
         List result = new ArrayList();
         for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
