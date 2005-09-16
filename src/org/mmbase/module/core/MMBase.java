@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.150 2005-09-14 09:14:12 michiel Exp $
+ * @version $Id: MMBase.java,v 1.151 2005-09-16 09:02:43 ernst Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -258,6 +258,10 @@ public class MMBase extends ProcessorModule {
     public void init() {
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
+        //add event brokers for NodeEvent and RelationEvent
+        addEventBroker(new NodeEventBroker());
+        addEventBroker(new RelationEventBroker());
+        
         DataTypes.initialize();
 
         // Set the mmbaseroot singleton var
