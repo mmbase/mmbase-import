@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.23 2005-09-08 15:37:01 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.24 2005-09-16 12:32:14 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -220,6 +220,8 @@ public class DateHandler extends AbstractTypeHandler {
                     if (searchYear == null) {
                         if (cal != null) {
                             yearFieldValue(cal, buffer);
+                        } else {
+                            buffer.append("0");
                         }
                     } else {
                         buffer.append(searchYear);
