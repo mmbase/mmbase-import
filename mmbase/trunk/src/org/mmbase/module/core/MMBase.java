@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.152 2005-09-16 14:53:26 michiel Exp $
+ * @version $Id: MMBase.java,v 1.153 2005-09-16 18:28:29 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1343,7 +1343,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public void addEventListener(EventListener listener){
-        log.service("adding listnerer of type : " + listener.getClass().getName());
+        log.service("adding listener " + listener);
         synchronized(eventBrokers){
             AbstractEventBroker[] brokers = findBrokersFor(listener);
             if(brokers != null){
@@ -1452,7 +1452,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     private AbstractEventBroker[] findBrokersFor(EventListener listener) {
-        log.service("try to find broker for listener " + listener.getClass().getName());
+        log.debug("try to find broker  " + listener);
         
         List result = new ArrayList();
         for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
