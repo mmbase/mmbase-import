@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.121.2.10 2005-04-11 07:28:11 pierre Exp $
+ * @version $Id: Wizard.java,v 1.121.2.11 2005-09-16 08:21:38 ernst Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1404,6 +1404,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         if (command != null) {
             expandAttribute(command, "startnodes", null);
+            expandAttribute(command, "constraints", dataId);
         }
 
         // expand attribute 'objectnumber' en 'origin' for editwizard command
