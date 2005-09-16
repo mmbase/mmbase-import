@@ -40,7 +40,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.56 2005-06-29 13:40:33 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.57 2005-09-16 18:32:29 michiel Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag   {
 
@@ -231,7 +231,11 @@ public class FormatterTag extends CloudReferrerTag   {
         super.setPageContext(pageContext);
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         try {
-            cwd  = pageContext.getServletContext().getResource(org.mmbase.util.ResourceLoader.getDirectory(request.getServletPath()) + "/");
+            String includingServlet = (String) request.getAttribute(org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag.INCLUDE_PATH_KEY);
+            if (includingServlet == null) {
+                includingServlet = request.getServletPath();
+            }
+            cwd  = pageContext.getServletContext().getResource(org.mmbase.util.ResourceLoader.getDirectory(includingServlet) + "/");
         } catch (Exception e) {
         }
     }
