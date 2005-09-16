@@ -84,11 +84,12 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
      * maybe this method will have to go as well. not shure
      * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
      */
-    public void changedNode(int number, String tableName, String ctype) {
+    public boolean changedNode(int number, String tableName, String ctype) {
         // let's fire some events.
         MMObjectNode node = parent.getBuilder(tableName).getNode(number);
         NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(ctype));
         changedNode(event);
+        return true;
     }
 
 }
