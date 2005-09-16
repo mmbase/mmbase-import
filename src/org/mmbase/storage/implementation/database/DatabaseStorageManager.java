@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.118 2005-09-08 13:06:05 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.119 2005-09-16 14:21:53 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1308,7 +1308,6 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             } else {
             }
-
             statement.setString(index, setValue);
 
         }
@@ -1579,7 +1578,7 @@ public class DatabaseStorageManager implements StorageManager {
                 Blob b =  getBlobValue(result, index, field, mayShorten);
                 if (b == BLOB_SHORTED) return MMObjectNode.VALUE_SHORTED;
                 if (b == null) return null;
-                return b.getBytes(0L, (int) b.length());
+                return b.getBytes(1L, (int) b.length());
             case Field.TYPE_DATETIME :
                 return getDateTimeValue(result, index, field);
             case Field.TYPE_BOOLEAN :
@@ -1734,7 +1733,7 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
             }
             // create the table
-            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder });
+            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder, factory.getCatalog() });
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
@@ -1959,8 +1958,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (metaData.storesUpperCaseIdentifiers()) {
                     prefixTablename = prefixTablename.toUpperCase();
                 }
-                ResultSet res =
-                    metaData.getTables(factory.getCatalog(), null, prefixTablename+"_%", new String[] { "TABLE", "VIEW" });
+                ResultSet res = metaData.getTables(factory.getCatalog(), null, prefixTablename+"_%", new String[] { "TABLE", "VIEW" });
                 try {
                     while(res.next()) {
                         if(! tableNameCache.add(res.getString(3).toUpperCase())) {
