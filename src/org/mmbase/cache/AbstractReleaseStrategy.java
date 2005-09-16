@@ -33,7 +33,6 @@ public abstract class AbstractReleaseStrategy {
 	private int totalEvaluated = 0, totalPreserved =0;
 	private long totalEvalueationTimeInMillis = 0;
 	private boolean isActive = true;
-	protected static BasicSqlHandler sqlHandler = new BasicSqlHandler();
 	protected String name;
 
 	public AbstractReleaseStrategy(String name){
