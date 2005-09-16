@@ -7,10 +7,10 @@
 package org.mmbase.cache;
 
 /**
- * @author Administrator
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * TODO To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Style - Code Templates
+ * 
+ * @author Ernst Bunders
  */
 public class CacheConfigurationException extends Exception {
 
