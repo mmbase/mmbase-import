@@ -15,14 +15,14 @@ import org.mmbase.storage.search.Step;
 
 
 /**
+ * This class provides a very basic release strategy. In fact it will release
+ * the cache in nearly every instance, except when the event is for a step in
+ * the <code>SearchQuery</code> that has 'nodes' set for it and the changed
+ * node is not one of those. This release strategy is in fact the original one
+ * and will allways be the first in the hyrarchy of the
+ * <code>ChainedReleaseStrategy</code>.
+ * 
  * @author Ernst Bunders
- *
- * This class provides a very basic release strategy. In fact it will 
- * release the cache in nearly every instance, except when the event
- * is for a step in the <code>SearchQuery</code> that has 'nodes' set for 
- * it and the changed node is not one of those. This release strategy is 
- * in fact the original one and will allways be the first in the hyrarchy
- * of the <code>ChainedReleaseStrategy</code>.
  */
 public class BasicReleaseStrategy extends AbstractReleaseStrategy {
 
