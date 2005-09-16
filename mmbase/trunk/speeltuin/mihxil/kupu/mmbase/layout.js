@@ -7,7 +7,7 @@ if (document.getElementById || document.all) { // minimum dhtml support required
 function winOnLoad() {
   var ele = document.getElementById('leftColumn');
   if (ele && xDef(ele.style, ele.offsetHeight)) { // another compatibility check
-    adjustLayout();
+      //adjustLayout();
     addEventHandler(window, 'resize', winOnResize, window);
   }
 }
@@ -84,7 +84,7 @@ function adjustLayout() {
 
     var nodeHeight = xHeight('nodefields');
 
-    xHeight("tree", maxHeight - nodeHeight - 1);
+    xHeight("mmbase-tools", maxHeight - nodeHeight - 1);
 
     
 }

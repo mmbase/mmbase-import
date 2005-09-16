@@ -13,7 +13,7 @@
 XSL transformation from Kupu Library XML to HTML for the image library
 drawer.
 
-$Id: drawer.xsl,v 1.11 2005-08-26 18:21:36 michiel Exp $
+$Id: drawer.xsl,v 1.12 2005-09-16 19:47:56 michiel Exp $
 -->
 <xsl:stylesheet
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
@@ -257,7 +257,7 @@ $Id: drawer.xsl,v 1.11 2005-08-26 18:21:36 michiel Exp $
     </form>
     
     <iframe id="kupu-upload-form-target" name="kupu_upload_form_target"
-            src="kupublank.html" scrolling="off" frameborder="0" width="0px" height="0px" display="None">
+      src="../kupublank.html" scrolling="off" frameborder="0" width="0px" height="0px" display="None">
     </iframe>
   </xsl:template>
 
