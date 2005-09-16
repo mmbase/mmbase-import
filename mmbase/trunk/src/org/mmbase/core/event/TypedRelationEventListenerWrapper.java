@@ -48,4 +48,8 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
         return p;
     }
 
+    public String toString() {
+        return "TypedRelationEventListenerWrapper(" + wrappedListener + ")";
+    }
+
 }

@@ -43,4 +43,8 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
         return p;
     }
 
+    public String toString() {
+        return "NodeEventListenerWrapper(" + wrappedListener + ")";
+    }
+
 }
