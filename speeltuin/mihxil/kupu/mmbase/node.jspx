@@ -26,31 +26,18 @@
               <mm:notpresent referid="loadonly">
                 <table>
                   <tr>
-                    <th><a href="javascript:reloadTree();">#</a> <mm:field name="number" /></th>
+                    <th>#<mm:field name="number" /></th>
                     <mm:hasfunction name="index">
                       <th><mm:function name="index" /></th>
                     </mm:hasfunction>
                   </tr>
-                  <mm:hasfield name="lastmodifiedby">
-                    <tr>
-                      <td colspan="2">
-                        <mm:field name="lastmodifiedby" />:
-                        <nobr><mm:field name="lastmodified"><mm:time format=":LONG.MEDIUM" /></mm:field></nobr>
-                      </td>
-                    </tr>
-                  </mm:hasfield>
                 </table>
-                <a class="create" title="New" href="javascript: createSubNode(${node});">
-                  <mm:link page="/mmbase/style/images/create.gif">
-                    <img src="${_}" alt="+" title="Creëer subhoofstuk" />
-                  </mm:link>
-                </a>
                 <form>
                   <mm:fieldlist id="field" type="edit">
                     <mm:fieldinfo type="name">
                       <mm:compare value="body" inverse="true">
                         <p>
-                          <mm:fieldinfo type="guiname" />
+                          <mm:fieldinfo type="guiname" /><jsp:text> </jsp:text>
                           <mm:fieldinfo type="name">
                             <mm:compare value="title">
                               <mm:fieldinfo  options="noempty,extra:onKeyUp='updateTree(${node.number}, this.value); kupu.content_changed=true;'" type="input" />
