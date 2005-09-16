@@ -18,33 +18,33 @@ import org.mmbase.module.core.MMObjectNode;
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.2 2005-09-15 20:26:23 ernst Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.3 2005-09-16 11:56:04 michiel Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {
-
-	/**
-     * Initialize MMBaseChangeInterface 
-	 * @param mmb MMBase instance
-	 */
-	void init(MMBase mmb);
-
-
-   void changedNode(NodeEvent event);
     
-	/** 
+    /**
+     * Initialize MMBaseChangeInterface 
+     * @param mmb MMBase instance
+     */
+    void init(MMBase mmb);
+    
+    
+    void changedNode(NodeEvent event);
+    
+    /** 
      * Wait until the node change notification is completed.
-	 * @param node Node to wait for
-	 * @return <code>true</code> if done waiting
-	 */
-	boolean waitUntilNodeChanged(MMObjectNode node);
-
-
+     * @param node Node to wait for
+     * @return <code>true</code> if done waiting
+     */
+    boolean waitUntilNodeChanged(MMObjectNode node);
+    
+    
     /**
      * @param number
      * @param tableName
      * @param ctype
      * @deprecated (i think) fire an event in stead
      */
-    void changedNode(int number, String tableName, String ctype);
+    boolean changedNode(int number, String tableName, String ctype);
 }
