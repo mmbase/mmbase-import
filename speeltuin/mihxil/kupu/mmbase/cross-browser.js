@@ -111,8 +111,10 @@ function xWidth(e,w) {
   return w;
 }
 
-function xHeight(e,h) {
-  if(!(e=document.getElementById(e))) return 0;
+function xHeight(e, h) {
+  if(!(e = document.getElementById(e))) {
+      return 0;
+  }
   if (typeof(h) == "number") {
     if (h<0) h = 0;
     else h=Math.round(h);
@@ -149,6 +151,7 @@ function xHeight(e,h) {
   else if(css && xDef(e.style.pixelHeight)) {
     if(h>=0) e.style.pixelHeight=h;
     h=e.style.pixelHeight;
+  } else {
   }
   return h;
 }

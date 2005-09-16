@@ -1,0 +1,21 @@
+<div id="related">
+<mm:content
+    type="text/html"
+    expires="-1"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:directive.page session="true" errorPage="../error.jspx" />
+  <mm:cloud rank="basic user">
+    <mm:import id="node" externid="objectnumber" required="true" />
+    <mm:node referid="node">
+      <p>Related</p>
+      <a href="javascript: openPopup('drawers/drawer.jspx', 200, 300);">new</a>
+      <mm:relatednodes role="posrel" orderby="posrel.pos">
+        <p><mm:function name="gui" /></p>
+      </mm:relatednodes>
+    </mm:node>
+  </mm:cloud>
+</mm:content>
+</div>

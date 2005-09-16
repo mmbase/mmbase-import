@@ -10,12 +10,12 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: body.kupu,v 1.8 2005-09-08 08:30:31 michiel Exp $</kupu:id>
+  <kupu:id>$Id: body.kupu,v 1.9 2005-09-16 19:47:56 michiel Exp $</kupu:id>
 
 
   <kupu:part name="body">
     <mm:import externid="objectnumber"  />
-    <mm:import externid="tree"  />
+    <mm:import externid="tools"  />
     <mm:import externid="origin"  />
     <mm:import externid="wizard" vartype="list" />
     <mm:compare referid="objectnumber" value="new">
@@ -27,7 +27,7 @@
         <mm:node id="origin" referid="origin" />
         <mm:createrelation role="related" source="origin" destination="node" />
       </mm:present>
-      <mm:redirect referids="node@objectnumber,tree?,language?,origin?" /> 
+      <mm:redirect referids="node@objectnumber,tools?,language?,origin?" /> 
     </mm:compare>
     <mm:compare referid="objectnumber" value="new" inverse="true">
       <mm:node id="node" referid="objectnumber" />

@@ -249,7 +249,7 @@ function loadRelated(nodeNumber) {
     var treeXml = loadedTrees.get(nodeNumber);
     if (treeXml == null) {
         var request = getRequest();
-        request.open('GET', 'tree.jspx?objectnumber=' + nodeNumber, false);
+        request.open('GET', 'tools/tree.jspx?objectnumber=' + nodeNumber, false);
         request.send('');
         treeXml = serialize(request);
         loadedTrees.add(nodeNumber, treeXml);
@@ -270,7 +270,7 @@ function unloadRelated(nodeNumber) {
     if (html == null) {
         // just fall-back
         var request = getRequest();
-        request.open('GET', 'tree.jspx?objectnumber=' + nodeNumber, false);
+        request.open('GET', 'tools/tree.jspx?objectnumber=' + nodeNumber, false);
         request.send('');
         html = serialize(request);
     }
@@ -280,7 +280,7 @@ function unloadRelated(nodeNumber) {
 
 function reloadTree() {
     var request = getRequest();
-    request.open('GET', 'tree.jspx?objectnumber=' + trunkNumber, false);
+    request.open('GET', 'tools/tree.jspx?objectnumber=' + trunkNumber, false);
     request.send('');
     var tree = serialize(request);
     document.getElementById('tree').innerHTML = tree;
