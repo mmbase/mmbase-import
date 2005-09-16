@@ -68,6 +68,11 @@
         </mm:listrelations>
         </ul>
       </mm:listrelationscontainer>
+      <a class="create" title="New" href="javascript: createSubNode(${node});">
+        <mm:link page="/mmbase/style/images/create.gif">
+          <img src="${_}" alt="+" title="Creëer subhoofstuk" />
+        </mm:link>
+      </a>
     </div>
   </mm:node>
 </mm:cloud>
