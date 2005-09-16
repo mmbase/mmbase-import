@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.32 2005-09-12 17:32:45 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.33 2005-09-16 12:32:14 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -87,10 +87,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.useHtmlInput(node, field);
-        }
         String fieldName = field.getName();
         String fieldValue = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
