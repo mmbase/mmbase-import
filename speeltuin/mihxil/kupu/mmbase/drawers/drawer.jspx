@@ -1,0 +1,13 @@
+<mm:content 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    type="text/html" 
+    expires="-1">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud>    
+    <mm:import id="nodetypes">images</mm:import>
+    <mm:formatter xslt="drawer.xsl" escape="none">
+      <mm:include referids="nodetypes" page="libraries.jspx" escape="none" />
+    </mm:formatter>
+  </mm:cloud>
+</mm:content>

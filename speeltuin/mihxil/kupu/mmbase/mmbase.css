@@ -34,8 +34,7 @@ img {
 }
 
 
-#nodefields 
-{   
+#nodefields {   
   background-color: #76a2b6;
   overflow: hidden;
 }
@@ -50,13 +49,13 @@ img {
 
 
 
-#tree { 
+#mmbase-tools { 
   overflow: auto;
   overflow-x: auto;
   overflow-y: auto;
  
 }
-#tree ul { 
+#mmbase-tools ul { 
   list-style-type: none;          
 
  }
@@ -69,7 +68,7 @@ a.current  {
   background-color:  #76a2b6;
 }
 
-#tree a.create {
+#mmbase-tools a.create {
   text-decoration: none;
 }
 		
