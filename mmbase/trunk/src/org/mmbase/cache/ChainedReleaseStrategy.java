@@ -21,10 +21,11 @@ import org.mmbase.storage.search.SearchQuery;
  * instances, and call them hyrarchically. It is not really thread safe, but
  * i suppose the cost of synchronizing access to the list of strategies dous
  * not weigh up to the benefit. 
+ * @since MMBase-1.8
  */
 public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
 
-	private Map cacheReleaseStrategies;
+	private Map cacheReleaseStrategies = new HashMap(10);
 	private String basicStrategyName;
 
 
@@ -34,7 +35,6 @@ public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
 		BasicReleaseStrategy st = new BasicReleaseStrategy();
 		basicStrategyName = st.getName();
 		addReleaseStrategy(st);
-		cacheReleaseStrategies = new HashMap(10);
 	}
 
 	/**
