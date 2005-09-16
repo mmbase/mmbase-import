@@ -19,11 +19,11 @@
    done. <br> 
    Deleting forummessages that aren't linked to anything anymore...
    <mm:listnodes type="forummessages">
-   		<mm:countrelations>
-   			<mm:isgreaterthan value="0">
-	   		  <mm:deletenode deleterelations="true"/>
-    		 </mm:isgreaterthan>
- 		 </mm:countrelations>
+      <mm:countrelations>
+         <mm:isgreaterthan value="0" inverse="true">
+            <mm:deletenode deleterelations="true"/>
+         </mm:isgreaterthan>
+      </mm:countrelations>
    </mm:listnodes>
    done. <br>
 
