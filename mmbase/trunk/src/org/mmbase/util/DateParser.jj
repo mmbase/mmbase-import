@@ -50,11 +50,14 @@ public class DateParser {
     public boolean dynamic()  {
         return dynamic;        
     }
-    protected void beginOfDay() {
-        date.set(Calendar.HOUR_OF_DAY, 0);
+    protected void beginOfHour() {
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
+    }
+    protected void beginOfDay() {
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        beginOfHour();
     }
     protected void beginOfMonth() {
         date.set(Calendar.DAY_OF_MONTH, 1);
@@ -93,8 +96,8 @@ void start() : {}
 void time() : {}
 {
     hour_number() ":" minute_number() (":" second_number() ["." millisecond_number()])?
-    | "noon"     { beginOfDay(); date.set(Calendar.HOUR_OF_DAY, 12); }
-    | "teatime"  { beginOfDay(); date.set(Calendar.HOUR_OF_DAY, 16); }
+    | "noon"     { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 12); }
+    | "teatime"  { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 16); }
     | hour_number() "oclock" { date.set(Calendar.MINUTE, 0);}
 }
 
@@ -112,7 +115,7 @@ void date() :  {}
     | "tomorrow" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
     | "yesterday" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
     | "duration" { beginOfYear(); date.set(Calendar.YEAR, 1970); }
-    | "borreltijd"  { beginOfDay(); date.set(Calendar.HOUR_OF_DAY, 17); date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY); 
+    | "borreltijd"  { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 17); date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY); 
                      if (Calendar.getInstance().after(date)) date.add(Calendar.WEEK_OF_YEAR, 1);
     
     }
@@ -177,7 +180,7 @@ void increment() : {}
    | next() month_of_year() { beginOfMonth(); if (date.getTime().getTime() < prev) {date.add(Calendar.YEAR, 1); } }
    | previous() month_of_year() { beginOfMonth(); if (date.getTime().getTime() > prev) {date.add(Calendar.YEAR, -1); } }            
    | <THIS> month_of_year() { beginOfMonth(); }
-   | "ish"  {  date.add(Calendar.SECOND, (int) (random.nextGaussian() * 1200.0));/* 20 min */ dynamic = true;}
+   | "ish"  {  date.add(Calendar.SECOND, (int) (random.nextGaussian() * 1200.0)/* 20 min */ + 300 /* 5 minutes late on average*/); dynamic = true;}
 }
 void decrement() : {}
 {
