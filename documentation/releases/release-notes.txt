@@ -31,6 +31,46 @@ General New Features:
 
 - Crontab is a new application that provides scheduling.
 
+- Class security provides authentication wrapping based on calling class
+
+- It's easier to make security independen code because of new features about default authentication
+  methods.
+
+- Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
+  including inline urls, attachments, images, cross-links and 'blocks' (notes, intermezzo's)
+
+- Images
+   Several improvements
+   - Support for height and width (predicted before conversion, determined after conversion, and
+     stored if corresponding fields are available) (This was ported to 1.7.4 too)
+   - Transformations are postponed to when actually served
+   - FileName of upload can be stored, and be added to the URL
+
+- ResourceLoader was created, MMBase can more easily be deployed as war now. Most configuration can also
+  be shipped inside jars, and be overriden. This means the most applications can principally be installed by
+  placing one jar in WEB-INF/lib plus placing jsp's if any.
+
+- DataTypes and Field improvements.
+   New datatypes 'datetime' and 'boolean'. Support for 'constraints' on all types, default values,
+   uniqueness etc. All on field level.
+
+   This gave rise to complete new package org.mmbase.datatypes which is also part of 'bridge'
+   because its classes are accessible through several methods in bridge.
+
+- Functions. The function framework was completed. Among others you can now add functions in the
+  builder xml (without the need to override the builder class).
+
+Taglib New Features:
+-------------------
+- Bunch of new tags/attributes (see documentation)
+
+- Compatibility with EL. MMBase Taglib variables are now EL variables.
+  This may give minor compatibility issues. If this gives too many issues for you, you can switch
+  this behaviour off (this needs some testing still though).
+
+- 'escapers' can be more easily added, and they can also be configured on the page (mm:escaper)
+
+
 --------------------
 Obsolete Features:
 --------------------
@@ -44,42 +84,16 @@ Obsolete Features:
 
 - The 'Config' module and the 'AppTool' utility have been dropped from the
   code. Both tools provided visual input regarding configuration or
-  application makeup, but were concidered outdated.
+  application makeup, but were considered outdated.
   References to these modules have been removed from the MMBase admin pages.
 
---------------------------
-MMCI (bridge) New Features:
--------------------------
-[1.8.0]
-
--------------------
-Taglib New Features:
--------------------
-[1.8.0]
-
-==========================
-BUG FIXES AND IMPROVEMENTS:
-==========================
-
--------------------
-Generic Improvement:
--------------------
-[1.8.0]
 
 ------------------
-Generic Bug Fixes:
+Bug Fixes:
 ------------------
 [1.8.0]
+many
 
-------------------
-Security Bug Fixes:
-------------------
-[1.8.0]
-
------------------
-Taglib Bug Fixes:
------------------
-[1.8.0]
 
 ========================
 Know Issues and Problems:
@@ -89,24 +103,9 @@ Know Issues and Problems:
   web.xml or resin 3), then the new EL (Expression Language) syntax
   collides with the Expression language of mmbase taglib.
 
-  MMBase Taglib JSP's using the ${} syntax might not work then. Often
-  the {} can be avoided, otherwise the only option is to add <%@page
+  MMBase Taglib JSP's using the ${} syntax might work then, because this is also EL. To locally
+ disable, avoid {} (letting it away, or replacing them by []) or add <%@page
   isELIgnored="true" %> to the page.
-
-  The generic JSP-editors in /mmbase/edit/basic could not be fixed to
-  work with and without EL. When you want to use these editors in a EL
-  environment isELIgnored must manually be added to
-  /mmbase/edit/basic/page_base_functionality.jsp (Unfortunately it
-  cannot always be present, because this setting can cause errors in a
-  JSP1 environment).
-
-  The EL and MMBase Taglib expressions languages are actually very
-  similar to each other. We will try to make MMBase Taglib compatible
-  (perhaps optionally so) with EL in a next release.
-
-- The old database support classes are still in this release, but are
-  not fully tested. These are deprecated please DO NOT use them
-  anymore, but switch to the new database storage classes.
 
 - Orion version < 2.x doesn't support the final servlet api 2.3,
   because of this the jumpersFilter will not work. You will need to
