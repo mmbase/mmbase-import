@@ -1,5 +1,6 @@
 ===================================================================
                      MMBase 1.8.0 - Release Plan
+$Id: release-plan.txt,v 1.5 2005-09-17 13:59:58 michiel Exp $
 ===================================================================
 
 TODO for 1.8.0 release of MMBase:
@@ -9,29 +10,58 @@ I Core/Project abstraction
 The following applications should be removed from the core and moved to a separate application:
 
 - SCAN, including the org.mmbase.module.gui.html.* classes and supporting util classes (i.e. scanpage)
-  This includes removing SCAN specific hooks from some core classes (an alternative is needed to provide backward compatibility).
+  This includes removing SCAN specific hooks from some core classes (an alternative is needed to
+  provide backward compatibility).
+  DONE
+
 - Email application: find a solution for the email module class interface that is now in the core
+  DONE?
+
 - Config module and org.mmbase.config: xml parsers and color coders (perhaps a rewrite is better?)
-- Tools: move utility classes, modules, and builders that are still useful to a tools application (or in case this is too hard, tag them for inclusion in a later release)
+  DROPPED
+
+- Tools: move utility classes, modules, and builders that are still useful to a tools application
+  (or in case this is too hard, tag them for inclusion in a later release)
+  SKIP
+
 - Future non-core projects should also be deployed in separate applications packages.
-- If possible applicatuons should be configured to work with the Packaging project (if this project proves stable).
+   DONE?
+
+- If possible applicatuons should be configured to work with the Packaging project (if this project
+  proves stable).
+  DO
 
 II - Cleaning
 
 The following steps should be made to clean the code. Note that part of this is also done during abstraction
 
-- removing all old database support en storage classes
-- remove all utility classes, modules, and builders that are no longer used, i.e. DateSupport or Storable
+- removing all old database support and storage classes
+  DONE
+  
+- remove all utility classes, modules, and builders that are no longer used, i.e. DateSupport or
+  Storable
+  DONE
+  
 - Mark xerces/xalan dependent code for future change (there is no solution for this dependency yet)
+  DONE
+
 - cleaning of the html-dir
+  DO
 
 III Improvements
 
 The following Core functionality will be evalued and (if needed and possible) improved in 1.8.  It is possible that actual changes are delayed to a later release if it proves too time consuming for this one.
 
-- Multicast: select an appropriate (or pluggable) communication system, solve issues with bursts of change events
-- Modules and Builders: implement a proper way for loading, unloading, reloading, and shutting down modules and builders
+- Multicast: select an appropriate (or pluggable) communication system, solve issues with bursts of
+  change events
+  DO
+
+- Modules and Builders: implement a proper way for loading, unloading, reloading, and shutting down
+  modules and builders
+  SKIP
+
 - Security: field-level security checks
+  SKIP
 
 IV Performance and Maintenance
 
@@ -39,10 +69,19 @@ Performance issues should be analyzed and if possible resolved. It is possible t
 Performance and maintenance related issues are:
 
 - Monitoring of MMBase performance issues, i.e. profiling
+  SKIP
+
 - Running on packaged war (xml configuration as resources)
+  DONE
+
 - serving images staticly
+  SKIP
+
 - related-nodes optimalisation (passing queries to parent)
+  SKIP
+
 - create a better build-process
+  SKIP
 
 V Projects
 
@@ -51,13 +90,44 @@ This is dependent on input from the project manager.
 New projects that are not in a stable state will not be deployed in the 1.8 release.
 
 - Cleaning Project, fase II (see above)
+  PENDING
 - Distro project
+  PENDING
 - Field types project
+  DO
+  ----> DO FIX RMMCI 
+  ----> DO Review code and new methods (org.mmbase.bridge.*, org.mmbase.datatypes.*)
+
 - Richtext project
+  DO
 - Taglib II project
+  DONE
 - Packaging project (new, formerly 'Applications II')
+  SKIP
+- Cache release stategies
+  DO, or decide to HOLD
+
+- Editwizard 2
+   Planned for 1.8.1
+
 
 VI Other
 
 - update and improve documentation
+  DO
+
+- testing
+   - junit tests must succeed
+     DO
+   - junit tests must be reviewed
+     DO
+   - other test areas 
+      (new features in 1.8)
+      - Taglib & EL
+      - DataTypes
+      - Events and Clustering
+      - Imaging
+      - Security
+         -test generality of e.g. basic editors. The idea is that they work with every security
+           implementation, but this is not yet finished IIRC.
 
