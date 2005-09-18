@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.23 2005-09-15 15:05:02 michiel Exp $
+ * @version $Id: DataType.java,v 1.24 2005-09-18 08:46:27 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -337,6 +337,8 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         // test uniqueness
         if (node != null && field != null && value != null && isUnique() && !field.getName().equals("number")) {
             // create a query and query for the value
+            // XXX This will test for uniquness using the cloud, so you'll miss objects you can't
+            // see (and database doesn't know that!)
             NodeQuery query = field.getNodeManager().createQuery();
             Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
             Queries.addConstraint(query,constraint);
