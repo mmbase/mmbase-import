@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.119 2005-09-16 14:21:53 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.120 2005-09-19 17:37:10 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -629,7 +629,7 @@ public class DatabaseStorageManager implements StorageManager {
             pathBuffer.insert(0, File.separator);
             number /= 100;
         }
-        pathBuffer.insert(0, basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName());
+        pathBuffer.insert(0, basePath + File.separator + factory.getDatabaseName() + File.separator + node.getBuilder().getFullTableName());
         return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
     }
 
@@ -1733,7 +1733,7 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
             }
             // create the table
-            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder, factory.getCatalog() });
+            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder, factory.getDatabaseName() });
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
