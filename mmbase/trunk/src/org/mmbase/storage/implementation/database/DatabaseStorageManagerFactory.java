@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.23 2005-09-15 10:55:06 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.24 2005-09-19 17:37:10 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -110,6 +110,52 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         return catalog;
     }
 
+    // this is more or less common
+    private static final java.util.regex.Pattern JDBC_URL_DB = java.util.regex.Pattern.compile("(?i)jdbc:.*;.*DatabaseName=([^;]+?)");
+
+    // this too
+    private static final java.util.regex.Pattern JDBC_URL    = java.util.regex.Pattern.compile("(?i)jdbc:.*:(?:.*[/@])?(.*?)(?:;.*)?");
+
+    private static String getDatabaseName(String url) {
+        if (url == null) return null;
+        java.util.regex.Matcher matcher = JDBC_URL_DB.matcher(url);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        matcher = JDBC_URL.matcher(url);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    /**
+     * Doing some best effor to get a 'database name'.
+     * @since MMBase-1.8
+     */
+    public String getDatabaseName() {
+        Connection con = null;
+        try {
+            con = dataSource.getConnection();
+            DatabaseMetaData metaData = con.getMetaData();
+            String url = metaData.getURL();
+            String db = getDatabaseName(url);
+            if (db != null) return db;
+            log.service("No db found in database connection meta data URL '" + url + "'");
+        } catch (Exception e) {
+            log.error(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            }
+        }
+        return catalog;
+    }
+
     /**
      * Opens and reads the storage configuration document.
      * Obtain a datasource to the storage, and load configuration attributes.
@@ -154,8 +200,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // this allows for easy retrieval of database options
         try {
             Connection con = dataSource.getConnection();
+            if (con == null) throw new StorageException("Did get 'null' connection from data source " + dataSource);
             catalog = con.getCatalog();
             log.service("Connecting to catalog with name " + catalog);
+            log.service("Connecting to database with name " + getDatabaseName());
+
             DatabaseMetaData metaData = con.getMetaData();
 
             // set transaction options
@@ -242,11 +291,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 Connection con = null;
                 try {
                     con = dataSource.getConnection();
-                    DatabaseMetaData metadata = con.getMetaData();
-                    databaseResourcePath = lookup.getResourcePath(metadata);
+                    DatabaseMetaData metaData = con.getMetaData();
+                    databaseResourcePath = lookup.getResourcePath(metaData);
                     if(databaseResourcePath == null) {
                         // TODO: ask the lookup for a string containing all information on which the lookup could verify and display this instead of the classname
-                        throw new StorageConfigurationException("No filter found in " + lookup.getSystemId() + " for driver class:" + metadata.getConnection().getClass().getName() + "\n");
+                        throw new StorageConfigurationException("No filter found in " + lookup.getSystemId() + " for driver class:" + metaData.getConnection().getClass().getName() + "\n");
                     }
                 } catch (SQLException sqle) {
                     throw new StorageInaccessibleException(sqle);
@@ -337,6 +386,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         return new BasicQueryHandler((SqlHandler)data);
     }
 
+
+    public static void main(String[] args) {
+        String u = "jdbc:hsql:test;test=b";
+        if (args.length > 0) u = args[0];
+        System.out.println("Database " + getDatabaseName(u));
+    }
 }
 
 
