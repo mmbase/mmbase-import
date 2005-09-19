@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.23 2005-03-18 12:41:04 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.24 2005-09-19 12:30:35 pierre Exp $
  */
 public interface CloudContext {
 
@@ -103,7 +103,7 @@ public interface CloudContext {
      * @since   MMBase-1.6
      */
     public java.util.Locale getDefaultLocale();
-    
+
     /**
      * Returns a new, empty field list
      *
@@ -111,39 +111,43 @@ public interface CloudContext {
      * @since   MMBase-1.6
      */
     public FieldList createFieldList();
-    
+
     /**
-     * Returns a new, empty node list
+     * Returns a new, empty node list.
+     * Note that it is generally better to use {@link Cloud.createNodeList} or {@link NodeManager.createNodeList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
      */
     public NodeList createNodeList();
-    
+
     /**
      * Returns a new, empty relation list
+     * Note that it is generally better to use {@link Cloud.createRelationList} or {@link NodeManager.createRelationList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
      */
     public RelationList createRelationList();
-    
+
     /**
      * Returns a new, empty node manager list
+     * Note that it is generally better to use {@link Cloud.createNodeManagerList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
      */
     public NodeManagerList createNodeManagerList();
-    
+
     /**
      * Returns a new, empty relation manager list
+     * Note that it is generally better to use {@link Cloud.createRelationManagerList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
      */
     public RelationManagerList createRelationManagerList();
-    
+
     /**
      * Returns a new, empty module list
      *
@@ -151,7 +155,7 @@ public interface CloudContext {
      * @since   MMBase-1.6
      */
     public ModuleList createModuleList();
-    
+
     /**
      * Returns a new, empty string list
      *
@@ -159,7 +163,7 @@ public interface CloudContext {
      * @since   MMBase-1.6
      */
     public StringList createStringList();
-    
+
 
     /**
      * Acquired information about the currently configuration Authentication implementation.
