@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.104 2005-09-08 16:09:40 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.105 2005-09-19 12:24:21 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -180,7 +180,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), "" + id);
         // odd this MMObjectNode does _not_ have the right builder?!
-        
+
         Iterator i = node.parent.getFields().iterator();
         while(i.hasNext()) {
             Field f = (Field) i.next();
@@ -531,7 +531,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         if (function != null && !functionName.equals("info") && !functionName.equals("getFunctions")) {
             function = new BasicFunction(this, function);
         }  else {
-            function = builder != null ? builder.getFunction(functionName) : null;                    
+            function = builder != null ? builder.getFunction(functionName) : null;
             if (function != null) {
                 function = new BasicFunction(getCloud(), function);
             }
@@ -542,5 +542,18 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return function;
 
     }
+
+    public FieldList createFieldList() {
+        return new BasicFieldList(Collections.EMPTY_LIST, this);
+    }
+
+    public NodeList createNodeList() {
+        return new BasicNodeList(Collections.EMPTY_LIST, this);
+    }
+
+    public RelationList createRelationList() {
+        return new BasicRelationList(Collections.EMPTY_LIST, this);
+    }
+
 
 }

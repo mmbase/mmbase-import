@@ -21,7 +21,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.13 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.14 2005-09-19 12:24:21 pierre Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -59,7 +59,7 @@ public class BasicFunctionValue implements FieldValue {
                     if (cloud == null) {
                         throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
                     }
-                    NodeList l = cloud.getCloudContext().createNodeList();
+                    NodeList l = cloud.createNodeList();
                     this.value = l;
                     l.addAll(list);
                 }

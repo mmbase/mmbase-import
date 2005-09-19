@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.59 2005-09-05 16:33:42 michiel Exp $
+     * @version  $Id: list.jsp,v 1.60 2005-09-19 12:24:21 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -122,7 +122,7 @@ int resultsSize;
 
 //// do not list anything if search is forced and no searchvalue given
 if (listConfig.search == Config.ListConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
-    results = cloud.getCloudContext().createNodeList();
+    results = cloud.createNodeList();
     resultsSize = 0;
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");

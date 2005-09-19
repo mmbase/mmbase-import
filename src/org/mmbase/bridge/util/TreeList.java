@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.13 2005-03-16 19:03:20 michiel Exp $
+ * @version $Id: TreeList.java,v 1.14 2005-09-19 12:24:21 pierre Exp $
  * @since   MMBase-1.7
  */
 
@@ -222,9 +222,9 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     protected class TreeItr implements TreeIterator {
 
         private List nodeIterators = new ArrayList(); // an iterator for each query result
-        private NodeList nextNodes = TreeList.this.cloud.getCloudContext().createNodeList();
+        private NodeList nextNodes = TreeList.this.cloud.createNodeList();
         // contains 'next' nodes for each query result (needed for 'next()')
-        private NodeList previousNodes = TreeList.this.cloud.getCloudContext().createNodeList();
+        private NodeList previousNodes = TreeList.this.cloud.createNodeList();
         // contains 'previous' nodes for eacht query result (needed for 'previous()')
         private int currentIterator; // number of current iterator which is iterated
         private int nextIndex;

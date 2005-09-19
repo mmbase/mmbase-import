@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.42 2005-06-07 12:02:37 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.43 2005-09-19 12:24:21 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -132,7 +132,7 @@ public class BasicCloudContext implements CloudContext {
     }
 
     public Cloud getCloud(String cloudName, UserContext user) throws NotFoundException {
-        checkExists(cloudName); 
+        checkExists(cloudName);
        return new BasicCloud(cloudName, user, this);
     }
 
