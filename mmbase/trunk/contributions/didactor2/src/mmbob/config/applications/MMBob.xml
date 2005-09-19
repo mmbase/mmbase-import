@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="MMBob" maintainer="submarine.nl" version="1" auto-deploy="true">
+<application name="MMBob" maintainer="submarine.nl" version="2" auto-deploy="true">
     <requirements>
         <requires type="application" name="Resources" maintainer="mmbase.org" version="1" />
         <!-- <requires type="application" name="CloudSecurity" maintainer="mmbase.org" version="1" /> -->
@@ -39,6 +39,8 @@
         <relation from="educations" to="forums" type="related" />
         <relation from="classes" to="forums" type="related" />
         <relation from="people" to="posters" type="related" />
+
+        <relation from="posters" to="attachments" type="related" />
 
         <relation from="classes" to="components" type="settingrel" />
 

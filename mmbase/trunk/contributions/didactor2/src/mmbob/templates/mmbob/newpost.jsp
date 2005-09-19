@@ -50,7 +50,7 @@
   <form action="<mm:url page="postarea.jsp">
     <mm:param name="forumid" value="$forumid" />
     <mm:param name="postareaid" value="$postareaid" />
-    </mm:url>" method="post" name="posting">
+    </mm:url>" method="post" enctype="multipart/form-data" name="posting">
     <tr><th><fmt:message key="Name"/></th><td colspan="2">
         <mm:compare referid="posterid" value="-1" inverse="true">
         <mm:node number="$posterid">
@@ -63,8 +63,21 @@
         </mm:compare>
     </td></tr>
     <tr><th width="150"><fmt:message key="Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" ></td></th>
-    <tr><th valign="top"><fmt:message key="Message"/><center><table><tr><th width="100"><%@ include file="includes/smilies.jsp" %></th></tr></table></center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea>
-</td></tr>
+    <tr>
+        <th valign="top"><fmt:message key="Message"/><center><table><tr><th width="100"><%@ include file="includes/smilies.jsp" %></th></tr></table></center></th>
+        <td colspan="2">
+           <textarea name="body" rows="20" style="width: 100%"></textarea>
+           <table width="100%" border="0">
+              <tr><td colspan="2" style="border-width:0px"><b><fmt:message key="AddDocument"/></b></td></tr>
+              <mm:fieldlist nodetype="attachments" fields="title,handle">
+                 <tr>
+                    <td width="80" style="border-width:0px"><mm:fieldinfo type="guiname"/></td>
+                    <td style="border-width:0px"><mm:fieldinfo type="input"/></td>
+                 </tr>
+              </mm:fieldlist> 
+           </table>
+        </td>
+    </tr>
     <tr><th>&nbsp;</th><td>
     <input type="hidden" name="action" value="newpost">
     <center><input type="submit" value="<fmt:message key="commit" />">
