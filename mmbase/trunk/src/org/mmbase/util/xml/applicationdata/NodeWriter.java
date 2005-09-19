@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.util.xml.applicationdata;
 
 import java.io.*;
 import java.util.*;
@@ -17,17 +17,18 @@ import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
+import org.mmbase.util.Encode;
 
 /**
  * Utility class for writing xml files for data- and relation sources, suppied by an application export class.
  * Does not support or export dtd information.
- * @application Applications-I
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.27 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.1 2005-09-19 12:32:03 pierre Exp $
  */
-public class NodeWriter{
+public class NodeWriter {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(NodeWriter.class.getName());
