@@ -16,16 +16,18 @@ import org.w3c.dom.*;
 import javax.xml.transform.TransformerException;
 
 import org.mmbase.module.core.*;
-import org.mmbase.util.xml.BuilderWriter;
+import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.applicationdata.FullBackupDataWriter;
+import org.mmbase.util.xml.applicationdata.ContextDepthDataWriter;
 import org.mmbase.util.*;
 
 /**
  * @javadoc
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.1 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ApplicationWriter.java,v 1.2 2005-09-19 12:32:02 pierre Exp $
  */
 public class ApplicationWriter extends DocumentWriter  {
 
@@ -192,8 +194,9 @@ public class ApplicationWriter extends DocumentWriter  {
      * @param messages a List in which messages regarding progress are stored.
      * @throws TransformerException if one or more documents are malformed
      * @throws IOException if one or more files cannot be written
+     * @throws SearchQueryException if data could not be obtained from the database
      */
-    public void writeToPath(String targetPath, Logger logger) throws IOException, TransformerException {
+    public void writeToPath(String targetPath, Logger logger) throws IOException, TransformerException, SearchQueryException {
         writeToFile(targetPath + "/" + reader.getName() + ".xml");
         // now the tricky part starts figure out what nodes to write
         writeDateSources(targetPath, logger);
@@ -205,7 +208,7 @@ public class ApplicationWriter extends DocumentWriter  {
         logger.info("Writing Application file : " + targetPath + "/" + reader.getName() + ".xml");
     }
 
-    private void writeDateSources(String targetPath, Logger logger) throws IOException  {
+    private void writeDateSources(String targetPath, Logger logger) throws IOException, SearchQueryException  {
         List sources = reader.getContextSources();
         for (Iterator i = sources.iterator(); i.hasNext();) {
             Map bset = (Map)i.next();
@@ -218,9 +221,9 @@ public class ApplicationWriter extends DocumentWriter  {
 
             if (type.equals("depth")) {
                 XMLContextDepthReader contextReader = new XMLContextDepthReader(MMBaseContext.getConfigPath() + "/applications/" + path);
-                XMLContextDepthWriterII.writeContext(reader, contextReader, targetPath, mmbase, logger);
+                ContextDepthDataWriter.writeContext(reader, contextReader, targetPath, mmbase, logger);
             } else if (type.equals("full")) {
-                XMLFullBackupWriter.writeContext(reader, targetPath, mmbase, logger);
+                FullBackupDataWriter.writeContext(reader, targetPath, mmbase, logger);
             }
         }
     }
@@ -233,7 +236,7 @@ public class ApplicationWriter extends DocumentWriter  {
             String type = (String)bset.get("type");
             if (type.equals("depth")) {
                 XMLContextDepthReader contextReader = new XMLContextDepthReader( MMBaseContext.getConfigPath() + "/applications/" + path);
-                XMLContextDepthWriterII.writeContextXML(contextReader, targetPath + "/" + path);
+                ContextDepthDataWriter.writeContextXML(contextReader, targetPath + "/" + path);
             }
         }
     }
