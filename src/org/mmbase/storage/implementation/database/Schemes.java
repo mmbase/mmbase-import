@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.15 2005-08-22 08:14:01 pierre Exp $
+ * @version $Id: Schemes.java,v 1.16 2005-09-19 17:37:10 michiel Exp $
  */
 public final class Schemes {
 
@@ -41,7 +41,7 @@ public final class Schemes {
      *  The parameters accepted are:
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
-     *    <li>{1} the builder to create the table for</li>
+     *    <li>{1} the table name of the builder to create the table for</li>
      *    <li>{2} the field definitions (excluding simple index definitions)</li>
      *    <li>{3} the simple index definitions.
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined</li>
@@ -49,7 +49,8 @@ public final class Schemes {
      *    <li>{5} constraint definitions
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined,
      *            and no other field definitions.</li>
-     *    <li>{6} the builder that this table extends from</li>
+     *    <li>{6} the table name of the builder that this table extends from</li>
+     *    <li>{7} the database name or catalog</li>
      *  </ul>
      *
      * You can set up your scheme to create extended tables (i.e. in Postgresql).
