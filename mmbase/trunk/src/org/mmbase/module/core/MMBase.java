@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.153 2005-09-16 18:28:29 michiel Exp $
+ * @version $Id: MMBase.java,v 1.154 2005-09-19 12:29:25 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -134,7 +134,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * The table that contains all loaded builders. Includes virtual builders.
-     * Should be made private and accessed using getMMObjects()
+     * Should be made private and accessed using getBuilders()
      * @scope private
      */
     public Hashtable mmobjs = new Hashtable();
@@ -546,10 +546,18 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Retrieves the loaded builders.
+     * @deprecated use {@link #getBuilders()}
      * @return an <code>Enumeration</code> listing the loaded builders
      */
     public Enumeration getMMObjects() {
         return mmobjs.elements();
+    }
+
+    /**
+     * Retrieves a Collection of loaded builders.
+     */
+    public Collection getBuilders() {
+        return mmobjs.values();
     }
 
     /**
