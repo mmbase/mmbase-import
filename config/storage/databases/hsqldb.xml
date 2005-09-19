@@ -39,8 +39,8 @@
     <!-- some alternatives, which you may want to use -->
     <!-- This one creates an ASCII file for every table. This may be a very handy setting for debugging. -->
     <!--    
-    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt"</scheme>
-    <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt"</scheme>
+    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt;encoding=UTF-8"</scheme>
+    <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt;encoding=UTF-8"</scheme>
     -->
     <!-- This one is better if the tables get so big that you don't want them in memory entirely     
     -->
