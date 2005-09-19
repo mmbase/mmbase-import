@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.133 2005-09-01 15:19:29 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.134 2005-09-19 12:24:21 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -796,7 +796,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         BasicNodeList resultNodeList; // this will be the result NodeList
 
-        // create resultNodeList        
+        // create resultNodeList
         BasicNodeManager  tempNodeManager = new VirtualNodeManager(query, this);
 
         resultNodeList = new BasicNodeList(resultList, tempNodeManager);
@@ -971,5 +971,22 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         // wrap function
         return new BasicFunction(this, fun);
     }
+
+    public NodeList createNodeList() {
+        return new BasicNodeList(Collections.EMPTY_LIST, this);
+    }
+
+    public RelationList createRelationList() {
+        return new BasicRelationList(Collections.EMPTY_LIST, this);
+    }
+
+    public NodeManagerList createNodeManagerList() {
+        return new BasicNodeManagerList(Collections.EMPTY_LIST, this);
+    }
+
+    public RelationManagerList createRelationManagerList() {
+        return new BasicRelationManagerList(Collections.EMPTY_LIST, this);
+    }
+
 
 }

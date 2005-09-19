@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.7 2005-07-07 17:17:26 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.8 2005-09-19 12:24:21 pierre Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -403,7 +403,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
                 throw new Exception("Test cases cannot be performed because " + e.getMessage() + " Please arrange this in your cloud before running this TestCase.");
              }
 
-            createdNodes = cloud.getCloudContext().createNodeList();
+            createdNodes = cloud.createNodeList();
             assertNotNull("Could not create remotely a nodelist" , createdNodes);
 
             news = newsManager.createNode();

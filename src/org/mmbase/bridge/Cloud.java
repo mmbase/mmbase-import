@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.54 2005-07-28 16:53:45 michiel Exp $
+ * @version $Id: Cloud.java,v 1.55 2005-09-19 12:24:21 pierre Exp $
  */
 public interface Cloud {
 
@@ -608,5 +608,38 @@ public interface Cloud {
      * @throws NotFoundException if the function set or the function do not exist
      */
     public Function getFunction(String setName, String functionName);
+
+    /**
+     * Returns a new, empty node list for this cloud
+     *
+     * @return  The empty list
+     * @since   MMBase-1.8
+     */
+    public NodeList createNodeList();
+
+    /**
+     * Returns a new, empty relation list for this cloud
+     *
+     * @return  The empty list
+     * @since   MMBase-1.8
+     */
+    public RelationList createRelationList();
+
+    /**
+     * Returns a new, empty node manager list for this cloud
+     *
+     * @return  The empty list
+     * @since   MMBase-1.8
+     */
+    public NodeManagerList createNodeManagerList();
+
+    /**
+     * Returns a new, empty relation manager list for this cloud
+     *
+     * @return  The empty list
+     * @since   MMBase-1.8
+     */
+    public RelationManagerList createRelationManagerList();
+
 
 }
