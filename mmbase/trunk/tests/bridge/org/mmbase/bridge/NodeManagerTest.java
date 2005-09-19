@@ -31,7 +31,7 @@ public class NodeManagerTest extends BridgeTest {
     public void setUp() {
         // Create some test nodes
         cloud = getCloud();
-        nodes = cloud.getCloudContext().createNodeList();
+        nodes = cloud.createNodeList();
         Node node = cloud.getNodeManager("aa").createNode();
         node.setByteValue("bytefield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);

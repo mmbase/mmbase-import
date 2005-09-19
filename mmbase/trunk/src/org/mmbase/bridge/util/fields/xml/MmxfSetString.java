@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.18 2005-08-18 17:02:51 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.19 2005-09-19 12:24:21 pierre Exp $
  * @since MMBase-1.8
  */
 
@@ -321,7 +321,7 @@ public class MmxfSetString implements  Processor {
      * Just searches the nodes in a NodeList for which a certain field has a certain value.
      */
     private NodeList get(Cloud cloud, NodeList list, String field, String value) {
-        NodeList result = cloud.getCloudContext().createNodeList();
+        NodeList result = cloud.createNodeList();
         NodeIterator i = list.nodeIterator();
         while(i.hasNext()) {
             Node n = i.nextNode();
@@ -465,20 +465,20 @@ public class MmxfSetString implements  Processor {
             String segmentsServlet = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/segments/";
 
             NodeList relatedImages        = Queries.getRelatedNodes(editedNode, images, "idrel", "destination", "id", null);
-            NodeList usedImages           = cloud.getCloudContext().createNodeList();
+            NodeList usedImages           = cloud.createNodeList();
 
             NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
-            NodeList usedUrls             = cloud.getCloudContext().createNodeList();
+            NodeList usedUrls             = cloud.createNodeList();
 
             NodeList relatedSegments = null;
             NodeList usedSegments = null;
             if (segments != null) {
                 relatedSegments = Queries.getRelatedNodes(editedNode, segments , "idrel", "destination", "id", null);
-                usedSegments = cloud.getCloudContext().createNodeList();
+                usedSegments = cloud.createNodeList();
             }
 
             NodeList relatedAttachments   = Queries.getRelatedNodes(editedNode, attachments , "idrel", "destination", "id", null);
-            NodeList usedAttachments      = cloud.getCloudContext().createNodeList();
+            NodeList usedAttachments      = cloud.createNodeList();
 
             NodeList relatedBlocks        = Queries.getRelatedNodes(editedNode, blocks , "idrel", "destination", "id", null);
 
@@ -765,7 +765,7 @@ public class MmxfSetString implements  Processor {
 
         NodeManager urls = cloud.getNodeManager("urls");
         NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
-        NodeList usedUrls             = cloud.getCloudContext().createNodeList();
+        NodeList usedUrls             = cloud.createNodeList();
         
         // now find all <a href tags in the pseudo-mmxf, and fix them.
         org.w3c.dom.NodeList nl = pseudoMmxf.getElementsByTagName("a");

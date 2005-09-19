@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.9 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.10 2005-09-19 12:24:21 pierre Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
 
@@ -109,7 +109,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
         if (value instanceof NodeList) {
             list = (NodeList) value;
         } else {
-            list = getCloudVar().getCloudContext().createNodeList();
+            list = getCloudVar().createNodeList();
             if (value != null) {
                 // the Collection must contain "Nodes" only, no MMObjectNodes otherwise Exception from BasicNodeList, because it cannot convert without Cloud
                 list.addAll((Collection) value);
