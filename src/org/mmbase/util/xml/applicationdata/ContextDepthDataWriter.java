@@ -7,14 +7,15 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.util.xml.applicationdata;
 
 import java.io.*;
 import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.XMLContextDepthReader;
+import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.ApplicationReader;
 
 /**
@@ -24,35 +25,19 @@ import org.mmbase.util.xml.ApplicationReader;
  * The current version of this class combines a number of methods which we want to split - or at least share -
  * with a seperate class for handling contexts.
  * Note that because of it's static nature, no object instance need be made (in fact, none CAN be made) of this class.<br />
- * To use this class in stead of the old XMLContextDepthWriter, replace the following lines in
- * util/xml/ApplicationWriter.java:
- * <blockquote>
- *     XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb,logger);
- *     XMLContextDepthWriter.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
- * </blockquote>
- * with:
- * <blockquote>
- *     in writeDateSources :
- *     XMLContextDepthWriterII.writeContext(app,capp,targetpath,mmb,logger);
- *     in writeContextSources :
- *     XMLContextDepthWriterII.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
- * </blockquote>
  *
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ContextDepthWriter
- * @duplicate extend from org.mmbase.util.xml.DocumentWriter
+ * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: XMLContextDepthWriterII.java,v 1.11 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.1 2005-09-19 12:32:03 pierre Exp $
  */
-public class XMLContextDepthWriterII  {
+public class ContextDepthDataWriter  {
 
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(XMLContextDepthWriterII.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ContextDepthDataWriter.class.getName());
 
     /**
      * Writes an application's nodes, according to that application's contexts, to a path.
