@@ -33,6 +33,7 @@
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
 <mm:import externid="page">1</mm:import>
+<mm:import id="showreplyform">false</mm:import>
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -45,6 +46,16 @@
 </mm:present>
 <!-- end action check -->
 
+<!-- search check -->
+<mm:import externid="fromsearch">false</mm:import>
+<mm:compare referid="fromsearch" value="true">
+   <mm:import externid="postingid" />
+   <mm:nodefunction set="mmbob" name="getPageNumber" referids="forumid,postareaid,postthreadid,postingid">
+      <mm:import id="page" reset="true"><mm:field name="page" /></mm:import>
+   </mm:nodefunction>
+   <mm:import id="showreplyform" reset="true">true</mm:import>
+</mm:compare>
+<!-- end action check -->
 
 
 <center>
@@ -60,9 +71,12 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
     <tr><td align="left"><b><fmt:message key="Pages"/>
           <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
-            (<mm:field name="pagecount" />)
-            <mm:field name="navline" />
-            <mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
+             (<mm:field name="pagecount" />)
+             <mm:field name="navline" />
+             <mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
+             <mm:compare referid="showreplyform" value="false">
+                <mm:import id="showreplyform" reset="true"><mm:write referid="lastpage"/></mm:import>
+             </mm:compare>
           </mm:nodefunction>
       </b>
     </td></tr>
@@ -96,11 +110,16 @@
             <mm:import id="toid"><mm:field name="posterid" /></mm:import>
             <mm:import id="postingid"><mm:field name="id" /></mm:import>
 
+            <a name="<mm:write referid="postingid"/>" />
             <%-- hh
                <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
                <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
             --%>
-
+            <mm:list nodes="$postingid" path="postings,attachments">
+               <mm:node element="attachments">
+                  <a href="<mm:attachment/>"><img src="<mm:treefile write="true" page="/mmbob/images/download.gif" objectlist="$includePath" />" alt="<mm:field name="title"/>" border="0"/></a> 
+               </mm:node>
+            </mm:list>
             <mm:field name="ismoderator">
                <mm:compare value="true">
                   <a href="<mm:url page="editpost.jsp">
@@ -202,11 +221,11 @@
 </table>
 
 
-<mm:compare referid="lastpage" value="true">
+<mm:compare referid="showreplyform" value="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3"><fmt:message key="quickResponse"/></th></tr>
-  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
+  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" enctype="multipart/form-data" name="posting">
     <tr><th width="25%"><fmt:message key="Name"/></th><td>
 
         <mm:compare referid="posterid" value="-1" inverse="true">
@@ -220,7 +239,21 @@
         </mm:compare>
 
         </td></tr>
-    <tr><th><fmt:message key="Response"/> <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
+    <tr>
+        <th><fmt:message key="Response"/> <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th>
+        <td>
+           <textarea name="body" rows="5" style="width: 100%"></textarea>
+           <table width="100%" border="0">
+              <tr><td colspan="2" style="border-width:0px"><b><fmt:message key="AddDocument"/></b></td></tr>
+              <mm:fieldlist nodetype="attachments" fields="title,handle">
+                 <tr>
+                    <td width="80" style="border-width:0px"><mm:fieldinfo type="guiname"/></td>
+                    <td style="border-width:0px"><mm:fieldinfo type="input"/></td>
+                 </tr>
+              </mm:fieldlist> 
+           </table>
+        </td>
+    </tr>
     <tr><td colspan="3"><input type="hidden" name="action" value="postreply">
     <center><input type="submit" value="       <fmt:message key="placeResponse"/>"></center>
     </td></tr>
