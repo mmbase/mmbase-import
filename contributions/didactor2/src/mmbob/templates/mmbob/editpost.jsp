@@ -48,15 +48,18 @@
 <center>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <mm:node referid="postingid">
+  <mm:node number="$postingid">
+     <mm:import id="body"><mm:field name="body"/></mm:import>
+     <mm:import id="subject"><mm:field name="subject" /></mm:import>
+  </mm:node>
   <tr><th colspan="3"><fmt:message key="EditMessage"/></th></tr>
   <form action="<mm:url page="thread.jsp">
     <mm:param name="forumid" value="$forumid" />
     <mm:param name="postareaid" value="$postareaid" />
     <mm:param name="postthreadid" value="$postthreadid" />
     <mm:param name="postingid" value="$postingid" />
-    </mm:url>" method="post" name="posting">
-    <tr><th>Naam</th><td colspan="2">
+    </mm:url>" method="post" enctype="multipart/form-data" name="posting">
+    <tr><th><fmt:message key="Name"/></th><td colspan="2">
         <mm:compare referid="posterid" value="-1" inverse="true">
         <mm:node number="$posterid">
         <mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
@@ -67,16 +70,47 @@
         <input name="poster" size="32" value="gast" >
         </mm:compare>
     </td></tr>
-    <tr><th width="150"><fmt:message key="Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:field name="subject" />" ></td></th>
-    <tr><th valign="top"><fmt:message key="Message"/><center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></textarea>
-</td></tr>
+    <tr><th width="150"><fmt:message key="Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:write referid="subject" />" ></td></th>
+    <tr>
+        <th valign="top"><fmt:message key="Message"/><center><table><tr><th width="100"><%@ include file="includes/smilies.jsp" %></th></tr></table></center></th>
+        <td colspan="2">
+           <textarea name="body" rows="20" style="width: 100%"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:write referid="body" /></mm:formatter></textarea>
+           <table width="100%" border="0">
+              <tr><td colspan="2" style="border-width:0px"><b><fmt:message key="AddDocument"/></b></td></tr>
+              <mm:fieldlist nodetype="attachments" fields="title,handle">
+                 <tr>
+                    <td width="80" style="border-width:0px"><mm:fieldinfo type="guiname"/></td>
+                    <td style="border-width:0px">
+                       <mm:fieldinfo type="name">
+                          <mm:compare value="handle">
+                             <mm:node number="$postingid">
+                                <mm:relatednodes type="attachments">
+                                   <fmt:message key="download"/>:
+                                   <a href="<mm:attachment/>"> 
+                                      <mm:field name="title" write="true">
+                                         <mm:compare value="">
+                                            <fmt:message key="file"/>
+                                         </mm:compare>
+                                      </mm:field>
+                                   </a>
+                                </mm:relatednodes>
+                             </mm:node>
+                          </mm:compare>
+                       </mm:fieldinfo>
+                       <mm:fieldinfo type="input"/>
+                    </td>
+                 </tr>
+              </mm:fieldlist> 
+           </table>
+        </td>
+    </tr>
     <tr><th>&nbsp;</th><td>
     <input type="hidden" name="action" value="editpost">
     <center><input type="submit" value="<fmt:message key="commit" />">
     </form>
     </td>
     <td>
-    </mm:node>
+    
     <form action="<mm:url page="thread.jsp">
     <mm:param name="forumid" value="$forumid" />
     <mm:param name="postareaid" value="$postareaid" />

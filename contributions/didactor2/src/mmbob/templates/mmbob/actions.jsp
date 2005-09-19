@@ -44,6 +44,11 @@
 	<mm:import externid="body" />
 	<mm:booleanfunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
 	</mm:booleanfunction>
+
+        <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" directions="DOWN" max="1">
+           <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
+        </mm:list>
+        <%@ include file="addfile.jsp" %>
 </mm:compare>
 
 <mm:compare value="newpost" referid="action">
@@ -52,7 +57,13 @@
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
 	<mm:nodefunction set="mmbob" name="newPost" referids="forumid,postareaid,poster,subject,body">
+	   <mm:import id="postthreadid"><mm:field name="postthreadid"/></mm:import>
 	</mm:nodefunction>
+
+        <mm:list nodes="$postthreadid" path="postthreads,postings" orderby="postings.number" max="1">
+           <mm:import id="postingid"><mm:field name="postings.number"/></mm:import>
+        </mm:list>
+        <%@ include file="addfile.jsp" %>
 </mm:compare>
 
 
@@ -88,6 +99,8 @@
 	<mm:import externid="body" />
 	<mm:booleanfunction set="mmbob" name="editPost" referids="forumid,postareaid,postthreadid,postingid,posterid,subject,body">
 	</mm:booleanfunction>
+	
+        <%@ include file="addfile.jsp" %>
 </mm:compare>
 
 
