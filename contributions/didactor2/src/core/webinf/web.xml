@@ -351,4 +351,9 @@
         <param-value>${filemanagement.data.directory}</param-value>
     </context-param>
     
+<!-- Log controller init -->
+    <listener>
+      <listener-class>nl.didactor.utils.debug.InitLogController</listener-class>
+    </listener>
+<!-- Log controller init -->
 </web-app>
