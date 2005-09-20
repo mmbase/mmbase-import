@@ -24,12 +24,12 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangesSender.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ChangesSender.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
     /** counter of send messages */
     private int outcount = 0;
@@ -124,16 +124,15 @@ public class ChangesSender implements Runnable {
      */
     private void doWork() {
         while(kicker != null) {
-            String message = (String) nodesToSend.get();
-            byte[] data = message.getBytes();
+            byte[] data = (byte[]) nodesToSend.get();
             DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("SEND=>" + message);
+                    log.debug("SEND=>" + dp);
                 }
                 ms.send(dp);
             } catch (IOException e) {
-                log.error("can't send message" + message);
+                log.error("can't send message" + dp);
                 log.error(Logging.stackTrace(e));
             }
             outcount++;

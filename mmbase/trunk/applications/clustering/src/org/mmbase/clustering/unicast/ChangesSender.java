@@ -29,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  * 
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangesSender.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ChangesSender.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
     /** counter of send messages */
     private int outcount = 0;

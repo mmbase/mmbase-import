@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangesReceiver.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -131,7 +131,7 @@ public class ChangesReceiver implements Runnable {
             try {
                 ms.receive(dp);
                 // maybe we should use encoding here?
-                String message = new String(dp.getData(),0,dp.getLength());
+                byte[] message = dp.getData();
                 if (log.isDebugEnabled()) {
                     log.debug("RECEIVED=>" + message);
                 }

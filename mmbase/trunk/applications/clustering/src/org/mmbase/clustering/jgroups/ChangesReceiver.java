@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangesReceiver.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -146,7 +146,7 @@ public class ChangesReceiver implements Runnable {
                
                log.debug("      " + new String(message.getBuffer()));
                try {
-                  nodesToSpawn.append(new String(message.getBuffer()));
+                  nodesToSpawn.append(message.getBuffer());
                }
                catch (Exception ex) {
                   log.error(Logging.stackTrace(ex));
