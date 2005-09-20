@@ -12,7 +12,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.Escape;
+import org.mmbase.util.Encode;
 
 import nl.eo.chat.repository.*;
 import nl.eo.chat.repository.irc.*;
@@ -55,7 +55,7 @@ public class DidactorUserRepository extends IrcUserRepository {
         NodeList nodeList = null;
         nodeList = cloud.getList(null, "people",
                                  "people.number",
-                                 "username = '" + Escape.singlequote(nick) + "'", 
+                                 "username = '" + Encode.encode("ESCAPE_SINGLE_QUOTE", nick) + "'", 
                                  null, null, null, false);
         if (nodeList.size() == 0) {
             return UserRepository.REGISTER_INCORRECT_PASSWORD;

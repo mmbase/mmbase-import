@@ -22,7 +22,7 @@ public class UserCalendarWriterTag extends CloudReferrerTag {
     protected CalendarWriter writer;
         
     public int doStartTag() throws JspTagException {
-        Cloud cloud = getCloud();
+        Cloud cloud = getCloudVar();
         if (cloud == null) {
             throw new JspTagException("No parent <mm:cloud> tag found");
         }

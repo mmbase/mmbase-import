@@ -69,7 +69,7 @@ public class MayTag extends CloudReferrerTag {
         boolean[] value = new boolean[0];
         
         try {
-            value = comp.may(action, getCloud(), getContextProvider().getContextContainer(), arguments);
+            value = comp.may(action, getCloudVar(), getContextProvider().getContextContainer(), arguments);
         } catch (IllegalArgumentException e) {
             throw new JspTagException(e.getMessage());
         }
