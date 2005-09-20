@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.3 2005-09-20 11:26:41 michiel Exp $
+ * @version $Id: ChangeManager.java,v 1.4 2005-09-20 17:49:39 michiel Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -33,8 +33,8 @@ public final class ChangeManager {
      * Constructor.
      * @param mmbase the MMbase instance on which the changes are made
      */
-    public ChangeManager(MMBase mmbase) {
-        mmc = mmbase.mmc;
+    public ChangeManager(MMBaseChangeInterface m) {
+        mmc = m;
     }
 
     /**
@@ -64,10 +64,8 @@ public final class ChangeManager {
     public void commit(MMObjectNode node, String change) {
         node.clearChanged();
         MMObjectBuilder builder = node.getBuilder();
-        MMBase mmbase = MMBase.getMMBase();
-        if (builder.broadcastChanges) {
+        if (builder.broadcastChanges()) {
            mmc.changedNode(new NodeEvent(node, mapEventType(change)));
-           mmc.changedNode(node.getNumber(), builder.getTableName(), change); // backwards compatibiliy
            if (builder instanceof InsRel) {
                // figure out tables to send the changed relations
                mmc.changedNode(new RelationEvent(node, mapEventType(change)));
