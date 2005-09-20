@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.mmbase.util.logging.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 
@@ -25,6 +26,8 @@ import org.mmbase.module.core.MMObjectNode;
  */
 public class NodeEvent extends Event implements Serializable {
 
+    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
+
     public static final int EVENT_TYPE_NEW = 0;
 
     public static final int EVENT_TYPE_CHANGED = 1;
@@ -33,7 +36,7 @@ public class NodeEvent extends Event implements Serializable {
 
     public static final int EVENT_TYPE_RELATION_CHANGED = 3;
 
-    private String nodeNumber;
+    private int nodeNumber;
 
     private String eventSource;
 
@@ -49,10 +52,8 @@ public class NodeEvent extends Event implements Serializable {
     // no changed fields";
 
     /**
-     * @param nodeNumber
+     * @param node
      * @param eventType
-     * @param source
-     * @param oldValues
      */
 
     public NodeEvent(MMObjectNode node, int eventType) {
@@ -68,7 +69,7 @@ public class NodeEvent extends Event implements Serializable {
      * @param eventType
      */
     private void init(MMObjectNode node, int eventType, String machine) {
-        this.nodeNumber = node.getStringValue("number");
+        this.nodeNumber = node.getNumber();
         this.eventSource = node.parent.getTableName();
         this.eventType = eventType;
         this.machine = machine;
@@ -76,13 +77,10 @@ public class NodeEvent extends Event implements Serializable {
 
         // at this point the new value for the changed fields is
         // in the node, and the old values are in the oldValues map
-        oldValues = new HashMap(10);
-        newValues = new HashMap(10);
-        for (Iterator i = node.oldValues.keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
-            oldValues.put(key, node.oldValues.get(key));
-            newValues.put(key, node.getValue(key));
-        }
+        oldValues = new HashMap();
+        oldValues.putAll(node.getOldValues());
+        newValues = new HashMap();
+        newValues.putAll(node.getValues());
     }
 
     /**
@@ -142,8 +140,7 @@ public class NodeEvent extends Event implements Serializable {
         for (Iterator i = changedFieldIterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return "eventtype: '" + getEventTypeGuiName(eventType) + "', node: "
-            + nodeNumber + ", nodetype: " + eventSource + ", changedfields: "
+        return "eventtype: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + eventSource + ", changedfields: "
             + changedFields;
     }
 
@@ -211,7 +208,7 @@ public class NodeEvent extends Event implements Serializable {
     /**
      * @return Returns the nodeNumber.
      */
-    public String getNodeNumber() {
+    public int getNodeNumber() {
         return nodeNumber;
     }
 
