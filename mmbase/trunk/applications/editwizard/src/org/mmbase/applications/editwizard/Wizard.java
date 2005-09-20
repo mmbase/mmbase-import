@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.137 2005-09-16 08:35:35 ernst Exp $
+ * @version $Id: Wizard.java,v 1.138 2005-09-20 15:32:05 ernst Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1424,9 +1424,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // expand attribute 'startnodes' for search command
         Node command = Utils.selectSingleNode(newlist, "command[@name='search']");
 
+        
         if (command != null) {
             expandAttribute(command, "startnodes", null);
-            expandAttribute(command, "constraints", dataId);
+            // expand constraints attribute on search action
+            String cAttribute = Utils.getAttribute(command, "constraints");
+            if(cAttribute != null && !cAttribute.equals("")){
+                expandAttribute(command, "constraints", dataId);
+            }
         }
 
         // expand attribute 'objectnumber' en 'origin' for editwizard command
