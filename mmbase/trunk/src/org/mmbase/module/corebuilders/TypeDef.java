@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.58 2005-08-16 13:59:41 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.59 2005-09-20 19:29:16 nklasens Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -65,14 +65,11 @@ public class TypeDef extends MMObjectBuilder {
      */
     private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
 
-    /**
-     * Constructor
-     */
-    public TypeDef() {
+    public boolean broadcastChanges() {
         // set broadcasting of changes to false
-        broadcastChanges = false;
+        return false;
     }
-
+    
     /**
      * Sets the default deploy directory for the builders.
      * @return true if init was completed, false if uncompleted.
