@@ -43,8 +43,8 @@ public abstract class AbstractEventBroker {
     protected List listeners = Collections.synchronizedList(new ArrayList());
 
     /**
-     * this method should return true if the provided listener object is an
-     * instance of the listener type handeled by the specific broker
+     * this method should return true if this broker can accept and propagate
+     * events to the listener of this type. There are no fixed criteria for this.
      * 
      * @param listener
      * @return
@@ -52,8 +52,8 @@ public abstract class AbstractEventBroker {
     public abstract boolean canBrokerForListener(EventListener listener);
 
     /**
-     * this method should return true if the provided event object is of the
-     * type the specific broker handles
+     * this method should return true if this event broker can broker for 
+     * events of this type. There are no fixed criteria for this.
      * 
      * @param event
      * @return
