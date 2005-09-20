@@ -11,6 +11,7 @@ package org.mmbase.module.core;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 import org.mmbase.core.event.*;
@@ -43,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.156 2005-09-20 17:47:09 michiel Exp $
+ * @version $Id: MMBase.java,v 1.157 2005-09-20 19:31:09 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -132,47 +133,35 @@ public class MMBase extends ProcessorModule {
     public Hashtable mmobjs = new Hashtable();
 
     /**
-     * A thread object that gets activated by MMbase.
-     * It activates every X seconds and takes this signal to call all the
-     * builders probeCalls, using the callback {@link #doProbeRun} method in MMBase.
-     * @scope private
-     */
-    MMBaseProbe probe;
-
-    /**
      * Name of the machine used in the mmbase cluster.
      * it is used for the mmservers objects. Make sure that this is different
      * for each node in your cluster. This is not the machines dns name
      * (as defined by host as name or ip number).
-     * @scope private
      */
-    String machineName = "unknown";
+    private String machineName = "unknown";
 
     /**
      * The host or ip number of the machine this module is
      * running on. Its important that this name is set correctly because it is
      * used for communication between mmbase nodes and external devices
-     * @scope private
      */
-    String host = "unknown";
+    private String host = "unknown";
 
     /**
      * Authorisation type. Access using getAuthType()
-     * @scope private
      */
-    String authtype = "none";
+    private String authtype = "none";
 
     /**
      * Cookie domain (?). Access using getCookieDomain()
-     * @scope private
      */
-    String cookieDomain = null;
+    private String cookieDomain = null;
     
-    /**
-     * the collection of event brokers. There is one for every event type
-     * that can be sent/received
-     */
-    private List eventBrokers = Collections.synchronizedList(new ArrayList());
+	/**
+	 * the collection of event brokers. There is one for every event type
+	 * that can be sent/received
+	 */
+	private List eventBrokers = new CopyOnWriteArrayList();
 
     /**
      * The storage manager factory to use. Retrieve using getStorageManagerFactory();
@@ -623,31 +612,14 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Callback method, called from MMBaseProbe.
-     * The probe is a seperate thread that is created every 10 minutes by the module's
-     * {@link #maintainance} call.
-     * @performance daymarks should be loaded at initialization.
-     * @todo Evaluate whether presence of daymarks is required
+     * Performs periodic maintenance.
      */
-    public void doProbeRun() {
+    public void maintainance() {
         DayMarkers dayMarkers = (DayMarkers)getMMObject("daymarks");
         if (dayMarkers != null) {
             dayMarkers.probe();
         } else {
             log.error("Can't access builder : daymarks");
-        }
-    }
-
-    /**
-     * Performs periodic maintenance.
-     * Starts a separate thread that probes the builders by calling {@link #doProbeRun}.
-     * The reference to the thread is cleared when it dies (scheduled every 10 minutes), prompting
-     * the system to start a new thread.
-     * @see MMBaseProbe
-     */
-    public void maintainance() {
-        if (probe == null) {
-            probe = new MMBaseProbe(this);
         }
     }
 
@@ -1288,45 +1260,38 @@ public class MMBase extends ProcessorModule {
         return true;
     }
 
-    /**
-     * add an event  broker for a specific type of event  
-     * @param broker
-     * @since MMBase-1.8
-     */
-    public void addEventBroker(AbstractEventBroker broker){
-        synchronized(eventBrokers){
-            eventBrokers.add(broker);
-        }
-    }
-    
-    /**
-     * remove a broker for a specific type of event
-     * @param broker
-     * @since MMBase-1.8
-     */
-    public void removeEventBroker(AbstractEventBroker broker){
-        synchronized(eventBrokers){
-            eventBrokers.remove(broker);
-        }
-    }
-    
-    /**
-     * @param listener 
-     * @since MMBase-1.8
-     */
-    public void addEventListener(EventListener listener){
+	/**
+	 * add an event  broker for a specific type of event  
+	 * @param broker
+	 * @since MMBase-1.8
+	 */
+	public void addEventBroker(AbstractEventBroker broker){
+		eventBrokers.add(broker);
+	}
+	
+	/**
+	 * remove a broker for a specific type of event
+	 * @param broker
+	 * @since MMBase-1.8
+	 */
+	public void removeEventBroker(AbstractEventBroker broker){
+		eventBrokers.remove(broker);
+	}
+	
+	/**
+	 * @param listener 
+	 * @since MMBase-1.8
+	 */
+	public void addEventListener(EventListener listener){
         log.service("adding listener " + listener);
-        synchronized(eventBrokers){
-            AbstractEventBroker[] brokers = findBrokersFor(listener);
-            if(brokers != null){
-                for (int i = 0; i < brokers.length; i++) {
-                    brokers[i].addListener(listener);
-                    log.debug("listener added");
-                }
-                
-            }
-        }
-    }
+		AbstractEventBroker[] brokers = findBrokersFor(listener);
+		if(brokers != null){
+			for (int i = 0; i < brokers.length; i++) {
+				brokers[i].addListener(listener);
+                log.debug("listener added");
+			}
+		}
+	}
 
     /**
      * @param listener
@@ -1334,112 +1299,108 @@ public class MMBase extends ProcessorModule {
      */
     public void removeEventListener(EventListener listener){
         log.service("removing listnerer of type : " + listener.getClass().getName());
-        synchronized(eventBrokers){
-            AbstractEventBroker[] brokers = findBrokersFor(listener);
-            if(brokers != null){
-                for (int i = 0; i < brokers.length; i++) {
-                    brokers[i].removeListener(listener);
-                }
-            }
-        }
+		AbstractEventBroker[] brokers = findBrokersFor(listener);
+		if(brokers != null){
+			for (int i = 0; i < brokers.length; i++) {
+				brokers[i].removeListener(listener);
+			}
+		}
     }
-    
-    /**
-     * This method will propagate the given event to all the aproprate listeners.
-     * what makes a listener apropriate is determined by it's type (class) and
-     * by possible constraint properties (if the handling broker supports those
-     * @see AbstractEventBroker
-     * @param event
-     * @since MMBase-1.8
-     */
-    public void propagateEvent(Event event){
-        synchronized(eventBrokers){
-            for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
-                AbstractEventBroker broker = (AbstractEventBroker) i.next();
-                if(broker.canBrokerForEvent(event)){
-                    broker.notifyForEvent(event);
-                    log.debug("event: "+event.toString()+" has been accepted by broker " + broker.toString());
-                }
-            }
-        }
-    }
-    
-    
-    /**
-     * This is a conveniance method to help you register listeners to node and 
-     * relation events. Becouse they are now separate listeners the method accepts
-     * an object that may have implemented either NodeEvent
-     * or RelationEvent. This method checks and registers accordingly. <br/>
-     * the purpose of this method is that a straight node or relation event listeren 
-     * will listen to any node or relation event. This method will wrap your event
-     * listener to make shure only the requested event types are forwarded.
-     * @see TypedRelationEventListenerWrapper
-     * @see TypedNodeEventListenerWrapper
-     * @see NodeEventListener
-     * @see RelationEventListener
-     * @param builder should be a valid builder name, the type for which you want to 
-     * receive events
-     * @param listener some object implementing NodeEventListener, RelationEventListener,
-     * or both
-     * @since MMBase-1.8
-     */
-    public void addNodeRelatedEventsListener(String builder, Object listener){
-        if(getBuilder(builder) != null){
-            if(listener instanceof NodeEventListener){
-                TypedNodeEventListenerWrapper tnelr = 
-                    new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
-                addEventListener(tnelr);
-            }
-            if(listener instanceof RelationEventListener){
-                TypedRelationEventListenerWrapper trelr = 
-                    new TypedRelationEventListenerWrapper(builder, (RelationEventListener)listener);
-                addEventListener(trelr);
-            }
-        }
-    }
-    
-    /**
-     * @param builder
-     * @param listener
-     * @since MMBase-1.8
-     */
-    public void removeNodeRelatedEventsListener(String builder, Object listener){
-        if(getBuilder(builder) != null){
-            if(listener instanceof NodeEventListener){
-                TypedNodeEventListenerWrapper tnelr = 
-                    new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
-                removeEventListener(tnelr);
-            }
-            if(listener instanceof RelationEventListener){
-                TypedRelationEventListenerWrapper trelr = 
-                    new TypedRelationEventListenerWrapper(builder, (RelationEventListener)listener);
-                removeEventListener(trelr);
-            }
-        }
-    }
-
-    
-    /**
-     * @param listener
-     * @since MMBase-1.8
-     */
-    private AbstractEventBroker[] findBrokersFor(EventListener listener) {
-        log.debug("try to find broker  " + listener);
-        
-        List result = new ArrayList();
-        for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
+	
+	/**
+	 * This method will propagate the given event to all the aproprate listeners.
+	 * what makes a listener apropriate is determined by it's type (class) and
+	 * by possible constraint properties (if the handling broker supports those
+	 * @see AbstractEventBroker
+	 * @param event
+	 * @since MMBase-1.8
+	 */
+	public void propagateEvent(Event event){
+    	for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
             AbstractEventBroker broker = (AbstractEventBroker) i.next();
-            log.debug("evaluating broker " + broker);
-            if(broker.canBrokerForListener(listener)){
-                log.debug("broker " + broker + " matches eventlistener.");
-                result.add(broker);
+            if(broker.canBrokerForEvent(event)){
+                broker.notifyForEvent(event);
+                log.debug("event: "+event.toString()+" has been accepted by broker " + broker.toString());
             }
         }
+	}
+	
+	
+	/**
+	 * This is a conveniance method to help you register listeners to node and 
+	 * relation events. Becouse they are now separate listeners the method accepts
+	 * an object that may have implemented either NodeEvent
+	 * or RelationEvent. This method checks and registers accordingly. <br/>
+	 * the purpose of this method is that a straight node or relation event listeren 
+	 * will listen to any node or relation event. This method will wrap your event
+	 * listener to make shure only the requested event types are forwarded.
+     * @see TypedRelationEventListenerWrapper
+	 * @see TypedNodeEventListenerWrapper
+	 * @see NodeEventListener
+	 * @see RelationEventListener
+	 * @param builder should be a valid builder name, the type for which you want to 
+	 * receive events
+	 * @param listener some object implementing NodeEventListener, RelationEventListener,
+	 * or both
+	 * @since MMBase-1.8
+	 */
+	public void addNodeRelatedEventsListener(String builder, Object listener){
+	    if(getBuilder(builder) != null){
+	        if(listener instanceof NodeEventListener){
+	            TypedNodeEventListenerWrapper tnelr = 
+	                new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
+	            addEventListener(tnelr);
+	        }
+	        if(listener instanceof RelationEventListener){
+                TypedRelationEventListenerWrapper trelr = 
+                    new TypedRelationEventListenerWrapper(builder, (RelationEventListener)listener);
+	            addEventListener(trelr);
+	        }
+	    }
+	}
+	
+	/**
+	 * @param builder
+	 * @param listener
+	 * @since MMBase-1.8
+	 */
+	public void removeNodeRelatedEventsListener(String builder, Object listener){
+	    if(getBuilder(builder) != null){
+	        if(listener instanceof NodeEventListener){
+	            TypedNodeEventListenerWrapper tnelr = 
+	                new TypedNodeEventListenerWrapper(builder, (NodeEventListener)listener);
+	            removeEventListener(tnelr);
+	        }
+	        if(listener instanceof RelationEventListener){
+                TypedRelationEventListenerWrapper trelr = 
+                    new TypedRelationEventListenerWrapper(builder, (RelationEventListener)listener);
+	            removeEventListener(trelr);
+	        }
+	    }
+	}
+
+	
+	/**
+	 * @param listener
+	 * @since MMBase-1.8
+	 */
+	private AbstractEventBroker[] findBrokersFor(EventListener listener) {
+        log.debug("try to find broker  " + listener);
+		
+		List result = new ArrayList();
+		for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
+			AbstractEventBroker broker = (AbstractEventBroker) i.next();
+            log.debug("evaluating broker " + broker);
+			if(broker.canBrokerForListener(listener)){
+                log.debug("broker " + broker + " matches eventlistener.");
+				result.add(broker);
+			}
+		}
         if(result.size() > 0) { 
             return  (AbstractEventBroker[]) result.toArray(new AbstractEventBroker[result.size()]);
         }
-        return null;
-    }
+		return null;
+	}
 
 
 }
