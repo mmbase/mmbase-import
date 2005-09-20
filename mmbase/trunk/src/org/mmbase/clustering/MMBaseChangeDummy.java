@@ -17,50 +17,32 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 
 /**
- * Builds a MultiCast Thread to receive  and send 
- * changes from other MMBase Servers. (no it doesn't)
+ * Builds a MultiCast Thread to receive  and send  changes from other MMBase Servers. (no it doesn't)
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
+ * @version $Id: MMBaseChangeDummy.java,v 1.5 2005-09-20 11:40:29 michiel Exp $
  */
 public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
-    // debug routines
-    private static Logger log = Logging.getLoggerInstance(MMBaseChangeDummy.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MMBaseChangeDummy.class);
     
-    MMBase parent;
+    private MMBase mmbase;
 
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
     public void init(MMBase mmb) {
-        this.parent=mmb;
+        this.mmbase = mmb;
     }
     
-    //xxx: what to do with this. we don't know what message we are going to receive...
-    public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
-        if(log.isDebugEnabled()) {
-            log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
-        }
-
-        MMObjectBuilder bul = parent.getMMObject(tb);
-        if (bul == null) {
-            log.warn("MMBaseChangeDummy -> Unknown builder="+tb);
-            return false;
-        } 
-    
-        //this dous not compile anymore
-        //bul.nodeLocalChanged(machine, id,tb,ctype);
-        return true;
-    }
-
     /**
      * maybe this method will have to go as well. not sure
      * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
      */
     public boolean changedNode(int number, String tableName, String ctype) {
         // let's fire some events.
-        MMObjectBuilder bul = parent.getBuilder(tableName);
+        MMObjectBuilder bul = mmbase.getBuilder(tableName);
         if (bul != null) { // backwards compatibility
             bul.nodeLocalChanged(null, "" + number, tableName, ctype);
         }
@@ -74,7 +56,7 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
         return true;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(org.mmbase.core.event.NodeEvent)
      * @since MMBase-1.8
      */
@@ -85,9 +67,9 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
             //for node-relation changes to a specific builder, will be
             //notified if this builder is either source or destination type
             //in the relation event
-            parent.propagateEvent((RelationEvent)event);
+            mmbase.propagateEvent((RelationEvent)event);
         }else{
-            parent.propagateEvent(event);
+            mmbase.propagateEvent(event);
         }
     }
 
