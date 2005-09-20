@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.14 2005-09-20 11:51:19 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.15 2005-09-20 19:25:36 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -60,7 +60,6 @@ abstract public class QueryResultCache extends Cache {
      * 
      * @return number of entries invalidated
      */
-    /*
     public static int invalidateAll(MMObjectNode node, int eventType) { 
         int result = 0; 
         MMObjectBuilder builder = node.getBuilder();
@@ -80,7 +79,7 @@ abstract public class QueryResultCache extends Cache {
         } 
         return result; 
     }
-    */
+
 
     // Keep a map of the existing Observers, for each nodemanager one.
     // @todo I think it can be done with one Observer instance too, (in which
@@ -103,10 +102,8 @@ abstract public class QueryResultCache extends Cache {
     public void addReleaseStrategies(List strategies) {
         if (strategies != null) {
             for (Iterator iter = strategies.iterator(); iter.hasNext();) {
-                AbstractReleaseStrategy element = (AbstractReleaseStrategy) iter
-                    .next();
-                log.debug(("adding strategy " + element.getName()
-                    + " to cache " + getName()));
+                AbstractReleaseStrategy element = (AbstractReleaseStrategy) iter.next();
+                log.debug(("adding strategy " + element.getName() + " to cache " + getName())); 
                 addReleaseStrategy(element);
             }
         }
@@ -292,7 +289,7 @@ abstract public class QueryResultCache extends Cache {
             // let's test if this event should be handeled. The event is
             // being propagated by a mmObjectBuilder to it's ancestors.
             // I don't think we want to haldle these events as well.
-            if (event.getBuilderName().equals(type)) {
+            if (event.getNode().getBuilder().getTableName().equals(type)) {
                 nodeChanged(event);
             } else {
                 log.debug("node event was deflected by Observer for type: " + type);
