@@ -39,48 +39,48 @@ import org.jgroups.*;
  * @author Nico Klasens 
  * @author Costyn van Dongen 
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: Multicast.java,v 1.2 2005-09-20 19:27:38 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
     private static final Logger log = Logging.getLoggerInstance(Multicast.class);
     
-	/** 
-	 * Field containing the configuration file with the various options that
-	 * can be specified for configuring the JGroups channel 
-	 * */
+    /** 
+     * Field containing the configuration file with the various options that
+     * can be specified for configuring the JGroups channel 
+     * */
     public static final String CONFIG_FILE = "multicastJG.xml";
 
-	/**
-	 * Sender which reads the nodesToSend Queue amd puts the message on the
-	 * line 
-	 * */
+    /**
+     * Sender which reads the nodesToSend Queue amd puts the message on the
+     * line 
+     * */
     private ChangesSender mcs;
     
-	/** 
-	 * Receiver which reads the message from the line and puts message in the
-	 * nodesToSpawn Queue 
-	 * */
+    /** 
+     * Receiver which reads the message from the line and puts message in the
+     * nodesToSpawn Queue 
+     * */
     private ChangesReceiver mcr;
 
-	/** 
-	 * JChannel which the ChangesReceiver and ChangesSender
-	 * use to communicate with other instances 
-	 * */
-	private JChannel channel;
+    /** 
+     * JChannel which the ChangesReceiver and ChangesSender
+     * use to communicate with other instances 
+     * */
+    private JChannel channel;
 
-	/** 
-	 * channelproperties A string specifying the properties of the JChannel
-	 * protocol stack. 
-	 * */
+    /** 
+     * channelproperties A string specifying the properties of the JChannel
+     * protocol stack. 
+     * */
     private String channelProperties;
 
-	/** 
-	 * Name which the various MMBase instances use to communicate with
-	 * eachother.  If there are different clouds in a network which should not
-	 * communicate, this name should be different for each group of clouds
-	 * communicating with eachother.
-	 * */
+    /** 
+     * Name which the various MMBase instances use to communicate with
+     * eachother.  If there are different clouds in a network which should not
+     * communicate, this name should be different for each group of clouds
+     * communicating with eachother.
+     * */
     private String channelName;
 
     /**
@@ -109,20 +109,20 @@ public class Multicast extends ClusterManager {
             channelName = tmp;
         }
 
-		/** 
-		 * We need to strip out white space characters from the
-		 * channelproperties string before we pass it onto new JChannel().
+        /** 
+         * We need to strip out white space characters from the
+         * channelproperties string before we pass it onto new JChannel().
          */
         Pattern p = Pattern.compile("\\s");
         Matcher m = p.matcher(channelProperties);
         channelProperties = m.replaceAll( "" );
 
-		try {
-			channel = new JChannel(channelProperties);
+        try {
+            channel = new JChannel(channelProperties);
             channel.connect(channelName);
-		} catch (ChannelException createChannelException) {
-			log.error("JChannel: Unable to create or join multicast channel: " + Logging.stackTrace(createChannelException));
-		}
+        } catch (ChannelException createChannelException) {
+            log.error("JChannel: Unable to create or join multicast channel: " + Logging.stackTrace(createChannelException));
+        }
 
         /**
          * Have the communication threads stop and disconnect when this object 
