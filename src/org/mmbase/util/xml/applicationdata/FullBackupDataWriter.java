@@ -26,14 +26,14 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.1 2005-09-19 12:32:03 pierre Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.2 2005-09-20 11:52:30 michiel Exp $
  */
 public class FullBackupDataWriter {
 
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(FullBackupDataWriter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(FullBackupDataWriter.class);
 
     /**
      * Writes all nodes to XML.
@@ -83,7 +83,7 @@ public class FullBackupDataWriter {
             boolean isRelation = builder instanceof InsRel;
 
             NodeSearchQuery query = new NodeSearchQuery(builder);
-            StepField otypeField = query.getField(builder.getField(MMObjectBuilder.FIELD_OTYPE));
+            StepField otypeField = query.getField(builder.getField(MMObjectBuilder.FIELD_OBJECT_TYPE));
             BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(otypeField, new Integer(builder.getObjectType()));
             query.setConstraint(constraint);
 
