@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.335 2005-09-20 17:53:38 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.336 2005-09-20 19:24:56 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -623,7 +623,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // it is in the storage now, all caches can allready be invalidated, this makes sure
         // that imediate 'select' after 'insert' will be correct'.
         //xxx: this is bad.let's kill it!
-        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_NEW);
+        QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_NEW);
         if (n <= 0) {
             log.warn("Did not get valid nodeNumber of storage " + n);
         }
@@ -660,7 +660,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         mmb.getStorageManager().change(node);
         // change is in storage, caches can be invalidated immediately
         //bad! bad!
-        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_CHANGED);
+        QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_CHANGED);
         return true;
     }
 
@@ -861,7 +861,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // change is in storage, caches can be invalidated immediately
         //really bad!!!
-        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_DELETE);
+        QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_DELETE);
     }
 
     /**
@@ -3406,6 +3406,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node the node to convert
      * @return the XML <code>String</code>
      * @todo   This generates ad-hoc system id's and public id's.  Don't know what, why or how this is used.
+     * XXXXS I suggest we drop this stuff
      */
     public String toXML(MMObjectNode node) {
         StringBuffer body = new StringBuffer("<?xml version=\"" + version + "\"?>\n");
