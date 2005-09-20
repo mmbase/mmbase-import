@@ -52,7 +52,7 @@ public class BasicReleaseStrategy extends AbstractReleaseStrategy {
             Step thisStep = getStepForEvent(event, query);
             if(thisStep != null){
                 Set nodes = thisStep.getNodes();
-                if(nodes != null && nodes.size() > 0 && ! nodes.contains(new Integer(event.getNodeNumber()))) {
+                if(nodes != null && nodes.size() > 0 && ! nodes.contains(new Integer(event.getNode().getNumber()))) {
                     shouldRelease = false;
                 }
             }
