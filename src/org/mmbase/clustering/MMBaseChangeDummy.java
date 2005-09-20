@@ -11,9 +11,7 @@ package org.mmbase.clustering;
 
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -21,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMBaseChangeDummy.java,v 1.5 2005-09-20 11:40:29 michiel Exp $
+ * @version $Id: MMBaseChangeDummy.java,v 1.6 2005-09-20 17:48:54 michiel Exp $
  */
 public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
@@ -35,22 +33,7 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
     public void init(MMBase mmb) {
         this.mmbase = mmb;
     }
-    
-    /**
-     * maybe this method will have to go as well. not sure
-     * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
-     */
-    public boolean changedNode(int number, String tableName, String ctype) {
-        // let's fire some events.
-        MMObjectBuilder bul = mmbase.getBuilder(tableName);
-        if (bul != null) { // backwards compatibility
-            bul.nodeLocalChanged(null, "" + number, tableName, ctype);
-        }
-        MMObjectNode node = bul.getNode(number);
-        NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(ctype));
-        changedNode(event);
-        return true;
-    }
+
 
     public boolean waitUntilNodeChanged(MMObjectNode node) {
         return true;
@@ -61,6 +44,16 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
      * @since MMBase-1.8
      */
     public void changedNode(NodeEvent event) {
+
+        // backwards compatibilty:
+        {
+            MMObjectNode node = event.getNode();
+            MMObjectBuilder bul = node.getBuilder();
+            if (bul instanceof MMBaseObserver) {
+                ((MMBaseObserver) bul).nodeLocalChanged(null, "" + node.getNumber(), bul.getTableName(), NodeEvent.newTypeToOldType(event.getType()));
+            }
+        }
+
         //notify all listeners
         if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED) {
             //the relation event broker will make shure that listeners
