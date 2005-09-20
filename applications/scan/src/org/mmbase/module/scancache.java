@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.41 2004-10-01 08:42:47 pierre Exp $
+ * @version $Id: scancache.java,v 1.42 2005-09-20 19:28:29 nklasens Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -491,14 +491,6 @@ public class scancache extends Module implements scancacheInterface {
         state.put("Misses",""+miss);
         */
         return state;
-    }
-
-    /**
-    * maintainance call, will be called by the admin to perform managment
-    * tasks. This can be used instead of its own thread.
-    */
-    public void maintainance() {
-
     }
 
     /**

@@ -23,8 +23,8 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  * @move org.mmbase.cache.implementation
  * @rename Cache
- * @author  $Author: pierre $
- * @version $Id: cache.java,v 1.12 2003-03-10 11:50:13 pierre Exp $
+ * @author  $Author: nklasens $
+ * @version $Id: cache.java,v 1.13 2005-09-20 19:28:29 nklasens Exp $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -180,14 +180,6 @@ public class cache extends Module implements cacheInterface {
         return state;
     }
 
-    /**
-     * Maintainance call, will be called by the admin to perform managment
-     * tasks. This can be used instead of its own thread.
-     * @deprecated-now not used
-     */
-    public void maintainance() {
-        // do nothing, LRUHashtable does the trick now.
-    }
 
     /**
      * @javadoc
