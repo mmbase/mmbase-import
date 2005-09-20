@@ -30,7 +30,7 @@ public class ScoreTag extends CloudReferrerTag {
     }
 
     public int doStartTag() throws JspTagException {
-        Cloud cloud = getCloud();
+        Cloud cloud = getCloudVar();
         if (cloud == null) {
             throw new JspTagException("No parent <mm:cloud> tag found");
         }

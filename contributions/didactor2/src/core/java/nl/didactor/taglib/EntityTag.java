@@ -16,7 +16,7 @@ import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 /**
  * entityTag: retrieve entity data
- * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
+ * @author UNKNOWN
  */
 public class EntityTag extends CloudReferrerTag { 
     private String name;
@@ -132,7 +132,7 @@ public class EntityTag extends CloudReferrerTag {
         
         try {
             if (name.equals( "workgroupmembers")) {
-                List value= ClassRoom.getWorkgroupMembers( usernode, classno, educationno, role, getCloud());
+                List value= ClassRoom.getWorkgroupMembers( usernode, classno, educationno, role, getCloudVar());
                 it = value.iterator();
                 if (it.hasNext()) {
                     pageContext.setAttribute( var, it.next());
@@ -149,7 +149,7 @@ public class EntityTag extends CloudReferrerTag {
                     pageContext.getOut().print( object.toString());
                 }
             } else if (name.equals( "classmembers")) {
-                List value= ClassRoom.getWorkgroupMembers( usernode, classno, educationno, role, getCloud());
+                List value= ClassRoom.getWorkgroupMembers( usernode, classno, educationno, role, getCloudVar());
                 it = value.iterator();
                 if (it.hasNext()) {
                     pageContext.setAttribute( var, it.next());
