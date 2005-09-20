@@ -11,6 +11,7 @@ package org.mmbase.clustering.unicast;
 
 import java.util.Map;
 
+import org.mmbase.core.event.NodeEvent;
 import org.mmbase.clustering.ClusterManager;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
@@ -23,7 +24,7 @@ import org.mmbase.util.xml.UtilReader;
  * 
  * @author Nico Klasens
  * @created 20-sep-2004
- * @version $Id: Unicast.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: Unicast.java,v 1.3 2005-09-20 19:39:26 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
