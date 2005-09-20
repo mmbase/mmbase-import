@@ -64,20 +64,30 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.333 2005-09-16 20:48:03 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.334 2005-09-20 11:55:11 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
-    /** Name of the field containing the object number */
+    /** 
+     * Name of the field containing the object number, which uniquely identifies the node.
+     * @since MMBase-1.8  
+     */
     public static final String FIELD_NUMBER      = "number";
-    /** Name of the field containing the owner */
+    /** 
+     * Name of the field containing the owner. The owner field is used for security implementations.
+     * @since MMBase-1.8  
+     */
     public static final String FIELD_OWNER       = "owner";
-    /** Name of the field containing the object type number */
-    public static final String FIELD_OTYPE       = "otype";
-    /** Name of the field containing the object type number */
-    public static final String FIELD_OBJECT_TYPE = FIELD_OTYPE;
+    /** 
+     * Name of the field containing the object type number. This refers to an entry in the 'typedef' builder table.
+     * @since MMBase-1.8  
+     */
+    public static final String FIELD_OBJECT_TYPE  = "otype";
 
-    /** Default (system) owner name for the owner field. */
+    /**
+     * Default (system) owner name for the owner field. 
+     * @since MMBase-1.8
+     */
     public static final String SYSTEM_OWNER   = "system";
 
     /** Max size of the object type cache */
@@ -608,7 +618,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // it is in the storage now, all caches can allready be invalidated, this makes sure
         // that imediate 'select' after 'insert' will be correct'.
         //xxx: this is bad.let's kill it!
-        //QueryResultCache.invalidateAll(this);
+        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_NEW);
         if (n >= 0) {
             node = safeCache(new Integer(n),node);
         }
@@ -636,7 +646,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         mmb.getStorageManager().change(node);
         // change is in storage, caches can be invalidated immediately
         //bad! bad!
-        //QueryResultCache.invalidateAll(this);
+        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_CHANGED);
         return true;
     }
 
@@ -837,7 +847,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // change is in storage, caches can be invalidated immediately
         //really bad!!!
-        //QueryResultCache.invalidateAll(this);
+        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_DELETE);
     }
 
     /**
@@ -3628,7 +3638,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // should be TYPE_NODE ???
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
-            log.warn("Object 'otype' field is not defined. Please update your object.xml!");
+            log.warn("Object 'otype' field is not defined. Please update your object.xml, or update '" + getConfigResource() + "' to extend object");
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
             CoreField def = Fields.createSystemField(FIELD_OBJECT_TYPE, Field.TYPE_NODE);
@@ -3937,21 +3947,22 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         mmb.removeNodeRelatedEventsListener(getTableName(), listener);
     }
     
-	/**
-	 * @param type indicates if event is local or remote
-	 * @param number changed nodenumber
-	 * @param ctype event type
-	 */
-	private void updateCachForNodeEvent(String number, String ctype, int type) {
-		// overal cache control, this makes sure that the caches
+    /**
+     * @param type indicates if event is local or remote
+     * @param number changed nodenumber
+     * @param ctype event type
+     * @since MMBase-1.8
+     */
+    private void updateCachForNodeEvent(int number, String ctype, int type) {
+        // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
-		// if this is a remote event, the nodeCache must be flushed 
-		// on a 'change' event as well
+        // if this is a remote event, the nodeCache must be flushed 
+        // on a 'change' event as well
         if (type == EVENT_TYPE_LOCAL && ctype.equals("d") 
-        	|| type == EVENT_TYPE_REMOTE && (ctype.equals("d") || ctype.equals("c"))){
+            || type == EVENT_TYPE_REMOTE && (ctype.equals("d") || ctype.equals("c"))){
             try {
-                Integer i=new Integer(number);
+                Integer i = new Integer(number);
                 if (nodeCache.containsKey(i)) {
                     nodeCache.remove(i);
                 }
@@ -3959,20 +3970,19 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 log.error("Not a number");
                 log.error(Logging.stackTrace(e));
             }
-        } else
-        if (ctype.equals("r")) {
+        } else if (ctype.equals("r")) {
             try {
-                Integer i=new Integer(number);
-                MMObjectNode node=(MMObjectNode)nodeCache.get(i);
+                Integer i = new Integer(number);
+                MMObjectNode node = (MMObjectNode)nodeCache.get(i);
                 if (node!=null) {
                     node.delRelationsCache();
                 }
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
             }
-
+            
         }
-	}
+    }
     
     /**
      * This method has been overridden a lot. We need to take care of that before we remove it
@@ -4022,9 +4032,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             for (Iterator i = localObservers.iterator(); i.hasNext();) {
                 MMBaseObserver o = (MMBaseObserver)i.next();
                 if (eventLocal) {
-                    o.nodeLocalChanged(event.getMachine(), event.getNodeNumber(), event.getBuilderName(), ctype);
+                    o.nodeLocalChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
                 } else{
-                    o.nodeRemoteChanged(event.getMachine(), event.getNodeNumber(), event.getBuilderName(), ctype);
+                    o.nodeRemoteChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
                 }
             }
         }
@@ -4038,9 +4048,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             pb.notify(event);
             if(eventLocal){
-                pb.nodeLocalChanged(event.getMachine(), event.getNodeNumber(), event.getBuilderName(), ctype);
+                pb.nodeLocalChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
             }else{
-                pb.nodeRemoteChanged(event.getMachine(), event.getNodeNumber(), event.getBuilderName(), ctype);
+                pb.nodeRemoteChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
             }
         }
         
