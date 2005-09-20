@@ -132,9 +132,12 @@ public abstract class AbstractReleaseStrategy {
      */
     protected Step getStepForEvent(NodeEvent event, SearchQuery query) {
         Step step;
+        String builderName  = event.getNode().getBuilder().getTableName();
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             step = (Step) i.next();
-            if (event.getBuilderName().equals(step.getTableName())) { return step; }
+            if (builderName.equals(step.getTableName())) { 
+                return step; 
+            }
         }
         return null;
     }
