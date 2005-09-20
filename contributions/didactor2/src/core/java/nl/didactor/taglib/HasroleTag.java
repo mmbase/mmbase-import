@@ -102,7 +102,7 @@ public class HasroleTag extends CloudReferrerTag {
 
         try {
                  
-            if (ClassRoom.hasRole( usernode, role, educationno, getCloud())) {
+            if (ClassRoom.hasRole( usernode, role, educationno, getCloudVar())) {
                 return inv?SKIP_BODY:EVAL_BODY;
             } else {
                 return inv?EVAL_BODY:SKIP_BODY;

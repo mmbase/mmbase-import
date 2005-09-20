@@ -66,7 +66,7 @@ public class GetSettingTag extends CloudReferrerTag {
         String value = null;
         
         try {
-            value = comp.getSetting(setting, getCloud(), getContextProvider().getContextContainer(), arguments);
+            value = comp.getSetting(setting, getCloudVar(), getContextProvider().getContextContainer(), arguments);
         } catch (IllegalArgumentException e) {
             throw new JspTagException(e.getMessage());
         }
