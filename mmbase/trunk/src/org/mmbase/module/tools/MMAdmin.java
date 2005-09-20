@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.118 2005-09-12 22:16:21 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.119 2005-09-20 19:28:29 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -582,11 +582,6 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
-    /**
-     * @javadoc
-     */
-    public void maintainance() {}
 
 
     /**
