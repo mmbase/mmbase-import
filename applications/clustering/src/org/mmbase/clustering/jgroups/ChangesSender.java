@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangesSender.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -102,11 +102,11 @@ public class ChangesSender implements Runnable {
     private void doWork() {
 
         Message msg = null;
-        String message = null;
+        byte[] message = null;
 
         while(kicker != null) {
-            message = (String) nodesToSend.get();
-            msg = new Message(null, null, message.getBytes());
+            message = (byte[]) nodesToSend.get();
+            msg = new Message(null, null, message);
             try {
                 if (log.isDebugEnabled()) {
                     log.debug("SEND=>" + message);

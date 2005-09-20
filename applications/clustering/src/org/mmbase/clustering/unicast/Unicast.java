@@ -23,12 +23,11 @@ import org.mmbase.util.xml.UtilReader;
  * 
  * @author Nico Klasens
  * @created 20-sep-2004
- * @version $Id: Unicast.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: Unicast.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(Unicast.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Unicast.class);
     
     public static final String CONFIG_FILE = "unicast.xml";
     
@@ -93,17 +92,15 @@ public class Unicast extends ClusterManager {
         ucr.stop(); 
     }
 
-    /**
-     * @see org.mmbase.module.core.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
-     */
-    public boolean changedNode(int nodenr, String tableName, String type) {
-        String message = createMessage(nodenr, tableName, type);
+    // javadoc inherited
+    public void changedNode(NodeEvent event) {
+        byte[] message = createMessage(event);
         nodesToSend.append(message);
         //Multicast receives his own message. Unicast now too.
         nodesToSpawn.append(message);
         
-        log.debug("message: " + message);
-        
-        return true;
+        log.debug("message: " + event);
+        return;
     }
+
 }
