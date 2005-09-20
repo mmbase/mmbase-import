@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.70 2005-05-19 12:06:54 michiel Exp $
+ * @version $Id: scanparser.java,v 1.71 2005-09-20 19:28:29 nklasens Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -2002,13 +2002,6 @@ public class scanparser extends ProcessorModule {
             return;
         }
         return;
-    }
-
-    /**
-     * maintainance call, will be called by the admin to perform managment
-     * tasks. This can be used instead of its own thread.
-     */
-    public void maintainance() {
     }
 
     public String calcPage(String part2,scanpage sp,int cachetype) {

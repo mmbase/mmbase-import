@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.51 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.52 2005-09-20 19:28:29 nklasens Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -794,9 +794,6 @@ public class HtmlBase extends ProcessorModule {
             }
         }
         return "no command defined";
-    }
-
-    public void maintainance() {
     }
 
     public Hashtable getSearchHash(Vector se,String mapper) {

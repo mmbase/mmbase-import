@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @deprecated not used anymore (?)
  * @author Daniel Ockeloen
- * @version $Id: MMExport.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MMExport.java,v 1.11 2005-09-20 19:28:29 nklasens Exp $
  */
 public class MMExport extends ProcessorModule {
 
@@ -87,9 +87,6 @@ public class MMExport extends ProcessorModule {
             }
         }
         return("No command defined");
-    }
-
-    public void maintainance() {
     }
 
     public void doExportXML(Hashtable cmds, Hashtable vars) {
