@@ -19,6 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Preferences - Java - Code Style - Code Templates
  * 
  * @author Ernst Bunders
+ * @since MMBase-1.8
  */
 public class BetterStrategy extends AbstractReleaseStrategy {
 
@@ -55,7 +56,7 @@ public class BetterStrategy extends AbstractReleaseStrategy {
      * @see org.mmbase.cache.AbstractReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    public boolean doEvaluate(NodeEvent event, SearchQuery query,
+    protected boolean doEvaluate(NodeEvent event, SearchQuery query,
             List cachedResult) {
         boolean shouldRelease = true;
 
