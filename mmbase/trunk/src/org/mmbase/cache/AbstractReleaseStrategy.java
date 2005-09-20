@@ -23,6 +23,7 @@ import org.mmbase.storage.search.Step;
  * </p>
  * 
  * @author Ernst Bunders
+ * @since MMBase-1.8
  */
 
 public abstract class AbstractReleaseStrategy {
@@ -65,8 +66,7 @@ public abstract class AbstractReleaseStrategy {
      * @see QueryResultCacheReleaseStrategy#evaluate(NodeEvent, SearchQuery,
      *      NodeList)
      */
-    public final StrategyResult evaluate(NodeEvent event, SearchQuery query,
-            List cachedResult) {
+    public final StrategyResult evaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         Timer timer = new Timer();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
@@ -106,8 +106,7 @@ public abstract class AbstractReleaseStrategy {
      * @param cachedResult
      * @return true if the cache entry should be released
      */
-    public abstract boolean doEvaluate(NodeEvent event, SearchQuery query,
-            List cachedResult);
+    protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult);
 
     /*
      * (non-Javadoc)

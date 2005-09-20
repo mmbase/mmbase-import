@@ -30,15 +30,14 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.13 2005-09-16 20:48:03 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.14 2005-09-20 11:51:19 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
 
 abstract public class QueryResultCache extends Cache {
 
-    private static final Logger log = Logging
-        .getLoggerInstance(QueryResultCache.class);
+    private static final Logger log = Logging.getLoggerInstance(QueryResultCache.class);
 
     /**
      * Need reference to all existing these caches, to be able to invalidate
@@ -62,15 +61,26 @@ abstract public class QueryResultCache extends Cache {
      * @return number of entries invalidated
      */
     /*
-     * public static int invalidateAll(MMObjectBuilder builder) { int result =
-     * 0; while (builder != null) { String tn = builder.getTableName(); Iterator
-     * i = queryCaches.entrySet().iterator(); while (i.hasNext()) { Map.Entry
-     * entry = (Map.Entry) i.next(); QueryResultCache cache = (QueryResultCache)
-     * entry.getValue(); // get the Observers for the builder: Observer observer =
-     * (Observer) cache.observers.get(tn); if (observer != null) { result +=
-     * observer.nodeChanged("-1", builder.getTableName()); } } builder =
-     * builder.getParentBuilder(); } return result; }
-     */
+    public static int invalidateAll(MMObjectNode node, int eventType) { 
+        int result = 0; 
+        MMObjectBuilder builder = node.getBuilder();
+        while (builder != null) { 
+            String tn = builder.getTableName(); 
+            Iterator i = queryCaches.entrySet().iterator(); 
+            while (i.hasNext()) { 
+                Map.Entry entry = (Map.Entry) i.next(); 
+                QueryResultCache cache = (QueryResultCache) entry.getValue(); 
+                // get the Observers for the builder: 
+                Observer observer = (Observer) cache.observers.get(tn); 
+                if (observer != null) { 
+                    result += observer.nodeChanged(new NodeEvent(node, eventType));
+                } 
+            } 
+            builder = builder.getParentBuilder(); 
+        } 
+        return result; 
+    }
+    */
 
     // Keep a map of the existing Observers, for each nodemanager one.
     // @todo I think it can be done with one Observer instance too, (in which
@@ -81,11 +91,7 @@ abstract public class QueryResultCache extends Cache {
     QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
-        log.info("Instantiated a " + this.getClass().getName()); // should
-                                                                    // happend
-                                                                    // limited
-                                                                    // number of
-                                                                    // times
+        log.info("Instantiated a " + this.getClass().getName()); // should happen limited number of times
         if (queryCaches.put(this.getName(), this) != null) {
             log.error("" + queryCaches + "already containing " + this + "!!");
         }
@@ -218,11 +224,9 @@ abstract public class QueryResultCache extends Cache {
             // the builder it belongs to..
             if (mmb.getMMObject(type) == null) {
                 int builderNumber = mmb.getRelDef().getNumberByName(type);
-                String newType = mmb.getRelDef().getBuilder(builderNumber)
-                    .getTableName();
+                String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
                 if (log.isDebugEnabled()) {
-                    log.debug("replaced the type: " + type + " with type:"
-                        + newType);
+                    log.debug("replaced the type: " + type + " with type:" + newType);
                 }
                 type = newType;
             }
@@ -248,8 +252,7 @@ abstract public class QueryResultCache extends Cache {
         }
 
         public String toString() {
-            return "Observer  " + super.toString() + " watching "
-                + cacheKeys.size() + " keys";
+            return "Observer  " + super.toString() + " watching " + cacheKeys.size() + " keys";
         }
 
         /*
@@ -265,8 +268,7 @@ abstract public class QueryResultCache extends Cache {
                 || event.getRelationDestinationType().equals(type)) {
                 nodeChanged(event);
             } else {
-                log.debug("node event was deflected by Observer for type: "
-                    + type);
+                log.debug("node event was deflected by Observer for type: " + type);
                 log.debug(event.toString());
             }
 
@@ -293,38 +295,38 @@ abstract public class QueryResultCache extends Cache {
             if (event.getBuilderName().equals(type)) {
                 nodeChanged(event);
             } else {
-                log.debug("node event was deflected by Observer for type: "
-                    + type);
+                log.debug("node event was deflected by Observer for type: " + type);
                 log.debug(event.toString());
             }
 
         }
 
-        protected void nodeChanged(NodeEvent event) {
+        protected int nodeChanged(NodeEvent event) {
             int evaluatedResults = cacheKeys.size();
             Set removeKeys = new HashSet();
             long totalEvaluationTime = 0;
             synchronized (this) {
                 for (Iterator i = cacheKeys.iterator(); i.hasNext();) {
                     SearchQuery key = (SearchQuery) i.next();
-                    AbstractReleaseStrategy.StrategyResult result = releaseStrategy
-                        .evaluate(event, key, (List) get(key));
+                    AbstractReleaseStrategy.StrategyResult result = releaseStrategy.evaluate(event, key, (List) get(key));
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();
                     }
                     totalEvaluationTime += result.getCost();
                 }
-                log.debug(getName() + ": event analyzed in "
-                    + totalEvaluationTime + " milisecs. evaluating "
-                    + evaluatedResults + ". Flushing " + removeKeys.size());
+                
                 // ernst: why is this in a separate loop?
                 // why not chuck em out in the first one?
 
                 for (Iterator i = removeKeys.iterator(); i.hasNext();) {
-                    remove(i.next());
+                    QueryResultCache.this.remove(i.next());
                 }
             }
+            if (log.isDebugEnabled()) {
+                log.debug(getName() + ": event analyzed in " + totalEvaluationTime + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
+            }
+            return removeKeys.size();
         }
     }
 
