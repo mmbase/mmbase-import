@@ -19,8 +19,7 @@ import org.mmbase.util.logging.*;
  */
 public class RelationEventBroker extends AbstractEventBroker {
 
-    private static Logger log = Logging
-        .getLoggerInstance(RelationEventBroker.class);
+    private static Logger log = Logging.getLoggerInstance(RelationEventBroker.class);
 
     /**
      * use this property to make shure your listener only gets the relation
@@ -56,23 +55,21 @@ public class RelationEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#notifyEventListener(event.Event,
      *      event.EventListener)
      */
-    protected void notifyEventListener(Event event, EventListener listener)
-            throws ClassCastException {
+    protected void notifyEventListener(Event event, EventListener listener) throws ClassCastException {
         RelationEvent re = (RelationEvent) event;
         RelationEventListener rel = (RelationEventListener) listener;
         Properties p = rel.getConstraintsForEvent(re);
 
         MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder builder = mmb.getBuilder(re.getBuilderName());
-        if (builder.broadcastChanges) {
+        MMObjectBuilder builder = re.getNode().getBuilder();
+        if (builder.broadcastChanges()) {
             if (p != null) {
                 String nodeType = p.getProperty(PROPERTY_NODETYPE);
                 if (nodeType.equals(re.getRelationSourceType())
                     || nodeType.equals(re.getRelationDestinationType())) {
                     rel.notify(re);
                 } else {
-                    log.debug("the constraints set by " + rel
-                        + " were not met by event " + re);
+                    log.debug("the constraints set by " + rel + " were not met by event " + re);
                 }
             } else {
                 // no constraints

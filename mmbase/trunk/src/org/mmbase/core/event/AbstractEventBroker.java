@@ -70,8 +70,7 @@ public abstract class AbstractEventBroker {
      * @param listener
      * @throws ClassCastException
      */
-    protected abstract void notifyEventListener(Event event,
-            EventListener listener) throws ClassCastException;
+    protected abstract void notifyEventListener(Event event, EventListener listener) throws ClassCastException;
 
     public void addListener(EventListener listener) {
         if (canBrokerForListener(listener) && !listeners.contains(listener)) {

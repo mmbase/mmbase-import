@@ -7,14 +7,14 @@
  */
 package org.mmbase.core.event;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.mmbase.util.logging.*;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
+
 
 /**
  * This class communicates a node event. in case of a change event, it contains
@@ -36,9 +36,7 @@ public class NodeEvent extends Event implements Serializable {
 
     public static final int EVENT_TYPE_RELATION_CHANGED = 3;
 
-    private int nodeNumber;
-
-    private String eventSource;
+    private MMObjectNode node;
 
     private int eventType;
 
@@ -46,10 +44,31 @@ public class NodeEvent extends Event implements Serializable {
 
     // ernst:what object types can the 'old values' be, and what happens if they
     // can't be serialized??
-    private Map oldValues = null, newValues = null;
+    private Map oldValues = new HashMap();
+    private Map newValues = new HashMap();
 
-    // private static final String noFieldsMessage = "an event of this type has
-    // no changed fields";
+    // implementation of serializable
+    // UNTESTED
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeUTF(node.getBuilder().getTableName());
+        out.writeInt(node.getNumber()); 
+        out.writeInt(eventType);
+        out.writeUTF(machine);
+        out.writeObject(oldValues);
+        out.writeObject(newValues);        
+    }
+    // implementation of serializable
+    // UNTESTED
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        String builderName = in.readUTF();
+        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
+        int nodeNumber = in.readInt();
+        node = builder.getNode(nodeNumber);
+        eventType = in.readInt();
+        machine = in.readUTF();
+        oldValues = (Map) in.readObject();
+        newValues = (Map) in.readObject();
+    }
 
     /**
      * @param node
@@ -57,31 +76,21 @@ public class NodeEvent extends Event implements Serializable {
      */
 
     public NodeEvent(MMObjectNode node, int eventType) {
-        init(node, eventType, MMBase.getMMBase().getMachineName());
+        this(node, eventType, MMBase.getMMBase().getMachineName());
     }
 
     public NodeEvent(MMObjectNode node, int eventType, String machine) {
-        init(node, eventType, machine);
-    }
-
-    /**
-     * @param node
-     * @param eventType
-     */
-    private void init(MMObjectNode node, int eventType, String machine) {
-        this.nodeNumber = node.getNumber();
-        this.eventSource = node.parent.getTableName();
+        this.node = node;
         this.eventType = eventType;
         this.machine = machine;
         name = "node event";
 
         // at this point the new value for the changed fields is
         // in the node, and the old values are in the oldValues map
-        oldValues = new HashMap();
         oldValues.putAll(node.getOldValues());
-        newValues = new HashMap();
         newValues.putAll(node.getValues());
     }
+
 
     /**
      * Adds the name and old value of a changed field, But only if this event
@@ -126,9 +135,6 @@ public class NodeEvent extends Event implements Serializable {
         return eventType;
     }
 
-    public String getBuilderName() {
-        return eventSource;
-    }
 
     protected boolean canHaveChangedFields() {
         return eventType == NodeEvent.EVENT_TYPE_CHANGED
@@ -140,23 +146,21 @@ public class NodeEvent extends Event implements Serializable {
         for (Iterator i = changedFieldIterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return "eventtype: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + eventSource + ", changedfields: "
-            + changedFields;
+        return "eventtype: '" + getEventTypeGuiName(eventType) + "', node: " + node.getNumber() + ", nodetype: " + node.getBuilder() + ", changedfields: " + changedFields;
     }
 
-    protected String getEventTypeGuiName(int eventType) {
+    protected static String getEventTypeGuiName(int eventType) {
         switch (eventType) {
-            case NodeEvent.EVENT_TYPE_CHANGED:
-                return "node changed";
-            case NodeEvent.EVENT_TYPE_DELETE:
-                return "node deleted";
-            case NodeEvent.EVENT_TYPE_NEW:
-                return "new node";
-            case NodeEvent.EVENT_TYPE_RELATION_CHANGED:
-                return "relation changed";
-            default:
-                throw new RuntimeException("HELP! event of type " + eventType
-                    + " is unknown. This should not happen");
+        case NodeEvent.EVENT_TYPE_CHANGED:
+            return "node changed";
+        case NodeEvent.EVENT_TYPE_DELETE:
+            return "node deleted";
+        case NodeEvent.EVENT_TYPE_NEW:
+            return "new node";
+        case NodeEvent.EVENT_TYPE_RELATION_CHANGED:
+            return "relation changed";
+        default:
+            throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
         }
     }
 
@@ -169,17 +173,11 @@ public class NodeEvent extends Event implements Serializable {
      */
     public static String newTypeToOldType(int eventType) {
         switch (eventType) {
-            case NodeEvent.EVENT_TYPE_CHANGED:
-                return "c";
-            case NodeEvent.EVENT_TYPE_DELETE:
-                return "d";
-            case NodeEvent.EVENT_TYPE_NEW:
-                return "n";
-            case NodeEvent.EVENT_TYPE_RELATION_CHANGED:
-                return "r";
-            default:
-                throw new RuntimeException("HELP! event of type " + eventType
-                    + " is unknown. This should not happen");
+        case NodeEvent.EVENT_TYPE_CHANGED:          return "c";
+        case NodeEvent.EVENT_TYPE_DELETE:           return "d";
+        case NodeEvent.EVENT_TYPE_NEW:              return "n";
+        case NodeEvent.EVENT_TYPE_RELATION_CHANGED: return "r";
+        default: throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
         }
     }
 
@@ -200,16 +198,15 @@ public class NodeEvent extends Event implements Serializable {
         } else if (eventType.equals("r")) {
             return NodeEvent.EVENT_TYPE_RELATION_CHANGED;
         } else {
-            throw new RuntimeException("HELP! event of type " + eventType
-                + " is unknown. This should not happen");
+            throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
         }
     }
 
     /**
-     * @return Returns the nodeNumber.
+     * @return Returns the node.
      */
-    public int getNodeNumber() {
-        return nodeNumber;
+    public MMObjectNode getNode() {
+        return node;
     }
 
     /**
