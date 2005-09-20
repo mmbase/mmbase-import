@@ -11,8 +11,6 @@ package org.mmbase.module.core;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 
 import org.mmbase.core.event.*;
 import org.mmbase.core.event.EventListener;
@@ -34,6 +32,8 @@ import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.BuilderWriter;
 import org.xml.sax.SAXException;
 
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * The module which provides access to the MMBase storage defined
  * by the provided name/setup.
@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.157 2005-09-20 19:31:09 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.158 2005-09-20 20:04:45 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
