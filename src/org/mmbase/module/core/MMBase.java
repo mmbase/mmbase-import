@@ -12,8 +12,7 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 
-import org.mmbase.clustering.MMBaseChangeDummy;
-import org.mmbase.clustering.MMBaseChangeInterface;
+
 import org.mmbase.core.event.*;
 import org.mmbase.core.event.EventListener;
 import org.mmbase.datatypes.DataTypes;
@@ -44,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.155 2005-09-20 08:57:31 michiel Exp $
+ * @version $Id: MMBase.java,v 1.156 2005-09-20 17:47:09 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -94,13 +93,6 @@ public class MMBase extends ProcessorModule {
      * The (base)path to the builder configuration files
      */
     private static ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
-
-    /**
-     * Builds a MultiCast Thread to receive and send
-     * changes from other MMBase Servers.
-     * @scope private
-     */
-    public MMBaseChangeInterface mmc;
 
     /**
      * Base name for the storage  to be accessed using this instance of MMBase.
@@ -331,9 +323,7 @@ public class MMBase extends ProcessorModule {
             // you may also try to incorporate the username in the machine name
             pos = machineNameParam.indexOf("${USER}");
             if (pos!=-1) {
-                machineNameParam = machineNameParam.substring(0,pos) +
-                    System.getProperty("user.name") +
-                    machineNameParam.substring(pos+7);
+                machineNameParam = machineNameParam.substring(0,pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
             }
             machineName = machineNameParam;
         }
@@ -343,8 +333,6 @@ public class MMBase extends ProcessorModule {
 
         // start the JDBC module if present
         getModule("JDBC", true);
-
-        initializeClustering(getInitParameter("CLUSTERING"));
 
         mmbaseState = STATE_LOAD;
 
@@ -405,30 +393,6 @@ public class MMBase extends ProcessorModule {
         log.info("MMBase is up and running");
         checkUserLevel();
 
-    }
-
-    /**
-     * initialize Clustering
-     * @param clusterClass classname of cluster manager
-     * @since MMBase-1.7.2
-     */
-    private void initializeClustering(String clusterClass) {
-        if (clusterClass != null) {
-            log.debug("Starting Multicasting: " + clusterClass);
-
-            Class newclass;
-            try {
-                newclass = Class.forName(clusterClass);
-                mmc = (MMBaseChangeInterface) newclass.newInstance();
-            } catch (Exception e) {
-                log.error("Failed to start MMBaseChangeInterface: " + e.getMessage());
-                mmc = new MMBaseChangeDummy();
-            }
-        } else {
-            log.debug("Not starting MMBaseChangeInterface");
-            mmc = new MMBaseChangeDummy();
-        }
-        mmc.init(this);
     }
 
     // javadoc inherited
