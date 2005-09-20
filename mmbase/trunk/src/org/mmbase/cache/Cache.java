@@ -9,29 +9,33 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.util.*;
-
 import java.io.File;
-import org.mmbase.util.LRUHashtable;
-import org.mmbase.module.core.*; // MMBaseContext;
-
-import org.w3c.dom.Element;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.mmbase.bridge.Cacheable;
-
+import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.FileWatcher;
+import org.mmbase.util.LRUHashtable;
 import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.SizeOf;
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Element;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.24 2005-09-02 12:28:45 pierre Exp $
+ * @version $Id: Cache.java,v 1.25 2005-09-20 19:51:38 ernst Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
@@ -101,10 +105,115 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
                     if (cache.getDefaultMaxEntrySize() > 0) {
                         log.service("No max entry size specified for this cache taking default " + cache.getDefaultMaxEntrySize() + " bytes");
                     }
+                    
+                    //now see if we have to load cache release strategies for this lovely cache...
+                    if(cache instanceof QueryResultCache){
+                        log.debug("found a SearchQueryCache: "+cacheName);
+                        
+                        //see if there are globally configured release strategies
+                        List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
+                        if(strategies != null){
+                            log.debug("found "+strategies.size()+" globally configured strategies");
+                            ((QueryResultCache)cache).addReleaseStrategies(strategies);
+                        }
+                        
+                        //see if there are strategies configured for this cache
+                        strategies = findReleaseStrategies(xmlReader, cacheElement);
+                        if(strategies != null){
+                            log.debug("found "+strategies.size()+" strategies for cache "+cache.getName());
+                            ((QueryResultCache)cache).addReleaseStrategies(strategies);
+                        }
+                    }
                 }
             }
         }
     }
+    
+
+    /**
+     * @param reader xml document reader instance
+     * @param parentElement the parent of the releaseStrategies element
+     * @return List of ReleaseStrategy instances
+     * @since 1.8
+     */
+    private static List findReleaseStrategies(DocumentReader reader, Element parentElement) {
+        List result = new ArrayList(5);
+        Iterator strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
+        if(!strategyParentIterator.hasNext()){
+            return null;
+        }else{
+            parentElement = (Element) strategyParentIterator.next();
+            
+            //now find the strategies
+            Iterator strategyIterator = reader.getChildElements(parentElement, "strategy");
+            while(strategyIterator.hasNext()){
+                String strategyClassName = 
+                    reader.getElementValue((Element)strategyIterator.next());
+                log.debug("found strategy in configuration: "+ strategyClassName);
+                try {
+                    AbstractReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
+                    log.debug("still there after trying to get a strategy instance... Instance is " +
+                            releaseStrategy==null ? "null" : "not null");
+                    
+                    //check if we got something
+                    if(releaseStrategy != null){
+                        
+                        result.add(releaseStrategy);
+                        log.debug("Successfully created "+releaseStrategy.getName() + " instance");
+                    }else{
+                        log.error("release strategy instance is null (runtime exception?");
+                    }
+                    
+                } catch (CacheConfigurationException e1) {
+                    // here we throw a runtime exception, becouse there is
+                    // no way we can deal with this error. 
+                    log.error("Cache configuration error: " + e1.toString());
+                    log.debug("strategy instantiation error: "+e1.toString());
+                    throw new RuntimeException("Cache configuration error: " + 
+                            e1.toString());
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * I moved this code away from <code>configur()</code> just to 
+     * clean up a little, and keep the code readable
+     * @param strategyClass
+     * @since 1.8
+     */
+    private static AbstractReleaseStrategy getStrategyInstance(String strategyClassName) 
+        throws CacheConfigurationException{
+        log.debug("getStrategyInstance()");
+        Class strategyClass;
+        AbstractReleaseStrategy strategy = null;
+        try {
+            strategyClass = Class.forName(strategyClassName);
+            strategy = (AbstractReleaseStrategy) strategyClass.newInstance();
+            log.debug("created strategy instance: "+strategyClassName);
+            
+        } catch (ClassCastException e){
+            log.debug(strategyClassName + " can not be cast to strategy");
+            throw new CacheConfigurationException(strategyClassName + " can not be cast to strategy");
+        } catch (ClassNotFoundException e) {
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("Class "+strategyClassName +
+                    "was not found");
+        } catch (InstantiationException e) {
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("A new instance of " + strategyClassName +
+                    "could not be created: " + e.toString());
+        } catch (IllegalAccessException e) {
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("A new instance of " + strategyClassName +
+                    "could not be created: " + e.toString());
+        }
+        log.debug("exit getStrategyInstance()");
+        return strategy;
+    }
+
+
 
 
     /**
