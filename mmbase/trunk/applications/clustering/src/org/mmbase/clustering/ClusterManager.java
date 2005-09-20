@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *  
  * @author Nico Klasens
  * @author Michiel Meeuwissen
- * @version $Id: ClusterManager.java,v 1.8 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.9 2005-09-20 20:32:09 michiel Exp $
  */
 public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
@@ -127,11 +127,18 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
     protected NodeEvent parseMessage(byte[] message) {
         try {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(message));
-            // do do, need to somehow recognise message from MMBase < 1.8
-            // and then call paseMessageBackwardCompatible
             NodeEvent event = (NodeEvent) in.readObject();
             if (log.isDebugEnabled()) {
                 log.debug("Unserialized " + event);
+            }
+            return event;
+        } catch (StreamCorruptedException scc) {
+            log.debug(scc.getMessage() + ". Supposing old style message.");
+            // Possibly, it is a message from an 1.7 system
+            String mes = new String(message);
+            NodeEvent event = parseMessageBackwardCompatible(mes);
+            if (log.isDebugEnabled()) {
+                log.debug("Old style message " + event);
             }
             return event;
         } catch (IOException ioe) {
@@ -144,39 +151,33 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
     }
 
     protected NodeEvent parseMessageBackwardCompatible(String message) {
-        String chars=(String)nodesToSpawn.get();
-        String machine,vnr,id,tb,ctype;
-        StringTokenizer tok;
-        
         if (log.isDebugEnabled()) {
-            log.debug("RECEIVE=>" + chars);
+            log.debug("RECEIVE=>" + message);
         }
-        tok=new StringTokenizer(chars,",");
+        StringTokenizer tok = new StringTokenizer(message,",");
         if (tok.hasMoreTokens()) {
-            machine=tok.nextToken();
+            String machine = tok.nextToken();
             if (tok.hasMoreTokens()) {
-                    vnr=tok.nextToken();
+                String vnr = tok.nextToken();
+                if (tok.hasMoreTokens()) {
+                    String id = tok.nextToken();
                     if (tok.hasMoreTokens()) {
-                        id=tok.nextToken();
+                        String tb = tok.nextToken();
                         if (tok.hasMoreTokens()) {
-                            tb=tok.nextToken();
-                            if (tok.hasMoreTokens()) {
-                                ctype=tok.nextToken();
-                                if (!ctype.equals("s")) {
-                                    //return new NodeEvent();
-                                    //handleMsg(machine,vnr,id,tb,ctype);
-                                } else {
-                                    if (tok.hasMoreTokens()) {
-                                        String xml=tok.nextToken("");
-                                        //return new NodeEvent();a
-                                        //commitXML(machine,vnr,id,tb,ctype,xml);
-                                    } else log.error("doWork("+chars+"): 'xml' could not be extracted from this string!");
-                                }
-                            } else log.error("doWork("+chars+"): 'ctype' could not be extracted from this string!");
-                        } else log.error("doWork("+chars+"): 'tb' could not be extracted from this string!");
-                    } else log.error("doWork("+chars+"): 'id' could not be extracted from this string!");
-                } else log.error("doWork("+chars+"): 'vnr' could not be extracted from this string!");
-        } else log.error("doWork("+chars+"): 'machine' could not be extracted from this string!");        
+                            String ctype=tok.nextToken();
+                            if (!ctype.equals("s")) {
+                                MMObjectBuilder builder = mmbase.getBuilder(tb);
+                                MMObjectNode    node    = builder.getNode(id);
+                                return new NodeEvent(node, NodeEvent.oldTypeToNewType(ctype),machine);
+                            } else {
+                                /// XXXX should we?
+                                log.error("XML messages not suppported any more");
+                            }
+                        } else log.error(message + ": 'ctype' could not be extracted from this string!");
+                    } else log.error(message + ": 'tb' could not be extracted from this string!");
+                } else log.error(message + ": 'id' could not be extracted from this string!");
+            } else log.error(message + ": 'vnr' could not be extracted from this string!");
+        } else log.error(message + ": 'machine' could not be extracted from this string!");        
         return null;
     }
 
@@ -200,12 +201,8 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        try {
-            kicker.setPriority(Thread.NORM_PRIORITY+1);
-            doWork();
-        } catch(Exception e) {
-            log.error(e);
-        }
+        kicker.setPriority(Thread.NORM_PRIORITY+1);
+        doWork();
     }
     
     /**
@@ -213,13 +210,21 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
      */
     private void doWork() {
         while(kicker != null) {
-            byte[] message = (byte[]) nodesToSpawn.get();
-            if (log.isDebugEnabled()) {
-                log.debug("RECEIVE=>" + new String(message));
+            try {
+                byte[] message = (byte[]) nodesToSpawn.get();
+                if (log.isDebugEnabled()) {
+                    log.debug("RECEIVED =>" + message.length + " bytes");
+                }
+                spawncount++;
+                NodeEvent event = parseMessage(message);
+                if (event != null) {
+                    handleEvent(event);
+                } else {
+                    log.warn("Could not handle message, it is null");
+                }
+            } catch(Throwable t) {
+                log.error(t);
             }
-            spawncount++;
-            NodeEvent event = parseMessage(message);
-            handleEvent(event);
         }
 
     }

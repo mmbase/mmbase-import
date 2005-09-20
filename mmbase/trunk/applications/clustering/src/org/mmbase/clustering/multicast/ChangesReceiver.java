@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.3 2005-09-20 20:32:09 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -133,7 +133,7 @@ public class ChangesReceiver implements Runnable {
                 // maybe we should use encoding here?
                 byte[] message = dp.getData();
                 if (log.isDebugEnabled()) {
-                    log.debug("RECEIVED=>" + message);
+                    log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
                 }
                 nodesToSpawn.append(message);
             } catch (Exception f) {
