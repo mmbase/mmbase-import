@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.152 2005-09-14 14:34:02 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.153 2005-09-20 17:54:59 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -54,8 +54,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Map which stores the current database value for fields when
      * then change in the node. 
      * it can be used to optimise cacheing  
+     * @since MMBase-1.8
      */
-    public Map oldValues = new HashMap(20);
+    private Map oldValues = new HashMap();
 
     /**
      * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
@@ -105,7 +106,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @scope private
      */
     public Hashtable values = new Hashtable();
-    // private Map values = Collections.synchronizedMap(new HashMap());
+    //Map values = Collections.synchronizedMap(new HashMap());
 
     private Map sizes = Collections.synchronizedMap(new HashMap());
 
@@ -155,11 +156,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     protected boolean virtual = false;
 
     /**
-     * Alias name of this node.
-     * XXX: nodes can have multiple aliases.
+     * New aliases of the node
      * @scope private
      */
-    protected String alias;
+    private Set aliases = null;
 
     // object to sync access to properties
     private final Object properties_sync = new Object();
@@ -542,14 +542,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * this method stores a fieldvalue only once. the purpose is to
      * store the value only the first time a field changes, so it reflects
      * the value in the database.
-	 * @param fieldName
-	 * @param object
-	 */
-	private void storeOldValue(String fieldName, Object object) {
-		 if(oldValues.get(fieldName) == null)
-		 	oldValues.put(fieldName, object);
-	}
-
+     * @param fieldName
+     * @param object
+     */
+    private void storeOldValue(String fieldName, Object object) {
+        if(oldValues.get(fieldName) == null) {
+            oldValues.put(fieldName, object);
+        }
+    }
+    
     /**
      * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
      * fill using an InputStream.
@@ -1093,8 +1094,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    public Hashtable getValues() {
-        return values;
+    public Map getValues() {
+        return  Collections.unmodifiableMap(values);
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public Map getOldValues() {
+        return Collections.unmodifiableMap(oldValues);
     }
 
 
@@ -1319,9 +1326,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
                     if (relation_number==getNumber()) {
                         relation_number = tnode.getIntValue("dnumber");
-                        nodetype=parent.getNodeType(relation_number);
+                        nodetype = parent.getNodeType(relation_number);
                     } else {
-                        nodetype=parent.getNodeType(relation_number);
+                        nodetype = parent.getNodeType(relation_number);
                     }
 
                     // Display situation where snumber or dnumber from a relation-node does not seem to
@@ -1363,19 +1370,41 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Sets the node's alias.
      * The code only sets a (memory) property, it does not actually add the alias to the database.
-     * Does not support multiple aliases.
+     * Only works for uninserted Nodes. So this is actually only used for application import.
+     * No need to use this. Use {@link MMObjectBuilder#createAlias}.
      */
     public void setAlias(String alias) {
-        this.alias=alias;
+        if (aliases == null) aliases = new HashSet();
+        synchronized(aliases) {
+            aliases.add(alias);
+        }
     }
 
     /**
      * Returns the node's alias.
      * Does not support multiple aliases.
-     * @return the alias as a <code>String</code>
+     * @return the new aliases as a <code>Set</code>
      */
-    public String getAlias() {
-        return alias;
+    void useAliases() {
+        if (aliases != null) {
+            synchronized(aliases) {
+                if (getNumber() <= 0) {
+                    log.error("Trying to set aliases for uncommited node!!");
+                    return;
+                }
+                Integer n = new Integer(getNumber());
+                Iterator it = aliases.iterator();
+                while(it.hasNext()) {
+                    try {
+                        String alias = (String) it.next();
+                        parent.createAlias(getNumber(), alias);
+                    } catch (org.mmbase.storage.StorageException se) {
+                        log.error(se);
+                    }
+                }
+                aliases.clear();
+            }
+        }
     }
 
 
