@@ -39,37 +39,48 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
     
     //xxx: what to do with this. we don't know what message we are going to receive...
     public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
-        log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
+        if(log.isDebugEnabled()) {
+            log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
+        }
 
-        MMObjectBuilder bul=parent.getMMObject(tb);
-        if (bul==null) {
+        MMObjectBuilder bul = parent.getMMObject(tb);
+        if (bul == null) {
             log.warn("MMBaseChangeDummy -> Unknown builder="+tb);
-            return(false);
+            return false;
         } 
     
         //this dous not compile anymore
         //bul.nodeLocalChanged(machine, id,tb,ctype);
-        return(true);
+        return true;
     }
 
-//    public boolean changedNode(int nodenr,String tableName,String type) {
-//        MMObjectBuilder bul=parent.getMMObject(tableName);
-//        if (bul!=null) {
-//            bul.nodeLocalChanged(null, ""+nodenr,tableName,type);
-//        }
-//        return(true);
-//    }
+    /**
+     * maybe this method will have to go as well. not sure
+     * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
+     */
+    public boolean changedNode(int number, String tableName, String ctype) {
+        // let's fire some events.
+        MMObjectBuilder bul = parent.getBuilder(tableName);
+        if (bul != null) { // backwards compatibility
+            bul.nodeLocalChanged(null, "" + number, tableName, ctype);
+        }
+        MMObjectNode node = bul.getNode(number);
+        NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(ctype));
+        changedNode(event);
+        return true;
+    }
 
     public boolean waitUntilNodeChanged(MMObjectNode node) {
-        return(true);
+        return true;
     }
 
     /* (non-Javadoc)
      * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(org.mmbase.core.event.NodeEvent)
+     * @since MMBase-1.8
      */
     public void changedNode(NodeEvent event) {
         //notify all listeners
-        if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED){
+        if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED) {
             //the relation event broker will make shure that listeners
             //for node-relation changes to a specific builder, will be
             //notified if this builder is either source or destination type
@@ -80,16 +91,5 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
         }
     }
 
-    /**
-     * maybe this method will have to go as well. not shure
-     * @see org.mmbase.clustering.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
-     */
-    public boolean changedNode(int number, String tableName, String ctype) {
-        // let's fire some events.
-        MMObjectNode node = parent.getBuilder(tableName).getNode(number);
-        NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(ctype));
-        changedNode(event);
-        return true;
-    }
 
 }

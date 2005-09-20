@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.2 2005-09-15 20:26:23 ernst Exp $
+ * @version $Id: ChangeManager.java,v 1.3 2005-09-20 11:26:41 michiel Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -67,28 +67,29 @@ public final class ChangeManager {
         MMBase mmbase = MMBase.getMMBase();
         if (builder.broadcastChanges) {
            mmc.changedNode(new NodeEvent(node, mapEventType(change)));
-            if (builder instanceof InsRel) {
-                // figure out tables to send the changed relations
-                mmc.changedNode(new RelationEvent(node, mapEventType(change)));
-                
-            }
+           mmc.changedNode(node.getNumber(), builder.getTableName(), change); // backwards compatibiliy
+           if (builder instanceof InsRel) {
+               // figure out tables to send the changed relations
+               mmc.changedNode(new RelationEvent(node, mapEventType(change)));
+               
+           }
         }
         node.clearChanged();
     }
     
-    	/**
-	 * @param change
-	 * @return
-	 */
-	private int mapEventType(String change) {
-		 if("c".equals(change)){
-		 	return NodeEvent.EVENT_TYPE_CHANGED;
-		 }else if("d".equals(change)){
-		 	return NodeEvent.EVENT_TYPE_DELETE;
-		 }else if ("n".equals(change)){
-		 	return NodeEvent.EVENT_TYPE_NEW;
-		 }
-       //this should never happen. But what to do when it dous?
-		throw new IllegalArgumentException("change type "+change+" is not supported");
-	}
+    /**
+     * @param change
+     * @return
+     */
+    private int mapEventType(String change) {
+        if("c".equals(change)){
+            return NodeEvent.EVENT_TYPE_CHANGED;
+        } else if("d".equals(change)){
+            return NodeEvent.EVENT_TYPE_DELETE;
+        } else if ("n".equals(change)){
+            return NodeEvent.EVENT_TYPE_NEW;
+        }
+        //this should never happen. But what to do when it does?
+        throw new IllegalArgumentException("change type "+change+" is not supported");
+    }
 }
