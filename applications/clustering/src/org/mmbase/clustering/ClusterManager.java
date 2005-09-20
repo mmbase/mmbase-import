@@ -9,18 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
-import org.mmbase.clustering.MessageProbe;
-import org.mmbase.clustering.WaitNode;
+import java.util.*;
+import java.io.*;
+
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.core.event.NodeEvent;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 
 /**
@@ -30,7 +30,8 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: ClusterManager.java,v 1.7 2005-09-16 11:58:23 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: ClusterManager.java,v 1.8 2005-09-20 19:31:27 michiel Exp $
  */
 public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
@@ -65,6 +66,9 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
         this.mmbase = mmb;
     }
     
+    public MMBase getMMBase() {
+        return mmbase;
+    }
     /**
      * Subclasses should start the communication threads in this method
      */
@@ -87,7 +91,6 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
             startCommunicationThreads();
         }
     }
-
     /**
      * Stops the ClusterManager.
      */
@@ -98,55 +101,85 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
         kicker = null;
     }
     
-    /**
-     * @javadoc
-     */
-    public boolean changedNode(int nodenr, String tableName, String type) {
-        String message = createMessage(nodenr, tableName, type);
+    
+    // javadoc inherited
+    public void changedNode(NodeEvent event) {
+        byte[] message = createMessage(event);
         nodesToSend.append(message);
-        return true;
+        return;
     }
 
-    /**
-     * Create message to send to other servers
-     * 
-     * @param nodenr node number
-     * @param tableName node type (tablename)
-     * @param node Node with xml info
-     * @return message with node xml
-     */
-    protected String createXmlMessage(String nodenr, String tableName, MMObjectNode node) {
-        return createMessage(nodenr, tableName, "x", node.toXML());
-    }
-    
-    /**
-     * Create message to send to other servers
-     * 
-     * @param nodenr node number
-     * @param tableName node type (tablename)
-     * @param type command type
-     * @return message
-     */
-    protected String createMessage(int nodenr, String tableName, String type) {
-        return createMessage("" + nodenr, tableName, type, null);
-    }
-    
-    /**
-     * Create message to send to other servers
-     * 
-     * @param nodenr node number
-     * @param tableName node type (tablename)
-     * @param type command type
-     * @param xml node xml
-     * @return message
-     */
-    protected String createMessage(String nodenr,String tableName,String type, String xml) {
-        String message = mmbase.getMachineName()+","+(follownr++)+","+nodenr+","+tableName+","+type;
-        if (xml != null) {
-            message += "," + xml +"\n";
+    protected byte[] createMessage(NodeEvent nodeEvent) {
+        if (log.isDebugEnabled()) {
+            log.debug("Serializing " + nodeEvent);
         }
-        return message;
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bytes);
+            out.writeObject(nodeEvent);
+            return bytes.toByteArray();
+        } catch (IOException ioe) {
+            log.error(ioe);
+            return null;
+        }
+        
     }
+    protected NodeEvent parseMessage(byte[] message) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(message));
+            // do do, need to somehow recognise message from MMBase < 1.8
+            // and then call paseMessageBackwardCompatible
+            NodeEvent event = (NodeEvent) in.readObject();
+            if (log.isDebugEnabled()) {
+                log.debug("Unserialized " + event);
+            }
+            return event;
+        } catch (IOException ioe) {
+            log.error(ioe);
+            return null;
+        } catch (ClassNotFoundException cnfe) {
+            log.error(cnfe);
+            return null;
+        }
+    }
+
+    protected NodeEvent parseMessageBackwardCompatible(String message) {
+        String chars=(String)nodesToSpawn.get();
+        String machine,vnr,id,tb,ctype;
+        StringTokenizer tok;
+        
+        if (log.isDebugEnabled()) {
+            log.debug("RECEIVE=>" + chars);
+        }
+        tok=new StringTokenizer(chars,",");
+        if (tok.hasMoreTokens()) {
+            machine=tok.nextToken();
+            if (tok.hasMoreTokens()) {
+                    vnr=tok.nextToken();
+                    if (tok.hasMoreTokens()) {
+                        id=tok.nextToken();
+                        if (tok.hasMoreTokens()) {
+                            tb=tok.nextToken();
+                            if (tok.hasMoreTokens()) {
+                                ctype=tok.nextToken();
+                                if (!ctype.equals("s")) {
+                                    //return new NodeEvent();
+                                    //handleMsg(machine,vnr,id,tb,ctype);
+                                } else {
+                                    if (tok.hasMoreTokens()) {
+                                        String xml=tok.nextToken("");
+                                        //return new NodeEvent();a
+                                        //commitXML(machine,vnr,id,tb,ctype,xml);
+                                    } else log.error("doWork("+chars+"): 'xml' could not be extracted from this string!");
+                                }
+                            } else log.error("doWork("+chars+"): 'ctype' could not be extracted from this string!");
+                        } else log.error("doWork("+chars+"): 'tb' could not be extracted from this string!");
+                    } else log.error("doWork("+chars+"): 'id' could not be extracted from this string!");
+                } else log.error("doWork("+chars+"): 'vnr' could not be extracted from this string!");
+        } else log.error("doWork("+chars+"): 'machine' could not be extracted from this string!");        
+        return null;
+    }
+
     
     /**
      * @javadoc
@@ -158,7 +191,7 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
             wnode.doWait(60*1000);
             waitingNodes.remove(wnode);
         } catch(Exception e) {
-            log.error(Logging.stackTrace(e));
+            log.error(e);
         }
         return true;
     }
@@ -171,7 +204,7 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
             kicker.setPriority(Thread.NORM_PRIORITY+1);
             doWork();
         } catch(Exception e) {
-            log.error(Logging.stackTrace(e));
+            log.error(e);
         }
     }
     
@@ -179,127 +212,38 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
      * Let the thread do his work
      */
     private void doWork() {
-        String chars;
-        String machine,vnr,id,tb,ctype;
-        StringTokenizer tok;
-        while(kicker!=null) {
-            chars=(String)nodesToSpawn.get();
+        while(kicker != null) {
+            byte[] message = (byte[]) nodesToSpawn.get();
             if (log.isDebugEnabled()) {
-                log.debug("RECEIVE=>" + new String(chars));
+                log.debug("RECEIVE=>" + new String(message));
             }
             spawncount++;
-            tok=new StringTokenizer(chars,",");
-            if (tok.hasMoreTokens()) {
-                machine=tok.nextToken();
-                if (tok.hasMoreTokens()) {
-                    vnr=tok.nextToken();
-                    if (tok.hasMoreTokens()) {
-                        id=tok.nextToken();
-                        if (tok.hasMoreTokens()) {
-                            tb=tok.nextToken();
-                            if (tok.hasMoreTokens()) {
-                                ctype=tok.nextToken();
-                                if (!ctype.equals("s")) {
-                                    handleMsg(machine,vnr,id,tb,ctype);
-                                } else {
-                                    if (tok.hasMoreTokens()) {
-                                        String xml=tok.nextToken("");
-                                        commitXML(machine,vnr,id,tb,ctype,xml);
-                                    } else log.error("doWork("+chars+"): 'xml' could not be extracted from this string!");
-                                }
-                            } else log.error("doWork("+chars+"): 'ctype' could not be extracted from this string!");
-                        } else log.error("doWork("+chars+"): 'tb' could not be extracted from this string!");
-                    } else log.error("doWork("+chars+"): 'id' could not be extracted from this string!");
-                } else log.error("doWork("+chars+"): 'vnr' could not be extracted from this string!");
-            } else log.error("doWork("+chars+"): 'machine' could not be extracted from this string!");
+            NodeEvent event = parseMessage(message);
+            handleEvent(event);
         }
+
     }
 
     /**
      * Handle message
      * 
-     * @param machine machine name
-     * @param fnr follow up number
-     * @param id node number
-     * @param tb tablename
-     * @param ctype command type
-     * @return <code>true</code> when message is handled
+     * @param event NodeEvent
      */
-    public boolean handleMsg(String machine, String fnr, String id, String tb, String ctype) {
+    protected void handleEvent(NodeEvent event) {
         // check if MMBase is 100% up and running, if not eat event
-        if (!mmbase.getState()) return true;
+        if (!mmbase.getState()) return;
 
-        MMObjectBuilder bul = mmbase.getBuilder(tb);
-        if (bul == null) {
-            log.warn("Unknown builder=" + tb);
-            tb = "object";
-            bul = mmbase.getBuilder(tb);
-        }
-        if (machine.equals(mmbase.getMachineName())) {
-            if (bul != null) {
-                nodeChanged(bul, machine, id, tb, ctype, false);
-            }
-        }
-        else {
-            try {
-                if (ctype.equals("g")) {
-                    if (bul!=null) {
-                        MMObjectNode node = bul.getNode(id);
-                        if (node!=null) {
-                            // well send it back !
-                            String chars = createXmlMessage(id, tb, node);
-                            nodesToSend.append(chars);
-                        } else {
-                            log.error("can't get node " + id);
-                        }
-                    } else {
-                        log.error("can't find builder " + bul);
-                    }
-                }
-                else {
-                    nodeChanged(bul, machine, id, tb, ctype, true);
-                }
-            } catch(Exception e) {
-                log.error(Logging.stackTrace(e));
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Process node changed
-     * 
-     * @param bul builder
-     * @param machine machine name
-     * @param id node number
-     * @param tb tablename
-     * @param ctype command type
-     * @param remote update from remote
-     */
-    private void nodeChanged(MMObjectBuilder bul,String machine,
-                            String id, String tb, String ctype, boolean remote) {
-        
-        if (spawnThreads) {
-            new MessageProbe(this,bul,machine,id,tb,ctype,remote);
-        }
-        else {
-            try {
-                if (remote) {
-                    bul.nodeRemoteChanged(machine,id,tb,ctype);
-                    checkWaitingNodes(id);
-                } else {
-                    bul.nodeLocalChanged(machine,id,tb,ctype);
-                    checkWaitingNodes(id);
-                }
-            } catch(Throwable t) {
-                log.error(Logging.stackTrace(t));
-            }
-            
+        boolean remote = ! mmbase.getMachineName().equals(event.getMachine());
+        MessageProbe probe = new MessageProbe(this, event, remote);
+        if (spawnThreads || ! remote) {
+            probe.run();
+        } else {
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(probe);
         }
     }
     
     /**
-     * Check collection of waiting nodes fir the changed node
+     * Check collection of waiting nodes for the changed node
      * @param snumber changed node number
      */
     public void checkWaitingNodes(String snumber) {
@@ -315,71 +259,6 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
         } catch(Exception e) {
             log.error("not a valid number " + snumber);
         }
-    }
-    
-    /**
-     * @javadoc
-     */
-    public boolean commitXML(String machine,String fnr,String id,String tb,String ctype,String xml) {
-        try {
-            MMObjectBuilder bul = mmbase.getMMObject(tb);
-            if (bul==null) {
-                log.error("Unknown builder=" + tb);
-                return false;
-            }
-            if (!machine.equals(mmbase.getMachineName())) {
-                MMObjectNode node=bul.getNode(id);
-                if (node!=null) {
-                    // well send it back !
-                    mergeXMLNode(node,xml);
-                    node.commit();
-                } else {
-                    log.error("can't get node "+id);
-                }
-            }
-        }
-        catch(Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
-        return true;
-    }
-
-    /**
-     * @javadoc
-     */
-    private void mergeXMLNode(MMObjectNode node,String body) {
-        StringTokenizer tok = new StringTokenizer(body, "\n\r");
-        String xmlline = tok.nextToken();
-        String docline = tok.nextToken();
-
-        String builderline = tok.nextToken();
-        String endtoken = "</" + builderline.substring(1);
-
-        // weird way
-        String nodedata = body.substring(body.indexOf(builderline)+builderline.length());
-        nodedata = nodedata.substring(0,nodedata.indexOf(endtoken));
-
-        int bpos=nodedata.indexOf("<");
-        while (bpos != -1) {
-            String key = nodedata.substring(bpos + 1);
-            key = key.substring(0, key.indexOf(">"));
-            String begintoken = "<" + key + ">";
-            endtoken = "</" + key + ">";
-
-            String value = nodedata.substring(nodedata.indexOf(begintoken) + begintoken.length());
-            value = value.substring(0, value.indexOf(endtoken));
-
-            if (!key.equals("number") && !key.equals("otype") && !key.equals("owner"))
-                node.setValue(key, value);
-            
-            nodedata = nodedata.substring(nodedata.indexOf(endtoken) + endtoken.length());
-            bpos = nodedata.indexOf("<");
-        }
-    }
-
-    
-    public void changedNode(org.mmbase.core.event.NodeEvent event) {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
     
 }

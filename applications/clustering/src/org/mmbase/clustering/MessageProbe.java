@@ -10,7 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering;
 
 import org.mmbase.clustering.ClusterManager;
-import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.*;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.RelationEvent;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * MessageProbe a thread object started to handle all nofity's needed when
@@ -18,101 +23,61 @@ import org.mmbase.module.core.MMObjectBuilder;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: MessageProbe.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class MessageProbe implements Runnable {
 
-    /**
-     * @javadoc
-     * @scope private
-     */
-    Thread kicker = null;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    ClusterManager parent=null;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    MMObjectBuilder bul=null;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    String machine;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    String id;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    String tb;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    String ctype;
-    /**
-     * @javadoc
-     * @scope private
-     */
-    boolean remote;
+    private static final Logger log = Logging.getLoggerInstance(MessageProbe.class);
+
+    private ClusterManager parent;
+    private NodeEvent event;
+    private boolean remote;
 
     /**
      * @javadoc
      */
-    public MessageProbe(ClusterManager parent,MMObjectBuilder bul,String machine,
-            String id,String tb,String ctype,boolean remote) {
-        this.parent=parent;
-        this.bul=bul;
-        this.machine=machine;
-        this.id=id;
-        this.tb=tb;
-        this.ctype=ctype;
+    MessageProbe(ClusterManager parent, NodeEvent event, boolean remote) {
+        this.parent = parent;
+        this.event = event;
         this.remote=remote;
-        init();
-    }
-
-    public void init() {
-        this.start();
-    }
-
-    /**
-     * Starts the admin Thread.
-     */
-    public void start() {
-        /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this,"MessageProbe");
-            kicker.setDaemon(true);
-            kicker.start();
-        }
-    }
-
-    /**
-     * Stops the admin Thread.
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
     }
 
     /**
      * @javadoc
      */
     public void run() {
-        if (remote) {
-            bul.nodeRemoteChanged(machine,id,tb,ctype);
-            parent.checkWaitingNodes(id);
-        } else {
-            bul.nodeLocalChanged(machine,id,tb,ctype);
-            parent.checkWaitingNodes(id);
+        if (log.isDebugEnabled()) {
+            log.debug("Handling event " + event + " for " + (remote ? "REMOTE " + event.getMachine()  : "LOCALE"));
         }
+        try {
+            
+            { // backwards compatibilty:
+                MMObjectNode node = event.getNode();
+                MMObjectBuilder bul = node.getBuilder();
+                if (bul instanceof MMBaseObserver) {
+                    if (remote) {
+                        ((MMBaseObserver) bul).nodeRemoteChanged(event.getMachine(), "" + node.getNumber(), bul.getTableName(), NodeEvent.newTypeToOldType(event.getType()));
+                        parent.checkWaitingNodes("" + event.getNode().getNumber());
+                    } else {
+                        ((MMBaseObserver) bul).nodeLocalChanged(event.getMachine(), "" + node.getNumber(), bul.getTableName(), NodeEvent.newTypeToOldType(event.getType()));
+                        parent.checkWaitingNodes("" + event.getNode().getNumber());
+                    }
+                }
+            }
+
+            //notify all listeners
+            if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED) {
+                //the relation event broker will make shure that listeners
+                //for node-relation changes to a specific builder, will be
+                //notified if this builder is either source or destination type
+                //in the relation event
+                parent.getMMBase().propagateEvent((RelationEvent)event);
+            } else {
+                parent.getMMBase().propagateEvent(event);
+            }
+        } catch(Throwable t) {
+            log.error(Logging.stackTrace(t));
+        }
+
     }
 }

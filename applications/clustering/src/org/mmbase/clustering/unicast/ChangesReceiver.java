@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  * 
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: ChangesReceiver.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -116,7 +116,7 @@ public class ChangesReceiver implements Runnable {
                        }
                     }
                     // maybe we should use encoding here?
-                    String message = new String(writer.toByteArray());
+                    byte[] message = writer.toByteArray();
                     if (log.isDebugEnabled()) {
                         log.debug("RECEIVED=>" + message);
                     }
