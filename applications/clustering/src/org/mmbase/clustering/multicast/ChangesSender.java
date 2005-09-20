@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.3 2005-09-20 20:32:09 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -128,7 +128,7 @@ public class ChangesSender implements Runnable {
             DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("SEND=>" + dp);
+                    log.debug("SEND=> " + dp.getLength() + " bytes to " + dp.getAddress());
                 }
                 ms.send(dp);
             } catch (IOException e) {
