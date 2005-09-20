@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.3 2005-09-16 11:56:04 michiel Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.4 2005-09-20 17:48:11 michiel Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {
@@ -46,5 +46,5 @@ public interface MMBaseChangeInterface {
      * @param ctype
      * @deprecated (i think) fire an event in stead
      */
-    boolean changedNode(int number, String tableName, String ctype);
+    //boolean changedNode(int number, String tableName, String ctype);
 }
