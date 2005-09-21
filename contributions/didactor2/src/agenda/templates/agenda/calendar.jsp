@@ -72,7 +72,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
     <cal:calendar view="month" language="nl" country="NL" date="<%=format.format(calendar.getTime())%>">
      <di:usercalwriter /> 
     
-      <table width=130 class="cal" cellspacing=0>
+      <table width="130" class="cal" cellspacing="0">
         <tr>
           <td bgcolor="#DDDDDD" align="center" class="calMonth">
             <a href="javascript:moveMonth(<mm:write referid="calmonth"/>-1)">&lt;&lt;</a>
@@ -84,7 +84,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
         </tr>
         <tr>
           <td>
-            <table width="100%" class="calWeek" cellspacing=0>
+            <table width="100%" class="calWeek" cellspacing="0">
               <tr>
                 <td class="calWeek" align="center">&nbsp;&nbsp;</td>
                 <td class="calWeek" align="center"><di:translate>zo</di:translate></td>
@@ -101,7 +101,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
         </tr>
         <tr>
           <td >
-            <table width="100%" class="calDay" cellspacing=0>
+            <table width="100%" class="calDay" cellspacing="0">
               <st:dataset name="week">
                 <tr>
                   <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
