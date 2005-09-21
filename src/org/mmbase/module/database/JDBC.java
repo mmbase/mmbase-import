@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.42 2005-09-09 15:00:37 michiel Exp $
+ * @version $Id: JDBC.java,v 1.43 2005-09-21 21:16:11 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -263,32 +263,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String host, int port, String dbm) {
-        String pre, post;
-        int pos;
-        String end = jdbcURL;
+        String url = jdbcURL;
         // $HOST $DBM $PORT
 
-        pos = end.indexOf("$DBM");
-        if (pos != -1) {
-            pre  = end.substring(0,pos);
-            post = end.substring(pos + 4);
-            end = pre + dbm + post;
-        } else {
-            log.service("Database name is static, can't select other databases within this databaseserver");
-        }
-        pos = end.indexOf("$HOST");
-        if (pos !=- 1) {
-            pre = end.substring(0,pos);
-            post = end.substring(pos+5);
-            end = pre + host + post;
-        }
-        pos=end.indexOf("$PORT");
-        if (pos != -1) {
-            pre = end.substring(0,pos);
-            post = end.substring(pos+5);
-            end = pre + port + post;
-        }
-        return end;
+        url = url.replaceAll("\\$DBM", dbm);
+        url = url.replaceAll("\\$HOST", host);
+        url = url.replaceAll("\\$PORT", "" + port);
+
+        return url;
     }
 
     /**
@@ -302,7 +284,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public MultiConnection getConnection(String url) throws SQLException {
-        return poolHandler.getConnection(url,defaultname,defaultpassword);
+        return poolHandler.getConnection(url, defaultname, defaultpassword);
     }
 
     /**
