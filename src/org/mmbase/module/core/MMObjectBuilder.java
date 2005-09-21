@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.336 2005-09-20 19:24:56 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.337 2005-09-21 11:37:42 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -3399,37 +3399,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
     */
 
-
-    /**
-     * Converts a node to XML.
-     * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
-     * @param node the node to convert
-     * @return the XML <code>String</code>
-     * @todo   This generates ad-hoc system id's and public id's.  Don't know what, why or how this is used.
-     * XXXXS I suggest we drop this stuff
-     */
-    public String toXML(MMObjectNode node) {
-        StringBuffer body = new StringBuffer("<?xml version=\"" + version + "\"?>\n");
-        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmb.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
-        body.append("<" + tableName + ">\n");
-        body.append("<number>" + node.getNumber() + "</number>\n");
-        for (Iterator i = getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
-            CoreField field = (CoreField)i.next();
-            int type = field.getType();
-            String name = field.getName();
-            body.append('<').append(name).append('>');
-            if ((type == Field.TYPE_INTEGER)|| (type == Field.TYPE_NODE)) {
-                body.append(node.getIntValue(name));
-            } else if (type == Field.TYPE_BINARY) {
-                body.append(node.getByteValue(name));
-            } else {
-                body.append(node.getStringValue(name));
-            }
-            body.append("</").append(name).append(">\n");
-        }
-        body.append("</").append(tableName).append(">\n");
-        return body.toString();
-    }
 
     /**
      * Sets a list of singular names (language - value pairs)
