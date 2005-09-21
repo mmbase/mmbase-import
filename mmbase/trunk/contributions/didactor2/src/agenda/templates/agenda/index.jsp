@@ -48,8 +48,8 @@
       <mm:param name="day"><mm:write referid="day"/></mm:param>
     </mm:treeinclude>
 
-    <p>
-  
+    <p/>
+
     <mm:list nodes="$user" path="people1,invitationrel1,items,invitationrel2,people2" constraints="people1.number != people2.number AND invitationrel1.m_status <= 0" max="1">
 	<a href="<mm:treefile page="/agenda/appointments.jsp" objectlist="$includePath" referids="$referids"/>"><di:translate id="newappointments">U heeft nieuwe afspraken</di:translate></a>
     </mm:list>
@@ -138,7 +138,7 @@
 
       <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="listappointments">Bekijk afspraken</di:translate>" border="0" /></a>
     
-	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
+	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"/>
     </div>
   <div class="contentBody">
     <mm:treeinclude page="/agenda/agenda.jsp" objectlist="$includePath" referids="$referids">
@@ -149,8 +149,8 @@
     </mm:treeinclude>
   </div>
 </div>
-</div>
 </form>
+</div>
 
 <script type="text/javascript">
 <!--
