@@ -28,7 +28,7 @@ import org.mmbase.storage.StorageInaccessibleException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.4 2004-01-21 09:06:02 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.5 2005-09-21 21:20:23 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
 
@@ -38,6 +38,7 @@ public final class GenericDataSource implements DataSource {
     private java.io.PrintWriter printWriter = null;
     // Datasource login timeout, initially zero
     private int loginTimeout = 0;
+    private String dataDir;
 
     /**
      * Constructs a datasource for accessing the database belonging to the given MMBase module.
@@ -45,11 +46,12 @@ public final class GenericDataSource implements DataSource {
      * @param mmbase the MMBase instance
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
-    public GenericDataSource(MMBase mmbase) throws StorageInaccessibleException {
+    public GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
         jdbc = (JDBCInterface)Module.getModule("JDBC", true);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
+        this.dataDir = dataDir;
     }
 
     /**
@@ -58,7 +60,9 @@ public final class GenericDataSource implements DataSource {
      * @throws java.sql.SQLException - if a database-access error occurs.
      */
     public Connection getConnection() throws SQLException {
-        return jdbc.getConnection(jdbc.makeUrl());
+        String url = jdbc.makeUrl();                
+        url = url.replaceAll("\\$DATADIR", dataDir);
+        return jdbc.getConnection(url);
     }
 
     /**
