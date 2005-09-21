@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.120 2005-09-19 17:37:10 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.121 2005-09-21 21:19:20 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1907,7 +1907,7 @@ public class DatabaseStorageManager implements StorageManager {
                 Statement s;
                 Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
                 if (scheme != null) {
-                    query = scheme.format(new Object[] { this, fieldDef });
+                    query = scheme.format(new Object[] { this, fieldDef, factory.getDatabaseName()});
                     logQuery(query);
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
