@@ -7,10 +7,7 @@
  */
 package org.mmbase.core.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -37,10 +34,9 @@ import org.mmbase.util.logging.Logging;
  */
 public abstract class AbstractEventBroker {
 
-    private static Logger log = Logging
-        .getLoggerInstance(AbstractEventBroker.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    protected List listeners = Collections.synchronizedList(new ArrayList());
+    protected Set listeners = Collections.synchronizedSet(new HashSet());
 
     /**
      * this method should return true if this broker can accept and propagate
@@ -73,35 +69,32 @@ public abstract class AbstractEventBroker {
     protected abstract void notifyEventListener(Event event, EventListener listener) throws ClassCastException;
 
     public void addListener(EventListener listener) {
-        if (canBrokerForListener(listener) && !listeners.contains(listener)) {
-            synchronized (listeners) {
-                listeners.add(listener);
+        if (canBrokerForListener(listener)) {
+            if (! listeners.add(listener)) {
+                log.warn("" + listener + " was already in " + this + ". Ignored.");
             }
         }
     }
 
     public void removeListener(EventListener listener) {
-        if (listeners.contains(listener)) {
-            synchronized (listeners) {
-                listeners.remove(listener);
-            }
+        if (! listeners.remove(listener)) {
+            log.warn("Tried to remove " + listener + " from " + this + " but it was not in in. Ignored.");
         }
+
     }
 
     public void notifyForEvent(Event event) {
-        if (listeners.size() > 0) {
-            synchronized (listeners) {
-                for (Iterator i = listeners.iterator(); i.hasNext();) {
-                    EventListener listener = (EventListener) i.next();
-                    try {
-                        notifyEventListener(event, listener);
-                    } catch (ClassCastException e) {
-                        // warn the world!
-                        // this event is not proper for this broker
-                        // (this should never happen)
-                    }
-
+        synchronized (listeners) {
+            for (Iterator i = listeners.iterator(); i.hasNext();) {
+                EventListener listener = (EventListener) i.next();
+                try {
+                    notifyEventListener(event, listener);
+                } catch (ClassCastException e) {
+                    // warn the world!
+                    // this event is not proper for this broker
+                    // (this should never happen)
                 }
+                
             }
         }
     }
