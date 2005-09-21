@@ -20,6 +20,8 @@ import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.util.*;
+import org.mmbase.bridge.*;
+import org.mmbase.core.CoreField;
 
 import org.mmbase.util.logging.*;
 
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.60 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: servdb.java,v 1.61 2005-09-21 21:31:16 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -574,6 +576,37 @@ public class servdb extends JamesServlet {
         return params;
     }
 
+      /**
+     * Converts a node to XML.
+     * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
+     * @param node the node to convert
+     * @return the XML <code>String</code>
+     * @todo   This generates ad-hoc system id's and public id's.  Don't know what, why or how this is used.
+     */
+    private String toXML(MMObjectNode node) {
+        String tableName = node.parent.getTableName();
+        StringBuffer body = new StringBuffer("<?xml version=\"" + node.parent.getVersion()+ "\"?>\n");
+        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmbase.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
+        body.append("<" + tableName + ">\n");
+        body.append("<number>" + node.getNumber() + "</number>\n");
+        for (Iterator i = node.parent.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
+            CoreField field = (CoreField)i.next();
+            int type = field.getType();
+            String name = field.getName();
+            body.append('<').append(name).append('>');
+            if ((type == Field.TYPE_INTEGER)|| (type == Field.TYPE_NODE)) {
+                body.append(node.getIntValue(name));
+            } else if (type == Field.TYPE_BINARY) {
+                body.append(node.getByteValue(name));
+            } else {
+                body.append(node.getStringValue(name));
+            }
+            body.append("</").append(name).append(">\n");
+        }
+        body.append("</").append(tableName).append(">\n");
+        return body.toString();
+    }
+
     /**
      * @javadoc
      */
@@ -590,7 +623,7 @@ public class servdb extends JamesServlet {
 
 
             if (node!=null) {
-                result=node.toXML();
+                result=toXML(node);
             } else {
                 result="Sorry no valid mmnode so no xml can be given";
             }
@@ -606,7 +639,7 @@ public class servdb extends JamesServlet {
 
 
                     if (node!=null) {
-                        result+=node.toXML()+"\n\n";
+                        result+=toXML(node)+"\n\n";
                     }
                 }
             } catch(Exception f) {
