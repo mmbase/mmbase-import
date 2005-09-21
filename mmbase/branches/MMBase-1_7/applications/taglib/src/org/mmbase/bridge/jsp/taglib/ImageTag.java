@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.45.2.7 2005-08-23 13:18:36 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.8 2005-09-21 23:52:44 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -173,7 +173,11 @@ public class ImageTag extends FieldTag {
             a.add(template.getString(this));
             Dimension dim = (Dimension) getNodeVar().getFunctionValue("dimension", a).get();
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
-            helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
+            if (dim.getHeight() > 0 && dim.getWidth() > 0) {
+                helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
+            } else {
+                helper.setValue("src=\"" + url + "\"");
+            }
             pageContext.setAttribute("dimension", dim);
             break;
         }
@@ -191,9 +195,15 @@ public class ImageTag extends FieldTag {
             } else {
                 alt = null;
             }
-            helper.setValue("<img src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\" " +
-                            (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
-                            );
+            if (dim.getHeight() > 0 && dim.getWidth() > 0) {
+                helper.setValue("<img src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\" " +
+                                (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
+                                );
+            } else {
+                helper.setValue("<img src=\"" + url + "\" " + 
+                                (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
+                                );
+            }
             pageContext.setAttribute("dimension", dim);
         }
         }
