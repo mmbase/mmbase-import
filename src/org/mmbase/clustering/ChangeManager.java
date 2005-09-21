@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.4 2005-09-20 17:49:39 michiel Exp $
+ * @version $Id: ChangeManager.java,v 1.5 2005-09-21 08:22:34 ernst Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -38,7 +38,7 @@ public final class ChangeManager {
     }
 
     /**
-     * Commit all changes stored in a Changes map. 
+     * Commit all changes stored in a Changes map.
      * Clears the change status of all changed nodes, then broadcasts changes to the
      * nodes' builders.
      * @param changes a map with node/change value pairs
@@ -46,7 +46,7 @@ public final class ChangeManager {
     public void commit(Map changes) {
         for (Iterator i = changes.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry e = (Map.Entry)i.next();
-            MMObjectNode node = (MMObjectNode)e.getKey(); 
+            MMObjectNode node = (MMObjectNode)e.getKey();
             String change = (String)e.getValue();
             commit(node, change);
             i.remove();
@@ -62,19 +62,19 @@ public final class ChangeManager {
      * @param change the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
      */
     public void commit(MMObjectNode node, String change) {
-        node.clearChanged();
+        //node.clearChanged();
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges()) {
            mmc.changedNode(new NodeEvent(node, mapEventType(change)));
            if (builder instanceof InsRel) {
                // figure out tables to send the changed relations
                mmc.changedNode(new RelationEvent(node, mapEventType(change)));
-               
+
            }
         }
         node.clearChanged();
     }
-    
+
     /**
      * @param change
      * @return
