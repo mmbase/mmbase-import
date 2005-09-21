@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.16 2005-09-19 17:37:10 michiel Exp $
+ * @version $Id: Schemes.java,v 1.17 2005-09-21 21:17:51 michiel Exp $
  */
 public final class Schemes {
 
@@ -395,6 +395,7 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the (suggested) field definition of the primary key field ('number') </li>
+     *    <li>{2} the database name or catalog</li>
      *  </ul>
      */
     public static final String CREATE_SEQUENCE = "create-sequence-scheme";
