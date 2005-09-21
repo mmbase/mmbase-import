@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.153 2005-09-20 17:54:59 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.154 2005-09-21 11:37:42 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -416,20 +416,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return result.toString();
     }
 
-    /**
-     * Return the node as a string in XML format.
-     * Used for data exchange, though, oddly enough, not by application export. (?)
-     * @return the contents of the node as a xml-formatted string.
-     */
-    public String toXML() {
-        // call is implemented by its builder so
-        // call the builder with this node
-        if (parent!=null) {
-            return parent.toXML(this);
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Stores a value in the values hashtable.
