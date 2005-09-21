@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.58 2005-09-01 14:07:03 michiel Exp $
+ * @version $Id: Queries.java,v 1.59 2005-09-21 08:26:15 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1144,6 +1144,32 @@ abstract public class Queries {
         NodeQuery query = createNodeQuery(node);
         if (otherNodeManager == null) otherNodeManager = node.getCloud().getNodeManager("object");
         RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
+        query.setNodeStep(step);
+        return query;
+    }
+
+    /**
+     * Returns a query to find the relations nodes between two given nodes.
+     * 
+     * To test <em>whether</em> to nodes are related you can use e.g.:
+     * <code>
+     *  if (Queries.count(Queries.createRelationNodesQuery(node1, node2, "posrel", null)) > 0) {
+     *    ..
+     *  }
+     * </code>
+     * @param node start node
+     * @param otherNode node on the other side of the relation
+     * @param role role of the relation
+     * @param direction direction of the relation
+     * @return A new NodeQuery object
+     * @since MMBase-1.8
+     */
+    public static NodeQuery createRelationNodesQuery(Node node, Node otherNode, String role, String direction) {
+        NodeQuery query = createNodeQuery(node);
+        NodeManager otherNodeManager = otherNode.getNodeManager();
+        RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
+        Step nextStep = step.getNext();
+        query.addNode(nextStep, otherNode.getNumber());
         query.setNodeStep(step);
         return query;
     }
