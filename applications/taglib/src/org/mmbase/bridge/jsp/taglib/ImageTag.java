@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.59 2005-08-23 13:24:42 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.60 2005-09-21 22:38:19 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -140,7 +140,12 @@ public class ImageTag extends FieldTag {
             a.add(t);
             Dimension dim = (Dimension) getNodeVar().getFunctionValue("dimension", a).get();
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
-            helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
+            if (dim.getHeight() > 0 && dim.getWidth() > 0) {
+                helper.setValue("src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"");
+            } else {
+                log.warn("Found odd dimension " + dim);
+                helper.setValue("src=\"" + url + "\"");
+            }
             pageContext.setAttribute("dimension", dim);
             break;
         }
@@ -157,9 +162,16 @@ public class ImageTag extends FieldTag {
             } else {
                 alt = null;
             }
-            helper.setValue("<img src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\" " +
-                            (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
-                            );
+            if (dim.getHeight() > 0 && dim.getWidth() > 0) {
+                helper.setValue("<img src=\"" + url + "\" height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\" " +
+                                (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
+                                );
+            } else {
+                log.warn("Found odd dimension " + dim);
+                helper.setValue("<img src=\"" + url + "\" " + 
+                                (alt == null ? "" : " alt=\"" + alt + "\"") + " />"
+                                );
+            }
             pageContext.setAttribute("dimension", dim);
         }
         }
