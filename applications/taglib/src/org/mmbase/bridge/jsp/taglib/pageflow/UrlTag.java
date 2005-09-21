@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.71 2005-08-18 14:40:00 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.72 2005-09-21 19:44:11 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -47,6 +47,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected List       extraParameters      = null;
     protected Attribute  page                 = Attribute.NULL;
     private   Attribute  escapeAmps           = Attribute.NULL;
+    private   Attribute  absolute             = Attribute.NULL;
 
 
     public void setReferids(String r) throws JspTagException {
@@ -59,6 +60,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public void setEscapeamps(String e) throws JspTagException {
         escapeAmps = getAttribute(e);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public void setAbsolute(String a) throws JspTagException {
+        absolute = getAttribute(a);
     }
 
 
@@ -137,7 +145,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         StringBuffer show = w.getBuffer();
 
 
-
         if (referid != Attribute.NULL) {
             if (page != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
             String url = (String) getObject(getReferid());
@@ -146,29 +153,48 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             }
             show.append(url);
         } else {
-            show.append(getPage());
+            String page = getPage();
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-            if (show.toString().equals("")) {
-                
-                String thisPage = null;
+            if (page.equals("")) { // means _this_ page
+                 
                 String requestURI = req.getRequestURI();
                 if (requestURI.endsWith("/")) {
-                    thisPage = ".";
+                    page = ".";
                 } else {
-                    thisPage = new File(requestURI).getName();
+                    page = new File(requestURI).getName();
                 }
                 
-                show.append(thisPage);
-            }
-            
-            if (doMakeRelative()) { 
-                makeRelative(show);
             } else {
-                if (addContext() && show.charAt(0) == '/') { // absolute on servletcontex
-                    show.insert(0, req.getContextPath());
+                if (absolute.getBoolean(this, false)) {
+                    show.append(req.getScheme()).append("://");
+                    show.append(req.getServerName());
+                    int port = req.getServerPort();
+                    show.append(port == 80 ? "" : ":" + port);
+                    show.append(req.getContextPath());
+                    if (page.charAt(0) != '/') {
+                        String thisDir = new java.io.File(req.getServletPath()).getParent();
+                        show.append(thisDir);
+                        show.append('/');
+                    }
+                    if (page.equals(".")) page = "";
+                } else {
+                    if (doMakeRelative()) { 
+                        show.append(page);
+                        page = "";
+                        makeRelative(show);
+                    } else {
+                        if (addContext() && page.charAt(0) == '/') { // absolute on servletcontex
+                            show.append(req.getContextPath());
+                        }
+                    }
                 }
             }
+            
+            show.append(page);
         }
+            
+
+        // url is now complete up to query string, which we are to construct now
 
 
         String amp = (writeamp ? "&amp;" : "&");
