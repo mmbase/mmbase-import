@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.24 2005-09-19 17:37:10 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.25 2005-09-21 21:20:23 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -190,7 +190,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
-            dataSource = new GenericDataSource(mmbase);
+            dataSource = new GenericDataSource(mmbase, getBinaryFileBasePath());
         }
         // store the datasource as an attribute
         setAttribute(Attributes.DATA_SOURCE, dataSource);
