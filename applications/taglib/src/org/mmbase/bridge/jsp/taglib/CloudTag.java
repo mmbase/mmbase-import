@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.124 2005-06-21 19:16:39 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.125 2005-09-22 19:57:29 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -186,10 +186,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * @since MMBase-1.7
      */
     private boolean rankAnonymous() throws JspTagException {
-        if (rank == Attribute.NULL)
+        if (rank == Attribute.NULL) {
             return true;
+        }
         String rankString = rank.getString(this);
-        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS.toString());
+        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS);
     }
 
     public void setJspvar(String jv) {
@@ -501,7 +502,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         ContentTag tag = (ContentTag) findParentTag(ContentTag.class, null, false);
         if (tag != null) {
             UserContext user = cloud.getUser();
-            if (sessionCloud && ! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
+            if (sessionCloud && ! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
                 tag.setUser(cloud.getUser());
             }
         }
@@ -759,7 +760,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             if (log.isDebugEnabled()) {
                 log.debug("Implicitily requested non-anonymous (by method) cloud. Current user: " + cloud.getUser().getIdentifier());
             }
-            if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
+            if (cloud.getUser().getRank().equals(Rank.ANONYMOUS)) { // so it simply may not be anonymous
                 log.debug("there was a cloud, but anonymous. log it on");
                 removeCloud();
                 return;
