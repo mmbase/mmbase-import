@@ -5,3 +5,4 @@
 <%@include file="/shared/setImports.jsp" %>
 <img src="<mm:treefile page="/education/wizards/gfx/ok.gif" objectlist="$includePath" referids="$referids" />" alt="OK">
 </mm:cloud>
+</mm:content>
