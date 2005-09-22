@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.59 2005-09-20 19:29:16 nklasens Exp $
+ * @version $Id: TypeDef.java,v 1.60 2005-09-22 20:44:09 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -69,7 +69,6 @@ public class TypeDef extends MMObjectBuilder {
         // set broadcasting of changes to false
         return false;
     }
-    
     /**
      * Sets the default deploy directory for the builders.
      * @return true if init was completed, false if uncompleted.
@@ -174,9 +173,8 @@ public class TypeDef extends MMObjectBuilder {
         log.service("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         try {
             MMObjectBuilder builder = getBuilder(node);
-            BuilderReader originalBuilderXml = new BuilderReader(mmb.getBuilderLoader().getInputSource(getBuilderConfiguration(node)), getMMBase());
-            BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(
-                                                                                                  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            BuilderReader originalBuilderXml = new BuilderReader(mmb.getBuilderLoader().getDocument(getBuilderConfiguration(node)), getMMBase());
+            BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                                                                                                   "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
                                                                                                   "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
                                                                                                   node.getStringValue("config"))), getMMBase());
@@ -634,7 +632,7 @@ public class TypeDef extends MMObjectBuilder {
                 log.error(sqe);
             }
         }
-        
+
         // check if there are relations which use this builder
         {
             if (builder instanceof InsRel) {
