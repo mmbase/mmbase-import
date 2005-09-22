@@ -2,8 +2,9 @@
 <!-- Author: Ernst Bunders -->
 
 <!ELEMENT caches (releaseStrategies?, cache*) >
-<!ELEMENT cache (status?, size?, maxEntrySize?,releaseStrategies? ) >
+<!ELEMENT cache (implementation?, status?, size?, maxEntrySize?,releaseStrategies? ) >
 <!ATTLIST cache  name  CDATA  #REQUIRED >
+<!ELEMENT implementation (#PCDATA) >
 <!ELEMENT status (#PCDATA) >
 <!ELEMENT size (#PCDATA) >
 <!ELEMENT maxEntrySize (#PCDATA) >
