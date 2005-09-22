@@ -15,6 +15,8 @@
         <relation destinationtype="educations" role="classrel"/> 
     </action>
 
+    <action type="delete"/>
+
     <steps>
         <step form-schema="step1" />
     </steps>
