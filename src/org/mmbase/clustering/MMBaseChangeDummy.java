@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMBaseChangeDummy.java,v 1.6 2005-09-20 17:48:54 michiel Exp $
+ * @version $Id: MMBaseChangeDummy.java,v 1.7 2005-09-22 19:54:44 ernst Exp $
  */
 public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
@@ -44,15 +44,6 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
      * @since MMBase-1.8
      */
     public void changedNode(NodeEvent event) {
-
-        // backwards compatibilty:
-        {
-            MMObjectNode node = event.getNode();
-            MMObjectBuilder bul = node.getBuilder();
-            if (bul instanceof MMBaseObserver) {
-                ((MMBaseObserver) bul).nodeLocalChanged(null, "" + node.getNumber(), bul.getTableName(), NodeEvent.newTypeToOldType(event.getType()));
-            }
-        }
 
         //notify all listeners
         if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED) {
