@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.119 2005-09-20 19:28:29 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.120 2005-09-22 18:37:47 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -406,8 +406,7 @@ public class MMAdmin extends ProcessorModule {
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                //return ("" + (MultilevelCache.getCache().maxSize()));
-                return ("" + (MultilevelCache.getCache().getSize()));
+                return ("" + (MultilevelCache.getCache().maxSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return ("" + MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -417,8 +416,7 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("NODECACHEPERFORMANCE")) {
                 return ("" + (MMObjectBuilder.nodeCache.getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
-                //return ("" + (MMObjectBuilder.nodeCache.maxSize()));
-                return ("" + (MMObjectBuilder.nodeCache.getSize()));
+                return ("" + (MMObjectBuilder.nodeCache.maxSize()));
             } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
                 return ("" + (MMObjectBuilder.temporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
@@ -720,14 +718,14 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      * @since MMBase-1.7
      */
-    protected boolean installDataSources(Vector ds, String appName, ApplicationResult result) {
+    protected boolean installDataSources(List dataSources, String appName, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
 
         List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
-            for (Enumeration h = ds.elements(); h.hasMoreElements();) {
-                Hashtable bh = (Hashtable)h.nextElement();
-                String path = (String)bh.get("path");
+            for (Iterator h = dataSources.iterator(); h.hasNext();) {
+                Map bh = (Map) h.next();
+                String path = (String) bh.get("path");
 
                 ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
                 InputSource is;
@@ -739,13 +737,13 @@ public class MMAdmin extends ProcessorModule {
                 }
 
                 if (is != null) {
-                    XMLNodeReader nodereader = new XMLNodeReader(is, applicationLoader.getChildResourceLoader(appName));
-                    String exportsource = nodereader.getExportSource();
-                    int timestamp = nodereader.getTimeStamp();
+                    XMLNodeReader nodeReader = new XMLNodeReader(is, applicationLoader.getChildResourceLoader(appName));
+                    String exportsource = nodeReader.getExportSource();
+                    int timestamp = nodeReader.getTimeStamp();
 
                     // loop all nodes , and add to syncnodes.
-                    for (Enumeration n = nodereader.getNodes(mmb).elements(); n.hasMoreElements();) {
-                        MMObjectNode newNode = (MMObjectNode)n.nextElement();
+                    for (Iterator n = nodeReader.getNodes(mmb).iterator(); n.hasNext();) {
+                        MMObjectNode newNode = (MMObjectNode)n.next();
 
                         int exportnumber = newNode.getIntValue("number");
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
@@ -766,25 +764,25 @@ public class MMAdmin extends ProcessorModule {
 
                                 log.debug("inserting " + newNode);
                                 if (localnumber == newNode.getNumber()) {
-                                    // && (newNode.parent instanceof Message)) { terrible stuff
 
                                     // determine if there were NODE fields, which need special treatment later.
                                     Collection fields = newNode.parent.getFields();
                                     Iterator i = fields.iterator();
                                     while (i.hasNext()) {
-                                        CoreField def = (CoreField) i.next();
+                                        CoreField field = (CoreField) i.next();
 
                                         // Fields with type NODE and notnull=true will be handled
                                         // by the doKeyMergeNode() method.
-                                        if (def.getType() == Field.TYPE_NODE
-                                            && ! def.getName().equals("number")
-                                            && ! def.isRequired()) {
+                                        if (field.getType() == Field.TYPE_NODE
+                                            && ! field.getName().equals("number")
+                                            && ! field.isNotNull()) {
 
                                             newNode.values.put("__exportsource", exportsource);
                                             nodeFieldNodes.add(newNode);
                                             break;
                                         }
                                     }
+
                                 }
                             }
                         }
@@ -832,8 +830,8 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc !!!
      */
-    private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newnode, String exportsource, ApplicationResult result) {
-        MMObjectBuilder bul = newnode.parent;
+    private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newNode, String exportsource, ApplicationResult result) {
+        MMObjectBuilder bul = newNode.parent;
         if (bul != null) {
             Collection vec = bul.getFields();
             Constraint constraint = null;
@@ -850,10 +848,10 @@ public class MMAdmin extends ProcessorModule {
                     // The node contains a reference to another node.
                     // The referenced node has to exist when this node is inserted.
                     // trying to update the node.
-                    updateFieldWithTypeNode(syncbul, newnode, exportsource, def.getName());
-                    if (newnode.getIntValue(def.getName()) == -1) {
+                    updateFieldWithTypeNode(syncbul, newNode, exportsource, def.getName());
+                    if (newNode.getIntValue(def.getName()) == -1) {
                        // guess that failed
-                       result.error("Insert of node " + newnode + " failed. Field '" + def.getName() + "' with type NODE is not allowed to have a null value. " +
+                       result.error("Insert of node " + newNode + " failed. Field '" + def.getName() + "' with type NODE is not allowed to have a null value. " +
                                     "The referenced node is not found. Try to reorder the nodes so the referenced node is imported before this one.");
                        return -1;
                     }
@@ -865,7 +863,7 @@ public class MMAdmin extends ProcessorModule {
                     int type = def.getType();
                     String name = def.getName();
                     if (type == Field.TYPE_STRING) {
-                        String value = newnode.getStringValue(name);
+                        String value = newNode.getStringValue(name);
                         if (query==null) {
                             query = new NodeSearchQuery(bul);
                         }
@@ -882,13 +880,13 @@ public class MMAdmin extends ProcessorModule {
                     }
                 }
             }
-            if (query!=null && constraint !=null) {
+            if (query != null && constraint != null) {
                 query.setConstraint(constraint);
                 try {
                     List nodes = bul.getNodes(query);
                     if (nodes.size()>0) {
-                        MMObjectNode oldnode = (MMObjectNode)nodes.get(0);
-                        return oldnode.getIntValue("number");
+                        MMObjectNode oldNode = (MMObjectNode)nodes.get(0);
+                        return oldNode.getIntValue("number");
                     }
                 } catch (SearchQueryException sqe) {
                     result.error("Application installer can't search builder storage (" + sqe.getMessage()+")");
@@ -896,14 +894,14 @@ public class MMAdmin extends ProcessorModule {
                 }
             }
 
-            int localnumber = newnode.insert("import");
+            int localnumber = newNode.insert("import");
             if (localnumber == -1) {
-                result.error("Insert of node " + newnode + " failed.");
+                result.error("Insert of node " + newNode + " failed.");
             }
             return localnumber;
 
         } else {
-            result.error("Application installer can't find builder for : " + newnode);
+            result.error("Application installer can't find builder for : " + newNode);
             return -1;
         }
     }
@@ -969,15 +967,15 @@ public class MMAdmin extends ProcessorModule {
                     int timestamp = nodereader.getTimeStamp();
 
                     for (Enumeration n = (nodereader.getNodes(mmb)).elements(); n.hasMoreElements();) {
-                        MMObjectNode newnode = (MMObjectNode)n.nextElement();
-                        int exportnumber = newnode.getIntValue("number");
+                        MMObjectNode newNode = (MMObjectNode)n.nextElement();
+                        int exportnumber = newNode.getIntValue("number");
                         Enumeration b =
                             syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
                             // XXX To do : we may want to load the relation node and check/change the fields
                             log.debug("node allready installed : " + exportnumber);
                         } else {
-                            newnode.setValue("number", -1);
+                            newNode.setValue("number", -1);
                             // The following code determines the 'actual' (synced) numbers for the destination and source nodes
                             // This will normally work well, however:
                             // It is _theoretically_ possible that one or both nodes are _themselves_ relation nodes.
@@ -987,7 +985,7 @@ public class MMAdmin extends ProcessorModule {
                             // ye be warned.
 
                             // find snumber
-                            int snumber = newnode.getIntValue("snumber");
+                            int snumber = newNode.getIntValue("snumber");
                             b = syncbul.search("exportnumber==" + snumber + "+exportsource=='" + exportsource + "'");
                             if (b.hasMoreElements()) {
                                 MMObjectNode n2 = (MMObjectNode)b.nextElement();
@@ -997,7 +995,7 @@ public class MMAdmin extends ProcessorModule {
                             }
 
                             // find dnumber
-                            int dnumber = newnode.getIntValue("dnumber");
+                            int dnumber = newNode.getIntValue("dnumber");
                             b = syncbul.search("exportnumber==" + dnumber + "+exportsource=='" + exportsource + "'");
                             if (b.hasMoreElements()) {
                                 MMObjectNode n2 = (MMObjectNode)b.nextElement();
@@ -1006,19 +1004,19 @@ public class MMAdmin extends ProcessorModule {
                                 dnumber = -1;
                             }
 
-                            newnode.setValue("snumber", snumber);
-                            newnode.setValue("dnumber", dnumber);
+                            newNode.setValue("snumber", snumber);
+                            newNode.setValue("dnumber", dnumber);
                             int localnumber = -1;
                             if (snumber != -1 && dnumber != -1) {
                                 // test whether a relation with the proposed snumber/dnumber/rnumber already exists
                                 // if so, skip this relation
-                                MMObjectNode testNode = insRel.getRelation(snumber, dnumber, newnode.getIntValue("rnumber"));
+                                MMObjectNode testNode = insRel.getRelation(snumber, dnumber, newNode.getIntValue("rnumber"));
                                 if (testNode != null) {
                                     log.warn("Application tries to add relation which already exists :" +
                                               testNode.getGUIIndicator() + ", skipping relation.");
                                 } else {
-                                    // localnumber = doKeyMergeNode(syncbul, newnode, exportsource, result);
-                                    localnumber = newnode.insert("import");
+                                    // localnumber = doKeyMergeNode(syncbul, newNode, exportsource, result);
+                                    localnumber = newNode.insert("import");
                                     if (localnumber != -1) {
                                         MMObjectNode syncnode = syncbul.getNewNode("import");
                                         syncnode.setValue("exportsource", exportsource);
@@ -1026,10 +1024,10 @@ public class MMAdmin extends ProcessorModule {
                                         syncnode.setValue("timestamp", timestamp);
                                         syncnode.setValue("localnumber", localnumber);
                                         syncnode.insert("import");
-                                        if (localnumber == newnode.getNumber()) {
+                                        if (localnumber == newNode.getNumber()) {
 
                                             // determine if there were NODE fields, which need special treatment later.
-                                            Collection fields = newnode.parent.getFields();
+                                            Collection fields = newNode.parent.getFields();
                                             Iterator i = fields.iterator();
                                             while (i.hasNext()) {
                                                 CoreField def = (CoreField) i.next();
@@ -1040,8 +1038,8 @@ public class MMAdmin extends ProcessorModule {
                                                     && ! def.getName().equals("number")
                                                     && ! def.isRequired()) {
 
-                                                    newnode.values.put("__exportsource", exportsource);
-                                                    nodeFieldNodes.add(newnode);
+                                                    newNode.values.put("__exportsource", exportsource);
+                                                    nodeFieldNodes.add(newNode);
                                                     break;
                                                 }
                                             }
