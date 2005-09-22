@@ -19,7 +19,9 @@
     <builder maintainer="mmbase.org" version="0">jumpers</builder>
   </neededbuilderlist>
 
-  <neededreldeflist />
+  <neededreldeflist>
+    <reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+  </neededreldeflist>
 
   <allowedrelationlist />
 
