@@ -89,6 +89,9 @@
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
     ><span class="<%=("cache".equals(subcategory)) ? "current" : ""%>menuitem">CACHE</span></a>
     &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=tools&subcategory=querytool" />" target="_top"
+    ><span class="<%=("querytool".equals(subcategory)) ? "current" : ""%>menuitem">SQL</span></a>
+    &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top" >
     <span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
     &nbsp;&nbsp;

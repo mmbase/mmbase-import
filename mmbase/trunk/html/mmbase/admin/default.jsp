@@ -74,6 +74,7 @@
 
       <tr><th class="header">Tools</th></tr>
       <tr><td class="data"><a href="<mm:url page="tools/cache.jsp" />">Cache Monitor</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="tools/querytool.jsp" />">Raw SQL tool</a></td></tr>
       <tr><td class="data"><a href="<mm:url page="tools/email.jsp" />">Email Queue Monitor</a></td></tr>
     </table>
   </body>
