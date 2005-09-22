@@ -80,7 +80,7 @@
 </tr>
 <tr>
   <td class="data">Size</td>
-  <td class="data"><%= cache.size() %> / <%= cache.getSize() %></td>
+  <td class="data"><%= cache.size() %> / <%= cache.maxSize() %></td>
   <td class="data">Performance</td>
   <td class="data"><%= cache.getRatio() * 100 %> %</td>
   <td class="data">Show first 500 entry's of the cache</td>
