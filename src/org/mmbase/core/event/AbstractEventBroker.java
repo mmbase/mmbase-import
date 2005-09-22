@@ -11,6 +11,7 @@ import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This is the base class for all event brokers in mmbase. the function of an
@@ -36,7 +37,7 @@ public abstract class AbstractEventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    protected Set listeners = Collections.synchronizedSet(new HashSet());
+    protected Set listeners = new CopyOnWriteArraySet();
 
     /**
      * this method should return true if this broker can accept and propagate
