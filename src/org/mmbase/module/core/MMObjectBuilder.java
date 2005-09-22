@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.337 2005-09-21 11:37:42 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.338 2005-09-22 19:54:45 ernst Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -2857,7 +2857,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return always <code>true</code>
-     * @deprecated
+     * @deprecated use notify(NodeEvent) in stead
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         // overal cache control, this makes sure that the caches
@@ -2875,13 +2875,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 log.warn(getClass().getName()  + " " + toString() + " observes itself");
             }
         }
-
-        MMObjectBuilder pb = getParentBuilder();
-        if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
-            log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
-            pb.nodeRemoteChanged(machine, number, builder, ctype);
-        }
-
         return true;
     }
 
@@ -2893,16 +2886,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return always <code>true</code>
-     * @deprecated
+     * @deprecated use notify(NodeEvent) in stead
      */
 
    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-       // overal cache control, this makes sure that the caches
-       // provided by mmbase itself (on nodes and relations)
-       // are kept in sync is other servers add/change/delete them.
     
-       updateCacheForNodeEvent(number, ctype, EVENT_TYPE_LOCAL);
-       
        // signal all the other objects that have shown interest in changes of nodes of this builder type.
        synchronized(localObservers) {
            for (Iterator i = localObservers.iterator(); i.hasNext();) {
@@ -2913,14 +2901,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                    log.warn(getClass().getName()  + " " + toString() + " observes itself");
                }
            }
-       }
-
-       MMObjectBuilder pb = getParentBuilder();
-       if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
-           if (log.isDebugEnabled()) {
-               log.debug("Builder " + tableName + " sending signal to builder " + pb.tableName + " (changed node is of type " + builder + ")");
-           }
-           pb.nodeLocalChanged(machine, number, builder, ctype);
        }
 
        return true;
@@ -3979,13 +3959,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public void notify(NodeEvent event) {
         String ctype = NodeEvent.newTypeToOldType(event.getType());
         
+        
         boolean eventLocal;
         if(MMBase.getMMBase().getMachineName().equals(event.getMachine())){
             eventLocal = true;
             updateCacheForNodeEvent("" + event.getNode().getNumber(), ctype, MMObjectBuilder.EVENT_TYPE_LOCAL);
+            nodeLocalChanged(null, "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), NodeEvent.newTypeToOldType(event.getType()));
+            
         }else{
             eventLocal = false;
             updateCacheForNodeEvent("" + event.getNode().getNumber(), ctype, MMObjectBuilder.EVENT_TYPE_REMOTE);
+            nodeRemoteChanged(null, "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), NodeEvent.newTypeToOldType(event.getType()));
         }
         
         //for backwards compatibility: fire the old event type of event
@@ -4008,11 +3992,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 log.debug("Builder " + tableName + " sending signal to builder " + pb.tableName + " for event "+event.toString());
             }
             pb.notify(event);
-            if(eventLocal){
-                pb.nodeLocalChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
-            }else{
-                pb.nodeRemoteChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
-            }
         }
         
     }
