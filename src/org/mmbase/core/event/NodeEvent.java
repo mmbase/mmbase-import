@@ -48,7 +48,6 @@ public class NodeEvent extends Event implements Serializable {
     private Map newValues = new HashMap();
 
     // implementation of serializable
-    // UNTESTED
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeUTF(node.getBuilder().getTableName());
         out.writeInt(node.getNumber()); 
@@ -58,7 +57,6 @@ public class NodeEvent extends Event implements Serializable {
         out.writeObject(newValues);        
     }
     // implementation of serializable
-    // UNTESTED
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         String builderName = in.readUTF();
         MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
@@ -146,7 +144,7 @@ public class NodeEvent extends Event implements Serializable {
         for (Iterator i = changedFieldIterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return "eventtype: '" + getEventTypeGuiName(eventType) + "', node: " + node.getNumber() + ", nodetype: " + node.getBuilder() + ", changedfields: " + changedFields;
+        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + node.getNumber() + ", nodetype: " + node.getBuilder() + ", changedfields: " + changedFields;
     }
 
     protected static String getEventTypeGuiName(int eventType) {
