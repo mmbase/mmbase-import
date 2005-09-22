@@ -3,7 +3,7 @@
 <application name="DidactorComponent" maintainer="didactor.nl" version="2" auto-deploy="true">
 	<requirements>
 		<requires name="Resources" maintainer="didactor.nl" version="2" />
-		<requires name="DidactorCore" maintainer="didactor.nl" version="6" />
+		<requires name="DidactorCore" maintainer="didactor.nl" version="8" />
 	</requirements>
 
 	<neededbuilderlist>
@@ -27,12 +27,9 @@
 
 	<datasourcelist>
 		<datasource builder="components" path="DidactorComponent/components.xml" />
-		<datasource builder="providers" path="DidactorComponent/providers.xml" />
 	</datasourcelist>
 
-	<relationsourcelist>
-		<relationsource builder="settingrel" path="DidactorComponent/settingrel.xml" />
-	</relationsourcelist>
+	<relationsourcelist />
 
 	<contextsourcelist>
 		<contextsource path="DidactorComponent/backup.xml" type="depth" goal="backup"/>
