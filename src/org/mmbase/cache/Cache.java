@@ -9,42 +9,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
-import org.mmbase.bridge.Cacheable;
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.FileWatcher;
-import org.mmbase.util.LRUHashtable;
-import org.mmbase.util.SizeMeasurable;
-import org.mmbase.util.SizeOf;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.bridge.Cacheable;
 import org.w3c.dom.Element;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.25 2005-09-20 19:51:38 ernst Exp $
+ * @version $Id: Cache.java,v 1.26 2005-09-22 18:28:21 michiel Exp $
  */
-abstract public class Cache extends LRUHashtable implements SizeMeasurable {
+abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
 
     private static final Logger log = Logging.getLoggerInstance(Cache.class);
 
     /**
      * All registered caches
      */
-    private static Map caches = new Hashtable();
+    private static Map caches = new ConcurrentHashMap();
 
     /**
      * Configures the caches using a config File. There is only one
@@ -84,11 +73,26 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
+                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation"));
+                if(!"".equals(clazz)) {
+                    try {
+                        Class clas = Class.forName(clazz);
+                        if (cache.implementation == null || (! clas.equals(cache.implementation.getClass()))) {
+                            cache.implementation = (CacheImplementationInterface) clas.newInstance();
+                        }
+                    } catch (ClassNotFoundException cnfe) {
+                        log.error("For cache " + cache + " " + cnfe.getClass().getName() + ": " + cnfe.getMessage());
+                    } catch (InstantiationException ie) {
+                        log.error("For cache " + cache + " " + ie.getClass().getName() + ": " + ie.getMessage());
+                    } catch (IllegalAccessException iae) {
+                        log.error("For cache " + cache + " " + iae.getClass().getName() + ": " + iae.getMessage());
+                    }
+                }
                 String status = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.status"));
                 cache.setActive(status.equalsIgnoreCase("active"));
                 try {
                     Integer size = new Integer(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
-                    cache.setSize(size.intValue());
+                    cache.setMaxSize(size.intValue());
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {
                     log.error("Could not configure cache " + cacheName + " because the size was wrong: " + nfe.toString());
@@ -105,7 +109,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
                     if (cache.getDefaultMaxEntrySize() > 0) {
                         log.service("No max entry size specified for this cache taking default " + cache.getDefaultMaxEntrySize() + " bytes");
                     }
-                    
+                    cache.maxEntrySize = cache.getDefaultMaxEntrySize();
                     //now see if we have to load cache release strategies for this lovely cache...
                     if(cache instanceof QueryResultCache){
                         log.debug("found a SearchQueryCache: "+cacheName);
@@ -178,13 +182,13 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
     }
     
     /**
-     * I moved this code away from <code>configur()</code> just to 
+     * I moved this code away from <code>configure()</code> just to 
      * clean up a little, and keep the code readable
-     * @param strategyClass
+     * XXX: Who is I?
+     * @param strategyClassName
      * @since 1.8
      */
-    private static AbstractReleaseStrategy getStrategyInstance(String strategyClassName) 
-        throws CacheConfigurationException{
+    private static AbstractReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException{
         log.debug("getStrategyInstance()");
         Class strategyClass;
         AbstractReleaseStrategy strategy = null;
@@ -217,26 +221,25 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
 
     /**
-    * The caches can be configured with an XML file, this file can
-    * be changed which causes the caches to be reconfigured automaticly.
-    */
-    private static FileWatcher configWatcher = new FileWatcher (true) {
-            public void onChange(File file) {
-                configReader = new XMLBasicReader(file.getAbsolutePath(), Cache.class);
+     * The caches can be configured with an XML file, this file can
+     * be changed which causes the caches to be reconfigured automaticly.
+     */
+    private static ResourceWatcher configWatcher = new ResourceWatcher () {
+            public void onChange(String resource) { 
+                try {
+                    configReader = new XMLBasicReader(ResourceLoader.getConfigurationRoot().getInputSource(resource), Cache.class);
+                } catch (Exception e) {
+                    log.error(e);
+                    return;
+                }
                 configure(configReader);
             }
         };
 
     static { // configure
         log.debug("Static init of Caches");
-        File configFile = new File(MMBaseContext.getConfigPath() + File.separator + "caches.xml");
-        if (configFile.exists()) {
-            configWatcher.add(configFile);
-            configReader = new XMLBasicReader(configFile.getAbsolutePath(), Cache.class);
-            // configure(configReader); never mind, no cache are present on start up
-        } else {
-            log.warn("No cache configuration file " + configFile + " found");
-        }
+        configWatcher.add("caches.xml");
+        configWatcher.onChange("caches.xml");
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
 
@@ -246,8 +249,30 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
     private boolean active = true;
     protected int   maxEntrySize = -1; // no maximum/ implementation does not support;
 
+    /**
+     * @since MMBase-1.8
+     */
+    private CacheImplementationInterface implementation;
+
+    /**
+     * The number of times an element was succesfully retrieved from this cache.
+     */
+    private int hits = 0;
+
+    /**
+     * The number of times an element could not be retrieved from this cache.
+     */
+    private int misses = 0;
+
+    /**
+     * The number of times an element was committed to this cache.
+     */
+    private int puts = 0;
+
+
+
     public Cache(int size) {
-        super(size);
+        implementation = new LRUHashtable(size);
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
@@ -271,7 +296,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
     /**
      * Return the maximum entry size for the cache in bytes.  If the
-     * cache-type support it (default no), then no values bigger then
+     * cache-type supports it (default no), then no values bigger then
      * this will be stored in the cache.
      */
     public int getMaxEntrySize() {
@@ -331,12 +356,19 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
         return caches.keySet();
     }
 
+    
+    public Set entrySet() {
+        if (! active) return new HashSet();
+        return implementation.entrySet();
+    }
+
     /**
      * Checks whether the key object should be cached.
      * This method returns <code>false</code> if either the current cache is inactive, or the object to cache
      * has a cache policy associated that prohibits caching of the object.
      * @param key the object to be cached
      * @return <code>true</code> if the object can be cached
+     * @since MMBase-1.8
      */
     protected boolean checkCachePolicy(Object key) {
         CachePolicy policy = null;
@@ -353,12 +385,21 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
     }
 
     /**
-     * Like 'get' of LRUHashtable but considers if the cache is active or not.
+     * Like 'get' of Maps but considers if the cache is active or not,  and the cache policy of the key.
      *
      */
     public  Object get(Object key) {
-        if (!checkCachePolicy(key)) return null;
-        return super.get(key);
+        if (!checkCachePolicy(key)) {
+            return null;
+        }
+
+        Object res = implementation.get(key);
+        if (res != null) {
+            hits++;
+        } else {
+            misses++;
+        }
+        return res;
     }
 
     /**
@@ -366,9 +407,78 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
      *
      */
     public Object put(Object key, Object value) {
-        if (!checkCachePolicy(key)) return null;
-        return super.put(key, value);
+        if (!checkCachePolicy(key)) {
+            return null;
+        }
+        puts++;
+        return implementation.put(key, value);
     }
+
+    /**
+     * Returns the number of times an element was succesfully retrieved
+     * from the table.
+     */
+    public int getHits() {
+        return hits;
+    }
+
+    /**
+     * Returns the number of times an element cpould not be retrieved
+     * from the table.
+     */
+    public int getMisses() {
+        return misses;
+    }
+
+    /**
+     * Returns the number of times an element was committed to the table.
+     */
+    public int getPuts() {
+        return puts;
+    }
+
+    public  void setMaxSize(int size) {
+        implementation.setMaxSize(size);
+    }
+    public  int maxSize() {
+        return implementation.maxSize();
+    }
+    public  int size() {
+        return implementation.size();
+    }
+    public  boolean contains(Object key) {
+        return implementation.containsKey(key);
+    }
+
+    public int getCount(Object key) {
+        return implementation.getCount(key);
+    }
+
+    /**
+     * Returns the ratio of hits and misses.
+     * The higher the ratio, the more succesfull the table retrieval is.
+     * A value of 1 means every attempt to retrieve data is succesfull,
+     * while a value nearing 0 means most times the object requested it is
+     * not available.
+     * Generally a high ratio means the table can be shrunk, while a low ratio
+     * means its size needs to be increased.
+     *
+     * @return A double between 0 and 1 or NaN.
+     */
+    public double getRatio() {
+        return ((double) hits) / (  hits + misses );
+    }
+
+
+    /**
+     * Returns statistics on this table.
+     * The information shown includes number of accesses, ratio of misses and hits,
+     * current size, and number of puts.
+     */
+    public String getStats() {
+        return "Access "+ (hits + misses) + " Ratio " + getRatio() + " Size " + size() + " Puts " + puts;
+    }
+
 
     /**
      * Sets this cache to active or passive.
@@ -376,9 +486,13 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
      */
     public void setActive(boolean a) {
         active = a;
-        if (! active) clear();
+        if (! active) implementation.clear();
         // inactive caches cannot contain anything
         // another option would be to override also the 'contains' methods (which you problable should not use any way)
+    }
+
+    public String toString() {
+        return "Cache " + getName() + ", Ratio: " + getRatio() + " " + implementation.toString();
     }
 
     /**
@@ -414,30 +528,30 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable {
         return len;
     }
 
-public static void main(String args[]) {
-    Cache mycache = new Cache(20) {
-            public String getName()        { return "test cache"; }
-            public String getDescription() { return ""; }
-        };
-    /*
-    System.out.println("putting some strings in cache");
-    mycache.put("aaa", "AAA"); // 6 bytes
-    mycache.put("bbb", "BBB"); // 6 bytes
+    public static void main(String args[]) {
+        Cache mycache = new Cache(20) {
+                public String getName()        { return "test cache"; }
+                public String getDescription() { return ""; }
+            };
+        /*
+          System.out.println("putting some strings in cache");
+          mycache.put("aaa", "AAA"); // 6 bytes
+          mycache.put("bbb", "BBB"); // 6 bytes
+          
+          System.out.println("putting an hashmap in cache");
+          Map m = new HashMap();
+          m.put("ccc", "CCCCCC");
+          m.put("ddd", "DDD");
+          m.put("abc", "EEE");
+          mycache.put("eee", m);
+        */
 
-    System.out.println("putting an hashmap in cache");
-    Map m = new HashMap();
-    m.put("ccc", "CCCCCC");
-    m.put("ddd", "DDD");
-    m.put("abc", "EEE");
-    mycache.put("eee", m);
-    */
-
-    MMObjectNode node = new MMObjectNode(new MMObjectBuilder());
-    node.setValue("hoi", "hoi");
-    mycache.put("node", node);
-
-    System.out.println("size of cache: " + mycache.getByteSize());
-
-}
-
+        MMObjectNode node = new MMObjectNode(new MMObjectBuilder());
+        node.setValue("hoi", "hoi");
+        mycache.put("node", node);
+        
+        System.out.println("size of cache: " + mycache.getByteSize());
+        
+    }
+    
 }
