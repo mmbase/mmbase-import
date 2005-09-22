@@ -73,10 +73,13 @@
 	<datasourcelist>
 		<datasource builder="people" path="DidactorCore/people.xml" />
 		<datasource builder="roles" path="DidactorCore/roles.xml" />
+		<datasource builder="providers" path="DidactorCore/providers.xml" />
+		<datasource builder="editcontexts" path="DidactorCore/editcontexts.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
 		<relationsource builder="insrel" path="DidactorCore/insrel.xml" />
+		<relationsource builder="posrel" path="DidactorCore/posrel.xml" />
 	</relationsourcelist>
 
 	<contextsourcelist>
