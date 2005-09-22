@@ -106,7 +106,9 @@
                Didactor versie 2.0 Beta
             </p>
             <p>
+    <mm:node number="component.portfolio" notfound="skipbody">
     <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+    </mm:node>
     </p>
     </div>
          <div class="columnRight">
