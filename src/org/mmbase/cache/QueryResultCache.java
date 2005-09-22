@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.15 2005-09-20 19:25:36 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.16 2005-09-22 15:20:35 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -248,10 +248,6 @@ abstract public class QueryResultCache extends Cache {
             return cacheKeys.remove(key);
         }
 
-        public String toString() {
-            return "Observer  " + super.toString() + " watching " + cacheKeys.size() + " keys";
-        }
-
         /*
          * (non-Javadoc)
          * 
@@ -299,16 +295,20 @@ abstract public class QueryResultCache extends Cache {
         }
 
         protected int nodeChanged(NodeEvent event) {
+            log.debug("Considering " + event);
             int evaluatedResults = cacheKeys.size();
             Set removeKeys = new HashSet();
             long totalEvaluationTime = 0;
-            synchronized (this) {
+            synchronized (QueryResultCache.this) {
                 for (Iterator i = cacheKeys.iterator(); i.hasNext();) {
                     SearchQuery key = (SearchQuery) i.next();
                     AbstractReleaseStrategy.StrategyResult result = releaseStrategy.evaluate(event, key, (List) get(key));
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();
+                        log.debug("Release strategy said not to release " + key);
+                    } else {
+                        log.debug("Release strategy said NOT to release " + key);
                     }
                     totalEvaluationTime += result.getCost();
                 }
@@ -324,6 +324,9 @@ abstract public class QueryResultCache extends Cache {
                 log.debug(getName() + ": event analyzed in " + totalEvaluationTime + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
             }
             return removeKeys.size();
+        }
+        public String toString() {
+            return "QueryResultCacheObserver for " + type + " watching " + cacheKeys.size() + " queries";
         }
     }
 
