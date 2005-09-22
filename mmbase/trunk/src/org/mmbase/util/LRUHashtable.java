@@ -9,8 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-//import org.mmbase.cache.CacheImplementation;
+import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
+
 /**
  * A hashtable which has a maximum of entries.  Old entries are
  * removed when the maximum is reached.  This table is used mostly to
@@ -19,10 +20,10 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.19 2004-09-30 08:52:12 pierre Exp $
+ * @version $Id: LRUHashtable.java,v 1.20 2005-09-22 18:34:40 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
-public class LRUHashtable extends Hashtable implements Cloneable {
+public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface {
 
     private static final String ROOT     = "root";
     private static final String DANGLING = "dangling";
@@ -48,21 +49,6 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     private int currentSize = 0;
 
     /**
-     * The number of times an element was succesfully retrieved from the table.
-     */
-    private int hit;
-    /**
-     * The number of times an element cpould not be retrieved from the table.
-     */
-
-
-    private int miss;
-    /**
-     * The number of times an element was committed to the table.
-     */
-    private int puts;
-
-    /**
      * Creates the URL Hashtable.
      * @param size the maximum capacity
      * @param cap the starting capacity (used to improve performance)
@@ -73,7 +59,6 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         root.next = dangling;
         dangling.prev = root;
         this.size = size;
-        hit = miss = puts = 0;
     }
 
     /**
@@ -126,7 +111,6 @@ public class LRUHashtable extends Hashtable implements Cloneable {
                 remove(root.next.key);
             }
         }
-        puts++;
         return rtn;
     }
 
@@ -152,14 +136,12 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     public synchronized Object get(Object key) {
         LRUEntry work = (LRUEntry) super.get(key);
         if (work != null) {
-            hit++;
             work.requestCount++;
             Object rtn = work.value;
             removeEntry(work);
             appendEntry(work);
             return rtn;
         } else {
-            miss++;
             return null;
         }
     }
@@ -221,7 +203,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * This may result in removal of entries in the table.
      * @param size the new desired size
      */
-    public void setSize(int size) {
+    public void setMaxSize(int size) {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size of LRUHashtable to negative value");
         if (size < this.size) {
             while(currentSize > size) {
@@ -234,7 +216,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Return the maximum size of the table
      */
-    public int getSize() {
+    public int maxSize() {
         return size;
     }
 
@@ -264,7 +246,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * and a description of the underlying hashtable
      */
     public String toString() {
-        return "Size=" + currentSize + ", Max=" + size + ", Ratio=" + getRatio() + " : " + super.toString();
+        return "Size=" + currentSize + ", Max=" + size;
     }
 
     /**
@@ -277,18 +259,8 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     public String toString(boolean which) {
         if (which) {
             StringBuffer b= new StringBuffer();
-            b.append("Size " + currentSize + ", Max " + size + " : {");
-            LRUEntry walk = root.next;
-            while (walk != dangling) {
-                if (which) {
-                    b.append("" + walk.key + "=" + walk.value);
-                    which = false;
-                } else {
-                    b.append("," + walk.key + "=" + walk.value);
-                }
-                walk = walk.next;
-            }
-            b.append("}");
+            b.append("Size " + currentSize + ", Max " + size + " : ");
+            b.append(super.toString());
             return b.toString();
         } else {
             return toString();
@@ -318,53 +290,6 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         return new LRUHashtableEnumeration();
     }
 
-
-    /**
-     * Returns the ratio of hits and misses.
-     * The higher the ratio, the more succesfull the table retrieval is.
-     * A value of 1 means every attempt to retrieve data is succesfull,
-     * while a value nearing 0 means most times the object requested it is
-     * not available.
-     * Generally a high ratio means the table can be shrunk, while a low ratio
-     * means its size needs to be increased.
-     *
-     * @return A double between 0 and 1 or NaN.
-     */
-    public double getRatio() {
-        return ((double) hit) / (  hit + miss );
-    }
-
-    /**
-     * Returns the number of times an element was succesfully retrieved
-     * from the table.
-     */
-    public int getHits() {
-        return hit;
-    }
-
-    /**
-     * Returns the number of times an element cpould not be retrieved
-     * from the table.
-     */
-    public int getMisses() {
-        return miss;
-    }
-
-    /**
-     * Returns the number of times an element was committed to the table.
-     */
-    public int getPuts() {
-        return puts;
-    }
-
-    /**
-     * Returns statistics on this table.
-     * The information shown includes number of accesses, ratio of misses and hits,
-     * current size, and number of puts.
-     */
-    public String getStats() {
-        return "Access "+ (hit + miss) + " Ratio " + getRatio() + " Size " + size() + " Puts " + puts;
-    }
 
 
     /**
