@@ -17,7 +17,7 @@
 
 <div class="providerMenubar" style="white-space: nowrap">
 <mm:isgreaterthan referid="user" value="0">
-  <mm:import id="providerbaritems" vartype="list">search,pop,address,agenda,portfolio,email,workspace,cms,education</mm:import>
+  <mm:import id="providerbaritems" vartype="list">search,pop,address,agenda,portfolio,email,workspace,cms</mm:import>
   
   <%-- first show all the items in a predefined order --%>
   <mm:stringlist referid="providerbaritems">
@@ -37,6 +37,14 @@
     </mm:node>
     <mm:remove referid="pname" />
   </mm:stringlist>
+  
+  <%-- If the user has the rights, then always show the management link. That allows us to enable/disable components after
+       install on an empty database --%>
+  <mm:treeinclude page="/education/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="name">education</mm:param>
+    <mm:param name="type">div</mm:param>
+    <mm:param name="scope">provider</mm:param>
+  </mm:treeinclude>
 </mm:isgreaterthan>
 </div>
 </mm:cloud>
