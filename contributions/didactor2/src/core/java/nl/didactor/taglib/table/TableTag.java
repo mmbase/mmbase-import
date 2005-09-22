@@ -172,12 +172,13 @@ public class TableTag extends CloudReferrerTag {
         try {
             if (bodyContent != null) {
                 getPreviousOut().print(getLabel("surrounding.start"));
-                String pagingContent = "<span style='width:80%'>";
+                String pagingContent = "";
 
                 // If there were more results then fit on one page, we need to
                 // create a paging <div>
                 int max = maxitems.getInt(this, 0);
                 if (size > max) {
+                    pagingContent = "<span style='width:80%'>";
                     ArrayList disallowed = new ArrayList();
                     disallowed.add(PARAM_PAGE);
                     
