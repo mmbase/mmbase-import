@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -16,7 +17,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @applicatie Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.18 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: Urls.java,v 1.19 2005-09-22 19:51:07 ernst Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Urls.class.getName());
@@ -44,27 +45,19 @@ public class Urls extends MMObjectBuilder {
         MMObjectNode node = getNode(src);
         return node.getStringValue("url");
     }
-
-
-    private boolean nodeChanged(String number,String builder,String ctype) {
-        if (builder.equals(tableName)) {
-            Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
-            if (jumpers == null) {
-                log.debug("Urls builder - Could not get Jumper builder");
-            } else {
-                jumpers.delJumpCache(number);
-            }
-        }
-        return true;
-    }
-
-    public boolean nodeLocalChanged(String machine, String number,String builder,String ctype) {
-            super.nodeLocalChanged(machine, number,builder,ctype);
-        return nodeChanged(number, builder, ctype);
-    }
-
-    public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
-        super.nodeRemoteChanged(machine, number,builder,ctype);
-        return nodeChanged(number, builder, ctype);
+    
+    /* (non-Javadoc)
+     * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
+     */
+    public void notify(NodeEvent event) {
+         if(tableName.equals(event.getNode().getBuilder().getTableName())){
+             Jumpers jumpers = (Jumpers)mmb.getBuilder("jumpers");
+             if (jumpers == null) {
+                 log.debug("Urls builder - Could not get Jumper builder");
+             } else {
+                 jumpers.delJumpCache(""+event.getNode().getNumber());
+             }
+         }
+        super.notify(event);
     }
 }

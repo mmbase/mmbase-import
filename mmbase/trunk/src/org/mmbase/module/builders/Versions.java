@@ -1,16 +1,17 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 package org.mmbase.module.builders;
 
 import java.util.*;
 
+import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
@@ -19,9 +20,9 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.13 2004-07-05 08:03:36 keesj Exp $
+ * @version $Id: Versions.java,v 1.14 2005-09-22 19:51:07 ernst Exp $
  */
-public class Versions extends MMObjectBuilder implements MMBaseObserver {
+public class Versions extends MMObjectBuilder {
 
     private static Logger log = Logging.getLoggerInstance(Versions.class.getName());
 
@@ -37,9 +38,10 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * @param name the name of the component we want to get know the version information about 
+     * @param name the name of the component we want to get know the version information about
      * @param type the type of tye component we want to get information about (application/builder)
-     * @return the node that contains version information about "name", "type" or null if no version information is avaiable
+     * @return the node that contains version information about "name", "type" or null if no version
+     * information is avaiable
      * @throws SearchQueryException
      * @since MMBase-1.7
      */
@@ -80,21 +82,21 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         return retval;
 
     }
+
     /**
      * @javadoc
      */
     public int getInstalledVersion(String name, String type) throws SearchQueryException {
         MMObjectNode node = getVersionNode(name, type);
-        if (node == null) {
-            return -1;
-        }
+        if (node == null) { return -1; }
         return node.getIntValue("version");
     }
 
     /**
      * @javadoc
      */
-    public void setInstalledVersion(String name, String type, String maintainer, int version) throws SearchQueryException {
+    public void setInstalledVersion(String name, String type, String maintainer, int version)
+        throws SearchQueryException {
 
         MMObjectNode node = getVersionNode(name, type);
         if (node == null) {
@@ -114,7 +116,8 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public void updateInstalledVersion(String name, String type, String maintainer, int version) throws SearchQueryException {
+    public void updateInstalledVersion(String name, String type, String maintainer, int version)
+        throws SearchQueryException {
         setInstalledVersion(name, type, maintainer, version);
     }
 
@@ -137,42 +140,24 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         }
     }
 
-    /**
-     * @javadoc
+    /*
+     * (non-Javadoc)
+     * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
-    private boolean nodeChanged(String machine, String number, String builder, String ctype) {
+    public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Versions -> signal change on " + number + " " + builder + " ctype=" + ctype);
+            log.debug("Changed " + event.getMachine() + " " + event.getNode().getNumber() + " "
+                + event.getNode().getBuilder().getTableName() + " " + NodeEvent.newTypeToOldType(event.getType()));
         }
+        String builder = event.getNode().getBuilder().getTableName();
         Vector subs = (Vector) CacheVersionHandlers.get(builder);
-        try {
-            int inumber = Integer.parseInt(number);
-            if (subs != null) {
-                for (Enumeration e = subs.elements(); e.hasMoreElements();) {
-                    VersionCacheNode cnode = (VersionCacheNode) e.nextElement();
-                    cnode.handleChanged(builder, inumber);
-                }
+        int inumber = event.getNode().getNumber();
+        if (subs != null) {
+            for (Enumeration e = subs.elements(); e.hasMoreElements();) {
+                VersionCacheNode cnode = (VersionCacheNode) e.nextElement();
+                cnode.handleChanged(builder, inumber);
             }
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
         }
-        return true;
-    }
-
-    /**
-     * @javadoc
-     */
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-        getNode(number); // to make sure cache is valid
-        super.nodeLocalChanged(machine, number, builder, ctype);
-        return nodeChanged(machine, number, builder, ctype);
-    }
-
-    /**
-     * @javadoc
-     */
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        super.nodeRemoteChanged(machine, number, builder, ctype);
-        return nodeChanged(machine, number, builder, ctype);
+        super.notify(event);
     }
 }
