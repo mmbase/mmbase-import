@@ -7,6 +7,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Reads <config>/magic.xml
@@ -82,7 +83,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
      */
     public List getDetectors() {
         if (detectors == null) {
-            detectors = new Vector();
+            detectors = new CopyOnWriteArrayList();
             Element e = getElementByPath("magic.detectorlist");
             if (e == null) {
                 log.fatal("Could not find magic/detectorlist in magic.xml");
