@@ -3,6 +3,14 @@
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
+  <context-param>
+    <param-name>filemanagementBaseUrl</param-name>
+    <param-value>${filemanagement.data.url}</param-value>
+  </context-param>
+  <context-param>
+    <param-name>filemanagementBaseDirectory</param-name>
+    <param-value>${filemanagement.data.directory}</param-value>
+  </context-param>
 
   <!-- Filter for jumpers -->
   <filter>
@@ -55,6 +63,8 @@
     <load-on-startup>5</load-on-startup>
   </servlet>
 
+  <!-- EXTRASERVLETS -->
+
   <!-- mapping for testing purposes -->
   <servlet-mapping>
     <servlet-name>performance</servlet-name>
@@ -100,96 +110,7 @@
     <url-pattern>/xml/dove.xml</url-pattern>
   </servlet-mapping>
 
-  <!-- SOAP begin -->
-  <servlet>
-    <servlet-name>rpcrouter</servlet-name>
-    <display-name>Apache-SOAP RPC Router</display-name>
-    <description>no description</description>
-    <servlet-class>org.apache.soap.server.http.RPCRouterServlet</servlet-class>
-    <init-param>
-      <param-name>faultListener</param-name>
-      <param-value>org.apache.soap.server.DOMFaultListener</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
-    <servlet-name>messagerouter</servlet-name>
-    <display-name>Apache-SOAP Message Router</display-name>
-    <servlet-class>org.apache.soap.server.http.MessageRouterServlet</servlet-class>
-    <init-param>
-      <param-name>faultListener</param-name>
-      <param-value>org.apache.soap.server.DOMFaultListener</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>rpcrouter</servlet-name>
-    <url-pattern>/servlet/rpcrouter</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>messagerouter</servlet-name>
-    <url-pattern>/servlet/messagerouter</url-pattern>
-  </servlet-mapping>
-  <!-- SOAP end -->
-
-
-
-  <!-- Axis begin -->
-
-  <servlet>
-    <servlet-name>AxisServlet</servlet-name>
-    <display-name>Apache-Axis Servlet</display-name>
-    <servlet-class>
-        org.apache.axis.transport.http.AxisServlet
-    </servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>AdminServlet</servlet-name>
-    <display-name>Axis Admin Servlet</display-name>
-    <servlet-class>
-        org.apache.axis.transport.http.AdminServlet
-    </servlet-class>
-    <load-on-startup>100</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SOAPMonitorService</servlet-name>
-    <display-name>SOAPMonitorService</display-name>
-    <servlet-class>
-        org.apache.axis.monitor.SOAPMonitorService
-    </servlet-class>
-    <init-param>
-      <param-name>SOAPMonitorPort</param-name>
-      <param-value>5001</param-value>
-    </init-param>
-    <load-on-startup>100</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>/servlet/AxisServlet</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>*.jws</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>/services/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SOAPMonitorService</servlet-name>
-    <url-pattern>/SOAPMonitor</url-pattern>
-  </servlet-mapping>
-
-
-  
-
+  <!-- Mime mappings for Apache Axis -->
   <mime-mapping>
     <extension>wsdl</extension>
      <mime-type>text/xml</mime-type>
@@ -341,19 +262,5 @@
   <!-- 
   EXTRATAGLIB
   -->
-
-    <context-param>
-        <param-name>filemanagementBaseUrl</param-name>
-        <param-value>${filemanagement.data.url}</param-value>
-    </context-param>
-     <context-param>
-        <param-name>filemanagementBaseDirectory</param-name>
-        <param-value>${filemanagement.data.directory}</param-value>
-    </context-param>
     
-<!-- Log controller init -->
-    <listener>
-      <listener-class>nl.didactor.utils.debug.InitLogController</listener-class>
-    </listener>
-<!-- Log controller init -->
 </web-app>
