@@ -17,4 +17,5 @@ package org.mmbase.core.event;
  */
 public class UnsupportedEventException extends Exception {
 
+
 }
