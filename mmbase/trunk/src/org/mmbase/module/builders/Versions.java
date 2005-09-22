@@ -20,13 +20,13 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.14 2005-09-22 19:51:07 ernst Exp $
+ * @version $Id: Versions.java,v 1.15 2005-09-22 20:53:21 michiel Exp $
  */
-public class Versions extends MMObjectBuilder {
+public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
-    private static Logger log = Logging.getLoggerInstance(Versions.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Versions.class);
 
-    private Hashtable CacheVersionHandlers = new Hashtable();
+    private Hashtable cacheVersionHandlers = new Hashtable();
 
     /**
      * @javadoc
@@ -131,9 +131,9 @@ public class Versions extends MMObjectBuilder {
         if (cacheversionfile != null && !cacheversionfile.equals("")) {
             VersionXMLCacheNodeReader parser = new VersionXMLCacheNodeReader(cacheversionfile);
             parser.setBuilder(this);
-            CacheVersionHandlers = parser.getCacheVersions(CacheVersionHandlers);
+            cacheVersionHandlers = parser.getCacheVersions(cacheVersionHandlers);
         }
-        for (Enumeration e = CacheVersionHandlers.keys(); e.hasMoreElements();) {
+        for (Enumeration e = cacheVersionHandlers.keys(); e.hasMoreElements();) {
             String bname = (String) e.nextElement();
             mmb.addLocalObserver(bname, this);
             mmb.addRemoteObserver(bname, this);
@@ -150,7 +150,7 @@ public class Versions extends MMObjectBuilder {
                 + event.getNode().getBuilder().getTableName() + " " + NodeEvent.newTypeToOldType(event.getType()));
         }
         String builder = event.getNode().getBuilder().getTableName();
-        Vector subs = (Vector) CacheVersionHandlers.get(builder);
+        Vector subs = (Vector) cacheVersionHandlers.get(builder);
         int inumber = event.getNode().getNumber();
         if (subs != null) {
             for (Enumeration e = subs.elements(); e.hasMoreElements();) {
