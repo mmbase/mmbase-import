@@ -144,6 +144,7 @@
              <include name="editwizards/**"/>
              <exclude name="**/CVS"/>
              <exclude name="templates/**"/>
+             <exclude name="editwizards/**/extra_*.xml"/>
             </fileset>
            </copy>
          </else>
@@ -218,6 +219,20 @@
       </then>
     </if>
 
+    <!-- merge editwizard definitions --> 
+    <if>
+      <available file="src/${component}/templates/editwizards/data/config/" />
+      <then>
+        <foreach target="mergewizards" param="file">
+          <path id="boe">
+            <fileset dir="src/${component}/templates/editwizards/data/config/">
+              <include name="**/extra_*.xml" />
+            </fileset>
+          </path>
+        </foreach>
+      </then>
+    </if>
+
     <!-- build java sources and create a jar file -->
     <if>
       <available file="src/${component}/java" type="dir"/>
@@ -261,6 +276,28 @@
     </if>
   </target>
 
+  <target name="mergewizards">
+            <pathconvert property="cleaned_filename" targetos="unix"> 
+              <path path="${file}" />
+              <mapper>
+                <globmapper from="${basedir}/src/${component}/templates/editwizards/data/config/*" to="*"  />
+              </mapper>
+            </pathconvert>
+            <if>
+              <available file="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+              <then>
+                <echo>Merging in extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
+                <concat destfile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" append="true">
+                  <path path="${file}" />
+                </concat>
+              </then>
+              <else>
+                <echo>Copying extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
+                <copy file="${file}" tofile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+              </else>
+            </if>
+  </target>
+
   <target name="javadoc">
     <mkdir dir="${build.dir}/javadoc" />
     <javadoc destdir="${build.dir}/javadoc">
@@ -280,7 +317,7 @@
   </target>
 
   <!-- Begin van Antlets gedeelte -->
-
+  <!--
   <taskdef resource="org/krysalis/antworks/importer/antlib.xml"
          classpath="${user.home}/.antworks/lib/antworks-importer.jar"/>
 
@@ -294,8 +331,9 @@
     <importer name="webapp-0.1" href="${importer.repository}"/>
 
     <property name="tomcat5-antlet.deploy.archive" value= "${build.dir}/didactor.war"/>
+   -->
    <target name="war" depends="webapp">
-     <jar destfile="${build.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
+     <jar destfile="${build.dir}/${war.name}.war"
           basedir="${build.dir}/webapp"
      />
    </target>
