@@ -99,6 +99,10 @@ many
 Know Issues and Problems:
 ========================
 
+- org.mmbase.bridge.Cloud#getUser().getRank() does not return a String any more, but an actual Rank
+  object --> rankString.equals(Rank.ANONYMOUS.toString()); still compiles but doesn't work any more!!
+
+
 - If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new'
   web.xml or resin 3), then the new EL (Expression Language) syntax
   collides with the Expression language of mmbase taglib.
