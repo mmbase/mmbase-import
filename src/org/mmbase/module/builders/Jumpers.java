@@ -1,18 +1,19 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/
+ */
 package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.Cache;
+import org.mmbase.core.event.NodeEvent;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 
@@ -21,33 +22,33 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Maintains jumpers for redirecting urls.
- * The data stored in this builder is used to redirect urls based ons a specific key.
- * The jumpers builder is called from the {@link org.mmbase.servlet.servjumpers} servlet.
- * <br />
- * The jumpers builder can be configured using two properties:<br />
+ * Maintains jumpers for redirecting urls. The data stored in this builder is
+ * used to redirect urls based ons a specific key. The jumpers builder is called
+ * from the {@link org.mmbase.servlet.servjumpers}servlet. <br />
+ * The jumpers builder can be configured using two properties: <br />
  * <ul>
- * <li><code>JumperCacheSize</code> determines the size of the jumper cache (in nr of items).
- *                                 The default size is 1000.</li>
- * <li><code>JumperNotFoundURL</code> Determines the default url (such as a home page or error page)
- *              when no jumper is found. If not specified nothing will be done if no jumper is found.</li>
+ * <li><code>JumperCacheSize</code> determines the size of the jumper cache
+ * (in nr of items). The default size is 1000.</li>
+ * <li><code>JumperNotFoundURL</code> Determines the default url (such as a
+ * home page or error page) when no jumper is found. If not specified nothing
+ * will be done if no jumper is found.</li>
  * </ul>
  * <br />
- * XXX:Note that this builder is called directly from a servlet, and may therefor
- * be bound to the cloud context rather than a cloud.
- * This would mean that in a multi-cloud environment, this builder will be shared.
- *
+ * XXX:Note that this builder is called directly from a servlet, and may
+ * therefor be bound to the cloud context rather than a cloud. This would mean
+ * that in a multi-cloud environment, this builder will be shared.
+ * 
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.31 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: Jumpers.java,v 1.32 2005-09-22 19:51:07 ernst Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
     /**
-     * Default Jump Cache Size.
-     * Customization can be done through the central caches.xml
-     * Make an entry under the name "JumpersCache" with the size you want.
+     * Default Jump Cache Size. Customization can be done through the central
+     * caches.xml Make an entry under the name "JumpersCache" with the size you
+     * want.
      */
     private static final int DEFAULT_JUMP_CACHE_SIZE = 1000;
 
@@ -59,21 +60,20 @@ public class Jumpers extends MMObjectBuilder {
     protected JumpersCache jumpCache = new JumpersCache(DEFAULT_JUMP_CACHE_SIZE);
 
     /**
-     * Default redirect if no jumper can be found.
-     * If this field is <code>null</code>, a url will not be 'redirected' if the
-     * search for a jumper failed. This may cause a 404 error on your server if
-     * the path specified is unavailable.
-     * However, you may need it if other servlets rely on specific paths
-     * that would otherwise be caught by the jumper servlet.
+     * Default redirect if no jumper can be found. If this field is
+     * <code>null</code>, a url will not be 'redirected' if the search for a
+     * jumper failed. This may cause a 404 error on your server if the path
+     * specified is unavailable. However, you may need it if other servlets rely
+     * on specific paths that would otherwise be caught by the jumper servlet.
      * The value fo this field is set using the <code>JumperNotFoundURL</code>
      * property in the builder configuration file.
      */
     protected static String jumperNotFoundURL;
 
     /**
-     * Initializes the builder.
-     * Determines the jumper cache size, and initializes it.
-     * Also determines the default jumper url.
+     * Initializes the builder. Determines the jumper cache size, and
+     * initializes it. Also determines the default jumper url.
+     * 
      * @return always <code>true</code>
      */
     public boolean init() {
@@ -94,7 +94,8 @@ public class Jumpers extends MMObjectBuilder {
             String link;
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
                 link = url;
-            } else if (! url.startsWith("/")) { // requested relative to context path
+            } else if (!url.startsWith("/")) { // requested relative to context
+                // path
                 String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 String u = context + "/" + url;
                 link = res == null ? u : res.encodeURL(u);
@@ -119,10 +120,11 @@ public class Jumpers extends MMObjectBuilder {
 
     }
 
-
     /**
      * Retrieves a jumper for a specified key.
-     * @param tok teh tokenizer, in which the first token is the key to search for.
+     * 
+     * @param tok teh tokenizer, in which the first token is the key to search
+     * for.
      * @return the found alternate url.
      */
     public String getJump(StringTokenizer tok) {
@@ -132,11 +134,12 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Removes a specified key from the cache.
+     * 
      * @param key the key to remove
      */
     public void delJumpCache(String key) {
-        if (key!=null) {
-            log.debug("Jumper builder - Removing "+key+" from jumper cache");
+        if (key != null) {
+            log.debug("Jumper builder - Removing " + key + " from jumper cache");
             jumpCache.remove(key);
         }
     }
@@ -164,6 +167,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Retrieves a jumper for a specified key.
+     * 
      * @param key the key to search for.
      * @return the found alternate url.
      */
@@ -173,7 +177,7 @@ public class Jumpers extends MMObjectBuilder {
         if (key.equals("")) {
             url = jumperNotFoundURL;
         } else {
-            url = (String)jumpCache.get(key);
+            url = (String) jumpCache.get(key);
             if (log.isDebugEnabled()) {
                 if (url != null) {
                     log.debug("Jumper - Cache hit on " + key);
@@ -189,8 +193,7 @@ public class Jumpers extends MMObjectBuilder {
             if (url == null) {
                 try {
                     ikey = Integer.parseInt(key);
-                } catch (NumberFormatException e) {
-                }
+                } catch (NumberFormatException e) {}
                 // Search jumpers with number (parent);
                 if (ikey >= 0) {
                     url = getJumpByField("id", key);
@@ -214,7 +217,9 @@ public class Jumpers extends MMObjectBuilder {
             }
             if (url != null && url.length() > 0 && !url.equals("null")) {
                 jumpCache.put(key, url);
-                if (url.equalsIgnoreCase("NOREDIRECT")) {  // return null if the url specified is NOREDIRECT
+                if (url.equalsIgnoreCase("NOREDIRECT")) { // return null if the
+                    // url specified is
+                    // NOREDIRECT
                     url = null;
                 }
             } else {
@@ -228,53 +233,43 @@ public class Jumpers extends MMObjectBuilder {
     }
 
     /**
-     * Handles changes made to a node by a remote server.
-     * @param machine Name of the machine that changed the node.
-     * @param number the number of the node that was added, removed, or changed.
-     * @param builder the name of the builder of the changed node (should be 'jumpers')
-     * @param ctype the type of change
-     */
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-        super.nodeRemoteChanged(machine,number,builder,ctype);
-        return nodeChanged(machine,number,builder,ctype);
-    }
-
-    /**
-     * Handles changes made to a node by this server.
-     * @param machine Name of the machine that changed the node.
-     * @param number the number of the node that was added, removed, or changed.
-     * @param builder the name of the builder of the changed node (should be 'jumpers')
-     * @param ctype the type of change
-     */
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        super.nodeLocalChanged(machine,number,builder,ctype);
-        return nodeChanged(machine,number,builder,ctype);
-    }
-
-    /**
      * Clears the jump cache if a jumper was added, removed, or changed.
+     * 
      * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
-     * @param builder the name of the builder of the changed node (should be 'jumpers')
+     * @param builder the name of the builder of the changed node (should be
+     * 'jumpers')
      * @param ctype the type of change
      */
-    public boolean nodeChanged(String machine,String number,String builder,String ctype) {
-        log.debug("Jumpers="+machine+" " +builder+" no="+number+" "+ctype);
+    public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+        log.debug("Jumpers=" + machine + " " + builder + " no=" + number + " " + ctype);
         jumpCache.clear();
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
+     */
+    public void notify(NodeEvent event) {
+        log.debug("Jumpers=" + event.getMachine() + " " + event.getNode().getBuilder().getTableName() + " no="
+            + event.getNode().getNumber() + " " + NodeEvent.newTypeToOldType(event.getType()));
+        jumpCache.clear();
+        super.notify(event);
+    }
+
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
-         if (function.equals("gui")) {
-             String rtn;
-             if (arguments == null || arguments.size() == 0) {
-                 rtn = getGUIIndicator(node);
-             } else {
-                 rtn =  getGUIIndicator(node, Functions.buildParameters(GUI_PARAMETERS, arguments));
-             }
-             if (rtn != null) return rtn;
-         }
-         return super.executeFunction(node, function, arguments);
+        if (function.equals("gui")) {
+            String rtn;
+            if (arguments == null || arguments.size() == 0) {
+                rtn = getGUIIndicator(node);
+            } else {
+                rtn = getGUIIndicator(node, Functions.buildParameters(GUI_PARAMETERS, arguments));
+            }
+            if (rtn != null) return rtn;
+        }
+        return super.executeFunction(node, function, arguments);
     }
 
 }

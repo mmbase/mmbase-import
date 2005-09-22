@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+
+import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.images.*;
@@ -28,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.104 2005-08-26 09:09:16 michiel Exp $
+ * @version $Id: Images.java,v 1.105 2005-09-22 19:51:07 ernst Exp $
  */
 public class Images extends AbstractImages {
 
@@ -332,24 +334,18 @@ public class Images extends AbstractImages {
         super.removeNode(node);
     }
 
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) {
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
-        }
-        MMObjectNode image = getNode(number);
-        if (image != null) {
-            invalidateTemplateCacheNumberCache(image.getNumber());
-        }
-        return super.nodeLocalChanged(machine, number, builder, ctype);
-    }
 
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+    
+    /* (non-Javadoc)
+     * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
+     */
+    public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
+            log.debug("Changed " + event.getMachine() + " " + event.getNode().getNumber() +
+                " " + event.getNode().getBuilder().getTableName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
         }
-        MMObjectNode image = getNode(number);
-        invalidateTemplateCacheNumberCache(image.getNumber());
-        return super.nodeRemoteChanged(machine, number, builder, ctype);
+        invalidateTemplateCacheNumberCache(event.getNode().getNumber());
+        super.notify(event);
     }
 
 
