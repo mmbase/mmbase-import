@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.25 2005-09-21 21:20:23 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.26 2005-09-22 20:36:46 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -73,7 +73,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * The catalog used by this storage.
      */
     protected String catalog = null;
-
+    private   String databaseName = null;
     /**
      * The datasource in use by this factory.
      * The datasource is retrieved either from the application server, or by wrapping the JDBC Module in a generic datasource.
@@ -130,30 +130,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     }
 
     /**
-     * Doing some best effor to get a 'database name'.
+     * Doing some best effort to get a 'database name'.
      * @since MMBase-1.8
      */
     public String getDatabaseName() {
-        Connection con = null;
-        try {
-            con = dataSource.getConnection();
-            DatabaseMetaData metaData = con.getMetaData();
-            String url = metaData.getURL();
-            String db = getDatabaseName(url);
-            if (db != null) return db;
-            log.service("No db found in database connection meta data URL '" + url + "'");
-        } catch (Exception e) {
-            log.error(e);
-        } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (Exception e) {
-                    log.error(e);
-                }
-            }
-        }
-        return catalog;
+        return databaseName;
     }
 
     /**
@@ -203,9 +184,17 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             if (con == null) throw new StorageException("Did get 'null' connection from data source " + dataSource);
             catalog = con.getCatalog();
             log.service("Connecting to catalog with name " + catalog);
-            log.service("Connecting to database with name " + getDatabaseName());
 
             DatabaseMetaData metaData = con.getMetaData();
+            String url = metaData.getURL();
+            String db = getDatabaseName(url);
+            if (db != null) {
+                databaseName = db;
+            } else {
+                log.service("No db found in database connection meta data URL '" + url + "'");
+                databaseName = catalog;
+            }
+            log.service("Connecting to database with name " + getDatabaseName());
 
             // set transaction options
             supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
