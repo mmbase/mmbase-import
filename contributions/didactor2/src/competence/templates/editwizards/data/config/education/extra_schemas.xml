@@ -1,0 +1,6 @@
+    <form-schema id="step_competences">
+        <title>Competenties invoeren</title>
+        <field name="name" ftype="data"/>
+        <list extends="config/competency/needcompetencies.xml"/>
+        <list extends="config/competency/developcompetencies.xml"/>
+    </form-schema>
