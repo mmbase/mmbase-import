@@ -338,7 +338,8 @@
     <property name="tomcat5-antlet.deploy.archive" value= "${build.dir}/didactor.war"/>
    -->
    <target name="war" depends="webapp">
-     <jar destfile="${build.dir}/${war.name}.war"
+     <tstamp />
+     <jar destfile="${build.dir}/${war.name}${DSTAMP}_${TSTAMP}.war"
           basedir="${build.dir}/webapp"
      />
    </target>
