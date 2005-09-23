@@ -57,6 +57,7 @@
     <function name="index">
       <class>org.mmbase.util.functions.IndexFunction</class>
     </function>
+
     <function name="url" key="{REQUEST.getContextPath}/{INITPARAM.pol.home}?segment={NODE.number}&amp;template=segment.div.jspx">
       <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
