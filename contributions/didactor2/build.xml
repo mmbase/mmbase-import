@@ -276,26 +276,32 @@
   </target>
 
   <target name="mergewizards">
+    <echo>MergeWizards: ${file}</echo>
     <pathconvert property="cleaned_filename" dirsep="${file.separator}" pathsep="${path.separator}">
       <path path="${file}" />
       <mapper>
-        <globmapper from="${basedir}/src/${component}/templates/editwizards/data/config/*" to="*"  />
+        <globmapper from="${basedir}/src/${component}/templates/editwizards/data/config/*" to="*" handledirsep="yes" />
       </mapper>
     </pathconvert>
+    <pathconvert property="destfile" dirsep="${file.separator}" pathsep="${path.separator}">
+      <path path="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+    </pathconvert> 
+    <echo>Destfile: ${destfile}</echo>
     <if>
-      <available file="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+      <available file="${destfile}" />
       <then>
-        <echo>Merging in extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
-        <concat destfile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" append="true">
+        <echo>Merging in extra wizards defs for ${component}: ${cleaned_filename}</echo>
+        <concat destfile="${destfile}" append="true">
           <path path="${file}" />
         </concat>
       </then>
       <else>
-        <echo>Copying extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
-      <copy file="${file}" tofile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+        <echo>Copying extra wizards defs for ${component}: ${cleaned_filename}</echo>
+        <copy file="${file}" tofile="${destfile}" />
       </else>
     </if>
   </target>
+
 
   <target name="javadoc">
     <mkdir dir="${build.dir}/javadoc" />
