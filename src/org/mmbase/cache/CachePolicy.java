@@ -14,12 +14,13 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * A CachePolicy object deterrmiens fro a given object whether it should be cached or not.
+ * A CachePolicy object determines for a given object whether it should be cached or not, and how.
  * Code that makes use of a cache should use a CachePolicy object, when available, to determine if the
  * object should be cached or not.
  *
+ * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: CachePolicy.java,v 1.2 2005-06-03 15:08:10 pierre Exp $
+ * @version $Id: CachePolicy.java,v 1.3 2005-09-23 13:59:26 pierre Exp $
  */
 abstract public class CachePolicy implements Serializable {
 

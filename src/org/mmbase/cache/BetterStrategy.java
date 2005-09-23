@@ -15,13 +15,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
- * 
+ * @javadoc
+ * @since MMBase 1.8
  * @author Ernst Bunders
- * @since MMBase-1.8
+ * @version $Id: BetterStrategy.java,v 1.4 2005-09-23 13:59:26 pierre Exp $
  */
-public class BetterStrategy extends AbstractReleaseStrategy {
+public class BetterStrategy extends ReleaseStrategy {
 
     public BetterStrategy() {
         super("better strategy");
@@ -31,7 +30,7 @@ public class BetterStrategy extends AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getName()
      */
     public String getName() {
@@ -40,11 +39,11 @@ public class BetterStrategy extends AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
      */
     public String getDescription() {
-        return "This is work in progress. It dous some basic checking. If a query has "
+        return "This is work in progress. It does some basic checking. If a query has "
             + "more than one step, all 'new' events can be ignored, becouse a new node has no relations yet. "
             + "If a query has one step, all relation changed events can be ignored. "
             + "if a relation event concerns a role that is not part of this query, the event can be ignored.";
@@ -52,8 +51,8 @@ public class BetterStrategy extends AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.mmbase.cache.AbstractReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
+     *
+     * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query,

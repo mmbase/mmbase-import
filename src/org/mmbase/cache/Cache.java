@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.26 2005-09-22 18:28:21 michiel Exp $
+ * @version $Id: Cache.java,v 1.27 2005-09-23 13:59:26 pierre Exp $
  */
 abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
 
@@ -113,14 +113,14 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
                     //now see if we have to load cache release strategies for this lovely cache...
                     if(cache instanceof QueryResultCache){
                         log.debug("found a SearchQueryCache: "+cacheName);
-                        
+
                         //see if there are globally configured release strategies
                         List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
                         if(strategies != null){
                             log.debug("found "+strategies.size()+" globally configured strategies");
                             ((QueryResultCache)cache).addReleaseStrategies(strategies);
                         }
-                        
+
                         //see if there are strategies configured for this cache
                         strategies = findReleaseStrategies(xmlReader, cacheElement);
                         if(strategies != null){
@@ -132,7 +132,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
             }
         }
     }
-    
+
 
     /**
      * @param reader xml document reader instance
@@ -147,56 +147,56 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
             return null;
         }else{
             parentElement = (Element) strategyParentIterator.next();
-            
+
             //now find the strategies
             Iterator strategyIterator = reader.getChildElements(parentElement, "strategy");
             while(strategyIterator.hasNext()){
-                String strategyClassName = 
+                String strategyClassName =
                     reader.getElementValue((Element)strategyIterator.next());
                 log.debug("found strategy in configuration: "+ strategyClassName);
                 try {
-                    AbstractReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
+                    ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
                     log.debug("still there after trying to get a strategy instance... Instance is " +
                             releaseStrategy==null ? "null" : "not null");
-                    
+
                     //check if we got something
                     if(releaseStrategy != null){
-                        
+
                         result.add(releaseStrategy);
                         log.debug("Successfully created "+releaseStrategy.getName() + " instance");
                     }else{
                         log.error("release strategy instance is null (runtime exception?");
                     }
-                    
+
                 } catch (CacheConfigurationException e1) {
                     // here we throw a runtime exception, becouse there is
-                    // no way we can deal with this error. 
+                    // no way we can deal with this error.
                     log.error("Cache configuration error: " + e1.toString());
                     log.debug("strategy instantiation error: "+e1.toString());
-                    throw new RuntimeException("Cache configuration error: " + 
+                    throw new RuntimeException("Cache configuration error: " +
                             e1.toString());
                 }
             }
         }
         return result;
     }
-    
+
     /**
-     * I moved this code away from <code>configure()</code> just to 
+     * I moved this code away from <code>configure()</code> just to
      * clean up a little, and keep the code readable
      * XXX: Who is I?
      * @param strategyClassName
      * @since 1.8
      */
-    private static AbstractReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException{
+    private static ReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException {
         log.debug("getStrategyInstance()");
         Class strategyClass;
-        AbstractReleaseStrategy strategy = null;
+        ReleaseStrategy strategy = null;
         try {
             strategyClass = Class.forName(strategyClassName);
-            strategy = (AbstractReleaseStrategy) strategyClass.newInstance();
+            strategy = (ReleaseStrategy) strategyClass.newInstance();
             log.debug("created strategy instance: "+strategyClassName);
-            
+
         } catch (ClassCastException e){
             log.debug(strategyClassName + " can not be cast to strategy");
             throw new CacheConfigurationException(strategyClassName + " can not be cast to strategy");
@@ -225,7 +225,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
      * be changed which causes the caches to be reconfigured automaticly.
      */
     private static ResourceWatcher configWatcher = new ResourceWatcher () {
-            public void onChange(String resource) { 
+            public void onChange(String resource) {
                 try {
                     configReader = new XMLBasicReader(ResourceLoader.getConfigurationRoot().getInputSource(resource), Cache.class);
                 } catch (Exception e) {
@@ -356,7 +356,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
         return caches.keySet();
     }
 
-    
+
     public Set entrySet() {
         if (! active) return new HashSet();
         return implementation.entrySet();
@@ -537,7 +537,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
           System.out.println("putting some strings in cache");
           mycache.put("aaa", "AAA"); // 6 bytes
           mycache.put("bbb", "BBB"); // 6 bytes
-          
+
           System.out.println("putting an hashmap in cache");
           Map m = new HashMap();
           m.put("ccc", "CCCCCC");
@@ -549,9 +549,9 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
         MMObjectNode node = new MMObjectNode(new MMObjectBuilder());
         node.setValue("hoi", "hoi");
         mycache.put("node", node);
-        
+
         System.out.println("size of cache: " + mycache.getByteSize());
-        
+
     }
-    
+
 }
