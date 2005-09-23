@@ -223,7 +223,7 @@
       <available file="src/${component}/templates/editwizards/data/config/" />
       <then>
         <foreach target="mergewizards" param="file">
-          <path id="boe">
+          <path>
             <fileset dir="src/${component}/templates/editwizards/data/config/">
               <include name="**/extra_*.xml" />
             </fileset>
@@ -276,25 +276,25 @@
   </target>
 
   <target name="mergewizards">
-            <pathconvert property="cleaned_filename" targetos="unix"> 
-              <path path="${file}" />
-              <mapper>
-                <globmapper from="${basedir}/src/${component}/templates/editwizards/data/config/*" to="*"  />
-              </mapper>
-            </pathconvert>
-            <if>
-              <available file="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
-              <then>
-                <echo>Merging in extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
-                <concat destfile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" append="true">
-                  <path path="${file}" />
-                </concat>
-              </then>
-              <else>
-                <echo>Copying extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
-                <copy file="${file}" tofile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
-              </else>
-            </if>
+    <pathconvert property="cleaned_filename" dirsep="${file.separator}" pathsep="${path.separator}">
+      <path path="${file}" />
+      <mapper>
+        <globmapper from="${basedir}/src/${component}/templates/editwizards/data/config/*" to="*"  />
+      </mapper>
+    </pathconvert>
+    <if>
+      <available file="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+      <then>
+        <echo>Merging in extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
+        <concat destfile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" append="true">
+          <path path="${file}" />
+        </concat>
+      </then>
+      <else>
+        <echo>Copying extra wizards defs for ${component}: ${cleaned_filename} &lt;-- ${file}</echo>
+      <copy file="${file}" tofile="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
+      </else>
+    </if>
   </target>
 
   <target name="javadoc">
