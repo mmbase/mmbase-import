@@ -19,13 +19,14 @@ import org.mmbase.storage.search.Step;
  * the cache in nearly every instance, except when the event is for a step in
  * the <code>SearchQuery</code> that has 'nodes' set for it and the changed
  * node is not one of those. This release strategy is in fact the original one
- * and will allways be the first in the hyrarchy of the
+ * and will allways be the first in the hierarchy of the
  * <code>ChainedReleaseStrategy</code>.
- * 
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
+ * @version $Id: BasicReleaseStrategy.java,v 1.5 2005-09-23 13:59:26 pierre Exp $
  */
-public class BasicReleaseStrategy extends AbstractReleaseStrategy {
+public class BasicReleaseStrategy extends ReleaseStrategy {
 
 
     public BasicReleaseStrategy(){
@@ -36,14 +37,14 @@ public class BasicReleaseStrategy extends AbstractReleaseStrategy {
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
      */
     public String getDescription() {
-        return "This strategy dous exactly what the original cache release "+
+        return "This strategy does exactly what the original cache release "+
             "implementation did. It checks if the step of the query that maches the "+
-            "type of the changed node has 'nodes' set. if it dous, and the changed "+
+            "type of the changed node has 'nodes' set. if it does, and the changed "+
             "node is not one of them, the query should not be flushed from cache";
     }
 
     /* (non-Javadoc)
-     * @see org.mmbase.cache.AbstractReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
+     * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
