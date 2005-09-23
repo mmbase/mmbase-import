@@ -138,10 +138,9 @@
            </copy>
         </then>
          <else>
-            <copy todir="${build.dir}/webapp">
+            <copy todir="${build.dir}/webapp" overwrite="true">
             <fileset dir="src/${component}/templates">
-             <include name="${component}/**"/>
-             <include name="editwizards/**"/>
+             <include name="**"/>
              <exclude name="**/CVS"/>
              <exclude name="templates/**"/>
              <exclude name="editwizards/**/extra_*.xml"/>
