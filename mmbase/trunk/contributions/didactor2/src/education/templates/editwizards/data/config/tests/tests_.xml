@@ -4,6 +4,7 @@
    <!ENTITY extra_loads SYSTEM "extra_loads.xml">
    <!ENTITY extra_steps SYSTEM "extra_steps.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+   <!ENTITY extra_lists SYSTEM "extra_lists.xml">
 ]>
 <wizard-schema id="empty">
     <title>Toets Editor</title>
@@ -151,27 +152,7 @@
 -->
         </list>
 
-        <!-- we need a new list to make an extra search command -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
-            <title>Zoeken op metadata</title>
-            <item displaytype="none"></item>
-
-            <action type="create">
-                <relation role="posrel" destinationtype="questions">
-                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-                </relation>
-            </action>
-
-
-             <command name="search" nodepath="metadata,questions" fields="questions.title,metadata.value" age="-1" orderby="questions.number" directions="down" >
-                <prompt>Zoeken naar vragen op metadata</prompt>
-                <search-filter>
-                    <name>Metadata bevat</name>
-                    <search-fields>metadata.value</search-fields>
-                </search-filter>
-           </command>
-        </list>
-
+        &extra_lists;
 
         <list role="related" extends="config/online/online-list.xml" />
         <list destination="feedback" role="related" extends="config/feedback/feedback-list.xml" />

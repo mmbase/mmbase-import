@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
-<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_steps SYSTEM "extra_steps.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
 <wizard-schema id="empty">
     <title>Videofragment editor</title>
 
@@ -10,34 +15,7 @@
     </action>
     
     <action type="load">
-        <relation destination="metadata" role="related">
-          <object type="metadata">
-           <relation destination="metalangstring" role="posrel">
-              <object type="metalangstring">
-                <field name="number"/>
-                <field name="language"/>
-                <field name="value"/>
-              </object>
-            </relation>
-           <relation destination="metadate" role="posrel">
-              <object type="metadate">
-                <field name="number"/>
-                <field name="value"/>
-              </object>
-            </relation>
-           <relation destination="metavocabulary" role="posrel">
-              <object type="metavocabulary">
-                <field name="number"/>
-                <field name="value"/>
-              </object>
-            </relation>
-            <relation destination="metadefinition" role="related">
-              <object type="metadefinition">
-                <relation destination="metavocabulary" role="related"/>
-              </object>
-            </relation>
-            </object>
-        </relation>
+      &extra_loads;
     </action>
 
     <action type="delete"/>
@@ -48,7 +26,7 @@
 
     <steps>
         <step form-schema="step1" />
-        <!-- step form-schema="step2" / -->
+        &extra_steps;
     </steps>
 
     <form-schema id="step1">
@@ -79,10 +57,5 @@
             <description>Verwijst naar een video-fragment</description>
         </field>
     </form-schema>
-    <form-schema id="step2">
-        <title>Metadata invoeren</title>
-        <list extends="config/metadata/metadatalangstring.xml"/>
-        <list extends="config/metadata/metadatadate.xml"/>
-        <list extends="config/metadata/metadatavocabulary.xml"/>
-    </form-schema>
+    &extra_schemas;
 </wizard-schema>
