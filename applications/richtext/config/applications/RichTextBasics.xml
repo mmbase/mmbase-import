@@ -19,6 +19,9 @@
   </neededreldeflist>
 
   <allowedrelationlist>
+    <relation from="blocks"    to="urls"        type="idrel" /><!-- inline urls -->
+    <relation from="blocks"    to="images"      type="idrel" /><!-- inline images -->
+    <relation from="blocks"    to="attachments" type="idrel" /><!-- inline images -->
     <!-- you must create relations from the type containing 'mmxf' fields see e.g. RichText.xml -->
   </allowedrelationlist>
 

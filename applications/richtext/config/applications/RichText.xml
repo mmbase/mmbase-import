@@ -9,6 +9,8 @@
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">segments</builder>
     <builder maintainer="mmbase.org" version="0">categories</builder>
+
+    <builder maintainer="mmbase.org" version="0">indexrel</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
@@ -25,9 +27,6 @@
     <relation from="segments"    to="segments"   type="idrel" /> <!-- cross-references-->
     <relation from="segments"    to="blocks"    type="idrel" /> <!-- notes-->
 
-    <relation from="blocks"    to="urls"        type="idrel" /><!-- inline urls -->
-    <relation from="blocks"    to="images"      type="idrel" /><!-- inline images -->
-    <relation from="blocks"    to="attachments" type="idrel" /><!-- inline images -->
     <relation from="blocks"    to="segments"    type="idrel" /> <!-- cross-references-->
 
 
@@ -41,6 +40,6 @@
 
   <description><![CDATA[Installs a few builders and relations needed for fully fledged 'rich text' in MMBase. You can acquire some sample data by running the documentation import utility]]></description>
 
-  <install-notice><![CDATA[]]></install-notice>
+  <install-notice><![CDATA[Segments, categories, and belonging idrel, index relations were created. ]]></install-notice>
 
 </application>
