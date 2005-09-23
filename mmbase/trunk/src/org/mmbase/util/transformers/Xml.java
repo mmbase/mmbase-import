@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.15 2005-05-29 11:08:21 nico Exp $
+ * @version $Id: Xml.java,v 1.16 2005-09-23 09:18:51 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -57,7 +57,9 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
 
 
     /**
-     * Attributes of XML tags cannot contain quotes.
+     * Attributes of XML tags cannot contain quotes, and also &amp; must be escaped
+     * @param att String representing the attribute
+     * @param quot Which quote (either ' or ")
      */
     public static String XMLAttributeEscape(String att, char quot) {
         if (att == null) return "";
@@ -73,12 +75,18 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                     sb.append("&apos;");
                 }
 
+            } else if (c == '&') {
+                sb.append("&amp;");
             } else {
                 sb.append(c);
             }
         }
         return sb.toString();
     }
+    /**
+     * Attributes of XML tags cannot contain quotes, and also &amp; must be escaped
+     * @param att String representing the attribute
+     */
     public static String XMLAttributeEscape(String att) {
         if (att == null) return "";
         StringBuffer sb = new StringBuffer();
@@ -90,6 +98,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                 sb.append("&quot;");
             } else if (c == '\'')  {
                 sb.append("&apos;");
+            } else if (c == '&') {
+                sb.append("&amp;");
             } else {
                 sb.append(c);
             }
