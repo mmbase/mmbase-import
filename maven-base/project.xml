@@ -292,7 +292,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>mmapps</groupId>
             <artifactId>maven-mmbase-module-plugin</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <type>plugin</type>
             <url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
         </dependency>
