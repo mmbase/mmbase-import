@@ -21,12 +21,13 @@ import org.mmbase.storage.search.Step;
  * to analyze query objecs and cached search results. Feel free to add those In
  * case you miss one developing your own strategies.
  * </p>
- * 
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
+ * @version $Id: ReleaseStrategy.java,v 1.1 2005-09-23 13:59:26 pierre Exp $
  */
 
-public abstract class AbstractReleaseStrategy {
+public abstract class ReleaseStrategy {
 
     private int totalEvaluated = 0, totalPreserved = 0;
 
@@ -36,7 +37,7 @@ public abstract class AbstractReleaseStrategy {
 
     protected String name;
 
-    public AbstractReleaseStrategy(String name) {
+    public ReleaseStrategy(String name) {
         this.name = name;
     }
 
@@ -46,7 +47,7 @@ public abstract class AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#avgEvaluationTimeInMilis()
      */
     public int getAvgEvaluationTimeInMilis() {
@@ -62,7 +63,7 @@ public abstract class AbstractReleaseStrategy {
      * of the operation and updates the statistics.<br/> to implement you own
      * strategy override
      * <code>doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)</code>
-     * 
+     *
      * @see QueryResultCacheReleaseStrategy#evaluate(NodeEvent, SearchQuery,
      *      NodeList)
      */
@@ -82,7 +83,7 @@ public abstract class AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getTotalPreserved()
      */
     public int getTotalPreserved() {
@@ -91,7 +92,7 @@ public abstract class AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getTotalEvaluations()
      */
     public int getTotalEvaluated() {
@@ -100,7 +101,7 @@ public abstract class AbstractReleaseStrategy {
 
     /**
      * implement this method to create your own strategy.
-     * 
+     *
      * @param event (could be a RelationEvent)
      * @param query
      * @param cachedResult
@@ -110,7 +111,7 @@ public abstract class AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -124,7 +125,7 @@ public abstract class AbstractReleaseStrategy {
 
     /**
      * Utility method to get step from a query that the event relates to
-     * 
+     *
      * @param event
      * @param query
      * @return a Step instance or null if the event object type was not found in
@@ -135,8 +136,8 @@ public abstract class AbstractReleaseStrategy {
         String builderName  = event.getNode().getBuilder().getTableName();
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             step = (Step) i.next();
-            if (builderName.equals(step.getTableName())) { 
-                return step; 
+            if (builderName.equals(step.getTableName())) {
+                return step;
             }
         }
         return null;

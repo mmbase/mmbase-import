@@ -26,11 +26,11 @@ import org.mmbase.storage.search.*;
  * This mechanism is not very subtle but it is garanteed to be correct. It means
  * though that your cache can be considerably less effective for queries
  * containing node types from which often node are edited.
- * 
+ *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.16 2005-09-22 15:20:35 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.17 2005-09-23 13:59:26 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -48,7 +48,7 @@ abstract public class QueryResultCache extends Cache {
     /**
      * This is the default release strategy. Actually it is a container for any
      * number of 'real' release strategies
-     * 
+     *
      * @see ChainedReleaseStrategy
      */
     private ChainedReleaseStrategy releaseStrategy;
@@ -57,27 +57,27 @@ abstract public class QueryResultCache extends Cache {
      * Explicitely invalidates all Query caches for a certain builder. This is
      * used in MMObjectBuilder for 'local' changes, to ensure that imediate
      * select after update always works.
-     * 
+     *
      * @return number of entries invalidated
      */
-    public static int invalidateAll(MMObjectNode node, int eventType) { 
-        int result = 0; 
+    public static int invalidateAll(MMObjectNode node, int eventType) {
+        int result = 0;
         MMObjectBuilder builder = node.getBuilder();
-        while (builder != null) { 
-            String tn = builder.getTableName(); 
-            Iterator i = queryCaches.entrySet().iterator(); 
-            while (i.hasNext()) { 
-                Map.Entry entry = (Map.Entry) i.next(); 
-                QueryResultCache cache = (QueryResultCache) entry.getValue(); 
-                // get the Observers for the builder: 
-                Observer observer = (Observer) cache.observers.get(tn); 
-                if (observer != null) { 
+        while (builder != null) {
+            String tn = builder.getTableName();
+            Iterator i = queryCaches.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                QueryResultCache cache = (QueryResultCache) entry.getValue();
+                // get the Observers for the builder:
+                Observer observer = (Observer) cache.observers.get(tn);
+                if (observer != null) {
                     result += observer.nodeChanged(new NodeEvent(node, eventType));
-                } 
-            } 
-            builder = builder.getParentBuilder(); 
-        } 
-        return result; 
+                }
+            }
+            builder = builder.getParentBuilder();
+        }
+        return result;
     }
 
 
@@ -102,8 +102,8 @@ abstract public class QueryResultCache extends Cache {
     public void addReleaseStrategies(List strategies) {
         if (strategies != null) {
             for (Iterator iter = strategies.iterator(); iter.hasNext();) {
-                AbstractReleaseStrategy element = (AbstractReleaseStrategy) iter.next();
-                log.debug(("adding strategy " + element.getName() + " to cache " + getName())); 
+                ReleaseStrategy element = (ReleaseStrategy) iter.next();
+                log.debug(("adding strategy " + element.getName() + " to cache " + getName()));
                 addReleaseStrategy(element);
             }
         }
@@ -115,7 +115,7 @@ abstract public class QueryResultCache extends Cache {
      * is the default base release strategy.
      * @param releaseStrategy A releaseStrategy to add.
      */
-    public void addReleaseStrategy(AbstractReleaseStrategy releaseStrategy) {
+    public void addReleaseStrategy(ReleaseStrategy releaseStrategy) {
         ((ChainedReleaseStrategy) this.releaseStrategy)
             .addReleaseStrategy(releaseStrategy);
     }
@@ -123,7 +123,7 @@ abstract public class QueryResultCache extends Cache {
     /**
      * @return Returns the releaseStrategy.
      */
-    AbstractReleaseStrategy getReleaseStrategy() {
+    ReleaseStrategy getReleaseStrategy() {
         return releaseStrategy;
     }
 
@@ -150,7 +150,7 @@ abstract public class QueryResultCache extends Cache {
     /**
      * Removes an object from the cache. It alsos remove the watch from the
      * observers which are watching this entry.
-     * 
+     *
      * @param key A SearchQuery object.
      */
     public synchronized Object remove(Object key) {
@@ -211,7 +211,7 @@ abstract public class QueryResultCache extends Cache {
 
         /**
          * Creates a multilevel cache observer for the speficied type
-         * 
+         *
          * @param type Name of the builder which is to be observed.
          */
         private Observer(String type) {
@@ -233,7 +233,7 @@ abstract public class QueryResultCache extends Cache {
         /**
          * Start watching the entry with the specified key of this
          * MultilevelCache (for this type).
-         * 
+         *
          * @return true if it already was observing this entry.
          */
         protected synchronized boolean observe(Object key) {
@@ -250,7 +250,7 @@ abstract public class QueryResultCache extends Cache {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.mmbase.core.event.RelationEventListener#notify(org.mmbase.core.event.RelationEvent)
          */
         public void notify(RelationEvent event) {
@@ -269,7 +269,7 @@ abstract public class QueryResultCache extends Cache {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
          */
         public Properties getConstraintsForEvent(Event event) {
@@ -278,7 +278,7 @@ abstract public class QueryResultCache extends Cache {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
          */
         public void notify(NodeEvent event) {
@@ -302,7 +302,7 @@ abstract public class QueryResultCache extends Cache {
             synchronized (QueryResultCache.this) {
                 for (Iterator i = cacheKeys.iterator(); i.hasNext();) {
                     SearchQuery key = (SearchQuery) i.next();
-                    AbstractReleaseStrategy.StrategyResult result = releaseStrategy.evaluate(event, key, (List) get(key));
+                    ReleaseStrategy.StrategyResult result = releaseStrategy.evaluate(event, key, (List) get(key));
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();
@@ -312,7 +312,7 @@ abstract public class QueryResultCache extends Cache {
                     }
                     totalEvaluationTime += result.getCost();
                 }
-                
+
                 // ernst: why is this in a separate loop?
                 // why not chuck em out in the first one?
 

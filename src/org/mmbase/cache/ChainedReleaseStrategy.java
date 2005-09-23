@@ -13,15 +13,16 @@ import org.mmbase.core.event.NodeEvent;
 import org.mmbase.storage.search.SearchQuery;
 
 /**
- * This class will manage a collection of <code>AbstractReleaseStrategy</code>
- * instances, and call them hyrarchically. It is not really thread safe, but i
- * suppose the cost of synchronizing access to the list of strategies dous not
+ * This class will manage a collection of <code>ReleaseStrategy</code>
+ * instances, and call them hierarchically. It is not really thread safe, but I
+ * suppose the cost of synchronizing access to the list of strategies does not
  * weigh up to the benefit.
- * 
+ *
  * @since MMBase-1.8
  * @author Ernst Bunders
+ * @version $Id: ChainedReleaseStrategy.java,v 1.4 2005-09-23 13:59:26 pierre Exp $
  */
-public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
+public class ChainedReleaseStrategy extends ReleaseStrategy {
 
     private Map cacheReleaseStrategies = new HashMap(10);
 
@@ -37,15 +38,15 @@ public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
     /**
      * Adds the strategy if it is not allerady there. Strategies should only
      * occure once.
-     * 
+     *
      * @param strategy
      */
-    public void addReleaseStrategy(AbstractReleaseStrategy strategy) {
+    public void addReleaseStrategy(ReleaseStrategy strategy) {
         if (cacheReleaseStrategies.get(strategy.getName()) == null)
             cacheReleaseStrategies.put(strategy.getName(), strategy);
     }
 
-    public void removeReleaseStrategy(AbstractReleaseStrategy strategy) {
+    public void removeReleaseStrategy(ReleaseStrategy strategy) {
         if (!strategy.getName().equals(basicStrategyName)) {
             cacheReleaseStrategies.remove(strategy.getName());
         }
@@ -53,8 +54,8 @@ public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.mmbase.cache.AbstractReleaseStrategy#getName()
+     *
+     * @see org.mmbase.cache.ReleaseStrategy#getName()
      */
     public String getName() {
         return "Multi Release Strategy";
@@ -62,8 +63,8 @@ public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.mmbase.cache.AbstractReleaseStrategy#getDescription()
+     *
+     * @see org.mmbase.cache.ReleaseStrategy#getDescription()
      */
     public String getDescription() {
         return "This is a wrapper for any number of strategies you would like to "
@@ -82,8 +83,8 @@ public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.mmbase.cache.AbstractReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
+     *
+     * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
     public boolean doEvaluate(NodeEvent event, SearchQuery query,
@@ -91,13 +92,13 @@ public class ChainedReleaseStrategy extends AbstractReleaseStrategy {
         // first do the 'basic' strategy that is allways there. (see
         // constructor)
         Iterator i = cacheReleaseStrategies.values().iterator();
-        StrategyResult result = ((AbstractReleaseStrategy) i.next()).evaluate(
+        StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(
             event, query, cachedResult);
 
         // while the outcome of getResult is true (the cache should be fluhed),
         // we have to keep trying.
         while (i.hasNext() && result.shouldRelease() == true) {
-            result = ((AbstractReleaseStrategy) i.next()).evaluate(event,
+            result = ((ReleaseStrategy) i.next()).evaluate(event,
                 query, cachedResult);
         }
         return result.shouldRelease();
