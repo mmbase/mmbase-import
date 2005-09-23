@@ -18,7 +18,6 @@
     <action type="load">
         <relation destination="couplinganswers" role="related" />
         <relation destination="feedback" role="related" />
-        <relation destination="metadata" role="related"/>
         &extra_loads;
     </action>
 
