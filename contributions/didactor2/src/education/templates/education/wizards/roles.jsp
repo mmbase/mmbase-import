@@ -10,7 +10,7 @@
 
 <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 
-<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" /></mm:import>
+<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp</mm:import>
 <mm:import externid="command">-1</mm:import>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -79,7 +79,7 @@
                      <td class="tightborder">&nbsp;</td>
                 <% } %>
               </mm:islessthan>
-              <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>?wizard=config/role/roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
+              <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>&wizard=config/role/roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
                                           alt="<fmt:message key="createNewRole"/>"/></a></td>
             </tr>
             <% String sSelectName = ""; %>
