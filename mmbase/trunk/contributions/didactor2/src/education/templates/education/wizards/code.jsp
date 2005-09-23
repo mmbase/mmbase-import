@@ -13,13 +13,6 @@
   String sAltText = "";
 %>
 
-<%
-  if(session.getAttribute("education_topmenu_mode") == null) {
-    //Default active element in education top menu
-    session.setAttribute("education_topmenu_mode", "components");
-  }
-%>
-
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
@@ -43,7 +36,7 @@
    <mm:import externid="showcode">false</mm:import>
    <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp</mm:import>
    <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" />?a=1</mm:import>
-   <mm:import id="education_top_menu"><%= session.getAttribute("education_topmenu_mode") %></mm:import>
+   <mm:import externid="mode">components</mm:import>
       <mm:node number="component.pdf" notfound="skip">
          <mm:relatednodes type="providers" constraints="providers.number=$provider">
             <mm:import id="pdfurl"><mm:treefile write="true" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
@@ -122,7 +115,7 @@
 
 
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="components">
+<mm:compare referid="mode" value="components">
    <% //----------------------- Components come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -139,7 +132,7 @@
 
 
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="roles">
+<mm:compare referid="mode" value="roles">
    <% //----------------------- Roles come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">rollen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -225,11 +218,8 @@
 </mm:compare>
 </fmt:bundle>
 
-
-
-
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="content_metadata">
+<mm:compare referid="mode" value="content_metadata">
    <% //----------------------- Metadata for components comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -308,11 +298,8 @@
 </mm:compare>
 </fmt:bundle>
 
-
-
-
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="filemanagement">
+<mm:compare referid="mode" value="filemanagement">
    <% //----------------------- Filemanagement comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -342,11 +329,8 @@
 </mm:compare>
 </fmt:bundle>
 
-
-
-
 <fmt:bundle basename="<%= bundleCompetence %>">
-<mm:compare referid="education_top_menu" value="competence">
+<mm:compare referid="mode" value="competence">
    <% //----------------------- Competence comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">competentie</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -463,7 +447,7 @@
 
 
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="metadata">
+<mm:compare referid="mode" value="metadata">
    <% //----------------------- Metadata comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">metadata</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -597,7 +581,7 @@
 
 
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="tests">
+<mm:compare referid="mode" value="tests">
    <% //----------------------- Tests come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -761,7 +745,7 @@
 
 
 <fmt:bundle basename="<%= bundleEducation %>">
-<mm:compare referid="education_top_menu" value="educations">
+<mm:compare referid="mode" value="educations">
    <% //----------------------- Educations come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
