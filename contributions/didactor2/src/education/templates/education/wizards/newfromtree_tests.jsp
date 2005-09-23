@@ -74,7 +74,7 @@
                   %>
 
                   <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><fmt:message key="<%= arrstrNames[f] %>"/></a></nobr></td>
+                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><fmt:message key="<%= arrstrNames[f] %>"/></a></nobr></td>
                </tr>
             </table>
          <%
