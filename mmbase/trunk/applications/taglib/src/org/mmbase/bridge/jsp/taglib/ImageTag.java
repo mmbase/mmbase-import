@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.60 2005-09-21 22:38:19 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.61 2005-09-23 09:21:51 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -156,9 +156,9 @@ public class ImageTag extends FieldTag {
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             String alt;
             if (node.getNodeManager().hasField("title")) {
-                alt = node.getStringValue("title"); // escaper?
+                alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("title"));
             } else if (node.getNodeManager().hasField("name")) {
-                alt = node.getStringValue("name"); // escaper?
+                alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("name"));
             } else {
                 alt = null;
             }
