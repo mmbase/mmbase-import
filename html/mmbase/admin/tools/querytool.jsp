@@ -10,6 +10,10 @@
     <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
   </head>
   <body>
+    <%
+    // if (true) {
+    if (false) {
+    %>
     <mm:import externid="submit" />
     <mm:import externid="query" jspvar="sqlString" vartype="string" />
     <form method="post">
@@ -66,6 +70,9 @@
         %>        
       </table>
     </mm:present>    
+    <%} else {%>
+    <h1>Disabled, change JSP to switch this feature on</h1>
+    <% } %>
   </body>
 </html>
 </mm:cloud>
