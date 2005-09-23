@@ -10,18 +10,6 @@
    <%
       //education-people connector
       EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
-
-      if(request.getParameter("mode") != null) {
-         session.setAttribute("education_topmenu_mode", request.getParameter("mode"));
-      }
-
-      if(request.getParameter("course") != null) {
-         session.setAttribute("education_topmenu_course", request.getParameter("course"));
-      }
-
-      if(session.getAttribute("education_topmenu_mode") == null) {//Default active element in education top menu
-         session.setAttribute("education_topmenu_mode", "components");
-      }
    %>
 
    <style type="text/css">
@@ -33,7 +21,7 @@
      }
    </style>
 
-   <mm:import id="education_top_menu"><%= session.getAttribute("education_topmenu_mode") %></mm:import>
+   <mm:import externid="mode">components</mm:import>
    <%
       HashSet hsetEducations = null;
    %>
@@ -57,7 +45,7 @@
      <a href="?mode=roles" style="font-weight:bold;"><fmt:message key="educationMenuPersons"/></a>
    </mm:islessthan>
 
-   <mm:node number="component.pop" notfound="skip">
+   <mm:node number="component.pop" notfound="skipbody">
      <%// A user will see a Competence submenu only if POP component is switched ON %>
      <mm:relatednodes type="providers" constraints="providers.number=$provider">
        <mm:import id="editcontextname" reset="true">competentie</mm:import>
@@ -68,11 +56,13 @@
      </mm:relatednodes>
    </mm:node>
 
-   <mm:import id="editcontextname" reset="true">metadata</mm:import>
-   <%@include file="/education/wizards/roles_chk.jsp" %>
-   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=metadata" style="font-weight:bold;"><fmt:message key="educationMenuMetadata"/></a>
-   </mm:islessthan>
+   <mm:node number="component.metadata" notfound="skipbody">
+     <mm:import id="editcontextname" reset="true">metadata</mm:import>
+     <%@include file="/education/wizards/roles_chk.jsp" %>
+     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+       <a href="?mode=metadata" style="font-weight:bold;"><fmt:message key="educationMenuMetadata"/></a>
+     </mm:islessthan>
+   </mm:node>
 
    <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
@@ -113,7 +103,7 @@
            String sEducationID = (String) it.next();
            %>
            <option 
-              <% if((session.getAttribute("education_topmenu_course") != null) && (session.getAttribute("education_topmenu_course").equals(sEducationID))) out.print(" selected=\"selected\" "); %> 
+              <% if((request.getParameter("education_topmenu_course") != null) && (request.getParameter("education_topmenu_course").equals(sEducationID))) out.print(" selected=\"selected\" "); %> 
               value="<%=sEducationID%>">
                 <mm:node number="<%=sEducationID%>"><mm:field name="name"/></mm:node>
            </option>
