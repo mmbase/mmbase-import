@@ -38,6 +38,12 @@
   
   <!-- M$ SQL Server -->
   <filter resource="storage/databases/mssql.xml">
-    <driver-class>com.microsoft.jdbc.sqlserver</driver-class>
+	<driver-class>com.microsoft.jdbc.sqlserver</driver-class>
   </filter>
+
+  <!-- Oracle -->
+  <filter resource="storage/databases/oracle.xml">
+	<driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
+  </filter>
+
 </database-filters>
