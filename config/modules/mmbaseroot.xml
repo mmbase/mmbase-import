@@ -56,9 +56,17 @@
   <!--
   name="storagemanagerfactory" defines what factory to use for accessing the storage devices.
   Currently. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices using JDBC.
-  Comment this property to use the old database support classes (which are deprecated).
   -->
   <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
+  
+  <!-- 
+  name="datasource-context" defines the jndi context.
+  name="datasource" defines the jndi name of the datasource is bounded to
+  The Database connections will be retrieved from the application server, so the application-server
+  should define a resource for this. 
+  -->
+  <!-- property name="datasource-context">java:comp/env</property -->
+  <!-- property name="datasource">jdbc/MMBase</property -->
 
   <!--
   name="database" defines which database we are using as defined in your config
@@ -79,9 +87,6 @@
             PostgrSQL:      postgresql71
             HyperSonic:     hypersonic
   -->
-        <!--
-            TODO: Why is this setting not in the jdbc.xml?
-        -->
   <!-- property name="database">mysql</property -->
 
   <!--
