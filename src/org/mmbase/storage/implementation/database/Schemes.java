@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.17 2005-09-21 21:17:51 michiel Exp $
+ * @version $Id: Schemes.java,v 1.18 2005-09-24 16:42:17 nklasens Exp $
  */
 public final class Schemes {
 
@@ -533,5 +533,23 @@ public final class Schemes {
      *  The default scheme for deleting a constraint.
      */
     public static final String DELETE_CONSTRAINT_DEFAULT = "ALTER TABLE {1} DROP CONSTRAINT {2}";
+
+    /**
+     *  Name of the scheme for creeating a view.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the view name of the builder to create the view for</li>
+     *    <li>{2} the table name of the builder to create the view for</li>
+     *    <li>{3} the fields in view</li>
+     *    <li>{4} the fields from tables</li>
+     *    <li>{5} the number field</li>
+     *    <li>{6} the table name of the builder that this table extends from</li>
+     *    <li>{7} the database name or catalog</li>
+     *  </ul>
+     */
+    public static final String CREATE_VIEW = "create-view-scheme";
+    public static final String CREATE_VIEW_DEFAULT = "CREATE OR REPLACE VIEW (1) ((3)) AS " +
+                                                        "SELECT (4) FROM (2) WHERE (2).(5) = (6).(5)";
 
 }
