@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.44 2005-09-15 15:54:08 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.45 2005-09-26 09:29:40 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -109,7 +109,12 @@ public class StringHandler extends AbstractTypeHandler {
                     if (guiType.indexOf("confirmpassword") > -1) {
                         value = " ";
                     } else {
-                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
+                        if (node != null) {
+                            value = tag.decode(node.getStringValue(field.getName()), node);
+                        } else {
+                            value = tag.decode(org.mmbase.util.Casting.toString(field.getDataType().getDefaultValue()), null);
+                        }
+                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", value) : "";
                     }
                 }
                 buffer.append(prefix(field.getName()));
