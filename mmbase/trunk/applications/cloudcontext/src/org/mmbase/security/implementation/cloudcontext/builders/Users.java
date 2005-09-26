@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.37 2005-05-08 13:29:02 michiel Exp $
+ * @version $Id: Users.java,v 1.38 2005-09-26 11:36:47 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -499,19 +499,18 @@ public class Users extends MMObjectBuilder {
             int nodeNumber = Integer.parseInt(number);
             invalidateCaches(nodeNumber);
         } else if (ctype.equals("r")) {
-            MMObjectNode node = getNode(number);
+            int nodeNumber = Integer.parseInt(number);
             Map ranks = new HashMap();
             Iterator i = rankCache.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
                 MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
-                if (cacheNode.getNumber() == node.getNumber()) {
+                if (cacheNode.getNumber() == nodeNumber) {
                     i.remove();
                 }
             }
-        } else if (ctype.equals("c") || ctype.equals("r")) {
+        } else if (ctype.equals("c")) {
             MMObjectNode node = getNode(number);
-
             Map ranks = new HashMap();
             Iterator i = rankCache.entrySet().iterator();
             while (i.hasNext()) {
