@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.320 2005-09-21 19:44:12 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.321 2005-09-26 11:48:13 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3793,6 +3793,18 @@ like the parameter list or the session (where ever it is available) --&gt;
       <info>
         Whether or not to produce fully qualified absolute URL's. (http://myhost.nl/context/..). Defaults to false.        
       </info>
+      <possiblevalue>
+        <value>false</value>
+        <info>Does nothing special to the url. If 'page' starts with '/' the context is prefixed.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>true</value>
+        <info>Makes the URL absolute, so it starts with something like http:</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>server</value>
+        <info>Makes the URL abslute on the server, so it starts with /.</info>
+      </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
     <example>
