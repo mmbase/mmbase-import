@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.61 2005-09-22 19:52:09 ernst Exp $
+ * @version $Id: TypeRel.java,v 1.62 2005-09-26 14:57:06 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -118,8 +118,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             MMObjectNode typerel = (MMObjectNode) iter.next();
             addCacheEntry(typerel, buildersInitialized);
         }
-        log.debug("Done reading typerel cache " + (buildersInitialized ? "(considered inheritance)" : "") + ": "
-            + typeRelNodes);
+        log.debug("Done reading typerel cache " + (buildersInitialized ? "(considered inheritance)" : "") + ": " + typeRelNodes);
     }
 
     /**
@@ -130,9 +129,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
     protected TypeRelSet addCacheEntry(MMObjectNode typeRel, boolean buildersInitialized) {
 
-        TypeRelSet added = new TypeRelSet(); // store temporary, which will
-        // enable nice logging of what
-        // happened
+        TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
 
         // Start to add the actual definition, this is then afterwards again,
         // except if one of the builders could not be found
@@ -156,23 +153,22 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             MMObjectBuilder sourceBuilder = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
 
             String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
-            MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb
-                .getBuilder(destinationBuilderName) : null;
+            MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
 
             if (sourceBuilder == null) {
                 if (destinationBuilder == null) {
                     log.warn("Both source and destination of " + typeRel
-                        + " are not active builders. Cannot follow descendants.");
+                             + " are not active builders. Cannot follow descendants.");
                 } else {
                     log.warn("The source of relation type " + typeRel
-                        + " is not an active builder. Cannot follow descendants.");
+                             + " is not an active builder. Cannot follow descendants.");
                 }
                 break inheritance;
             }
 
             if (destinationBuilder == null) {
                 log.warn("The destination of relation type " + typeRel
-                    + " is not an active builder. Cannot follow descendants.");
+                         + " is not an active builder. Cannot follow descendants.");
                 break inheritance;
             }
 
@@ -212,8 +208,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             added.add(typeRel); // replaces the ones added in the 'inheritance'
             // loop (so now not any more Virtual)
         }
-        typeRelNodes.addAll(added);
-        if (bidirectional) inverseTypeRelNodes.addAll(added);
+        Iterator i = added.iterator();
+        while (i.hasNext()) {
+            MMObjectNode node = (MMObjectNode) i.next();
+            if (! node.isVirtual()) { 
+                // make sure 'real' nodes replace virtual nodes. (real and virtual nodes are equal, so will not be added to set otherwise)
+                // This is especially essential whey you use STRICT in contains
+                typeRelNodes.remove(node);
+                if (bidirectional) inverseTypeRelNodes.remove(node);
+            }
+            typeRelNodes.add(node);
+            if (bidirectional) inverseTypeRelNodes.add(node);
+        }
         if (log.isDebugEnabled()) {
             log.debug("Added to typerelcache: " + added);
         }
@@ -235,10 +241,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         int dnumber = node.getIntValue("dnumber");
         int rnumber = node.getIntValue("rnumber");
         if (contains(snumber, dnumber, rnumber, STRICT)) {
-            log.error("The typerel with snumber=" + snumber + ", dnumber=" + dnumber + ", rnumber=" + rnumber
-                + " already exists");
+            log.error("The typerel with snumber=" + snumber + ", dnumber=" + dnumber + ", rnumber=" + rnumber + " already exists");
             throw new RuntimeException("The typerel with snumber=" + snumber + ", dnumber=" + dnumber + ", rnumber="
-                + rnumber + " already exists");
+                                       + rnumber + " already exists");
         }
         int res = super.insert(owner, node);
         return res;
@@ -477,19 +482,22 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
     public boolean contains(int n1, int n2, int r, int restriction) {
         switch (restriction) {
-            case INCLUDE_DESCENDANTS:
-                return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-            case INCLUDE_PARENTS:
-                return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-            case INCLUDE_PARENTS_AND_DESCENDANTS:
-                return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r))
-                    || parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-            default: // STRICT
-                SortedSet existingNodes = typeRelNodes.getBySourceDestinationRole(n1, n2, r);
-                return (existingNodes.size() > 0 && !((MMObjectNode) existingNodes.first()).isVirtual());
+        case INCLUDE_DESCENDANTS:
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        case INCLUDE_PARENTS:
+            return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        case INCLUDE_PARENTS_AND_DESCENDANTS:
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r))
+                || parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        case STRICT:
+            SortedSet existingNodes = typeRelNodes.getBySourceDestinationRole(n1, n2, r);
+            return (existingNodes.size() > 0 && !((MMObjectNode) existingNodes.first()).isVirtual());
+        default:
+            log.error("Unknown restriction " + restriction);
+            return false;
         }
     }
-
+    
     /**
      * Watch for changes on relation types and adjust our memory table accordingly
      * @todo Should update artCache en relDefCorrectCache as wel
@@ -620,7 +628,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             String source = snumber > -1 ? sourceName : "[unfilled]";
             String destination = dnumber > -1 ? destName : "[unfilled]";
             MMObjectNode role = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
-            return source + "->" + destination + " (" + (role != null ? role.getStringValue("sname") : "???") + ")";
+            return source + "->" + destination + " (" + (role != null ? role.getStringValue("sname") : "???") + ") " + (isVirtual() ? "(virtual)" : "");
         } catch (Exception e) {
             log.warn(e);
         }
@@ -640,7 +648,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         VirtualTypeRel(TypeRel t) {
             mmb = t.mmb;
             CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN,
-                Field.STATE_PERSISTENT, null);
+                                                 Field.STATE_PERSISTENT, null);
             field.setEditPosition(2);
             field.finish();
             addField(field);
@@ -671,6 +679,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
     protected class TypeRelSet extends TreeSet {
         protected TypeRelSet() {
+
             super(new Comparator() {
                 // sorted by source, destination, role
                 public int compare(Object o1, Object o2) {
@@ -702,27 +711,27 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // find some subsets:
         SortedSet getBySource(MMObjectBuilder source) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.oType),
-                new VirtualTypeRelNode(source.oType + 1)));
+                                                            new VirtualTypeRelNode(source.oType + 1)));
         }
 
         SortedSet getBySource(int sourceOType) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceOType),
-                new VirtualTypeRelNode(sourceOType + 1)));
+                                                            new VirtualTypeRelNode(sourceOType + 1)));
         }
 
         SortedSet getBySourceDestination(int source, int destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination),
-                new VirtualTypeRelNode(source, destination + 1)));
+                                                            new VirtualTypeRelNode(source, destination + 1)));
         }
 
         SortedSet getBySourceDestination(MMObjectBuilder source, MMObjectBuilder destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.oType, destination.oType),
-                new VirtualTypeRelNode(source.oType, destination.oType + 1)));
+                                                            new VirtualTypeRelNode(source.oType, destination.oType + 1)));
         }
 
         SortedSet getBySourceDestinationRole(int source, int destination, int role) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, role),
-                new VirtualTypeRelNode(source, destination, role + 1)));
+                                                            new VirtualTypeRelNode(source, destination, role + 1)));
         }
     }
 
@@ -750,8 +759,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
                     i1 = n1.getIntValue("rnumber");
                     i2 = n2.getIntValue("rnumber");
-                    if (i1 != i2) return i1 - i2;
-
+                    if (i1 != -1 && i2 != -1 && i1 != i2) return i1 - i2;
                     return 0;
                 }
             });
@@ -764,27 +772,27 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
         SortedSet getByDestination(MMObjectBuilder destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(-1, destination.oType),
-                new VirtualTypeRelNode(-1, destination.oType + 1)));
+                                                            new VirtualTypeRelNode(-1, destination.oType + 1)));
         }
 
         SortedSet getByDestination(int destinationOType) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(-1, destinationOType),
-                new VirtualTypeRelNode(-1, destinationOType + 1)));
+                                                            new VirtualTypeRelNode(-1, destinationOType + 1)));
         }
 
         SortedSet getByDestinationSource(int source, int destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination),
-                new VirtualTypeRelNode(source + 1, destination)));
+                                                            new VirtualTypeRelNode(source + 1, destination)));
         }
 
         SortedSet getByDestinationSource(MMObjectBuilder source, MMObjectBuilder destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.oType, destination.oType),
-                new VirtualTypeRelNode(source.oType + 1, destination.oType)));
+                                                            new VirtualTypeRelNode(source.oType + 1, destination.oType)));
         }
 
         SortedSet getByDestinationSourceRole(int source, int destination, int role) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, role),
-                new VirtualTypeRelNode(source, destination, role + 1)));
+                                                            new VirtualTypeRelNode(source, destination, role + 1)));
         }
     }
 
