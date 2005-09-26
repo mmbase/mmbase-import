@@ -17,7 +17,6 @@ import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.clustering.ChangeManager;
-import org.mmbase.clustering.MMBaseChangeDummy;
 import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.core.CoreField;
 
@@ -37,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.17 2005-09-20 17:51:05 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.18 2005-09-26 20:05:49 ernst Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -159,7 +158,7 @@ public abstract class StorageManagerFactory {
         disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         typeMappings = Collections.synchronizedList(new ArrayList());
         MMBaseChangeInterface mmc = initializeClustering(mmbase.getInitParameter("CLUSTERING"));
-        mmc.init(mmbase);
+        if(mmc != null) mmc.init(mmbase);
         changeManager = new ChangeManager(mmc);
         try {
             log.service("loading Storage Manager factory " + this.getClass().getName());
@@ -187,11 +186,13 @@ public abstract class StorageManagerFactory {
                 mmc = (MMBaseChangeInterface) newclass.newInstance();
             } catch (Exception e) {
                 log.error("Failed to start MMBaseChangeInterface: " + e.getMessage());
-                mmc = new MMBaseChangeDummy();
+                mmc = null;
             }
         } else {
             log.debug("Not starting MMBaseChangeInterface");
-            mmc = new MMBaseChangeDummy();
+            //we don't need this anymore
+            //mmc = new MMBaseChangeDummy();
+            mmc = null;
         }
         return mmc;
     }
