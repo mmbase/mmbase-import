@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *  
  * @author Nico Klasens
  * @author Michiel Meeuwissen
- * @version $Id: ClusterManager.java,v 1.9 2005-09-20 20:32:09 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.10 2005-09-26 11:46:37 michiel Exp $
  */
 public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
 
@@ -82,7 +82,7 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
     /**
      * Starts the Changer Thread.
      */
-    public void start() {
+    protected void start() {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this, "ClusterManager");
@@ -94,12 +94,13 @@ public abstract class ClusterManager implements Runnable, MMBaseChangeInterface 
     /**
      * Stops the ClusterManager.
      */
+    /*
     public void stop() {
         stopCommunicationThreads();
-        /* Stop thread */
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
+    */
     
     
     // javadoc inherited
