@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.72 2005-09-21 19:44:11 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.73 2005-09-26 11:48:13 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -164,28 +164,35 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                     page = new File(requestURI).getName();
                 }
                 
-            } else {
-                if (absolute.getBoolean(this, false)) {
+            }
+            String abs = absolute.getString(this);
+            if (abs.equals("")) abs = "false";
+            if (! abs.equals("false")) {
+                if (abs.equals("true")) {
                     show.append(req.getScheme()).append("://");
                     show.append(req.getServerName());
                     int port = req.getServerPort();
                     show.append(port == 80 ? "" : ":" + port);
-                    show.append(req.getContextPath());
-                    if (page.charAt(0) != '/') {
-                        String thisDir = new java.io.File(req.getServletPath()).getParent();
+                } else if (abs.equals("server")) {
+                    //show.append("/");
+                } else {
+                    throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false' or 'server')");
+                }
+                show.append(req.getContextPath());
+                if (page.charAt(0) != '/') {
+                    String thisDir = new java.io.File(req.getServletPath()).getParent();
                         show.append(thisDir);
                         show.append('/');
-                    }
-                    if (page.equals(".")) page = "";
+                }
+                if (page.equals(".")) page = "";
+            } else {
+                if (doMakeRelative()) { 
+                    show.append(page);
+                    page = "";
+                    makeRelative(show);
                 } else {
-                    if (doMakeRelative()) { 
-                        show.append(page);
-                        page = "";
-                        makeRelative(show);
-                    } else {
-                        if (addContext() && page.charAt(0) == '/') { // absolute on servletcontex
-                            show.append(req.getContextPath());
-                        }
+                    if (addContext() && page.charAt(0) == '/') { // absolute on servletcontex
+                        show.append(req.getContextPath());
                     }
                 }
             }
