@@ -21,13 +21,15 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.5 2005-09-21 08:22:34 ernst Exp $
+ * @version $Id: ChangeManager.java,v 1.6 2005-09-26 20:05:49 ernst Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
 
     // the class to broadcast changes with
     private MMBaseChangeInterface mmc;
+    
+    private MMBase mmbase;
 
     /**
      * Constructor.
@@ -35,6 +37,7 @@ public final class ChangeManager {
      */
     public ChangeManager(MMBaseChangeInterface m) {
         mmc = m;
+        mmbase = MMBase.getMMBase();
     }
 
     /**
@@ -55,39 +58,39 @@ public final class ChangeManager {
 
     /**
      * Commits the change to a node.
-     * Clears the change status of a node, then broadcasts changes to the
-     * node's parent builder. If the node is a relation, it also updates the relationcache and
-     * broadcasts these changes to the relation' s source and destination.
+     * Fires the node change events through MMBase.propagateEvent() for all
+     * local listeners. then calls the MMBaseChangeInterface implementation
+     * (if there is one) to propagate the event into the clustering system.
+     * Finally clears 'changed' state on the node
      * @param node the node to commit the change of
      * @param change the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
      */
     public void commit(MMObjectNode node, String change) {
-        //node.clearChanged();
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges()) {
-           mmc.changedNode(new NodeEvent(node, mapEventType(change)));
-           if (builder instanceof InsRel) {
-               // figure out tables to send the changed relations
-               mmc.changedNode(new RelationEvent(node, mapEventType(change)));
+            NodeEvent event = new RelationEvent(node, NodeEvent.oldTypeToNewType(change));
+ 
+            //regardless of wether this is a relatione event we fire a node event first
+            mmbase.propagateEvent(event);
+            
+            //now if we have a MMBaseChangeManager send the event into the clustering system
+            if (mmc != null) mmc.changedNode(event);
+            
+            //if the changed node is a relation, we fire a relation event as well
+            if(builder instanceof InsRel) {
+                RelationEvent relEvent = new RelationEvent(node, NodeEvent.oldTypeToNewType(change));
+                
+                //the relation event broker will make shure that listeners
+                //for node-relation changes to a specific builder, will be
+                //notified if this builder is either source or destination type
+                //in the relation event
+                mmbase.propagateEvent(relEvent);
+                
+                // now if we have a MMBaseChangeManager send the event into the clustering system
+               if(mmc != null) mmc.changedNode((RelationEvent)event);
+            }
 
-           }
         }
         node.clearChanged();
-    }
-
-    /**
-     * @param change
-     * @return
-     */
-    private int mapEventType(String change) {
-        if("c".equals(change)){
-            return NodeEvent.EVENT_TYPE_CHANGED;
-        } else if("d".equals(change)){
-            return NodeEvent.EVENT_TYPE_DELETE;
-        } else if ("n".equals(change)){
-            return NodeEvent.EVENT_TYPE_NEW;
-        }
-        //this should never happen. But what to do when it does?
-        throw new IllegalArgumentException("change type "+change+" is not supported");
     }
 }

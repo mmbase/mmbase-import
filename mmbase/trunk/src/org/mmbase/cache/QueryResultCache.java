@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.17 2005-09-23 13:59:26 pierre Exp $
+ * @version $Id: QueryResultCache.java,v 1.18 2005-09-26 20:05:49 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -60,25 +60,25 @@ abstract public class QueryResultCache extends Cache {
      *
      * @return number of entries invalidated
      */
-    public static int invalidateAll(MMObjectNode node, int eventType) {
-        int result = 0;
-        MMObjectBuilder builder = node.getBuilder();
-        while (builder != null) {
-            String tn = builder.getTableName();
-            Iterator i = queryCaches.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                QueryResultCache cache = (QueryResultCache) entry.getValue();
-                // get the Observers for the builder:
-                Observer observer = (Observer) cache.observers.get(tn);
-                if (observer != null) {
-                    result += observer.nodeChanged(new NodeEvent(node, eventType));
-                }
-            }
-            builder = builder.getParentBuilder();
-        }
-        return result;
-    }
+//    public static int invalidateAll(MMObjectNode node, int eventType) {
+//        int result = 0;
+//        MMObjectBuilder builder = node.getBuilder();
+//        while (builder != null) {
+//            String tn = builder.getTableName();
+//            Iterator i = queryCaches.entrySet().iterator();
+//            while (i.hasNext()) {
+//                Map.Entry entry = (Map.Entry) i.next();
+//                QueryResultCache cache = (QueryResultCache) entry.getValue();
+//                // get the Observers for the builder:
+//                Observer observer = (Observer) cache.observers.get(tn);
+//                if (observer != null) {
+//                    result += observer.nodeChanged(new NodeEvent(node, eventType));
+//                }
+//            }
+//            builder = builder.getParentBuilder();
+//        }
+//        return result;
+//    }
 
 
     // Keep a map of the existing Observers, for each nodemanager one.

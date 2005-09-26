@@ -31,9 +31,9 @@ import org.mmbase.util.logging.Logging;
  *  
  * @author Nico Klasens
  * @author Michiel Meeuwissen
- * @version $Id: ClusterManager.java,v 1.10 2005-09-26 11:46:37 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.11 2005-09-26 20:05:49 ernst Exp $
  */
-public abstract class ClusterManager implements Runnable, MMBaseChangeInterface {
+public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
