@@ -26,6 +26,19 @@
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
   
+    <tstamp>
+        <format property="war.time" pattern="hh:mm aa, dd MMMM yyyy" locale="en"/>
+    </tstamp>
+    <replace file="${build.dir}/webapp/version.jsp"
+             token="$${war.name}"
+             value="${war.name}"/>
+    <replace file="${build.dir}/webapp/version.jsp"
+             token="$${components}"
+             value="${components}"/>
+    <replace file="${build.dir}/webapp/version.jsp"
+             token="$${war.time}"
+             value="${war.time}"/>
+
     <replace file="${build.config.dir}/log/log4j.xml"
              token="$${mmbase.logdir}"
              value="${mmbase.logdir}"/>
