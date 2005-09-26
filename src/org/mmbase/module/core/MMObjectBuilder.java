@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.338 2005-09-22 19:54:45 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.339 2005-09-26 20:05:49 ernst Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -623,7 +623,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // it is in the storage now, all caches can allready be invalidated, this makes sure
         // that imediate 'select' after 'insert' will be correct'.
         //xxx: this is bad.let's kill it!
-        QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_NEW);
+        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_NEW);
         if (n <= 0) {
             log.warn("Did not get valid nodeNumber of storage " + n);
         }
@@ -660,7 +660,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         mmb.getStorageManager().change(node);
         // change is in storage, caches can be invalidated immediately
         //bad! bad!
-        QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_CHANGED);
+        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_CHANGED);
         return true;
     }
 
@@ -861,7 +861,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // change is in storage, caches can be invalidated immediately
         //really bad!!!
-        QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_DELETE);
+        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_DELETE);
     }
 
     /**
@@ -3985,7 +3985,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         
         //and now notify the parent builders
-        //this is probably crooked
         MMObjectBuilder pb = getParentBuilder();
         if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             if (log.isDebugEnabled()) {
