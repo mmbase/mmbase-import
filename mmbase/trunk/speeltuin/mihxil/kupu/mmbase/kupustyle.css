@@ -94,11 +94,9 @@ img.section {
   border: solid 1px green;
 }
 
-strong, b 
-{ 
+strong, b  { 
   color: green;
   font-weight: bold;
-  text-decoration: underline;
 }
 
 em, i { 
