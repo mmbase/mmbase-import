@@ -91,6 +91,11 @@
                     <input id="loginPassword" type="password" size="20" name="password" /> <br /><br />
                     <input class="formbutton" id="loginSubmit" type="submit" value="<fmt:message key="LOGIN" />" />
                   </form>
+		  <mm:node number="component.register" notfound="skipbody">
+		    <br />
+		    Nog geen account? <br />
+		    Registreer jezelf <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />">hier</a>.
+		  </mm:node>
             </div>
             </div>
           <div class="columnMiddle">
