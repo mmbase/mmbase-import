@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.14 2005-09-08 17:08:53 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.15 2005-09-27 19:12:51 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -21,6 +21,8 @@
   <xsl:output method="xml"
     omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
 
+
+  <xsl:param name="client">msie</xsl:param>
 
    <!-- If objects is the entrance to this XML, then only handle the root child of it -->
   <xsl:template match="o:objects">
@@ -77,6 +79,53 @@
     </body>
     <xsl:text>&#xA;</xsl:text>
   </xsl:template>
+
+  <xsl:template match="mmxf:em|mmxf:strong">
+    <!-- hackery, firefox sends b/i and IE sends em/strong
+         Sends in the way the browers likes, because ff does not succeed to remove em/strong
+    -->
+    <xsl:choose>
+      <xsl:when test="$client = 'gecko'">
+        <xsl:apply-templates select="." mode="gecko" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="msie" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="mmxf:em" mode="gecko">    
+    <xsl:if test=". != ''">
+      <xsl:element name="i">
+        <xsl:copy-of select="@*" />
+        <xsl:apply-templates select="node()" />
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="mmxf:strong" mode="gecko">    
+    <xsl:if test=". != ''">
+      <xsl:element name="b">
+        <xsl:copy-of select="@*" />
+        <xsl:apply-templates select="node()" />
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="mmxf:em|mmxf:strong" mode="msie">    
+    <xsl:if test=". != ''">
+      <xsl:element name="{name()}">
+        <xsl:copy-of select="@*" />
+        <xsl:apply-templates select="node()" />
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'blocks']" mode="quote">
+    <xsl:apply-templates select="o:field[@name = 'body']" />
+  </xsl:template>
+
+
 
   <!-- don't want clickable images, and hope the id can survive in the title -->
   <xsl:template match="o:object[@type = 'images']" mode="inline">

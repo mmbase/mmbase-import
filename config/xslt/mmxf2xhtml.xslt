@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.19 2005-07-18 08:49:58 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.20 2005-09-27 19:12:51 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -25,11 +25,20 @@
   </xsl:template>
   
   
-  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:em|mmxf:strong|mmxf:table|mmxf:tr|mmxf:th|mmxf:td|mmxf:caption|mmxf:br|mmxf:sub|mmxf:sup" >
+  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:table|mmxf:tr|mmxf:th|mmxf:td|mmxf:caption|mmxf:br" >
     <xsl:element name="{name()}">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="mmxf:em|mmxf:strong|mmxf:caption|mmxf:sub|mmxf:sup">
+    <xsl:if test=". != ''">
+      <xsl:element name="{name()}">
+        <xsl:copy-of select="@*" />
+        <xsl:apply-templates select="node()" />
+      </xsl:element>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="mmxf:ul|mmxf:ol">
