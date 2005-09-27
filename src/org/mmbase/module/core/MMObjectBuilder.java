@@ -64,28 +64,28 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.339 2005-09-26 20:05:49 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.340 2005-09-27 14:44:39 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
-    /** 
+    /**
      * Name of the field containing the object number, which uniquely identifies the node.
-     * @since MMBase-1.8  
+     * @since MMBase-1.8
      */
     public static final String FIELD_NUMBER      = "number";
-    /** 
+    /**
      * Name of the field containing the owner. The owner field is used for security implementations.
-     * @since MMBase-1.8  
+     * @since MMBase-1.8
      */
     public static final String FIELD_OWNER       = "owner";
-    /** 
+    /**
      * Name of the field containing the object type number. This refers to an entry in the 'typedef' builder table.
-     * @since MMBase-1.8  
+     * @since MMBase-1.8
      */
     public static final String FIELD_OBJECT_TYPE  = "otype";
 
     /**
-     * Default (system) owner name for the owner field. 
+     * Default (system) owner name for the owner field.
      * @since MMBase-1.8
      */
     public static final String SYSTEM_OWNER   = "system";
@@ -99,9 +99,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /** Default replacements for method getHTML() */
     public final static String DEFAULT_ALINEA = "<br />&#160;<br />"; // marcel: bugfix #6617: changed &nbsp to &#160;
     public final static String DEFAULT_EOL = "<br />";
-    
-	public final static int EVENT_TYPE_LOCAL=0;
-	public final static int EVENT_TYPE_REMOTE=1;
+
+    public final static int EVENT_TYPE_LOCAL  = 0;
+    public final static int EVENT_TYPE_REMOTE = 1;
 
     /**
      * Parameters for the GUI function
@@ -539,12 +539,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
         }
         update();
-        
+
         //now register it as a listener for events of it's own type
         //this is only for backwards compatibility, to notify the MMBaseObserver's
         MMBase.getMMBase().addNodeRelatedEventsListener(getTableName(), this);
-        
-        
+
+
         return true;
     }
 
@@ -633,7 +633,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // This is usually because the ChangeManager indirectoy called 'getNode'
             // This should in the new event-mechanism not be needed, because the NodeEvent
             // contains the node.
-            
+
             log.warn("New node '" + nodeNumber + "' of type " + node.parent.getTableName() + " is already in node-cache!");
         } else {
             safeCache(new Integer(n), node);
@@ -2863,7 +2863,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
-        
+
         updateCacheForNodeEvent(number, ctype, EVENT_TYPE_LOCAL);
 
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
@@ -2890,7 +2890,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
 
    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-    
+
        // signal all the other objects that have shown interest in changes of nodes of this builder type.
        synchronized(localObservers) {
            for (Iterator i = localObservers.iterator(); i.hasNext();) {
@@ -2905,7 +2905,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
        return true;
    }
-    
+
     /**
      * Called when a local field is changed.
      * @param number Number of the changed node as a <code>String</code>
@@ -3127,58 +3127,56 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 value = Double.valueOf(strValue);
         }
 
-        BasicFieldValueConstraint constraint =
-            new BasicFieldValueConstraint(field, value);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(field, value);
 
         switch (comparison) {
-            case '=':
-            case 'E':
-                // EQUAL (string field)
-                if (field.getType() == Field.TYPE_STRING ||
-                    field.getType() == Field.TYPE_XML) {
-                    // Strip first and last character of value, when
-                    // equal to '*'.
-                    String str = (String) value;
-                    int length = str.length();
-                    if (str.charAt(0) == '*' && str.charAt(length - 1) == '*') {
-                        value = str.substring(1, length - 1);
-                    }
+        case '=':
+        case 'E':
+            // EQUAL (string field)
+            if (field.getType() == Field.TYPE_STRING ||
+                field.getType() == Field.TYPE_XML) {
+                // Strip first and last character of value, when
+                // equal to '*'.
+                String str = (String) value;
+                int length = str.length();
+                if (str.charAt(0) == '*' && str.charAt(length - 1) == '*') {
+                    value = str.substring(1, length - 1);
+                }
 
-                    // Convert to LIKE comparison with wildchard characters
-                    // before and after (legacy).
-                    constraint.setValue('%' + (String) value + '%');
-                    constraint.setCaseSensitive(false);
-                    constraint.setOperator(FieldCompareConstraint.LIKE);
+                // Convert to LIKE comparison with wildchard characters
+                // before and after (legacy).
+                constraint.setValue('%' + (String) value + '%');
+                constraint.setCaseSensitive(false);
+                constraint.setOperator(FieldCompareConstraint.LIKE);
 
                 // EQUAL (numerical field)
-                } else {
-                    constraint.setOperator(FieldCompareConstraint.EQUAL);
-                }
-                break;
+            } else {
+                constraint.setOperator(FieldCompareConstraint.EQUAL);
+            }
+            break;
 
-            case 'N':
-                constraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
-                break;
+        case 'N':
+            constraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
+            break;
 
-            case 'G':
-                constraint.setOperator(FieldCompareConstraint.GREATER);
-                break;
+        case 'G':
+            constraint.setOperator(FieldCompareConstraint.GREATER);
+            break;
 
-            case 'g':
-                constraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
-                break;
+        case 'g':
+            constraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+            break;
 
-            case 'S':
-                constraint.setOperator(FieldCompareConstraint.LESS);
-                break;
+        case 'S':
+            constraint.setOperator(FieldCompareConstraint.LESS);
+            break;
 
-            case 's':
-                constraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
-                break;
+        case 's':
+            constraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
+            break;
 
-            default:
-                throw new IllegalArgumentException(
-                    "Invalid comparison character: '" + comparison + "'");
+        default:
+            throw new IllegalArgumentException("Invalid comparison character: '" + comparison + "'");
         }
         return constraint;
     }
@@ -3895,7 +3893,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
     }
-    
+
     /**
      * simple way to register a NodeEvent listener and a RelationEventListener
      * at the same time.
@@ -3914,7 +3912,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public void removeEventListener(Object listener){
         mmb.removeNodeRelatedEventsListener(getTableName(), listener);
     }
-    
+
     /**
      * @param type indicates if event is local or remote
      * @param number changed nodenumber
@@ -3925,9 +3923,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
-        // if this is a remote event, the nodeCache must be flushed 
+        // if this is a remote event, the nodeCache must be flushed
         // on a 'change' event as well
-        if (type == EVENT_TYPE_LOCAL && ctype.equals("d") 
+        if (type == EVENT_TYPE_LOCAL && ctype.equals("d")
             || type == EVENT_TYPE_REMOTE && (ctype.equals("d") || ctype.equals("c"))){
             try {
                 Integer i = new Integer(nodeNumber);
@@ -3947,43 +3945,32 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-            
+
         }
     }
-    
+
     /**
      * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
      * here we handle all the backward compatibility stuff.
      * this method covers for both node and relation events.
+     * @since MMBase-1.8
      */
     public void notify(NodeEvent event) {
+        log.debug("" + this + " received event " + event);
         String ctype = NodeEvent.newTypeToOldType(event.getType());
-        
-        
-        boolean eventLocal;
-        if(MMBase.getMMBase().getMachineName().equals(event.getMachine())){
-            eventLocal = true;
+
+        boolean eventLocal = mmb.getMachineName().equals(event.getMachine());
+        if(eventLocal) {
+            // backwards compatibilty
+            nodeLocalChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
             updateCacheForNodeEvent("" + event.getNode().getNumber(), ctype, MMObjectBuilder.EVENT_TYPE_LOCAL);
-            nodeLocalChanged(null, "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), NodeEvent.newTypeToOldType(event.getType()));
-            
-        }else{
-            eventLocal = false;
+        } else {
+            // backwards compatibilty
+            nodeRemoteChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
             updateCacheForNodeEvent("" + event.getNode().getNumber(), ctype, MMObjectBuilder.EVENT_TYPE_REMOTE);
-            nodeRemoteChanged(null, "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), NodeEvent.newTypeToOldType(event.getType()));
         }
-        
-        //for backwards compatibility: fire the old event type of event
-        synchronized(localObservers) {
-            for (Iterator i = localObservers.iterator(); i.hasNext();) {
-                MMBaseObserver o = (MMBaseObserver)i.next();
-                if (eventLocal) {
-                    o.nodeLocalChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
-                } else{
-                    o.nodeRemoteChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
-                }
-            }
-        }
-        
+
+
         //and now notify the parent builders
         MMObjectBuilder pb = getParentBuilder();
         if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
@@ -3992,14 +3979,20 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             pb.notify(event);
         }
-        
+
     }
-    
+
+    /**
+     * @since MMBase-1.8
+     */
     public Properties getConstraintsForEvent(Event event) {
         //we don't need this.
         return null;
     }
-    
+
+    /**
+     * @since MMBase-1.8
+     */
     public void notify(RelationEvent event) {
         notify((NodeEvent)event);
     }
