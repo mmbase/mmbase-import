@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Arjan Houtman
- * @version $Id: FieldEditor.java,v 1.16 2005-07-07 16:36:56 michiel Exp $
+ * @version $Id: FieldEditor.java,v 1.17 2005-09-27 14:52:36 michiel Exp $
  */
 public class FieldEditor implements CommandHandlerInterface {
     // Logger
@@ -292,7 +292,7 @@ public class FieldEditor implements CommandHandlerInterface {
                 // node.preEdit(ed);
                 id=node.insert(userName);
                 // node.insertDone(ed);
-                node.changed.removeAllElements();
+                node.getChanged().clear();
             } else {
                 // node.preEdit(ed);
                 node.commit();
