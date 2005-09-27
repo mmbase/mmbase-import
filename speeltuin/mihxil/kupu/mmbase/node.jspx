@@ -1,10 +1,10 @@
 <mm:content type="text/xml"
 	    expires="-1"
-            xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:jsp="http://java.sun.com/JSP/Page"
-            xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-            >
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+      >
   <jsp:directive.page session="true" errorPage="error.jspx" />
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="rich_language" from="session">client</mm:import>

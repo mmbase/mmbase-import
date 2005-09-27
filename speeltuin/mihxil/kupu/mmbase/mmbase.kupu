@@ -34,10 +34,10 @@
   </kupu:part>
   <kupu:part name="header">
     <div id="header">
-      <mm:import id="back" externid="kupu_back" from="session"><jsp:expression>request.getHeader("Referer")</jsp:expression></mm:import>
+      <mm:import id="back" externid="kupu_back">${header.referer}</mm:import>
       <fmt:bundle basename="org.mmbase.kupu.Messages">
         <div id="back">
-          <a href="javascript:history.back()">
+          <a href="${back}">
             <mm:link page="/mmbase/style/images/previous.gif">
               <img src="${_}" alt="&amp;lt;" />
             </mm:link>
@@ -48,6 +48,7 @@
           <form name="languageform" method="get" action=".">
             <input type="hidden" name="objectnumber" value="${node}" />
             <input type="hidden" name="tools" value="${tools}" />
+            <input type="hidden" name="kupu_back" value="${back}" />
             <select onChange="document.forms['languageform'].submit();" name="language">
               <mm:compare referid="rich_language" value="client">
                 <option value="client" selected="selected"><fmt:message key="default" /></option>

@@ -1,0 +1,85 @@
+<!-- 
+     Used for for related.jspx 
+     Presents related nodes for one type, plus the functionality to delete and add those. (reloading itself through xmlhttprequest)
+-->
+<mm:content
+    type="text/xml"
+    expires="-1"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="type">images</mm:import>
+  <mm:import externid="rich_language" from="session">client</mm:import>
+  <mm:locale language="$rich_language">    
+    <div>      
+      <mm:cloud rank="basic user">
+        <mm:import id="node" externid="objectnumber" required="true" />
+        <mm:node referid="node">
+          
+          <!-- delete a relation if requested -->
+          <mm:import  externid="delete_relation"  />
+          <mm:present referid="delete_relation">
+            <mm:deletenode referid="delete_relation">
+            </mm:deletenode>
+          </mm:present>
+
+          <!-- create a relation if requested -->
+          <mm:import externid="relate_node" />
+          <mm:present referid="relate_node">
+            <mm:relatednodes type="${type}" role="posrel" orderby="posrel.pos" max="1">
+              <mm:field name="pos" id="pos" write="false" />
+            </mm:relatednodes>
+            <mm:node referid="relate_node" id="relate_node" />
+            <mm:createrelation source="node" destination="relate_node" role="posrel">
+              <mm:present referid="pos">
+                <mm:setfield name="pos">${pos - 1}</mm:setfield>
+              </mm:present>
+              <mm:notpresent referid="pos">
+                <mm:setfield name="pos">0</mm:setfield>
+              </mm:notpresent>
+            </mm:createrelation>
+          </mm:present>
+
+          <!-- now list the relations -->
+          <mm:listrelationscontainer role="posrel"  type="$type">
+            <mm:sortorder field="posrel.pos" />
+            <p>
+              <mm:link page="../common/kupuimages/${type == 'images' ? 'image' : 'inthyperlink'}.png">
+                <img alt="+" 
+                     src="${_}" 
+                     onclick="window.open(absoluteUrl + 'tools/search-node.jspx?objectnumber=${node}&amp;amp;type=${type}', 200, 300);"
+                     />
+              </mm:link>
+              <mm:nodeinfo nodetype="$type" type="guitype" />
+            </p>
+            <mm:size>
+              <mm:isgreaterthan value="0">              
+                <mm:nodeinfo nodetype="$type" type="plural_guitype" id="plural" write="false" />
+                <p title="${plural}">
+                  <mm:listrelations id="relation">
+                    <mm:relatednode>
+                      <nobr>
+                        <mm:function name="gui" escape="none" />
+                        <mm:maydelete>
+                          <mm:link page="../common/kupuimages/remove.png">
+                            <img alt="-"
+                                 src="${_}" 
+                                 onclick="deleteRelation('${type}', ${node}, ${relation});"
+                                 />
+                          </mm:link>
+                        </mm:maydelete>
+                        <mm:last inverse="true">, </mm:last>
+                      </nobr>
+                    </mm:relatednode>
+                  </mm:listrelations>
+                </p>
+              </mm:isgreaterthan>
+            </mm:size>
+          </mm:listrelationscontainer>
+        </mm:node>
+      </mm:cloud>
+    </div>
+  </mm:locale>
+</mm:content>
