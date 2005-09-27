@@ -11,9 +11,7 @@ package org.mmbase.storage.implementation.database;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
@@ -26,6 +24,13 @@ import org.mmbase.storage.util.Index;
 import org.mmbase.storage.util.Scheme;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+/**
+ * @javadoc
+ *
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.2 2005-09-27 14:39:09 michiel Exp $
+ * @since MMBase-1.8
+ */
 
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -147,7 +152,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     private void changeObject(MMObjectNode node, MMObjectBuilder builder) {
         List changeFields = new ArrayList();
         // obtain the node's changed fields
-        List fieldNames = node.getChanged();
+        Collection fieldNames = node.getChanged();
         for (Iterator f = fieldNames.iterator(); f.hasNext();) {
             String key = (String)f.next();
             CoreField field = builder.getField(key);
@@ -155,7 +160,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 changeFields.add(field);
             }
         }
-        change(node, builder, getTableName(builder), changeFields, fieldNames);
+        change(node, builder, getTableName(builder), changeFields);
     }
 
     /**

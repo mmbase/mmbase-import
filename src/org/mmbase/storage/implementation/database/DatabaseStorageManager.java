@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.122 2005-09-24 16:42:17 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.123 2005-09-27 14:39:09 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -951,19 +951,21 @@ public class DatabaseStorageManager implements StorageManager {
     protected void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         List changeFields = new ArrayList();
         // obtain the node's changed fields
-        List fieldNames = node.getChanged();
-        for (Iterator f = fieldNames.iterator(); f.hasNext();) {
-            String key = (String)f.next();
-            CoreField field = builder.getField(key);
-            if ((field != null) && field.inStorage()) {
-                changeFields.add(field);
+        Collection fieldNames = node.getChanged();
+        synchronized(fieldNames) { // make sure the set is not changed during this loop
+            for (Iterator f = fieldNames.iterator(); f.hasNext();) {
+                String key = (String)f.next();
+                CoreField field = builder.getField(key);
+                if ((field != null) && field.inStorage()) {
+                    changeFields.add(field);
+                }
             }
         }
         String tablename = (String) factory.getStorageIdentifier(builder);
-        change(node, builder, tablename, changeFields, fieldNames);
+        change(node, builder, tablename, changeFields);
     }
 
-    protected void change(MMObjectNode node, MMObjectBuilder builder, String tablename, List changeFields, List fieldNames) {
+    protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection changeFields) {
         // Create a String that represents the fields to be used in the commit
         StringBuffer setFields = null;
         List fields = new ArrayList();
@@ -971,7 +973,7 @@ public class DatabaseStorageManager implements StorageManager {
             CoreField field = (CoreField) iter.next();
             // changing number is not allowed
             if ("number".equals(field.getName()) || "otype".equals(field.getName())) {
-                throw new StorageException("trying to change the '" + field.getName() + "' field of " + node + ". Changed fields " + fieldNames);
+                throw new StorageException("trying to change the '" + field.getName() + "' field of " + node + ". Changed fields " + node.getChanged());
             }
             // skip bytevalues that are written to file
             if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
@@ -994,7 +996,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
-                String query = scheme.format(new Object[] { this, tablename , setFields.toString(), builder.getField("number"), node });
+                String query = scheme.format(new Object[] { this, tableName , setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
