@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.154 2005-09-21 11:37:42 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.155 2005-09-27 14:46:06 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -126,11 +126,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Hashtable properties;
 
     /**
-     * Vector which stores the keys of the fields that were changed
+     * Set which stores the keys of the fields that were changed
      * since the last commit.
-     * @scope private, and should be a Set, not a Vector
      */
-    public Vector changed = new Vector();
+    private Set changed = Collections.synchronizedSet(new HashSet());
 
     /**
      * Pointer to the parent builder that is responsible for this node.
@@ -506,7 +505,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         
         //store the old value
-        storeOldValue(fieldName, values.get(fieldName));
+        storeOldValue(fieldName, originalValue);
         
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
@@ -622,7 +621,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (! initializing && !changed.contains(fieldName) && state == Field.STATE_PERSISTENT) {
+        if (! initializing && state != Field.STATE_VIRTUAL) {
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
@@ -1041,11 +1040,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Return the names of all persistent fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
-     * @param a <code>Vector</code> containing all the fieldNames
-     * @todo  Should it not return a (unmodifiable) Collection or a Set?
-     * @todo  Should this function not be replaced by a more generic 'isChanged(String fieldName)'?
+     * @param a <code>Set</code> containing all the fieldNames corresponding to changed fields.
+     * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though. 
      */
-    public Vector getChanged() {
+    public Set getChanged() {
         return changed;
     }
 
