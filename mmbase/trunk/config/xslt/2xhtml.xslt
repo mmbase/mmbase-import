@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.24 2005-09-08 17:10:41 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.25 2005-09-27 19:12:51 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -84,7 +84,7 @@
   <xsl:template match="o:object[@type = 'images']" mode="img">
     <xsl:param name="relation" />
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', 's(100x100&gt;)')" />
-    <img src="{node:function($cloud, string($icache/@id ), 'servletpath()')}" >
+    <img src="{node:function($cloud, string($icache/@id ), 'ervletpath()')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
@@ -150,11 +150,24 @@
         </xsl:apply-templates>
       </xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']" /></xsl:attribute>
-      <xsl:apply-templates select="o:field[@name = 'body']" />
+      <xsl:choose>
+        <xsl:when test="contains($relation/o:field[@name='class'], 'quote')">
+          <xsl:apply-templates select="." mode="quote" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="o:field[@name = 'body']" />
+        </xsl:otherwise>
+      </xsl:choose>
     </div>
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'blocks']" mode="id">
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'blocks']" mode="quote">
+    <span style="font-size: +30pt; float: left;">&#x2018;</span>
+       <xsl:apply-templates select="o:field[@name = 'body']" />
+    <span style="font-size: +30pt; float: right;">&#x2019;</span>    
   </xsl:template>
 
 
