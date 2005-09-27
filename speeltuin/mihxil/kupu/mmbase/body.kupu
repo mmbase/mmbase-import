@@ -10,7 +10,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: body.kupu,v 1.9 2005-09-16 19:47:56 michiel Exp $</kupu:id>
+  <kupu:id>$Id: body.kupu,v 1.10 2005-09-27 18:26:52 michiel Exp $</kupu:id>
 
 
   <kupu:part name="body">
@@ -32,7 +32,8 @@
     <mm:compare referid="objectnumber" value="new" inverse="true">
       <mm:node id="node" referid="objectnumber" />
     </mm:compare>
-    <body onload="kupu = startKupu('${lang}'); mmbaseInit('${node}');">
+    <mm:url absolute="true" page="." id="abs" write="false" />
+    <body onload="kupu = startKupu('${lang}'); mmbaseInit('${node}', '${abs}');">
       <kupu:define-slot name="body" />
     </body>
   </kupu:part>

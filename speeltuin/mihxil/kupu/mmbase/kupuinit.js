@@ -7,7 +7,7 @@
  *
  *****************************************************************************/
 
-// $Id: kupuinit.js,v 1.20 2005-08-26 18:21:36 michiel Exp $
+// $Id: kupuinit.js,v 1.21 2005-09-27 18:26:52 michiel Exp $
 
 //----------------------------------------------------------------------------
 // MMBase initialization for it's kupu
@@ -31,14 +31,12 @@ function initKupu(iframe) {
     // now we can create the controller
     var kupu = new KupuEditor(doc, conf, l);
 
-
     var contextmenu = new ContextMenu();
     kupu.setContextMenu(contextmenu);
 
-
     // now we can create a UI object which we can use from the UI
     var ui = new KupuUI('kupu-tb-styles');
-
+    
     // the ui must be registered to the editor like a tool so it can be notified
     // of state changes
     kupu.registerTool('ui', ui); // XXX Should this be a different method?
@@ -175,7 +173,6 @@ function initKupu(iframe) {
    }
            
 
-
    try {
        var linklibdrawer = new ResourceLibraryDrawer(linktool, 
                                                  conf['link_xsl_uri'],
@@ -188,6 +185,14 @@ function initKupu(iframe) {
                                                    conf['image_libraries_uri'],
                                                    conf['search_images_uri']);
        drawertool.registerDrawer('imagelibdrawer', imagelibdrawer);
+
+       /*
+       var imagelibdrawer2 = new ImageLibraryDrawer(null, 
+                                                    conf['image_xsl_uri'],
+                                                    conf['image_libraries_uri'],
+                                                    conf['search_images_uri']);
+       drawertool.registerDrawer('nodeimagedrawer', imagelibdrawer2);
+       */
    } catch(e) {
        var msg = _('There was a problem initializing the drawers. Most ' +
                'likely the XSLT or XML files aren\'t available. If this ' +

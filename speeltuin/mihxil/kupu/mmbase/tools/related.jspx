@@ -1,21 +1,37 @@
-<div id="related">
-<mm:content
-    type="text/html"
-    expires="-1"
-    xmlns="http://www.w3.org/1999/xhtml"
+<!--
+    The related tool is to related some object to the node directly
+    argument: related_types: list of types, defaults to images, urls, mediafragments
+ -->
+ <div id="mmbase_related">
+ <mm:content
+     type="text/html"
+     expires="-1"
+     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
+  <mm:import externid="rich_language" from="session">client</mm:import>
   <jsp:directive.page session="true" errorPage="../error.jspx" />
-  <mm:cloud rank="basic user">
-    <mm:import id="node" externid="objectnumber" required="true" />
-    <mm:node referid="node">
-      <p>Related</p>
-      <a href="javascript: openPopup('drawers/drawer.jspx', 200, 300);">new</a>
-      <mm:relatednodes role="posrel" orderby="posrel.pos">
-        <p><mm:function name="gui" /></p>
-      </mm:relatednodes>
-    </mm:node>
-  </mm:cloud>
+  <mm:locale language="$rich_language">
+    <mm:cloud rank="basic user">
+      <mm:import id="node" externid="objectnumber" required="true" />
+      <mm:node referid="node">
+        <!--
+        <iframe id="mmbase_related" src="kupublank.html" style="display: none; z-index: 1000;">
+          <jsp:text> </jsp:text>
+        </iframe>
+ onclick="var iframe = document.getElementById('mmbase_related'); iframe.src = 'drawers/drawer.jspx'; iframe.style.display = 'block';">
+        -->
+        <mm:import externid="related_types" vartype="list">images,urls,videosources</mm:import>
+        <mm:stringlist referid="related_types" id="type">
+          <mm:hasnodemanager name="$type">
+            <div id="related_${type}">
+              <mm:include page="related-type.jspx" referids="type" />
+            </div>
+          </mm:hasnodemanager>
+        </mm:stringlist>
+      </mm:node>
+    </mm:cloud>
+  </mm:locale>
 </mm:content>
 </div>

@@ -1,11 +1,18 @@
+<!-- 
+     Server side spell checking based on aspell.
+     Used by kupu. This is an implementation in JSPX
+     TODO: Perhaps MMBase depenency can be removed, and this can be a more general tool, for JSP/Kupu combo's.
+
+     @author Michiel Meeuwissen
+     @version $Id: spellcheck.jspx,v 1.4 2005-09-27 18:26:52 michiel Exp $
+-->
 <mm:content type="text/xml" expires="-1"
-            xmlns="http://www.w3.org/1999/xhtml"
             xmlns:jsp="http://java.sun.com/JSP/Page" 
             xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"            
             >
   <jsp:output omit-xml-declaration="true" />
-  <jsp:directive.page import="java.io.*,org.mmbase.util.*,org.mmbase.util.externalprocess.CommandLauncher" session="true" errorPage="error.jspx" />
+  <jsp:directive.page import="java.io.*,org.mmbase.util.externalprocess.CommandLauncher" session="true" errorPage="error.jspx" />
 
   <mm:import externid="text" jspvar="text" vartype="string" />
   <spellcheck_result>

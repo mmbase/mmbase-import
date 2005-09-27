@@ -1,45 +1,46 @@
-<mm:content type="text/html" language="en" expires="-1" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"  xmlns:jsp="http://java.sun.com/JSP/Page">
+<mm:content type="application/xml"
+            language="en" expires="-1"
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+            xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.page import="java.io.*,java.util.*,org.apache.commons.fileupload.*" session="true" errorPage="error.jspx" />
+  <jsp:output omit-xml-declaration="true" />
 
-  <jsp:directive.page import="java.io.*,java.util.*,org.apache.commons.fileupload.*" contentType="text/html; charset=UTF-8" session="true" errorPage="error.jspx" />
-  <html xmlns="http://www.w3.org/1999/xhtml">
+  <html>
     <head>
-
-      <title>KUPU- receiver</title>
+      <title>KUPU-receiver</title>
     </head>
     <body >
       <mm:cloud>
         <mm:log jspvar="log">
-        <mm:import externid="kupu_node" from="session" />
-        <mm:node referid="kupu_node" jspvar="node">
-          <mm:import externid="fields">false</mm:import>
-          <mm:compare referid="fields" value="false">
-            <mm:param name="org.mmbase.xml-mode" value="kupu" />
-            <jsp:scriptlet>
-              log.service("Saving body of " + node.getNumber());
-              StringBuffer received = new StringBuffer();
-              BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
-              String line = r.readLine();
-              while (line != null) {
-                 received.append(line).append("\n");
-                 line = r.readLine();             
-              }
-              node.setStringValue("body", received.toString());
-              node.commit();
-              log.debug("Saved " + received.toString());
-            </jsp:scriptlet>
-            <p>
-              Received:
-          </p>
-          <pre>
-            <jsp:expression>received</jsp:expression>
-          </pre>
-          </mm:compare>          
-          <mm:compare referid="fields" value="true">
-            <mm:fieldlist id="field" type="edit" >
-              <mm:fieldinfo type="useinput" /> 
-            </mm:fieldlist>
-          </mm:compare>
-        </mm:node>
+          <mm:import externid="kupu_node" from="session" />
+          <mm:node referid="kupu_node" jspvar="node">
+            <mm:import externid="fields">false</mm:import>
+            <mm:compare referid="fields" value="false">
+              <mm:param name="org.mmbase.xml-mode" value="kupu" />
+              <jsp:scriptlet>
+                log.service("Saving body of " + node.getNumber());
+                StringBuffer received = new StringBuffer();
+                BufferedReader r  =  new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
+                String line = r.readLine();
+                while (line != null) {
+                  received.append(line).append("\n");
+                  line = r.readLine();
+                }
+                node.setStringValue("body", received.toString());
+                node.commit();
+                log.debug("Saved " + received.toString());
+              </jsp:scriptlet>
+            </mm:compare>
+
+            <mm:compare referid="fields" value="true">
+              <mm:fieldlist id="field" type="edit" >
+                <mm:fieldinfo type="useinput" />
+              </mm:fieldlist>
+            </mm:compare>
+          </mm:node>
+          <jsp:scriptlet>
+            log.service("Saved body");
+          </jsp:scriptlet>
         </mm:log>
       </mm:cloud>
     </body>

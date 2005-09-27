@@ -2,9 +2,8 @@ body {
   overflow: hidden;
 }
 
-body, #footer, #header, #centerColumn, #leftColumn, #kupu-editor, #kupu div.kupu-editorframe, 
-#kupu, #kupu div.kupu-toolboxes, div.kupu-fulleditor, div.kupu-fulleditor-zoomed, #toolbar, form, input, textarea, iframe#kupu-editor, iframe,
-div.kupu-toolbox, div.kupu-toolbox-active{ 
+body, #footer, #header, #centerColumn, #leftColumn, #kupu-editor, #kupu div.kupu-editorframe,  #kupu, #kupu div.kupu-toolboxes, div.kupu-fulleditor, div.kupu-fulleditor-zoomed, #toolbar, form, input, textarea, iframe#kupu-editor, iframe,
+div.kupu-toolbox, div.kupu-toolbox-active { 
   padding-right: 0px;
   padding-left: 0px;
   padding-bottom: 0px;

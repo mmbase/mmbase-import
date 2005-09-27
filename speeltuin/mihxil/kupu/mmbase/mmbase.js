@@ -3,6 +3,7 @@
  */
 var currentNode;
 var trunkNode;
+var absoluteUrl;
 
 // any object can be used as map in javascript, but make it look a bit nicer.
 function Map() {
@@ -81,7 +82,7 @@ function startKupu(language) {
 };
 
 
-function mmbaseInit(node) {
+function mmbaseInit(node, abs) {
 
     KupuZoomTool.prototype.origcommandfunc  = KupuZoomTool.prototype.commandfunc;
     KupuZoomTool.prototype.commandfunc = function(button, editor) {
@@ -98,6 +99,8 @@ function mmbaseInit(node) {
     winOnLoad();
     trunkNumber = node;
     loadNode(node);
+
+    absoluteUrl = abs;
 
 }
 
@@ -127,7 +130,7 @@ function addMultiPart(content, a) {
 function saveNode(button, editor) {
     // hmm, i think editor == kupu
     kupu.logMessage(_("Saving body (kupu)") + " " + currentNode);
-    editor.saveDocument(undefined, true); // kupu-part of save
+    editor.saveDocument(undefined, false); // kupu-part of save
     var content = "";
     kupu.logMessage(_("Saving fields (form)") + " " + currentNode);
 
@@ -152,15 +155,19 @@ function saveNode(button, editor) {
     request.open("POST", "receive.jspx?fields=true", true);
     request.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
     request.send(content);
-    //kupu.handleSaveResponse(request);
-    var node = currentNode;
-    currentNode = undefined;
-    //alert("Posted \n" + content);
-    alert(_("saved") + " " + node);
-    kupu.logMessage("Reloading " + node);
-    loadedNodes.remove(node);
-    loadedNodeBodies.remove(node);
-    loadNode(node);
+    request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+            kupu.handleSaveResponse(request);
+            var node = currentNode;
+            currentNode = undefined;
+            //alert("Posted \n" + content);
+            alert(_("saved") + " " + node);
+            kupu.logMessage("Reloading " + node);
+            loadedNodes.remove(node);
+            loadedNodeBodies.remove(node);
+            loadNode(node);
+        }
+    }
 
 }
 
@@ -172,8 +179,7 @@ function updateTree(nodeNumber, title) {
     var nodeA = document.getElementById('a_' + nodeNumber);
     if (nodeA != null) {
         nodeA.innerHTML = title;
-    }
-}
+    }}
 
 /**
  * Load one node from server into the 'node' div. Unless that already happened, in which case this
@@ -243,6 +249,12 @@ function loadNode(nodeNumber) {
 }
 
 /**
+ * ================================================================================
+ * TREE tool
+ * ================================================================================
+ */
+
+/**
  * Load a part from the 'tree' of nodes. A request is done, and the div with the correct id is filled.
  */
 function loadRelated(nodeNumber) {
@@ -302,15 +314,43 @@ function reloadTree() {
  */
 function createSubNode(nodeNumber) {
     var request = getRequest();
-    request.open('GET', 'create-subnode.jspx?objectnumber=' + nodeNumber, false);
+    request.open('GET', 'tools/create-subnode.jspx?objectnumber=' + nodeNumber, false);
     request.send('');
     var result = serialize(request);
     alert(result);
     loadedTrees = new Map();
     reloadTree();
+}
+
+/**
+ * ================================================================================
+ * Related tool
+ * ================================================================================
+ */
+
+
+function deleteRelation(type, nodeNumber, relationNode) {
+    var relatedRequest = getRequest();
+    relatedRequest.open('GET', absoluteUrl + 'tools/related-type.jspx?objectnumber=' + nodeNumber + "&delete_relation=" + relationNode + "&type=" + type, false);
+    relatedRequest.send('');
+    var result = serialize(relatedRequest);
+    document.getElementById("related_" + type).innerHTML = result;
+
 
 }
 
+function createRelation(type, nodeNumber, relatedNode) {
+    var relatedRequest = getRequest();
+    relatedRequest.open('GET',  absoluteUrl + 'tools/related-type.jspx?objectnumber=' + nodeNumber + "&relate_node=" + relatedNode + "&type=" + type, false);
+    relatedRequest.send('');
+    var result = serialize(relatedRequest);
+    document.getElementById("related_" + type).innerHTML = result;
+}
+
+
+
+
+// ================================================================================
 
 /**
  * our own version to also save the other fields 

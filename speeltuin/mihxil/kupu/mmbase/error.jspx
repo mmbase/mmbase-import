@@ -2,18 +2,14 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="nl" lang="nl">
+  <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page session="false" isErrorPage="true" />
-  <jsp:output doctype-root-element="html"
-              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-
   <jsp:scriptlet>
-    response.setStatus(500); //Prevent search enging entry
     response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
     response.setHeader("Pragma","no-cache"); //HTTP 1.0
     response.setDateHeader ("Expires", 0); //Prevents caching at the proxy server
   </jsp:scriptlet>
-  <mm:content language="nl" postprocessor="reducespace" expires="0">
+  <mm:content language="nl" type="text/xml" postprocessor="reducespace" expires="0">
     
     <head>
       <title><mm:import id="title">500 <jsp:expression>exception != null ? exception.getMessage() : " fout "</jsp:expression></mm:import><mm:write referid="title" /></title>
@@ -35,6 +31,7 @@
           </p>
           <mm:log jspvar="log"><jsp:scriptlet>log.warn(exception, exception);</jsp:scriptlet></mm:log>
           <pre>
+            STACK
             <jsp:scriptlet>
             if (exception != null) { 
             exception.printStackTrace(new java.io.PrintWriter(out));
