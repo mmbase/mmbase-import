@@ -69,8 +69,10 @@ function xClientWidth() {
   return w;
 }
 
-function xWidth(e,w) {
-  if(!(e=document.getElementById(e))) return 0;
+function xWidth(e, w) {
+  if(typeof(e) == 'string' && !(e=document.getElementById(e))) {
+      return 0;
+  }
   if (typeof(w) == "number") {
       if (w<0) w = 0;
       else w=Math.round(w);
@@ -99,8 +101,11 @@ function xWidth(e,w) {
         }
       }
       w-=(pl+pr+bl+br);
-      if(isNaN(w)||w<0) return;
-      else e.style.width=w+'px';
+      if(isNaN(w)||w<0) {
+          return;
+      } else {
+          e.style.width=w+'px';
+      }
     }
     w=e.offsetWidth;
   }
@@ -112,7 +117,7 @@ function xWidth(e,w) {
 }
 
 function xHeight(e, h) {
-  if(!(e = document.getElementById(e))) {
+  if(typeof(e) == 'string' && !(e=document.getElementById(e))) {
       return 0;
   }
   if (typeof(h) == "number") {

@@ -9,6 +9,11 @@
   <jsp:directive.page session="true" errorPage="../error.jspx" />
 <mm:cloud rank="basic user">
 <!-- 
+     This tool is to show a kind of table of contents in which this node is.
+     Can be used to navigate.
+
+     Parts of this tree can be added with xmlhttprequest. So this jspx is kind of 'manually recursive'.
+ 
   Shows:
   <div class="tree" id="node_[]">
      [folder] <a id="a_[]">link to node</a>

@@ -40,7 +40,7 @@ img {
 }
 
 #nodefields input {
-  user-input: enabled;
+/*  user-input: enabled; */
 }
 
 #nodefields input.mm_year { 
@@ -84,7 +84,7 @@ a.current  {
 }
 
 textarea#kupu-editor-textarea {
-  display: none
+  display: none;
   background-color: white;
 }
 

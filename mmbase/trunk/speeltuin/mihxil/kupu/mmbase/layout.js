@@ -56,8 +56,8 @@ function adjustLayout() {
     xWidth('centerColumn', maxWidth);
 
     var a = document.getElementById('leftColumn').getElementsByTagName('input');    
-    for (i=0; i < a.length; i++) {
-        if (a[i].className == '') {            
+    for (i = 0; i < a.length; i++) {
+        if (a[i].className == 'small') { // to avoid date-time entries
             xWidth(a[i], leftColumnWidth - 6);
         }
     }
