@@ -11,7 +11,7 @@
 
 <html>
    <head>
-   <script>   
+   <script>
    function toggleDiv(thisDiv)
    {  var style2 = null;
       if (document.getElementById)
@@ -97,38 +97,34 @@
                   <mm:cloud>
                    <%@include file="metaedit_standard_init.jsp" %>
                    <%
-                     
-                     if ((!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")) &&
-                          (request.getParameter("set_defaults") == null)) { 
+
+                      if ((!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")) &&
+                          (request.getParameter("set_defaults") == null)) {
                          %>
                          <%@include file="metaedit_processparams.jsp" %>
-                         <% 
-                     } // end of if .....
+                         <%
+                      } // end of if .....
 
-                     //If we set only defaults values, always redirect
-                     if((request.getParameter("set_defaults") != null) && (!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")))
-                     {
+                      //If we set only defaults values, always redirect
+                      if((request.getParameter("set_defaults") != null) && (!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove"))){
                             String sParList = "";
 
                                  enumParamNames = request.getParameterNames();
 
-                                 while(enumParamNames.hasMoreElements())
-                                {
+                                 while(enumParamNames.hasMoreElements()){
                                       String sParameter = (String) enumParamNames.nextElement();
                                       String[] arrstrParameters = request.getParameterValues(sParameter);
 
-                                      if(sParameter.charAt(0) == 'm')
-                                      {
-                                                for(int i=0; i < arrstrParameters.length; i++)
-                                                  {
+                                      if(sParameter.charAt(0) == 'm'){
+                                                for(int i=0; i < arrstrParameters.length; i++){
                                                      sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
-                                                  }
+                                                }
 
                                        }// end of if(sParameter.charAt(0) == 'm')
 
-                               } // end of while
+                                 } // end of while
 
-                                %>
+                                 %>
 
                                  <%@include file="metaedit_header.jsp" %>
                                  <br/>
@@ -139,148 +135,125 @@
                                  <br/><br/>
                                  <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
 
-                                 <%
-                     } // end of if((request.getParameter("set_defaults") != null)
+                      <%
+                      } // end of if((request.getParameter("set_defaults") != null)
 
-                     //---------------- Process parameters and store values ---------------
-                     enumParamNames = request.getParameterNames();
-                     while(enumParamNames.hasMoreElements())
-                     {  //Go throw all parameters from http-request
-                        String sParameter = (String) enumParamNames.nextElement();
+                      //---------------- Process parameters and store values ---------------
+                      enumParamNames = request.getParameterNames();
+                      while(enumParamNames.hasMoreElements()){
+                         //Go throw all parameters from http-request
+                         String sParameter = (String) enumParamNames.nextElement();
 
-                        if((sParameter.equals("add")) && (sRequest_Submitted.equals("remove")))
-                        {
-                          //we have got "remove lang string" command
-                        }
+                         if((sParameter.equals("add")) && (sRequest_Submitted.equals("remove"))){
+                            //we have got "remove lang string" command
+                         }
 
-                        if(sParameter.charAt(0) == 'm')
-                        {
-                           String sMetadataDefinitionID = sParameter.substring(1);
-                           //It creates a new or gets exist metadata
-                           %>
-                              <jsp:include page="metaedit_metaget.jsp" flush="true">
-                                 <jsp:param name="node" value="<%= sNode %>" />
-                                 <jsp:param name="metadata_definition" value="<%= sMetadataDefinitionID%>" />
-                              </jsp:include>
-                           <%
-                           String sMetadataID = (String) session.getAttribute("metadata_id");
-
-
-
-                           //Add this node to the "passed" list
-                           //We shouldn't erase values from it in future
-                           hsetPassedNodes.add(sMetadataID);
-
-                           String sMetadataDefinitionType = "";
-                           boolean bIsRelated = false;
-                           //Type of metadata
-                           %>
-                           <%@include file="metaedit_definition_process.jsp" %>
-                           <%
-                        } // end of if(sParameter.charAt(0) == 'm')
-                     } // end of  while(enumParamNames.hasMoreElements())
-
-
-                     if(sRequest_Submitted.equals("add"))
-                     { //we have got "add lang string" command
-                       //It creates a new or gets exist metadata
-
-                        %>
-                           <jsp:include page="metaedit_metaget.jsp" flush="true">
-                              <jsp:param name="node" value="<%= sNode %>" />
-                              <jsp:param name="metadata_definition" value="<%= request.getParameter("add") %>" />
-                           </jsp:include>
-                        <%
-                        String sMetadataID = (String) session.getAttribute("metadata_id");
-
-                        //add a new field
-                        %>
-                           <mm:remove referid="lang_id" />
-                           <mm:remove referid="metadata_id" />
-                           <mm:createnode type="metalangstring" id="lang_id"/>
-
-                           <mm:node number="<%= sMetadataID %>" id="metadata_id">
-                              <mm:createrelation source="metadata_id" destination="lang_id" role="posrel">
-                                 <mm:setfield name="pos"><%= 1000000 %></mm:setfield>
-                              </mm:createrelation>
-                           </mm:node>
-                        <%
-                     }
-                     %>
-                     <mm:node number="<%= sNode %>">
-                        <mm:relatednodes type="metadata">
-                           <mm:field name="number" jspvar="sID" vartype="String">
-
-                             <mm:relatednodes type="metavocabulary">
-                                <mm:field name="number" jspvar="sNum" vartype="String">
-                                   <mm:listrelations type="metadata" role="posrel">
-                                     <mm:field name="snumber" jspvar="sSource" vartype="String">
-                                         <%
-                                           if(!hsetAssignedVocabularies.contains(sNum) &&
-                                              sSource.equals(sID)&&
-                                              sRequest_Submitted != null)
-                                           {
-
-                                           %>
-                                           <mm:deletenode />
-                                           <%
-                                           }
-                                           %>
-                                    </mm:field>
-                                 </mm:listrelations>
-                               </mm:field>
-                             </mm:relatednodes>
-
+                         if(sParameter.charAt(0) == 'm'){
+                            String sMetadataDefinitionID = sParameter.substring(1);
+                            //It creates a new or gets exist metadata
+                            %>
+                                <jsp:include page="metaedit_metaget.jsp" flush="true">
+                                   <jsp:param name="node" value="<%= sNode %>" />
+                                   <jsp:param name="metadata_definition" value="<%= sMetadataDefinitionID%>" />
+                                </jsp:include>
                             <%
+                            String sMetadataID = (String) session.getAttribute("metadata_id");
 
-                              if(!hsetPassedNodes.contains(sID))
-                                 {// ------------ Remove old values ---------------
-                                    %>
-                                       <mm:relatednodes type="metadate">
-                                          <mm:deletenode deleterelations="true"/>
-                                       </mm:relatednodes>
-                                       <mm:relatednodes type="metalangstring">
-                                          <mm:deletenode deleterelations="true"/>
-                                       </mm:relatednodes>
-                                    <%
-                                 }
+                            //Add this node to the "passed" list
+                            //We shouldn't erase values from it in future
+                            hsetPassedNodes.add(sMetadataID);
 
-                              %>
+                            String sMetadataDefinitionType = "";
+                            boolean bIsRelated = false;
+                            //Type of metadata
+                            %>
+                            <%@include file="metaedit_definition_process.jsp" %>
+                            <%
+                         } // end of if(sParameter.charAt(0) == 'm')
+                      } // end of  while(enumParamNames.hasMoreElements())
 
-                           </mm:field>
-                        </mm:relatednodes>
-                     </mm:node>
+
+                      if(sRequest_Submitted.equals("add")){
+                        //we have got "add lang string" command
+                        //It creates a new or gets exist metadata
+
+                      %>
+                         <jsp:include page="metaedit_metaget.jsp" flush="true">
+                             <jsp:param name="node" value="<%= sNode %>" />
+                             <jsp:param name="metadata_definition" value="<%= request.getParameter("add") %>" />
+                         </jsp:include>
+                      <%
+                         String sMetadataID = (String) session.getAttribute("metadata_id");
+
+                         //add a new field
+                      %>
+                      <mm:remove referid="lang_id" />
+                      <mm:remove referid="metadata_id" />
+                      <mm:createnode type="metalangstring" id="lang_id"/>
+
+                         <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                            <mm:createrelation source="metadata_id" destination="lang_id" role="posrel">
+                               <mm:setfield name="pos"><%= 1000000 %></mm:setfield>
+                            </mm:createrelation>
+                         </mm:node>
+                      <%
+                      } //end of if(sRequest_Submitted.equals("add"))
+                      %>
+                      <mm:node number="<%= sNode %>">
+                         <mm:relatednodes type="metadata">
+                            <mm:field name="number" jspvar="sID" vartype="String">
+
+                                <mm:relatednodes type="metavocabulary">
+                                   <mm:field name="number" jspvar="sNum" vartype="String">
+                                      <mm:listrelations type="metadata" role="posrel">
+                                         <mm:field name="snumber" jspvar="sSource" vartype="String">
+                                            <%
+                                            if(!hsetAssignedVocabularies.contains(sNum) &&
+                                               sSource.equals(sID)&&
+                                               sRequest_Submitted != null){
+                                            %>
+                                            <mm:deletenode />
+                                            <%
+                                            } // end of if(!hsetAssignedVocabularies.contains(sNum) &&
+                                            %>
+                                         </mm:field>
+                                      </mm:listrelations>
+                                   </mm:field>
+                                </mm:relatednodes>
+                            <%
+                            if(!hsetPassedNodes.contains(sID)){
+                               // ------------ Remove old values ---------------
+                               %>
+                               <mm:relatednodes type="metadate">
+                                   <mm:deletenode deleterelations="true"/>
+                               </mm:relatednodes>
+                               <mm:relatednodes type="metalangstring">
+                                    <mm:deletenode deleterelations="true"/>
+                               </mm:relatednodes>
+                            <%
+                            } // end of if(!hsetPassedNodes.contains(sID)){
+                            %>
+                            </mm:field>
+                         </mm:relatednodes>
+                      </mm:node>
+                      <%
+
+                      if((sRequest_Submitted.equals("add")) || (sRequest_Submitted.equals("remove"))){
+                         String sParList = "";
+                         enumParamNames = request.getParameterNames();
+                         while(enumParamNames.hasMoreElements()){
+                            String sParameter = (String) enumParamNames.nextElement();
+                            String[] arrstrParameters = request.getParameterValues(sParameter);
+                            if(sParameter.charAt(0) == 'm'){
+                               for(int i=0; i < arrstrParameters.length; i++){
+                                  sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
+                               } // end of for
+                            } // end of if
+                         }// end of while
+                         %>
+                         <jsp:include page="metaedit_form.jsp?node=<%= sNode %><%= sParList %>" flush="true" />
                      <%
-
-
-                     if((sRequest_Submitted.equals("add")) || (sRequest_Submitted.equals("remove")))
-                     {
-                        String sParList = "";
-                        
-                        
-                        enumParamNames = request.getParameterNames();
-                        while(enumParamNames.hasMoreElements())
-                        {
-                           String sParameter = (String) enumParamNames.nextElement();
-                           String[] arrstrParameters = request.getParameterValues(sParameter);
-                        
-                           if(sParameter.charAt(0) == 'm')
-                           {
-                                for(int i=0; i < arrstrParameters.length; i++)
-                                    {
-                                        sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
-                        
-                                    } // end of for
-                        
-                           } // end of if
-                        
-                        }// end of while
-                        
-                        
-                        %>
-                        <jsp:include page="metaedit_form.jsp?node=<%= sNode %><%= sParList %>" flush="true" />
-                        <%
-                      }  // end of if
+                     }  // end of if((sRequest_Submitted.equals("add")) ||
 
                      // We have to update metadate.value field (it is handled by metadata builder) %>
                      <mm:node number="<%= sNode %>">
@@ -291,9 +264,8 @@
                   </mm:cloud>
                </mm:content>
             <%
-
          } // end of Submit has been pressed
-      %>
+         %>
    </body>
 </html>
 
