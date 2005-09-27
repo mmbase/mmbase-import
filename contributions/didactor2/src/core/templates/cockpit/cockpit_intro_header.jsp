@@ -12,10 +12,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<mm:write referid="lang_code" />">
   <head>
-    <mm:write referid="extraheader" escape="none" />
-<%--    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/menubars.css" objectlist="$includePath" referids="$referids" />" />--%>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
-<%--    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids" />" />--%>
+    <mm:write referid="extraheader" escape="none" />
   </head>
   <body <mm:write referid="extrabody" escape="none" />>
    <div>
