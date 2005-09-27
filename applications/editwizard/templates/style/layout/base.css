@@ -4,7 +4,7 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version	$Id: base.css,v 1.3 2005-04-11 07:54:41 andre Exp $
+  @version	$Id: base.css,v 1.4 2005-09-27 15:35:43 michiel Exp $
 */
 
 body
@@ -25,7 +25,7 @@ input, textarea, select
 	letter-spacing: 0.05em;
 }
 
-input, textarea, { width: 100%; }
+input, textarea { width: 100%; }
 
 a:link
 {
@@ -61,7 +61,7 @@ a:active
 
 h1, h2, h3, h4, h5, h6
 {
-	padding- left: 3;
+	padding-left: 3px;
 	text-align: left;
 	font-weight: bold;
 }
@@ -75,7 +75,7 @@ h6 { font-size: 10px; }
 
 .tooltip
 {
-	borde-width: 1px;
+	border-width: 1px;
 	border-style: solid;
 	padding: 3;
 	position: absolute;
@@ -143,7 +143,7 @@ textarea.debug { width: 100%; }
 
 .imgbutton
 {
-	cursor: hand;
+	cursor: pointer;
 	padding: 0;
 	margin: 0 1 1 0;
 	border-style: none;
@@ -152,7 +152,7 @@ textarea.debug { width: 100%; }
 
 .imgbutton-down
 {
-	cursor: hand;
+	cursor: pointer;
 	padding: 0;
 	margin: 1 0 0 1;
 	border-style: none;
