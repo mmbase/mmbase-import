@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.6 2005-09-26 20:05:49 ernst Exp $
+ * @version $Id: ChangeManager.java,v 1.7 2005-09-27 12:59:33 michiel Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -68,7 +68,7 @@ public final class ChangeManager {
     public void commit(MMObjectNode node, String change) {
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges()) {
-            NodeEvent event = new RelationEvent(node, NodeEvent.oldTypeToNewType(change));
+            NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(change));
  
             //regardless of wether this is a relatione event we fire a node event first
             mmbase.propagateEvent(event);
