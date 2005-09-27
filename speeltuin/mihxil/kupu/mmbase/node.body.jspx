@@ -2,6 +2,7 @@
             expires="-1"
             xmlns="http://www.w3.org/1999/xhtml" 
             xmlns:jsp="http://java.sun.com/JSP/Page" 
+            xmlns:fn="http://java.sun.com/jsp/jstl/functions"
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page session="false" errorPage="error.jspx" />
   <jsp:output omit-xml-declaration="true" />
@@ -16,7 +17,7 @@
 
     <mm:present referid="node">
       <mm:node  number="$node">
-        <mm:formatter xslt="xslt/mmxf2kupu.xslt" id="sent" escape="none">
+        <mm:formatter xslt="xslt/mmxf2kupu.xslt" options="client=${fn:contains(header['user-agent'], 'MSIE')  ? 'msie' : 'gecko'}" id="sent" escape="none">
           <mm:field name="body" />
           <mm:listrelations type="object" role="idrel" searchdir="destination" >
             <mm:relatednode>
