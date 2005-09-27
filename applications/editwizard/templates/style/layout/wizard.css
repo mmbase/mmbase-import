@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.7 2005-04-11 07:53:14 andre Exp $
+  @version  $Id: wizard.css,v 1.8 2005-09-27 15:35:43 michiel Exp $
 
 body
 table.head
@@ -194,7 +194,8 @@ table.listcontent
 table.listhead
 {
     font-size: 11px;
-    padding: 0px margin: 0px;
+    padding: 0px;
+    margin: 0px;
     border-width: 0px;
     border-style: solid;
     border-collapse: collapse;
@@ -298,7 +299,7 @@ table.itemrow-hover
 {
     font-size: 11px;
     font-weight: normal;
-    cursor: hand;
+    cursor: pointer;
     border-style: solid;
     border-width: 1px;
     border-collapse: separate;
@@ -328,7 +329,7 @@ a.bottombutton:hover,
 a.bottombutton:active
 {
     font-size: 20px;
-    cursor: hand;
+    cursor: pointer;
 }
 
 a.bottombutton-disabled:link,
