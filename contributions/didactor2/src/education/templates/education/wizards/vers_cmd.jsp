@@ -18,8 +18,7 @@
 <mm:compare referid="command" value="restore">
    <mm:node number="$archiveid" notfound="skip">1
       <%
-         VersioningController versioningController = new VersioningController(cloud); 
-         versioningController.restoreVersion( cloud.getNode(archiveId) );
+         VersioningController.restoreVersion( cloud.getNode(archiveId) );
       %>
    </mm:node>
 </mm:compare>
