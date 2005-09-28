@@ -3,7 +3,9 @@
 <%@include file="/shared/setImports.jsp" %>
 <div class="educationMenubar" style="white-space: nowrap">
 <mm:present referid="education">
-  <mm:treeinclude page="/progress/cockpit/bar_connector.jsp" objectlist="$includePath" referids="$referids"/>
+  <mm:node number="component.progress" notfound="skip">
+    <mm:treeinclude page="/progress/cockpit/bar_connector.jsp" objectlist="$includePath" referids="$referids"/>
+  </mm:node>
 </mm:present>
 
   <%// Refresh button %>
