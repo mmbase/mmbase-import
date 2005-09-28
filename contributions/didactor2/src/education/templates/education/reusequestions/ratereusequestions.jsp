@@ -10,7 +10,7 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:createnode type="givenanswers" id="givenanswer">
-  <mm:setfield name="score"/>1</mm:setfield>
+  <mm:setfield name="score">1</mm:setfield>
 </mm:createnode>
 
 <mm:createrelation role="related" source="madetest" destination="givenanswer"/>
