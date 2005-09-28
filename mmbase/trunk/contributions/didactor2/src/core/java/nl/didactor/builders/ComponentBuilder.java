@@ -36,8 +36,7 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
                     v.add(c); 
             }
         } catch (Exception e) {
-            System.err.println(e);
-            e.printStackTrace(System.err);
+            log.error(e);
         }
 
         // Initialize all the components

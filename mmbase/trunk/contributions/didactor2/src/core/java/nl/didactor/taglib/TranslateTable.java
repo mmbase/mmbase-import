@@ -134,7 +134,7 @@ public class TranslateTable {
                 m.put(key, value);
             }
         } catch (Exception e) {
-            System.err.println("Exception: " + e);
+            log.error("Exception: " + e);
         }
        
         log.debug("Adding translations from file [" + path + "] with key [" + location + "]");
