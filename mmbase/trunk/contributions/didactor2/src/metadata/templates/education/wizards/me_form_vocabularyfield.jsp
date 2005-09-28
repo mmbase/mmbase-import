@@ -98,7 +98,7 @@ else{ // sMaxValues !=1
          if(bVocabularyAllowed){
             boolean metavocabularyIsShown = false;
             %>
-            <InputField type="checkbox" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<mm:field name="value" />"
+            <input type="checkbox" name="<%=sPrefix%><%= sMetaDefinitionID %>" value="<mm:field name="value" />"
                <%
                if(hsetVocabularis.contains(sNumber)){
                  %>
