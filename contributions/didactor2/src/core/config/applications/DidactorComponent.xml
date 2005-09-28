@@ -3,7 +3,6 @@
 <application name="DidactorComponent" maintainer="didactor.nl" version="2" auto-deploy="true">
 	<requirements>
 		<requires name="Resources" maintainer="didactor.nl" version="2" />
-		<requires name="DidactorCore" maintainer="didactor.nl" version="8" />
 	</requirements>
 
 	<neededbuilderlist>
@@ -17,13 +16,7 @@
 		<reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
 	</neededreldeflist>
 
-	<allowedrelationlist>
-		<relation from="providers" to="components" type="settingrel" />
-		<relation from="educations" to="components" type="settingrel" />
-		<relation from="classes" to="components" type="settingrel" />
-		<relation from="people" to="components" type="settingrel" />
-		<relation from="settingrel" to="settings" type="related" />
-	</allowedrelationlist>
+	<allowedrelationlist />
 
 	<datasourcelist>
 		<datasource builder="components" path="DidactorComponent/components.xml" />
