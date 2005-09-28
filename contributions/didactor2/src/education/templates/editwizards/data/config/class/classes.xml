@@ -3,20 +3,7 @@
 <wizard-schema id="empty">
     <title>Klas Editor</title>
 
-    <action type="create">
-      <object type="classes">
-        <relation role="related">
-          <object type="workspaces">
-            <field name="name">Werkruimte van de klas</field>
-          </object>
-        </relation>
-        <relation role="related">
-          <object type="agendas">
-            <field name="name">Klas Agenda</field>
-          </object>
-        </relation>
-      </object>
-    </action>
+    <action type="create" />
     
     <action type="load">
         <relation destination="people" role="classrel">
@@ -37,7 +24,6 @@
         </relation>
         <relation destination="mmevents" role="related" />
         <relation destination="workgroups" role="related" />
-        <relation destination="workspaces" role="related" />
     </action>
 
     <action type="delete" />
