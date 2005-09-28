@@ -34,12 +34,6 @@ import org.xml.sax.InputSource;
 public class VersioningController
 {
   private static Logger log = Logging.getLoggerInstance(VersioningController.class.getName());
-  private static Cloud cloud;
-
-  public VersioningController(Cloud c)
-  {
-     cloud = c;
-  }
 
   /**
    * Add a new version of paragraph to the 'archives' table. All data and relations to paragraphs is
@@ -48,6 +42,7 @@ public class VersioningController
    * @param node - Node to create a version from
    */
   public static int addParagraphVersion(Node node) {
+     Cloud cloud = node.getCloud();
      int archiveNumber = -1;
      String originalNode = "" + node.getNumber();
 
@@ -77,6 +72,7 @@ public class VersioningController
    * @param node - Node to create a version from
    */
   public static int addSimpleVersion(Node node) {
+     Cloud cloud = node.getCloud();
      int archiveNumber = -1;
      String originalNode = "" + node.getNumber();
      long now = System.currentTimeMillis()/1000 ;
@@ -116,6 +112,7 @@ public class VersioningController
    * @param node - Node to create a version from
    */
   public static int addLOVersion(Node node) {
+     Cloud cloud = node.getCloud();
      int archiveNumber = -1;
      String originalNode = "" + node.getNumber();
      long now = System.currentTimeMillis()/1000 ;
@@ -155,6 +152,7 @@ public class VersioningController
    * @param archive - Node with the archived data
    */
   public static String restoreVersion(Node archive) {
+     Cloud cloud = archive.getCloud();
      String errorMsg = "";
      log.info("restore node " + archive.getNumber());
      String originalNode = archive.getStringValue("original_node");
@@ -209,6 +207,7 @@ public class VersioningController
   }
 
   private static String restoreRelations(Document document, Node n) throws Exception {
+     Cloud cloud = n.getCloud();
      String errorMsg = "";
 
      org.w3c.dom.NodeList relations = document.getElementsByTagName("relation");

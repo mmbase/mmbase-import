@@ -19,8 +19,7 @@ public class SimpleVersioningBuilder extends MMObjectBuilder
   public MMObjectNode preCommit(MMObjectNode node) {
     CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
     cloud = cloudProvider.getAdminCloud();
-    VersioningController vc = new VersioningController(cloud);
-    vc.addSimpleVersion(cloud.getNode(node.getNumber()));
+    VersioningController.addSimpleVersion(cloud.getNode(node.getNumber()));
     super.preCommit(node);
     log.info("simple.precommit is called for node " + node.getNumber());
     return node;
