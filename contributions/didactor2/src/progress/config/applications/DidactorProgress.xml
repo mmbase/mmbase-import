@@ -16,6 +16,7 @@
 
     <datasourcelist>
         <datasource builder="images" path="DidactorProgress/images.xml" />
+        <datasource builder="components" path="DidactorProgress/components.xml" />
     </datasourcelist>
 
     <relationsourcelist />
