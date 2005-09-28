@@ -7,6 +7,8 @@ import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.*;
 import javax.servlet.Servlet;
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import nl.didactor.component.Component;
 
 /**
@@ -14,6 +16,7 @@ import nl.didactor.component.Component;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class GetSettingTag extends CloudReferrerTag { 
+    private static Logger log = Logging.getLoggerInstance(GetSettingTag.class.getName());
     private String component;
     private String setting;
     private String[] arguments = new String[0];
@@ -74,8 +77,7 @@ public class GetSettingTag extends CloudReferrerTag {
         try {
             pageContext.getOut().print(value);
         } catch (Exception e) {
-            System.err.println(e);
-            e.printStackTrace(System.err);
+            log.error(e);
         }
         return SKIP_BODY;
     }

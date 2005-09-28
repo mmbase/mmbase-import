@@ -7,6 +7,8 @@ import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.*;
 import javax.servlet.Servlet;
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import nl.didactor.component.Component;
 import java.util.StringTokenizer;
 
@@ -15,6 +17,7 @@ import java.util.StringTokenizer;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class MayTag extends CloudReferrerTag { 
+    private static Logger log = Logging.getLoggerInstance(MayTag.class.getName());
     private String component;
     private String action;
     private String[] arguments = new String[0];
@@ -62,7 +65,7 @@ public class MayTag extends CloudReferrerTag {
     public int doStartTag() throws JspTagException {
         Component comp = Component.getComponent(component);
         if (comp == null) {
-            System.err.println( "Component "+ component + "cannot be found" );
+            log.error("Component "+ component + "cannot be found" );
             return SKIP_BODY;
         }
 
@@ -81,7 +84,7 @@ public class MayTag extends CloudReferrerTag {
                 pageContext.getOut().print( "<h1>Permission denied!</h1>");
             }
             catch (java.io.IOException e) {
-               System.err.println( "di:may IO error:" + e.getMessage());
+               log.error( "di:may IO error:" + e.getMessage());
             }
             return SKIP_BODY;
         }

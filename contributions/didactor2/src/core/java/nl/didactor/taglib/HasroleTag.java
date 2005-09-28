@@ -8,6 +8,8 @@ import javax.servlet.jsp.*;
 import javax.servlet.Servlet;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import nl.didactor.component.Component;
 import nl.didactor.security.*;
 import nl.didactor.util.ClassRoom;
@@ -16,10 +18,12 @@ import nl.didactor.util.ClassRoom;
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class HasroleTag extends CloudReferrerTag { 
+    private static Logger log = Logging.getLoggerInstance(HasroleTag.class.getName());
+
     private String role;
     private String inverse;
-	private String referid;
-	private String education;
+    private String referid;
+    private String education;
 
     /**
      * Set the value for the 'role' argument of the Hasrole tag
@@ -37,38 +41,38 @@ public class HasroleTag extends CloudReferrerTag {
     public void setInverse(String inverse) {
         this.inverse = inverse;
     }
-	/**
-	 * Set the value for the 'inverse' argument of the Hasrole tag
-	 * @param inverse whether or not we need to inverse the result
-	 */
+    /**
+     * Set the value for the 'inverse' argument of the Hasrole tag
+     * @param inverse whether or not we need to inverse the result
+     */
 
-	public void setReferid(String referid) {
-		this.referid = referid;
-	}
+    public void setReferid(String referid) {
+        this.referid = referid;
+    }
 
-	/**
-	 * Set the value for the 'education' argument of the Hasrole tag
-	 * @param inverse the education for which the user has the role
-	 */
+    /**
+     * Set the value for the 'education' argument of the Hasrole tag
+     * @param inverse the education for which the user has the role
+     */
 
-	public void setEducation(String education) {
-		this.education = education;
-	}
+    public void setEducation(String education) {
+        this.education = education;
+    }
 
     /**
      * Execute the body of the tag if the current user has the given role.
      */
     public int doStartTag() throws JspTagException {
-    	//Get User        
+        //Get User        
         // default: logged in user 
         String userid= referid;
         if (userid == null) {
-			userid= "user";
-    	}
-    	Object user = getContextProvider().getContextContainer().get( userid);
+            userid= "user";
+        }
+        Object user = getContextProvider().getContextContainer().get( userid);
         if (user == null) {
-        	throw new JspTagException("Context variable with id '" + userid + "' not found");
-    	}
+            throw new JspTagException("Context variable with id '" + userid + "' not found");
+        }
         MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode("" + user);
         if (usernode == null) {
             throw new JspTagException("User with number '" + user + "' not found");
@@ -92,7 +96,7 @@ public class HasroleTag extends CloudReferrerTag {
            }   
         } 
         if (role == null) {
-			throw new JspTagException( "No role defined");			
+            throw new JspTagException( "No role defined");            
         }
         
         boolean inv = false;
@@ -109,7 +113,7 @@ public class HasroleTag extends CloudReferrerTag {
             }
         } catch (JspTagException e) {
             //             throw new JspTagException(e.getMessage());
-            System.err.println( "hasrole: " + e.getMessage());
+            log.error("hasrole: " + e.getMessage());
             return SKIP_BODY;
         }
     }

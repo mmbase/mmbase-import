@@ -9,16 +9,20 @@ import javax.servlet.jsp.*;
 import javax.servlet.Servlet;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.StringSplitter;
+import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import nl.didactor.component.Component;
 import nl.didactor.security.*;
 import nl.didactor.util.ClassRoom;
-import org.mmbase.util.StringSplitter;
-import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 /**
  * entityTag: retrieve entity data
  * @author UNKNOWN
  */
 public class EntityTag extends CloudReferrerTag { 
+    private static Logger log = Logging.getLoggerInstance(EntityTag.class.getName());
+
     private String name;
     private String user;
     private String education;
@@ -160,11 +164,11 @@ public class EntityTag extends CloudReferrerTag {
                 pageContext.getOut().print( pageContext.getAttribute( var).toString());
             }
         } catch (JspTagException e) {
-            System.err.println( "di:entity: IO " + e.getMessage());
+            log.error( "di:entity: IO " + e.getMessage());
             return SKIP_BODY;
          }
         catch (java.io.IOException e) {
-            System.err.println( "di:entity: IO " + e.getMessage());
+            log.error( "di:entity: IO " + e.getMessage());
             return SKIP_BODY;
         }
         return ret_value;

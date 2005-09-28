@@ -6,10 +6,14 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import java.util.*;
 
 public abstract class Component {
+    private static Logger log = Logging.getLoggerInstance(Component.class.getName());
+
     private static Hashtable components = new Hashtable();
 
     private Vector interestedComponents = new Vector();
@@ -36,7 +40,7 @@ public abstract class Component {
             comps[cnt] = (Component)e.nextElement();
             cnt++;
         }
-        System.err.println("Returning " + comps.length + " components");
+        log.info("Returning " + comps.length + " components");
         return comps;
     }
 
@@ -115,7 +119,7 @@ public abstract class Component {
             return "";
         }
         if (settingrel.size() > 1) {
-            System.err.println("Too many relations from " + userid + " to " + node.getNumber() +". Picking first one!");
+            log.warn("Too many relations from " + userid + " to " + node.getNumber() +". Picking first one!");
         }
         Node settingRelNode = settingrel.getNode(0);
         NodeList settings = settingRelNode.getRelatedNodes("settings");
