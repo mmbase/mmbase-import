@@ -75,6 +75,8 @@
     </neededreldeflist>
 
     <allowedrelationlist>
+        <relation from="educations" to="urls" type="related" />
+
         <relation from="educations" to="learnblocks" type="posrel" />
         <relation from="educations" to="images" type="sizerel" />
         <relation from="educations" to="audiotapes" type="posrel" />
