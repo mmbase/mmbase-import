@@ -29,7 +29,6 @@
       </mm:node>
       <mm:present referid="hasportfolio">
         <a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/portfolio/index.jsp?edit=true" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
-        <mm:remove referid="hasportfolio" />
       </mm:present>
       <mm:notpresent referid="hasportfolio">
         <a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/admin/" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
