@@ -344,4 +344,60 @@
      />
    </target>
 
+   <!-- 
+     If you want to precompile the webapplicationn, you need to use Tomcat5, and 
+     set the property 'tomcat.home' in your properties file 
+     Also, you might want to set:
+       build.compiler=jikes
+     because compilation with the classic/modern compilers takes a lot of time and memory.
+    -->
+   <target name="precompile" depends="webapp">
+     <taskdef classname="org.apache.jasper.JspC" name="jasper2" > 
+       <classpath id="jspc.classpath"> 
+         <pathelement location="${java.home}/../lib/tools.jar"/> 
+         <fileset dir="${tomcat.home}/server/lib"> 
+           <include name="*.jar"/> 
+         </fileset> 
+         <fileset dir="${tomcat.home}/common/lib"> 
+           <include name="*.jar"/> 
+         </fileset> 
+         <fileset dir="${build.dir}/webapp/WEB-INF/lib"> 
+           <include name="*.jar"/> 
+         </fileset> 
+       </classpath> 
+     </taskdef> 
+
+     <jasper2
+             validateXml="false" 
+	     addWebXmlMappings="true"
+             uriroot="${build.dir}/webapp" 
+             webXmlFragment="${build.dir}/webapp/WEB-INF/jsp.xml" 
+             outputDir="${build.dir}/jspjava" /> 
+
+     <mkdir dir="${build.dir}/jspclasses" />
+     <javac destdir="${build.dir}/jspclasses" 
+           optimize="off"
+           debug="on" failonerror="false"
+           srcdir="${build.dir}/jspjava"
+	   fork="true" memoryMaximumSize="512M">
+      <classpath>
+        <fileset dir="${build.dir}/webapp/WEB-INF/lib">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${tomcat.home}/common/lib">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${tomcat.home}/shared/lib">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+      <include name="**" />
+    </javac>
+
+    <jar jarfile="${build.dir}/webapp/WEB-INF/lib/didactor-jsp.jar"
+         includes="**"
+         basedir="${build.dir}/jspclasses" />
+  </target>
+  
+  <target name="precompiledwar" depends="precompile,war" />
 </project>
