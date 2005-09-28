@@ -3,6 +3,7 @@
 <application name="DidactorCore" maintainer="didactor.nl" version="8" auto-deploy="true">
     <requirements>
         <requires name="Resources" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     </requirements>  
 
     <neededbuilderlist>
@@ -36,6 +37,13 @@
     </neededreldeflist>
 
     <allowedrelationlist>
+        <!-- Components -->
+        <relation from="providers" to="components" type="settingrel" />
+        <relation from="educations" to="components" type="settingrel" />
+        <relation from="classes" to="components" type="settingrel" />
+        <relation from="people" to="components" type="settingrel" />
+        <relation from="settingrel" to="settings" type="related" />
+
         <relation from="providers" to="urls" type="related" />
         <relation from="providers" to="educations" type="related" />
 
@@ -75,6 +83,7 @@
 		<datasource builder="roles" path="DidactorCore/roles.xml" />
 		<datasource builder="providers" path="DidactorCore/providers.xml" />
 		<datasource builder="editcontexts" path="DidactorCore/editcontexts.xml" />
+		<datasource builder="components" path="DidactorCore/components.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
