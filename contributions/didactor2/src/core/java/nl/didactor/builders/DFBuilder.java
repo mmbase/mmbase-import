@@ -346,12 +346,12 @@ public class DFBuilder extends org.mmbase.module.core.MMObjectBuilder {
         Element tmp;
         String lang;
         // Gui
-        Enumeration enum;
+        Enumeration denum;
 
         Element descriptions = br.getElementByPath(field,"field.descriptions");
         if (descriptions!=null) {
-            for (enum = br.getChildElements(descriptions,"description"); enum.hasMoreElements(); ) {
-                tmp = (Element)enum.nextElement();
+            for (denum = br.getChildElements(descriptions,"description"); denum.hasMoreElements(); ) {
+                tmp = (Element)denum.nextElement();
                 lang = br.getElementAttributeValue(tmp,"xml:lang");
                 def.setDescription(lang,br.getElementValue(tmp));
             }
@@ -359,14 +359,14 @@ public class DFBuilder extends org.mmbase.module.core.MMObjectBuilder {
 
         Element gui = br.getElementByPath(field,"field.gui");
         if (gui!=null) {
-            for (enum = br.getChildElements(gui,"guiname"); enum.hasMoreElements(); ) {
-                tmp = (Element)enum.nextElement();
+            for (denum = br.getChildElements(gui,"guiname"); denum.hasMoreElements(); ) {
+                tmp = (Element)denum.nextElement();
                 lang = br.getElementAttributeValue(tmp,"xml:lang");
                 def.setGUIName(lang,br.getElementValue(tmp));
             }
             // XXX: deprecated tag 'name'
-            for(enum = br.getChildElements(gui,"name"); enum.hasMoreElements(); ) {
-                tmp = (Element)enum.nextElement();
+            for(denum = br.getChildElements(gui,"name"); denum.hasMoreElements(); ) {
+                tmp = (Element)denum.nextElement();
                 lang = br.getElementAttributeValue(tmp,"xml:lang");
                 def.setGUIName(lang,br.getElementValue(tmp));
             }

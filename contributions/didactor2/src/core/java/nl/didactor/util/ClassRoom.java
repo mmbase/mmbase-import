@@ -12,10 +12,14 @@ import org.mmbase.module.core.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.*;
 
 public class ClassRoom {
+	private static Logger log = Logging.getLoggerInstance(ClassRoom.class.getName());
+
 	public final static int ALL_CLASSES= -1;
 	
 	/**
@@ -117,7 +121,7 @@ public class ClassRoom {
 					cloud);
 			
 			if (rolerel.size()> 2) {
-				System.err.println("There is more than 1 relation from user '" + personnode.getNumber() + "' to education '" + educationno + "'");
+				log.error("There is more than 1 relation from user '" + personnode.getNumber() + "' to education '" + educationno + "'");
 			}
 			for (int rolerelno=0; rolerelno< rolerel.size() ;rolerelno++) {
 				// Find all related roles to this relation
