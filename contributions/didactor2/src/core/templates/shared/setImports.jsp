@@ -84,7 +84,7 @@
 --%>
 <mm:notpresent referid="provider">
   <mm:notpresent referid="education">
-    <mm:listcontainer path="providers,educations,urls" fields="urls.url,providers.number,educations.number">
+    <mm:listcontainer path="providers,educations,related,urls" fields="urls.url,providers.number,educations.number">
       <mm:constraint operator="equal" field="urls.url" referid="servername" />
       <mm:size id="nr_educations" write="false" />
       <mm:compare referid="nr_educations" value="1">
