@@ -4,6 +4,7 @@
    <!ENTITY extra_loads SYSTEM "extra_loads.xml">
    <!ENTITY extra_steps SYSTEM "extra_steps.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+   <!ENTITY extra_lists SYSTEM "extra_lists.xml">
 ]>
 <wizard-schema id="empty">
     <title>Opleiding Editor</title>
@@ -19,7 +20,6 @@
         <relation destination="classes" role="related" />
         <relation destination="news" role="related" />
         <relation destination="learnblocks" role="posrel" />
-        <relation destination="urlcategories" role="related" />
         <relation destination="people" role="rolerel">
           <object type="people">
             <relation destination="roles" role="related">
@@ -97,8 +97,8 @@
         <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
         <list destination="classes" role="related" extends="config/class/classes-list.xml" />
 
-       <list destination="urlcategories" role="related" extends="config/url/urlcategories-list.xml" />
         <list destination="people" role="rolerel" extends="config/people/people-list.xml" />
+        &extra_lists;
 
     </form-schema>
 
