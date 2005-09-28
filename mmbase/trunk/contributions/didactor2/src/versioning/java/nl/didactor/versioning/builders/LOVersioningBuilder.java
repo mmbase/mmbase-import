@@ -19,8 +19,7 @@ public class LOVersioningBuilder extends MMObjectBuilder
   public MMObjectNode preCommit(MMObjectNode node) {
     CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
     cloud = cloudProvider.getAdminCloud();
-    VersioningController vc = new VersioningController(cloud);
-    vc.addLOVersion(cloud.getNode(node.getNumber()));
+    VersioningController.addLOVersion(cloud.getNode(node.getNumber()));
     super.preCommit(node);
     log.info("lo.precommit is called for node " + node.getNumber());
     return node;

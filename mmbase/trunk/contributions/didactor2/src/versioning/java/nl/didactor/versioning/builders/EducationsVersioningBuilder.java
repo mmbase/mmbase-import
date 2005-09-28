@@ -19,8 +19,7 @@ public class EducationsVersioningBuilder extends nl.didactor.builders.SmartpathB
   public MMObjectNode preCommit(MMObjectNode node) {
     CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
     cloud = cloudProvider.getAdminCloud();
-    VersioningController vc = new VersioningController(cloud);
-    vc.addLOVersion(cloud.getNode(node.getNumber()));
+    VersioningController.addLOVersion(cloud.getNode(node.getNumber()));
     super.preCommit(node);
     log.info("education.precommit is called for node " + node.getNumber());
     return node;
