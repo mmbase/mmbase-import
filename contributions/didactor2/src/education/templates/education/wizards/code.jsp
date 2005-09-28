@@ -825,6 +825,18 @@
 
 
                <div id="education_0" style='display: none'>
+		  <% // Registration %>
+		  <mm:node number="component.register" notfound="skipbody">
+                  <table border="0" cellpadding="0" cellspacing="0">
+                     <tr>
+                        <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+                        <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                        <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
+                        <td>&nbsp;<nobr><a href="<mm:treefile write="true" page="/register/wizards/register.jsp" referids="$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="Aanmeldingen" target="text">Aanmeldingen</a></nobr></td>
+                     </tr>
+                  </table>
+		  </mm:node>
+
                   <%// create new learnblock item %>
                   <table border="0" cellpadding="0" cellspacing="0">
                      <tr>
@@ -839,6 +851,7 @@
                         <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<fmt:message key="createNewLearnblockDescription"/>" target="text"><fmt:message key="createNewLearnblock"/></a></nobr></td>
                      </tr>
                   </table>
+
 
                   <% //All learnblocks for current education %>
                   <%
