@@ -25,7 +25,6 @@
   <property name="build.wizards.dir" value="${build.dir}/webapp/editwizards" />
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
-  
     <tstamp>
         <format property="war.time" pattern="hh:mm aa, dd MMMM yyyy" locale="en"/>
     </tstamp>
@@ -99,26 +98,40 @@
     <replace file="${build.config.dir}/applications/Resources/builders/images.xml"
              token="$${imageconvert.convertercommand}"
              value="${imageconvert.convertercommand}"/>
-    <replace file="${build.config.dir}/modules/sendmail.xml"
-             token="$${sendmail.smarthost}"
-             value="${sendmail.smarthost}"/>
-    <replace file="${build.config.dir}/modules/smtpmodule.xml"
-             token="$${smtpmodule.hostname}"
-             value="${smtpmodule.hostname}"/>
-    <replace file="${build.config.dir}/modules/smtpmodule.xml"
-             token="$${smtpmodule.port}"
-             value="${smtpmodule.port}"/>
-    <replace file="${build.config.dir}/modules/smtpmodule.xml"
-             token="$${smtpmodule.relaydomains}"
-             value="${smtpmodule.relaydomains}"/>
+    <if>
+      <available file="${build.config.dir}/modules/sendmail.xml" />
+      <then>
+        <replace file="${build.config.dir}/modules/sendmail.xml"
+                 token="$${sendmail.smarthost}"
+                 value="${sendmail.smarthost}"/>
+      </then>
+    </if>
+    <if>
+      <available file="${build.config.dir}/modules/smtpmodule.xml" />
+      <then>
+        <replace file="${build.config.dir}/modules/smtpmodule.xml"
+                 token="$${smtpmodule.hostname}"
+                 value="${smtpmodule.hostname}"/>
+        <replace file="${build.config.dir}/modules/smtpmodule.xml"
+                 token="$${smtpmodule.port}"
+                 value="${smtpmodule.port}"/>
+        <replace file="${build.config.dir}/modules/smtpmodule.xml"
+                 token="$${smtpmodule.relaydomains}"
+                 value="${smtpmodule.relaydomains}"/>
+      </then>
+    </if>
 
-    <replace file="${build.config.dir}/chat/chat.properties"
-             token="$${chat.server.logfile}"
-             value="${chat.server.logfile}"/>
-    <replace file="${build.config.dir}/chat/chat.properties"
-             token="$${chat.engine.logfile}"
-             value="${chat.engine.logfile}"/>
- 
+    <if>
+      <available file="${build.config.dir}/chat/chat.properties" />
+      <then>
+        <replace file="${build.config.dir}/chat/chat.properties"
+                 token="$${chat.server.logfile}"
+                 value="${chat.server.logfile}"/>
+        <replace file="${build.config.dir}/chat/chat.properties"
+                 token="$${chat.engine.logfile}"
+                 value="${chat.engine.logfile}"/>
+      </then>
+    </if>
  
     <replace dir="${build.wizards.dir}/data/config"
              token="$${wizards.pages.text.ftype}"
