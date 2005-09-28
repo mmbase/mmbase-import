@@ -35,22 +35,22 @@ public class PeopleBuilder extends CreationNotifyBuilder {
     
             List nodelist = getNodes(query);
             if (nodelist.size() == 0) {
-            	log.info( "No users with the name");
+                log.info("No users with the name '" + username + "'");
                 return null;
                 // fail silently
             } else if (nodelist.size() > 1) {
-            	for ( int i=0;i <nodelist.size() ;i++) {
-					MMObjectNode n = (MMObjectNode)nodelist.get(0);
-					log.info( n.getStringValue("lastname") + ""+ n.getStringValue("username"));
-               }
                 log.error("Too many users with username '" + username + "': " + nodelist.size());
+                for ( int i=0;i <nodelist.size() ;i++) {
+                    MMObjectNode n = (MMObjectNode)nodelist.get(0);
+                    log.error(n.getStringValue("lastname") + ""+ n.getStringValue("username"));
+                }
                 return null;
             } else {
-				log.info( "1 user found" + username + " " + password);
+                log.debug( "1 user found: " + username + " " + password);
                 MMObjectNode node = (MMObjectNode)nodelist.get(0);
                 String storedpassword = node.getStringValue("password");
                 if (storedpassword == null || !storedpassword.equals("{md5}" + encoder.encode(password))) {
-					log.info( "Invalid password" );
+                    log.debug("Invalid password");
                     return null;
                 }
                 return node;
@@ -160,7 +160,7 @@ public class PeopleBuilder extends CreationNotifyBuilder {
             }
         }
         int number = super.insert(owner, node);
-        log.info( " insert people node" );
+        log.info("insert people node");
         return number;
     }
 
