@@ -20,16 +20,15 @@ public class ParagraphVersioningBuilder extends MMObjectBuilder
   public MMObjectNode preCommit(MMObjectNode node) {
     CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
     cloud = cloudProvider.getAdminCloud();
-    VersioningController vc = new VersioningController(cloud);
     Node originalNode = cloud.getNode(node.getNumber());
     NodeList learnobjects = learnobjects = originalNode.getRelatedNodes("learnobjects");
     for(int i=0;i<learnobjects.size();i++) {
-      vc.addLOVersion(learnobjects.getNode(i));
+      VersioningController.addLOVersion(learnobjects.getNode(i));
       log.info("paragraph.precommit : lo : " + learnobjects.getNode(i).getNumber());
     }
     NodeList educations = originalNode.getRelatedNodes("educations");
     for(int i=0;i<educations.size();i++) {
-      vc.addLOVersion(educations.getNode(i));
+      VersioningController.addLOVersion(educations.getNode(i));
       log.info("paragraph.precommit : education : " + educations.getNode(i).getNumber());
     }
     super.preCommit(node);
