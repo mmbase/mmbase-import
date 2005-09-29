@@ -34,7 +34,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 
-import org.aselect.system.communication.client.ClientCommunicator;
+import org.aselect.system.communication.client.IClientCommunicator;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.3 2005-06-21 07:36:37 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.4 2005-09-29 14:20:43 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -86,7 +86,7 @@ public class ASelectAuthentication extends Authentication {
     /**
      * If communicating directly with the server, this is the object which does it.
      */
-    private ClientCommunicator communicator = null;
+    private IClientCommunicator communicator = null;
 
     /**
      * ASelect server address, needed when not using agent.
@@ -133,7 +133,7 @@ public class ASelectAuthentication extends Authentication {
 
     /**
      * The idea is that on reload of configuration the existing user
-     * are invalid, because there uniqueNumber does not correspond.
+     * are invalid, because their uniqueNumber does not correspond.
      */
     private long uniqueNumber = System.currentTimeMillis();
 
@@ -200,7 +200,7 @@ public class ASelectAuthentication extends Authentication {
                 if (is != null) {
                     Document doc = db.parse(is);
                     NodeList nl = doc.getElementsByTagName("aselectauthentication");
-                    if (nl.getLength() == 0) { // The configuration _is_ the agent's configuration, this is old style configuration. It might be could enough.
+                    if (nl.getLength() == 0) { // The configuration _is_ the agent's configuration, this is old style configuration. It might be good enough.
                         useAgent = true;
                         NodeList nl1 = doc.getElementsByTagName("serviceport");
                         agentPort = Integer.parseInt(getNodeTextValue(nl1.item(0)));
@@ -594,7 +594,7 @@ public class ASelectAuthentication extends Authentication {
                 throw new RuntimeException("ASelect Error: '" + ASelectErrors.getMessage(resultCode) + "' for application " + application);
             }
             // redirect.
-            String url = (String) aselectServerResponse.get("as_url");
+            String url = java.net.URLDecoder.decode((String) aselectServerResponse.get("as_url"), "UTF-8");
             String rid = (String) aselectServerResponse.get("rid");
 
             if (user == null) {
