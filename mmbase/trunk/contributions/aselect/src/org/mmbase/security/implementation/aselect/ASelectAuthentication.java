@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.4 2005-09-29 14:20:43 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.5 2005-09-29 17:30:39 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -232,7 +232,8 @@ public class ASelectAuthentication extends Authentication {
                             } else if (prot.equals("soap12")) {
                                 communicator = new org.aselect.system.communication.client.soap12.SOAP12Communicator("ASelect", new MMBaseSystemLogger());
                             } else {
-                                throw new RuntimeException("Invalid XML");
+                                log.error("Protocol '" + prot + "' is not 'raw', 'soap11' or 'soap12', taking 'raw'");
+                                communicator = new org.aselect.system.communication.client.raw.RawCommunicator(new MMBaseSystemLogger());
                             }
                             nl1 = doc.getElementsByTagName("uri");
                             aselectServer = getNodeTextValue(nl1.item(0));
