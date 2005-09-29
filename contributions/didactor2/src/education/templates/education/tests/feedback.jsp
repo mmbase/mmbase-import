@@ -31,10 +31,11 @@
    <mm:relatednodes type="questions" role="posrel" orderby="posrel.pos">
       <mm:import id="questionamount"><mm:size/></mm:import>
    </mm:relatednodes>
-
+   
+   <mm:field id="test_name" name="name" write="false"/>
    <mm:field name="showtitle">
       <mm:compare value="1">
-         <h1><mm:field id="test_name" name="name"/></h1>
+         <h1><mm:write referid="test_name"/></h1>
       </mm:compare>
    </mm:field>
 
