@@ -2,10 +2,10 @@
 <!-- 
  Schema definition of configuration file of ASelectAuthentication.
  @author Michiel Meeuwissen
- @version $Id: aselectauthentication.xsd,v 1.1 2005-03-16 20:04:04 michiel Exp $
+ @version $Id: aselectauthentication.xsd,v 1.2 2005-09-29 14:21:46 michiel Exp $
 -->
 <xsd:schema 
-  xmlns="http://www.mmbase.org/xsd"
+  xmlns="http://www.mmbase.org/xmlns/aselect"
   targetNamespace="http://www.mmbase.org/xsd"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified"
