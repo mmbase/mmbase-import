@@ -114,6 +114,8 @@ void date() :  {}
     | "toyear"      { date = Calendar.getInstance(); beginOfYear(); }
     | "tomorrow" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
     | "yesterday" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
+    | "yestermonth" { date = Calendar.getInstance(); date.add(Calendar.MONTH, -1); beginOfMonth(); }
+    | "yesteryear" { date = Calendar.getInstance(); date.add(Calendar.YEAR, -1); beginOfYear(); }
     | "duration" { beginOfYear(); date.set(Calendar.YEAR, 1970); }
     | "borreltijd"  { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 17); date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY); 
                      if (Calendar.getInstance().after(date)) date.add(Calendar.WEEK_OF_YEAR, 1);
@@ -188,7 +190,8 @@ void decrement() : {}
 }
 void inc_period() : {} 
 {
-    "minute" { field = Calendar.MINUTE;} 
+    "second" { field = Calendar.SECOND;} 
+  | "minute" { field = Calendar.MINUTE;} 
   | "hour"   { field = Calendar.HOUR;} 
   | "day"    { field = Calendar.DAY_OF_YEAR;}
   | "week"   { field = Calendar.WEEK_OF_YEAR;}
