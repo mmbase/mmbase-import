@@ -12,7 +12,6 @@
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/classes" />
     <mkdir dir="${build.dir}/webapp" />
-    <mkdir dir="${build.dir}/webapp/${includepath}" />
     <mkdir dir="${build.dir}/webapp/WEB-INF" />
     <mkdir dir="${build.dir}/webapp/WEB-INF/config" />
     <mkdir dir="${build.dir}/webapp/WEB-INF/lib" />
@@ -400,4 +399,16 @@
   </target>
   
   <target name="precompiledwar" depends="precompile,war" />
+
+  <target name="srcdist">
+    <zip destfile="${build.dir}/didactor-src.zip"
+         basedir=".">
+      <include name="src/**"/>
+      <include name="lib/**"/>
+      <include name="build.properties"/>
+      <include name="*.xml" />
+      <exclude name="**/CVS"/>
+    </zip>
+  </target>
+
 </project>
