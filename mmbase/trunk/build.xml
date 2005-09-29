@@ -502,7 +502,9 @@ mmadmin.xml
            optimize="${optimize}"
            source="1.4"
            nowarn="${nowarn}"
-           deprecation="${deprecation}">
+           deprecation="${deprecation}"
+           includeAntRuntime="false"
+           >
       <src path="${source-src.dir}"/>
       <src path="${generated-source-src.dir}" />
     </javac>
