@@ -10,12 +10,16 @@
     <action type="load">
         <object type="people"/>
         <relation destinationtype="roles" role="related"/>
-        <relation destinationtype="classes" role="classrel"/> 
-        <relation destinationtype="workgroups" role="related"/> 
-        <relation destinationtype="educations" role="classrel"/> 
+        <relation destinationtype="classes" role="classrel"/>
+        <relation destinationtype="workgroups" role="related"/>
+        <relation destinationtype="educations" role="classrel"/>
     </action>
 
     <action type="delete"/>
+
+    <lists>
+       <optionlist include="config/option_list/enabled.xml" />
+    </lists>
 
     <steps>
         <step form-schema="step1" />
@@ -74,6 +78,12 @@
         <field name="description" ftype="text" dtminlength="0">
             <prompt>Omschrijving</prompt>
         </field>
+        <field name="person_status" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="enabled" />
+        </field>
+
 
         <list extends="config/role/roles-list.xml" />
 
