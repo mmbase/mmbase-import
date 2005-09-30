@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="people" maintainer="didactor.nl" version="3" extends="object">
+<builder name="people" maintainer="didactor.nl" version="4" extends="object">
   <status>active</status>
 
   <classfile>nl.didactor.builders.PeopleBuilder</classfile>
@@ -658,6 +658,40 @@
         <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
       </db>
     </field>
+
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl"></description>
+        <description xml:lang="en">Is the user active?</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Status</guiname>
+        <guiname xml:lang="en">Status</guiname>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>22</input>
+          <!-- position in list area of the editor -->
+          <list>-1</list>
+          <!-- position in search area of the editor -->
+          <search>22</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>person_status</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
+      </db>
+    </field>
+
+
 
   </fieldlist>
 </builder>
