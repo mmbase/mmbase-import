@@ -12,14 +12,17 @@
     <!-- Oracle is a hell when is comes to blobs, so store as file instead of in the database-->
     <option name="database-stores-binary-as-file" />
 
+    <!-- When transactions are enabled, strange things happen -->
+    <option name="database-supports-transactions" value="false" />
+
     <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
     <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
-    <scheme name="create-foreign-key-scheme">CONSTRAINT {1}_{2}_foreign FOREIGN KEY ({2}) REFERENCES {3} ({4})</scheme>
+    <scheme name="create-foreign-key-scheme">CONSTRAINT {1}_{2}_fk FOREIGN KEY ({2}) REFERENCES {3} ({4})</scheme>
 
     <scheme name="create-sequence-scheme" />
-    <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement INCREMENT {3} START {2}</scheme>
+    <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement MINVALUE 1 START WITH {2} INCREMENT BY {3}</scheme>
     <scheme name="update-sequence-scheme" />
-    <scheme name="read-sequence-scheme">SELECT NEXTVAL (''{0}_autoincrement'')</scheme>
+    <scheme name="read-sequence-scheme">SELECT {0}_autoincrement.nextval FROM DUAL</scheme>
 
     <scheme name="create-index-scheme">CREATE INDEX {3} ON {1} ({2})</scheme>
     <scheme name="delete-index-scheme">DROP INDEX {3}</scheme>
@@ -34,8 +37,12 @@
     <type-mapping name="LONG" type="BIGINT" />
     <type-mapping name="INTEGER" type="INTEGER" />
     <type-mapping name="NODE" type="INTEGER" />
-    <type-mapping name="STRING" type="TEXT" />
-    <type-mapping name="XML" type="TEXT" />
+    <type-mapping name="STRING" min-size="1" max-size="2000" type="nvarchar2({0,number,#####})" />
+    <type-mapping name="STRING" min-size="2000" max-size="16777216" type="nclob" />
+    <type-mapping name="XML" min-size="1" max-size="2000" type="nvarchar2({0,number,#####})" />
+    <type-mapping name="XML" min-size="2000" max-size="16777216" type="nclob" />
+    <type-mapping name="BINARY" min-size="1" max-size="16777216" type="blob" />
+
     <type-mapping name="DATETIME" type="TIMESTAMP" />
     <type-mapping name="BOOLEAN" type="BOOLEAN" />
     <type-mapping name="LIST[FLOAT]"   type="FLOAT[]" />
@@ -43,13 +50,43 @@
     <type-mapping name="LIST[LONG]"    type="BIGINT[]" />
     <type-mapping name="LIST[INTEGER]" type="INTEGER[]" />
     <type-mapping name="LIST[NODE]"    type="INTEGER[]" />
-    <type-mapping name="LIST[STRING]"  type="TEXT[]" />
-    <type-mapping name="LIST[XML]"     type="TEXT[]" />
+    <type-mapping name="LIST[STRING]"  type="CLOB[]" />
+    <type-mapping name="LIST[XML]"     type="CLOB[]" />
     <type-mapping name="LIST[DATETIME]"  type="TIMESTAMP[]" />
     <type-mapping name="LIST[BOOLEAN]"   type="BOOLEAN[]" />
   </type-mappings>
 
   <!-- Oracle disallowed fields are retrieved from the database -->
-  <disallowed-fields />
-
+  <disallowed-fields>
+    <disallowed-field name="size" replacement="m_size"/>
+    <disallowed-field name="number" replacement="m_number"/>
+    <disallowed-field name="column" replacement="m_column"/> <!-- standard SQL keyword -->
+    <disallowed-field name="comment" replacement="m_comment"/>
+    <disallowed-field name="create" replacement="m_create"/> <!-- standard SQL keyword -->
+    <disallowed-field name="data" replacement="m_data"/>
+    <disallowed-field name="day" replacement="m_day"/> <!-- standard SQL keyword -->
+    <disallowed-field name="delayed" replacement="m_delayed"/>
+    <disallowed-field name="fields" replacement="m_fields"/>
+    <disallowed-field name="from" replacement="m_from"/> <!-- standard SQL keyword -->
+    <disallowed-field name="global" replacement="m_global"/> <!-- standard SQL keyword -->
+    <disallowed-field name="group" replacement="m_group"/> <!-- standard SQL keyword -->
+    <disallowed-field name="hosts" replacement="m_hosts"/>
+    <disallowed-field name="hour" replacement="m_hour"/> <!-- standard SQL keyword -->
+    <disallowed-field name="int" replacement="m_int"/> <!-- standard SQL keyword -->
+    <disallowed-field name="key" replacement="m_key"/> <!-- standard SQL keyword -->
+    <disallowed-field name="keys" replacement="m_keys"/>
+    <disallowed-field name="local" replacement="m_local"/> <!-- standard SQL keyword -->
+    <disallowed-field name="month" replacement="m_month"/> <!-- standard SQL keyword -->
+    <disallowed-field name="order" replacement="m_order"/> <!-- standard SQL keyword -->
+    <disallowed-field name="parent" replacement="m_parent"/>
+    <disallowed-field name="read" replacement="m_read"/> <!-- standard SQL keyword -->
+    <disallowed-field name="references" replacement="m_references"/> <!-- standard SQL keyword -->
+    <disallowed-field name="second" replacement="m_second"/> <!-- standard SQL keyword -->
+    <disallowed-field name="status" replacement="m_status"/>
+    <disallowed-field name="time" replacement="m_time"/> <!-- standard SQL keyword -->
+    <disallowed-field name="to" replacement="m_to"/> <!-- standard SQL keyword -->
+    <disallowed-field name="type" replacement="m_type"/>
+    <disallowed-field name="use" replacement="m_use"/>
+    <disallowed-field name="write" replacement="m_write"/> <!-- standard SQL keyword -->
+  </disallowed-fields>
 </storage>
