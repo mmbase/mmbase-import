@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.7 2005-08-16 13:40:04 michiel Exp $
+ * @version $Id: IndexFunction.java,v 1.8 2005-10-01 20:17:36 michiel Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
@@ -43,7 +43,7 @@ public class IndexFunction extends FunctionProvider {
             public String getDescription() {
                 return "rootNumber/objectNumber -> Index";
             }
-            
+
         };
 
     static {
@@ -68,8 +68,8 @@ public class IndexFunction extends FunctionProvider {
                             indexCache.clear(); // this could be done smarter.
                             return true;
                         }
-                        
-                        
+
+
                     };
                 MMObjectBuilder indexRelation = MMBase.getMMBase().getBuilder("indexrel");
                 indexRelation.addLocalObserver(o);
@@ -82,7 +82,7 @@ public class IndexFunction extends FunctionProvider {
         }
     }
 
-    /** 
+    /**
      * Returns the 'successor' or a string. Which means that e.g. after 'zzz' follows 'aaaa'.
      */
     public static String successor(String index) {
@@ -111,7 +111,7 @@ public class IndexFunction extends FunctionProvider {
                 continue;
             }
         }
-        
+
         if (lowercase) {
             buf.insert(0, 'a');
         } else {
@@ -128,14 +128,14 @@ public class IndexFunction extends FunctionProvider {
         boolean uppercase = index.length() > 0 && Character.isUpperCase(index.charAt(0));
         String res = RomanTransformer.decimalToRoman(RomanTransformer.romanToDecimal(index) + 1);
         return uppercase ? res.toUpperCase() : res;
-        
+
     }
     /**
      * Calculates the 'successor' of an index String. Like '7.4.iii' of which the successor is
      * '7.4.iv'.
      *
      * @param index The string to succeed
-     * @param seperator Regular expression to split up the string first (e.g. "\\.")
+     * @param separator Regular expression to split up the string first (e.g. "\\.")
      * @param joiner    String to rejoin it again (e.g. ".")
      * @param roman     Whether to consider roman numbers
      */
@@ -195,16 +195,16 @@ public class IndexFunction extends FunctionProvider {
     }
 
     protected static NodeFunction index = new NodeFunction("index", INDEX_ARGS, ReturnType.STRING) {
-            
+
             {
                 setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
             }
-            
+
             /**
              * complete bridge version of {@link #getFunctionValue}
              */
             public Object getFunctionValue(final Node node, final Parameters parameters) {
-                Node root     = (Node)   parameters.get("root");        
+                Node root     = (Node)   parameters.get("root");
                 final String role   = (String) parameters.get("role");
                 final String join   = (String) parameters.get("joiner");
                 final String separator   = (String) parameters.get("separator");
@@ -218,18 +218,18 @@ public class IndexFunction extends FunctionProvider {
                 if (result != null) return result;
 
                 final NodeManager nm = node.getNodeManager();
-                
-                
-                // now we have to determine the path from node to root.        
+
+
+                // now we have to determine the path from node to root.
 
                 GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(node), 10, nm, role, "source");
                 NodeQuery template = tree.getTemplate();
                 if (root != null) {
                     StepField sf = template.addField(role + ".root");
                     template.setConstraint(template.createConstraint(sf, root));
-                    
+
                 }
-                
+
                 Stack stack = new Stack();
                 TreeIterator it = tree.treeIterator();
                 int depth = it.currentDepth();
@@ -250,7 +250,7 @@ public class IndexFunction extends FunctionProvider {
                     //if (root == null) root = n.getNodeValue(role + ".root");
                     if (root != null && n.getNumber() == root.getNumber()) break;
                 }
-                
+
                 if (stack.isEmpty()) {
                     indexCache.put(key, "");
                     return "";
@@ -286,20 +286,20 @@ public class IndexFunction extends FunctionProvider {
                             i = matcher.group(2);
                         }
                         doRoman = doRoman && RomanTransformer.ROMAN.matcher(i).matches();
-                        
+
                         if (found.getNumber() == search.getNumber()) {
                             // found!
                             buf.append(j).append(i);
                             j = join;
                             n = found;
                             continue OUTER;
-                        }               
+                        }
                         index = successor(i, separator, join, doRoman);
-                        // can as well cache this one too.                      
+                        // can as well cache this one too.
                         indexCache.put(getKey(found, parameters), buf.toString() + j + i);
                     }
                     // not found
-                    buf.append(j).append("???");                    
+                    buf.append(j).append("???");
                     break;
                 }
                 String r = buf.toString();
@@ -323,9 +323,9 @@ public class IndexFunction extends FunctionProvider {
         params.set("root", root);
         params.set("roman", Boolean.TRUE);
         System.out.println("" + index.getFunctionValue(node, params));
-        
-        
-        
-    }    
+
+
+
+    }
 
 }
