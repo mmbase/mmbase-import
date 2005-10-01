@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.25 2005-09-27 19:12:51 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.26 2005-10-01 07:23:53 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -72,7 +72,7 @@
     <xsl:value-of select="./o:field[@name='url']" />
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'segments']" mode="url">
+  <xsl:template match="o:object" mode="url">
     <xsl:value-of select="node:function($cloud, string(@id ), 'url')" />
   </xsl:template>
 
@@ -197,6 +197,19 @@
   </xsl:template>
 
 
+  <!-- other inline objects? -->
+  <xsl:template match="o:object" mode="inline">
+    <xsl:param name="relation" />
+    <xsl:param name="position" />
+    <xsl:param name="last" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:apply-templates select="." mode="title" />
+    </a>
+    <xsl:if test="$position != $last">,</xsl:if>
+  </xsl:template>
+
+
 
   <!--
        Produces at title for one o:object
@@ -204,19 +217,19 @@
   <xsl:template match="o:object" mode="title">
     <xsl:choose>
       <xsl:when test="./o:field[@name='title'] != ''" >
-	<xsl:value-of select="./o:field[@name='title']" />
+        <xsl:value-of select="./o:field[@name='title']" />
       </xsl:when>
       <xsl:when test="./o:field[@name='name'] != ''" >
-	<xsl:value-of select="./o:field[@name='name']" />
+        <xsl:value-of select="./o:field[@name='name']" />
       </xsl:when>
       <xsl:when test="./o:field[@name='description'] != ''" >
-	<xsl:value-of select="./o:field[@name='description']" />
+        <xsl:value-of select="./o:field[@name='description']" />
       </xsl:when>
       <xsl:when test="./o:field[@name='alt'] != ''" >
-	<xsl:value-of select="./o:field[@name='alt']" />
+        <xsl:value-of select="./o:field[@name='alt']" />
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="./o:field[@name='url']" />
+        <xsl:value-of select="./o:field[@name='url']" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
