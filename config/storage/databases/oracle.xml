@@ -7,7 +7,9 @@
 
   <attributes>
     <!-- No file path, then use webdir -->
-    <attribute name="database-binary-file-path" ></attribute>
+    <attribute name="database-binary-file-path"></attribute>
+
+    <attribute name="storage-identifier-case">upper</attribute>
 
     <!-- Oracle is a hell when is comes to blobs, so store as file instead of in the database-->
     <option name="database-stores-binary-as-file" />
@@ -15,19 +17,52 @@
     <!-- When transactions are enabled, strange things happen -->
     <option name="database-supports-transactions" value="false" />
 
+    <option name="database-supports-insert-triggers" value="true" />
+    <option name="database-supports-delete-triggers" value="true" />
+    <option name="database-supports-update-triggers" value="true" />
+
     <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
     <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
     <scheme name="create-foreign-key-scheme">CONSTRAINT {1}_{2}_fk FOREIGN KEY ({2}) REFERENCES {3} ({4})</scheme>
 
     <scheme name="create-sequence-scheme" />
-    <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement MINVALUE 1 START WITH {2} INCREMENT BY {3}</scheme>
+    <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_AUTOINCREMENT MINVALUE 1 START WITH {2} INCREMENT BY {3}</scheme>
     <scheme name="update-sequence-scheme" />
-    <scheme name="read-sequence-scheme">SELECT {0}_autoincrement.nextval FROM DUAL</scheme>
+    <scheme name="read-sequence-scheme">SELECT {0}_AUTOINCREMENT.NEXTVAL FROM DUAL</scheme>
 
     <scheme name="create-index-scheme">CREATE INDEX {3} ON {1} ({2})</scheme>
     <scheme name="delete-index-scheme">DROP INDEX {3}</scheme>
 
     <scheme name="create-view-scheme">CREATE OR REPLACE VIEW {1} ({3}) AS SELECT {4} FROM {2}, {6} WHERE {2}.{5} = {6}.{5}</scheme>
+
+    <scheme name="create-insert-trigger-scheme">
+      CREATE OF REPLACE TRIGGER {1}_INSERT
+      INSTEAD OF INSERT ON {1}
+      FOR EACH ROW
+      BEGIN
+        INSERT INTO {2} ({4}) VALUES ({5});
+        INSERT INTO {3} ({6}) VALUES ({7});
+      END {1}_INSERT;
+    </scheme>
+    <scheme name="create-delete-trigger-scheme">
+      CREATE OR REPLACE TRIGGER {1}_DELETE
+      INSTEAD OF DELETE ON {1}
+      FOR EACH ROW
+      BEGIN
+        DELETE FROM {2} WHERE {4} = :OLD.{4};
+        DELETE FROM {3} WHERE {4} = :OLD.{4};
+      END {1}_DELETE;
+    </scheme>
+    <scheme name="create-update-trigger-scheme">
+      CREATE OR REPLACE TRIGGER {1}_UPDATE
+      INSTEAD OF UPDATE ON {1}
+      FOR EACH ROW
+      BEGIN
+        UPDATE {2} SET {4} WHERE {6} = :OLD.{6};
+        UPDATE {3} SET {5} WHERE {6} = :OLD.{6};
+      END {1}_UPDATE;
+    </scheme>
+
   </attributes>
 
   <!-- Oracle type mappings -->
