@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.123 2005-09-27 14:39:09 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.124 2005-10-01 12:58:26 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2128,6 +2128,9 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             String tableName = (String)factory.getStorageIdentifier(builder);
             DatabaseMetaData metaData = activeConnection.getMetaData();
+            if (metaData.storesUpperCaseIdentifiers()) {
+                tableName = tableName.toUpperCase();
+            }
             // skip if does not support inheritance, or if this is the object table
             if (tablesInheritFields()) {
                 MMObjectBuilder parent = builder.getParentBuilder();
@@ -2136,7 +2139,7 @@ public class DatabaseStorageManager implements StorageManager {
                     try {
                         if (superTablesSet.next()) {
                             String parentName = superTablesSet.getString("SUPERTABLE_NAME");
-                            if (parent == null || !parentName.equals(factory.getStorageIdentifier(parent))) {
+                            if (parent == null || !parentName.equalsIgnoreCase((String)factory.getStorageIdentifier(parent))) {
                                 log.error("VERIFY: parent builder in storage for builder " + builder.getTableName() + " should be " + parent.getTableName() + " but defined as " + parentName);
                             } else {
                                 log.debug("VERIFY: parent builder in storage for builder " + builder.getTableName() + " defined as " + parentName);
@@ -2258,19 +2261,20 @@ public class DatabaseStorageManager implements StorageManager {
      * Determines if an index exists.
      * You should have an active connection before calling this method.
      * @param index the index to test
+     * @param tablename the tablename to test the index against
      * @throws StorageException when a database error occurs
      */
-    protected boolean exists(Index index) throws StorageException {
+    protected boolean exists(Index index, String tablename) {
         boolean result = false;
         try {
             DatabaseMetaData metaData = activeConnection.getMetaData();
-            ResultSet indexSet = metaData.getIndexInfo(null, null, index.getParent().getTableName(), index.isUnique(), false);
+            ResultSet indexSet = metaData.getIndexInfo(null, null, tablename, index.isUnique(), false);
             try {
                 String indexName = (String)factory.getStorageIdentifier(index);
                 while (!result && indexSet.next()) {
                     int indexType = indexSet.getInt("TYPE");
                     if (indexType != DatabaseMetaData.tableIndexStatistic) {
-                        result = indexName.equals(indexSet.getString("INDEX_NAME"));
+                        result = indexName.equalsIgnoreCase(indexSet.getString("INDEX_NAME"));
                     }
                 }
             } finally {
@@ -2281,6 +2285,17 @@ public class DatabaseStorageManager implements StorageManager {
         }
         return result;
     }
+    
+    /**
+     * Determines if an index exists.
+     * You should have an active connection before calling this method.
+     * @param index the index to test
+     * @throws StorageException when a database error occurs
+     */
+    protected boolean exists(Index index) throws StorageException {
+        return exists(index, index.getParent().getTableName());
+    }
+
 
     /**
      * Drop all constraints and indices that contain a specific field.
@@ -2393,7 +2408,7 @@ public class DatabaseStorageManager implements StorageManager {
             createIndexScheme = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
         }
         // note: do not attempt to create an index if it already exists.
-        if (createIndexScheme != null && !exists(index)) {
+        if (createIndexScheme != null && !exists(index, tablename)) {
             String fieldlist = getFieldList(index);
             if (fieldlist != null) {
                 String query = null;
