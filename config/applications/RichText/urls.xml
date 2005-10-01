@@ -7,7 +7,7 @@
 	</node>
 
 	<node number="356" owner="system">
-		<name></name>
+                <name>NOS</name>
 		<url>http://www.nos.nl</url>
 		<description>De site van de NOS!</description>
 	</node>
