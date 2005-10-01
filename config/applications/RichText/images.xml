@@ -3,6 +3,7 @@
 	<node number="5786" owner="system">
 		<itype></itype>
 		<handle file="images/5786.handle" />
+                <filename>zamenhof.gif</filename>
 		<title>Nia kara majstro LL Zamenhof</title>
 		<description>Jen li</description>
 	</node>
