@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.33 2005-09-01 13:51:57 michiel Exp $
+ * @version $Id: Query.java,v 1.34 2005-10-01 20:09:37 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -311,7 +311,7 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
     SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive);
 
     /**
-     * Defaulting version of {@link addSortOrder(StepField, int, boolean} (sorting case
+     * Defaulting version of {@link addSortOrder(StepField, int, boolean)} (sorting case
      * insensitively).
      */
     SortOrder addSortOrder(StepField f, int direction);

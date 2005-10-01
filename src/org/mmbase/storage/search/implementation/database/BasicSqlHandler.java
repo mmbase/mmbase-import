@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.50 2005-07-09 11:13:35 nklasens Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.51 2005-10-01 20:11:03 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -38,9 +38,6 @@ public class BasicSqlHandler implements SqlHandler {
 
     /**
      * Constructor.
-     *
-     * @param disallowedValues Map mapping disallowed table/fieldnames
-     *        to allowed alternatives.
      */
     public BasicSqlHandler() {
         mmbase = MMBase.getMMBase();
@@ -119,7 +116,7 @@ public class BasicSqlHandler implements SqlHandler {
      *
      * @param sb The stringbuffer to append to.
      * @param value The field value.
-     * @param toLoserCase True when <code>String</code> must be converted to
+     * @param toLowerCase True when <code>String</code> must be converted to
      *        lower case.
      * @param fieldType The field type.
      */

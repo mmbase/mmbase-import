@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.24 2005-09-19 12:30:35 pierre Exp $
+ * @version $Id: CloudContext.java,v 1.25 2005-10-01 20:09:37 michiel Exp $
  */
 public interface CloudContext {
 
@@ -71,7 +71,7 @@ public interface CloudContext {
     public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
 
     /**
-     * Returns the cloud with the specified name, based on an existing User object (e.g. of another {@link cloud#getUser}
+     * Returns the cloud with the specified name, based on an existing User object (e.g. of another {@link Cloud#getUser}
      * @param name                The name of the cloud to be returned, always "mmbase".
      * @param user                The user object for which this cloud object must be created.
      * @return                    the requested cloud
@@ -114,7 +114,7 @@ public interface CloudContext {
 
     /**
      * Returns a new, empty node list.
-     * Note that it is generally better to use {@link Cloud.createNodeList} or {@link NodeManager.createNodeList}.
+     * Note that it is generally better to use {@link Cloud#createNodeList} or {@link NodeManager#createNodeList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
@@ -123,7 +123,7 @@ public interface CloudContext {
 
     /**
      * Returns a new, empty relation list
-     * Note that it is generally better to use {@link Cloud.createRelationList} or {@link NodeManager.createRelationList}.
+     * Note that it is generally better to use {@link Cloud#createRelationList} or {@link NodeManager#createRelationList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
@@ -132,7 +132,7 @@ public interface CloudContext {
 
     /**
      * Returns a new, empty node manager list
-     * Note that it is generally better to use {@link Cloud.createNodeManagerList}.
+     * Note that it is generally better to use {@link Cloud#createNodeManagerList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
@@ -141,7 +141,7 @@ public interface CloudContext {
 
     /**
      * Returns a new, empty relation manager list
-     * Note that it is generally better to use {@link Cloud.createRelationManagerList}.
+     * Note that it is generally better to use {@link Cloud#createRelationManagerList}.
      *
      * @return  The empty list
      * @since   MMBase-1.6
