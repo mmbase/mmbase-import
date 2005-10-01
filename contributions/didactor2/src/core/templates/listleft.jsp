@@ -1,3 +1,4 @@
+      <mm:import id="tmpreferids" reset="true">provider?</mm:import>
       <%
          SortedMap sortmapEducations = new TreeMap();
          ArrayList arliEducations = new ArrayList();
@@ -85,7 +86,7 @@
 
                <% //USUAL EDUCATION %>
                <mm:compare referid="education_type" value="">
-               <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
+               <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
                            <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
                            <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
                         </mm:treefile>" class="users" />
@@ -125,3 +126,4 @@
             <%
          }
       %>
+      <mm:remove referid="tmpreferids"/>
