@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.20 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.21 2005-10-01 20:11:03 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -47,9 +47,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     /**
      * Constructor.
-     *
-     * @param disallowedValues Map mapping disallowed table/fieldnames
-     *                         to allowed alternatives.
      */
     public InformixSqlHandler() {
         super();

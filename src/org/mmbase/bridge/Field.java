@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.30 2005-09-06 21:16:54 michiel Exp $
+ * @version $Id: Field.java,v 1.31 2005-10-01 20:09:37 michiel Exp $
  */
 public interface Field extends Descriptor {
 
@@ -162,7 +162,7 @@ public interface Field extends Descriptor {
 
     /**
      * Returns the GUI name for the data type this field contains.
-     * @deprecated use {@link #getDataType } and {@link DataType.getName}
+     * @deprecated use {@link #getDataType } and {@link DataType#getName}
      * @see #getDataType
      */
     public String getGUIType();
