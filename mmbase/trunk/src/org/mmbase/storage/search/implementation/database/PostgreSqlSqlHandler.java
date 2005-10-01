@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.13 2005-08-16 14:05:38 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.14 2005-10-01 20:11:03 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -42,9 +42,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
     /**
      * Constructor.
-     *
-     * @param disallowedValues Map mapping disallowed table/fieldnames
-     *        to allowed alternatives.
      */
     public PostgreSqlSqlHandler() {
         super();
@@ -103,7 +100,9 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     */
 
     /**
-     * {@link http://www.postgresql.org/docs/7.4/static/functions-datetime.html}
+     * <a href="http://www.postgresql.org/docs/7.4/static/functions-datetime.html">date time
+     * functions</a>
+     *
      * @javadoc
      */
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {

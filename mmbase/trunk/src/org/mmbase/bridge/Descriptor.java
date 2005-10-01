@@ -48,13 +48,13 @@ public interface Descriptor {
     /**
      * Sets the GUI name of this object.
      * @param locale The locale for which this is valid, or <code>null</code> for the default locale.
-     * @param description the description as a String
+     * @param g the description as a String
      */
     public void setGUIName(String g, Locale locale);
 
     /**
      * Sets the GUI name of this object for the default locale.
-     * @param description the description as a String
+     * @param g the description as a String
      */
     public void setGUIName(String g);
 
@@ -80,8 +80,8 @@ public interface Descriptor {
 
     /**
      * Sets the description of this object.
-     * @param locale The locale for which this is valid, or <code>null</code> for a default locale.
      * @param description the description as a String
+     * @param locale The locale for which this is valid, or <code>null</code> for a default locale.
      */
     public void setDescription(String description, Locale locale);
 
