@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.9 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: NodeFunction.java,v 1.10 2005-10-01 20:17:36 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
- * @see org.mmbase.util.function.BeanFunction
+ * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.8
  */
 

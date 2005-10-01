@@ -23,9 +23,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.8 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: ParametersImpl.java,v 1.9 2005-10-01 20:17:36 michiel Exp $
  * @see Parameter
- * @see #Parameters(Parameter[])
+ * @see #ParametersImpl(Parameter[])
  */
 
 public class ParametersImpl extends AbstractList implements Parameters {
@@ -90,7 +90,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
      *
      * @param values Collection with values. This Collection should have a predictable iteration order.
      * @throws NullPointerException if definition is null
-     * @see #Parameters(Parameter[])
+     * @see #ParametersImpl(Parameter[])
      */
     public ParametersImpl(Parameter[] def, Collection values) {
         this(def);
