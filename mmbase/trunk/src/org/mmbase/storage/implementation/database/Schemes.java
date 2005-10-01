@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.18 2005-09-24 16:42:17 nklasens Exp $
+ * @version $Id: Schemes.java,v 1.19 2005-10-01 12:56:21 johannes Exp $
  */
 public final class Schemes {
 
@@ -535,7 +535,7 @@ public final class Schemes {
     public static final String DELETE_CONSTRAINT_DEFAULT = "ALTER TABLE {1} DROP CONSTRAINT {2}";
 
     /**
-     *  Name of the scheme for creeating a view.
+     *  Name of the scheme for creating a view.
      *  The parameters accepted are:
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
@@ -549,7 +549,53 @@ public final class Schemes {
      *  </ul>
      */
     public static final String CREATE_VIEW = "create-view-scheme";
-    public static final String CREATE_VIEW_DEFAULT = "CREATE OR REPLACE VIEW (1) ((3)) AS " +
-                                                        "SELECT (4) FROM (2) WHERE (2).(5) = (6).(5)";
+    public static final String CREATE_VIEW_DEFAULT = "CREATE OR REPLACE VIEW {1} {{3}} AS " +
+                                                        "SELECT {4} FROM {2} WHERE {2}.{5} = {6}.{5}";
 
+    /**
+     *  Name of the scheme for creating an 'insert' trigger for a view.
+     *  The parameters accepted are:
+     *  <ul>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the name of the view to create the trigger on</li>
+     *    <li>{2} the name of the table in which the fields for this view are stored</li>
+     *    <li>{3} the name of the view/table that this builder extends from</li>
+     *    <li>{4} the list of fields of the table {2}</li>
+     *    <li>{5} the list of values of the table {2}</li>
+     *    <li>{6} the list of fields of the view {3}</li>
+     *    <li>{7} the list of values of the table {3}</li>
+     *  </ul>
+     */
+    public static final String CREATE_INSERT_TRIGGER = "create-insert-trigger-scheme";
+    public static final String CREATE_INSERT_TRIGGER_DEFAULT = null;
+
+    /**
+     *  Name of the scheme for creating an 'delete' trigger for a view.
+     *  The parameters accepted are:
+     *  <ul>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the name of the view to create the trigger on</li>
+     *    <li>{2} the name of the table in which the fields for this view are stored</li>
+     *    <li>{3} the name of the view/table that this builder exntends from</li>
+     *    <li>{4} the name of the number field that joins the tables in the views</li>
+     *  </ul>
+     */
+    public static final String CREATE_DELETE_TRIGGER = "create-delete-trigger-scheme";
+    public static final String CREATE_DELETE_TRIGGER_DEFAULT = null;
+
+    /**
+     *  Name of the scheme for creating an 'update' trigger for a view.
+     *  The parameters accepted are:
+     *  <ul>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the name of the view to create the trigger on</li>
+     *    <li>{2} the name of the table in which the fields for this view are stored</li>
+     *    <li>{3} the name of the view/table that this builder extends from</li>
+     *    <li>{4} the list 'SET' statements for table {2}</li>
+     *    <li>{5} the list 'SET' statements for table {3}</li>
+     *    <li>{6} the name of the number field that joins the tables in the views</li>
+     *  </ul>
+     */
+    public static final String CREATE_UPDATE_TRIGGER = "create-update-trigger-scheme";
+    public static final String CREATE_UPDATE_TRIGGER_DEFAULT = null;
 }
