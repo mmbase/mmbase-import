@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.22 2005-09-08 09:40:10 michiel Exp $
+ * @version $Id: Parameter.java,v 1.23 2005-10-01 20:17:36 michiel Exp $
  * @see Parameters
  */
 
@@ -85,7 +85,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      */
     public Parameter(String name, Class type) {
         super(name);
-        dataType = DataTypes.createDataType(name,type);
+        dataType = DataTypes.createDataType(name, type);
     }
 
     /**
@@ -136,7 +136,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
 
     /**
      * Sets the default value of this parameter.
-     * @param def the default value
+     * @param defaultValue the default value
      */
     public void setDefaultValue(Object defaultValue) {
         dataType.setDefaultValue(defaultValue);

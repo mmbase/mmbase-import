@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.7 2005-07-09 11:14:38 nklasens Exp $
+ * @version $Id: Functions.java,v 1.8 2005-10-01 20:17:36 michiel Exp $
  */
 public class Functions {
 
@@ -118,7 +118,7 @@ public class Functions {
      *
      * @see Parameter
      * @param clazz the class to perform reflection on.
-     * @param functionName the name of the fucntion whose parameter definition to return
+     * @param map
      * @return A map of parameter definitions (Parameter[] objects), keys by function name (String)
     */
     public static Map getParameterDefinitonsByReflection(Class clazz, Map map) {
