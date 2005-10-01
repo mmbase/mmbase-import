@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.2 2005-09-27 14:39:09 michiel Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.3 2005-10-01 13:01:05 johannes Exp $
  * @since MMBase-1.8
  */
 
@@ -77,7 +77,6 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         if(!viewExists(builder)){
              viewCreate(builder);
         }
-        
     }
   
     public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
@@ -86,13 +85,18 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             beginTransaction();
         }
         try {
-            // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
-            java.util.Iterator i = builder.getAncestors().iterator();
-            while(i.hasNext()) {
-                MMObjectBuilder b = (MMObjectBuilder) i.next();
-                createObject(node, b);
+            if (factory.hasOption("database-supports-insert-triggers")) {
+                // no need for any fancy looping over parents; we just insert everything in this view
+                super.create(node, builder);
+            } else {
+                // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
+                java.util.Iterator i = builder.getAncestors().iterator();
+                while(i.hasNext()) {
+                    MMObjectBuilder b = (MMObjectBuilder) i.next();
+                    createObject(node, b);
+                }
+                createObject(node, builder);
             }
-            createObject(node, builder);
             if (localTransaction) {
                 commit();
             }
@@ -136,10 +140,14 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             beginTransaction();
         }
         try {
-            do {
-                changeObject(node,builder);
-                builder = builder.getParentBuilder();
-            } while (builder!=null);
+            if (factory.hasOption("database-supports-update-triggers")) {
+               super.change(node, builder);
+            } else {
+                do {
+                    changeObject(node,builder);
+                    builder = builder.getParentBuilder();
+                } while (builder!=null);
+            }
             if (localTransaction) {
                 commit();
             }
@@ -176,10 +184,14 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
         
         try {
-            do {
-                deleteObject(node, builder);
-                builder = builder.getParentBuilder();
-            } while (builder!=null);
+            if (factory.hasOption("database-supports-delete-triggers")) {
+                super.delete(node, builder);
+            } else {
+                do {
+                    deleteObject(node, builder);
+                    builder = builder.getParentBuilder();
+                } while (builder!=null);
+            }
             if (localTransaction) {
                 commit();
             }
@@ -224,11 +236,11 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     public String getTableName(MMObjectBuilder builder) {
         if (builder.getParentBuilder() == null) {
             return (String) factory.getStorageIdentifier(builder);
-        }
-        else {
+        } else {
             return getTableName((String) factory.getStorageIdentifier(builder));
         }
     }
+
     public String  getTableName(String viewname) {
         String id = viewname + "_table";
         String toCase = (String)factory.getAttribute(org.mmbase.storage.Attributes.STORAGE_IDENTIFIER_CASE);
@@ -251,13 +263,19 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     protected void create(Index index) throws StorageException {
         super.createIndex(index, getTableName(index.getParent()));
     }
+
+    protected boolean exists(Index index) throws StorageException {
+        return super.exists(index, getTableName(index.getParent()));
+    }
     
     public boolean viewExists(MMObjectBuilder builder) {     
         return exists(getViewName(builder));
     }
+    
     protected String getNewConstrainName(CoreField field, String type) {     
         return field.getParent().getTableName() + "_" + field.getName() + "_" + type;
     }
+
     public boolean viewCreate(MMObjectBuilder builder) {
         MMObjectBuilder inheritedBuilder = builder.getParentBuilder();
         // create the inherited builder first
@@ -298,6 +316,28 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     private void createView(MMObjectBuilder builder, MMObjectBuilder inheritedBuilder, List fields, String tablename) throws StorageError {
         log.debug("Creating a view for " + builder);
         Scheme viewScheme = factory.getScheme(Schemes.CREATE_VIEW, Schemes.CREATE_VIEW_DEFAULT);
+        Scheme createInsertTriggerScheme = null;
+        Scheme createDeleteTriggerScheme = null;
+        Scheme createUpdateTriggerScheme = null;
+        if (factory.hasOption("database-supports-insert-triggers")) {
+            createInsertTriggerScheme = factory.getScheme(Schemes.CREATE_INSERT_TRIGGER, Schemes.CREATE_INSERT_TRIGGER_DEFAULT);
+            if (createInsertTriggerScheme == null) {
+                log.warn("Database supports insert-triggers, but no trigger scheme defined! Ignoring insert-trigger!!");
+            }
+        }
+        if (factory.hasOption("database-supports-delete-triggers")) {
+            createDeleteTriggerScheme = factory.getScheme(Schemes.CREATE_DELETE_TRIGGER, Schemes.CREATE_DELETE_TRIGGER_DEFAULT);
+            if (createDeleteTriggerScheme == null) {
+                log.warn("Database supports delete-triggers, but no trigger scheme defined! Ignoring delete-trigger!!");
+            }
+        }
+        if (factory.hasOption("database-supports-update-triggers")) {
+            createUpdateTriggerScheme = factory.getScheme(Schemes.CREATE_UPDATE_TRIGGER, Schemes.CREATE_UPDATE_TRIGGER_DEFAULT);
+            if (createUpdateTriggerScheme == null) {
+                log.warn("Database supports update-triggers, but no trigger scheme defined! Ignoring update-trigger!!");
+            }
+        }
+
         String viewname = getViewName(builder);
         
         StringBuffer createViewFields = new StringBuffer();
@@ -312,6 +352,9 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
    
         StringBuffer createTableFields = new StringBuffer();
+        Vector myFieldNames = new Vector();
+        Vector parentFieldNames = new Vector();
+
         for (Iterator f = fields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
@@ -323,9 +366,14 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                     if(inheritedBuilder == null) 
                         throw new StorageError("Cannot have a inherited field while we dont extend inherit from a builder!");
                     createTableFields.append(getViewName(inheritedBuilder) + "." + getFieldName(field));
-                }
-                else {
+                    parentFieldNames.add(getFieldName(field));
+                } else {
                     createTableFields.append(tablename + "." + getFieldName(field));
+                    myFieldNames.add(getFieldName(field));
+                }
+
+                if (isInheritedField(field) && field.getName().equals(getNumberField().getName())) {
+                    myFieldNames.add(getFieldName(field));
                 }
             }
         }
@@ -345,6 +393,87 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             logQuery(query);
             s.executeUpdate(query);
             s.close();
+
+            if (createInsertTriggerScheme != null) {
+                //insert into mm_typedef_t (m_number, otype, owner) values (:NEW.m_number, :NEW.otype, :NEW.owner);
+                //insert into mm_object (m_number, name, description) values (:NEW.m_number, :NEW.name, :NEW.description);
+                StringBuffer myFields = new StringBuffer();
+                StringBuffer myValues = new StringBuffer();
+                StringBuffer parentFields = new StringBuffer();
+                StringBuffer parentValues = new StringBuffer();
+                for (int i=0; i<myFieldNames.size(); i++) {
+                    if (i > 0) {
+                        myFields.append(", ");
+                        myValues.append(", ");
+                    }
+                    myFields.append(myFieldNames.get(i));
+                    myValues.append(":NEW." + myFieldNames.get(i));
+                }
+                for (int i=0; i<parentFieldNames.size(); i++) {
+                    if (i > 0) {
+                        parentFields.append(", ");
+                        parentValues.append(", ");
+                    }
+                    parentFields.append(parentFieldNames.get(i));
+                    parentValues.append(":NEW." + parentFieldNames.get(i));
+                }
+                query = createInsertTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, myFields.toString(), myValues.toString(), parentFields.toString(), parentValues.toString()});
+
+                if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
+                    query = query.replaceAll("\\(\\s*\\)", "");
+                }
+   
+                s = activeConnection.createStatement();
+                logQuery(query);
+                s.executeUpdate(query);
+                s.close();
+
+            }
+
+            if (createDeleteTriggerScheme != null) {
+                query = createDeleteTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, getFieldName(getNumberField())});
+                if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
+                    query = query.replaceAll("\\(\\s*\\)", "");
+                }
+   
+                s = activeConnection.createStatement();
+                logQuery(query);
+                s.executeUpdate(query);
+                s.close();
+            }
+
+            if (createUpdateTriggerScheme != null) {
+                StringBuffer myAssignments = new StringBuffer();
+                StringBuffer parentAssignments = new StringBuffer();
+                for (int i=0; i<myFieldNames.size(); i++) {
+                    if (i > 0) {
+                        myAssignments.append(", ");
+                    }
+                    myAssignments.append(myFieldNames.get(i));
+                    myAssignments.append(" = :NEW.");
+                    myAssignments.append(myFieldNames.get(i));
+                }
+                for (int i=0; i<parentFieldNames.size(); i++) {
+                    if (i > 0) {
+                        parentAssignments.append(", ");
+                    }
+                    parentAssignments.append(parentFieldNames.get(i));
+                    parentAssignments.append(" = :NEW.");
+                    parentAssignments.append(parentFieldNames.get(i));
+                }
+                query = createUpdateTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, myAssignments.toString(), parentAssignments.toString(), getFieldName(getNumberField())});
+
+                if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
+                    query = query.replaceAll("\\(\\s*\\)", "");
+                }
+   
+                s = activeConnection.createStatement();
+                logQuery(query);
+                s.executeUpdate(query);
+                s.close();
+                 
+            }
+
    
             tableNameCache.add(viewname.toUpperCase());
         } catch (SQLException se) {
