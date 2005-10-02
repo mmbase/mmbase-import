@@ -26,7 +26,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.7 2005-07-12 18:27:40 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.8 2005-10-02 16:25:19 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -62,7 +62,7 @@ public class MmxfGetString implements  Processor {
         log.debug("Getting " + field + " from " + node + " as a String");
         
         try {
-            switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
+            switch(Modes.getMode("" + node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case Modes.KUPU: {
                 // this is actually not really used, at the moment is done on node.body.jspx
                 log.debug("Generating kupu-compatible XML for" + value);
