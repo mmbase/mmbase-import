@@ -153,7 +153,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/**"/>
       </fileset>
     </jar>
-    <unjar src="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" dest="build/rmmcitmp"/>
+    <unjar src="${build.dir}/mmbase.jar" dest="build/rmmcitmp"/>
     <jar jarfile="${project.jar.dir}/mmbase-rmmci.jar" manifest="build/rmmcitmp/manifest.mf">
       <fileset dir="build/classes">
         <include name="org/mmbase/bridge/remote/*"/>
@@ -163,12 +163,30 @@ Build-compiler: ${build.compiler}
       </fileset>
       <fileset dir="build/rmmcitmp">
         <include name="org/mmbase/bridge/*"/>
-        <include name="org/mmbase/storage/search/*"/>
-        <include name="org/mmbase/core/FieldType.class"/>
-        <include name="org/mmbase/util/logging/**"/>
-        <include name="org/mmbase/security/UserContext.class"/>
-        <include name="org/mmbase/security/AuthenticationData.class"/>
-        <include name="org/mmbase/security/Rank.class"/>
+        <include name="org/mmbase/bridge/util/*"/> <!-- not essential, but the idea is that you
+                                                        could use those with any bridge, so you should want them -->
+        <include name="org/mmbase/storage/search/*"/> <!-- those interface are bridge -->
+        <include name="org/mmbase/core/CoreField"/> <!-- wtf? -->
+        <include name="org/mmbase/util/functions/**" /> <!-- functions are bridge -->
+        <include name="org/mmbase/util/logging/**"/> <!-- wtf? -->
+        <include name="org/mmbase/util/ResourceLoader*.class"/> <!-- wtf? -->
+        <include name="org/mmbase/util/ResourceWatcher*.class"/><!-- wtf? -->
+        <include name="org/mmbase/module/core/MMBaseObserver.class"/> <!-- resourcewatcher extends -->
+        <include name="org/mmbase/util/LocalizedString.class"/> <!-- returned by bridge -->
+        <include name="org/mmbase/util/Entry.class"/> <!-- used by LocalizedString -->
+        <include name="org/mmbase/util/LocalizedEntryListFactory.class"/> <!-- -->
+        <include name="org/mmbase/util/SizeMeasurable.class"/> <!-- wtf? -->
+        <include name="org/mmbase/datatypes/*" /><!-- datatype classes are bridge -->
+        <include name="org/mmbase/storage/Storable.class"/> <!-- DataTypes uses .. -->
+        <include name="org/mmbase/core/util/Fields.class"/> <!-- DataTypes uses .. -->
+        <include name="org/mmbase/module/corebuilders/FieldDefs.class"/> <!-- DataTypes uses .. -->
+        <include name="org/mmbase/security/UserContext.class"/> <!-- security classes are bridge -->
+        <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
+        <include name="org/mmbase/security/Rank.class"/><!-- security classes are bridge -->
+        <include name="org/mmbase/security/SecurityException.class"/> <!-- security classes are bridge -->
+        <include name="org/mmbase/storage/StorageException.class"/> <!-- wtf? -->
+
+        <!-- external interfaces used by bridge, but not always present client side, so provide them. -->
         <include name="org/w3c/dom/Document.class"/>
         <include name="org/w3c/dom/Node.class"/>
         <include name="org/w3c/dom/Element.class"/>
