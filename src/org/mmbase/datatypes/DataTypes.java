@@ -16,10 +16,10 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.util.xml.*;
-import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.10 2005-09-15 15:05:02 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.11 2005-10-02 16:57:26 michiel Exp $
  */
 
 public class DataTypes {
@@ -61,7 +61,7 @@ public class DataTypes {
 
         log.debug("Reading datatypes " + dataTypeCollector);
         readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
-        
+
         /*
         try {
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
@@ -96,7 +96,7 @@ public class DataTypes {
                     dataTypesSource.setSystemId(u.toExternalForm());
                     log.service("Reading datatypes from " + dataTypesSource.getSystemId());
                     DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, DataTypeReader.class));
-                    Document doc = db.parse(dataTypesSource); 
+                    Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
                 }
@@ -132,7 +132,8 @@ public class DataTypes {
             return Field.TYPE_STRING;
         } else if (org.w3c.dom.Node.class.isAssignableFrom(classType)) {
             return Field.TYPE_XML;
-        } else if (org.mmbase.bridge.Node.class.isAssignableFrom(classType) || MMObjectNode.class.isAssignableFrom(classType)) {
+        } else if (Node.class.isAssignableFrom(classType) ||
+                   classType.getName().equals("org.mmbase.module.core.MMObjectNode")) {
             return Field.TYPE_NODE;
         } else if (Date.class.isAssignableFrom(classType)) {
             return Field.TYPE_DATETIME;
@@ -146,7 +147,7 @@ public class DataTypes {
     /**
      * Determines the class for a specified MMBase base type.
      * If the value is {@link Field.TYPE_UNKNOWN}), the method returns <code>null</code>.
-     * @param classType
+     * @param type
      * @return an MMBase base type constant
      */
     public static Class typeToClass(int type) {
@@ -158,7 +159,7 @@ public class DataTypes {
         case Field.TYPE_DOUBLE: return Double.class;
         case Field.TYPE_LONG: return Long.class;
         case Field.TYPE_XML: return org.w3c.dom.Document.class;
-        case Field.TYPE_NODE: return MMObjectNode.class; // org.mmbase.bridge.Node.class;
+        case Field.TYPE_NODE: return Node.class;
         case Field.TYPE_DATETIME: return java.util.Date.class;
         case Field.TYPE_BOOLEAN: return Boolean.class;
         case Field.TYPE_LIST: return List.class;
