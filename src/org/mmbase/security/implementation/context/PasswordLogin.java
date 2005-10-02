@@ -20,41 +20,42 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: PasswordLogin.java,v 1.6 2004-04-19 16:38:59 michiel Exp $
+ * @version $Id: PasswordLogin.java,v 1.7 2005-10-02 16:43:55 michiel Exp $
  */
 
 public class PasswordLogin extends ContextLoginModule {
     private static Logger log = Logging.getLoggerInstance(PasswordLogin.class);
 
     public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
-        
-        // get username
-        String username = (String)userLoginInfo.get("username");
-        if(username == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
-        
+
+        // get userName
+        String userName = (String)userLoginInfo.get("userName");
+        if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'userName' with login");
+
         // get password
         String password = (String)userLoginInfo.get("password");
         if(password == null) throw new org.mmbase.security.SecurityException("expected the property 'password' with login");
-        
-        log.debug("request for user: '"+username+"' with pass: '"+password+"'");
-        
-        String configValue = getModuleValue(username);
-        if(configValue == null) {
-            log.info("user with name:" + username + " doesnt have a value for this module");
+
+        log.debug("request for user: '"+userName+"' with pass: '"+password+"'");
+
+        org.w3c.dom.Node node = getAccount(userName);
+        if(node == null) {
+            log.info("user with name:" + userName + " doesnt have a value for this module");
             return null;
         }
-        if(!configValue.equals(password)) {
-            log.debug("user with name:" + username + " used pass:" + password+ " but needed :" + configValue);
-            log.info("user with name:" + username + " didnt give the right password");
+        String configPassword = org.mmbase.util.xml.DocumentReader.getNodeTextValue(node);
+        if(!configPassword.equals(password)) {
+            log.debug("user with name:" + userName + " used pass:" + password + " but needed :" + configPassword);
+            log.info("user with name:" + userName + " didnt give the right password");
             return null;
         }
-        
-        Rank rank= getRank(username);
+
+        Rank rank= getRank(userName);
         if(rank == null) {
-            log.warn( "expected a rank for user with the name:" + username + ", canceling a valid login due to the fact that the rank attribute wasnt set");
+            log.warn( "expected a rank for user with the name:" + userName + ", canceling a valid login due to the fact that the rank attribute wasnt set");
             return null;
-            
+
         }
-        return getValidUserContext(username, rank);
+        return getValidUserContext(userName, rank);
     }
 }
