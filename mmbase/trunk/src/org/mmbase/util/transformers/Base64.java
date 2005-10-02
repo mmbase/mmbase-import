@@ -20,7 +20,7 @@ import sun.misc.BASE64Encoder;
  * sun.misc classes are not supported by Sun. Perhaps once we have to
  * plug in another class.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  */
 
 public class Base64 extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
@@ -47,7 +47,7 @@ public class Base64 extends ByteArrayToCharTransformer implements ByteToCharTran
     public String transform(byte[] bytes) {
         return new BASE64Encoder().encode(bytes);
     }
-    
+
     public byte[] transformBack(String r) {
         try {
             BASE64Decoder dec = new BASE64Decoder();

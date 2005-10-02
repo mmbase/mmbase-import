@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.43 2005-09-12 20:08:12 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.44 2005-10-02 16:42:15 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -346,7 +346,7 @@ public class BuilderReader extends DocumentReader {
     /**
      * Get the named indices of this builder.
      * Note that the 'default' index (set with the 'key' attribute) is also included
-     * in this list (with the name {@link MAIN_INDEX}).
+     * in this list (with the name {@link Index#MAIN}).
      *
      * @param builder the MMObjectBuilder to which the fields will be added
      * @return a List of all Indices
@@ -585,7 +585,7 @@ public class BuilderReader extends DocumentReader {
 
     /**
      * Determine a data type instance based on the given gui element
-     * @TODO perhaps 'guitype' must be deprecated in favour of 'datatype' element
+     * @todo  perhaps 'guitype' must be deprecated in favour of 'datatype' element
      * @param collector The DataTypeCollector of the bulider.
      * @param fieldName unused
      * @param field     The 'field' element of the builder xml
@@ -603,12 +603,12 @@ public class BuilderReader extends DocumentReader {
         }
         DataType dataType = null;
         Element guiTypeElement = getElementByPath(field, "field.gui.guitype");
-        
+
         // XXX: deprecated tag 'type'
         if (guiTypeElement == null) {
             guiTypeElement = getElementByPath(field, "field.gui.type");
         }
-        
+
         if (guiTypeElement != null && collector != null) {
             String guiType = getElementValue(guiTypeElement);
             dataType = collector.getDataTypeInstance(guiType, baseDataType);
@@ -631,7 +631,7 @@ public class BuilderReader extends DocumentReader {
                 DataType newBaseDataType = collector.getDataType(base, true);
                 if (newBaseDataType != null) {
                     baseDataType = newBaseDataType;
-                } else {                    
+                } else {
                     log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType);
                 }
             }

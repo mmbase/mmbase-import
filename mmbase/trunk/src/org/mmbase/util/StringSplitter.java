@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.5 2005-05-08 13:23:49 michiel Exp $
+ * @version $Id: StringSplitter.java,v 1.6 2005-10-02 16:42:14 michiel Exp $
  */
 public class StringSplitter {
 
@@ -28,10 +28,10 @@ public class StringSplitter {
      * @param delimiter
      * @return a (modifiable) List containing the elements
      */
-    static public List split(String attribute, String delimiter) {
+    static public List split(String string, String delimiter) {
         List result = new ArrayList();
-        if (attribute == null) return result;
-        String[] values = attribute.split(delimiter);
+        if (string == null) return result;
+        String[] values = string.split(delimiter);
         for (int i = 0; i < values.length; i++) {
             result.add(values[i].trim());
         }
@@ -43,7 +43,6 @@ public class StringSplitter {
      * Simple util method to split comma separated values.
      * @see #split(String, String)
      * @param string the string to split
-     * @param delimiter
      * @return a List containing the elements
      */
     static public List split(String string) {

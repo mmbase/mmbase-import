@@ -48,6 +48,8 @@ package org.mmbase.util;
  *   Since you should implement this for every object that could go into
  *   hash-based collections, you want your code to be simple to write and easy
  *   to maintain.
+ *
+ * @since MMBase-1.8
  */
 final public class HashCodeUtil {
 

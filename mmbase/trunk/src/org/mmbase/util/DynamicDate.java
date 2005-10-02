@@ -21,12 +21,15 @@ public class DynamicDate extends Date {
 
 
     /**
-     * Parses a format string and returns a DynamicDate instance. Not necessary a new one, which
+     * Parses a format string and returns Date instance, possibly a 'dynamic one'. Not necessary a new one, which
      * does not matter, because these objects are unmodifiable anyway.
+     *
+     * If the request date is not dynamic, but absolutely defined, a normal Date object is returned. 
      */
-    static Date getInstance(final String format) throws ParseException {
+    public static Date getInstance(final String format) throws ParseException {
+        if (format.equals("null")) return null;
         DateParser parser = new DateParser(new java.io.StringReader(format));
-        
+
         parser.start();
         if (parser.dynamic()) {
             return new DynamicDate(format);
@@ -40,13 +43,13 @@ public class DynamicDate extends Date {
      * The original string by which this instance was gotten.
      */
     protected final String date;
-    
+
     protected DynamicDate(String d) {
         date = d;
     }
 
     /**
-     * This produces a normal Date object, and is called everytime when that is needed. Users can call it too, if they want to fixated 
+     * This produces a normal Date object, and is called everytime when that is needed. Users can call it too, if they want to fixated
      */
     protected  Date evalDate() {
         DateParser parser = new DateParser(new java.io.StringReader(date));
@@ -68,7 +71,7 @@ public class DynamicDate extends Date {
     public boolean  before(Date when) {
         return evalDate().before(when);
     }
-    
+
     public Object clone() {
         try {
             return getInstance(date);
@@ -88,7 +91,7 @@ public class DynamicDate extends Date {
         } else {
             return false;
         }
-    }    
+    }
     public int  getDate() {
         return evalDate().getDate();
     }
@@ -104,7 +107,7 @@ public class DynamicDate extends Date {
     public int  getMonth() {
         return evalDate().getMonth();
     }
-    
+
     public int  getSeconds() {
         return evalDate().getSeconds();
     }
@@ -132,7 +135,7 @@ public class DynamicDate extends Date {
     public void  setMonth(int month) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    
+
     public void  setSeconds(int seconds) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
@@ -163,7 +166,7 @@ public class DynamicDate extends Date {
         System.out.println("" + d2 + " " + d2.getTime());
         System.out.println("" + d3 + " " + d3.getTime());
     }
-    
+
 }
 
 

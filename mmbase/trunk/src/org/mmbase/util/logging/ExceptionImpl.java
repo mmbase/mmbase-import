@@ -25,7 +25,7 @@ import org.apache.log4j.spi.LocationInfo;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ExceptionImpl.java,v 1.5 2005-09-12 23:23:47 michiel Exp $
+ * @version $Id: ExceptionImpl.java,v 1.6 2005-10-02 16:42:15 michiel Exp $
  */
 
 public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
@@ -53,7 +53,7 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
     /**
      * The configure method of this Logger implemenation.
      *
-     * @param A string, which can contain the output (stdout or
+     * @param c A string, which can contain the output (stdout or
      * stderr) and the priority (e.g. 'info')
      */
     public static  void configure(String c) {

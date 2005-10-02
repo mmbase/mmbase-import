@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  * Factories new instances of extensions of {@link RegexpReplacer}, for which the replace patterns
  * are parameterized (using the 'patterns' parameter).
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.8
  */
 
@@ -44,7 +44,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
         }
-        RegexpReplacer trans = new RegexpReplacer() {                
+        RegexpReplacer trans = new RegexpReplacer() {
                 private Collection patterns = new ArrayList();
                 {
                     addPatterns((Collection) parameters.get("patterns"), patterns);

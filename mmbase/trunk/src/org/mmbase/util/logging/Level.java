@@ -34,7 +34,7 @@ public final class Level implements java.io.Serializable {
 
 
     /**
-     * A constant. Main use is for the method {@link Logger#setPriority}
+     * A constant. Main use is for the method {@link Logger#setLevel}
      */
     public final static Level
         TRACE   = new Level(TRACE_INT, "TRACE"),

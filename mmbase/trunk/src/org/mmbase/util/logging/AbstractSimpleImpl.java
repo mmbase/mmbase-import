@@ -11,7 +11,7 @@ package org.mmbase.util.logging;
 
 /**
  * Base class for simple Logger implementations (no patterns and so
- * on). 
+ * on).
  *
  *
  * @author Michiel Meeuwissen

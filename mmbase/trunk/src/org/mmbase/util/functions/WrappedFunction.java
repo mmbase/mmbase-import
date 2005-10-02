@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.7 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: WrappedFunction.java,v 1.8 2005-10-02 16:42:14 michiel Exp $
  */
 public abstract class WrappedFunction implements Function {
 
@@ -24,7 +24,6 @@ public abstract class WrappedFunction implements Function {
 
     /**
      * Constructor for Basic Function
-     * @param cloud The user's cloud
      * @param function The function to wrap
      */
     public WrappedFunction(Function function) {

@@ -30,7 +30,7 @@ public interface ParameterizedTransformerFactory  {
     Transformer createTransformer(Parameters parameters);
 
     /**
-     * Create  empty <code>Parameters</code> object for use with {@link #createTransformer}.
+     * Create  empty <code>Parameters</code> object for use with {@link #createTransformer(Parameters)}.
      */
     Parameters createParameters();
 

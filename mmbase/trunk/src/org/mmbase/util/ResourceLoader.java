@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.26 2005-09-09 09:27:09 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.27 2005-10-02 16:42:14 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -186,9 +186,6 @@ public class ResourceLoader extends ClassLoader {
             }
         }
     }
-
-
-    // these could perhaps be made non-static to make more generic ResourceLoaders possible
 
 
     private List /* <ResolverFactory> */ roots;
@@ -472,7 +469,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * {@inheritDoc}
-     * @see #findResourceList
+     * @see #getResourceList
      */
     protected Enumeration findResources(final String name) throws IOException {
         final Iterator i = roots.iterator();
@@ -515,7 +512,8 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns a List, containing all URL's which may represent the
-     * given resource. This can be used to show what resource whould be loaded and what resource whould be masked
+     * given resource. This can be used to show what resource whould be loaded and what resource
+     * whould be masked, or one can also simply somehow 'merge' all these resources.
      */
     public List getResourceList(final String name) {
         try {
@@ -554,7 +552,7 @@ public class ResourceLoader extends ClassLoader {
      *
      *
      * @param context a context relative to the current resource loader
-     * @returns a new 'child' ResourceLoader or the parent ResourceLoader if the context is ".."
+     * @return a new 'child' ResourceLoader or the parent ResourceLoader if the context is ".."
      * @see #ResourceLoader(ResourceLoader, String)
      */
     public ResourceLoader getChildResourceLoader(final String context) {
@@ -593,7 +591,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getResourceContexts(Pattern, boolean)}
+     * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getChildContexts(Pattern, boolean)}
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
      * @param recursive If true, then also subdirectories are searched.
      * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
@@ -885,7 +883,7 @@ public class ResourceLoader extends ClassLoader {
             if (con.getDoInput()) {
                 long lm = con.getLastModified();
                 if (lm  > 0 && usedUrl != null  && lastModified > 0 && lm > lastModified) {
-                    log.warn("File " + con.getURL() + " is newer (" + new Date(lm) + " then " + usedUrl + "(" + new Date(lastModified) + ") but shadowed by it");
+                    log.warn("File " + con.getURL() + " is newer (" + new Date(lm) + ") then " + usedUrl + "(" + new Date(lastModified) + ") but shadowed by it");
                 }
                 if (usedUrl == null && lm > 0) {
                     usedUrl = con.getURL();
@@ -1154,7 +1152,7 @@ public class ResourceLoader extends ClassLoader {
             }
             if (file.isDirectory()) {
                 final File directory = file;
-                return new OutputStream() {                        
+                return new OutputStream() {
                         public void write(byte[] b) throws IOException {
                             if (b == null) {
                                 directory.delete();
@@ -1166,7 +1164,7 @@ public class ResourceLoader extends ClassLoader {
                             throw new UnsupportedOperationException("Cannot write bytes to a directory outputstream");
                         }
                     };
-                        
+
             } else {
                 return new FileOutputStream(file) {
                     public void write(byte[] b) throws IOException {
@@ -1595,7 +1593,8 @@ public class ResourceLoader extends ClassLoader {
     private  PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new PathURLStreamHandler() {
 
             protected String getName(URL u) {
-                return u.getPath().substring(NOT_FOUND.length());
+                String path = u.getPath();
+                return path.substring("/NOTFOUND/".length());
             }
 
             public URLConnection openConnection(String name) {

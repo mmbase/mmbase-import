@@ -13,7 +13,7 @@ package org.mmbase.util.logging;
  * Exceptions thrown by logging can be wrapped in this. Odd logging
  * implementation like 'ExceptionImpl' do this.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since  MMBase-1.7
  * @see    ExceptionImpl
  */
@@ -25,7 +25,7 @@ public class LoggingException extends RuntimeException {
 	public LoggingException () {
 		super();
 	}
-	
+
     //javadoc is inherited
     public LoggingException(String message) {
         super(message);
@@ -51,11 +51,11 @@ public class LoggingException extends RuntimeException {
         this.level = level;
     }
 
-	/**
-	 * Create the exception.
-     * @param Throwable the cause of the exception
-	 * @param level the level of logging at which the exception occurred
- 	 */
+    /**
+     * Create the exception.
+     * @param cause the cause of the exception
+     * @param level the level of logging at which the exception occurred
+     */
     public LoggingException(Throwable cause, Level level) {
         super(cause);
         this.level = level;

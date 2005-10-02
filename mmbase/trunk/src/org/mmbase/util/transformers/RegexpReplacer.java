@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Finds regexps in the Character String, and replaces them. The replaced regexps can be found in a configuration file 'regexps.xml' (if it is present).
  * It ignores existing XML markup, and also avoids trailing dots and comments and surrounding quotes and parentheses.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.8
  */
 
@@ -51,26 +51,27 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
      * Match word by word, but only in PCDATA of xml elements.
      */
     public final static int XMLTEXT_WORDS     = 1;
+
     /**
      * Match in PCDATA of xml elements.
      */
-    public final static int XMLTEXT     = 2; 
+    public final static int XMLTEXT     = 2;
 
     /**
      * Match word by word.
      */
-    public final static int WORDS    = 3; 
+    public final static int WORDS    = 3;
 
     /**
      * Match line by line.
      */
-    public final static int LINES    = 4; 
+    public final static int LINES    = 4;
 
 
     /**
      * Match the entire stream (so, one String must be created).
      */
-    public final static int ENTIRE    = 5; 
+    public final static int ENTIRE    = 5;
 
 
 
@@ -113,17 +114,17 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
     protected final void readPatterns(Collection patterns) {
         UtilReader utilReader = (UtilReader) utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
-            utilReader = new UtilReader(getConfigFile(), 
-                                        new PatternWatcher(patterns) { 
-                                            public void onChange(String file) { 
-                                                readPatterns(patterns); 
-                                            } 
+            utilReader = new UtilReader(getConfigFile(),
+                                        new PatternWatcher(patterns) {
+                                            public void onChange(String file) {
+                                                readPatterns(patterns);
+                                            }
                                         });
             utilReaders.put(this.getClass().getName(), utilReader);
         }
 
         patterns.clear();
-        
+
         Collection regs = (Collection) utilReader.getProperties().get("regexps");
         if (regs != null) {
             addPatterns(regs, patterns);
@@ -148,10 +149,10 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
                 Pattern p        = Pattern.compile((String) entry.getKey());
                 String  result   = (String) entry.getValue();
                 patterns.add(new Entry(p, result));
-            }            
+            }
         }
     }
-    
+
     protected boolean replace(String string, Writer w) throws IOException {
         Iterator i  = getPatterns().iterator();
 
@@ -197,12 +198,12 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
             if (l > 0) {
 
                 // to allow for . , and like in the end, we tear those of.
-                char d = word.charAt(l - 1); 
+                char d = word.charAt(l - 1);
                 while (! Character.isLetterOrDigit(d)) {
                     postFix.insert(0, d);
                     word.setLength(--l);
                     if (l == 0) break;
-                    d = word.charAt(l - 1); 
+                    d = word.charAt(l - 1);
                 }
             }
         }
@@ -222,7 +223,7 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
 
         if (postFix != null) {
             writer.write(postFix.toString());
-        } 
+        }
         return result;
     }
 
@@ -250,7 +251,7 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
                         if (replaceWord(word, w)) replaced++;
                         word.setLength(0);
                         w.write(c);
-                    } else {       
+                    } else {
                         word.append((char) c);
                     }
                 }
@@ -309,7 +310,7 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
                     if (replaceWord(word, w)) replaced++;
                     word.setLength(0);
                     w.write(c);
-                } else {       
+                } else {
                     word.append((char) c);
                 }
             }
@@ -382,7 +383,7 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
             throw new UnknownCodingException(getClass(), to);
         }
     }
-    
+
     private static final Map h = new HashMap();
     static {
         h.put("REGEXPS_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));

@@ -82,7 +82,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      * 1. cannot give the repository then. 2. Cannot log the happening
      * on normal way.
      *
-     * @param s: A string to the xml-configuration file. Can be
+     * @param s A string to the xml-configuration file. Can be
      * absolute, or relative to the Logging configuration file.
      **/
 
