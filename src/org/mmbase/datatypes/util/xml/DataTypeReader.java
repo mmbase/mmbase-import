@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.10 2005-09-12 17:29:52 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.11 2005-10-02 16:53:10 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -74,27 +74,30 @@ public class DataTypeReader {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
                 String localName = childElement.getLocalName();
-                if (log.isDebugEnabled()) log.debug("Found child " + childElement.getTagName());
-                if ("fieldtype".equals(localName) ||  // backward compatibility   XXXX DO WE NEED BACKWARDS COMPATIBILITY??!
-                    "specialization".equals(localName) ||  // backward compatibility
-                    "datatype".equals(localName)) {
-                    DataType dataType = readDataType(childElement, baseDataType, collector).dataType;
-                    DataType old = collector.addDataType(dataType);
-                    if (log.isServiceEnabled()) {
-                        log.service((old == null ? "Created "  : "Configured ") + dataType + " based on " + baseDataType);
-                        if (log.isDebugEnabled()) {
-                            log.trace("Now " + collector);
+                try {
+                    if (log.isDebugEnabled()) log.debug("Found child " + childElement.getTagName());
+                    if ("fieldtype".equals(localName) ||  // backward compatibility   XXXX DO WE NEED BACKWARDS COMPATIBILITY??!
+                        "specialization".equals(localName) ||  // backward compatibility
+                        "datatype".equals(localName)) {
+                        DataType dataType = readDataType(childElement, baseDataType, collector).dataType;
+                        DataType old = collector.addDataType(dataType);
+                        if (log.isServiceEnabled()) {
+                            log.service((old == null ? "Created "  : "Configured ") + dataType + " based on " + baseDataType);
+                            if (log.isDebugEnabled()) {
+                                log.trace("Now " + collector);
+                            }
                         }
+                        readDataTypes(childElement, collector, dataType);
                     }
-
-                    readDataTypes(childElement, collector, dataType);
+                } catch (Exception e) {
+                    log.error("Error while parsing element  '" + org.mmbase.util.xml.XMLWriter.write(childElement, true) + "': " + e.getMessage(), e);
                 }
             }
         }
     }
 
     /**
-     * Read a datatype, and 'finished' it... (why it must do that last thing, I don't know).
+     * Read a datatype, and 'finished' it... (MM: why it must do that last thing, I don't know).
      */
     public  static DataTypeDefinition readDataType(Element typeElement, DataType baseDataType, DataTypeCollector collector) {
         DataTypeDefinition definition = collector.getDataTypeDefinition();
