@@ -21,19 +21,18 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.7 2005-09-27 12:59:33 michiel Exp $
+ * @version $Id: ChangeManager.java,v 1.8 2005-10-02 17:06:29 michiel Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
 
     // the class to broadcast changes with
     private MMBaseChangeInterface mmc;
-    
+
     private MMBase mmbase;
 
     /**
      * Constructor.
-     * @param mmbase the MMbase instance on which the changes are made
      */
     public ChangeManager(MMBaseChangeInterface m) {
         mmc = m;
@@ -69,25 +68,25 @@ public final class ChangeManager {
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges()) {
             NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(change));
- 
+
             //regardless of wether this is a relatione event we fire a node event first
             mmbase.propagateEvent(event);
-            
+
             //now if we have a MMBaseChangeManager send the event into the clustering system
             if (mmc != null) mmc.changedNode(event);
-            
+
             //if the changed node is a relation, we fire a relation event as well
             if(builder instanceof InsRel) {
                 RelationEvent relEvent = new RelationEvent(node, NodeEvent.oldTypeToNewType(change));
-                
+
                 //the relation event broker will make shure that listeners
                 //for node-relation changes to a specific builder, will be
                 //notified if this builder is either source or destination type
                 //in the relation event
                 mmbase.propagateEvent(relEvent);
-                
+
                 // now if we have a MMBaseChangeManager send the event into the clustering system
-               if(mmc != null) mmc.changedNode((RelationEvent)event);
+               if(mmc != null) mmc.changedNode(relEvent);
             }
 
         }
