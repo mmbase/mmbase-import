@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.database;
 
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.39 2005-06-28 11:00:01 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.40 2005-10-02 16:30:01 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -38,9 +38,9 @@ public class MultiConnection implements Connection {
     public final static int CON_BUSY     = 1;
     public final static int CON_FINISHED = 2;
     public final static int CON_FAILED   = 3;
-    
+
     private static final Logger log = Logging.getLoggerInstance(MultiConnection.class);
-    
+
     /**
      * @javadoc
      */
@@ -53,22 +53,22 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     String lastSql;
-    
+
     private long startTimeMillis = 0;
     private int usage=0;
     public int state=0;
-    
+
     /**
      * protected constructor for extending classes, so they can use
      * this with for example only a connection..
      */
-    protected MultiConnection() {       
+    protected MultiConnection() {
         state = CON_UNUSED;
     }
-    
+
     /**
      * @javadoc
-     * @todo in 1.7 this method was made public,document why? 
+     * @todo in 1.7 this method was made public,document why?
      * @since MMBase-1.7
      */
     public MultiConnection(MultiPool parent,Connection con) {
@@ -76,7 +76,7 @@ public class MultiConnection implements Connection {
         this.parent = parent;
         state = CON_UNUSED;
     }
-    
+
     /**
      * @javadoc
      */
@@ -92,7 +92,7 @@ public class MultiConnection implements Connection {
         }
         return "Unknown";
     }
-    
+
     /**
      * @javadoc
      */
@@ -100,14 +100,14 @@ public class MultiConnection implements Connection {
         lastSql = sql;
         state = CON_BUSY;
     }
-    
+
     /**
      * @javadoc
      */
     public String getLastSQL() {
         return lastSql;
     }
-    
+
     /**
      * createStatement returns an SQL Statement object
      */
@@ -115,7 +115,7 @@ public class MultiConnection implements Connection {
         MultiStatement s = new MultiStatement(this, con.createStatement());
         return s;
     }
-    
+
     /**
      * prepareStatement creates a pre-compiled SQL PreparedStatement object.
      */
@@ -123,7 +123,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql);
     }
-    
+
     /**
      * prepareCall create a pre-compiled SQL statement that is
      * a call on a stored procedure.
@@ -132,7 +132,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareCall(sql);
     }
-    
+
     /**
      *  Convert the given generic SQL statement to the drivers native SQL.
      */
@@ -140,16 +140,16 @@ public class MultiConnection implements Connection {
         setLastSQL(query);
         return con.nativeSQL(query);
     }
-    
+
 
     /**
      * Tries to fix the this connection, if it proves to be broken. It is supposed to be broken if
-     * the query "SELECT 1 FROM <OBJECT TABLE>" does yield an exception. 
+     * the query "SELECT 1 FROM <OBJECT TABLE>" does yield an exception.
      * This method is meant to be called in the catch after trying to use the connection.
-     * 
+     *
      * @return <code>true</code> if connection was broken and successfully repaired. <code>false</code> if connection was not broken.
      * @throws SQLException If connection is broken and no new one could be obtained.
-     * 
+     *
      * @since MMBase-1.7.1
      */
 
@@ -157,7 +157,7 @@ public class MultiConnection implements Connection {
         Statement s = null;
         ResultSet rs = null;
         try {
-            // check wether connection is still functional 
+            // check wether connection is still functional
             s = createStatement();
             rs = s.executeQuery("SELECT 1 FROM " + MMBase.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
         } catch (SQLException isqe) {
@@ -168,8 +168,8 @@ public class MultiConnection implements Connection {
             return true;
         } finally {
             if (s != null) s.close();
-            if (rs != null) rs.close();            
-        }        
+            if (rs != null) rs.close();
+        }
         return false;
     }
 
@@ -192,22 +192,22 @@ public class MultiConnection implements Connection {
             }
         }
     }
-    
-    
+
+
     /**
      * get AutoCommit mode
      */
     public boolean getAutoCommit() throws SQLException {
         return con.getAutoCommit();
     }
-    
+
     /**
      * Perform commit
      */
     public void commit() throws SQLException {
         con.commit();
     }
-    
+
     /**
      * Perform rollback
      */
@@ -216,7 +216,7 @@ public class MultiConnection implements Connection {
     }
 
 
-    
+
 
     /**
      * @since MMBase-1.7
@@ -233,7 +233,7 @@ public class MultiConnection implements Connection {
     /**
      * Close connections
      */
-    public void close() throws SQLException {        
+    public void close() throws SQLException {
         long time = System.currentTimeMillis() - getStartTimeMillis();
         long maxLifeTime = parent.getMaxLifeTime();
         if (time < maxLifeTime / 24) {  //  ok, you can switch on query logging with setting logging of this class on debug
@@ -261,15 +261,15 @@ public class MultiConnection implements Connection {
             realclose();
         }
     }
-    
-    
+
+
     /**
      * Close connections
      */
     public void realclose() throws SQLException {
         con.close();
     }
-    
+
     /**
      * isClosed returns true if the connection is closed, which can
      * occur either due to an explicit call on "close" or due to
@@ -278,7 +278,7 @@ public class MultiConnection implements Connection {
     public boolean isClosed() throws SQLException {
         return con.isClosed();
     }
-    
+
     /**
      * Advanced features:
      * You can obtain a DatabaseMetaData object to get information
@@ -287,7 +287,7 @@ public class MultiConnection implements Connection {
     public DatabaseMetaData getMetaData() throws SQLException {
         return con.getMetaData();
     }
-    
+
     /**
      * You can put a connection in read-only mode as a hint to enable
      * database optimizations.  Note that setReadOnly cannot be called
@@ -296,28 +296,28 @@ public class MultiConnection implements Connection {
     public void setReadOnly(boolean readOnly) throws SQLException {
         con.setReadOnly(readOnly);
     }
-    
+
     /**
      * Is this database readonly ?
      */
     public boolean isReadOnly() throws SQLException {
         return con.isReadOnly();
     }
-    
+
     /**
      * The "catalog" selects a sub-space of the target database.
      */
     public void setCatalog(String catalog) throws SQLException {
         con.setCatalog(catalog);
     }
-    
+
     /**
      * The "catalog" name
      */
     public String getCatalog() throws SQLException {
         return con.getCatalog();
     }
-    
+
     /**
      * You can call the following method to try to change the transaction
      * isolation level on a newly opened connection, using one of the
@@ -329,14 +329,14 @@ public class MultiConnection implements Connection {
     public void setTransactionIsolation(int level) throws SQLException {
         con.setTransactionIsolation(level);
     }
-    
+
     /**
      * @javadoc
      */
     public int getTransactionIsolation() throws SQLException {
         return con.getTransactionIsolation();
     }
-    
+
     /**
      * getWarnings will return any warning information related to
      * the current connection.  Note that SQLWarning may be a chain.
@@ -344,14 +344,14 @@ public class MultiConnection implements Connection {
     public SQLWarning getWarnings() throws SQLException {
         return con.getWarnings();
     }
-    
+
     /**
      * clear Warnings
      */
     public void clearWarnings() throws SQLException {
         con.clearWarnings();
     }
-    
+
     /**
      * @javadoc
      */
@@ -359,7 +359,7 @@ public class MultiConnection implements Connection {
         log.error("JDBC CHECK ERROR=" + e.toString());
         return true;
     }
-    
+
     /**
      * @javadoc
      */
@@ -367,14 +367,14 @@ public class MultiConnection implements Connection {
         usage++;
         startTimeMillis = System.currentTimeMillis();
     }
-    
+
     /**
      * @javadoc
      */
     public void release() {
         startTimeMillis = 0;
     }
-    
+
     /**
      * @javadoc
      */
@@ -388,29 +388,29 @@ public class MultiConnection implements Connection {
     void resetUsage() {
         usage = 0;
     }
-    
+
     /**
      * Returns the moment on which the last SQL statement was started in seconds after 1970.
      */
     public int getStartTime() {
         return (int) (startTimeMillis / 1000);
     }
-    
+
     /**
      * Returns the moment on which the last SQL statement was started in milliseconds after 1970.
      */
     public long getStartTimeMillis() {
         return startTimeMillis;
     }
-    
-    
+
+
     /**
      * @javadoc
      */
     public String toString() {
         return "'"+getLastSQL()+"'@"+hashCode();
     }
-    
+
     /**
      * prepareCall create a pre-compiled SQL statement that is
      * a call on a stored procedure.
@@ -419,28 +419,28 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareCall(sql,i,y);
     }
-    
+
     /**
      * @javadoc
      */
     public void setTypeMap(Map mp) throws SQLException {
         con.setTypeMap(mp);
     }
-    
+
     /**
      * @javadoc
      */
     public Map getTypeMap() throws SQLException {
         return con.getTypeMap();
     }
-    
+
     /**
      * createStatement returns an SQL Statement object
      */
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         return new MultiStatement(this, con.createStatement(resultSetType, resultSetConcurrency));
     }
-    
+
     /**
      * prepareStatement creates a pre-compiled SQL PreparedStatement object.
      */
@@ -448,7 +448,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql,i,y);
     }
-    
+
     /**
      * Changes the holdability of ResultSet objects created using this Connection
      * object to the given holdability.
@@ -459,7 +459,7 @@ public class MultiConnection implements Connection {
     public void setHoldability(int holdability) throws SQLException {
         con.setHoldability(holdability);
     }
-    
+
     /**
      * Retrieves the current holdability of ResultSet objects created using this Connection object.
      * @return the holdability, one of ResultSet.HOLD_CURSORS_OVER_COMMIT or ResultSet.CLOSE_CURSORS_AT_COMMIT
@@ -469,7 +469,7 @@ public class MultiConnection implements Connection {
     public int getHoldability() throws SQLException {
         return con.getHoldability();
     }
-    
+
     /**
      * Creates an unnamed savepoint in the current transaction and returns the new
      * Savepoint object that represents it.
@@ -479,7 +479,7 @@ public class MultiConnection implements Connection {
     public Savepoint setSavepoint() throws SQLException {
         return con.setSavepoint();
     }
-    
+
     /**
      * Creates a savepoint with the given name in the current transaction and
      * returns the new Savepoint object that represents it.
@@ -490,7 +490,7 @@ public class MultiConnection implements Connection {
     public Savepoint setSavepoint(String name) throws SQLException {
         return con.setSavepoint(name);
     }
-    
+
     /**
      * Undoes all changes made after the given Savepoint object was set.
      * This method should be used only when auto-commit has been disabled.
@@ -500,7 +500,7 @@ public class MultiConnection implements Connection {
     public void rollback(Savepoint savepoint) throws SQLException {
         con.rollback(savepoint);
     }
-    
+
     /**
      * Removes the given Savepoint object from the current transaction.
      * Any reference to the savepoint after it have been removed will cause an SQLException to be thrown
@@ -510,7 +510,7 @@ public class MultiConnection implements Connection {
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
         con.releaseSavepoint(savepoint);
     }
-    
+
     /**
      * Creates a Statement object that will generate ResultSet objects with the given type,
      * concurrency, and holdability.
@@ -526,7 +526,7 @@ public class MultiConnection implements Connection {
     public Statement createStatement(int type, int concurrency, int holdability) throws SQLException {
         return new MultiStatement(this,con.createStatement(type, concurrency, holdability));
     }
-    
+
     /**
      * Creates a PreparedStatement object that will generate ResultSet objects with the given type,
      * concurrency, and holdability.
@@ -545,7 +545,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql, type, concurrency, holdability);
     }
-    
+
     /**
      * Creates a CallableStatement object that will generate ResultSet objects with the given type,
      * concurrency, and holdability.
@@ -564,7 +564,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareCall(sql, type, concurrency, holdability);
     }
-    
+
     /**
      * Creates a default PreparedStatement object that has the capability to retrieve auto-generated keys.
      * The given constant tells the driver whether it should make auto-generated keys available for retrieval.
@@ -578,7 +578,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql, autoGeneratedKeys);
     }
-    
+
     /**
      * Creates a default PreparedStatement object capable of returning the auto-generated keys designated by
      * the given array. This array contains the indexes of the columns in the target table that contain
@@ -593,7 +593,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql, columnIndexes);
     }
-    
+
     /**
      * Creates a default PreparedStatement object capable of returning the auto-generated keys designated by
      * the given array. This array contains the names of the columns in the target table that contain the
@@ -608,7 +608,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql, columnNames);
     }
-    
+
 }
 
 

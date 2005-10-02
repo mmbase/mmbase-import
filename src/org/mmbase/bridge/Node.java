@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.60 2005-09-06 21:13:44 michiel Exp $
+ * @version $Id: Node.java,v 1.61 2005-10-02 16:19:25 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -272,7 +272,6 @@ public interface Node extends Comparable {
      * You can use this to get data from a field for validation purposes.
      *
      * @param fieldName name of field
-     * @param value new value of the field
      * @since MMBase-1.8
      */
     public Object getValueWithoutProcess(String fieldName);
@@ -456,8 +455,8 @@ public interface Node extends Comparable {
 
     /**
      * Validates a field of a node by checking the value against the constraints of
-     * the field's datatype.
-     * @see {@link #validate}
+     * the field's datatype. See also {@link #validate}.
+     *
      * @throws IllegalArgumentException when the field value is not valid.
      * @since MMBase-1.8
      */

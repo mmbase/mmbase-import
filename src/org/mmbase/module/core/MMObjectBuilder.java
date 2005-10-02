@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.340 2005-09-27 14:44:39 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.341 2005-10-02 16:30:00 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -2716,7 +2716,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node the node whose fields are queries
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
-     * @deprecated use {@link #getFunction(MMObjectNode)}
+     * @deprecated use {@link #getFunction(MMObjectNode, String)}
      */
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if (log.isDebugEnabled()) {
@@ -3457,7 +3457,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *  @return <code>true</code> When an update is required(when changed),
      *    <code>false</code> if original value was set back into the field.
      */
-    public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
+    public  boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
         return setValue(node, fieldName);
     }
 
@@ -3470,7 +3470,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param fieldName the fieldname that is changed
      * @return <code>true</code> if the call was handled.
      */
-    public boolean setValue(MMObjectNode node, String fieldName) {
+    public  boolean setValue(MMObjectNode node, String fieldName) {
         return true;
     }
 

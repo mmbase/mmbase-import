@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.44 2005-09-02 12:28:45 pierre Exp $
+ * @version $Id: ImageCaches.java,v 1.45 2005-10-02 16:30:00 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -232,7 +232,7 @@ public class ImageCaches extends AbstractImages {
      * Invalidate the Image Cache for a specific Node
      * method only accessable on package level, since only Images should call it..
      *
-     * @param node The image node, which is the original of the cached modifications
+     * @param imageNode The image node, which is the original of the cached modifications
      * @since MMBase-1.7
      */
     protected void invalidate(MMObjectNode imageNode) {

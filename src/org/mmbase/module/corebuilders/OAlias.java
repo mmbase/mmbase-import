@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.18 2004-09-02 12:52:18 michiel Exp $
+ * @version $Id: OAlias.java,v 1.19 2005-10-02 16:30:01 michiel Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -56,7 +56,7 @@ public class OAlias extends MMObjectBuilder {
 
     /**
      * Obtain the number of a node through its alias
-     * @param alias the alias of the desired node
+     * @param name the alias of the desired node
      * @return the number of the node, or -1 if the alias does not exist
      * @see #getAliasedNode
      */

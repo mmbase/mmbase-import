@@ -18,7 +18,7 @@ package org.mmbase.security;
  * certain that you will receive the same User object back !
  *
  * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.15 2005-03-01 14:06:29 michiel Exp $
+ * @version $Id: UserContext.java,v 1.16 2005-10-02 16:33:47 michiel Exp $
  */
 public interface UserContext {
 
@@ -56,7 +56,7 @@ public interface UserContext {
      * @return authentication type
      *
      * @since MMBase-1.7
-     * @see   CloudContext#getCloud(String)
+     * @see   org.mmbase.bridge.CloudContext#getCloud
      */
     public String getAuthenticationType();
 
