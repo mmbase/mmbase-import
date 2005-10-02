@@ -24,7 +24,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.1 2005-09-23 13:59:26 pierre Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.2 2005-10-02 17:04:44 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -64,8 +64,6 @@ public abstract class ReleaseStrategy {
      * strategy override
      * <code>doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)</code>
      *
-     * @see QueryResultCacheReleaseStrategy#evaluate(NodeEvent, SearchQuery,
-     *      NodeList)
      */
     public final StrategyResult evaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         Timer timer = new Timer();
@@ -172,14 +170,14 @@ public abstract class ReleaseStrategy {
         }
 
         /**
-         * @param cost The cost of a node event evaluation
+         * The cost of a node event evaluation. XXX What is the cost?
          */
         public long getCost() {
             return cost;
         }
 
         /**
-         * @param shouldRelease of a node event evaluation
+         * XXX What means this?
          */
         public boolean shouldRelease() {
             return shouldRelease;

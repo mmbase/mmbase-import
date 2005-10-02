@@ -49,9 +49,9 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     }
 
     /**
-     * Create a core object
+     * Copy constructor.
      * @param name the name of the data type
-     * @param type the class of the data type's possible value
+     * @param coreField
      */
     protected CoreField(String name, CoreField coreField) {
         super(name, coreField, true);
@@ -235,7 +235,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     /**
      * Compare this object to the supplied one (should be a CoreField)
-     * @param the object to compare to
+     * @param o the object to compare to
      * @return -1,1, or 0 according to wether this object is smaller, greater, or equal
      *         to the supplied one.
      */

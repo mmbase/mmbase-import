@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.13 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: TemplateCache.java,v 1.14 2005-10-02 17:04:44 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -78,7 +78,7 @@ public class TemplateCache extends Cache {
 
     }
 
-    public String getName() { 
+    public String getName() {
         return "XSLTemplates";
     }
     public String getDescription() {
@@ -101,21 +101,21 @@ public class TemplateCache extends Cache {
         private String  src;
         private URIResolver uri;
         Key(Source src, URIResolver uri) {
-            this.src = src.getSystemId(); 
+            this.src = src.getSystemId();
             this.uri = uri;
         }
         public boolean equals(Object o) {
             if (o instanceof Key) {
-                Key k = (Key) o;                
-                return  (src == null ? k.src == null : src.equals(k.src)) && 
+                Key k = (Key) o;
+                return  (src == null ? k.src == null : src.equals(k.src)) &&
                         (uri == null ? k.uri == null : uri.equals(k.uri));
-            } 
+            }
             return false;
         }
         public int hashCode() {
             return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
         }
-        /** 
+        /**
          * Returns File object or null
          */
         String getURL() {
@@ -129,10 +129,10 @@ public class TemplateCache extends Cache {
         public String toString() {
             return "" + src + "/" + uri;
         }
-       
+
     }
-    
-    /**    
+
+    /**
      * Remove all entries associated wit a certain url (used by FileWatcher).
      *
      * @param  The file under concern
@@ -140,13 +140,13 @@ public class TemplateCache extends Cache {
      */
 
     private int remove(String file) {
-        int removed = 0;        
+        int removed = 0;
         Iterator i =  entrySet().iterator();
         if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + file);
-        while (i.hasNext()) {           
+        while (i.hasNext()) {
             Key mapKey = (Key) ((Map.Entry) i.next()).getKey();
             if (mapKey.getURL().equals(file)) {
-                if(remove(mapKey) != null) {                 
+                if(remove(mapKey) != null) {
                     removed++;
                 } else {
                     log.warn("Could not remove " + mapKey);
@@ -183,7 +183,7 @@ public class TemplateCache extends Cache {
      *
      * @throws RuntimeException
      **/
-    
+
     public Object put(Object key, Object value) {
         throw new RuntimeException("wrong types in cache");
     }
@@ -198,17 +198,17 @@ public class TemplateCache extends Cache {
             return null;
         }
         Key key = new Key(src, uri);
-        Object res = super.put(key, value);        
+        Object res = super.put(key, value);
         log.service("Put xslt in cache with key " + key);
         templateWatcher.add(key.getURL());
         if (log.isDebugEnabled()) {
             log.debug("have set watch on  " + key.getURL());
             log.trace("currently watching: " + templateWatcher);
-        }                
+        }
         return res;
     }
 
-    
+
     /**
      * Invocation of the class from the commandline for testing
      */
@@ -221,7 +221,7 @@ public class TemplateCache extends Cache {
             fw.write("<xsl:stylesheet  version = \"1.1\" xmlns:xsl =\"http://www.w3.org/1999/XSL/Transform\"></xsl:stylesheet>");
             fw.close();
             for (int i =0; i<10; i++) {
-                TemplateCache cache = TemplateCache.getCache();       
+                TemplateCache cache = TemplateCache.getCache();
                 Source xsl = new StreamSource(xslFile);
                 org.mmbase.util.xml.URIResolver uri = new org.mmbase.util.xml.URIResolver(xslFile.getParentFile());
                 Templates cachedXslt = cache.getTemplates(xsl, uri);
@@ -237,7 +237,7 @@ public class TemplateCache extends Cache {
         } catch (Exception e) {
             System.err.println("hmm?" + e);
         }
-        
+
 
     }
 

@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  * This class communicates a node event. in case of a change event, it contains
  * a map of changed values, mapped to their field's name, as well as the
  * preveaus values of the changed fields.
- * 
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
  */
@@ -50,11 +50,11 @@ public class NodeEvent extends Event implements Serializable {
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeUTF(node.getBuilder().getTableName());
-        out.writeInt(node.getNumber()); 
+        out.writeInt(node.getNumber());
         out.writeInt(eventType);
         out.writeUTF(machine);
         out.writeObject(oldValues);
-        out.writeObject(newValues);        
+        out.writeObject(newValues);
     }
     // implementation of serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -93,7 +93,7 @@ public class NodeEvent extends Event implements Serializable {
     /**
      * Adds the name and old value of a changed field, But only if this event
      * type supports changed fields (i.e. node changed, relation changed)
-     * 
+     *
      * @param fieldName
      * @param oldValue
      */
@@ -123,7 +123,7 @@ public class NodeEvent extends Event implements Serializable {
      * @param fieldName the field you want the new value of (in case of change
      *        event), or null if the fieldName was not found in the new value
      *        list
-     * @return
+     * @return the new value of the field
      */
     public Object getNewValue(String fieldName) {
         return newValues.get(fieldName);
@@ -165,9 +165,9 @@ public class NodeEvent extends Event implements Serializable {
     /**
      * For conveneance: conversion of the new event type indication to the old
      * style
-     * 
+     *
      * @param eventType must be c,d,n or r
-     * @return
+     * @return A String describing the type of an event. (like "c" (change), "d" (delete), "n" (new), or "r" (relation change))
      */
     public static String newTypeToOldType(int eventType) {
         switch (eventType) {
@@ -182,9 +182,8 @@ public class NodeEvent extends Event implements Serializable {
     /**
      * For conveneance: conversion of the old event type indication to the new
      * style
-     * 
+     *
      * @param eventType
-     * @return
      */
     public static int oldTypeToNewType(String eventType) {
         if (eventType.equals("c")) {
