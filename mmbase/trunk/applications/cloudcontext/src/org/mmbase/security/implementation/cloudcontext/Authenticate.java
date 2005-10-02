@@ -15,6 +15,7 @@ import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.SecurityException;
+import org.mmbase.security.classsecurity.ClassAuthentication;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.13 2005-05-02 12:40:42 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.14 2005-10-02 16:45:09 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -82,7 +83,7 @@ public class Authenticate extends Authentication {
             log.error(msg);
             throw new SecurityException(msg);
         }
-        
+
         ResourceWatcher adminsWatcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
                 public void onChange(String res) {
                     InputStream in = getResourceLoader().getResourceAsStream(res);
@@ -148,18 +149,26 @@ public class Authenticate extends Authentication {
                 throw new SecurityException("Logged in an invalid user");
             }
         } else if ("class".equals(s)) {
-            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+            ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
             if (li == null) {
                 throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
             }
             String userName = (String) li.getMap().get("username");
-            if (extraAdmins.containsKey(userName)) {
+            String rank     = (String) li.getMap().get("rank");
+            if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
                 User user = new LocalAdmin(userName, s);
                 loggedInExtraAdmins.put(userName, user);
                 return user;
             } else {
-                node = users.getUser((String) li.getMap().get("username"));
+                if (userName != null) {
+                    node = users.getUser(userName);
+                    if (rank != null) {
+                    }
+                } else if (rank != null) {
+                    node = users.getUserByRank(rank, userName);
+                    log.debug("Class authentication to rank " + rank + " found node " + node);
+                }
             }
         } else {
             throw new UnknownAuthenticationMethodException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
@@ -209,9 +218,9 @@ public class Authenticate extends Authentication {
     }
 
     private static final Parameter PARAMETER_ENCODEDPASSWORD = new Parameter("encodedpassword", String.class, true);
-    private static final Parameter[] PARAMETERS_NAME_ENCODEDPASSWORD = 
-        new Parameter[] { 
-            PARAMETER_USERNAME, 
+    private static final Parameter[] PARAMETERS_NAME_ENCODEDPASSWORD =
+        new Parameter[] {
+            PARAMETER_USERNAME,
             PARAMETER_ENCODEDPASSWORD,
             new Parameter.Wrapper(PARAMETERS_USERS) };
     public Parameters createParameters(String application) {

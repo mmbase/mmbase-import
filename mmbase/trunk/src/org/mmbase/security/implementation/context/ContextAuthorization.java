@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.38 2005-07-06 11:04:38 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.39 2005-10-02 16:43:55 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -445,9 +445,7 @@ public class ContextAuthorization extends Authorization {
             log.debug("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         }
         if (!check(user, nodeNumber, operation) ) {
-            String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
-            log.debug(msg);
-            throw new SecurityException(msg);
+            throw new SecurityException("Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier());
         }
     }
 

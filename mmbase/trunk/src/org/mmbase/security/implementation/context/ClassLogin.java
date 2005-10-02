@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.2 2004-04-20 10:53:09 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.3 2005-10-02 16:43:55 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -31,23 +31,24 @@ public class ClassLogin extends ContextLoginModule {
         org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
         if (li == null) {
             throw new SecurityException("Class authentication failed  '" + userLoginInfo + "' (class not authorized)");
-        }        
+        }
         // get username
         String userName = (String) li.getMap().get("username");
-        if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
-        
-        
-        String configValue = getModuleValue(userName, null);
-        if(configValue == null) {
-            log.info("No user with name:" + userName);
+        String reqRank  = (String) li.getMap().get("rank");
+        if(userName == null && reqRank == null) throw new org.mmbase.security.SecurityException("expected the property 'username' and/or 'rank' with login");
+
+        org.w3c.dom.Element node = getAccount(userName, null, reqRank);
+        if(node == null) {
+            log.info("No user with name:" + userName + " rank " + reqRank);
             return null;
         }
-        
+        userName = node.getAttribute("name");
+
         Rank rank= getRank(userName, null);
         if(rank == null) {
             log.warn( "expected a rank for user with the name:" + userName + ", canceling a valid login due to the fact that the rank attribute wasnt set");
             return null;
-            
+
         }
         return getValidUserContext(userName, rank);
     }
