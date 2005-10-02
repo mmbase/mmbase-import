@@ -20,7 +20,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.6 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.7 2005-10-02 16:16:43 michiel Exp $
  */
 public interface StorageManager {
 
@@ -117,7 +117,6 @@ public interface StorageManager {
     /**
      * Delete a node
      * @param node The node to delete
-     * @return <code>true</code> if succesful
      * @throws StorageException if an error occurred during delete
      */
     public void delete(MMObjectNode node) throws StorageException;
@@ -148,7 +147,6 @@ public interface StorageManager {
 
     /**
      * Create the basic elements for this storage
-     * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation of the object storage
      */
     public void create() throws StorageException;

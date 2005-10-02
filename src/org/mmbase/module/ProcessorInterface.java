@@ -15,6 +15,7 @@ import org.mmbase.util.*;
 
 /**
  * @javadoc
+ * @deprecated
  */
 public interface ProcessorInterface  {
 
@@ -41,7 +42,7 @@ public interface ProcessorInterface  {
 
     /**
      * Generate a list of values from a command to the processor.
-     * @param sp the page context
+     * @param context the page context
      * @param tagger contains the attributes for the list
      * @param command the list command to execute.
      */
@@ -49,7 +50,7 @@ public interface ProcessorInterface  {
 
     /**
      * Execute the commands provided in the form values.
-     * @param sp the page context
+     * @param context the page context
      * @param cmds contains the list of commands to run
      * @param vars contains the attributes for the process
      */
@@ -57,21 +58,21 @@ public interface ProcessorInterface  {
 
     /**
      * Replace a command by a string.
-     * @param sp the page context
+     * @param context the page context
      * @param command the command to execute.
      */
     public String replace (PageInfo context, String command);
 
     /**
      * Replace a command by a string.
-     * @param sp the page context
+     * @param context the page context
      * @param command the command to execute
      */
     public String replace (PageInfo context, StringTagger command);
 
     /**
      * Do a cache check (304) for this request.
-     * @param sp the page context
+     * @param context the page context
      * @param command the command to execute.
      */
     public boolean cacheCheck(PageInfo context, String command);

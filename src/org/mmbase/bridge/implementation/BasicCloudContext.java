@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.43 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: BasicCloudContext.java,v 1.44 2005-10-02 16:20:25 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -49,8 +49,8 @@ public class BasicCloudContext implements CloudContext {
     /**
      *  constructor to call from the MMBase class
      *  (protected, so cannot be reached from a script)
-     * @throw NotFoundException If mmbase not running and cannot be started because mmbase.config missing
-     * @throw BridgeException   If mmbase not running and cannot be started (but mmbase.config was specified)
+     * @throws NotFoundException If mmbase not running and cannot be started because mmbase.config missing
+     * @throws BridgeException   If mmbase not running and cannot be started (but mmbase.config was specified)
      */
     protected BasicCloudContext() {
         Iterator i = org.mmbase.module.Module.getModules();

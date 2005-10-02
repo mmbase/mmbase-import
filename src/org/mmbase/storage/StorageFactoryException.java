@@ -14,7 +14,7 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageFactoryException.java,v 1.2 2003-11-18 14:58:33 michiel Exp $
+ * @version $Id: StorageFactoryException.java,v 1.3 2005-10-02 16:16:42 michiel Exp $
  */
 public class StorageFactoryException extends StorageException {
 
@@ -41,7 +41,7 @@ public class StorageFactoryException extends StorageException {
      * message of the original exception.
      * The cause can be retrieved with getCause().
      *
-     * @param Throwable the cause of the error
+     * @param cause the cause of the error
      */
     public StorageFactoryException(Throwable cause) {
         super(cause.getMessage(), cause);
@@ -53,7 +53,7 @@ public class StorageFactoryException extends StorageException {
      * The cause can be retrieved with getCause().
      *
      * @param message a description of the error
-     * @param Throwable the cause of the error
+     * @param cause the cause of the error
      */
     public StorageFactoryException(String message, Throwable cause) {
         super(message, cause);

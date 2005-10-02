@@ -23,11 +23,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.29 2005-05-02 09:43:13 michiel Exp $
+ * @version $Id: Authentication.java,v 1.30 2005-10-02 16:33:47 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
-
 
     static {
         try {
