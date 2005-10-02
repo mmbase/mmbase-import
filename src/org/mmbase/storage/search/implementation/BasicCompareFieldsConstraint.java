@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompareFieldsConstraint.java,v 1.5 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicCompareFieldsConstraint.java,v 1.6 2005-10-02 16:18:15 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint
@@ -28,7 +28,7 @@ implements CompareFieldsConstraint {
     /**
      * Constructor.
      *
-     * @param field The associated field.
+     * @param field1 The associated field.
      * @param field2 The second associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */

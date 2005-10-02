@@ -15,40 +15,40 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicConstraint.java,v 1.4 2005-05-02 13:02:09 michiel Exp $
+ * @version $Id: BasicConstraint.java,v 1.5 2005-10-02 16:18:15 michiel Exp $
  * @since MMBase-1.7
  */
 
 // this class would logically be abstract, but test-cases are instantiating it.
 public class BasicConstraint implements Constraint {
-    
+
     /** Inverse property. */
     private boolean inverse = false;
-    
+
     /** Default constructor. */
     protected BasicConstraint() {}
-    
+
     /**
      * Sets inverse.
      *
      * @return This <code>BasicConstraint</code> instance.
-     * @param invers The inverse value.
+     * @param inverse The inverse value.
      */
     public BasicConstraint setInverse(boolean inverse) {
         this.inverse = inverse;
         return this;
     }
-    
+
     // javadoc is inherited
     public boolean isInverse() {
         return inverse;
     }
-    
+
     // javadoc is inherited
     public int getBasicSupportLevel() {
         return SearchQueryHandler.SUPPORT_OPTIMAL;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
@@ -59,7 +59,7 @@ public class BasicConstraint implements Constraint {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return (inverse? 0: 107);

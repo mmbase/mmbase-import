@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldCompareConstraint.java,v 1.10 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicFieldCompareConstraint.java,v 1.11 2005-10-02 16:18:15 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint {
@@ -39,7 +39,7 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
     /**
      * Sets operator.
      *
-     * @param the operator value
+     * @param operator the operator value
      * @return This <code>BasicFieldCompareConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
