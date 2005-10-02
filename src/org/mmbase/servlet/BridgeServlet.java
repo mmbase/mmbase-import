@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.22 2005-08-18 12:37:59 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.23 2005-10-02 17:10:54 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -45,7 +45,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * It is a digit optionially followed by +.* (used in ImageServlet for url-triggered icache production)
      */
 
-    public static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?"); 
+    public static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?");
     // some example captured by this regexp:
     //   /mmbase/images/session=mmbasesession+1234+s(100)/image.jpg
     //   /mmbase/images/1234+s(100)/image.jpg
@@ -75,7 +75,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         return "mmbase";
     }
 
-    
+
 
     /**
      * Creates a QueryParts object which wraps request and response and the parse result of them.
@@ -93,16 +93,16 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         log.trace("parsing query");
 
         String q = req.getQueryString();
-        
+
         String fileNamePart;
-        if (q == null) { 
-            // also possible to use /attachments/[session=abc+]<number>/filename.pdf            
+        if (q == null) {
+            // also possible to use /attachments/[session=abc+]<number>/filename.pdf
             if (contextPathLength == -1) {
-                contextPathLength = req.getContextPath().length(); 
+                contextPathLength = req.getContextPath().length();
             }
             String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
 
-            qp = readServletPath(reqString);            
+            qp = readServletPath(reqString);
             if (qp == null) {
                 if(res != null) {
                     res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
@@ -111,26 +111,26 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 }
             }
         } else {
-            // attachment.db?[session=abc+]number       
+            // attachment.db?[session=abc+]number
             qp = readQuery(q);
             if (qp == null && res != null) {
                 res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: No node number found after session.");
             }
 
         }
-        
+
         if (qp == null) return null;
 
         qp.setRequest(req);
         qp.setResponse(res);
-               
+
         req.setAttribute("org.mmbase.servlet.BridgeServlet$QueryParts", qp);
         return qp;
     }
 
 
     /**
-     * 
+     *
      * @since MMBase-1.7.4
      */
     public static QueryParts readServletPath(String servletPath) {
@@ -144,15 +144,15 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     }
 
     /**
-     * 
+     *
      * @since MMBase-1.7.4
      */
     public static QueryParts readQuery(String query) {
         String sessionName = null; // "cloud_" + getCloudName();
         String nodeIdentifier;
-        if (query.startsWith("session=")) { 
+        if (query.startsWith("session=")) {
             // indicated the session name in the query: session=<sessionname>+<nodenumber>
-            
+
             int plus = query.indexOf("+", 8);
             if (plus == -1) {
                 sessionName = "";
@@ -182,11 +182,11 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             log.debug("from session");
             String sessionName = qp.getSessionName();
             if (sessionName != null) {
-                cloud = (Cloud) session.getAttribute(sessionName); 
+                cloud = (Cloud) session.getAttribute(sessionName);
             } else { // desperately searching for a cloud, perhaps someone forgot to specify 'session_name' to enforce using the session?
-                cloud = (Cloud) session.getAttribute("cloud_" + getCloudName()); 
+                cloud = (Cloud) session.getAttribute("cloud_" + getCloudName());
             }
-        } 
+        }
         return cloud;
     }
 
@@ -217,7 +217,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             return null;
         }
     }
-    
+
 
 
     /**
@@ -233,24 +233,24 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         if (c == null || ! (c.mayRead(nodeNumber))) {
             c = getCloud(query);
         }
-        if (c == null || ! (c.mayRead(nodeNumber)))  { // cannot find any cloud what-so-ever, 
+        if (c == null || ! (c.mayRead(nodeNumber)))  { // cannot find any cloud what-so-ever,
             HttpServletResponse res = query.getResponse();
             if (res != null) {
                 res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied to anonymous for node '" + nodeNumber + "'");
             }
-            return null; 
+            return null;
         }
-        return c;       
+        return c;
     }
 
     /**
      * Servlets would often need a node. This function provides it.
-     * @param query A QueryParts object, which you must have obtained by {@link readQuery}
+     * @param query A QueryParts object, which you must have obtained by {@link #readQuery}
      */
-     
+
     final protected Node getNode(QueryParts query)  throws IOException {
         try {
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.debug("query : " + query);
             }
 
@@ -262,11 +262,11 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                     return n;
                 }
             }
-            
+
             Cloud c = getAnonymousCloud(); // first try anonymously always, because then session has not to be used
 
             String nodeNumber = query.getNodeNumber();
-            
+
             if (c != null && ! c.hasNode(nodeNumber)) {
                 HttpServletResponse res = query.getResponse();
                 if (res != null) {
@@ -276,7 +276,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             }
 
             c = findCloud(c, nodeNumber, query);
-            if (c == null) { 
+            if (c == null) {
                 return null;
             }
 
@@ -286,7 +286,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         } catch (Exception e) {
             HttpServletResponse res = query.getResponse();
             if (res != null) {
-                query.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());           
+                query.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             }
             return null;
         }
@@ -295,8 +295,8 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     /**
      * If the node associated with the resonse is another node then the node associated with the request.\
      * (E.g. a icache based on a url with an image node).
-     * @param qp A QueryParts object, which you must have obtained by {@link readQuery}
-     * @param node The node which is specified on the URL (obtained by {@link getNode}
+     * @param qp A QueryParts object, which you must have obtained by {@link #readQuery}
+     * @param node The node which is specified on the URL (obtained by {@link #getNode}
      * @since MMBase-1.7.4
      */
     protected Node getServedNode(QueryParts qp, Node node) throws IOException {
@@ -332,7 +332,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      */
 
     public void init() throws ServletException {
-        super.init();        
+        super.init();
         lastModifiedField = getInitParameter("lastmodifiedfield");
         if ("".equals(lastModifiedField)) lastModifiedField = null;
         log = Logging.getLoggerInstance(BridgeServlet.class);
@@ -355,7 +355,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         QueryParts(String sessionName, String nodeIdentifier) {
             this.sessionName = sessionName;
             this.nodeIdentifier = nodeIdentifier;
-            
+
         }
         void setNode(Node node) {
             this.node = node;
@@ -375,11 +375,11 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         public String getFileName() {
             return fileName;
         }
-        public String getSessionName() { 
-            return sessionName; 
+        public String getSessionName() {
+            return sessionName;
         }
-        public String getNodeNumber() { 
-            int i = nodeIdentifier.indexOf('+');            
+        public String getNodeNumber() {
+            int i = nodeIdentifier.indexOf('+');
             if (i > 0) {
                 return nodeIdentifier.substring(0, i);
             } else {
@@ -392,7 +392,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         void setResponse(HttpServletResponse res) {
             this.res = res;
         }
-            
+
         HttpServletRequest getRequest() {
             return req;
         }
@@ -400,25 +400,25 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             return res;
         }
 
-        /**           
+        /**
          * @since MMBase-1.7.4
          */
-        public String getNodeIdentifier() { 
-            return nodeIdentifier; 
+        public String getNodeIdentifier() {
+            return nodeIdentifier;
         }
 
         public  String toString() {
             return sessionName == null ? nodeIdentifier : "session=" + sessionName + "+" + nodeIdentifier;
         }
-                   
-                   
+
+
     }
 
     /**
      * Just to test to damn regexp
      */
     public static void main(String[] argv) {
-       
+
         Matcher m = FILE_PATTERN.matcher(argv[0]);
         if (! m.matches()) {
             System.out.println("Didn't match");

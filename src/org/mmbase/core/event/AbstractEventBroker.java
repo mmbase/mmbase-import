@@ -44,7 +44,6 @@ public abstract class AbstractEventBroker {
      * events to the listener of this type. There are no fixed criteria for this.
      * 
      * @param listener
-     * @return
      */
     public abstract boolean canBrokerForListener(EventListener listener);
 
@@ -53,7 +52,6 @@ public abstract class AbstractEventBroker {
      * events of this type. There are no fixed criteria for this.
      * 
      * @param event
-     * @return
      */
     public abstract boolean canBrokerForEvent(Event event);
 

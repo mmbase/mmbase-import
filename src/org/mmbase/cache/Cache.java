@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.27 2005-09-23 13:59:26 pierre Exp $
+ * @version $Id: Cache.java,v 1.28 2005-10-02 17:04:44 michiel Exp $
  */
 abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
 
@@ -319,7 +319,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
      * Puts a cache in the caches repository. This function will be
      * called in the static of childs, therefore it is protected.
      *
-     * @param A cache.
+     * @param cache A cache.
      * @return The previous cache of the same type (stored under the same name)
      */
     protected static Cache putCache(Cache cache) {

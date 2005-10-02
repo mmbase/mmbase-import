@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.3 2005-08-04 14:14:27 pierre Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.4 2005-10-02 17:08:04 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
@@ -36,7 +36,6 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     /**
      * Create a data type object
      * @param name the name of the data type
-     * @param type the class of the data type's possible value
      */
     protected AbstractDescriptor(String name) {
         key = name;
@@ -47,7 +46,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     /**
      * Create a data type object
      * @param name the name of the data type
-     * @param type the class of the data type's possible value
+     * @param descriptor
      */
     protected AbstractDescriptor(String name, Descriptor descriptor) {
         key = name;
