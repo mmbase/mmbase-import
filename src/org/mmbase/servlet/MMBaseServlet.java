@@ -38,7 +38,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.41 2005-08-16 09:25:43 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.42 2005-10-02 17:10:54 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -92,7 +92,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     private long start = System.currentTimeMillis();
 
-    /** 
+    /**
      * Boolean indicating whether MMBase has been started. Used by {@link #checkInited}, set to true {@link #by setMMBase}.
      * @since MMBase-1.7
      */
@@ -100,11 +100,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     /**
      * If MMBase has not been started, a 503 is given, with this value for the 'Retry-After' header.
-     * {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4}
+     * See <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4">rfc 2616, section 10.5.4</a>.
      * Defaults to 60 seconds, can be configured in web.xml with the 'retry-after' propery on the servlets.
      * @since MMBase-1.7.2
      */
-    protected int retryAfter = 60;    
+    protected int retryAfter = 60;
 
 
     /**
@@ -126,7 +126,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     }
 
     /**
-     * Used in association map 
+     * Used in association map
      */
     private static class ServletEntry {
         ServletEntry(String n) {
@@ -164,12 +164,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             log.info("MMBase servlets are ready to receive requests, started in " +cal.get(Calendar.MINUTE)+" min "+cal.get(Calendar.SECOND)+" sec.");
         }
 
-        mmbase = mmb;        
+        mmbase = mmb;
         mmbaseInited = true;
     }
 
 
-    
+
     /**
      * Used in checkInited.
      */
@@ -214,7 +214,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (initialize) {
             // used to determine the accurate way to access a servlet
             try {
-               
+
                 MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
                 java.net.URL url;
@@ -231,7 +231,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     InputSource path = new InputSource(url.openStream());
                     log.service("Reading servlet mappings from " + url);
                     DocumentReader webDotXml = new DocumentReader(path, false);
-                    
+
                     for (Iterator mappingsIter = webDotXml.getChildElements("web-app", "servlet-mapping"); mappingsIter.hasNext();) {
                         Element mapping = (Element) mappingsIter.next();
                         Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
@@ -242,7 +242,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                             if (!(pattern.equals(""))) {
                                 List ls = (List) servletMappings.get(name);
                                 if (ls == null) {
-                                    ls = new ArrayList(); 
+                                    ls = new ArrayList();
                                     servletMappings.put(name, ls);
                                 }
                                 ls.add(pattern);
@@ -363,7 +363,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (m != null && (priority.intValue() < m.priority)) return;
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
-        log.service("Associating function '" + function + "' with servlet name " + servletName + 
+        log.service("Associating function '" + function + "' with servlet name " + servletName +
            (e == null ? ""  : " (previous assocation was with " + e.name +")")+
            (m == null ? ""  : " (previous assocation was with " + m.name +")"));
         associatedServlets.put(function, new ServletEntry(servletName, priority));
@@ -417,10 +417,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             int minutes = seconds / 60;
             seconds %=  60;
             pw.print("\nUptime: " + (days == 1 ? "1 day" : ( days > 1 ? "" + days + " days" : "")) +
-                     (hours > 0 || days > 0 ? " " + (hours == 1 ? "1 hour" : "" + hours + " hours") : "")  + 
-                     (minutes > 0 || hours > 0 ? " " + (minutes == 1 ? "1 minute" : "" + minutes + " minutes") : "") + 
+                     (hours > 0 || days > 0 ? " " + (hours == 1 ? "1 hour" : "" + hours + " hours") : "")  +
+                     (minutes > 0 || hours > 0 ? " " + (minutes == 1 ? "1 minute" : "" + minutes + " minutes") : "") +
                      (seconds > 0 || minutes > 0 ? " " + (seconds == 1 ? "1 second" : "" + seconds + " seconds") : ""));
-                     
+
         }
         pw.close();
     }
@@ -435,18 +435,18 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     protected  boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
         if (initException != null) {
-            throw initException;            
+            throw initException;
         }
-        
+
         if (! mmbaseInited) {
             res.setHeader("Retry-After", "" + retryAfter);
             res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
-        } 
-        return mmbaseInited;        
+        }
+        return mmbaseInited;
     }
-    
 
-        
+
+
 
     /**
      * The service method is extended with calls for the refCount
@@ -456,7 +456,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         if (!checkInited(res)) {
-            return;            
+            return;
         }
         incRefCount(req);
         try {
@@ -529,26 +529,26 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             String url = getRequestURL(req) + " " + req.getMethod();
             int curCount;
             synchronized (servletCountLock) {
-                servletCount++; 
-                curCount = servletCount; 
+                servletCount++;
+                curCount = servletCount;
                 printCount++;
                 ReferenceCountServlet s = (ReferenceCountServlet) runningServlets.get(this);
                 if (s==null) {
                     runningServlets.put(this, new ReferenceCountServlet(this, url, 0));
-                } else { 
-                    s.refCount++; 
-                    s.uris.add(url); 
+                } else {
+                    s.refCount++;
+                    s.uris.add(url);
                 }
             }// sync
 
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
-                    synchronized(servletCountLock) {        
+                    synchronized(servletCountLock) {
                         log.info("Running servlets: " + curCount);
                         for(Iterator e = runningServlets.values().iterator(); e.hasNext();)
                             log.info(e.next());
                     }
-                    
+
                 }// curCount>0
             }
         }
@@ -583,7 +583,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             }
         }
    }
-    
+
     /**
      * This class maintains current state information for a running servlet.
      * It contains a reference count, as well as a list of URI's being handled by the servlet.
