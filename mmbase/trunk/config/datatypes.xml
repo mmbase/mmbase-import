@@ -17,7 +17,6 @@
     </specialization>
 
     <specialization id="html">
-      <pattern value=".*" />
       <setprocessor type="string">
         <class name="org.mmbase.bridge.util.fields.xml.HtmlSetString" />
       </setprocessor>
@@ -43,6 +42,7 @@
     <class name="org.mmbase.datatypes.StringDataType" />
 
     <pattern value="(?s)[^\n\r]*" />
+
     <specialization id="lastmodifier">
       <unique value="false" />
       <setprocessor>
@@ -53,11 +53,13 @@
         <class name="org.mmbase.bridge.util.fields.LastModifier" />
       </commitprocessor>
     </specialization>
+
     <specialization id="md5password">
       <setprocessor>
         <class name="org.mmbase.util.transformers.MD5" />
       </setprocessor>
     </specialization>
+
     <specialization id="lowercaseuppercase">
       <!-- Silly example (also used to test)
            Strings are stored all lowercase, but showed all uppercase
@@ -69,11 +71,13 @@
         <class name="org.mmbase.util.transformers.UpperCaser" />
       </getprocessor>
     </specialization>
+
     <specialization id="index">
       <getprocessor>
         <class name="org.mmbase.bridge.util.fields.GetIndex" />
       </getprocessor>
     </specialization>
+
     <specialization id="dutch-zipcode">
       <pattern value="[0-9]{4}\s[A-Z]{2}" />
     </specialization>
@@ -84,6 +88,29 @@
 
     <specialization id="owner">
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
+    </specialization>
+
+
+    <specialization id="whitespacereplacer">
+      <setprocessor type="string">
+        <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+          <param name="mode">entire</param>
+          <param name="patterns">
+            <param name="\s+"> </param>
+          </param>
+        </class>
+      </setprocessor>
+    </specialization>
+
+    <specialization id="whitespacecollapser">
+      <setprocessor type="string">
+        <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+          <param name="mode">entire</param>
+          <param name="patterns">
+            <param name="\s+"></param>
+          </param>
+        </class>
+      </setprocessor>
     </specialization>
 
   </datatype>
@@ -169,6 +196,7 @@
 
   <datatype id="integer">
     <class name="org.mmbase.datatypes.IntegerDataType" />
+
     <specialization id="dirs">
       <enumeration resource="org.mmbase.bridge.jsp.taglib.typehandler.resources.dirs" />
     </specialization>
