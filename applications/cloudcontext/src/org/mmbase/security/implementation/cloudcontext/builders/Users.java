@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.38 2005-09-26 11:36:47 michiel Exp $
+ * @version $Id: Users.java,v 1.39 2005-10-02 16:45:09 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -225,7 +225,7 @@ public class Users extends MMObjectBuilder {
             return null;
         }
         String encodedPassword = encode ? encode(password) : password;
-        
+
         if (encodedPassword.equals(user.getStringValue(FIELD_PASSWORD))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
@@ -241,13 +241,13 @@ public class Users extends MMObjectBuilder {
                     throw new SecurityException("account for '" + userName + "' is blocked");
                 }
             }
-            if (userRank.getInt()<Rank.ADMIN_INT && getField(FIELD_VALID_FROM) != null) {
+            if (userRank.getInt() < Rank.ADMIN_INT && getField(FIELD_VALID_FROM) != null) {
                 long validFrom = user.getLongValue(FIELD_VALID_FROM);
                 if (validFrom != -1 && validFrom * 1000 > System.currentTimeMillis() ) {
                     throw new SecurityException("account for '" + userName + "' not yet active");
                 }
             }
-            if (userRank.getInt()<Rank.ADMIN_INT && getField(FIELD_VALID_TO) != null) {
+            if (userRank.getInt() < Rank.ADMIN_INT && getField(FIELD_VALID_TO) != null) {
                 long validTo = user.getLongValue(FIELD_VALID_TO);
                 if (validTo != -1 && validTo * 1000 < System.currentTimeMillis() ) {
                     throw new SecurityException("account for '" + userName + "' is expired");
@@ -302,6 +302,50 @@ public class Users extends MMObjectBuilder {
             userCache.put(userName, user);
         }
         return user;
+    }
+
+    /**
+     * @param rank Rank to be searched. Never <code>null</code>.
+     * @param userName Username to match or <code>null</code>
+     * @since MMBase-1.8
+     */
+    public MMObjectNode getUserByRank(String rank, String userName) {
+        BasicSearchQuery query = new BasicSearchQuery();
+        MMObjectBuilder ranks = mmb.getBuilder("mmbaseranks");
+        BasicStep step = query.addStep(ranks);
+        StepField sf = query.addField(step, ranks.getField("name"));
+        Constraint cons = new BasicFieldValueConstraint(sf, rank);
+        query.addField(step, ranks.getField("number"));
+        BasicRelationStep relStep = query.addRelationStep(mmb.getInsRel(), this);
+        query.addField(relStep.getNext(), this.getField("number"));
+        relStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
+        relStep.setRole(new Integer(mmb.getRelDef().getNumberByName("rank")));
+        if (userName != null) {
+            StepField sf2 = query.addField(relStep.getNext(), this.getField("username"));
+            Constraint cons2 = new BasicFieldValueConstraint(sf2, userName);
+            BasicCompositeConstraint composite = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            composite.addChild(cons);
+            composite.addChild(cons2);
+            cons = composite;
+        }
+
+        query.setConstraint(cons);
+        // sometimes, I quite hate the 'core version' query-framework.
+
+        try {
+            List result = mmb.getClusterBuilder().getClusterNodes(query);
+            if (log.isDebugEnabled()) {
+                log.debug("Executing " + query + " --> " + result);
+            }
+            if (result.size() > 0) {
+                return ((MMObjectNode) result.get(0)).getNodeValue("mmbaseusers");
+            } else {
+                return null;
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe);
+            return null;
+        }
     }
 
     /**
@@ -404,7 +448,7 @@ public class Users extends MMObjectBuilder {
     public boolean check() {
         return true;
     }
-    
+
    protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (function.equals("info")) {
             List empty = new ArrayList();

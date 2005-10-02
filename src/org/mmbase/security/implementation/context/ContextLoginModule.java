@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.12 2005-03-01 14:11:13 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.13 2005-10-02 16:43:55 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -92,26 +92,46 @@ public abstract class ContextLoginModule {
         return rank;
     }
 
-    protected String getModuleValue(String username) throws SecurityException {
-        return getModuleValue(username, name);
+    /**
+     * Gets accounts for this authentication module
+     * @since MMBase-1.8
+     */
+    protected Element getAccount(String userName) throws SecurityException {
+        return getAccount(userName, name, null);
+    }
+    /**
+     * @deprecated Use {@link #getAccountValue}
+     */
+    protected String getModuleValue(String userName) throws SecurityException {
+        Element node = getAccount(userName, name, null);
+        if (node == null) return null;
+        // now we have to retrieve the value of the node.
+        return org.mmbase.util.xml.DocumentReader.getNodeTextValue(node);
     }
 
     /**
+     * Search an account for a given user name and identify type (the 'module'). Returns the value of the element
+     * (which is often the empty string or the password)
      * @since MMBase-1.8
      */
-    protected String getModuleValue(String username, String identifyType) throws SecurityException {
+    protected Element getAccount(String userName, String identifyType, String rank) throws SecurityException {
         String xpath;
+        StringBuffer userCons = new StringBuffer(userName != null ? "@name='" + userName + "'" : "");
+        if (rank != null) {
+            if (userCons.length() > 0) userCons.append(" and ");
+            userCons.append("@rank='" + rank + "'");
+        }
         if (identifyType != null) {
-            xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify[@type='" + identifyType + "']";
+            xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
         } else {
-            xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify";
+            xpath = "/contextconfig/accounts/user[" + userCons + "]/identify";
         }
         if (log.isDebugEnabled()) {
             log.debug("going to execute the query:" + xpath);
         }
-        Node found;
+        Element found;
         try {
-            found = XPathAPI.selectSingleNode(document, xpath);
+            found = (Element) XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
             String msg = "error executing query: '"+xpath+"'";
             log.error(msg);
@@ -119,21 +139,9 @@ public abstract class ContextLoginModule {
             throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
-            log.warn("user :" + username + " was not found for identify type: " + identifyType);
+            log.warn("user :" + userName + " was not found for identify type: " + identifyType);
             return null;
         }
-        // now we have to retrieve the value of the node.
-        NodeList nl = found.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node n = nl.item(i);
-            if (n.getNodeType() == Node.TEXT_NODE) {
-                String value = n.getNodeValue();
-                if (log.isDebugEnabled()) {
-                    log.debug("retrieved the value for user:" + username + " in module: " + name + " value: " + value);
-                }
-                return value;
-            }
-        }
-        return null;
+        return (Element) found.getParentNode();
     }
 }
