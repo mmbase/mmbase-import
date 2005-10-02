@@ -46,7 +46,7 @@ public class Transformers {
             log.error("Class " + name + " specified for " + errorId + " could not be found");
             return null;
         }
-        
+
         if (! Transformer.class.isAssignableFrom(clazz) &&
             ! ParameterizedTransformerFactory.class.isAssignableFrom(clazz)) {
             log.error("The class " + clazz + " specified for "  + errorId + " is not a Transformer");
@@ -69,7 +69,7 @@ public class Transformers {
             }
             config = "";
             t = pt.createTransformer(params);
-        }        
+        }
         CharTransformer ct;
 
         if (t instanceof CharTransformer) {
@@ -78,7 +78,7 @@ public class Transformers {
             ct = new ByteCharTransformer((ByteToCharTransformer) t);
         } else {
             log.error("The class " + clazz + " specified for "  + errorId + " is not a CharTransformer or a ByteToCharTransformer");
-            return null;            
+            return null;
         }
 
         if (config == null) config = "";
@@ -96,7 +96,7 @@ public class Transformers {
                     } catch (Exception nsfe) {
                         log.error("Type " + errorId + " is not well configured : " + nfe.toString() + " and " + nsfe.toString());
                         return null;
-                    }                
+                    }
                 }
                 ((ConfigurableTransformer) ct).configure(conf);
             }
@@ -135,7 +135,7 @@ public class Transformers {
         } catch (Exception ex) {
             log.error("Error instantiating a " + clazz + ": " + ex.toString());
             return null;
-        }        
+        }
 
         return fact;
     }

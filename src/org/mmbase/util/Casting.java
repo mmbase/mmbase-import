@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.66 2005-09-15 15:19:50 michiel Exp $
+ * @version $Id: Casting.java,v 1.67 2005-10-02 16:42:14 michiel Exp $
  */
 
 import java.util.*;
@@ -801,8 +801,10 @@ public class Casting {
                 try {
                     date =  DynamicDate.getInstance("" + d);
                 } catch (org.mmbase.util.dateparser.ParseException pe) {
-                    log.error(pe);
+                    log.error("Parser exception in " + d, pe);
                     return new Date(-1);
+                } catch (Error per) {
+                    throw new Error("Parser error in " + d, per);
                 }
             }
         }

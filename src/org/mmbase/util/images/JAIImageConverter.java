@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
+ * @version $Id: JAIImageConverter.java,v 1.3 2005-10-02 16:42:15 michiel Exp $
  */
 public class JAIImageConverter implements ImageConverter {
 
@@ -238,7 +238,7 @@ public class JAIImageConverter implements ImageConverter {
     /**
      * Performs the 's' or 'geometry' operation:
      * Resize an image using specified width and height.
-     * @param the image to transform
+     * @param inImg the image to transform
      * @param width new width of the image
      * @param height new height of the image
      * @param maintainAspectRation if true, width and height are maximums: aspect ratio is maintained
@@ -272,7 +272,7 @@ public class JAIImageConverter implements ImageConverter {
     /**
      * Performs the 'dia' or 'negate' operation.
      * Replace every pixel with its complementary color (white becomes black, yellow becomes blue, etc.)
-     * @param the image to transform
+     * @param inImg the image to transform
      * @return the transformed image
      */
     protected static PlanarImage negate(PlanarImage inImg) {
@@ -286,7 +286,7 @@ public class JAIImageConverter implements ImageConverter {
 
     /**
      * Performs the 'rotate' operation: rotates an image.
-     * @param the image to transform
+     * @param inImg the image to transform
      * @param x xposition of the rotation
      * @param y yposition of the rotation
      * @param a angle of the rotation
@@ -307,7 +307,7 @@ public class JAIImageConverter implements ImageConverter {
     /**
      * Performs the 'border' operation:
      * Adds a border to an image using the specified horizontal and vertical padding.
-     * @param the image to transform
+     * @param inImg the image to transform
      * @param xpadding the horizontal padding
      * @param ypadding the vertical padding
      * @return the transformed image
@@ -329,7 +329,7 @@ public class JAIImageConverter implements ImageConverter {
     /**
      * Performs the 'flop' or 'flipx' operation:
      * Flip an image across an imaginary horizontal line that runs through the center of the image.
-     * @param the image to transform
+     * @param inImg the image to transform
      * @return the transformed image
      */
     protected static PlanarImage flop(PlanarImage inImg) {
@@ -343,7 +343,7 @@ public class JAIImageConverter implements ImageConverter {
     /**
      * Performs the 'flip' or 'flipy' operation:
      * Flip an image across an imaginary vertical line that runs through the center of the image.
-     * @param the image to transform
+     * @param inImg the image to transform
      * @return the transformed image
      */
     protected static PlanarImage flip(PlanarImage inImg) {

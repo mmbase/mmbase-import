@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: DocumentWriter.java,v 1.9 2005-10-02 16:42:15 michiel Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -63,8 +63,8 @@ abstract public class DocumentWriter extends DocumentReader {
      * It is actually filled with a call to {@link #generateDocument()}, which is in turn called when
      * the document is first accessed through {@link #getDocument()}.
      * @param qualifiedName the qualified name of the document's root element
-     * @param publicID the PUBLIC id of the document type
-     * @param systemID the SYSTEm id of the document type
+     * @param publicId the PUBLIC id of the document type
+     * @param systemId the SYSTEm id of the document type
      */
     public DocumentWriter(String qualifiedName, String publicId, String systemId) throws DOMException {
         DOMImplementation domImpl=DocumentReader.getDocumentBuilder().getDOMImplementation();

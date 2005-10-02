@@ -49,7 +49,7 @@ package org.mmbase.util;
  * @see     String
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.7 2004-09-30 17:19:50 pierre Exp $
+ * @version $Id: StringObject.java,v 1.8 2005-10-02 16:42:14 michiel Exp $
  */
 
 public final class StringObject {
@@ -594,14 +594,11 @@ public final class StringObject {
         }
         return -1;
     }
+    
 
+    /**
+     */
     public byte[] getBytes() {
-        int j = 0;
-        int i = 0;
-        byte[] dst=new byte[count];
-        while (j < count) {
-            dst[j++] = (byte)value[i++];
-        }
-        return dst;
+        return toString().getBytes();
     }
 }
