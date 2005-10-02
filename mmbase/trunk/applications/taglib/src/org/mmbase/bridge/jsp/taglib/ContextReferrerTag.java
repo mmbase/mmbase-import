@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.73 2005-08-18 14:40:00 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.74 2005-10-02 09:06:22 michiel Exp $
  * @see ContextTag
  */
 
@@ -357,7 +357,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * extended classes.
      *
      * @param clazz     the class of the Tag to find.
-     * @param id        the id of the Tag to find.
+     * @param tagId     the id of the Tag to find.
      * @param exception if it has to throw an exception if the parent can not be found (default: yes).
      * @since MMBase-1.7
      */
