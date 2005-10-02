@@ -17,28 +17,24 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * The datatype for String fields. Strings can be constrained by a regular expression, and have a
+ * property 'password' which indicates that the contents should not be shown.
  *
  * @author Pierre van Rooden
- * @version $Id: StringDataType.java,v 1.14 2005-09-15 15:05:02 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: StringDataType.java,v 1.15 2005-10-02 16:55:03 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends BigDataType {
 
-    public static final Integer WHITESPACE_PRESERVE = new Integer(0);
-    public static final Integer WHITESPACE_REPLACE = new Integer(1);
-    public static final Integer WHITESPACE_COLLAPSE = new Integer(2);
-
-    public static final String CONSTRAINT_PATTERN = "pattern";
+    public static final String   CONSTRAINT_PATTERN = "pattern";
     public static final Pattern CONSTRAINT_PATTERN_DEFAULT = Pattern.compile(".*");
-
-    public static final String CONSTRAINT_WHITESPACE = "whiteSpace";
-    public static final Integer CONSTRAINT_WHITESPACE_DEFAULT = WHITESPACE_PRESERVE;
 
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
     protected DataType.ValueConstraint patternConstraint;
-    protected DataType.ValueConstraint whiteSpaceConstraint;
+
+    private boolean isPassword = false;
 
     /**
      * Constructor for string data type.
@@ -51,7 +47,6 @@ public class StringDataType extends BigDataType {
     public void erase() {
         super.erase();
         patternConstraint = null;
-        whiteSpaceConstraint = null;
     }
 
     public void inherit(DataType origin) {
@@ -86,44 +81,17 @@ public class StringDataType extends BigDataType {
     /**
      * Sets the regular expression pattern used to validate values for this datatype.
      * @param pattern the pattern as a <code>Pattern</code>, or <code>null</code> if no pattern should be applied.
-     * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MMBase)
      */
     public DataType.ValueConstraint setPattern(Pattern value) {
         return getPatternConstraint().setValue(value);
     }
 
-    /**
-     * Returns the whitespace value.
-     * @return one of the constants {@link #WHITESPACE_PRESERVE}, {@link #WHITESPACE_REPLACE},  or {@link #WHITESPACE_COLLAPSE}
-     */
-    public Integer getWhiteSpace() {
-        if (whiteSpaceConstraint == null) {
-            return CONSTRAINT_WHITESPACE_DEFAULT;
-        } else {
-            return (Integer) whiteSpaceConstraint.getValue();
-        }
+    public boolean isPassword() {
+        return isPassword;
     }
-
-    /**
-     * Returns the 'whitespace' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Constraint}
-     */
-    public DataType.ValueConstraint getWhiteSpaceConstraint() {
-        if (whiteSpaceConstraint == null) whiteSpaceConstraint = new ValueConstraint(CONSTRAINT_WHITESPACE, CONSTRAINT_WHITESPACE_DEFAULT);
-        return whiteSpaceConstraint;
-    }
-
-    /**
-     * Sets the whitspeace value used to validate values for this datatype.
-     * @param whitespace one of the constants {@link #WHITESPACE_PRESERVE}, {@link #WHITESPACE_REPLACE}, or {@link #WHITESPACE_COLLAPSE}
-     * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MBase)
-     */
-    public DataType.ValueConstraint setWhiteSpace(Integer value) {
-        if (WHITESPACE_COLLAPSE.equals(value) || WHITESPACE_PRESERVE.equals(value) || WHITESPACE_REPLACE.equals(value)) {
-            return getWhiteSpaceConstraint().setValue(value);
-        } else {
-            throw new IllegalArgumentException("value should be either WHITESPACE_PRESERVE, WHITESPACE_REPLACE or WHITESPACE_COLLAPSE");
-        }
+    public void setPassword(boolean pw) {
+        isPassword = pw;
     }
 
     public Collection validate(Object value, Node node, Field field) {
@@ -140,31 +108,10 @@ public class StringDataType extends BigDataType {
         return errors;
     }
 
-    public Object process(int action, Node node, Field field, Object value, int processingType) {
-        value = super.process(action, node, field, value, processingType);
-        if (value instanceof String && action == PROCESS_SET) {
-            Integer whiteSpace = getWhiteSpace();
-            if (whiteSpace.equals(WHITESPACE_REPLACE)) {
-                // replace all whitespace
-                value = ((String)value).replaceAll("\\s"," ");
-            } else if (whiteSpace.equals(WHITESPACE_COLLAPSE)) {
-                // collapse all whitespace
-                value = ((String)value).replaceAll("\\s+"," ").trim();
-            }
-        }
-        return value;
-    }
-
     public String toString() {
         StringBuffer buf = new StringBuffer(super.toString());
         if (getPattern() != null) {
             buf.append(" pattern:").append(getPattern()).append(" ");
-        }
-        Integer whiteSpace = getWhiteSpace();
-        if (whiteSpace.equals(WHITESPACE_REPLACE)) {
-            buf.append("whitespace: replace ");
-        } else if (whiteSpace.equals(WHITESPACE_COLLAPSE)) {
-            buf.append("whitespace: collapse ");
         }
         return buf.toString();
     }
