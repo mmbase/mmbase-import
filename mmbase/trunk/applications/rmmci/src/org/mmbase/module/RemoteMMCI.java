@@ -16,6 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
 import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.remote.RemoteCloudContext;
 import org.mmbase.bridge.remote.rmi.RemoteCloudContext_Rmi;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.8 2005-06-22 15:52:38 michiel Exp $
+ * @version $Id: RemoteMMCI.java,v 1.9 2005-10-02 16:59:53 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -75,14 +76,14 @@ public class RemoteMMCI extends ProcessorModule {
         if (host == null || host.equals("")) {
             try {
                 // load MMBase and make sure it is started first
-                ProcessorModule mmbase = (ProcessorModule)getModule("MMBASEROOT", true);
+                MMBase mmbase  = MMBase.getMMBase();
                 host = mmbase.getInitParameter("host");
                 log.debug("using host FROM MMBASEROOT " + host);
                 java.net.InetAddress.getByName(host);
                 System.setProperty("java.rmi.server.hostname", host);
             } catch (java.net.UnknownHostException uhn) {
                 log.warn("property host in mmbaseroot.xml is not set correctly.");
-                log.warn("Chances are big the Remote MMCI will nog work");
+                log.warn("Chances are big the Remote MMCI will not work");
             }
         } else {
             log.debug("RemoteMMCI is using the RMIRegistryServer{" + host + "} as hostname to create/connect to the RMI registry");
@@ -90,7 +91,12 @@ public class RemoteMMCI extends ProcessorModule {
 
         String bindNameParam = getInitParameter("bindname");
         if (bindNameParam != null) {
-            bindName = bindNameParam;
+            if (bindNameParam.equals("$MACHINENAME")) {
+                // use machine name
+                bindName = MMBase.getMMBase().getMachineName();
+            } else {
+                bindName = bindNameParam;
+            }
         } else {
             log.warn("missing bindname init param, using (default)=(" + bindName + ")");
         }
@@ -127,7 +133,7 @@ public class RemoteMMCI extends ProcessorModule {
             //interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
             RemoteCloudContext remoteCloudContext = new RemoteCloudContext_Rmi(LocalContext.getCloudContext());
 
-            log.debug("bind RemoteCloudContext in the registry using (tcp port, name)=(" + registryPort + ", " + bindName + ")");
+            log.info("bind RemoteCloudContext in the registry using (tcp port, name)=(" + registryPort + ", " + bindName + ")");
 
             //bind it to the registry.
             reg.rebind(bindName, remoteCloudContext);
