@@ -12,6 +12,8 @@ package org.mmbase.security.classsecurity;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.mmbase.security.SecurityException;
 import org.mmbase.security.MMBaseCopConfig;
@@ -26,9 +28,9 @@ import org.xml.sax.InputSource;
  * Provides the static utility methods to authenticate by class. Default a file
  * security/&lt;classauthentication.xml&gt; is used for this. If using the wrapper authentication,
  * its configuration file, contains this configuration.
- * 
+ *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.7 2005-05-23 11:00:39 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.8 2005-10-02 16:35:56 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -37,15 +39,15 @@ public class ClassAuthentication {
 
     public static final String PUBLIC_ID_CLASSSECURITY_1_0 = "-//MMBase//DTD classsecurity config 1.0//EN";
     public static final String DTD_CLASSSECURITY_1_0       = "classsecurity_1_0.dtd";
-    
-    
+
+
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
     private static List authenticatedClasses = null;
 
     static ResourceWatcher watcher = null;
-    
+
     /**
      * Stop watchin the config file, if there is watched one. This is needed when security
      * configuration switched to ClassAuthenticationWrapper (which will not happen very often).
@@ -56,7 +58,7 @@ public class ClassAuthentication {
             watcher.exit();
         }
     }
-    
+
     private ClassAuthentication() {
         //Static Utility class
     }
@@ -65,46 +67,50 @@ public class ClassAuthentication {
      * Reads the configuration file and instantiates and loads the wrapped Authentication.
      */
     protected static void load(String configFile) throws SecurityException {
-        try {
-            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configFile);
-            Document document = DocumentReader.getDocumentBuilder(true, // validate aggresively, because no further error-handling will be done
-                        new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
-                        new XMLEntityResolver(true, ClassAuthentication.class) // validate
-               ).parse(in);
-                     
-            authenticatedClasses = new ArrayList();
-            NodeList authenticates = document.getElementsByTagName("authenticate");
+        List resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
+        authenticatedClasses = new ArrayList();
+        ListIterator it = resourceList.listIterator();
+        while (it.hasNext()) it.next();
+        while (it.hasPrevious()) {
+            try {
+                URL u = (URL) it.previous();
+                URLConnection con = u.openConnection();
+                if (! con.getDoInput()) continue;
+                log.service("Reading " + u);
+                InputSource in = new InputSource(con.getInputStream());
+                Document document = DocumentReader.getDocumentBuilder(true, // validate aggresively, because no further error-handling will be done
+                                                                      new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
+                                                                      new XMLEntityResolver(true, ClassAuthentication.class) // validate
+                                                                      ).parse(in);
 
-            
-            for (int i = 0; i < authenticates.getLength(); i ++) {
-                Node node = authenticates.item(i);
-                String clazz    = node.getAttributes().getNamedItem("class").getNodeValue();
-                String method   = node.getAttributes().getNamedItem("method").getNodeValue();
+                NodeList authenticates = document.getElementsByTagName("authenticate");
 
-                
-                Node property   = node.getFirstChild();
-                Map map = new HashMap();
-                while (property != null) {
-                    if (property instanceof Element && property.getNodeName().equals("property")) {
-                        String name     = property.getAttributes().getNamedItem("name").getNodeValue();
-                        String value    = property.getAttributes().getNamedItem("value").getNodeValue();
-                        map.put(name, value);
+                for (int i = 0; i < authenticates.getLength(); i ++) {
+                    Node node = authenticates.item(i);
+                    String clazz    = node.getAttributes().getNamedItem("class").getNodeValue();
+                    String method   = node.getAttributes().getNamedItem("method").getNodeValue();
+                    Node property   = node.getFirstChild();
+                    Map map = new HashMap();
+                    while (property != null) {
+                        if (property instanceof Element && property.getNodeName().equals("property")) {
+                            String name     = property.getAttributes().getNamedItem("name").getNodeValue();
+                            String value    = property.getAttributes().getNamedItem("value").getNodeValue();
+                            map.put(name, value);
+                        }
+                        property = property.getNextSibling();
                     }
-                    property = property.getNextSibling();
+                    authenticatedClasses.add(new Login(Pattern.compile(clazz), method, map));
                 }
-                authenticatedClasses.add(new Login(Pattern.compile(clazz), method, map));
-                
+            } catch (Exception e) {
+                log.error(e);
             }
-
-        } catch (Exception fnfe) {
-            throw new SecurityException(fnfe);
         }
 
 
 
     }
 
-    
+
     /**
      * Checks wether the (indirectly) calling class is authenticated by the
      * ClassAuthenticationWrapper (using a stack trace). This method can be called from an
@@ -114,24 +120,15 @@ public class ClassAuthentication {
      *
      * @param application Only checks this 'authentication application'. Can be <code>null</code> to
      * check for every application.
-     * @returns A Login object if yes, <code>null</code> if not.
+     * @return A Login object if yes, <code>null</code> if not.
      */
     public static Login classCheck(String application) {
         if (authenticatedClasses == null) {
             String configFile = "classauthentication.xml";
-            try {
-                InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configFile);
-                if (in == null) {
-                    return null;
-                }
-            } catch (IOException ioe) {
-                log.info(ioe);
-                return null;
-            }
             load(configFile);
             watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
-                public void onChange(String file) {
-                    load(file);
+                public void onChange(String resource) {
+                    load(resource);
                 }
             };
             watcher.add(configFile);
@@ -140,7 +137,7 @@ public class ClassAuthentication {
         }
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();
-        
+
         Iterator i = authenticatedClasses.iterator();
 
         while(i.hasNext()) {
