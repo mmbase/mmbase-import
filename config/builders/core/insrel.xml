@@ -117,7 +117,6 @@
         <guiname xml:lang="nl">Richting</guiname>
         <guiname xml:lang="eo">Direkto</guiname>
         <guiname xml:lang="it">Direzione</guiname>
-        <guitype>dirs</guitype>
       </gui>
       <editor>
         <positions>
@@ -126,6 +125,7 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>dir</name>
         <type state="persistent">INTEGER</type>
