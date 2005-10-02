@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.29 2005-08-09 14:17:29 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.30 2005-10-02 16:18:15 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -363,17 +363,14 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      * @throws IllegalStateException when there is no previous step.
      */
-    public BasicRelationStep addRelationStep(
-    InsRel builder, MMObjectBuilder nextBuilder) {
+    public BasicRelationStep addRelationStep(InsRel builder, MMObjectBuilder nextBuilder) {
         int nrOfSteps = steps.size();
         if (nrOfSteps == 0) {
-           throw new IllegalStateException(
-            "No previous step.");
+           throw new IllegalStateException("No previous step.");
         }
         BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
         BasicStep next = new BasicStep(nextBuilder);
-        BasicRelationStep relationStep
-        = new BasicRelationStep(builder, previous, next);
+        BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
         steps.add(relationStep);
         steps.add(next);
         return relationStep;
@@ -430,21 +427,21 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * Adds new aggregated field to this SearchQuery.
      *
      * @param step The associated step.
-     * @param fieldDefs The associated fieldDefs.
-     * @param aggregatinType The aggregation type.
+     * @param field The associated Field.
+     * @param aggregationType The aggregation type.
      * @return The new field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      * @throws UnsupportedOperationException when called
      *         on an non-aggregating query.
      */
-    public BasicAggregatedField addAggregatedField(Step step, CoreField fielDefs, int aggregationType) {
+    public BasicAggregatedField addAggregatedField(Step step, CoreField field, int aggregationType) {
         if (!aggregating) {
             throw new UnsupportedOperationException(
             "Adding aggregated field to non-aggregating query.");
         }
-        BasicAggregatedField field = new BasicAggregatedField(step, fielDefs, aggregationType);
-        fields.add(field);
-        return field;
+        BasicAggregatedField stepField = new BasicAggregatedField(step, field, aggregationType);
+        fields.add(stepField);
+        return stepField;
     }
 
     /**
