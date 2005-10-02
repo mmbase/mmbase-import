@@ -25,8 +25,12 @@ import org.mmbase.util.transformers.*;
 /**
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
  *
+ * XXX MM: This class does the actual datatype reading, so more correctly this one would be called
+ * DatatypeReader?
+ *
  * @author Pierre van Rooden
- * @version $Id: DataTypeDefinition.java,v 1.20 2005-09-15 15:05:02 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: DataTypeDefinition.java,v 1.21 2005-10-02 16:53:10 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -44,7 +48,7 @@ public class DataTypeDefinition {
     private DataType baseDataType = null;
 
     /**
-     * The data type collector that contains the data datatype which this definition.
+     * The data type collector that contains the data datatype with this definition.
      */
     protected final DataTypeCollector collector;
 
@@ -59,7 +63,7 @@ public class DataTypeDefinition {
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
      * default namespace
      */
-    protected boolean hasAttribute(Element element, String localName) {
+    protected static boolean hasAttribute(Element element, String localName) {
         return DocumentReader.hasAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
     }
 
@@ -67,15 +71,8 @@ public class DataTypeDefinition {
      * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
      * default namespace
      */
-    protected String getAttribute(Element element, String localName) {
+    protected static String getAttribute(Element element, String localName) {
         return DocumentReader.getAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
-    }
-
-    /**
-     * Returns the textual value (content) of a certain element
-     */
-    protected String getValue(Element element) {
-        return DocumentReader.getNodeTextValue(element);
     }
 
     private static int anonymousSequence = 1;
@@ -95,9 +92,9 @@ public class DataTypeDefinition {
      * If id was empty string, then this can still be equal to baseDataType, and nothing changed. Never <code>null</code>
      * @param   dataTypeElement piece of XML used to configure. Only the 'class' subelements are explored in this method.
      * @param   id              the new id or empty string (which means that is still identical to baseDataType)
-     * 
+     *
      */
-    private  void getImplementation(Element dataTypeElement, String id) { 
+    private  void getImplementation(Element dataTypeElement, String id) {
         DataType dt = id.equals("") ? null : collector.getDataType(id);
         if (dt != null) {
             collector.rewrite(dt);
@@ -111,9 +108,9 @@ public class DataTypeDefinition {
                     if (dt != null) {
                         log.debug("Already defined " + id);
                         if (childElement.getAttribute("name").equals(dt.getClass().getName())) {
-                            log.error("Cannot change class!");
+                            log.error("Cannot change class of '" + id + "'  " + dt + " (to " + childElement.getAttribute("name") + ")");
                         }
-                    } else {                        
+                    } else {
                         try {
                             String className = childElement.getAttribute("name");
                             Class claz = Class.forName(className);
@@ -130,7 +127,7 @@ public class DataTypeDefinition {
                     break;
                 } else {
                     continue;
-                }              
+                }
             }
         }
         if (dt == null) {
@@ -147,7 +144,7 @@ public class DataTypeDefinition {
         } else {
             dataType = dt;
         }
-        
+
     }
 
     /**
@@ -169,10 +166,10 @@ public class DataTypeDefinition {
         if (! base.equals("")) { // also specified, let's see if it is correct
 
             DataType definedBaseDataType = collector.getDataType(base, true);
-            if (requestBaseDataType != null) { 
+            if (requestBaseDataType != null) {
                 if (requestBaseDataType != definedBaseDataType) {
                     log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + baseDataType + "'");
-                }                
+                }
             }
             if (definedBaseDataType == null) {
                 log.warn("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype.");
@@ -180,7 +177,7 @@ public class DataTypeDefinition {
                 requestBaseDataType = definedBaseDataType;
             }
         }
-        
+
         baseDataType = requestBaseDataType;
 
         getImplementation(dataTypeElement, id);
@@ -193,7 +190,7 @@ public class DataTypeDefinition {
     /**
      * This utility takes care of reading the xml:lang attribute from an element
      */
-    protected Locale getLocale(Element element) {
+    protected static Locale getLocale(Element element) {
         Locale loc = null;
         String xmlLang = getAttribute(element, "xml:lang");
         if (! xmlLang.equals("")) {
@@ -208,14 +205,14 @@ public class DataTypeDefinition {
     }
 
 
-    protected LocalizedString getLocalizedDescription(String tagName, Element element, LocalizedString descriptions) {
+    protected static LocalizedString getLocalizedDescription(String tagName, Element element, LocalizedString descriptions) {
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
                 if (tagName.equals(childElement.getLocalName())) {
                     Locale locale = getLocale(childElement);
-                    String description = getValue(childElement);
+                    String description = DocumentReader.getNodeTextValue(childElement);
                     if (descriptions ==  null) {
                         descriptions = new LocalizedString(description);
                     }
@@ -318,6 +315,30 @@ public class DataTypeDefinition {
         return processor;
     }
 
+
+    private Object getParameterValue(Element param) {
+        String stringValue = DocumentReader.getNodeTextValue(param);
+        NodeList childNodes = param.getChildNodes();
+        Collection subParams = null;
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if (! (child instanceof Element)) continue;
+            if (child.getLocalName().equals("param")) {
+                Element subParam = (Element) child;
+                if (subParams == null) subParams = new ArrayList();
+                String name = subParam.getAttribute("name");
+                subParams.add(new Entry(name, getParameterValue(subParam)));
+            }
+        }
+        if (subParams != null) {
+            if (! stringValue.equals("")) {
+                log.warn("" + param + " has both a text value and sub parameters, ignoring the text value '" + stringValue + "'");
+            }
+            return subParams;
+        } else {
+            return stringValue;
+        }
+    }
     private void fillParameters(Element paramContainer, Parameters params) {
         NodeList childNodes = paramContainer.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -325,11 +346,11 @@ public class DataTypeDefinition {
                 Element paramElement = (Element) childNodes.item(i);
                 if ("param".equals(paramElement.getLocalName())) {
                     String name = paramElement.getAttribute("name");
-                    String value = getValue(paramElement);
-                    params.set(name, value);                    
+                    Object value = getParameterValue(paramElement);
+                    params.set(name, value);
                 }
             }
-        }     
+        }
     }
 
     private Processor createProcessor(Element processorElement) {
@@ -342,7 +363,7 @@ public class DataTypeDefinition {
                     String clazString = classElement.getAttribute("name");
                     if (clazString.equals("")) {
                         log.warn("No 'name' attribute on " + org.mmbase.util.xml.XMLWriter.write(classElement, true) + ", trying body");
-                        clazString = getValue(classElement);
+                        clazString = DocumentReader.getNodeTextValue(classElement);
                     }
                     try {
                         Class claz = Class.forName(clazString);
@@ -503,17 +524,6 @@ public class DataTypeDefinition {
         if ("pattern".equals(localName)) {
             String value = getAttribute(conditionElement, "value");
             setConstraintData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
-        } else if ("whiteSpace".equals(localName)) {
-            String value = getAttribute(conditionElement, "value");
-            Integer whiteSpaceValue = null;
-            if (value == null || value.equals("preserve")) {
-                whiteSpaceValue = StringDataType.WHITESPACE_PRESERVE;
-            } else if (value.equals("replace")) {
-                whiteSpaceValue = StringDataType.WHITESPACE_REPLACE;
-            } else if (value.equals("collapse")) {
-                whiteSpaceValue = StringDataType.WHITESPACE_COLLAPSE;
-            }
-            setConstraintData(sDataType.setWhiteSpace(whiteSpaceValue), conditionElement);
         } else {
             addBigDataCondition(conditionElement);
         }

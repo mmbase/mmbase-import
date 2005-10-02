@@ -68,7 +68,6 @@
               </xsd:complexContent>
             </xsd:complexType>
           </xsd:element>
-          <xsd:element name="whiteSpace" type="WhiteSpace" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:sequence>
           <xsd:element ref="enumeration" maxOccurs="unbounded" minOccurs="1" />
@@ -112,14 +111,6 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="WhiteSpace">
-    <xsd:complexContent>
-      <xsd:extension base ="Constraint">
-        <xsd:attribute name="value" type="type_whitespace" />
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-
   <xsd:complexType name="Condition">
     <xsd:complexContent>
       <xsd:extension base ="Constraint">
@@ -139,17 +130,6 @@
       <xsd:enumeration value="weeks" />
       <xsd:enumeration value="months" />
       <xsd:enumeration value="years" />
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:simpleType name="type_whitespace">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="collapse">
-        <xsd:annotation>
-          <xsd:documentation>Every occurance of more then one white space character is interpreted as one white space ?</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="none" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -187,13 +167,18 @@
 
   <xsd:element name="param">
     <xsd:complexType>
-      <xsd:simpleContent>
-        <xsd:extension base="xsd:string">
-          <xsd:attribute name="name" type="xsd:string" />
-        </xsd:extension>
-      </xsd:simpleContent>
+      <xsd:choice>
+        <!--
+        <xsd:element ref="xsd:string" />
+        -->
+        <xsd:sequence>
+          <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+        </xsd:sequence>
+      </xsd:choice>
+      <xsd:attribute name="name" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
+
 
   <xsd:element name="enumeration">
     <xsd:complexType>
