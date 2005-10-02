@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * @author     Daniel Ockeloen
  *
- * background hanlder for sending email, a call backthread
- * that is used to send email (one thread per active email
- * node)
+ * @version $Id: packageStep.java,v 1.5 2005-10-02 17:10:58 michiel Exp $
+ * @author     Daniel Ockeloen
+ * @rename PackageStep
  */
 public class packageStep {
 
@@ -32,19 +31,13 @@ public class packageStep {
 
     private int parent = -1;
 
-    /**
-     *  Description of the Field
-     */
     public final static int TYPE_ERROR = 1;
 
-    /**
-     *  Description of the Field
-     */
     public final static int TYPE_WARNING = 2;
 
 
     /**
-     *Constructor for the packageStep object
+     * Constructor for the PackageStep object
      */
     public packageStep() {
         timestamp = (int) (System.currentTimeMillis() / 1000);
