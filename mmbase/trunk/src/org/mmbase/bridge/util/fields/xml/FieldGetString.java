@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.6 2005-07-12 18:27:40 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.7 2005-10-02 16:25:19 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -45,7 +45,7 @@ public class FieldGetString implements  Processor {
         } else {
             // requested something else, String, probably
             try {
-                switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
+                switch(Modes.getMode("" + node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
                 case Modes.WIKI:
                 case Modes.KUPU:
                 case Modes.FLAT: {

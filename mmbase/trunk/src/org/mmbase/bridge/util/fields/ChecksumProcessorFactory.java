@@ -16,7 +16,7 @@ import java.io.StringWriter;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.1 2005-09-09 20:20:35 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.2 2005-10-02 16:25:19 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -44,6 +44,9 @@ public class ChecksumProcessorFactory implements ParameterizedProcessorFactory {
                     StringWriter writer = new StringWriter();
                     transformer.transform(node.getInputStreamValue(sourceField), writer);
                     node.setStringValue(field.getName(), writer.toString());
+                }
+                public String toString() {
+                    return transformer.toString() + " on " + sourceField;
                 }
             };
     }

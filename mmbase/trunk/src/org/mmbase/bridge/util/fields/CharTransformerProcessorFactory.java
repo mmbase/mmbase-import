@@ -14,12 +14,12 @@ import org.mmbase.util.transformers.*;
 
 
 /**
- * Wraps a {@link org.mmbase.util.ParameterizedTransformerFactory} (it <em>must</em> produces
+ * Wraps a {@link org.mmbase.util.transformers.ParameterizedTransformerFactory} (it <em>must</em> produces
  * CharTransformer), to be a ParameterizedProcessorFactory. Of course based on {@link
- * CharTransformerProcessor}.
+ * org.mmbase.brige.util.fields.CharTransformerProcessor}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessorFactory.java,v 1.1 2005-09-09 20:20:35 michiel Exp $
+ * @version $Id: CharTransformerProcessorFactory.java,v 1.2 2005-10-02 16:25:19 michiel Exp $
  * @since MMBase-1.8
  */
 
