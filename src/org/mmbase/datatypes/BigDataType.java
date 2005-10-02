@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.8 2005-09-06 21:11:30 michiel Exp $
+ * @version $Id: BigDataType.java,v 1.9 2005-10-02 16:10:32 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -74,7 +74,7 @@ abstract public class BigDataType extends DataType {
 
     /**
      * Returns the 'minLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Constraint}
+     * @return the property as a {@link DataType.ValueConstraint}
      */
     public DataType.ValueConstraint getMinLengthConstraint() {
         if (minLengthConstraint == null) minLengthConstraint = new ValueConstraint(CONSTRAINT_MINLENGTH, CONSTRAINT_MINLENGTH_DEFAULT);
@@ -83,7 +83,7 @@ abstract public class BigDataType extends DataType {
 
     /**
      * Sets the minimum length of binary values for this datatype.
-     * @param length the minimum length as an <code>int</code>, or -1 if there is no minimum length.
+     * @param value the minimum length as an <code>int</code>, or -1 if there is no minimum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype property that was just set
      */
@@ -105,7 +105,7 @@ abstract public class BigDataType extends DataType {
 
     /**
      * Returns the 'maxLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Constraint}
+     * @return the property as a {@link DataType.ValueConstraint}
      */
     public DataType.ValueConstraint getMaxLengthConstraint() {
         if (maxLengthConstraint == null) maxLengthConstraint = new ValueConstraint(CONSTRAINT_MAXLENGTH, CONSTRAINT_MAXLENGTH_DEFAULT);
@@ -114,7 +114,7 @@ abstract public class BigDataType extends DataType {
 
     /**
      * Sets the maximum length of binary values for this datatype.
-     * @param length the maximum length as an <code>int</code>, or -1 if there is no maximum length.
+     * @param value the maximum length as an <code>int</code>, or -1 if there is no maximum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype property that was just set
      */

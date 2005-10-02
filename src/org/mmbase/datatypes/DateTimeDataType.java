@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.16 2005-09-08 16:06:25 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.17 2005-10-02 16:10:32 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -53,7 +53,7 @@ public class DateTimeDataType extends DataType {
 
 
     // see javadoc of DateTimeFormat
-    private boolean weakPattern = true; // means, may not be changed, must be cloned before chaning somethin
+    private boolean weakPattern = true; // means, may not be changed, must be cloned before changing something
     private DateTimePattern pattern = DateTimePattern.DEFAULT;
 
     /**
@@ -61,6 +61,15 @@ public class DateTimeDataType extends DataType {
      */
     public DateTimeDataType(String name) {
         super(name, Date.class);
+        // the default default value of a date time field is 'now'
+        // That's a good default and is more or less backwards compatible, because unfilled
+        // 'eventtime' object used to be displayed as now too.
+        try {
+            setDefaultValue(org.mmbase.util.DynamicDate.getInstance("now"));
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            log.error(pe);
+            // could not happen, 'now' should parse
+        }
     }
 
     public DataType setDefaultValue(Object o) {
@@ -188,7 +197,7 @@ public class DateTimeDataType extends DataType {
 
     /**
      * Sets the minimum Date value for this data type.
-     * @param length the minimum as an <code>Date</code>, or <code>null</code> if there is no minimum.
+     * @param value the minimum as an <code>Date</code>, or <code>null</code> if there is no minimum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
     public DataType.ValueConstraint setMin(Date value) {
@@ -213,7 +222,7 @@ public class DateTimeDataType extends DataType {
 
     /**
      * Sets the minimum Date value for this data type.
-     * @param length the minimum as an <code>Date</code>, or <code>null</code> if there is no minimum.
+     * @param value the minimum as an <code>Date</code>, or <code>null</code> if there is no minimum.
      * @param precision precision, a constant from {@link org.mmbase.storage.search.FieldValueDateConstraint}
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
@@ -227,7 +236,7 @@ public class DateTimeDataType extends DataType {
 
     /**
      * Sets the maximum Date value for this data type.
-     * @param length the maximum as an <code>Date</code>, or <code>null</code> if there is no maximum.
+     * @param valuethe maximum as an <code>Date</code>, or <code>null</code> if there is no maximum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
     public DataType.ValueConstraint setMax(Date value) {
@@ -252,7 +261,7 @@ public class DateTimeDataType extends DataType {
 
     /**
      * Sets the maximum Date value for this data type.
-     * @param length the maximum as an <code>Date</code>, or <code>null</code> if there is no maximum.
+     * @param valuethe maximum as an <code>Date</code>, or <code>null</code> if there is no maximum.
      * @param precision precision, a constant from {@link org.mmbase.storage.search.FieldValueDateConstraint}
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
@@ -294,9 +303,9 @@ public class DateTimeDataType extends DataType {
      * Returns a long value representing the date in milliseconds since 1/1/1970,
      * adjusted for the precision given.
      * @param date the date to obtain the value from
-     * @param precisison the precision, similar to the <code>java.util.Calendar</code> constants, or the
+     * @param precision the precision, similar to the <code>java.util.Calendar</code> constants, or the
      *        constants from {@link org.mmbase.storage.search.FieldValueDateConstraint}
-     * @returns the date as a <code>long</code>
+     * @return the date as a <code>long</code>
      */
     protected long getDateLongValue(Date date, int precision) {
         Calendar calendar = Calendar.getInstance();
