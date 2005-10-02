@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.120 2005-09-22 18:37:47 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.121 2005-10-02 16:26:46 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -106,7 +106,7 @@ public class MMAdmin extends ProcessorModule {
      * Retrieves a specified builder.
      * The builder's name can be extended with the subpath of that builder's configuration file.
      * i.e. 'core/typedef' or 'basic/images'. The subpath part is ignored.
-     * @param name The path of the builder to retrieve
+     * @param path The path of the builder to retrieve
      * @return a <code>MMObjectBuilder</code> is found, <code>null</code> otherwise
      */
     public MMObjectBuilder getMMObject(String path) {

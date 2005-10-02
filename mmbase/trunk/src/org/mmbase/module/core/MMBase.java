@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.159 2005-09-22 20:50:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.160 2005-10-02 16:30:00 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -468,6 +468,7 @@ public class MMBase extends ProcessorModule {
      * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
      */
     public MMObjectBuilder getMMObject(String name) {
+        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + machineName);
         Object o = mmobjs.get(name);
         if (o == null) {
             log.trace("MMObject " + name + " could not be found"); // can happen...

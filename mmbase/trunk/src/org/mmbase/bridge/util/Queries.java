@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.59 2005-09-21 08:26:15 michiel Exp $
+ * @version $Id: Queries.java,v 1.60 2005-10-02 16:21:49 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -83,7 +83,7 @@ abstract public class Queries {
      * @param directions
      * @param searchDir
      * @param distinct
-     * @return
+     * @return New query object
      * @todo Should this method be part of Cloud itself?
      */
     public static Query createQuery(Cloud cloud, String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct) {
@@ -1178,7 +1178,7 @@ abstract public class Queries {
      * Queries a list of cluster nodes, using a {@link org.mmbase.bridge.NodeQuery} (so al fields of
      * one step are available), plus some fields of the relation step.  The actual node can be got
      * from the node cache by doing a {@link org.mmbase.bridge.Node#getNodeValue} with the {@link
-     * org.mmbase.bridge.NodeList#NODE_STEP} property.  The fields of the relation can be got by
+     * org.mmbase.bridge.NodeList#NODESTEP_PROPERTY} property.  The fields of the relation can be got by
      * prefixing their names by the role and a dot (as normal in multilevel results).
      * @param node start node
      * @param otherNodeManager node manager on the other side of the relation
