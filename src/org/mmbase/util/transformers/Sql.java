@@ -40,8 +40,9 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
      * Escaping is done by doubling any quotes encountered.
      * Strings that are rendered in such way can more easily be included
      * in a SQL query.
-     * @param str the string to escape
-     * @return the escaped string
+     * @param r the string to escape
+     * @param w The escaped string goes to this writer
+     * @return the writer
      * @since MMBase-1.7
      */
     public static Writer singleQuote(Reader r, Writer w) {
@@ -60,8 +61,9 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
     /**
      * Unescapes single quotes in a string.
      * Unescaping is done by replacing two quotes with one quote.
-     * @param str the string to unescape
-     * @return the unescaped string
+     * @param r the string to unescape
+     * @param w the result is written to this writer.
+     * @return the writer
      * @since MMBase-1.7.2
      */
     public static Writer singleQuoteBack(Reader r, Writer w) {

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * This can be used in taglib e.g. by &lt;mm:content postprocessor="google" expires="0" /&gt;
  *
  * Because you need expires=0, you need be reluctant to use this, because this means that you page
- * cannot be cached in front-proxies. Perhap's it is better to find some client-side solution.
+ * cannot be cached in front-proxies. Perhaps it is better to find some client-side solution.
  *
  * It produces instances of extensions of {@link RegexpReplacer}
  *

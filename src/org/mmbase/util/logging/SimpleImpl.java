@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleImpl.java,v 1.11 2005-09-12 23:23:47 michiel Exp $
+ * @version $Id: SimpleImpl.java,v 1.12 2005-10-02 16:42:15 michiel Exp $
  * @since   MMBase-1.4
  */
 
@@ -41,7 +41,7 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
     /**
      * The configure method of this Logger implemenation.
      *
-     * @param A string, which can contain the output (stdout or
+     * @param c A string, which can contain the output (stdout or
      * stderr) and the priority (e.g. 'info')
      */
 

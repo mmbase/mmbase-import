@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.24 2005-04-05 20:13:33 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.25 2005-10-02 16:42:15 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
@@ -115,7 +115,8 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * ordered list of URIResolver.Entry's. First in this list are the
      * directories which must be checked first, in case no prefix is
      * given.
-     * @param extradirs A EntryList, containing 'extra' dirs with
+     * @param c 'Current working dir'
+     * @param extraDirs A EntryList, containing 'extra' dirs with
      * prefixes.  If not specified or null, there will still be one
      * 'extra dir' available, namely the MMBase configuration
      * directory (with prefix mm:)
@@ -436,7 +437,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
     /**
      * For testing only
-     * @mmbase-1.8
+     * @since MMBase-1.8
      */
     public static void main(String argv[]) {
         try {

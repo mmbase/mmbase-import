@@ -27,29 +27,28 @@ public class XMLWriter {
     private static Logger log = Logging.getLoggerInstance(XMLWriter.class);
     
     /**
-     * defaulting version of {@link #write(Node, Writer, boolean, boolean}. (Not ommitting xml declaration).
+     * defaulting version of {@link #write(Node, Writer, boolean, boolean)}. (Not ommitting xml declaration).
      */
     public static void write(Node node, Writer writer, boolean indent) throws TransformerConfigurationException, TransformerException{
         write(node, writer, indent, false);
     }
     /**
      * static method to serialize an DOM document
-     * @param document the document to serialize
-     * @param writer the writer to write the document to
+     * @param node the node to serialize
+     * @param writer the writer to write the node to
      * @param indent if true the document wil be indented
      * @param omitxml
      **/
-    public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException{
+    public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitxml ? "yes" : "no");
         transformer.transform(new DOMSource(node), new StreamResult(writer));
     }
-    
 
     /**
-     * Defaulting version of {@link #write(Node, boolean, boolean}. (Not ommitting xml
+     * Defaulting version of {@link #write(Node, boolean, boolean)}. (Not ommitting xml
      * declaration).
      */
     public static String write(Node node, boolean indent) {
