@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.24 2005-09-18 08:46:27 michiel Exp $
+ * @version $Id: DataType.java,v 1.25 2005-10-02 16:08:23 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -70,7 +70,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
-     * Used to restore default values when calling the {@link clear} method.
+     * Used to restore default values when calling the {@link #clear} method.
      */
     protected DataType origin = null;
 
@@ -240,7 +240,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     /**
      * Sets the default value of this data type.
      * @param def the default value
-     * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
+     * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return this datatype
      */
     public DataType setDefaultValue(Object def) {
@@ -459,7 +459,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     /**
      * Returns the 'required' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Constraint}
+     * @return the property as a {@link DataType.ValueConstraint}
      */
     public DataType.ValueConstraint getRequiredConstraint() {
         if (requiredConstraint == null) requiredConstraint = new ValueConstraint(CONSTRAINT_REQUIRED, CONSTRAINT_REQUIRED_DEFAULT);
@@ -469,7 +469,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     /**
      * Sets whether the data type requires a value.
      * @param required <code>true</code> if a value is required
-     * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
+     * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype property that was just set
      */
     public DataType.ValueConstraint setRequired(boolean required) {
@@ -496,7 +496,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
 
     /**
      * Returns the 'unique' property, containing the value, error messages, and fixed status of this attribute.
-     * @return the property as a {@link DataType#Constraint}
+     * @return the property as a {@link DataType#ValueConstraint}
      */
     public DataType.ValueConstraint getUniqueConstraint() {
         if (uniqueConstraint == null) uniqueConstraint = new ValueConstraint(CONSTRAINT_UNIQUE, CONSTRAINT_UNIQUE_DEFAULT);
@@ -506,7 +506,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     /**
      * Sets whether the data type requires a value.
      * @param unique <code>true</code> if a value is unique
-     * @param InvalidStateException if the datatype was finished (and thus can no longer be changed)
+     * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype property that was just set
      */
     public DataType.ValueConstraint setUnique(boolean unique) {
@@ -518,9 +518,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @return A List of all possible values for this datatype, as {@link java.util.Map.Entry}s, or
      * <code>null</code> if no restrictions apply. Every Map entry contains as key the 'value' for
      * this datatype and as value it contains the description for this value in the given locale.
-     * 
+     *
      * @param locale for which locale to produce
-     * @param node   Possibly the possible values depend on a cloud (security)
+     * @param cloud  Possibly the possible values depend on a cloud (security)
      * @param node   Possibly the possible values depend on an actual node (this may be, and in the default implementation is, ignored)
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      *

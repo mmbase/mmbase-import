@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.9 2005-09-06 21:11:30 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.10 2005-10-02 16:10:32 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends DataType {
@@ -137,7 +137,7 @@ abstract public class NumberDataType extends DataType {
 
     /**
      * Sets the minimum Number value for this data type.
-     * @param length the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
+     * @param value the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
     public DataType.ValueConstraint setMin(Number value) {
@@ -150,7 +150,7 @@ abstract public class NumberDataType extends DataType {
 
     /**
      * Sets the minimum Number value for this data type.
-     * @param length the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
+     * @param value the minimum as an <code>Number</code>, or <code>null</code> if there is no minimum.
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
@@ -162,7 +162,7 @@ abstract public class NumberDataType extends DataType {
 
     /**
      * Sets the maximum Number value for this data type.
-     * @param length the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
+     * @param value the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
     public DataType.ValueConstraint setMax(Number value) {
@@ -175,7 +175,7 @@ abstract public class NumberDataType extends DataType {
 
     /**
      * Sets the maximum Number value for this data type.
-     * @param length the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
+     * @param value the maximum as an <code>Number</code>, or <code>null</code> if there is no maximum.
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */

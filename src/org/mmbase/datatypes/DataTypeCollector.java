@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.6 2005-09-09 20:16:24 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.7 2005-10-02 16:08:23 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -75,7 +75,7 @@ public final class DataTypeCollector {
      * when trying to obtain a datatype or datatype instance, if
      * the current collector does not contain the datatype, it tries to obtain
      * it from any colelctors it depends on.
-     * @param colelctor the datatYpe colelctor to add add
+     * @param collector the dataType collector to add
      */
      public void addCollector(DataTypeCollector collector) {
          collectors.add(collector);
@@ -92,7 +92,6 @@ public final class DataTypeCollector {
 
     /**
      * Set local datatypes of the collector
-     * @param dataTypes a <code>Map</code> containing the datatypes
      */
     public Map getDataTypes() {
         return dataTypes;

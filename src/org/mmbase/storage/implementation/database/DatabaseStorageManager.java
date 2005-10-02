@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.124 2005-10-01 12:58:26 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.125 2005-10-02 16:14:54 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1075,7 +1075,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @param index the index of the field in the prepared statement
      * @param value the numeric value to store, which will be checked for null.
      * @param field the MMBase field, containing meta-information
-     * @param node the node that contains the data.
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      * @return true if a null value was set, false otherwise
@@ -1183,7 +1182,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.8
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param objectValue the data (boolean) to store
+     * @param value the data (boolean) to store
      * @param field the MMBase field, containing meta-information
      * @param node the node that contains the data. Used to update this node if the database layer makes changes
      *             to the data (i.e. creating a default value for a non-null field that had a null value)
@@ -1206,7 +1205,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.8
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param objectValue the data (date) to store
+     * @param value the data (date) to store
      * @param field the MMBase field, containing meta-information
      * @param node the node that contains the data. Used to update this node if the database layer makes changes
      *             to the data (i.e. creating a default value for a non-null field that had a null value)
@@ -1229,7 +1228,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.8
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param objectValue the data (List) to store
+     * @param value the data (List) to store
      * @param field the MMBase field, containing meta-information. This value can be null
      * @param node the node that contains the data. Used to update this node if the database layer makes changes
      *             to the data (i.e. creating a default value for a non-null field that had a null value)
@@ -1586,7 +1585,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param result the resultset
      * @param index the index of the field in the resultset
      * @param field the expected MMBase field type. This can be null
-     * @param node the node that contains the data.
+     * @param mayShorten Whether it would suffice to return only a 'shorted' version of the value.
      * @return the value
      * @throws StorageException if the value cannot be retrieved from the resultset
      */
