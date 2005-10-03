@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.45 2005-10-02 16:30:00 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.46 2005-10-03 16:27:35 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -286,25 +286,39 @@ public class ImageCaches extends AbstractImages {
      */
     protected String getImageFormat(MMObjectNode node) {
         if (storesImageType()) {
-            return super.getImageFormat(node);
-        } else {
-            // stupid method, for if the format is not a field of the icaches table.
-            String ckey    = node.getStringValue(Imaging.FIELD_CKEY);
-            int fi = ckey.indexOf("f(");
-            if (fi > -1) {
-                int fi2 = ckey.indexOf(")", fi);
-                return ckey.substring(fi + 2, fi2);
-            } else {
-                String r = Factory.getDefaultImageFormat();
-                if (r.equals("asis")) {
-                    MMObjectNode original = originalImage(node);
-                    return ((AbstractImages) original.parent).getImageFormat(original);
-                } else {
-                    return r;
+            String iType = node.getStringValue(FIELD_ITYPE);
+            if(iType.equals("")) {
+                if (! node.isNull(Imaging.FIELD_HANDLE)) {        // handle present
+                    // determin using the blob
+                    return super.getImageFormat(node);
                 }
+            } else {
+                return iType;
             }
         }
+        // determin using the ckey
+        log.debug("Not found, using ckey");
+
+        // stupid method, for if the format is not a field of the icaches table.
+        String ckey    = node.getStringValue(Imaging.FIELD_CKEY);
+        int fi = ckey.indexOf("f(");
+        if (fi > -1) {
+            int fi2 = ckey.indexOf(")", fi);
+            return ckey.substring(fi + 2, fi2);
+        } else {
+            String r = Factory.getDefaultImageFormat();
+            if (r.equals("asis")) {
+                MMObjectNode original = originalImage(node);
+                return ((AbstractImages) original.parent).getImageFormat(original);
+            } else {
+                return r;
+            }
+        }
+        // not storing the result of parsing on ckey, it is cheap, and determining by handle is more
+        // correct.
+
     }
+
 
     public String getMimeType(List params) {
         return getMimeType(getNode("" + params.get(0)));

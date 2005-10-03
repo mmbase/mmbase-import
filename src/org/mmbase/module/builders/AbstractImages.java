@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.34 2005-08-24 09:52:35 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.35 2005-10-03 16:27:35 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -162,6 +162,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     public String getMimeType(MMObjectNode node) {
         String ext = getImageFormat(node);
         log.debug("Getting mimetype for node " + node.getNumber() + " " + ext);
+        if (ext.equals("")) ext = getDefaultImageType();
         return Imaging.getMimeTypeByExtension(ext);
     }
 
@@ -198,7 +199,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         }
         byte[] data = node.getByteValue(Imaging.FIELD_HANDLE);
         if (data == null || data.length == 0) {
-            log.warn("Cannot get dimension of Node with not 'handle' " + node.getNumber());
+            log.warn("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ")");
             return new Dimension(-1, -1);
         }
         ImageInformer ii = Factory.getImageInformer();
@@ -260,6 +261,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         if ((itype == null || itype.equals("")) &&  // itype unset
             ! node.isNull(Imaging.FIELD_HANDLE)        // handle present
             ) {
+            log.debug("Determining itype for " + node.getNumber());
             itype = "";
             try {
                 MagicFile magicFile = MagicFile.getInstance();
@@ -282,7 +284,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                 log.warn("Error while determining image mimetype : " + Logging.stackTrace(e));
             }
             if (storesImageType()) {
+                log.debug("Found itype " + itype + " storing that");
                 node.setValue(FIELD_ITYPE, itype);
+                node.commit();
+            } else {
+                log.debug("Doesn't store");
             }
         }
         return itype;
