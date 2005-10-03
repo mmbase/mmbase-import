@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.18 2005-08-22 13:12:01 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.19 2005-10-03 17:19:40 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -70,7 +70,18 @@ public class ByteHandler extends AbstractTypeHandler {
             throw new BridgeException("getBytes(" + prefix(fieldName) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
         if (bytes.getSize() > 0) {
-            String fileName = bytes.getName();
+            String fileName = bytes.getName();            
+            { // some browers provide directoy information. Take that away.
+                int pos = fileName.lastIndexOf("\\");
+                if (pos > 0) {
+                    fileName = fileName.substring(pos + 1);
+                }
+                pos = fileName.lastIndexOf("/");
+                if (pos > 0) {
+                    fileName = fileName.substring(pos + 1);
+                }
+            }
+
             String fileType = bytes.getContentType();
 
             try {
