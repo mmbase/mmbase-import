@@ -46,8 +46,8 @@ StringBuffer msg = new StringBuffer();
      while (e != null) {
         stack.push(e);
          if (e instanceof NotFoundException) {
-             status = HttpServletResponse.SC_NOT_FOUND;
-             response.setStatus(status);
+            // status = HttpServletResponse.SC_NOT_FOUND;
+            // response.setStatus(status);
          }
 	 if (e instanceof ServletException) {
 	     e = ((ServletException) e).getRootCause();
