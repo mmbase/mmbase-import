@@ -3,8 +3,9 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
     type="text/xml" 
     expires="-1">
+  <jsp:directive.page  errorPage="../error.jspx" />
   <!--      
-       $Id: search.library.jspx,v 1.1 2005-06-28 12:33:20 michiel Exp $
+       $Id: search.library.jspx,v 1.2 2005-10-03 17:37:39 michiel Exp $
   -->  
   <jsp:output omit-xml-declaration="yes" />
 
@@ -22,21 +23,23 @@
       <icon>icons/map.gif</icon>	
       
       <mm:stringlist referid="nodetypes">        
-        <mm:context id="drawer" scope="request">
-          <mm:remove referid="nodetype" />
-          <mm:write id="nodetype" write="false" />
-          <mm:remove referid="query" />
-          <mm:listnodescontainer id="query" type="$nodetype">          
-            <jsp:directive.include file="search.constraints.jspx" />
-          
-            <mm:sortorder field="number" direction="down" />
-            <mm:maxnumber value="$librarysize" />
-            <mm:offset    value="${librarysize * page}" />
-            
-            <mm:include page="${nodetype}.items.jspx" />
-            
-          </mm:listnodescontainer>
-        </mm:context>
+        <mm:hasnodemanager name="$_">
+          <mm:context id="drawer" scope="request">
+            <mm:remove referid="nodetype" />
+            <mm:write id="nodetype" write="false" />
+            <mm:remove referid="query" />
+            <mm:listnodescontainer id="query" type="$nodetype">          
+              <jsp:directive.include file="search.constraints.jspx" />
+              
+              <mm:sortorder field="number" direction="down" />
+              <mm:maxnumber value="$librarysize" />
+              <mm:offset    value="${librarysize * page}" />
+              
+              <mm:include page="${nodetype}.items.jspx" />
+              
+            </mm:listnodescontainer>
+          </mm:context>
+        </mm:hasnodemanager>
       </mm:stringlist>
 
     </library>            
