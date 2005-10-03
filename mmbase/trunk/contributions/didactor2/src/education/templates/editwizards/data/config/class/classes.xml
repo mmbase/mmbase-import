@@ -3,7 +3,9 @@
 <wizard-schema id="empty">
     <title>Klas Editor</title>
 
-    <action type="create" />
+    <action type="create">
+        <object type="classes" />
+    </action>
     
     <action type="load">
         <relation destination="people" role="classrel">
