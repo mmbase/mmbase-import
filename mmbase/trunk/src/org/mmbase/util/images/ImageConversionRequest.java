@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequest.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
+ * @version $Id: ImageConversionRequest.java,v 1.3 2005-10-03 17:33:39 michiel Exp $
  */
 public class ImageConversionRequest {
 
@@ -71,13 +71,13 @@ public class ImageConversionRequest {
      */
     public synchronized void waitForConversion() {
         if (! ready) { // the request is in progress, wait until it is ready.
-            log.service("Waiting");
+            log.service("Waiting for " + toString());
             count++;
             try {
                 wait();
             } catch (InterruptedException e) {
             }
-            log.service("Ready.");
+            log.service("Ready " + toString());
         }
     }
 
@@ -97,6 +97,6 @@ public class ImageConversionRequest {
 
     // javadoc inherited (of Object)
     public String toString() {
-        return "id=" + icacheNode.getStringValue("id") + " : key=" + icacheNode.getStringValue("ckey");
+        return icacheNode.getStringValue("id") + " --> " + icacheNode.getNumber() + " " + params;
     }
 }
