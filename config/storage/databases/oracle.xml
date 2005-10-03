@@ -69,7 +69,7 @@
   <type-mappings>
     <type-mapping name="FLOAT" type="REAL" />
     <type-mapping name="DOUBLE" type="DOUBLE PRECISION" />
-    <type-mapping name="LONG" type="BIGINT" />
+    <type-mapping name="LONG" type="INTEGER" />
     <type-mapping name="INTEGER" type="INTEGER" />
     <type-mapping name="NODE" type="INTEGER" />
     <type-mapping name="STRING" min-size="1" max-size="2000" type="nvarchar2({0,number,#####})" />
