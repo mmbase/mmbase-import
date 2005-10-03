@@ -28,11 +28,10 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * The 'date' type does not exist yet, this class is used in IntegerHandler and LongHandler now.
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.24 2005-09-16 12:32:14 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.25 2005-10-03 08:12:05 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -44,7 +43,6 @@ public class DateHandler extends AbstractTypeHandler {
     private static final Date NODATE = new Date(-1);
 
     /**
-     * Constructor for LongHandler.
      * @param tag
      */
     public DateHandler(FieldInfoTag tag) {
@@ -161,8 +159,8 @@ public class DateHandler extends AbstractTypeHandler {
                 buf.append("HH'h':mm'm':ss's'");
             }
             dateTimePattern = new DateTimePattern(buf.toString());
-            
-        } else {                        
+
+        } else {
             dateTimePattern = ((DateTimeDataType) dt).getPattern();
             Date min = ((DateTimeDataType) dt).getMin();
             if (min != null) {
@@ -174,12 +172,12 @@ public class DateHandler extends AbstractTypeHandler {
                 maxDate = Calendar.getInstance();
                 maxDate.setTime(max);
             }
-            
+
         }
 
-        int startYear = -100; 
+        int startYear = -100;
         int endYear   = 4000;
-        
+
         long interval = -1;
         if (minDate != null && maxDate != null) {
             interval = maxDate.getTimeInMillis() - minDate.getTimeInMillis();
@@ -221,7 +219,7 @@ public class DateHandler extends AbstractTypeHandler {
                         if (cal != null) {
                             yearFieldValue(cal, buffer);
                         } else {
-                            buffer.append("0");
+                            buffer.append("1970"); // the default default year
                         }
                     } else {
                         buffer.append(searchYear);
@@ -254,6 +252,7 @@ public class DateHandler extends AbstractTypeHandler {
                             buffer.append(">--</option>");
                         }
                         for (int i = startYear; i <= endYear ; i++) {
+                            if (! EXIST_YEAR_0 && i == 0) continue; 
                             if (checkYear == i) {
                                 buffer.append("  <option selected=\"selected\" value=\"" + i + "\">" + i + "</option>\n");
                             } else {
@@ -470,16 +469,16 @@ public class DateHandler extends AbstractTypeHandler {
         }
 
 
-        
+
         if (! didDay)   buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_day") + "\" value=\"1\" />");
         if (! didMonth) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_month") + "\" value=\"1\" />");
         if (! didYear)  buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"1970\" />");
-        
-        
+
+
         if (! didHours)   buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_hour") + "\" value=\"0\" />");
         if (! didMinutes) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"0\" />");
         if (! didSeconds) buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"0\" />");
-        
+
 
 
         buffer.append("</span>");
@@ -527,7 +526,7 @@ public class DateHandler extends AbstractTypeHandler {
                 if (newValue != null) {
                     node.setDateValue(fieldName, newValue);
                     return true;
-                }                
+                }
             } else if (!oldValue.equals(newValue)) {
                 node.setDateValue(fieldName, newValue);
                 return true;
