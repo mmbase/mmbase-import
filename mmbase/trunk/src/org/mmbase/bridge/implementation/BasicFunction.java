@@ -18,7 +18,7 @@ import org.mmbase.util.functions.*;
  *
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: BasicFunction.java,v 1.8 2005-09-06 21:14:44 michiel Exp $
+ * @version $Id: BasicFunction.java,v 1.9 2005-10-03 14:07:06 michiel Exp $
  */
 public class BasicFunction extends WrappedFunction {
 
@@ -59,7 +59,7 @@ public class BasicFunction extends WrappedFunction {
             return new BasicFunctionValue(node, wrappedFunction.getFunctionValue(parameters));
         } else {
             if (cloud == null) {
-                cloud = (Cloud) parameters.get("cloud");
+                cloud = (Cloud) parameters.get(Parameter.CLOUD);
             }
             return new BasicFunctionValue(cloud, wrappedFunction.getFunctionValue(parameters));
         }
@@ -67,8 +67,9 @@ public class BasicFunction extends WrappedFunction {
     public Parameters createParameters() {
         Parameters params = super.createParameters();
         if (node != null) {
-            params.setIfDefined(Parameter.NODE, node.noderef);
+            params.setIfDefined(Parameter.NODE, node);
         }
+        params.setIfDefined(Parameter.CLOUD, cloud);
         return params;
     }
 
