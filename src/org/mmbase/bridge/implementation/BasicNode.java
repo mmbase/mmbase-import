@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.167 2005-09-15 16:01:39 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.168 2005-10-03 14:07:06 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -208,7 +208,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return the underlying MMObjectNode
      * @throws NotFoundException if no node was specified. This generally means the
      */
-    protected final MMObjectNode getNode() throws NotFoundException {
+    protected final MMObjectNode getNode() {
         return noderef;
     }
 
@@ -1409,14 +1409,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public Parameters createParameters(String functionName) {
         Parameters params =  getFunction(functionName).createParameters();
-        params.setIfDefined(Parameter.NODE, getNode());
+        params.setIfDefined(Parameter.NODE, this);
+        params.setIfDefined(Parameter.CLOUD, getCloud());
         return params;
     }
 
     public FieldValue getFunctionValue(String functionName, List parameters) {
         Function function = getFunction(functionName);
         Parameters params = function.createParameters();
-        params.setIfDefined(Parameter.NODE, getNode());
+        params.setIfDefined(Parameter.NODE,  this);
         params.setIfDefined(Parameter.CLOUD, getCloud());
         params.setAll(parameters);
         return (FieldValue) function.getFunctionValue(params);
