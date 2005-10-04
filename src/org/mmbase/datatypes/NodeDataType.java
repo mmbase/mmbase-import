@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.10 2005-10-02 16:51:51 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.11 2005-10-04 22:48:56 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends DataType {
@@ -81,6 +81,8 @@ public class NodeDataType extends DataType {
                         int num = ((Number)value).intValue();
                         if (num == -1) return true;
                         return node.getCloud().hasNode(num);
+                    } else if (value instanceof Node) {
+                        return true;
                     } else {
                         return false;
                     }
