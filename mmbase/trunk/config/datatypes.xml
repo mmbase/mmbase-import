@@ -155,19 +155,19 @@
         <!-- Silly example (also used to test)
              Allow only dates from the previous century..
         -->
-        <minInclusive value="1900-01-01" precision="days" />
-        <maxExclusive value="2000-01-01" precision="days" />
+        <minInclusive value="1900-01-01"  />
+        <maxExclusive value="2000-01-01"  />
       </specialization>
       
       <specialization id="birthdate">
-        <!-- need better date-parser to make this work -->
-        <maxInclusive value="now" precision="days" />
+        <default value="today- 30 year" />
+        <maxInclusive value="today" />
       </specialization>
 
       <specialization id="living-birthdate">
-        <!-- need better date-parser to make thing work -->
-        <minInclusive value="now - 140 year" precision="days" />
-        <maxInclusive value="now" precision="days" />
+        <default value="today - 30 year" />
+        <minInclusive value="today - 140 year" />
+        <maxInclusive value="today"    />
       </specialization>
       
     </specialization>
