@@ -15,6 +15,7 @@ import java.io.*;
 import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
@@ -35,7 +36,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.156 2005-10-04 18:46:30 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.157 2005-10-04 22:58:14 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1339,11 +1340,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
     /**
-     * Returns the node's age
-     * @return the age in days
+     * Return the age of the node, determined using the daymarks builder.
+     * @return the age in days, or 0 if unknown (daymarks builder not present)
      */
     public int getAge() {
-        return parent.getAge(this);
+        DayMarkers dayMarkers = ((DayMarkers) parent.mmb.getBuilder("daymarks"));
+        if (dayMarkers == null) return 0;        
+        return dayMarkers.getAge(getNumber());
     }
 
     /**
