@@ -62,11 +62,20 @@ public class NodeEvent extends Event implements Serializable {
         String builderName = in.readUTF();
         MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
         int nodeNumber = in.readInt();
-        node = builder.getNode(nodeNumber);
         eventType = in.readInt();
         machine = in.readUTF();
         oldValues = (Map) in.readObject();
         newValues = (Map) in.readObject();
+        node = builder.getNode(nodeNumber);
+        if (node == null) {
+            // probably the node was deleted. Happily, we know more or less enough to reconstruct it.            
+            node = new MMObjectNode(builder);
+            Iterator it = oldValues.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+                node.storeValue((String) entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
