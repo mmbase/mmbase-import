@@ -121,7 +121,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">XmlField</guiname>
-        <guitype>string</guitype>
       </gui>
       <db>
         <name>xmlfield</name>
