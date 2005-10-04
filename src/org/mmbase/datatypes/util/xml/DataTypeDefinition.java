@@ -30,7 +30,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.21 2005-10-02 16:53:10 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.22 2005-10-04 17:18:37 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -105,15 +105,16 @@ public class DataTypeDefinition {
             if (childNodes.item(i) instanceof Element) {
                 Element childElement = (Element) childNodes.item(i);
                 if (childElement.getLocalName().equals("class")) {
+                    String className = childElement.getAttribute("name");
                     if (dt != null) {
                         log.debug("Already defined " + id);
-                        if (childElement.getAttribute("name").equals(dt.getClass().getName())) {
-                            log.error("Cannot change class of '" + id + "'  " + dt + " (to " + childElement.getAttribute("name") + ")");
+                        if (! className.equals(dt.getClass().getName())) {
+                            log.error("Cannot change class for '" + id + "' from " + dt.getClass().getName() + " to '" + className + "'");
                         }
                     } else {
                         try {
-                            String className = childElement.getAttribute("name");
                             Class claz = Class.forName(className);
+                            log.info("Instantiating " + claz + " for " + dataType);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
                             dt = (DataType) constructor.newInstance(new Object[] { getId(id) });
                             if (baseDataType != null) {
@@ -476,8 +477,12 @@ public class DataTypeDefinition {
                         }
                     }
                 }
-                fact.addBundle(resource, getClass().getClassLoader(), constantsClass,
-                               wrapper, comparator);
+                try {
+                    fact.addBundle(resource, getClass().getClassLoader(), constantsClass,
+                                   wrapper, comparator);
+                } catch (MissingResourceException mre) {
+                    log.error(mre);
+                }
             } else {
                 throw new IllegalArgumentException("no 'value' or 'resource' attribute on enumeration element");
             }
@@ -626,26 +631,15 @@ public class DataTypeDefinition {
         }
     }
 
-    protected int getDateTimePartValue(Element element) {
-        if (hasAttribute(element, "part")) {
-            String value = getAttribute(element, "value").toLowerCase();
-            return Queries.getDateTimePart(value);
-        } else {
-            return Calendar.MILLISECOND;
-        }
-    }
-
     protected void addDateTimeCondition(Element conditionElement) {
         DateTimeDataType dtDataType = (DateTimeDataType) dataType;
         String localName = conditionElement.getLocalName();
         if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
             Date value = getDateTimeValue(conditionElement);
-            int precision = getDateTimePartValue(conditionElement);
-            setConstraintData(dtDataType.setMin(value, precision, "minInclusive".equals(localName)), conditionElement);
+            setConstraintData(dtDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
         } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
             Date value = getDateTimeValue(conditionElement);
-            int precision = getDateTimePartValue(conditionElement);
-            setConstraintData(dtDataType.setMax(value, precision, "maxInclusive".equals(localName)), conditionElement);
+            setConstraintData(dtDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
         } else if ("pattern".equals(localName)) {
             String pattern = getAttribute(conditionElement, "value");
             Locale locale = getLocale(conditionElement);

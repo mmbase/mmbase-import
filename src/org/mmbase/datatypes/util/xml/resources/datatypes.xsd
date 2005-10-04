@@ -106,7 +106,6 @@
     <xsd:complexContent>
       <xsd:extension base ="Constraint">
         <xsd:attribute name="value"     type="xsd:string" />
-        <xsd:attribute name="precision" type="type_precision" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -121,17 +120,6 @@
 
   <xsd:element name="description" type="xsd:string" />
 
-  <xsd:simpleType name="type_precision">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="seconds" />
-      <xsd:enumeration value="minutes" />
-      <xsd:enumeration value="hours" />
-      <xsd:enumeration value="days" />
-      <xsd:enumeration value="weeks" />
-      <xsd:enumeration value="months" />
-      <xsd:enumeration value="years" />
-    </xsd:restriction>
-  </xsd:simpleType>
 
   <xsd:simpleType name="type_database">
     <xsd:restriction base="xsd:string">
