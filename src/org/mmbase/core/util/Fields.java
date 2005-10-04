@@ -129,6 +129,68 @@ public class Fields {
         return Field.TYPE_UNKNOWN;
     }
 
+    /**
+     * Determines the MMBase type of a specified class. The MMBase base type is sue by the storage layer to
+     * determine how to store a field.
+     * If the base type cannot be determined from the class, the value returned is {@link Field.TYPE_UNKNOWN}.
+     * @param classType
+     * @return an MMBase base type constant
+     */
+    public static int classToType(Class classType) {
+        if (classType == null) {
+            return Field.TYPE_UNKNOWN;
+        } else if (classType.isArray() && classType.getComponentType() == Byte.TYPE) {
+            return Field.TYPE_BINARY;
+        } else if (classType == Integer.class || classType == Integer.TYPE) {
+            return Field.TYPE_INTEGER;
+        } else if (classType == Long.class || classType == Long.TYPE) {
+            return Field.TYPE_LONG;
+        } else if (classType == Double.class || classType == Double.TYPE) {
+            return Field.TYPE_DOUBLE;
+        } else if (classType == Float.class || classType == Float.TYPE) {
+            return Field.TYPE_FLOAT;
+        } else if (classType == Boolean.class || classType == Boolean.TYPE) {
+            return Field.TYPE_BOOLEAN;
+        } else if (classType == String.class) {
+            return Field.TYPE_STRING;
+        } else if (org.w3c.dom.Node.class.isAssignableFrom(classType)) {
+            return Field.TYPE_XML;
+        } else if (Node.class.isAssignableFrom(classType) ||
+                   classType.getName().equals("org.mmbase.module.core.MMObjectNode")) {
+            return Field.TYPE_NODE;
+        } else if (Date.class.isAssignableFrom(classType)) {
+            return Field.TYPE_DATETIME;
+        } else if (List.class.isAssignableFrom(classType)) {
+            return Field.TYPE_LIST;
+        } else {
+            return Field.TYPE_UNKNOWN;
+        }
+    }
+
+    /**
+     * Determines the class for a specified MMBase base type.
+     * If the value is {@link Field.TYPE_UNKNOWN}), the method returns <code>null</code>.
+     * @param type
+     * @return an MMBase base type constant
+     */
+    public static Class typeToClass(int type) {
+        switch (type) {
+        case Field.TYPE_STRING : return String.class;
+        case Field.TYPE_INTEGER : return Integer.class;
+        case Field.TYPE_BINARY: return byte[].class;
+        case Field.TYPE_FLOAT: return Float.class;
+        case Field.TYPE_DOUBLE: return Double.class;
+        case Field.TYPE_LONG: return Long.class;
+        case Field.TYPE_XML: return org.w3c.dom.Document.class;
+        case Field.TYPE_NODE: return Node.class;
+        case Field.TYPE_DATETIME: return java.util.Date.class;
+        case Field.TYPE_BOOLEAN: return Boolean.class;
+        case Field.TYPE_LIST: return List.class;
+        default: return null;
+        }
+    }
+
+
     public static void sort(List fields, int order) {
         Collections.sort(fields, new FieldComparator(order));
     }
