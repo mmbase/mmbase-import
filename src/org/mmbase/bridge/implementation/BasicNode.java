@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.168 2005-10-03 14:07:06 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.169 2005-10-04 19:21:40 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -93,7 +93,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Determines whether this node was created for insert.
      * @scope private
      */
-    protected boolean isnew = false;
+    protected boolean isNew = false;
 
     /**
      * Instantiates a node, linking it to a specified node manager.
@@ -132,7 +132,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         this.cloud = cloud;
         setNode(node);
         temporaryNodeId = id;
-        isnew = true;
+        isNew = true;
         init();
         edit(ACTION_CREATE);
     }
@@ -259,7 +259,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return is a new node
      */
     public boolean isNew() {
-        return isnew;
+        return isNew;
     }
 
     /**
@@ -428,10 +428,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_NODE);
         if (v == null) {
             setValueWithoutProcess(fieldName, null);
-        } else if (v instanceof BasicNode) {
-            setValueWithoutProcess(fieldName, ((BasicNode)v).getNode());
         } else if (v instanceof Node) {
-            setValueWithoutProcess(fieldName, new Integer(value.getNumber()));
+            setValueWithoutProcess(fieldName, new Integer(((Node)v).getNumber()));
+        } else if (v instanceof MMObjectNode) {
+            setValueWithoutProcess(fieldName, new Integer(((MMObjectNode)v).getNumber()));
         } else {
             setValueWithoutProcess(fieldName, v);
         }
@@ -757,7 +757,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void commit() {
-        if (isnew) {
+        if (isNew) {
             cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
@@ -766,10 +766,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();
-            if (isnew) {
+            if (isNew) {
                 node.insert(cloud.getUser());
                 // cloud.createSecurityInfo(getNumber());
-                isnew = false;
+                isNew = false;
             } else {
                 node.commit(cloud.getUser());
                 //cloud.updateSecurityInfo(getNumber());
@@ -791,8 +791,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         } else {
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
-            if (isnew) {
-                isnew = false;
+            if (isNew) {
+                isNew = false;
                 invalidateNode();
             } else {
                 // update the node, reset fields etc...
@@ -809,7 +809,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void delete(boolean deleteRelations) {
         edit(ACTION_DELETE);
-        if (isnew) {
+        if (isNew) {
             // remove from the Transaction
             // note that the node is immediately destroyed !
             // possibly older edits will fail if they refernce this node
@@ -1214,7 +1214,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (cloud instanceof Transaction) {
             String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
             ((BasicTransaction)cloud).add(aliasContext);
-        } else if (isnew) {
+        } else if (isNew) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
             if (!getNode().getBuilder().createAlias(getNumber(), aliasName)) {
@@ -1238,7 +1238,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // so no attempt has been made to rectify this (cause its not worth all the trouble).
         // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
         // Live with it.
-        if (!isnew) {
+        if (!isNew) {
             NodeManager oalias = cloud.getNodeManager("oalias");
             NodeQuery q = oalias.createQuery();
             Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
