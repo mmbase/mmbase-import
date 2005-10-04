@@ -14,6 +14,7 @@
   <storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
 
   <searchqueryhandler classname="org.mmbase.storage.search.implementation.database.HSqlSqlHandler" />
+
   <attributes>
     <!-- Automatically prefix reserved words with "m_" -->
     <attribute name="default-storage-identifier-prefix">m</attribute>
@@ -21,8 +22,7 @@
     <!-- HSQLdb expects table and field names to be uppercase -->
     <attribute name="storage-identifier-case">upper</attribute>
 
-    <!--   This needs testing too!
-    -->
+    <!-- This option can easily be removed -->
     <option name="database-stores-binary-as-file" />
 
     <!-- Not sure about this option, so turned it off -->
@@ -32,8 +32,30 @@
     <scheme name="change-field-scheme" />
 
     <!-- HSQLdb wants to have index declarations at the end of a CREATE TABLE statement  -->
-		<scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt;fs=\t"</scheme>
-    <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+
+    <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+    <!--
+    -->
+
+    <!-- some alternatives, which you may want to use -->
+    <!-- This one creates an ASCII file for every table. This may be a very handy setting for debugging. -->
+
+    <!--
+    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt"</scheme>
+    <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{1}.txt"</scheme>
+-->
+    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
+    <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
+    <scheme name="create-sequence-scheme">CREATE TEXT TABLE {0}_NUMBERTABLE ({1}); SET TABLE {0}_NUMBERTABLE SOURCE "{2}_{0}_NUMBERTABLE.txt;encoding=UTF-8"</scheme>
+    <!--    
+    -->
+    <!-- This one is better if the tables get so big that you don't want them in memory entirely     
+    -->
+    <!--
+		<scheme name="create-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
+    -->
 
   </attributes>
 
@@ -49,6 +71,7 @@
     <type-mapping name="BINARY" min-size="1" max-size="16777216" type="BINARY" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
+
     <type-mapping name="LIST[FLOAT]"   type="OTHER" />
     <type-mapping name="LIST[DOUBLE]"  type="OTHER" />
     <type-mapping name="LIST[LONG]"    type="OTHER" />
@@ -61,6 +84,8 @@
   </type-mappings>
 
   <!-- HSQLdb disallowed fields are retrieved from the database -->
-  <disallowed-fields />
+  <disallowed-fields>
+    <disallowed-field name="number" replacement="m_number"/>
+  </disallowed-fields>
 
 </storage>
