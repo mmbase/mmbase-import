@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge;
 
+import org.mmbase.util.LocalizedString;
 import java.util.*;
 
 
 /**
+ * XXX A descriptor does not describe. It has descriptions.
  * @since MMBase-1.8
  */
 public interface Descriptor {
@@ -22,6 +24,9 @@ public interface Descriptor {
      * @return the name as a String
      */
     public String getName();
+
+
+    // 5 methods for one property
 
     /**
      * Returns the GUI name for this object.
@@ -43,7 +48,7 @@ public interface Descriptor {
      * Returns the set of (localized) gui names of this object.
      * @return the description as a LocalizedString
      */
-    public org.mmbase.util.LocalizedString getLocalizedGUIName();
+    public LocalizedString getLocalizedGUIName();
 
     /**
      * Sets the GUI name of this object.
@@ -58,11 +63,14 @@ public interface Descriptor {
      */
     public void setGUIName(String g);
 
+
+
+    /// 6 (!) methods just for one property!
     /**
      * Returns the set of (localized) descriptions of this object.
      * @return the description as a LocalizedString
      */
-    public org.mmbase.util.LocalizedString getLocalizedDescription();
+    public LocalizedString getLocalizedDescription();
 
     /**
      * Returns the description of this object.
@@ -92,7 +100,7 @@ public interface Descriptor {
     public void setDescription(String description);
 
     /**
-     * Associates a resource-bundle with the description of this DataType. The description can be
+     * Associates a resource-bundle with the description of this Descriptor. The description can be
      * looked up using this resource-bundle if no description for a Locale was specified explicitely.
      */
     public void setBundle(String bundle);
