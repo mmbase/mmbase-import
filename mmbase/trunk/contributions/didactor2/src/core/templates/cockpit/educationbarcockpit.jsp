@@ -2,6 +2,7 @@
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
 <div class="educationMenubarCockpit" style="white-space: nowrap">
+<mm:isgreaterthan referid="user" value="0">
   <mm:present referid="education">
     <mm:node number="$education" notfound="skip">
       <mm:related path="settingrel,components">
@@ -39,6 +40,5 @@
     </mm:node>
   </mm:notpresent>
 </div>
-
-
+</mm:isgreaterthan>
 </mm:cloud>
