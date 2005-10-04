@@ -19,10 +19,11 @@ import org.mmbase.bridge.Field;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.16 2005-07-29 11:22:11 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.17 2005-10-04 23:03:26 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
+    private static int counter = 0;
     /**
      * Creates an instance of a Virtual builder.
      * A builder instantiated with this constrcutor is not registered in MMBase
@@ -31,9 +32,9 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param m the MMbase cloud creating the node
      */
     public VirtualBuilder(MMBase m) {
-        this.mmb=m;
-        this.tableName="virtualnodes_"+System.currentTimeMillis();
-        this.description="";
+        this.mmb = m;
+        this.tableName = "virtualnodes_" + counter++;
+        this.description = "";
         virtual = true;
     }
 
@@ -43,8 +44,10 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param tableName the name of the builder as known in the MMbase system
      */
     protected VirtualBuilder(MMBase m, String tableName) {
-        this(m);
+        this.mmb = m;
         this.tableName = tableName;
+        this.description = "";
+        virtual = true;
         m.mmobjs.put(tableName, this);
     }
 
