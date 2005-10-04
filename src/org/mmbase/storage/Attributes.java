@@ -15,7 +15,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.4 2005-02-03 09:16:48 michiel Exp $
+ * @version $Id: Attributes.java,v 1.5 2005-10-04 13:21:21 johannes Exp $
  */
 public final class Attributes {
 
@@ -76,6 +76,11 @@ public final class Attributes {
     public static final String GET_SURROGATOR  = "storage-get-surrogator";
 
 
-
+    /**
+     * This attribute can be used to specify the maximum identifier length for
+     * table names and key names. 
+     * @since MMBase-1.8.1
+     */
+    public static final String MAX_IDENTIFIER_LENGTH = "max-identifier-length";
 }
 
