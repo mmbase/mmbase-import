@@ -123,5 +123,9 @@
     <disallowed-field name="type" replacement="m_type"/>
     <disallowed-field name="use" replacement="m_use"/>
     <disallowed-field name="write" replacement="m_write"/> <!-- standard SQL keyword -->
+    <disallowed-field name="start" replacement="m_start"/> <!-- standard SQL keyword -->
+    <disallowed-field name="mode" replacement="m_mode"/> <!-- standard SQL keyword -->
+    <disallowed-field name="session" replacement="m_session"/> <!-- standard SQL keyword -->
+    <disallowed-field name="level" replacement="m_level"/> <!-- standard SQL keyword -->
   </disallowed-fields>
 </storage>
