@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.3 2005-09-26 20:05:49 ernst Exp $
+ * @version $Id: MessageProbe.java,v 1.4 2005-10-04 21:06:14 michiel Exp $
  */
 public class MessageProbe implements Runnable {
 
@@ -31,15 +31,13 @@ public class MessageProbe implements Runnable {
 
     private ClusterManager parent;
     private NodeEvent event;
-    private boolean remote;
 
     /**
      * @javadoc
      */
-    MessageProbe(ClusterManager parent, NodeEvent event, boolean remote) {
+    MessageProbe(ClusterManager parent, NodeEvent event) {
         this.parent = parent;
         this.event = event;
-        this.remote=remote;
     }
 
     /**
@@ -47,7 +45,7 @@ public class MessageProbe implements Runnable {
      */
     public void run() {
         if (log.isDebugEnabled()) {
-            log.debug("Handling event " + event + " for " + (remote ? "REMOTE " + event.getMachine()  : "LOCALE"));
+            log.debug("Handling event " + event + " for " + event.getMachine());
         }
         try {
 

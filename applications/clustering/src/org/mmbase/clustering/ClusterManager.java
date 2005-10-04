@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *  
  * @author Nico Klasens
  * @author Michiel Meeuwissen
- * @version $Id: ClusterManager.java,v 1.11 2005-09-26 20:05:49 ernst Exp $
+ * @version $Id: ClusterManager.java,v 1.12 2005-10-04 21:06:14 michiel Exp $
  */
 public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
 
@@ -224,7 +224,7 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
                     log.warn("Could not handle message, it is null");
                 }
             } catch(Throwable t) {
-                log.error(t);
+                log.error(t.getMessage(), t);
             }
         }
 
@@ -238,10 +238,12 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
     protected void handleEvent(NodeEvent event) {
         // check if MMBase is 100% up and running, if not eat event
         if (!mmbase.getState()) return;
-
-        boolean remote = ! mmbase.getMachineName().equals(event.getMachine());
-        MessageProbe probe = new MessageProbe(this, event, remote);
-        if (spawnThreads || ! remote) {
+        if(mmbase.getMachineName().equals(event.getMachine())) {
+            // ignore changes of ourselves
+            return;
+        }
+        MessageProbe probe = new MessageProbe(this, event);
+        if (spawnThreads) {
             probe.run();
         } else {
             org.mmbase.util.ThreadPools.jobsExecutor.execute(probe);
