@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: PasswordLogin.java,v 1.7 2005-10-02 16:43:55 michiel Exp $
+ * @version $Id: PasswordLogin.java,v 1.8 2005-10-04 11:15:24 michiel Exp $
  */
 
 public class PasswordLogin extends ContextLoginModule {
@@ -29,8 +29,8 @@ public class PasswordLogin extends ContextLoginModule {
     public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
 
         // get userName
-        String userName = (String)userLoginInfo.get("userName");
-        if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'userName' with login");
+        String userName = (String)userLoginInfo.get("username");
+        if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
 
         // get password
         String password = (String)userLoginInfo.get("password");
@@ -38,12 +38,13 @@ public class PasswordLogin extends ContextLoginModule {
 
         log.debug("request for user: '"+userName+"' with pass: '"+password+"'");
 
-        org.w3c.dom.Node node = getAccount(userName);
+        org.w3c.dom.Element node = getAccount(userName);
         if(node == null) {
             log.info("user with name:" + userName + " doesnt have a value for this module");
             return null;
         }
-        String configPassword = org.mmbase.util.xml.DocumentReader.getNodeTextValue(node);
+        org.w3c.dom.Element identify = (org.w3c.dom.Element) node.getElementsByTagName("identify").item(0);
+        String configPassword = org.mmbase.util.xml.DocumentReader.getNodeTextValue(identify);
         if(!configPassword.equals(password)) {
             log.debug("user with name:" + userName + " used pass:" + password + " but needed :" + configPassword);
             log.info("user with name:" + userName + " didnt give the right password");
