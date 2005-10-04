@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.19 2005-10-01 12:56:21 johannes Exp $
+ * @version $Id: Schemes.java,v 1.20 2005-10-04 13:20:28 johannes Exp $
  */
 public final class Schemes {
 
@@ -152,6 +152,7 @@ public final class Schemes {
      *    <li>{2} the field to create the key for</li>
      *    <li>{3} the basic storage element referenced (name of the object table)</li>
      *    <li>{4} the name of the number field</li>
+     *    <li>{5} the name of the foreign key (may be unspecified)</li>
      *  </ul>
      */
     public static final String CREATE_FOREIGN_KEY = "create-foreign-key-scheme";
@@ -564,6 +565,7 @@ public final class Schemes {
      *    <li>{5} the list of values of the table {2}</li>
      *    <li>{6} the list of fields of the view {3}</li>
      *    <li>{7} the list of values of the table {3}</li>
+     *    <li>{8} the name of the trigger</li>
      *  </ul>
      */
     public static final String CREATE_INSERT_TRIGGER = "create-insert-trigger-scheme";
@@ -578,6 +580,7 @@ public final class Schemes {
      *    <li>{2} the name of the table in which the fields for this view are stored</li>
      *    <li>{3} the name of the view/table that this builder exntends from</li>
      *    <li>{4} the name of the number field that joins the tables in the views</li>
+     *    <li>{5} the name of the trigger</li>
      *  </ul>
      */
     public static final String CREATE_DELETE_TRIGGER = "create-delete-trigger-scheme";
@@ -594,6 +597,7 @@ public final class Schemes {
      *    <li>{4} the list 'SET' statements for table {2}</li>
      *    <li>{5} the list 'SET' statements for table {3}</li>
      *    <li>{6} the name of the number field that joins the tables in the views</li>
+     *    <li>{7} the name of the trigger</li>
      *  </ul>
      */
     public static final String CREATE_UPDATE_TRIGGER = "create-update-trigger-scheme";
