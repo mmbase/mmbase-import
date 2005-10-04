@@ -19,6 +19,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletContext;
 
 /**
  * If this class is used as the class for your builder, then an 'handle' byte field is assumed to
@@ -30,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.105 2005-09-22 19:51:07 ernst Exp $
+ * @version $Id: Images.java,v 1.106 2005-10-04 09:33:57 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -199,6 +200,7 @@ public class Images extends AbstractImages {
             if (imageCaches.storesDimension() || imageCaches.storesFileSize()) {
                 Dimension dimension          = getDimension(node);
                 Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template)); 
+                log.debug("" + dimension + " " + template + " --> " + predictedDimension);
                 if (imageCaches.storesDimension()) {
                     icacheNode.setValue(FIELD_HEIGHT, predictedDimension.getHeight());
                     icacheNode.setValue(FIELD_WIDTH,  predictedDimension.getWidth());
@@ -207,8 +209,8 @@ public class Images extends AbstractImages {
                     icacheNode.setValue(FIELD_FILESIZE, Imaging.predictFileSize(dimension, getFileSize(node), predictedDimension));
                 }
             }
-            log.info("Inserting " + icacheNode);
             int icacheNumber = icacheNode.insert("imagesmodule");
+            log.info("Inserted " + icacheNode);
             if (icacheNumber < 0) {
                 throw new RuntimeException("Can't insert cache entry id=" + node.getNumber() + " key=" + template);
             }
@@ -233,7 +235,12 @@ public class Images extends AbstractImages {
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
         if (req != null) {
-            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
+            ServletContext sx = MMBaseContext.getServletContext();
+            if (sx != null && "true".equals(sx.getInitParameter("mmbase.taglib.url.makerelative"))) {
+                servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
+            } else {
+                servlet.append(getServletPath());
+            }
         } else {
             servlet.append(getServletPath());
         }
