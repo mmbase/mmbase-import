@@ -354,34 +354,44 @@ public class FilledNodeTest extends NodeTest {
 
     public void testGetDateTimeValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            Date value = node.getDateValue(fieldTypes[i] + "field");
-            assertTrue(fieldTypes[i] + " field queried as datetime returned null", value!=null);
+            Date value = null;
             if (fieldTypes[i].equals("node")) {
+                value = node.getDateValue(fieldTypes[i] + "field");
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
                             value.getTime()==-1);
             } else if (fieldTypes[i].equals("datetime")) {
+                value = node.getDateValue(fieldTypes[i] + "field");
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(TEST_TIME)+", but " + value,
                             value.getTime()==TEST_TIME);
             } else if (fieldTypes[i].equals("double")) {
+                value = node.getDateValue(fieldTypes[i] + "field");
                 long time = new Double(Double.MAX_VALUE).longValue() * 1000;
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
                             value.getTime()==time);
             } else if (fieldTypes[i].equals("float")) {
+                value = node.getDateValue(fieldTypes[i] + "field");
                 long time = new Float(Float.MAX_VALUE).longValue() * 1000;
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
                             value.getTime()==time);
             } else if (fieldTypes[i].equals("int")) {
+                value = node.getDateValue(fieldTypes[i] + "field");
                 long time = new Integer(Integer.MAX_VALUE).longValue()*1000;
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
                             value.getTime()==time);
             } else if (fieldTypes[i].equals("long")) {
+                value = node.getDateValue(fieldTypes[i] + "field");
                 long time = Long.MAX_VALUE*1000; // oddd..
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time) + ", but " + value,
                             value.getTime()==time);
             } else {
-                assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
-                            value.getTime()==-1);
+                try {
+                    value = node.getDateValue(fieldTypes[i] + "field");
+                    fail(fieldTypes[i] + " field 's value '" + node.getStringValue(fieldTypes[i] + "field") + "' cannot be queried as a date, should have thrown exception");
+                } catch (Throwable e) {
+                    return;
+                }
             }
+            assertTrue(fieldTypes[i] + " field queried as datetime returned null", value != null);
        }
     }
 
