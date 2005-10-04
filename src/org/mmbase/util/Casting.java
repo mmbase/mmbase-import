@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.67 2005-10-02 16:42:14 michiel Exp $
+ * @version $Id: Casting.java,v 1.68 2005-10-04 22:47:14 michiel Exp $
  */
 
 import java.util.*;
@@ -32,6 +32,7 @@ import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.DayMarkers; // to convert Nodes to and from Dates....
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
 
@@ -79,6 +80,7 @@ public class Casting {
      * @param type the type (class) to check
      * @param value the value whose type to check
      * @return <code>true</code> if compatible
+     * @since MMBase-1.8
      */
     public static boolean isType(Class type, Object value) {
         if (type.isPrimitive()) {
@@ -103,9 +105,10 @@ public class Casting {
      * @param value The value to be converted
      * @param type the type (class)
      * @return value the converted value
+     * @since MMBase-1.8
      */
     public static Object toType(Class type, Object value) {
-        if (isType(type, value))  {
+        if (value != null && isType(type, value))  {
             return value;
         } else {
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
@@ -148,9 +151,17 @@ public class Casting {
             } else if (type.equals(Date.class)) {
                 return toDate(value);
             } else if (type.equals(Node.class)) {
-                return toNode(value, ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
+                if (MMBase.getMMBase().getState()) {
+                    return toNode(value, ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
+                } else {
+                    return value instanceof Node ? value : null;
+                }
             } else if (type.equals(MMObjectNode.class)) {
-                return toNode(value, MMBase.getMMBase().getTypeDef());
+                if (MMBase.getMMBase().getState()) {
+                    return toNode(value, MMBase.getMMBase().getTypeDef());
+                } else {
+                    return value instanceof MMObjectNode ? value : null;
+                }
             } else if (type.equals(Document.class)) {
                 return toXML(value);
             } else if (type.equals(List.class)) {
@@ -160,6 +171,7 @@ public class Casting {
             } else if (type.equals(Collection.class)) {
                 return toCollection(value);
             } else {
+                log.error("Dont now how to convert to " + type);
                 // don't know
                 return value;
             }
@@ -338,12 +350,23 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static List toList(Object o) {
+        return toList(o, ",");
+    }
+
+    /**
+     * As {@link #toList(Object)} but with one extra argument.
+     *
+     * @param delimiter Regexp to use when splitting up the string if the object is a String. <code>null</code> or the empty string mean the default, which is a comma.
+     * @since MMBase-1.8
+     */
+    public static List toList(Object o, String delimiter) {
         if (o instanceof List) {
             return (List)o;
         } else if (o instanceof Collection) {
             return new ArrayList((Collection) o);
         } else if (o instanceof String) {
-            return StringSplitter.split((String)o);
+            if ("".equals(delimiter) || delimiter == null) delimiter = ",";
+            return StringSplitter.split((String)o, delimiter);
         } else if (o instanceof Map) {
             return new ArrayList(((Map)o).entrySet());
         } else {
@@ -490,11 +513,21 @@ public class Casting {
             if (nodenumber != -1) {
                 res = parent.getNode(nodenumber);
             }
+        } else if (i instanceof Date) {
+            MMBase mmb = MMBase.getMMBase();
+            DayMarkers dm = mmb.getState() ? (DayMarkers) mmb.getBuilder("daymarkers") : null;
+            if (dm != null) {
+                long now = System.currentTimeMillis();
+                int daysAgo = (int) ((now - ((Date) i).getTime()) / (1000L * 60 * 60 * 24));
+                return parent.getNode(dm.getDayCountAge(daysAgo));
+            }            
         } else if (i != null && i != MMObjectNode.VALUE_NULL && !i.equals("")) {
             res = parent.getNode(i.toString());
         }
         return res;
     }
+
+    
 
     /**
      * Convert an object to an Node.
@@ -519,6 +552,14 @@ public class Casting {
             if (nodenumber != -1) {
                 res = cloud.getNode(nodenumber);
             }
+        } else if (i instanceof Date) {
+            MMBase mmb = MMBase.getMMBase();
+            DayMarkers dm = mmb.getState() ? (DayMarkers) mmb.getBuilder("daymarkers") : null;
+            if (dm != null) {
+                long now = System.currentTimeMillis();
+                int daysAgo = (int) ((now - ((Date) i).getTime()) / (1000L * 60 * 60 * 24));
+                return cloud.getNode(dm.getDayCountAge(daysAgo));
+            }            
         } else if (i != null &&  i != MMObjectNode.VALUE_NULL && !i.equals("")) {
             res = cloud.getNode(i.toString());
         }
@@ -586,9 +627,9 @@ public class Casting {
 
     /**
      * Convert an object to a <code>boolean</code>.
-     * If the value is numeric, this call returns <code>true</code>
+     * If the value is numeric, this call returns <code>true</code> 
      * if the value is a positive, non-zero, value. In other words, values '0'
-     * and '-1' are concidered <code>false</code>.
+     * and '-1' are considered <code>false</code>.
      * If the value is a string, this call returns <code>true</code> if
      * the value is "true" or "yes" (case-insensitive).
      * In all other cases (including calling byte fields), <code>false</code>
@@ -597,7 +638,9 @@ public class Casting {
      * @return the converted value as a <code>boolean</code>
      */
     static public boolean toBoolean(Object b) {
-        if (b instanceof Boolean) {
+        if (b == null) {
+            return false;
+        } else if (b instanceof Boolean) {
             return ((Boolean)b).booleanValue();
         } else if (b instanceof Number) {
             return ((Number)b).doubleValue() > 0;
@@ -780,17 +823,42 @@ public class Casting {
      * @since MMBase-1.7
      */
     static public Date toDate(Object d) {
+        if (d == null || d == MMObjectNode.VALUE_NULL) return new Date(-1);
         Date date = null;
+        if (d instanceof MMObjectNode || d instanceof Node) {
+            MMBase mmb = MMBase.getMMBase();
+            DayMarkers dm = mmb.getState() ? (DayMarkers) mmb.getBuilder("daymarkers") : null;
+            if (dm != null) {
+                int nodeNumber = (d instanceof Node) ? ((Node)d).getNumber() : ((MMObjectNode) d).getNumber();
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DAY_OF_YEAR, -1 * dm.getAge(nodeNumber));
+                d = cal.getTime();                
+            }            
+        }
+
         if (d instanceof Date) {
-            date =  (Date) d;
+            date = (Date) d;            
         } else {
-            // must perhaps be delegated to specialized class, which borrows stuff from TimeTag.
             try {
                 long dateInSeconds = -1;
                 if (d instanceof Number) {
                     dateInSeconds = ((Number)d).longValue();
+                } else if (d instanceof Document) {
+                    // impossible
+                    dateInSeconds = -1;
+                } else if (d instanceof Boolean) {
+                    dateInSeconds = -1;
+                } else if (d instanceof Collection) {
+                    // impossible
+                    dateInSeconds = -1;
                 } else if (d != null && d != MMObjectNode.VALUE_NULL) {
-                    dateInSeconds = Long.parseLong("" + d);
+                    d = toString(d);
+                    if (d.equals("")) {
+                        return new Date(-1);
+                    }
+                    dateInSeconds = Long.parseLong((String) d);
+                } else {
+                    dateInSeconds = -1;
                 }
                 if (dateInSeconds == -1) {
                     date = new Date(-1);
@@ -799,7 +867,7 @@ public class Casting {
                 }
             } catch (NumberFormatException e) {
                 try {
-                    date =  DynamicDate.getInstance("" + d);
+                    date =  DynamicDate.getInstance((String) d);
                 } catch (org.mmbase.util.dateparser.ParseException pe) {
                     log.error("Parser exception in " + d, pe);
                     return new Date(-1);
@@ -808,7 +876,6 @@ public class Casting {
                 }
             }
         }
-        if (date == null) return new Date(-1);
         return date;
         
     }
