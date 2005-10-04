@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BigDataType.java,v 1.9 2005-10-02 16:10:32 michiel Exp $
+ * @version $Id: BigDataType.java,v 1.10 2005-10-04 22:48:11 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class BigDataType extends DataType {
@@ -156,7 +156,7 @@ abstract public class BigDataType extends DataType {
             buf.append("minLength:" + getMinLength() + "\n");
         }
         if (getMaxLength() > -1) {
-            buf.append("minLength:" + getMaxLength() + "\n");
+            buf.append("maxLength:" + getMaxLength() + "\n");
         }
         return buf.toString();
     }
