@@ -10,9 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 import org.mmbase.util.dateparser.*;
 import java.util.*;
+
 /**
  * A DynamicDate is a Date object that has no fixed value, like 'now'. It is unmodifiable, so all
  * set-methods throw exceptions. There is no public constructor, but a public static {@link #getInstance}.
+ *
+ * Sadly, the Date object of Sun is implemented using private static methods which use private
+ * fields, of the Date object so not everything could be overridden perfectly. So, if e.g. a dynamic
+ * date could be an argument of a 'after' or 'before' method, it is better to wrap it with {@link
+ * DynamicDate#eval} first.
  *
  * @author  Michiel Meeuwissen
  * @since MMBase-1.8
@@ -37,6 +43,18 @@ public class DynamicDate extends Date {
             return parser.toDate();
         }
 
+    }
+
+    /**
+     *  Makes sure the argument 'date' is no DynamicDate any more. So this returns a fixed date
+     *  object when the argument is a DynamicDate and simply the argument if it is not.
+     */
+    public static Date eval(final Date date) {
+        if (date instanceof DynamicDate) {
+            return ((DynamicDate) date).evalDate();
+        } else {
+            return date;
+        }
     }
 
     /**
@@ -82,9 +100,7 @@ public class DynamicDate extends Date {
     public int  compareTo(Date anotherDate) {
         return evalDate().compareTo(anotherDate);
     }
-    public int  compareTo(Object o) {
-        return evalDate().compareTo(o);
-    }
+
     public boolean  equals(Object obj) {
         if (obj instanceof DynamicDate) {
             return date.equals(((DynamicDate)obj).date);
