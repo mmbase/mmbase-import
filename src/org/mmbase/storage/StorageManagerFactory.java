@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.19 2005-10-02 16:16:43 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.20 2005-10-04 13:24:24 johannes Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -546,6 +546,7 @@ public abstract class StorageManagerFactory {
      *  <li>For StorageManager: the basename</li>
      *  <li>For MMBase: the String '[basename]_object</li>
      *  <li>For MMObjectBuilder: the String '[basename]_[builder name]'</li>
+     *  <li>For Indices: the String '[basename]_[builder name]_[index name]_idx'</li>
      *  <li>For MMObjectNode: the object number as a Integer</li>
      *  <li>For CoreField or String: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
      * </ul>
@@ -568,7 +569,7 @@ public abstract class StorageManagerFactory {
         } else if (mmobject instanceof MMObjectNode) {
             return ((MMObjectNode)mmobject).getIntegerValue("number");
         } else if (mmobject instanceof Index) {
-            return mmbase.getBaseName()+"_"+((Index)mmobject).getParent().getTableName() + "_" + ((Index)mmobject).getName() + "_idx";
+            id = mmbase.getBaseName()+"_"+((Index)mmobject).getParent().getTableName() + "_" + ((Index)mmobject).getName() + "_idx";
         } else if (mmobject instanceof String || mmobject instanceof CoreField) {
             if (mmobject instanceof CoreField) {
                 id = ((CoreField)mmobject).getName();
@@ -592,6 +593,25 @@ public abstract class StorageManagerFactory {
         } else {
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
         }
+        
+        String maxIdentifierLength = (String)getAttribute(Attributes.MAX_IDENTIFIER_LENGTH);
+        if (maxIdentifierLength != null && !"".equals(maxIdentifierLength)) {
+          try {
+            int maxlength = Integer.parseInt(maxIdentifierLength);
+            if (id.length() > maxlength) {
+              // Truncate the id, leave 8 characters space to put the hashcode
+              String base = id.substring(0, maxlength - 8);
+              long hashcode = id.hashCode();
+              if (hashcode < 0) hashcode = Integer.MAX_VALUE + hashcode;
+
+              // This generates a 8-character hex representation of the strings hashcode
+              id = base + (new java.math.BigInteger(""+hashcode)).toString(16);
+            }
+          } catch (NumberFormatException e) {
+            log.warn("Exception parsing the 'max-identifier-length' parameter; ignoring it!");
+          }
+        }
+
         String toCase = (String)getAttribute(Attributes.STORAGE_IDENTIFIER_CASE);
         if ("lower".equals(toCase)) {
             return id.toLowerCase();
