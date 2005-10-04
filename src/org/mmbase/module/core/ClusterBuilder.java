@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.75 2005-09-01 14:16:08 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.76 2005-10-04 23:04:48 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -167,13 +167,14 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // Else "name"-fields of contained nodes.
         StringBuffer sb = new StringBuffer();
-        for (Enumeration i= node.values.keys(); i.hasMoreElements();) {
-            String key= (String)i.nextElement();
+        for (Iterator i= node.getValues().entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String) entry.getKey();
             if (key.endsWith(".name")) {
                 if (s.length() != 0) {
                     sb.append(", ");
                 }
-                sb.append(node.values.get(key));
+                sb.append(entry.getValue());
             }
         }
         if (sb.length() > 15) {
@@ -197,7 +198,7 @@ public class ClusterBuilder extends VirtualBuilder {
         int pos= field.indexOf('.');
         String bulname= null;
         if ((pos != -1) && (node instanceof ClusterNode)) {
-            bulname= field.substring(0, pos);
+            bulname = field.substring(0, pos);
         }
         MMObjectNode n = ((ClusterNode)node).getRealNode(bulname);
         if (n == null) {
@@ -205,8 +206,11 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         MMObjectBuilder bul= n.getBuilder();
         if (bul != null) {
-            String tmp= field.substring(pos + 1);
-            return bul.getGUIIndicator(tmp, n);
+            // what are we trying here?
+            if (pos != -1) {
+                String fieldName = field.substring(pos + 1);
+                return bul.getGUIIndicator(fieldName, n);
+            }
         }
         return null;
     }
