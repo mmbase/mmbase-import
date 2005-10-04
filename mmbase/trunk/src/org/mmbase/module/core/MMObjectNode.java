@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.155 2005-09-27 14:46:06 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.156 2005-10-04 18:46:30 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -46,7 +46,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.7
      * @todo The _type_ of such a 'null' value cannot be determined. Do we need a NULL constant for every type in stead?
      */
-    public final static Object VALUE_NULL = new Object() {
+    public final static Object VALUE_NULL = new Serializable() {
+            private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+                // writing nothing in special, is good enough
+            }
+            private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+                // reading nothing is good enough too.
+            }
             public String toString() { return "[FIELD VALUE NULL]"; }
         };
 
@@ -106,7 +112,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @scope private
      */
     public Hashtable values = new Hashtable();
-    //Map values = Collections.synchronizedMap(new HashMap());
+    //private Map values = Collections.synchronizedMap(new HashMap());
 
     private Map sizes = Collections.synchronizedMap(new HashMap());
 
@@ -249,7 +255,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Insert this node into the storage
-     * @param username the name of the user who inserts the node. This value is ignored
+     * @param userName the name of the user who inserts the node. This value is ignored
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
@@ -810,7 +816,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
     public byte[] getByteValue(String fieldName) {
-
         Object obj = getValue(fieldName);
         if (obj == null || obj == VALUE_NULL) {
             return new byte[0];
@@ -1040,7 +1045,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Return the names of all persistent fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
-     * @param a <code>Set</code> containing all the fieldNames corresponding to changed fields.
      * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though. 
      */
     public Set getChanged() {
@@ -1291,7 +1295,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Return the number of relations of this node, filtered on a specified type.
-     * @param wantedtype the 'type' of related nodes (NOT the relations!).
+     * @param wt the 'type' of related nodes (NOT the relations!).
      * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount(String wt) {
