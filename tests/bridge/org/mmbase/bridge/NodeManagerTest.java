@@ -59,7 +59,7 @@ public class NodeManagerTest extends BridgeTest {
         // Remove test node.
         
         for (NodeIterator i  = nodes.nodeIterator() ; i.hasNext() ; ){
-         i.nextNode().delete();
+            i.nextNode().delete();
         }
     }
 
@@ -77,8 +77,8 @@ public class NodeManagerTest extends BridgeTest {
      */
     public void testGetListWithQuotes() {
         NodeManager nodeManager = cloud.getNodeManager("aa");
-        NodeList nodeList = nodeManager.getList("stringfield ='"+ org.mmbase.util.Encode.encode("ESCAPE_SINGLE_QUOTE",TEST_STRING_VALUE) +" '", "", "");
-        assertTrue(nodeList.size() == 1);
+        NodeList nodeList = nodeManager.getList("stringfield ='"+ org.mmbase.util.Encode.encode("ESCAPE_SINGLE_QUOTE", TEST_STRING_VALUE) + "'", "", "");
+        assertTrue("Size of result list with constraint on string field is not 1 but " + nodeList.size() + " : " + nodeList, nodeList.size() == 1);
     }
     // Add some more list test.
 
