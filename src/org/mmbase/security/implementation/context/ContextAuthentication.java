@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.18 2005-03-01 14:16:31 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.19 2005-10-04 11:15:24 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -132,7 +132,7 @@ public class ContextAuthentication extends Authentication {
                 log.debug("login on module with name:" + moduleName + "failed");
             } else {
                 if (user.getRank().getInt() > Rank.ANONYMOUS_INT) {
-                    log.service("login on module with name:" + moduleName + " was succesfull for user with id:" + user.getIdentifier());
+                    log.debug("login on module with name:" + moduleName + " was succesfull for user with id:" + user.getIdentifier());
                 }
             }
         }
