@@ -26,8 +26,7 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
      * @param nodeType should be a valid builder name
      * @param listener the node event listener you want to wrap
      */
-    public TypedNodeEventListenerWrapper(String nodeType,
-            NodeEventListener listener) {
+    public TypedNodeEventListenerWrapper(String nodeType, NodeEventListener listener) {
         this.nodeType = nodeType;
         wrappedListener = listener;
 
@@ -54,7 +53,7 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
     }
 
     public String toString() {
-        return "NodeEventListenerWrapper(" + wrappedListener + ")";
+        return "TypedNodeEventListenerWrapper(" + wrappedListener + ")";
     }
 
 }
