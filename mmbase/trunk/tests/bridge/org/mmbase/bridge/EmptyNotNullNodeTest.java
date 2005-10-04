@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.7 2005-10-04 22:46:02 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
@@ -189,15 +190,17 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
     public void testGetDateTimeValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Date value = node.getDateValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value!=null);
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value, value.getTime() == -1);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value != null);            
+            Date expected = fieldTypes[i].equals("date") ? new Date() : new Date(-1);
+            long diff = Math.abs(expected.getTime() - value.getTime());
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return " + expected + ", but " + value + "(differs " + diff + ") value:" + node.getStringValue(fieldTypes[i] + "field"),  diff < 60000L); // allow for a minute differnce (duration of test or so..)
        }
     }
 
     public void testGetListValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             List value = node.getListValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value!=null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value != null);
             if (fieldTypes[i].equals("list")) {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value, value.size() == 0);
             } else {
@@ -211,6 +214,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
         // Create a empty test node.
         Cloud cloud = getCloud();
         node = cloud.getNodeManager("xx").createNode();
+        assertTrue(cloud.hasNode(cloud.getNodeManager("bb").getNumber()));
         // not-null node-field _must_ be filled because of referential integrity conflicts
         node.setValue("nodefield", cloud.getNodeManager("bb"));
         node.commit();
