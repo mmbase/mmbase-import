@@ -34,6 +34,7 @@ import org.mmbase.core.event.RelationEventListener;
 import org.mmbase.core.util.Fields;
 
 import org.mmbase.storage.StorageException;
+import org.mmbase.storage.StorageNotFoundException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
@@ -64,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.341 2005-10-02 16:30:00 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.342 2005-10-04 18:45:09 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -1173,7 +1174,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      * @throws RuntimeException If the node does not exist (not always true!)
      */
-    public  MMObjectNode getNode(int number, boolean useCache) {
+    public  MMObjectNode getNode(final int number, boolean useCache) {
         if (log.isDebugEnabled()) {
             log.trace("Getting node with number " + number);
         }
@@ -1233,6 +1234,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             log.debug("Returning " + node);
             return node;
+        } catch(StorageNotFoundException se) {
+            return null;
         } catch(StorageException se) {
             log.error(se.getMessage(), se);
             return null;
@@ -2167,7 +2170,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Default is null (indicating to display the field as is)
      * Override this to display your own choice.
      * @param node The node to display
-     * @param field the name field of the field to display
+     * @param fieldName the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
     public String getGUIIndicator(String fieldName, MMObjectNode node) {
@@ -2214,7 +2217,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * not been assigned a valid position (valid is >= 0).
      * This method makes an explicit sort (it does not use a cached list).
      *
-     * @param sortorder One of the sortorders defined in
+     * @param sortOrder One of the sortorders defined in
      *        {@link org.mmbase.core.CoreField CoreField}
      * @return The ordered list of field definitions.
      */
@@ -2455,7 +2458,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Instantiates a Function object for a certain function on a certain node of this type.
      * @param node The Node for on which the function must work
-     * @param functioName Name of the request function.
+     * @param functionName Name of the request function.
      * @return a Function object or <code>null</code> if no such function.
      * @since MMBase-1.8
      */
@@ -3412,7 +3415,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get text from a blob field. This function is called to 'load' a field into the node, because
      * it was not loaded together with the node, because it is supposed to be too big.
      * @param fieldName name of the field
-     * @param number number of the object in the table
+     * @param node 
      * @return a <code>String</code> containing the complate contents of a field as text.
      * @since MMBase-1.8
      */
@@ -3431,7 +3434,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Get binary data of a blob field. This function is called to 'load' a field into the node, because
      * it was not loaded together with the node, because it is supposed to be too big.
      * @param fieldName name of the field
-     * @param number number of the object in the table
+     * @param node
      * @return an array of <code>byte</code> containing the complete contents of the field.
      * @since MMBase-1.8
      */
