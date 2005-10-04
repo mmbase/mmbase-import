@@ -22,7 +22,6 @@ import org.mmbase.cache.*;
 
 import org.mmbase.datatypes.DataTypeCollector;
 
-import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.core.*;
@@ -65,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.342 2005-10-04 18:45:09 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.343 2005-10-04 22:56:51 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -489,12 +488,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (oType == -1) { // no object type number defined yet
                     if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
                     MMObjectNode node = typeDef.getNewNode(SYSTEM_OWNER);
-                    node.setValue("name", tableName);
+                    node.storeValue("name", tableName);
 
                     // This sucks:
                     if (description == null) description = "not defined in this language";
 
-                    node.setValue("description", description);
+                    node.storeValue("description", description);
 
                     try {
                         oType = mmb.getStorageManager().createKey();
@@ -504,10 +503,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     }
 
                     log.debug("Got key " + oType);
-                    node.setValue(FIELD_NUMBER, oType);
+                    node.storeValue(FIELD_NUMBER, new Integer(oType));
                     // for typedef, set otype explictly, as it wasn't set in getNewNode()
                     if (this == typeDef) {
-                        node.setValue(FIELD_OBJECT_TYPE, oType);
+                        node.storeValue(FIELD_OBJECT_TYPE, new Integer(oType));
                     }
                     typeDef.insert(SYSTEM_OWNER, node, false);
                     // for typedef, call it's parents init again, as otype is only now set
@@ -523,7 +522,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     return false;
                 }
             }
-
+            // XXX: wtf
             // add temporary fields
             checkAddTmpField("_number");
             checkAddTmpField("_exists");
@@ -631,7 +630,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         Integer nodeNumber = new Integer(n);
         if (nodeCache.contains(nodeNumber)) {
             // it seems that the something put the node in the cache already.
-            // This is usually because the ChangeManager indirectoy called 'getNode'
+            // This is usually because the ChangeManager indirectly called 'getNode'
             // This should in the new event-mechanism not be needed, because the NodeEvent
             // contains the node.
 
@@ -778,6 +777,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         for (Iterator i = getFields().iterator(); i.hasNext(); ) {
             CoreField field = (CoreField) i.next();
             Object defaultValue = field.getDataType().getDefaultValue();
+            if ((defaultValue == null) && field.isNotNull()) {
+                defaultValue = Casting.toType(Fields.typeToClass(field.getType()), "");
+            }
             if (defaultValue != null) {
                 node.setValue(field.getName(), defaultValue);
             }
@@ -2835,14 +2837,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return mmb.getDBKey();
     }
 
-    /**
-     * Return the age of the node, determined using the daymarks builder.
-     * @param node The node whose age to determine
-     * @return the age in days, or 0 if unknown (daymarks builder not present)
-     */
-    public int getAge(MMObjectNode node) {
-        return ((DayMarkers)mmb.getMMObject("daymarks")).getAge(node);
-    }
 
     /**
      * Get the name of this mmserver from the MMBase Root
