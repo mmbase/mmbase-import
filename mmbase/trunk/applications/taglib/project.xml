@@ -40,7 +40,7 @@ See http://www.MMBase.org/license
                 <filtering>false</filtering>
             </resource>
             <resource>
-                <directory>${basedir}/src/java/</directory>
+                <directory>${basedir}/src</directory>
                 <includes>
                     <include>**/*.xml</include>
                     <include>**/*.dtd</include>
