@@ -17,10 +17,10 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @applicatie Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.20 2005-10-03 16:49:30 michiel Exp $
+ * @version $Id: Urls.java,v 1.21 2005-10-04 09:34:37 michiel Exp $
  */
 public class Urls extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(Urls.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Urls.class);
 
     public String getGUIIndicator(MMObjectNode node) {
         String str = node.getStringValue("url");
