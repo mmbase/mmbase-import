@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.41 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.42 2005-10-04 22:52:58 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -151,13 +151,12 @@ public class DayMarkers extends MMObjectBuilder {
         }
     }
 
+
     /**
      * Returns the age, in days, of a node. So, this does the inverse of most methods in this
      * class. It converts a node number (which is like a mark) to a day.
      */
-    public int getAge(MMObjectNode node) {
-
-        int nodeNumber = node.getIntValue(FIELD_NUMBER);
+    public int getAge(int nodeNumber) {
         // first, check if it accidentily can be found with the cache:
         Set days = daycache.entrySet();
         Iterator i = days.iterator();
@@ -208,7 +207,7 @@ public class DayMarkers extends MMObjectBuilder {
                 return day - daycount;
             } else {
                 // hmm, strange, perhaps we have to seek the oldest daycount, but for the moment:
-                log.service("daycount could not be found for node " + node.getNumber());
+                log.service("daycount could not be found for node " + nodeNumber);
                 // determining the oldest daycount:
                 query = new NodeSearchQuery(this);
                 StepField number = query.getField(getField(FIELD_NUMBER));
@@ -246,7 +245,7 @@ public class DayMarkers extends MMObjectBuilder {
     }
 
     /**
-     * Given an age, this function returns a mark, _not a day count_.
+     * Given an age, this function returns a mark, _not a day count_, and also _not an age_!
      * @param daysold a time in days ago.
      * @return the smallest object number of all objects that are younger than given parameter daysold.
      **/
