@@ -49,6 +49,7 @@ public class NodeEvent extends Event implements Serializable {
 
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
+        if (node.getNumber() < 0) throw new IOException("Cannot serialize " + node);
         out.writeUTF(node.getBuilder().getTableName());
         out.writeInt(node.getNumber());
         out.writeInt(eventType);
