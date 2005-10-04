@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.13 2005-10-02 16:43:55 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.14 2005-10-04 11:15:24 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -100,7 +100,7 @@ public abstract class ContextLoginModule {
         return getAccount(userName, name, null);
     }
     /**
-     * @deprecated Use {@link #getAccountValue}
+     * @deprecated Use {@link #getAccount}
      */
     protected String getModuleValue(String userName) throws SecurityException {
         Element node = getAccount(userName, name, null);
@@ -110,8 +110,8 @@ public abstract class ContextLoginModule {
     }
 
     /**
-     * Search an account for a given user name and identify type (the 'module'). Returns the value of the element
-     * (which is often the empty string or the password)
+     * Search an account for a given user name and identify type (the 'module').
+     * @return The user Element.
      * @since MMBase-1.8
      */
     protected Element getAccount(String userName, String identifyType, String rank) throws SecurityException {
@@ -124,7 +124,7 @@ public abstract class ContextLoginModule {
         if (identifyType != null) {
             xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
         } else {
-            xpath = "/contextconfig/accounts/user[" + userCons + "]/identify";
+            xpath = "/contextconfig/accounts/user[" + userCons + "]";
         }
         if (log.isDebugEnabled()) {
             log.debug("going to execute the query:" + xpath);
@@ -142,6 +142,10 @@ public abstract class ContextLoginModule {
             log.warn("user :" + userName + " was not found for identify type: " + identifyType);
             return null;
         }
-        return (Element) found.getParentNode();
+        if (identifyType != null) {
+            return (Element) found.getParentNode();
+        } else {
+            return (Element) found;
+        }
     }
 }
