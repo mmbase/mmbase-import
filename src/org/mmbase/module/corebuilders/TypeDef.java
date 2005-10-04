@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.60 2005-09-22 20:44:09 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.61 2005-10-04 23:02:23 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -395,15 +395,15 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     /**
-     *  Sets a key/value pair in the main values of this node.
-     *  Note that if this node is a node in cache, the changes are immediately visible to
-     *  everyone, even if the changes are not committed.
-     *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
-     *  @param fieldValue the value to assign
-     *  @param originalValue the value which was original in the field
-     *  @return <code>true</code> When an update is required(when changed),
-     *	<code>false</code> if original value was set back into the field.
+     * Sets a key/value pair in the main values of this node.
+     * Note that if this node is a node in cache, the changes are immediately visible to
+     * everyone, even if the changes are not committed.
+     * The fieldname is added to the (public) 'changed' vector to track changes.
+     * @param node 
+     * @param fieldName the name of the field to change
+     * @param originalValue the value which was original in the field
+     * @return <code>true</code> When an update is required(when changed),
+     * <code>false</code> if original value was set back into the field.
      */
     public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
         Object newValue = node.retrieveValue(fieldName);
