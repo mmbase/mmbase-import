@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.35 2005-10-03 16:27:35 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.36 2005-10-04 09:15:16 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -286,7 +286,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             if (storesImageType()) {
                 log.debug("Found itype " + itype + " storing that");
                 node.setValue(FIELD_ITYPE, itype);
-                node.commit();
+                if (node.getNumber() > 0) { // if this node is not new
+                    node.commit();
+                }
             } else {
                 log.debug("Doesn't store");
             }
