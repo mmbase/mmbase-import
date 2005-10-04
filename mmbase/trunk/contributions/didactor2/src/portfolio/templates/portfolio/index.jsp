@@ -518,7 +518,7 @@ Mijn gegevens:
           <td>Achternaam:</td>
           <td><mm:field name="lastname"/></td>
         </tr>
-        <tr>
+<%--        <tr>
           <td>Adres:</td>
           <td><mm:field name="address"/></td>
         </tr>
@@ -533,7 +533,7 @@ Mijn gegevens:
         <tr>
           <td>Telefoonnummer:</td>
           <td><mm:field name="telephone"/></td>
-        </tr>
+        </tr> --%>
         <tr>
           <td style="vertical-align: top">Opmerkingen:</td>
           <td><mm:field name="remarks" escape="p"/></td>
