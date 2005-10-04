@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.25 2005-10-02 16:08:23 michiel Exp $
+ * @version $Id: DataType.java,v 1.26 2005-10-04 22:50:15 michiel Exp $
  */
 
 public class DataType extends AbstractDescriptor implements Cloneable, Comparable, Descriptor {
@@ -105,7 +105,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
     }
 
     protected String getBaseTypeIdentifier() {
-        return Fields.getTypeDescription(DataTypes.classToType(classType)).toLowerCase();
+        return Fields.getTypeDescription(Fields.classToType(classType)).toLowerCase();
     }
 
     /**
@@ -140,11 +140,11 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         setProcessors = null;
     }
 
-    protected DataType.ValueConstraint inheritConstraint(DataType.ValueConstraint property) {
-        if (property == null) {
+    protected DataType.ValueConstraint inheritConstraint(DataType.ValueConstraint constraint) {
+        if (constraint == null) {
             return null;
         } else {
-            return property.clone(this);
+            return constraint.clone(this);
         }
     }
 
@@ -294,15 +294,15 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * Adds a new error message to the errors collection, based on given Constraint. If this
      * error-collection is unmodifiable (VALID), it is replace with a new empty one first.
      */
-    protected final Collection addError(Collection errors, DataType.ValueConstraint property, Object value) {
+    protected final Collection addError(Collection errors, DataType.ValueConstraint constraint, Object value) {
         if (errors == VALID) errors = new ArrayList();
-        if (property.getErrorDescription() == null) {
-            throw new IllegalArgumentException("Failed " + property + " for value " + value);
+        if (constraint.getErrorDescription() == null) {
+            throw new IllegalArgumentException("Failed " + constraint+ " for value " + value);
         }
-        ReplacingLocalizedString error = new ReplacingLocalizedString(property.getErrorDescription());
-        error.replaceAll("\\$\\{NAME\\}",       property.getName());
-        error.replaceAll("\\$\\{CONSTRAINT\\}",   ""+property.getValue());
-        error.replaceAll("\\$\\{VALUE\\}",      ""+value);
+        ReplacingLocalizedString error = new ReplacingLocalizedString(constraint.getErrorDescription());
+        error.replaceAll("\\$\\{NAME\\}",       constraint.getName());
+        error.replaceAll("\\$\\{CONSTRAINT\\}",   "" + constraint.toString());
+        error.replaceAll("\\$\\{VALUE\\}",      "" + value);
         errors.add(error);
         return errors;
     }
@@ -364,12 +364,12 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor.getClass().getName() + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
-                buf.append(getProcessors[i] == null ? "" : ("; get [" + DataTypes.typeToClass(i) + "]:" + getProcessors[i] + " "));
+                buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));
             }
         }
         if (setProcessors != null) {
             for (int i =0; i < 13; i++) {
-                buf.append(setProcessors[i] == null ? "" : ("; set [" + DataTypes.typeToClass(i) + "]:" + setProcessors[i] + " "));
+                buf.append(setProcessors[i] == null ? "" : ("; set [" + Fields.typeToClass(i) + "]:" + setProcessors[i] + " "));
             }
         }
         if (isRequired()) {
@@ -447,14 +447,9 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * is filled in by the system.
      *
      * @return  <code>true</code> if the field is required
-     * @since  MMBase-1.6
      */
     public boolean isRequired() {
-        if (requiredConstraint == null) {
-            return CONSTRAINT_REQUIRED_DEFAULT.booleanValue();
-        } else {
-            return Boolean.TRUE.equals(requiredConstraint.getValue());
-        }
+        return requiredConstraint == null ? CONSTRAINT_REQUIRED_DEFAULT.booleanValue() : Boolean.TRUE.equals(requiredConstraint.getValue());
     }
 
     /**
@@ -487,11 +482,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
      * @since  MMBase-1.6
      */
     public boolean isUnique() {
-        if (uniqueConstraint == null) {
-            return CONSTRAINT_UNIQUE_DEFAULT.booleanValue();
-        } else {
-            return Boolean.TRUE.equals(uniqueConstraint.getValue());
-        }
+        return uniqueConstraint == null ? CONSTRAINT_UNIQUE_DEFAULT.booleanValue() : Boolean.TRUE.equals(uniqueConstraint.getValue());
     }
 
     /**
@@ -594,7 +585,6 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
                     log.debug("commit:" + processor.getClass().getName());
                 }
                 ((CommitProcessor)processor).commit(node, field);
-
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("process for " + this + processor.getClass().getName());
@@ -603,6 +593,7 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
                 result = processor.process(node, field, value);
             }
         }
+        
 
         return result;
     }
@@ -689,12 +680,16 @@ public class DataType extends AbstractDescriptor implements Cloneable, Comparabl
         private LocalizedString errorDescription;
         private boolean fixed = false;
 
-        protected ValueConstraint(String name, Object value) {
+
+        protected ValueConstraint(String name) {
             this.name = name;
-            this.value = value;
             String key = DataType.this.getBaseTypeIdentifier() + "." + name + ".error";
             errorDescription = new LocalizedString(key);
             errorDescription.setBundle(DataType.DATATYPE_BUNDLE);
+        }
+        protected ValueConstraint(String name, Object value) {
+            this(name);
+            this.value = value;
         }
 
         public String getName() {
