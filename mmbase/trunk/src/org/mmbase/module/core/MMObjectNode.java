@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.157 2005-10-04 22:58:14 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.158 2005-10-04 23:30:36 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -716,6 +716,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // request to our builder
         if (value == null) value = parent.getValue(this, fieldName);
 
+        if (value instanceof InputStream) {
+            value = useInputStream(fieldName, (InputStream) value);
+        }
+
         // return the found object
         return value;
     }
@@ -823,8 +827,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         } else if (obj instanceof byte[]) {
             // was already unmapped so return the value
             return (byte[]) obj;
-        } else if (obj instanceof InputStream) {
-            return useInputStream(fieldName, (InputStream) obj);
         } else {
             byte[] b;
             if (getDBType(fieldName) == Field.TYPE_STRING) {
