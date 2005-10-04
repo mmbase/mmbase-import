@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.44 2005-07-09 11:46:10 nklasens Exp $
+ * @version $Id: MMBaseContext.java,v 1.45 2005-10-04 23:05:49 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -213,11 +213,11 @@ public class MMBaseContext {
     }
 
     /**
-     * Returns the <code>ServeltContext</code> used to initialize MMBase.
+     * Returns the <code>ServletContext</code> used to initialize MMBase.
      * Before calling this method the init method should be called.
      *
-     * @return  the <code>ServeltContext</code> used to initialize MMBase or
-     *          <code>null</code> if MMBase was initilized without
+     * @return  the <code>ServletContext</code> used to initialize MMBase or
+     *          <code>null</code> if MMBase was initialized without
      *          <code>ServletContext</code>
      */
     public synchronized static ServletContext getServletContext() {
