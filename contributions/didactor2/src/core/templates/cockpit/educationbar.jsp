@@ -2,11 +2,13 @@
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
 <div class="educationMenubar" style="white-space: nowrap">
-<mm:present referid="education">
-  <mm:node number="component.progress" notfound="skip">
-    <mm:treeinclude page="/progress/cockpit/bar_connector.jsp" objectlist="$includePath" referids="$referids"/>
-  </mm:node>
-</mm:present>
+<mm:isgreaterthan referid="user" value="0">
+
+  <mm:present referid="education">
+    <mm:node number="component.progress" notfound="skip">
+      <mm:treeinclude page="/progress/cockpit/bar_connector.jsp" objectlist="$includePath" referids="$referids"/>
+    </mm:node>
+  </mm:present>
 
   <%// Refresh button %>
   <%-- <iframe width="200" height="25" frameborder="0" marginheight="0" marginwidth="0" scrolling="0" src="../../cockpit/refresh_of_tree.jsp"/> --%>
@@ -29,5 +31,5 @@
     </mm:node>
   </mm:present>
   </div>
-
+</mm:isgreaterthan>
 </mm:cloud>
