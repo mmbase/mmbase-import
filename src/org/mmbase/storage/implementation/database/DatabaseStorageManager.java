@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.125 2005-10-02 16:14:54 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.126 2005-10-04 13:40:10 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1139,7 +1139,7 @@ public class DatabaseStorageManager implements StorageManager {
                 long storeValue = Casting.toLong(value);
                 statement.setLong(index, storeValue);
                 node.storeValue(field.getName(), new Long(storeValue));
-                    break;
+                break;
             }
             default:
                 break;
@@ -1614,6 +1614,16 @@ public class DatabaseStorageManager implements StorageManager {
                 return getDateTimeValue(result, index, field);
             case Field.TYPE_BOOLEAN :
                 return getBooleanValue(result, index, field);
+            case Field.TYPE_INTEGER :
+            case Field.TYPE_NODE :
+                Object o = result.getObject(index);
+                if (o instanceof Integer) {
+                    return o;
+                } else if (o instanceof Number) {
+                    return new Integer(((Number)o).intValue());
+                } else {
+                    return o;
+                }
             default :
                 return result.getObject(index);
             }
@@ -1857,7 +1867,8 @@ public class DatabaseStorageManager implements StorageManager {
             if (field.getType() == Field.TYPE_NODE) {
                 scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY, Schemes.CREATE_FOREIGN_KEY_DEFAULT);
                 if (scheme != null) {
-                    String definition = scheme.format(new Object[] { this, field.getParent(), field, factory.getMMBase(), factory.getStorageIdentifier("number")});
+                    Object keyname = factory.getStorageIdentifier("" + field.getParent().getTableName() + "_" + field.getName() + "_FOREIGN");
+                    String definition = scheme.format(new Object[] { this, field.getParent(), field, factory.getMMBase(), factory.getStorageIdentifier("number"), keyname});
                     if (definitions != null) {
                         definitions += ", " + definition;
                     } else {
