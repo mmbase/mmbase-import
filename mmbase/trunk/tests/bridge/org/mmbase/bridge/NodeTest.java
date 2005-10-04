@@ -264,18 +264,6 @@ public abstract class NodeTest extends BridgeTest {
         }
     }
 
-    public void testSetOwner() {
-        try {
-            node.setStringValue("owner", "admin");
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-        try {
-            node.setValue("owner", "admin");
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-    }
 
     public void testSetOType() {
         try {
