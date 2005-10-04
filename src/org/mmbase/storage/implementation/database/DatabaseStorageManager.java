@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.126 2005-10-04 13:40:10 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.127 2005-10-04 18:43:30 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1444,7 +1444,7 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
+    public MMObjectNode getNode(final MMObjectBuilder builder, final int number) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
             // create a new node (must be done before acquiring the connection, because this code might need a connection)
@@ -1571,7 +1571,7 @@ public class DatabaseStorageManager implements StorageManager {
                 node.clearChanged();
                 return;
             } else {
-                throw new StorageException("Node " + node.getNumber() + " not found in storage. ResultSet: " + result);
+                throw new StorageNotFoundException("Statement " + result.getStatement() + " (to fetch a Node) did not result anything");
             }
         } catch (SQLException se) {
             throw new StorageException(se);
