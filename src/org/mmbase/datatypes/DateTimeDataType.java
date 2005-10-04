@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: DateTimeDataType.java,v 1.17 2005-10-02 16:10:32 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.18 2005-10-04 14:51:48 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends DataType {
@@ -29,23 +29,19 @@ public class DateTimeDataType extends DataType {
 
     public static final String CONSTRAINT_MIN = "min";
     public static final Date CONSTRAINT_MIN_DEFAULT = null;
-    public static final String ERROR_MIN_INCLUSIVE = "minInclusive";
-    public static final String ERROR_MIN_EXCLUSIVE = "minExclusive";
 
     public static final String CONSTRAINT_MAX = "max";
     public static final Date CONSTRAINT_MAX_DEFAULT = null;
-    public static final String ERROR_MAX_INCLUSIVE = "maxInclusive";
-    public static final String ERROR_MAX_EXCLUSIVE = "maxExclusive";
 
     protected DataType.ValueConstraint minConstraint;
-    protected int minPrecision;
+    protected int minPrecision   = FieldValueDateConstraint.SECOND;
     protected boolean minInclusive;
 
     protected DataType.ValueConstraint maxConstraint;
-    protected int maxPrecision;
+    protected int maxPrecision = FieldValueDateConstraint.SECOND;
     protected boolean maxInclusive;
 
-    // keys for use with error messages to retrive from the bundle
+    // keys for use with error messages to retrieve from the bundle
     private String minInclusiveErrorKey;
     private String minExclusiveErrorKey;
     private String maxInclusiveErrorKey;
@@ -126,12 +122,14 @@ public class DateTimeDataType extends DataType {
      * @return the minimum value as an <code>Number</code>, or <code>null</code> if there is no minimum.
      */
     public DataType.ValueConstraint getMinConstraint() {
-        if (minConstraint == null) minConstraint = new ValueConstraint(CONSTRAINT_MIN, CONSTRAINT_MIN_DEFAULT);
+        if (minConstraint == null) {
+            minConstraint = new ValueConstraint(CONSTRAINT_MIN, CONSTRAINT_MIN_DEFAULT);
+        }
         // change the key for the property error description to match the inclusive status
         if (minInclusive) {
-            minConstraint.getErrorDescription().setKey(ERROR_MIN_INCLUSIVE);
+            minConstraint.getErrorDescription().setKey(minInclusiveErrorKey);
         } else {
-            minConstraint.getErrorDescription().setKey(ERROR_MIN_EXCLUSIVE);
+            minConstraint.getErrorDescription().setKey(minExclusiveErrorKey);
         }
         return minConstraint;
     }
@@ -169,12 +167,14 @@ public class DateTimeDataType extends DataType {
      * @return the property defining the maximum value
      */
     public DataType.ValueConstraint getMaxConstraint() {
-        if (maxConstraint == null) maxConstraint = new ValueConstraint(CONSTRAINT_MAX, CONSTRAINT_MAX_DEFAULT);
+        if (maxConstraint == null) {
+            maxConstraint = new ValueConstraint(CONSTRAINT_MAX, CONSTRAINT_MAX_DEFAULT);
+        }
         // change the key for the property error description to match the inclusive status
         if (maxInclusive) {
-            maxConstraint.getErrorDescription().setKey(ERROR_MAX_INCLUSIVE);
+            maxConstraint.getErrorDescription().setKey(maxInclusiveErrorKey);
         } else {
-            maxConstraint.getErrorDescription().setKey(ERROR_MAX_EXCLUSIVE);
+            maxConstraint.getErrorDescription().setKey(maxExclusiveErrorKey);
         }
         return maxConstraint;
     }
