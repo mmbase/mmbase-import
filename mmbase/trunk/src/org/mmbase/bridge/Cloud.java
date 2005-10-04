@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.55 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: Cloud.java,v 1.56 2005-10-04 19:26:27 michiel Exp $
  */
 public interface Cloud {
 
@@ -299,7 +299,7 @@ public interface Cloud {
      * @param destinationManagerName the name of the manager for the destination of the relation
      * @param roleName the rolename
      * @return  a <code>RelationManagerList</code> containing all relation
-     *          managers that follwo thsi filter
+     *          managers that follow this filter
      * @throws NotFoundException     if one of the specified relation managers or the rolename could not be found
      */
     public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,  String roleName) throws NotFoundException;
