@@ -287,6 +287,7 @@ Build-compiler: ${build.compiler}
             >
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
       </daemons>
       <echo message="${tests.lib}/mmbase-rmmci.jar" />
@@ -396,6 +397,7 @@ Build-compiler: ${build.compiler}
       >
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Dmmbase.machinename=remotecontext" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
   </target>
 
