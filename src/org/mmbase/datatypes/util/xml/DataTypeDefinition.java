@@ -16,6 +16,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.util.fields.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.xml.DocumentReader;
@@ -30,7 +31,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.22 2005-10-04 17:18:37 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.23 2005-10-04 22:50:15 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -421,7 +422,7 @@ public class DataTypeDefinition {
                     int processingType = Field.TYPE_UNKNOWN;
                     DataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
                     if (basicDataType != null) {
-                        processingType = DataTypes.classToType(basicDataType.getTypeAsClass());
+                        processingType = Fields.classToType(basicDataType.getTypeAsClass());
                     } else {
                         log.warn("Datatype " + type + " is unknown, create processor as a default processor");
                     }
