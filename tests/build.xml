@@ -26,7 +26,7 @@
   <property name="tests.database.dir"    value="${tests.work.dir}/database" />
 
   <property name="tests.lib"       value="${tests.build.dir}/lib" />
-  <property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
+  <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
 
@@ -36,6 +36,7 @@
     <delete dir="${tests.source.dir}/config/builders/applications"/>
     <mkdir dir="${tests.source.dir}/config/builders/applications"/>
   </target>
+
   <target name="start.database" depends="init">
     <java classname="org.hsqldb.Server" fork="true" >
       <arg value="-database.0" />
@@ -47,6 +48,7 @@
       </classpath>
     </java>
   </target>
+
   <target name="stop.database" depends="init">
     <echo message="Stopping database" />
     <java
@@ -274,7 +276,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.bridge.rmmci" depends="jar,init,mmbase">
+  <target name="run.bridge.rmmci" depends="mmbase,jar,init">
     <antcall target="clean.database" />
     <parallel>
       <daemons>
@@ -297,12 +299,8 @@ Build-compiler: ${build.compiler}
         <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
         <classpath>
           <pathelement location="${tests.lib}/junit.jar" />
-          <pathelement location="${tests.lib}/mmbasetest.jar" />
+          <pathelement location="${mmbasetest.jar}" />
           <pathelement location="${tests.lib}/mmbase-rmmci.jar" />
-          <!-- I don't understand it, it gives very many NoClassDefFoundError
-               mmbase.jar must be gone from path here!
-          -->
-          <pathelement location="${tests.lib}/mmbase.jar" />
         </classpath>
       </java>
     </parallel>
