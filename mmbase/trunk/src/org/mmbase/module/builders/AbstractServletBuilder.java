@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.29 2005-08-24 13:08:17 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.30 2005-10-04 09:16:21 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -71,6 +71,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      */
     protected boolean usesBridgeServlet = false;
 
+
+    private static final int FILENAME_ADD = 1;
+    private static final int FILENAME_DONTADD = 0;
+    private static final int FILENAME_IFSENSIBLE = -1;
+    private static final int FILENAME_CHECKSETTING = -2;
     /**
      * -2: check init, based on existance of filename field.
      * -1: based on existance of filename field
@@ -78,7 +83,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * 1 : yes
      * @since MMBase-1.7.4
      */
-    protected int addsFileName = -2;
+    protected int addsFileName = FILENAME_CHECKSETTING;
 
 
     /**
@@ -401,7 +406,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     }
                     
                     String fileName = getField(FIELD_FILENAME) != null ? node.getStringValue("filename") : "";
-                    if (addsFileName == -2) {
+                    if (addsFileName == FILENAME_CHECKSETTING) {
                         javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
                         if (sx != null) {                            
                             String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
@@ -409,18 +414,19 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             res = res.toLowerCase();
                             log.trace("res " + res);
                             if ("no".equals(res) || "false".equals(res)) {
-                                addsFileName = 0;
+                                addsFileName = FILENAME_DONTADD;
                             } else if ("yes".equals(res) || "true".equals(res)) {
-                                addsFileName = 1;
+                                addsFileName = FILENAME_ADD;
                             } else {
                                 log.debug("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
-                                addsFileName = -1;
+                                addsFileName = FILENAME_IFSENSIBLE;
                             }
                         }
                     }
                     log.debug("addsFileName " + addsFileName);
 
-                    boolean addFileName =  addsFileName > 0 ||  ( addsFileName < 0 && !servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
+                    boolean addFileName =  addsFileName == FILENAME_ADD ||  
+                        ( addsFileName == FILENAME_IFSENSIBLE && (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName)));
                     
                     if (usesBridgeServlet && ! session.equals("")) {
                         servlet.append("session=" + session + "+");
