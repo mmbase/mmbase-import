@@ -27,31 +27,39 @@
   <%@include file="/mmbob/check.jsp" %>
   <mm:import id="template" reset="true"><mm:treefile page="/mmbob/index.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
   <mm:compare referid="type" value="div">
-    <mm:node number="$class" notfound="skip">
-      <div class="menuSeperator"> </div>
-      <div class="menuItem" id="menuMMBob">
-        <a href='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="classforum"/>' class="menubar"><fmt:message key="groupForum"/></a>
-      </div>
-    </mm:node>
-    <mm:node number="$education" notfound="skip">
-      <div class="menuSeperator"> </div>
-      <div class="menuItem" id="menuMMBob">
-        <a href='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="educationforum"/>' class="menubar"><fmt:message key="educationForum"/></a>
-      </div>
-    </mm:node>
+    <mm:present referid="class">
+      <mm:node number="$class" notfound="skip">
+        <div class="menuSeperator"> </div>
+        <div class="menuItem" id="menuMMBob">
+          <a href='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="classforum"/>' class="menubar"><fmt:message key="groupForum"/></a>
+        </div>
+      </mm:node>
+    </mm:present>
+    <mm:present referid="education">
+      <mm:node number="$education" notfound="skip">
+        <div class="menuSeperator"> </div>
+        <div class="menuItem" id="menuMMBob">
+          <a href='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="educationforum"/>' class="menubar"><fmt:message key="educationForum"/></a>
+        </div>
+      </mm:node>
+    </mm:present>
   </mm:compare>
   
   <mm:compare referid="type" value="option">
-    <mm:node number="$class" notfound="skip">
-      <option value='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="classforum"/>'>
-        <fmt:message key="groupForum"/>
-      </option>
-    </mm:node>
-    <mm:node number="$education" notfound="skip">
-      <option value='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="educationforum"/>'>
-        <fmt:message key="educationForum"/>
-      </option>
-    </mm:node>
+    <mm:present referid="class">
+      <mm:node number="$class" notfound="skip">
+        <option value='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="classforum"/>'>
+          <fmt:message key="groupForum"/>
+        </option>
+      </mm:node>
+    </mm:present>
+    <mm:present referid="education">
+      <mm:node number="$education" notfound="skip">
+        <option value='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="educationforum"/>'>
+          <fmt:message key="educationForum"/>
+        </option>
+      </mm:node>
+    </mm:present>
   </mm:compare>
   </fmt:bundle>
   </mm:cloud>
