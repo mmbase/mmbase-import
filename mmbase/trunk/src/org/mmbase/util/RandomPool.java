@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: RandomPool.java,v 1.7 2004-10-11 11:08:56 pierre Exp $
+ * @version $Id: RandomPool.java,v 1.8 2005-10-05 10:44:00 michiel Exp $
  */
 public class RandomPool {
 
@@ -123,7 +123,7 @@ public class RandomPool {
 
     /**
      * Stirs, then returns the (new) current random value.
-     * @param init the source of randomness for stirring
+     * @param mix the source of randomness for stirring
      */
     public long value_and_stir(long mix) {
         stir(mix);
