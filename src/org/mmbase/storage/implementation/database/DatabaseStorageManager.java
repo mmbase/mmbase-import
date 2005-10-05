@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.127 2005-10-04 18:43:30 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.128 2005-10-05 16:27:01 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1854,7 +1854,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (field.getName().equals("number")) {
             scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
             if (scheme != null) {
-                definitions = scheme.format(new Object[] { this, field.getParent(), field });
+                definitions = scheme.format(new Object[] { this, field.getParent(), field, factory.getMMBase() });
             }
         } else {
             // the field is unique: create a unique key for it
