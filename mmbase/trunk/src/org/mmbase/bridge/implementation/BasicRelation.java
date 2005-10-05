@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.35 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.36 2005-10-05 02:23:02 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -154,10 +154,10 @@ public class BasicRelation extends BasicNode implements Relation {
         int rnumber = getNode().getIntValue("rnumber");
         if (!mmb.getTypeRel().contains(sourceNodeType, destinationNodeType, rnumber)) {
             if (!mmb.getTypeRel().contains(destinationNodeType, sourceNodeType, rnumber)) {
-                throw new BridgeException("Source and/or Destination node are not of the correct type. ("
-                          + cloud.getNode(sourceNodeType).getValue("name") + ","
-                          + cloud.getNode(destinationNodeType).getValue("name") + ","
-                          + cloud.getNode(rnumber).getValue("sname") + ")");
+                throw new BridgeException("Source and/or Destination node are not of the correct type, or relation not allowed ("
+                                          + cloud.getNode(sourceNodeType).getValue("name") + ","
+                                          + cloud.getNode(destinationNodeType).getValue("name") + ","
+                                          + cloud.getNode(rnumber).getValue("sname") + ")");
             }
         }
 
@@ -177,7 +177,7 @@ public class BasicRelation extends BasicNode implements Relation {
 
         checkValid();
         if (! (BasicCloud.isTemporaryId(snum) || BasicCloud.isTemporaryId(dnum))) {
-            if (isnew) {
+            if (isNew) {
                 cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
                 relationChanged = false;
             } else {
