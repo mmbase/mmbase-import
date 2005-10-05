@@ -18,7 +18,7 @@ package org.mmbase.util;
  *
  * @deprecated Use java.util.Comparator
  * @author Rico Jansen
- * @version $Id: SortableCompare.java,v 1.7 2004-09-30 16:08:39 pierre Exp $
+ * @version $Id: SortableCompare.java,v 1.8 2005-10-05 10:44:00 michiel Exp $
  */
 public class SortableCompare implements CompareInterface {
 
@@ -30,7 +30,7 @@ public class SortableCompare implements CompareInterface {
      * @param other the second object to compare. should be a <code>Comparable</code>.
      * @return the result of the comparison
      */
-    public int compare(Object thisone,Object other) {
+    public int compare(Object thisOne,Object other) {
         return ((Sortable)thisone).compare((Sortable)other);
     }
 }

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.10 2004-09-29 14:29:22 pierre Exp $
+ * @version $Id: CVSReader.java,v 1.11 2005-10-05 10:44:00 michiel Exp $
  */
 public class CVSReader {
 
@@ -175,7 +175,7 @@ public class CVSReader {
     /**
      * Returns the element at the given row and with the given column name.
      * @param row the element row
-     * @param col the element columnname
+     * @param colname the element columnname
      * @return the element as a String.
      */
     public String getElement(int row,String colname) {

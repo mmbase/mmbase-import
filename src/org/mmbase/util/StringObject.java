@@ -49,7 +49,7 @@ package org.mmbase.util;
  * @see     String
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.8 2005-10-02 16:42:14 michiel Exp $
+ * @version $Id: StringObject.java,v 1.9 2005-10-05 10:44:00 michiel Exp $
  */
 
 public final class StringObject {
@@ -275,7 +275,7 @@ public final class StringObject {
 
     /**
      * Appends a character to the end of this buffer.
-     * @param ch        the character to be appended
+     * @param c        the character to be appended
      * @return         the StringBuffer itself, NOT a new one.
      */
     public synchronized StringObject append(char c) {
@@ -386,7 +386,7 @@ public final class StringObject {
     /**
      * Inserts a character into the String buffer.
      * @param offset        the offset at which to insert
-     * @param ch                the character to insert
+     * @param c                the character to insert
      * @return                 the StringBuffer itself, NOT a new one.
      * @exception        StringIndexOutOfBoundsException If the offset invalid.
      */
