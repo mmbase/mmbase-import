@@ -61,7 +61,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.29 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: FileWatcher.java,v 1.30 2005-10-05 10:02:55 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -137,7 +137,7 @@ public abstract class FileWatcher {
 
     /**
      * Wether the file is being watched or not.
-     * @param the file to be checked.
+     * @param file the file to be checked.
      * @since MMBase-1.6
      */
     public boolean contains(File file) {

@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.21 2005-07-09 15:29:11 nklasens Exp $
+ * @version $Id: ClusterNode.java,v 1.22 2005-10-05 10:00:54 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -66,7 +66,7 @@ public class ClusterNode extends VirtualNode {
     /**
      * Main contructor.
      * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
-     * @param rnofnodes Nr of referenced nodes.
+     * @param nrofnodes Nr of referenced nodes.
      */
     public ClusterNode(MMObjectBuilder parent, int nrofnodes) {
         super(parent);
@@ -106,7 +106,7 @@ public class ClusterNode extends VirtualNode {
 
     /**
      * Obtain the 'real' nodes, associated with a specified objectbuilder.
-     * @param buildername the name of the builder of the requested node, as known
+     * @param builderName the name of the builder of the requested node, as known
      *        within the virtual node
      * @return the node, or <code>null</code> if it does not exist or is unknown
      */
@@ -127,7 +127,7 @@ public class ClusterNode extends VirtualNode {
      * Stores a value in the values hashtable.
      * If the value is not stored in the virtualnode,
      * the 'real' node is used instead.
-     * @param fieldname the name of the field to change
+     * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      */
     public void storeValue(String fieldName, Object fieldValue) {
@@ -144,7 +144,7 @@ public class ClusterNode extends VirtualNode {
      * Note that if this node is a node in cache, the changes are immediately visible to
      * everyone, even if the changes are not committed.
      * The fieldname is added to the (public) 'changed' vector to track changes.
-     * @param fieldname the name of the field to change
+     * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      * @return always <code>true</code>
      */
@@ -176,7 +176,7 @@ public class ClusterNode extends VirtualNode {
     /**
      * Determines the builder name of a specified fieldname, i.e.
      * "news" in "news.title",
-     * @param fieldname the name of the field
+     * @param fieldName the name of the field
      * @return the buidler name of the field
      */
     protected String getBuilderName(String fieldName) {
@@ -205,7 +205,7 @@ public class ClusterNode extends VirtualNode {
 
     /**
      * Get a value of a certain field.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
@@ -242,7 +242,7 @@ public class ClusterNode extends VirtualNode {
     /**
      * Get a value of a certain field.
      * The value is returned as a String. Non-string values are automatically converted to String.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>String</code>
      */
     public String getStringValue(String fieldName) {

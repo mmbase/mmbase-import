@@ -135,7 +135,7 @@ public class RegexpReplacer extends ConfigurableReaderTransformer implements Cha
 
     /**
      * Utility function to create a bunch of patterns.
-     * @param list A Collection of Map.Entry (like {@link java.util.Map#entryList}), containing
+     * @param list A Collection of Map.Entry (like {@link java.util.Map#entrySet()}), containing
      *        pairs of Strings
      * @param patterns This the Collection of Entries. The key of every entry is a compiled regular
      *        expression. The value is still a String. New entries will be added to this collection
