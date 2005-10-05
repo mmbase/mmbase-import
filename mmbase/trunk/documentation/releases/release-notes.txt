@@ -94,13 +94,31 @@ Bug Fixes:
 [1.8.0]
 many
 
+---------------------------------------------------------
+Known API incompatibilities of bridge, between 1.7 to 1.8.
+---------------------------------------------------------
+Of course we try to mimimize this, but sometimes it happens...
+
+- org.mmbase.bridge.Cloud#getUser().getRank() does not return a String any more, but an actual Rank
+  object --> rankString.equals(Rank.ANONYMOUS.toString()); still compiles but doesn't work any
+  more!!
+  So, if grep your code for that. And see that the change is, though incompatible, a real
+  improvement... Quickest fixes are to change getUser().getRank() by getUser().getRank().toString(),
+  or remove the 'toString()' on the compared Rank-constant.
+
+
+- Node#setValue("owner", ..) does no longer throw an exception.
+
+- Empty fields of a node in a Transaction behave excactly like empty fields of a node which is not in
+  a Transaction. In previous versions there could be a difference, more specificly with 'not null'
+  fields (which for example could still be null in a node which is only commited in the transaction,
+  and not yet to the database).
+
+
 
 ========================
 Know Issues and Problems:
 ========================
-
-- org.mmbase.bridge.Cloud#getUser().getRank() does not return a String any more, but an actual Rank
-  object --> rankString.equals(Rank.ANONYMOUS.toString()); still compiles but doesn't work any more!!
 
 
 - If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new'
