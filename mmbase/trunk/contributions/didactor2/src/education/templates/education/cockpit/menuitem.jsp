@@ -17,7 +17,9 @@
       <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW"> 
          <div class="menuSeperator"></div>
          <div class="menuItem" id="coursemanagement">
-            <a href="<mm:treefile page="/education/wizards/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
+            <a href="<mm:treefile page="/education/wizards/index.jsp" objectlist="$includePath" referids="$referids">
+                        <mm:present referid="user"><mm:param name="user"><mm:write referid="user"/></mm:param></mm:present>
+                     </mm:treefile>" class="menubar">
                <fmt:message key="coursemanagement"/>
             </a>
          </div>
