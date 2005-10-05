@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.20 2005-10-04 13:24:24 johannes Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.21 2005-10-05 12:26:11 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -239,7 +239,7 @@ public abstract class StorageManagerFactory {
      * The specified parameter may be an actual SearchQueryHandler object, or it may be a utility class.
      * For instance, the database factory expects an org.mmbase.storage.search.implentation.database.SQLHandler object,
      * which is used as a parameter in the construction of the actual SearchQueryHandler class.
-     * @param object the object to instantuate a SearchQueryHandler object with
+     * @param data the object to instantuate a SearchQueryHandler object with
      */
     abstract protected SearchQueryHandler instantiateQueryHandler(Object data);
 

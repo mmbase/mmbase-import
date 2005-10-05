@@ -17,16 +17,16 @@ import org.xml.sax.*;
 /**
  *
  * @author Rob van Maris
- * @version $Id: XmlEtxIndicesReader.java,v 1.2 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: XmlEtxIndicesReader.java,v 1.3 2005-10-05 12:26:11 michiel Exp $
  * @since MMBase-1.7
  */
 public class XmlEtxIndicesReader extends DocumentReader {
-    
+
     /** Creates a new instance of XmlEtxIndicesReader */
     public XmlEtxIndicesReader(InputSource source) {
         super(source, true, XmlEtxIndicesReader.class);
     }
-    
+
     /**
      * Gets <code>sbspace</code> elements.
      *
@@ -35,7 +35,7 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public Iterator getSbspaceElements() {
         return getChildElements("etxindices", "sbspace");
     }
-    
+
     /**
      * Gets value of <code>name</code> attribute of <code>sbspace</code> element.
      *
@@ -45,7 +45,7 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public String getSbspaceName(Element sbspace) {
         return getElementAttributeValue(sbspace, "name");
     }
-    
+
     /**
      * Gets <code>etxindex</code> child elements of <code>sbspace</code> element.
      *
@@ -55,7 +55,7 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public Iterator getEtxindexElements(Element sbspace) {
         return getChildElements(sbspace, "etxindex");
     }
-    
+
     /**
      * Gets value of <code>table</code> attribute of <code>etxindex</code> element.
      *
@@ -65,7 +65,7 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public String getEtxindexTable(Element etxindex) {
         return getElementAttributeValue(etxindex, "table");
     }
-    
+
     /**
      * Gets value of <code>field</code> attribute of <code>etxindex</code> element.
      *
@@ -75,12 +75,12 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public String getEtxindexField(Element etxindex) {
         return getElementAttributeValue(etxindex, "field");
     }
-    
+
     /**
      * Gets name of <code>etxindex</code> element.
      *
      * @param etxindex The <code>etxindex</code> element.
-     * @param Value of <code>etxindex</code> element.
+     * @return Value of <code>etxindex</code> element.
      */
     public String getEtxindexValue(Element etxindex) {
         return getElementValue(etxindex);
