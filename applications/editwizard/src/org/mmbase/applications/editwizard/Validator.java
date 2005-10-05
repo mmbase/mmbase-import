@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.7 2003-04-16 08:39:46 pierre Exp $
+ * @version $Id: Validator.java,v 1.8 2005-10-05 10:41:38 michiel Exp $
  */
 
 public class Validator {
@@ -30,8 +30,8 @@ public class Validator {
     /**
      * Validates the given prehtml-xml. Returns true if everything is valid, false if errors are found.
      * Detailed information about the errors are placed as subnodes of the invalid fields.
-     * @param Document prehtml the prehtml which should be validated
-     * @param Document schema the wizardschema which is needed to validate at all
+     * @param prehtml the prehtml which should be validated
+     * @param schema the wizardschema which is needed to validate at all
      * @return True is the form is valid, false if it is invalid
      */
     public static boolean validate(Document prehtml, Document schema) {
