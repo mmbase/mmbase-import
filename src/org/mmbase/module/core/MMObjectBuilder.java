@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.343 2005-10-04 22:56:51 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.344 2005-10-05 00:18:01 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -1174,7 +1174,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param useCache If true, the node is retrieved from the node cache if possible.
      * @return <code>null</code> if the node does not exist, the key is invalid,or a
      *       <code>MMObjectNode</code> containing the contents of the requested node.
-     * @throws RuntimeException If the node does not exist (not always true!)
      */
     public  MMObjectNode getNode(final int number, boolean useCache) {
         if (log.isDebugEnabled()) {
@@ -1203,11 +1202,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // retrieve node's objecttype
         MMObjectBuilder builder = this;
         int nodeType = getNodeType(number);
-        // test otype.
-        // XXX todo: getNodeType() should throw a NotFound exception.
         if (nodeType < 0) {
-            String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + nodeType + ")";
-            throw new RuntimeException(msg);
+            // the node does not exists, which according to javadoc shoulw return null
+            return null;
         }
         // if the type is not for the current buidler, determine the real builder
         if (nodeType != oType) {
