@@ -36,7 +36,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.6 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.7 2005-10-05 12:26:11 michiel Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -248,7 +248,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      *
      * @param constraint the constraint.
      * @param searchConstraint the stringsearch constraint.
-     * @param true if the constraint is/contains another stringsearch constraint
+     * @return true if the constraint is/contains another stringsearch constraint
      *             than the given one, false otherwise.
      */
     protected boolean containsOtherStringSearchConstraints(
