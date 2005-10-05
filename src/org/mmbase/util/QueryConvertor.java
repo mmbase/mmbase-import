@@ -45,7 +45,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.29 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.30 2005-10-05 10:44:00 michiel Exp $
  */
 public class QueryConvertor {
 
@@ -54,7 +54,7 @@ public class QueryConvertor {
     /**
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
-     * @param factory the storagemanagerfactory to use when converting fieldnames
+     * @param smf the storagemanagerfactory to use when converting fieldnames
      * @deprecated Use {@link #setConstraint setConstraint()} to parse
      *        these expressions.
      */

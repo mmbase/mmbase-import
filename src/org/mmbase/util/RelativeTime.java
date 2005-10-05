@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.8 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RelativeTime.java,v 1.9 2005-10-05 10:44:00 michiel Exp $
  */
 public class RelativeTime {
 
@@ -118,7 +118,7 @@ public class RelativeTime {
 
     /**
      * Converts an integer (representing the time in milliseconds) to a string (like "12:42:15.020")
-     * @param time The amount of time in milliseconds.
+     * @param timeValue The amount of time in milliseconds.
      * @return String containing the amount of time in the "h:m:s.ms" format.
      */
     public static String convertIntToTime(int timeValue) {

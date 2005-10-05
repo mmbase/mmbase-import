@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.25 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: DateSupport.java,v 1.26 2005-10-05 10:44:00 michiel Exp $
  */
 public class DateSupport {
 
@@ -691,7 +691,7 @@ public class DateSupport {
 
     /**
      * Main method used for testing purposes
-     * @param args[] Array of arguments
+     * @param args Array of arguments
      */
     public static void main(String args[]) {
         log.info("Date (without corr)" + date2string((int) (System.currentTimeMillis() / 1000)) + " " + System.currentTimeMillis() / 1000);
