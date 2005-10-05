@@ -165,8 +165,8 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/bridge/*"/>
         <include name="org/mmbase/bridge/util/*"/> <!-- not essential, but the idea is that you
                                                         could use those with any bridge, so you should want them -->
+        <include name="org/mmbase/bridge/util/xml/Generator.class" /> <!--  used by rmmci bridge test cases , and generally useful-->
         <include name="org/mmbase/storage/search/*"/> <!-- those interface are bridge -->
-        <include name="org/mmbase/core/CoreField"/> <!-- wtf? -->
         <include name="org/mmbase/util/functions/**" /> <!-- functions are bridge -->
         <include name="org/mmbase/util/logging/**"/> <!-- wtf? -->
         <include name="org/mmbase/util/ResourceLoader*.class"/> <!-- wtf? -->
