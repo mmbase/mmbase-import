@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.43 2005-05-14 14:06:48 nico Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.44 2005-10-05 10:41:38 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -120,7 +120,7 @@ public class WizardDatabaseConnector {
      * This method loads an object and the necessary relations and fields, according to the given schema.
      *
      * @param schema The schema carrying all the information needed for loading the proper object and related fields and objects.
-     * @param objectnumber The objectnumber of the object to start with.
+     * @param objectNumber The objectnumber of the object to start with.
      * @return The resulting data document.
      * @throws WizardException if loading the schema fails
      * @since MMBase-1.7
@@ -924,7 +924,7 @@ public class WizardDatabaseConnector {
      *
      * @param     sourcenode              The sourcenode from which should be flattened.
      * @param     targetParentNode        The targetParentNode where the results should be appended.
-     * @param     allowChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
+     * @param     allowedChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
      */
     public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
         NodeList list = Utils.selectNodeList(sourcenode, xpath);

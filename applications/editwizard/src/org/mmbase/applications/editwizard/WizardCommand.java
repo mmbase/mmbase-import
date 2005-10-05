@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.11 2003-11-12 13:54:41 michiel Exp $
+ * @version $Id: WizardCommand.java,v 1.12 2005-10-05 10:41:38 michiel Exp $
  */
 public class WizardCommand {
 
@@ -65,7 +65,7 @@ public class WizardCommand {
      * parameters to the command.
      *
      * @todo should use StringTokenizer here
-     * @param command The full command
+     * @param acommand The full command
      * @param avalue The value of the command
      */
     public WizardCommand(String acommand, String avalue) {

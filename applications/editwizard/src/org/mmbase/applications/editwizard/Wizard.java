@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.138 2005-09-20 15:32:05 ernst Exp $
+ * @version $Id: Wizard.java,v 1.139 2005-10-05 10:41:38 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -502,7 +502,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * of one and another.
      *
      * @param out The writer where the output (html) should be written to.
-     * @param instancename name of the current instance
+     * @param instanceName name of the current instance
      */
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         writeHtmlForm(out, instanceName, null);
@@ -515,7 +515,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * of one and another.
      *
      * @param out The writer where the output (html) should be written to.
-     * @param instancename name of the current instance
+     * @param instanceName name of the current instance
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
      */
@@ -759,7 +759,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param       wizardSchema    the main node of the schema to be used. Includes should already be resolved.
      * @param       formid          The id of the current form
      * @param       data            The main node of the data tree to be used
-     * @param       instancename    The instancename of this wizard
+     * @param       instanceName    The instancename of this wizard
      */
     public Document createPreHtml(Node wizardSchema, String formid, Node data,
                                   String instanceName) throws WizardException {
