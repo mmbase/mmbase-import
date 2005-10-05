@@ -1,5 +1,9 @@
 Migratie issues
 
+2005-10-01
+    ALTER TABLE mmb_people ADD person_status TINYINT(1);
+
+
 2005-09-12
     ALTER TABLE mmb_components ADD mayrelateclasses TINYINT(1);
 
@@ -7,8 +11,8 @@ Migratie issues
 
 2005-09-11
 
-    1.place new update 
-    2.place *.xml from didactor/WEB-INF/config/applications/MMBob/old-xml/ to didactor/WEB-INF/config/builders/ 
+    1.place new update
+    2.place *.xml from didactor/WEB-INF/config/applications/MMBob/old-xml/ to didactor/WEB-INF/config/builders/
     3.start Tomcat
     4.run /migrate-2005-09-11.jsp to remove old forum
     5.stop Tomcat
