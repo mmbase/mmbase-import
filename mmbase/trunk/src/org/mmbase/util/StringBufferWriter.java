@@ -18,7 +18,7 @@ import java.io.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.7
- * @version $Id: StringBufferWriter.java,v 1.3 2004-10-05 16:00:22 michiel Exp $
+ * @version $Id: StringBufferWriter.java,v 1.4 2005-10-05 10:09:05 michiel Exp $
  */
 public class StringBufferWriter extends Writer {
 
@@ -27,7 +27,7 @@ public class StringBufferWriter extends Writer {
     /**
      * Create a new StringBufferWriter
      * @param buffer The StringBuffer to use
-     * @throw java.lang.NullPointerException if <code>buffer</code> is null.
+     * @throws java.lang.NullPointerException if <code>buffer</code> is null.
      */
     public StringBufferWriter(StringBuffer buffer) {
         if (buffer == null) throw new NullPointerException("Buffer may not be null");

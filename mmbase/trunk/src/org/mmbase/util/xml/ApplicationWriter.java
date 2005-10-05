@@ -27,7 +27,7 @@ import org.mmbase.util.*;
  * @javadoc
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.2 2005-09-19 12:32:02 pierre Exp $
+ * @version $Id: ApplicationWriter.java,v 1.3 2005-10-05 10:09:05 michiel Exp $
  */
 public class ApplicationWriter extends DocumentWriter  {
 
@@ -191,7 +191,7 @@ public class ApplicationWriter extends DocumentWriter  {
     /**
      * Generates the documents for this application and store it as a set of files in the given path.
      * @param targetPath the filepath (directory) where the configuration is to be stored
-     * @param messages a List in which messages regarding progress are stored.
+     * @param logger This thing must receive the errors
      * @throws TransformerException if one or more documents are malformed
      * @throws IOException if one or more files cannot be written
      * @throws SearchQueryException if data could not be obtained from the database
