@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.5 2005-10-04 13:27:35 johannes Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.6 2005-10-05 14:02:30 johannes Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -258,7 +258,18 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         return viewname;
     }
 
+    /**
+     * Override the default version. An index should only be created if
+     * all the fields are in this builder. Otherwise this will fail horrably.
+     */
     protected void create(Index index) throws StorageException {
+        for (int i=0; i<index.size(); i++) {
+            CoreField f = (CoreField)index.get(i);
+            if (!isPartOfBuilderDefinition(f)) {
+                return;
+            }
+        }
+        
         super.createIndex(index, getTableName(index.getParent()));
     }
 
