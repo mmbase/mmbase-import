@@ -325,7 +325,7 @@ builddate=${builddate}
 
     <mkdir dir="${compile.lib.dir}"/>
 
-    <!-- including xerces/xml-apis maakes a huge difference in compile time for rmmci -->
+    <!-- including xerces/xml-apis makes a huge difference in compile time for rmmci -->
     <copy file="${xerces.jar}"   todir="${compile.lib.dir}" />
     <copy file="${xml-apis.jar}"   todir="${compile.lib.dir}" />
     
@@ -717,7 +717,7 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init,lib.compile"
+          depends="init,lib.compile,javacc"
           unless="did.javadocs"
     >    
     <antcall target="download">
@@ -739,6 +739,9 @@ Build-compiler: ${build.compiler}
       <fileset dir="${source.dir}" defaultexcludes="yes">
         <include name="src/**/*.java" />
         <include name="applications/*/src/**/*.java" />
+      </fileset>
+      <fileset dir="${generated-source-src.dir}" defaultexcludes="yes">
+        <include name="**/*.java" />
       </fileset>
       <classpath>
         <fileset dir="${compile.lib.dir}">
@@ -1038,7 +1041,9 @@ Build-compiler: ${build.compiler}
            optimize="${optimize}"
            nowarn="${nowarn}"
            source="1.4"
-           deprecation="${deprecation}">
+           deprecation="${deprecation}"
+           includeAntRuntime="false"
+           >
            <include name="org/mmbase/util/XSLTransformer.java" />
     </javac>
 
@@ -1100,7 +1105,9 @@ Build-compiler: ${build.compiler}
            optimize="${optimize}"
            nowarn="${nowarn}"
            source="1.4"
-           deprecation="${deprecation}">
+           deprecation="${deprecation}"
+           includeAntRuntime="false"
+           >
            <include name="org/mmbase/util/DocumentationIndex.java" />
     </javac>
 
