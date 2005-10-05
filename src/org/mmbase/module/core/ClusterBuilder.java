@@ -24,12 +24,12 @@ import org.mmbase.util.logging.*;
  * <p>
  * Provides these methods to retrieve clusternodes:
  * <ul>
- *      <li>{@link #getClusterNodes(SearchQuery) getClusterNodes(SearchQuery)}
+ *      <li>{@link #getClusterNodes(SearchQuery)}
  *          to retrieve clusternodes using a <code>SearchQuery</code> (recommended).
- *      <li>{@link #getMultiLevelSearchQuery(List,List,String,List,String,List,List,int)
- *          getMultiLevelSearchQuery()} as a convenience method to create a <code>SearchQuery</code>
- *      <li>{@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
- *          searchMultiLevelVector()} to retrieve clusternodes using a constraint string.
+ *      <li>{@link #getMultiLevelSearchQuery(List,List,String,List,String,List,List,int)}
+ *            as a convenience method to create a <code>SearchQuery</code>
+ *      <li>{@link #searchMultiLevelVector(List,List,String,List,String,List,List,int)}
+ *            to retrieve clusternodes using a constraint string.
  * </ul>
  * <p>
  * Individual nodes in a 'cluster' node can be retrieved by calling the node's
@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.76 2005-10-04 23:04:48 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.77 2005-10-05 10:00:54 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -217,7 +217,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Determines the builder part of a specified field.
-     * @param fieldname the name of the field
+     * @param fieldName the name of the field
      * @return the name of the field's builder
      */
     public String getBuilderNameFromField(String fieldName) {
@@ -244,7 +244,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Return a field.
-     * @param the requested field's name
+     * @param fieldName the requested field's name
      * @return the field
      */
     public FieldDefs getField(String fieldName) {
@@ -293,10 +293,10 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
-     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)}.
+     * Same as {@link #searchMultiLevelVector(List,List,String,List,String,List,Vector,int)
+              * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)}.
      *
-     * @see #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
+     * @see #searchMultiLevelVector(List,List,String,List,String,List,List,int)
      */
     public Vector searchMultiLevelVector(
         Vector snodes,
@@ -329,7 +329,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
-     * @param orderVec the fieldnames on which you want to sort.
+     * @param sortFields the fieldnames on which you want to sort.
      * @param directions A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
@@ -366,7 +366,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
-     * @param orderVec the fieldnames on which you want to sort.
+     * @param sortFields the fieldnames on which you want to sort.
      * @param directions A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
@@ -504,7 +504,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        If less values are supplied then there are fields in order,
      *        the first value in the list is used for the remaining fields.
      *        Default value is <code>'UP'</code>.
-     * @param searchDirs Specifies in which direction relations are to be
+     * @param searchDir Specifies in which direction relations are to be
      *        followed, this must be one of the values defined by this class.
      * @deprecated use {@link #getMultiLevelSearchQuery(List snodes, List fields, String pdistinct, List tables, String where,
      *               List orderVec, List directions, int searchDir)}

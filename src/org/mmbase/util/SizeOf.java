@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *</p>
  * <p>
  * A count of the byte size of an object is done recursively and for every count a SizeOf instance
- * must be instantiated. The static {@link #getByteSize(Object} does that for you.
+ * must be instantiated. The static {@link #getByteSize(Object)} does that for you.
  *</p>
  * <p>
  * The core of the SizeOf object is then {@link #sizeof(Object)} plus a (private) 'countedObjects'
@@ -66,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.12 2005-05-20 15:15:49 keesj Exp $
+ * @version $Id: SizeOf.java,v 1.13 2005-10-05 10:02:55 michiel Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {

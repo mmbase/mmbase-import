@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since MMBase 1.6.3
  * @author Gerard van de Looi
- * @version $Id: DummyImageConverter.java,v 1.3 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: DummyImageConverter.java,v 1.4 2005-10-05 10:02:55 michiel Exp $
  */
 public class DummyImageConverter implements ImageConverter {
 
@@ -31,7 +31,7 @@ public class DummyImageConverter implements ImageConverter {
     /**
      * Call for converting a specified image (byte array) using a list of (string) commands
      * This dummy method ignores any passed commands, and simply returns the inputed list.
-     * @see ImageConverter#convertImage(byte[], List, String)
+     * @see ImageConverter#convertImage(byte[], String, List)
      */
     public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
         return input;
