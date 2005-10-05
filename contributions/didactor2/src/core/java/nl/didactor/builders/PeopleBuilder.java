@@ -131,6 +131,10 @@ public class PeopleBuilder extends CreationNotifyBuilder {
             if (now - oldtime > 60 * 5) {
                 return new Integer("0");
             } else {
+                int islogged = node.getIntValue("islogged");
+                if (islogged == 0) {
+                    return new Integer("0");
+                }
                 return new Integer("1");
             }
         }

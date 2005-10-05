@@ -11,6 +11,7 @@
       </mm:islessthan>
 
       <mm:setfield name="lastactivity"><%=System.currentTimeMillis()/1000%></mm:setfield>
+      <mm:setfield name="islogged">1</mm:setfield>
    </mm:node>
 
    <mm:present referid="education">
