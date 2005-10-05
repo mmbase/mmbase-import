@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * <em>no</em> entries are added, it will behave itself like as the default locale of {@link
  * LocalizedString#getDefault}.
  *
- * It is also possible to add entire 'bundles'. For this use {@link addBundle}. When a Collection instance
+ * It is also possible to add entire 'bundles'. For this use {@link #addBundle}. When a Collection instance
  * for a certain Locale is requested these informations are used to call {@link
  * SortedBundle#getResource}.
  *
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.2 2005-09-07 13:23:02 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.3 2005-10-05 10:02:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements java.io.Serializable, Cloneable {

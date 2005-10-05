@@ -19,7 +19,7 @@ import org.mmbase.bridge.Field;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.17 2005-10-04 23:03:26 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.18 2005-10-05 10:00:54 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -119,7 +119,7 @@ public class VirtualBuilder extends MMObjectBuilder {
     /**
      * Return a field's database state.
      * The default behavior for a virtual node is to return <code>DBSTATE_VIRTUAL</code>.
-     * @param the requested field's name
+     * @param fieldName the requested field's name
      * @return <code>DBSTATE_VIRTUAL</code>
      */
     public int getDBState(String fieldName) {
@@ -130,11 +130,11 @@ public class VirtualBuilder extends MMObjectBuilder {
      * Get text from a blob field from a database.
      * Since virtual builders are generally not associated with a database,
      * this method returns null.
-     * @param fieldname name of the field
-     * @param number number of the object in the table
+     * @param fieldName name of the field
+     * @param node
      * @return <code>null</code>
      */
-    protected String getShortedText(String fieldname, MMObjectNode node) {
+    protected String getShortedText(String fieldName, MMObjectNode node) {
         return null;
     }
 
@@ -143,11 +143,11 @@ public class VirtualBuilder extends MMObjectBuilder {
      * Get binary data of a blob field from a database.
      * Since virtual builders are generally not associated with a database,
      * this method returns null.
-     * @param fieldname name of the field
-     * @param number number of the object in the table
+     * @param fieldName name of the field
+     * @param node
      * @return <code>null</code>
      */
-    protected byte[] getShortedByte(String fieldname, MMObjectNode node) {
+    protected byte[] getShortedByte(String fieldName, MMObjectNode node) {
         return null;
     }
 
@@ -156,7 +156,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * search query.
      * Since virtual nodes are not real nodes, this method is empty,
      * overriding the behaviour defined in
-     * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)
+     * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)}
      * MMObjectBuilder}.
      *
      * @param results The (virtual) nodes.
