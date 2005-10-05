@@ -25,7 +25,7 @@ import org.mmbase.module.core.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.8 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: NodeBreaker.java,v 1.9 2005-10-05 10:59:39 michiel Exp $
  */
 public class NodeBreaker implements Runnable {
 
@@ -46,8 +46,7 @@ public class NodeBreaker implements Runnable {
     /**
      * Creates a new node breaker.
      * Used by the Channel builder.
-     * @param mmb reference to MMBase
-     * @param checkinterval the interval at which the relation breaker checks for expired relations
+     * @param checkInterval the interval at which the relation breaker checks for expired relations
      * @param tmpNodeManager the temporary node manager that holds the relations.
      */
     public NodeBreaker(long checkInterval, TemporaryNodeManager tmpNodeManager) {

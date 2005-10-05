@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.19 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Community.java,v 1.20 2005-10-05 10:59:39 michiel Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -139,7 +139,7 @@ public class Community extends MMObjectBuilder {
      * <li> communitynr-OPEN : opens all channels that are connected to this community</li>
      * <li> communitynr-CLOSE: closes all channels that are connected to this community</li>
      * </ul>
-     * @param PageInfo the current page context
+     * @param sp the current page context
      * @param tok the tokenized command
      * @return the empty string
      */

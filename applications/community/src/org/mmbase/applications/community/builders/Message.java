@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.29 2005-07-14 20:23:47 nklasens Exp $
+ * @version $Id: Message.java,v 1.30 2005-10-05 10:59:39 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -165,7 +165,7 @@ public class Message extends MMObjectBuilder {
     /**
      * Obtains the description of an error that occurred during a
      * user-induced action on a message (such as a post).
-     * @param the error number
+     * @param error the error number
      * @return the error description
      */
     public String getMessageError(int error) {
@@ -724,7 +724,7 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Retrieves a list of messages related to a thread.
-     * @param thread the number of the message or channel that is the parent of
+     * @param node the message or channel node that is the parent of
      *      the messages requested
      * @param ci A Comparator to use for sorting the messages
      * @return A <code>Vector</code> containing the requested message nodes.
@@ -804,7 +804,7 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Get temporary MMObjectNodes related to a specified MMObjectNode
-     * @param sourceNode this is the source MMObjectNode
+     * @param node this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
     public Vector getTemporaryRelated(MMObjectNode node, String wtype) {
@@ -813,7 +813,7 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Get temporary MMObjectNodes related to a specified MMObjectNode
-     * @param sourceNode this is the source MMObjectNode
+     * @param node this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
     public Vector getTemporaryRelated(MMObjectNode node, String wtype,
@@ -1211,7 +1211,7 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Returns the channel in which the given message node is posted.
-     * @param the node to get the channel of
+     * @param node the node to get the channel of
      * @return teh channel of teh message as a <code>MMObjectNode</code>
      */
     public MMObjectNode isPostedInChannel(MMObjectNode node) {
