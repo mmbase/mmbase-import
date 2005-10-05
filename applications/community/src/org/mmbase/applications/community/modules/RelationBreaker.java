@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use NodeBreaker instead
  *
  * @author Dirk-Jan Hoekstra
- * @version $Id: RelationBreaker.java,v 1.8 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RelationBreaker.java,v 1.9 2005-10-05 10:59:39 michiel Exp $
  */
 
 public class RelationBreaker extends Thread {
@@ -51,7 +51,7 @@ public class RelationBreaker extends Thread {
      * Creates a new relation breaker.
      * Used by the Channel builder.
      * @param mmb reference to MMBase
-     * @param checkinterval the interval at which the relation breaker checks for expired relations
+     * @param checkInterval the interval at which the relation breaker checks for expired relations
      * @param tmpNodeManager the temporary node manager that holds the relations.
      */
     public RelationBreaker(MMBase mmb, long checkInterval, TemporaryNodeManager tmpNodeManager) {

@@ -25,13 +25,13 @@ import org.mmbase.util.logging.*;
  * In this manner, it is more an application than a module.
  * The community 'application' consists of the Community, Channel, and Message builder.
  * <br />
- * The {@link org.mmbase.module.builders.Community} builder is a pool of channels
+ * The {@link org.mmbase.applications.community.builders.Community} builder is a pool of channels
  * of a similar type (chatbox, forum, or guestbook).
  * <br />
- * The {@link org.mmbase.module.builders.Channel} builder defines a channel - a
+ * The {@link org.mmbase.applications.community.builders.Channel} builder defines a channel - a
  * 'location' which manages a forum discussion or chat.
  * <br />
- * The {@link org.mmbase.module.builders.Message} builder defines a single message - a
+ * The {@link org.mmbase.applications.community.builders.Message} builder defines a single message - a
  * persistent message in case of a forum or guestbook, a temporary message in the
  * case of a chat.
  * <br />
@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.20 2005-07-29 12:13:17 michiel Exp $
+ * @version $Id: CommunityPrc.java,v 1.21 2005-10-05 10:59:39 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
