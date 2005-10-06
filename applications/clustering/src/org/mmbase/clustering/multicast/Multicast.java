@@ -23,16 +23,16 @@ import org.mmbase.util.xml.UtilReader;
  * and spawns them to call the objects (listeners) who need to know.
  * The Multicast start two threads to handle the sending and receiving of
  * multicast messages.
- * 
+ *
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.1 2005-05-14 15:25:36 nico Exp $
+ * @version $Id: Multicast.java,v 1.2 2005-10-06 17:37:51 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
     private static final Logger log = Logging.getLoggerInstance(Multicast.class);
-    
+
     public static final String CONFIG_FILE = "multicast.xml";
 
     /**
@@ -63,15 +63,15 @@ public class Multicast extends ClusterManager {
      */
     public void init(MMBase mmb) {
         super.init(mmb);
-        
+
         UtilReader reader = new UtilReader(CONFIG_FILE);
         Map properties = reader.getProperties();
-        
+
         String tmp = (String) properties.get("spawnthreads");
         if (tmp != null && !tmp.equals("")) {
             spawnThreads = !"false".equalsIgnoreCase(tmp);
         }
-        
+
         tmp = (String) properties.get("multicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
@@ -105,12 +105,12 @@ public class Multicast extends ClusterManager {
         start();
     }
 
-    
+
     protected void startCommunicationThreads() {
         mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend);
         mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
     }
-    
+
     protected void stopCommunicationThreads() {
         mcs.stop();
         mcr.stop();
