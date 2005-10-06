@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.62 2005-09-26 14:57:06 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.63 2005-10-06 17:46:39 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -321,9 +321,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @return An <code>Enumeration</code> of nodes containing the reldef (not typerel!) sname
      * field
      */
-    protected Vector getAllowedRelationsNames(int number1, int number2) {
+    protected Vector getAllowedRelationsNames(int snum, int dnum) {
         Vector results = new Vector();
-        for (Enumeration e = getAllowedRelations(number1, number2); e.hasMoreElements();) {
+        for (Enumeration e = getAllowedRelations(snum, dnum); e.hasMoreElements();) {
             MMObjectNode node = (MMObjectNode) e.nextElement();
             int rnumber = node.getIntValue("rnumber");
             MMObjectNode snode = mmb.getRelDef().getNode(rnumber);

@@ -46,7 +46,7 @@ public interface ProcessorInterface  {
      * @param tagger contains the attributes for the list
      * @param command the list command to execute.
      */
-    public Vector getList(PageInfo context, StringTagger tagger, String value);
+    public Vector getList(PageInfo context, StringTagger tagger, String command);
 
     /**
      * Execute the commands provided in the form values.
