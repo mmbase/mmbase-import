@@ -19,20 +19,18 @@ import org.mmbase.applications.media.urlcomposers.RealURLComposer;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.8 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: CgiURLComposer.java,v 1.9 2005-10-06 11:46:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {
-
 
     /**
      * These scripts actually wrap the source in a ram or wmp
      */
     public Format getFormat() {
         Format format = super.getFormat();
-        if (format == Format.RM)  return Format.RAM;
-        if (format == Format.RA)  return Format.RAM;
-        if (format == Format.ASF) return Format.WMP;                
+        if (format.isReal())  return Format.RAM;
+        if (format.isWindowsMedia()) return Format.WMP;                
         return format;
     }
 

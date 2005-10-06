@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.42 2005-05-14 14:08:35 nico Exp $
+ * @version $Id: MediaFragments.java,v 1.43 2005-10-06 11:46:31 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -237,7 +237,7 @@ public class MediaFragments extends MMObjectBuilder {
         Iterator i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = (MMObjectNode) i.next();
-            MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
+            MediaSources bul    = (MediaSources) source.getBuilder(); // cast everytime, because it can be extended
             bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
         }
         return urls;
@@ -392,8 +392,9 @@ public class MediaFragments extends MMObjectBuilder {
         List ms = getSources(fragment);
         for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
             MMObjectNode source = (MMObjectNode) mediaSources.next();
-            source.parent.removeRelations(source);
-            source.parent.removeNode(source);
+            MMObjectBuilder parent = source.getBuilder();
+            parent.removeRelations(source);
+            parent.removeNode(source);
         }
     }
 
@@ -449,7 +450,7 @@ public class MediaFragments extends MMObjectBuilder {
                 if (command.hasMoreTokens()) userChannels=new Integer(command.nextToken());
                 if (number!=null) {
             MMObjectNode media = getNode(number.intValue());
-            if(!(media.parent).isExtensionOf(mmb.getBuilder("mediafragments"))) {
+            if(!media.getBuilder().isExtensionOf(mmb.getBuilder("mediafragments"))) {
                 log.error("Number "+number+" is not a media/audio/video fragment "+media);
                 return "Number "+number+" is not a media/audio/video fragment "+media;
             }
@@ -484,7 +485,7 @@ public class MediaFragments extends MMObjectBuilder {
     public boolean setValue(MMObjectNode node,String fieldname) {
         if (fieldname.equals("lengthsec")) {
             long val=node.getLongValue("lengthsec");
-log.info("store value in seconds: "+val);
+            log.info("store value in seconds: "+val);
             node.setValue("length",new Long(val*1000));
             node.storeValue("lengthsec",null);
             return false;
