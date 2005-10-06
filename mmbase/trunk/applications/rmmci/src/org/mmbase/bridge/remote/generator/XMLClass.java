@@ -28,6 +28,7 @@ public class XMLClass {
     public boolean isArray  = false;
     public boolean isPrimitive = false;
     public boolean isInterface = true;
+    public boolean isSerializable = false;
 
     XMLClass(Document document) {
         this.document= document;
@@ -81,15 +82,18 @@ public class XMLClass {
             XMLClass xmlClass = new XMLClass(doc);
             xmlClass.isPrimitive = true;
             xmlClass.setXML(xml);
+            xmlClass.isSerializable = xml.getAttribute("serializable").equals("true");
             return xmlClass;
         } else if (elementName.equals("sunclass")){
             XMLClass xmlClass = new XMLClass(doc);
             xmlClass.setXML(xml);
+            xmlClass.isSerializable = xml.getAttribute("serializable").equals("true");
             return xmlClass;
         } else if (elementName.equals("class")) {
             XMLClass xmlClass = new XMLClass(doc);
             xmlClass.isInterface = false;
             xmlClass.setXML(xml);
+            xmlClass.isSerializable = xml.getAttribute("serializable").equals("true");
             return xmlClass;
         } else if (elementName.equals("array") || elementName.equals("interface")){
 
@@ -101,7 +105,7 @@ public class XMLClass {
                 xmlClass.isInterface = true;
             }
             xmlClass.setXML(xml);
-
+            xmlClass.isSerializable = xml.getAttribute("serializable").equals("true");
             NodeList nl= xml.getElementsByTagName("*");
             for(int i=0; i<nl.getLength(); i++) {
                 Element element = (Element)nl.item(i);
@@ -132,6 +136,8 @@ public class XMLClass {
             } catch (Exception e){
                 System.err.println("FROMXML ERROR " + e.getMessage());
             }
+        } else {
+            System.err.println("CANNOT make class from " + elementName);
         }
         return null;
     }
@@ -170,7 +176,7 @@ public class XMLClass {
     public String getOriginalName(){
         String result=xml.getAttribute("originalname");
         if (result.equals("")){
-            result=getName();
+            result = getName();
         }
         return result;
     }
@@ -206,6 +212,7 @@ public class XMLClass {
                 return XMLClass.fromXML(returnvalue);
             }
         }
+        System.out.println("No return type found on " + this);
         return null;
     }
 
