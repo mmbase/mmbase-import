@@ -45,6 +45,7 @@ public class AllTests {
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
         suite.addTestSuite(RelationTest.class);
+        suite.addTestSuite(DataTypesTest.class);
         return suite;
     }
 	
