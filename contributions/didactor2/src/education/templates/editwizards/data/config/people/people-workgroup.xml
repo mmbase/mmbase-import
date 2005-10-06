@@ -21,7 +21,7 @@
     </action>
 
     <action type="add">
-        <relation destinationtype="peope" role="related">
+        <relation destinationtype="people" role="related">
             <object type="people">
             </object>
         </relation>
