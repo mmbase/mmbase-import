@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.12 2004-11-26 10:32:31 michiel Exp $
+ * @version $Id: DateFormat.java,v 1.13 2005-10-06 17:42:56 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -152,7 +152,7 @@ public class DateFormat {
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
      * @param locale    The locale for which the date must be formatted.
-     * @return
+     * @return the formatted String
      */
     protected static String format(String fieldValue, String pattern, int factor, String timeZone, Locale locale) {
         if (fieldValue == null || "".equals(fieldValue)) {

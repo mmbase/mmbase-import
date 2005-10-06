@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.9 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.10 2005-10-06 17:41:28 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -44,13 +44,13 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
     }
 
     /**
-     * @param type a nodeManager
+     * @param t a nodeManager
      */
     public void setType(String t) throws JspTagException {
         type  = getAttribute(t);
     }
     /**
-     * @param role a role
+     * @param r a role
      */
     public void setRole(String r) throws JspTagException {
         role  = getAttribute(r);

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.60 2005-10-02 16:21:49 michiel Exp $
+ * @version $Id: Queries.java,v 1.61 2005-10-06 17:42:56 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1184,7 +1184,7 @@ abstract public class Queries {
      * @param otherNodeManager node manager on the other side of the relation
      * @param role role of the relation
      * @param direction direction of the relation
-     * @param relationsFields Comma separated string of fields which must be queried from the relation step
+     * @param relationFields  Comma separated string of fields which must be queried from the relation step
      * @param sortOrders      Comma separated string of fields of sortorders, or the empty string or <code>null</code>
      *                        So, this methods is targeted at the use of 'posrel' and similar fields, because sorting on other fields isn't possible right now.
      * @since MMBase-1.8
