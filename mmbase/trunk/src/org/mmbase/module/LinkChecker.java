@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.18 2005-07-09 11:46:10 nklasens Exp $
+ * @version $Id: LinkChecker.java,v 1.19 2005-10-06 17:46:39 michiel Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -130,8 +130,6 @@ public class LinkChecker extends ProcessorModule implements Runnable {
      * @param builderName the builder to check
      * @param fieldName the fieldname of the url to check
      * @param data the StringBuffer to append error information to
-     * @return false if the url does not exist
-     * @return true if the url exists
      * @since MMBase-1.7
      */
     protected void checkUrls(String builderName, String fieldName, StringBuffer data) {
