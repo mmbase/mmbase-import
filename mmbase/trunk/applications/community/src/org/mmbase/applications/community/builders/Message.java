@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.30 2005-10-05 10:59:39 michiel Exp $
+ * @version $Id: Message.java,v 1.31 2005-10-06 14:20:33 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -170,22 +170,22 @@ public class Message extends MMObjectBuilder {
      */
     public String getMessageError(int error) {
         switch (error) {
-            case POST_ERROR_BODY_EXCEEDS_SIZE:
-                return "Message body size exceeds " + maxBodySize + " bytes";
-            case POST_ERROR_NO_USER:
-                return "User name or object needed";
-            case POST_ERROR_NEED_LOGIN:
-                return "User needs to be logged on to post";
-            case POST_ERROR_RELATION_CHANNEL:
-                return "Could not create temporary relations between message and channel.";
-            case POST_ERROR_RELATION_USER:
-                return "Could not create temporary relations between message and user.";
-            case POST_ERROR_NO_BODY_TEXT:
-                return "No message body text specified.";
-            case POST_ERROR_NO_SUBJECT:
-                return "No subject specified.";
-            default :
-                return "Could not post message.";
+        case POST_ERROR_BODY_EXCEEDS_SIZE:
+            return "Message body size exceeds " + maxBodySize + " bytes";
+        case POST_ERROR_NO_USER:
+            return "User name or object needed";
+        case POST_ERROR_NEED_LOGIN:
+            return "User needs to be logged on to post";
+        case POST_ERROR_RELATION_CHANNEL:
+            return "Could not create temporary relations between message and channel.";
+        case POST_ERROR_RELATION_USER:
+            return "Could not create temporary relations between message and user.";
+        case POST_ERROR_NO_BODY_TEXT:
+            return "No message body text specified.";
+        case POST_ERROR_NO_SUBJECT:
+            return "No subject specified.";
+        default :
+            return "Could not post message.";
         }
     }
 
@@ -835,7 +835,7 @@ public class Message extends MMObjectBuilder {
         while ((count < (offset + max)) && tmpInsRels.hasNext()) {
             tmpInsRel = (MMObjectNode) temporaryNodes.get(tmpInsRels.next());
             if (tmpInsRel != null) {
-                if (tmpInsRel.parent instanceof InsRel) {
+                if (tmpInsRel.getBuilder() instanceof InsRel) {
                     found = false;
                     // Test if the (_)snumbers are equal.
                     if (_number != null) {
@@ -952,7 +952,7 @@ public class Message extends MMObjectBuilder {
         log.service("removeNode(): node=" + node.getNumber());
 
         // Make sure we got a Message node, else abort the remove operation.
-        if (!(node.parent instanceof Message)) {
+        if (!(node.getBuilder() instanceof Message)) {
             log.error(node.getNumber() + " is of type " + node.getName() + " instead of Message");
             return;
         }
@@ -1215,7 +1215,7 @@ public class Message extends MMObjectBuilder {
      * @return teh channel of teh message as a <code>MMObjectNode</code>
      */
     public MMObjectNode isPostedInChannel(MMObjectNode node) {
-        while (node.parent instanceof Message) {
+        while (node.getBuilder() instanceof Message) {
             node = getNode(node.getIntValue(F_THREAD));
         }
         return node;

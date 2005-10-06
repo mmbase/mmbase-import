@@ -21,7 +21,7 @@ import org.mmbase.util.*;
 
 /**
  * @todo This look a remarkable lot like {@link org.mmbase.util.NodeWriter}. One of them has to go!
- * @version $Id: NodeWriter.java,v 1.4 2005-07-14 12:32:50 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.5 2005-10-06 14:22:04 michiel Exp $
  */
 public class NodeWriter{
 
@@ -124,7 +124,7 @@ public class NodeWriter{
                 write("\t<object number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
             }
         }
-    MMObjectBuilder bul=node.parent;
+    MMObjectBuilder bul = node.getBuilder();
     Iterator nd = bul.getFields().iterator();
         while (nd.hasNext()) {
             CoreField def=(CoreField)nd.next();
