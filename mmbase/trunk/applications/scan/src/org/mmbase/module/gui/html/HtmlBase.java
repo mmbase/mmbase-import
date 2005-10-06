@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.52 2005-09-20 19:28:29 nklasens Exp $
+ * @version $Id: HtmlBase.java,v 1.53 2005-10-06 14:07:32 michiel Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -356,7 +356,7 @@ public class HtmlBase extends ProcessorModule {
             String tm = tagger.Value("NODE");
             MMObjectNode srcnode = mmb.getTypeDef().getNode(tm);
             snode = srcnode.getIntValue("number");
-            bul = srcnode.parent;
+            bul = srcnode.getBuilder();
 
             if (type!=null) {
                 bul=mmb.getMMObject(type);
