@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.160 2005-10-02 16:30:00 michiel Exp $
+ * @version $Id: MMBase.java,v 1.161 2005-10-06 13:35:34 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -318,10 +318,10 @@ public class MMBase extends ProcessorModule {
         }
         log.service("MMBase machine name used for clustering:" + machineName);
 
-        log.debug("Starting JDBC module");
-
-        // start the JDBC module if present
-        getModule("JDBC", true);
+//        log.debug("Starting JDBC module");
+//
+//        // start the JDBC module if present
+//        getModule("JDBC", true);
 
         mmbaseState = STATE_LOAD;
 
@@ -1284,7 +1284,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public void addEventListener(EventListener listener){
-        log.service("adding listener " + listener);
+        log.debug("adding listener " + listener);
         AbstractEventBroker[] brokers = findBrokersFor(listener);
         if(brokers != null){
             for (int i = 0; i < brokers.length; i++) {
@@ -1299,7 +1299,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public void removeEventListener(EventListener listener){
-        log.service("removing listnerer of type : " + listener.getClass().getName());
+        log.debug("removing listnerer of type : " + listener.getClass().getName());
         AbstractEventBroker[] brokers = findBrokersFor(listener);
         if(brokers != null){
             for (int i = 0; i < brokers.length; i++) {
