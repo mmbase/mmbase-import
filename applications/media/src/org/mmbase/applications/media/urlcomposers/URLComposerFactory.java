@@ -187,7 +187,7 @@ public class URLComposerFactory  {
         List templates = new ArrayList();
         
         if (fragment != null) {
-            MediaFragments bul = (MediaFragments) fragment.parent;
+            MediaFragments bul = (MediaFragments) fragment.getBuilder();
             Stack stack = bul.getParentFragments(fragment);
             Iterator i = stack.iterator();
             while (i.hasNext()) {
