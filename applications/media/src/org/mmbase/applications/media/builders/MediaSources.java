@@ -35,7 +35,7 @@ import org.mmbase.applications.media.Codec;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.33 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MediaSources.java,v 1.34 2005-10-06 11:46:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -358,7 +358,7 @@ public class MediaSources extends MMObjectBuilder {
                 if (provider == null) {
                     log.warn("Specified default provider '" + defaultProvider + "' is not an existing node");
                 } else {
-                    MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
+                    MediaProviders bul = (MediaProviders) provider.getBuilder(); // cast everytime, because it can be extended
                     bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
                 }
             }
@@ -370,7 +370,7 @@ public class MediaSources extends MMObjectBuilder {
                 if (log.isDebugEnabled()) {
                     log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
                 }
-                MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
+                MediaProviders bul = (MediaProviders) provider.getBuilder(); // cast everytime, because it can be extended
                 bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
             }
         }
