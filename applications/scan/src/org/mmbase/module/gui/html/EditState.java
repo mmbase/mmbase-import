@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  * @application SCAN - Removing this from Core requires changes in Module/MMObjectBuilder
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.17 2004-10-01 08:43:45 pierre Exp $
+ * @version $Id: EditState.java,v 1.18 2005-10-06 14:07:32 michiel Exp $
  */
 public class EditState {
 
@@ -224,7 +224,7 @@ public class EditState {
     public String getEditNodeSrcDutchName() {
         MMObjectNode snode=getEditSrcNode();
         if (snode!=null) {
-            String dname=snode.parent.getSingularName();
+            String dname=snode.getBuilder().getSingularName();
             if (dname!=null) return dname;
         }
         return "";
@@ -251,7 +251,7 @@ public class EditState {
     public String getEditNodeDstDutchName() {
         MMObjectNode snode=getEditDstNode();
         if (snode!=null) {
-            String dname=snode.parent.getSingularName();
+            String dname=snode.getBuilder().getSingularName();
             if (dname!=null) return dname;
         }
         return "";

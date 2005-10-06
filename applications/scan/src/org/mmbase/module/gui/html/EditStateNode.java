@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditStateNode.java,v 1.16 2004-10-01 08:43:45 pierre Exp $
+ * @version $Id: EditStateNode.java,v 1.17 2005-10-06 14:07:32 michiel Exp $
  */
 public class EditStateNode {
 
@@ -279,7 +279,7 @@ public class EditStateNode {
                         target = mmObjectBuilder.getNode(rel.getIntValue("dnumber"));
                     else
                         target = mmObjectBuilder.getNode(rel.getIntValue("snumber"));
-                    typeName = target.parent.getTableName();
+                    typeName = target.getBuilder().getTableName();
                     Vector relList = (Vector)relationTable.get(typeName);
                     if (relList != null) {
                         relList.addElement(target);
