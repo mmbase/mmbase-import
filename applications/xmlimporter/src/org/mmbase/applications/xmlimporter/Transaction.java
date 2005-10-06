@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.5 2005-07-14 12:07:42 michiel Exp $
+ * @version $Id: Transaction.java,v 1.6 2005-10-06 14:14:41 michiel Exp $
  */
 public class Transaction implements Runnable {
 
@@ -910,7 +910,7 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Iterator fieldNames = tempObj1.getNode().parent.getFieldNames().iterator();
+        Iterator fieldNames = tempObj1.getNode().getBuilder().getFieldNames().iterator();
         while (fieldNames.hasNext()) {
             String fieldName = (String) fieldNames.next();
 
@@ -957,7 +957,7 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Iterator fieldNames  = tempObj1.getNode().parent.getFieldNames().iterator();
+        Iterator fieldNames  = tempObj1.getNode().getBuilder().getFieldNames().iterator();
         while (fieldNames.hasNext()) {
             String fieldName = (String) fieldNames.next();
 
