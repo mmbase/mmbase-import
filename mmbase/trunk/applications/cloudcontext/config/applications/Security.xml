@@ -30,7 +30,6 @@
   </allowedrelationlist>
 
   <datasourcelist>
-	<datasource builder="typedef"        path="Security/typedef.xml" />
     <datasource builder="mmbaseranks"    path="Security/mmbaseranks.xml" />
     <datasource builder="mmbasecontexts" path="Security/mmbasecontexts.xml" />
     <datasource builder="mmbasegroups"   path="Security/mmbasegroups.xml" />
