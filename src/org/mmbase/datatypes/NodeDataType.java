@@ -18,12 +18,12 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.11 2005-10-04 22:48:56 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.12 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
-public class NodeDataType extends DataType {
+public class NodeDataType extends BasicDataType {
 
-    protected final DataType.ValueConstraint mustExistConstraint = new MustExistConstraint();
+    protected MustExistConstraint mustExistConstraint = new MustExistConstraint();
 
     /**
      * Constructor for node field.
@@ -32,18 +32,11 @@ public class NodeDataType extends DataType {
         super(name, Node.class);
     }
 
-    public void erase() {
-        super.erase();
-        if (mustExistConstraint != null) { // check because erase is called from constructor of super too, and so member can still be null.
-            mustExistConstraint.setFixed(false);
-            mustExistConstraint.setValue(Boolean.TRUE);
-        }
-    }
 
-    public void inherit(DataType origin) {
+    public void inherit(BasicDataType origin) {
         super.inherit(origin);
         if (origin instanceof NodeDataType) {
-            mustExistConstraint.inherit(((NodeDataType)origin).mustExistConstraint);
+            mustExistConstraint = new MustExistConstraint(((NodeDataType)origin).mustExistConstraint);
         }
     }
 
@@ -57,7 +50,7 @@ public class NodeDataType extends DataType {
         return mustExistConstraint.getValue().equals(Boolean.TRUE);
     }
 
-    public DataType.ValueConstraint getMustExistConstraint() {
+    public MustExistConstraint getMustExistConstraint() {
         mustExistConstraint.setFixed(true);
         return mustExistConstraint;
     }
@@ -68,7 +61,10 @@ public class NodeDataType extends DataType {
         return errors;
     }
 
-    private class MustExistConstraint extends ValueConstraint {
+    private class MustExistConstraint extends AbstractValueConstraint {
+        MustExistConstraint(MustExistConstraint me) {
+            super(me);
+        }
         MustExistConstraint() {
             super("mustExist", Boolean.TRUE);
         }

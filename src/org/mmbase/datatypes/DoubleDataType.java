@@ -10,45 +10,36 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * @javadoc
+ * A NumberDataType, but provides getMin and getMax as double.
  *
  * @author Pierre van Rooden
- * @version $Id: DoubleDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: DoubleDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
+
 public class DoubleDataType extends NumberDataType {
 
     /**
-     * Constructor for Double field.
      */
     public DoubleDataType(String name) {
         super(name, Double.class);
     }
 
     /**
-     * Returns the minimum value for this datatype.
-     * @return the minimum value as an <code>Double</code>, or <code>null</code> if there is no minimum.
+     * @return the minimum value as a <code>double</code>, or {@link Double#NEGATIVE_INFINITY} if there is no minimum.
      */
-    public Double getMin() {
-        Number min = getMinValue();
-        if (min instanceof Double) {
-            return (Double)min;
-        } else {
-            return new Double(min.doubleValue());
-        }
+    public double getMin() {
+        Number min = (Number) getMinConstraint().getValue();
+        return min == null ? Double.NEGATIVE_INFINITY : min.doubleValue();
     }
 
     /**
-     * Returns the maximum value for this datatype.
-     * @return the maximum value as an <code>Double</code>, or <code>null</code> if there is no maximum.
+     * @return the maximum value as a <code>double</code>, or {@link Double#POSITIVE_INFINITY} if there is no maximum.
      */
-    public Double getMax() {
-        Number max = getMaxValue();
-        if (max instanceof Double) {
-            return (Double)max;
-        } else {
-            return new Double(max.doubleValue());
-        }
+    public double getMax() {
+        Number max = (Number) getMaxConstraint().getValue();
+        return max == null ? Double.POSITIVE_INFINITY : max.doubleValue();
     }
 
 }

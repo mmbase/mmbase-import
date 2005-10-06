@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.12 2005-10-04 22:50:15 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.13 2005-10-06 23:02:03 michiel Exp $
  */
 
 public class DataTypes {
@@ -124,7 +124,7 @@ public class DataTypes {
         if (type != Field.TYPE_UNKNOWN || classType == null) {
             return createDataType(name, type);
         } else {
-            return new DataType(name, classType);
+            return new BasicDataType(name, classType);
         }
     }
 
@@ -144,7 +144,7 @@ public class DataTypes {
         case Field.TYPE_NODE: return new NodeDataType(name);
         case Field.TYPE_DATETIME: return new DateTimeDataType(name);
         case Field.TYPE_LIST: return new ListDataType(name);
-        default: return new DataType(name);
+        default: return new BasicDataType(name);
         }
     }
 
@@ -240,7 +240,7 @@ public class DataTypes {
                 dataType = getListDataType(Field.TYPE_UNKNOWN);
             } else {
                 dataType = createDataType(name, type);
-                dataTypeCollector.finish(dataType);
+                // dataTypeCollector.finish(dataType); // will be finished when reading the XML.
                 dataTypeCollector.addDataType(dataType);
             }
         }

@@ -10,45 +10,34 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * @javadoc
+ * A NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: IntegerDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType {
 
     /**
-     * Constructor for integer field.
      */
     public IntegerDataType(String name) {
         super(name, Integer.class);
     }
 
     /**
-     * Returns the minimum value for this datatype.
-     * @return the minimum value as an <code>Integer</code>, or <code>null</code> if there is no minimum.
+     * @return the minimum value as an <code>int</code>, or a very very small number if there is no minimum.
      */
-    public Integer getMin() {
-        Number min = getMinValue();
-        if (min instanceof Integer) {
-            return (Integer)min;
-        } else {
-            return new Integer(min.intValue());
-        }
+    public int getMin() {
+        Number min = (Number) getMinConstraint().getValue();
+        return min == null ? Integer.MIN_VALUE : min.intValue();
     }
 
     /**
-     * Returns the maximum value for this datatype.
-     * @return the maximum value as an <code>Integer</code>, or <code>null</code> if there is no maximum.
+     * @return the maximum value as an <code>int</code>, or a very very big if there is no maximum.
      */
-    public Integer getMax() {
-        Number max = getMaxValue();
-        if (max instanceof Integer) {
-            return (Integer)max;
-        } else {
-            return new Integer(max.intValue());
-        }
+    public int getMax() {
+        Number max = (Number) getMaxConstraint().getValue();
+        return max == null ? Integer.MAX_VALUE : max.intValue();
     }
 
 }

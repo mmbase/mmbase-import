@@ -17,12 +17,13 @@ import org.mmbase.bridge.Field;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: Constants.java,v 1.2 2005-09-15 15:05:02 michiel Exp $
+ * @version $Id: Constants.java,v 1.3 2005-10-06 23:02:03 michiel Exp $
  */
 
 public class Constants {
 
     // DataTypes for base MMBase field types
+
     public static final DataType DATATYPE_INTEGER  = DataTypes.getDataType(Field.TYPE_INTEGER);
     public static final DataType DATATYPE_LONG     = DataTypes.getDataType(Field.TYPE_LONG);
     public static final DataType DATATYPE_FLOAT    = DataTypes.getDataType(Field.TYPE_FLOAT);
@@ -35,6 +36,7 @@ public class Constants {
     public static final DataType DATATYPE_NODE     = DataTypes.getDataType(Field.TYPE_NODE);
     public static final DataType DATATYPE_UNKNOWN  = DataTypes.getDataType(Field.TYPE_UNKNOWN);
 
+    /*
     public static final DataType DATATYPE_LIST_UNKNOWN  = DataTypes.getListDataType(Field.TYPE_UNKNOWN);
     public static final DataType DATATYPE_LIST_INTEGER  = DataTypes.getListDataType(Field.TYPE_INTEGER);
     public static final DataType DATATYPE_LIST_LONG     = DataTypes.getListDataType(Field.TYPE_LONG);
@@ -44,5 +46,7 @@ public class Constants {
     public static final DataType DATATYPE_LIST_XML      = DataTypes.getListDataType(Field.TYPE_XML);
     public static final DataType DATATYPE_LIST_DATETIME = DataTypes.getListDataType(Field.TYPE_DATETIME);
     public static final DataType DATATYPE_LIST_BOOLEAN  = DataTypes.getListDataType(Field.TYPE_BOOLEAN);
-    public static final DataType DATATYPE_LIST_NODE     = DataTypes.getListDataType(Field.TYPE_NODE);
+    public static final DataType DATATYPE_LIST_NODE     =
+    DataTypes.getListDataType(Field.TYPE_NODE);
+    */
 }
