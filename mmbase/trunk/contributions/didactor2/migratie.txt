@@ -1,5 +1,9 @@
 Migratie issues
 
+2005-10-05
+    ALTER TABLE mmb_people ADD islogged TINYINT(1);
+
+
 2005-10-01
     ALTER TABLE mmb_people ADD person_status TINYINT(1);
 
