@@ -38,6 +38,7 @@
   <mm:fieldlist type="edit"> 
     <mm:fieldinfo type="guiname" />: <mm:field /><br />
   </mm:fieldlist>
+  [<mm:nodeinfo type="query" jspvar="q"><%= q.getClass().getName() %> XXXX <mm:write /></mm:nodeinfo>]<br >
 </mm:node>
 (should see all editable fields)
 
@@ -50,9 +51,11 @@
 (should see title and subtitle fields)
 <h3>field-function wrap, html</h3>
 <mm:node referid="node">
+  <%--
   <mm:field name="html(wrap(title, 10))" />
   <mm:field name="wrap(title, 10)" escape="p" />
   <pre><mm:field name="wrap(title,10)" /></pre>
+  --%>
   <mm:field name="info()" />
 </mm:node>
 
@@ -169,6 +172,7 @@ using list tag: <br />
      <mm:relatednodes type="urls">
        1  related url (used relatednodes): <mm:field id="url" name="url" /> (<mm:index />/<mm:size />)<br />
        <mm:last>(should be two ('sorted' and 'posrel'))<br /></mm:last>
+  [<mm:nodeinfo type="query" />]<br >
      </mm:relatednodes>
      <mm:relatednodes type="urls" orderby="description">
        2  related url (used relatednodes): <mm:field name="url" /><br />
@@ -270,8 +274,8 @@ using list tag: <br />
           14  position (relatednodescontainer): <mm:field name="pos" /> (should be 10)<br /> 
        </mm:relatednodes>
      </mm:relatednodescontainer>
-     <mm:relatednodes type="object" role="posrel" orderby="posrel.pos" jspvar="node">
-       <mm:log><%=node%></mm:log>
+     <mm:relatednodes type="object" role="posrel" orderby="posrel.pos" jspvar="rnode">
+       <mm:log><%=rnode%></mm:log>
        15  actual type (listing object): <mm:nodeinfo type="nodemanager" /> (should be 'urls'): <mm:field name="url" /> (should see the url)<br />
      </mm:relatednodes>
      <em>Testing with 'sorted' role (a posrel)</em><br />
@@ -329,6 +333,7 @@ using list tag: <br />
    <mm:listnodes>
     1 url: <mm:field name="url" /><br />
     <mm:field id="urlnumber" name="number" write="false" />
+  [<mm:nodeinfo type="query" />]<br >
    </mm:listnodes>
 </mm:listnodescontainer>
 
@@ -441,7 +446,7 @@ mm:listnodes with path/element (should show twice the article):<br />
 <mm:log>mm:list with one element</mm:log>
 
 <h3>List-tag with only one element</h3>
-<mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" constraints="news.number > 10/10">
+<mm:list nodes="$nodenumber" path="news" fields="news.title"  constraints="news.number > 10/10">
 cd 
    <em>all the following should have values</em>:<br />
    news.title:    <mm:field name="news.title" />   <br />

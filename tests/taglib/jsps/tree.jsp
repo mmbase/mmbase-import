@@ -10,17 +10,15 @@
   <h1>Testing MMBase/taglib</h1>
   <mm:cloud jspvar="cloud">
 
-<mm:import id="test" vartype="list">bla,koe</mm:import>
-<mm:stringlist referid="test" > <mm:write />abc </mm:stringlist>
-<mm:write value="hoi" write="true"> bla bla </mm:write>
 <table>
 <tr>
 <mm:log>=============================================</mm:log>
 <td>
  <mm:timer>
-<mm:listnodescontainer type="object">
-  <mm:constraint field="number" operator="IN" value="$startnodes" />
-  <mm:tree id="tree" type="object" searchdir="destination" maxdepth="8">
+   <mm:listnodescontainer type="object">
+     <mm:aliasconstraint name="$startnodes" />
+
+  <mm:tree id="tree" type="object" searchdir="destination" maxdepth="8" orderby="number,otype" directions="down">
 
     <mm:grow>
       <ul class="<mm:depth />" id="<mm:index list="tree" />">
@@ -46,7 +44,7 @@
  <mm:timer>
 <mm:node number="$startnodes">
 <mm:relatednodescontainer type="object" searchdirs="destination">
-  <mm:tree type="object" searchdir="destination" maxdepth="8">
+  <mm:tree type="object" searchdir="destination" maxdepth="8" orderby="number">
     <mm:grow>
       <ul><mm:onshrink></ul></mm:onshrink>
     </mm:grow>
@@ -63,9 +61,35 @@
 </mm:relatednodescontainer>
 </mm:node>
 </mm:timer>
+
 </td>
 
 </tr>
+</table>
+<mm:log>-------------------------------------------</mm:log>
+
+<mm:timer>
+  <mm:listnodescontainer type="object" nodes="$startnodes">
+    <mm:tree id="tree2" type="object" searchdir="destination" maxdepth="8" orderby="number">
+      <mm:grow>
+        <mm:depth>
+          <mm:isgreaterthan value="1">
+             <ul> <mm:onshrink></ul></mm:onshrink>
+          </mm:isgreaterthan>
+        </mm:depth>
+      </mm:grow>
+      <mm:depth>
+        <mm:isgreaterthan value="2"><li></mm:isgreaterthan>
+        <mm:write />: <mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
+        <mm:isgreaterthan value="2"><mm:onshrink></li></mm:onshrink></mm:isgreaterthan>
+      </mm:depth>
+
+      <mm:shrink />
+    </mm:tree>
+  </mm:listnodescontainer>
+</mm:timer>
+
+
 
 
 <hr />
