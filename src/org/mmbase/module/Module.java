@@ -26,14 +26,14 @@ import org.mmbase.util.logging.Logger;
  * automaticly loaded, and all found 'Module's are then initialized.
  *
  * There are several Modules which are more or less compulsary in MMBase, like the 'mmbaseroot'
- * module, the actual core of MMBase implemented by {@see org.mmbase.module.core.MMBase}, and the
+ * module, the actual core of MMBase implemented by {@link org.mmbase.module.core.MMBase}, and the
  * 'jdbc' module.
  *
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.69 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: Module.java,v 1.70 2005-10-06 17:46:39 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 

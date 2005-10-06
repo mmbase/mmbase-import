@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.34 2005-09-02 12:28:45 pierre Exp $
+ * @version $Id: MMServers.java,v 1.35 2005-10-06 17:46:39 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -308,7 +308,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
-     * @return
+     * @return List of MMObjectNodes representing  active servers.
      */
     public List getActiveServers() {
         List activeServers = new ArrayList();

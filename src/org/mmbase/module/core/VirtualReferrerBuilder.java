@@ -18,7 +18,7 @@ import java.util.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.4 2005-07-29 11:22:11 michiel Exp $
+ * @version $Id: VirtualReferrerBuilder.java,v 1.5 2005-10-06 17:46:39 michiel Exp $
  * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {
@@ -30,7 +30,6 @@ public class VirtualReferrerBuilder extends VirtualBuilder {
      * A builder instantiated with this constrcutor is not registered in MMBase
      * and should only be used as a temporary parent for virtual nodes which
      * do not have a long life span.
-     * @param m the MMbase cloud creating the node
      */
     public VirtualReferrerBuilder(MMObjectBuilder originalBuilder) {
         super(originalBuilder.mmb);
@@ -61,9 +60,6 @@ public class VirtualReferrerBuilder extends VirtualBuilder {
 
     /**
      * Returns the original builder
-     * @param node the node who setfields are queried
-     * @param field the fieldname that is requested
-     * @return the result of the 'function', or null if no valid functions could be determined.
      */
     public Object getOriginalBuilder() {
         return originalBuilder;

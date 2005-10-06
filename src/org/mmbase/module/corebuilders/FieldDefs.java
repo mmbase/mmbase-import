@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.53 2005-09-08 11:47:31 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.54 2005-10-06 17:46:39 michiel Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -236,33 +236,12 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * Set size of the field.
      * @param value the value to set
-     * @deprecated use {@link #setSize}
+     * @deprecated use {@link CoreField#setSize}
      */
     public void setDBSize(int value) {
         setMaxLength(value);
     }
 
-    /**
-     * Set the basic MMBase type of the field.
-     * @param value the id of the type
-     * @deprecated use {@link #setType}
-     */
-    /*
-    public void setDBType(int value) {
-        setType(value);
-    }
-    */
-
-    /**
-     * Set the basic MMBase type of the field, using the type description
-     * @param value the name of the type
-     * @deprecated use {@link #setType}
-     */
-    /*
-    public void setDBType(String value) {
-        setType(Fields.getType(value));
-    }
-    */
 
     /**
      * Set the position of the field in the database table.
@@ -349,8 +328,8 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * Set whether the field is a key and thus needs to be 'unique'.
      * @param value the value to set
-     * @deprecated use {@link #setUnique} to make a field unique, use
-     *             {@link #addToIndex} to make the field part of an index
+     * @deprecated use {@link CoreField#setUnique} to make a field unique, use
+     *             {@link org.mmbase.module.core.MMTable#addToIndex} to make the field part of an index
      */
     public void setDBKey(boolean value) {
         if (getParent() != null) {
@@ -380,7 +359,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * Sorts a list with FieldDefs objects, using the specified order
      * @param fielddefs the list to sort
      * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
-     * @deprecated use {@link Fields.sort}
+     * @deprecated use {@link Fields#sort}
      */
     public static void sort(List fielddefs, int order) {
         Fields.sort(fielddefs, order);

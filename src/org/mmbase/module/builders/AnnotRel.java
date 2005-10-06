@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.21 2005-06-27 17:02:49 michiel Exp $
+ * @version $Id: AnnotRel.java,v 1.22 2005-10-06 17:46:39 michiel Exp $
  */
 public class AnnotRel extends InsRel {
 
@@ -38,8 +38,8 @@ public class AnnotRel extends InsRel {
         public final static int ROWS    = 8;
         public final static int COLS    = 9;
     */
-    // logger
-    private static Logger log = Logging.getLoggerInstance(AnnotRel.class);
+
+    private static final Logger log = Logging.getLoggerInstance(AnnotRel.class);
 
     /**
      * Sets defaults for a node.
@@ -109,7 +109,6 @@ public class AnnotRel extends InsRel {
      * The hook that passes all form related pages to the correct handler.
      * This method is not supported.
      * @param sp The PageInfo
-     * @param command the command to execute
      * @param cmds the commands (PRC-CMD) to process
      * @param vars variables (PRC-VAR) to use
      * @return the result value as a <code>String</code>
@@ -123,7 +122,7 @@ public class AnnotRel extends InsRel {
      * Obtains a string value by performing the provided command.
      * This method is not supported.
      * @param sp The PageInfo
-     * @param tok the command to execute
+     * @param command the command to execute
      * @return the result value as a <code>String</code>
      */
     public String replace(PageInfo sp, StringTokenizer command) {

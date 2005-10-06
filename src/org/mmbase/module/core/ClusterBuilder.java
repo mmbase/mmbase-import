@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.77 2005-10-05 10:00:54 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.78 2005-10-06 17:46:39 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -277,7 +277,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)},
      * where <code>snodes</code> contains just the number specified by <code>snode</code>.
      *
-     * @see #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
+     * @see #searchMultiLevelVector(List,List,String,List,String,List,List,int)
      */
    public Vector searchMultiLevelVector(
         int snode,
@@ -293,7 +293,7 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Same as {@link #searchMultiLevelVector(List,List,String,List,String,List,Vector,int)
+     * Same as {@link #searchMultiLevelVector(List,List,String,List,String,List,List,int)
               * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)}.
      *
      * @see #searchMultiLevelVector(List,List,String,List,String,List,List,int)
