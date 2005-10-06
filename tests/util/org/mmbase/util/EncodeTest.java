@@ -68,7 +68,7 @@ public class EncodeTest extends TestCase {
     public void testUndocumentedEncoders() {
         Set encodings = new TreeSet(Encode.possibleEncodings());
         encodings.removeAll(getDocumentedEncodings());
-        assertTrue("found undocumeted encoding(s)" + encodings, encodings.isEmpty());
+        assertTrue("found undocumented encoding(s)" + encodings, encodings.isEmpty());
     }
 
     /**
