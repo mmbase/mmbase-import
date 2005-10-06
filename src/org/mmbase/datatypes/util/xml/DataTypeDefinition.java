@@ -20,6 +20,7 @@ import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
 
@@ -31,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.23 2005-10-04 22:50:15 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.24 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -60,21 +61,6 @@ public class DataTypeDefinition {
         this.collector = collector;
     }
 
-    /**
-     * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
-     * default namespace
-     */
-    protected static boolean hasAttribute(Element element, String localName) {
-        return DocumentReader.hasAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
-    }
-
-    /**
-     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
-     * default namespace
-     */
-    protected static String getAttribute(Element element, String localName) {
-        return DocumentReader.getAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
-    }
 
     private static int anonymousSequence = 1;
 
@@ -101,6 +87,7 @@ public class DataTypeDefinition {
             collector.rewrite(dt);
         }
 
+        // Check the class element only.
         NodeList childNodes = dataTypeElement.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
@@ -120,7 +107,7 @@ public class DataTypeDefinition {
                             dt = (DataType) constructor.newInstance(new Object[] { getId(id) });
                             if (baseDataType != null) {
                                 // should check class here, perhaps
-                                dt.inherit(baseDataType);
+                                dt.inherit((BasicDataType) baseDataType);
                             }
                         } catch (Exception e) {
                             log.error(e);
@@ -132,18 +119,20 @@ public class DataTypeDefinition {
                 }
             }
         }
-        if (dt == null) {
+        if (dt == null) { // either it had no id, or it did not exist yet.
             if (baseDataType == null) {
-                log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + org.mmbase.util.xml.XMLWriter.write(dataTypeElement, true));
+                log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + XMLWriter.write(dataTypeElement, true));
                 baseDataType = Constants.DATATYPE_UNKNOWN;
             }
             if (id.equals("")) {
+                log.debug("No id given, for the time being this datatype will be equal to its base type " + baseDataType);
                 dataType = baseDataType;
             } else {
+                log.debug("Id given, cloning " + baseDataType);
                 dataType = (DataType) baseDataType.clone(id);
-                dataType.clear(); // clears datatype.
             }
-        } else {
+        } else { // means that it existed it already
+            log.debug("Existing datatype " + dt + " with base " + baseDataType);
             dataType = dt;
         }
 
@@ -154,16 +143,16 @@ public class DataTypeDefinition {
      */
     DataTypeDefinition configure(Element dataTypeElement, DataType requestBaseDataType) {
 
-        String id = getAttribute(dataTypeElement, "id");
+        String id = DataTypeXml.getAttribute(dataTypeElement, "id");
 
         if ("byte".equals(id)) {
             log.warn("Found for datatype id 'byte', supposing that 'binary' is meant");
             id = "binary"; // hmmmmm
         }
 
-        String base = getAttribute(dataTypeElement, "base");
+        String base = DataTypeXml.getAttribute(dataTypeElement, "base");
         if (log.isDebugEnabled()) {
-            log.debug("Reading element id='" + id + "' base='" + base + "'");
+            log.debug("Reading element id='" + id + "' base='" + base + "' req datatype " + requestBaseDataType);
         }
         if (! base.equals("")) { // also specified, let's see if it is correct
 
@@ -181,7 +170,6 @@ public class DataTypeDefinition {
         }
 
         baseDataType = requestBaseDataType;
-
         getImplementation(dataTypeElement, id);
         configureConditions(dataTypeElement);
 
@@ -189,58 +177,15 @@ public class DataTypeDefinition {
     }
 
 
-    /**
-     * This utility takes care of reading the xml:lang attribute from an element
-     */
-    protected static Locale getLocale(Element element) {
-        Locale loc = null;
-        String xmlLang = getAttribute(element, "xml:lang");
-        if (! xmlLang.equals("")) {
-            String[] split = xmlLang.split("-");
-            if (split.length == 1) {
-                loc = new Locale(split[0]);
-            } else {
-                loc = new Locale(split[0], split[1]);
-            }
-        }
-        return loc;
-    }
-
-
-    protected static LocalizedString getLocalizedDescription(String tagName, Element element, LocalizedString descriptions) {
-        NodeList childNodes = element.getChildNodes();
-        for (int k = 0; k < childNodes.getLength(); k++) {
-            if (childNodes.item(k) instanceof Element) {
-                Element childElement = (Element) childNodes.item(k);
-                if (tagName.equals(childElement.getLocalName())) {
-                    Locale locale = getLocale(childElement);
-                    String description = DocumentReader.getNodeTextValue(childElement);
-                    if (descriptions ==  null) {
-                        descriptions = new LocalizedString(description);
-                    }
-                    descriptions.set(description, locale);
-                }
-            }
-        }
-        return descriptions;
-    }
-
-    protected void setConstraintData(DataType.ValueConstraint property, Element element) {
-        // set fixed
-        if (hasAttribute(element, "fixed")) {
-            boolean isFixed = Boolean.valueOf(getAttribute(element, "fixed")).booleanValue();
-            property.setFixed(isFixed);
-        }
-        LocalizedString descriptions = property.getErrorDescription();
-        property.setErrorDescription(getLocalizedDescription("description", element, descriptions));
-    }
 
     private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class");
+
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
      */
     protected void configureConditions(Element dataTypeElement) {
+        log.debug("Now going to configure " + dataType);
         // add conditions
         NodeList childNodes = dataTypeElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
@@ -249,172 +194,73 @@ public class DataTypeDefinition {
                 if (childElement.getLocalName().equals("")) {
                     continue;
                 }
+                if (nonConditions.matcher(childElement.getLocalName()).matches()) {
+                    continue;
+                }
                 if (dataType == baseDataType) {
+                    log.debug("About to add/change conditions, need clone first!");
                     dataType = (DataType) baseDataType.clone(getId(""));
                 }
-                String childTag = childElement.getLocalName();
-
-                if ("required".equals(childTag)) {
-                    boolean value = getBooleanValue(childElement, false);
-                    setConstraintData(dataType.setRequired(value), childElement);
-                } else if ("unique".equals(childTag)) {
-                    boolean value = getBooleanValue(childElement, false);
-                    setConstraintData(dataType.setUnique(value), childElement);
-                } else if ("getprocessor".equals(childTag)) {
-                    addProcessor(DataType.PROCESS_GET, childElement);
-                } else if ("setprocessor".equals(childTag)) {
-                    addProcessor(DataType.PROCESS_SET, childElement);
-                } else if ("commitprocessor".equals(childTag)) {
-                    addProcessor(DataType.PROCESS_COMMIT, childElement);
-                } else if ("enumeration".equals(childTag)) {
-                    addEnumeration(childElement);
-                } else if ("default".equals(childTag)) {
-                    String value = getAttribute(childElement, "value");
-                    dataType.setDefaultValue(value);
-                } else if (nonConditions.matcher(childTag).matches()) {
-                    // ignore
-                } else if (dataType instanceof StringDataType) {
-                    addStringCondition(childElement);
-                } else if (dataType instanceof BigDataType) {
-                    addBigDataCondition(childElement);
-                } else if (dataType instanceof IntegerDataType) {
-                    addIntegerCondition(childElement);
-                } else if (dataType instanceof LongDataType) {
-                    addLongCondition(childElement);
-                } else if (dataType instanceof FloatDataType) {
-                    addFloatCondition(childElement);
-                } else if (dataType instanceof DoubleDataType) {
-                    addDoubleCondition(childElement);
-                } else if (dataType instanceof DateTimeDataType) {
-                    addDateTimeCondition(childElement);
-                } else if (dataType instanceof ListDataType) {
-                    addListCondition(childElement);
+                log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
+                if (!addCondition(childElement)) {
+                    log.error("" + XMLWriter.write(childElement, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that");
                 }
             }
         }
     }
 
-    protected boolean getBooleanValue(Element element, boolean defaultValue) {
-        if (hasAttribute(element, "value")) {
-            return Boolean.valueOf(getAttribute(element, "value")).booleanValue();
-        } else {
-            return defaultValue;
+    /**
+     * Uses one subelement of a datatype xml configuration element and interpret it. Possibly this
+     * method is a good candidate to override.
+     * @return <code>childElement</code>
+     */
+    protected boolean addCondition(Element childElement) {
+        boolean ret = false;
+        String childTag = childElement.getLocalName();
+        if ("required".equals(childTag)) {
+            boolean value = DataTypeXml.getBooleanValue(childElement, false);
+            setConstraintData(dataType.setRequired(value), childElement);
+            ret = true;
+        } else if ("unique".equals(childTag)) {
+            boolean value = DataTypeXml.getBooleanValue(childElement, false);
+            setConstraintData(dataType.setUnique(value), childElement);
+            ret = true;
+        } else if ("getprocessor".equals(childTag)) {
+            addProcessor(DataType.PROCESS_GET, childElement);
+            ret = true;
+        } else if ("setprocessor".equals(childTag)) {
+            addProcessor(DataType.PROCESS_SET, childElement);
+            ret = true;
+        } else if ("commitprocessor".equals(childTag)) {
+            addProcessor(DataType.PROCESS_COMMIT, childElement);
+            ret = true;
+        } else if ("enumeration".equals(childTag)) {
+            addEnumeration(childElement);
+            ret = true;
+        } else if ("default".equals(childTag)) {
+            String value = DataTypeXml.getAttribute(childElement, "value");
+            dataType.setDefaultValue(value);
+            ret = true;
+        } else if (addPatternCondition(childElement)) {
+            ret = true;
+        } else if (addLengthDataCondition(childElement)) {
+            ret =  true;
+        } else if (addComparableCondition(childElement)) {
+            ret = true;
         }
+        return ret;
     }
 
-    private Processor chainProcessors(Processor processor1, Processor processor2) {
-        Processor processor = processor1;
-        if (processor == null) {
-            processor = processor2;
-        } else if (processor instanceof ChainedProcessor) {
-            ((ChainedProcessor) processor).add(processor2);
-        } else {
-            ChainedProcessor chain = new ChainedProcessor();
-            chain.add(processor1);
-            chain.add(processor2);
-            processor = chain;
-        }
-        return processor;
-    }
-
-
-    private Object getParameterValue(Element param) {
-        String stringValue = DocumentReader.getNodeTextValue(param);
-        NodeList childNodes = param.getChildNodes();
-        Collection subParams = null;
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node child = childNodes.item(i);
-            if (! (child instanceof Element)) continue;
-            if (child.getLocalName().equals("param")) {
-                Element subParam = (Element) child;
-                if (subParams == null) subParams = new ArrayList();
-                String name = subParam.getAttribute("name");
-                subParams.add(new Entry(name, getParameterValue(subParam)));
-            }
-        }
-        if (subParams != null) {
-            if (! stringValue.equals("")) {
-                log.warn("" + param + " has both a text value and sub parameters, ignoring the text value '" + stringValue + "'");
-            }
-            return subParams;
-        } else {
-            return stringValue;
-        }
-    }
-    private void fillParameters(Element paramContainer, Parameters params) {
-        NodeList childNodes = paramContainer.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            if (childNodes.item(i) instanceof Element) {
-                Element paramElement = (Element) childNodes.item(i);
-                if ("param".equals(paramElement.getLocalName())) {
-                    String name = paramElement.getAttribute("name");
-                    Object value = getParameterValue(paramElement);
-                    params.set(name, value);
-                }
-            }
-        }
-    }
-
-    private Processor createProcessor(Element processorElement) {
-        Processor processor = null;
-        NodeList childNodes = processorElement.getChildNodes();
-        for (int k = 0; k < childNodes.getLength(); k++) {
-            if (childNodes.item(k) instanceof Element) {
-                Element classElement = (Element) childNodes.item(k);
-                if ("class".equals(classElement.getLocalName())) {
-                    String clazString = classElement.getAttribute("name");
-                    if (clazString.equals("")) {
-                        log.warn("No 'name' attribute on " + org.mmbase.util.xml.XMLWriter.write(classElement, true) + ", trying body");
-                        clazString = DocumentReader.getNodeTextValue(classElement);
-                    }
-                    try {
-                        Class claz = Class.forName(clazString);
-                        Processor newProcessor = null;
-                        if (CharTransformer.class.isAssignableFrom(claz)) {
-                            CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueintercepter ", false);
-                            if (charTransformer != null) {
-                                newProcessor = new CharTransformerProcessor(charTransformer);
-                            }
-                        } else if (Processor.class.isAssignableFrom(claz)) {
-                            newProcessor = (Processor)claz.newInstance();
-                        } else if (ParameterizedTransformerFactory.class.isAssignableFrom(claz)) {
-                            ParameterizedTransformerFactory factory = (ParameterizedTransformerFactory) claz.newInstance();
-                            Parameters params = factory.createParameters();
-                            fillParameters(classElement, params);
-                            Transformer transformer = factory.createTransformer(params);
-                            newProcessor = new CharTransformerProcessor((CharTransformer) transformer);
-                        } else if (ParameterizedProcessorFactory.class.isAssignableFrom(claz)) {
-                            ParameterizedProcessorFactory factory = (ParameterizedProcessorFactory) claz.newInstance();
-                            Parameters params = factory.createParameters();
-                            fillParameters(classElement, params);
-                            newProcessor = factory.createProcessor(params);
-                        } else {
-                            log.error("Found class " + clazString + " is not a Processor or a CharTransformer, nor a factory for those.");
-                        }
-                        processor = chainProcessors(processor, newProcessor);
-                    } catch (ClassNotFoundException cnfe) {
-                        log.error("Class '" + clazString + "' could not be found");
-                    } catch (IllegalAccessException iae) {
-                        log.error("Class " + clazString + " may  not be instantiated");
-                    } catch (InstantiationException ie) {
-                        log.error("Class " + clazString + " can not be instantiated");
-                    }
-
-                }
-            }
-        }
-        return processor;
-    }
 
     private void addProcessor(int action, int processingType, Processor newProcessor) {
         Processor oldProcessor = dataType.getProcessor(action, processingType);
-        newProcessor = chainProcessors(oldProcessor, newProcessor);
+        newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
         dataType.setProcessor(action, newProcessor, processingType);
     }
 
 
-    protected void addProcessor(int action, Element processorElement) {
-        Processor newProcessor = createProcessor(processorElement);
+    protected  void addProcessor(int action, Element processorElement) {
+        Processor newProcessor = DataTypeXml.createProcessor(processorElement);
         if (newProcessor != null) {
             if (action != DataType.PROCESS_COMMIT) {
                 String type = processorElement.getAttribute("type");
@@ -437,13 +283,24 @@ public class DataTypeDefinition {
         }
     }
 
+    protected void setConstraintData(DataType.ValueConstraint property, Element element) {
+        // set fixed
+        if (DataTypeXml.hasAttribute(element, "fixed")) {
+            boolean isFixed = Boolean.valueOf(DataTypeXml.getAttribute(element, "fixed")).booleanValue();
+            property.setFixed(isFixed);
+        }
+        LocalizedString descriptions = property.getErrorDescription();
+        property.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions));
+    }
 
-
+    /**
+     * Used the enumeration element.
+     */
     protected void addEnumeration(Element enumerationElement) {
         String value = enumerationElement.getAttribute("value");
         LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
         if (!value.equals("")) {
-            Locale locale = getLocale(enumerationElement);
+            Locale locale = DataTypeXml.getLocale(enumerationElement);
             String display = enumerationElement.getAttribute("display");
             if (display.equals("")) display = value;
             fact.add(locale, value, display);
@@ -490,182 +347,84 @@ public class DataTypeDefinition {
         }
     }
 
-    protected int getIntValue(Element element) {
-        return getIntValue(element, true);
-    }
 
-    protected int getIntValue(Element element, boolean required) {
-        if (hasAttribute(element, "value")) {
-            return Integer.parseInt(getAttribute(element, "value"));
-        } else {
-            if (required) {
-                throw new IllegalArgumentException("no 'value' argument");
-            } else {
-                return -1;
+    /**
+     * Considers length related condition elements ('minLength', 'maxLength' , 'length')
+     * @return <code>true</code> if element was used
+     */
+    protected boolean addLengthDataCondition(Element conditionElement) {
+        if (dataType instanceof LengthDataType) {
+            String localName = conditionElement.getLocalName();
+            LengthDataType bDataType = (LengthDataType) dataType;
+            if ("minLength".equals(localName)) {
+                long value = DataTypeXml.getLongValue(conditionElement);
+                setConstraintData(bDataType.setMinLength(value), conditionElement);
+                return true;
+            } else if ("maxLength".equals(localName)) {
+                long value = DataTypeXml.getLongValue(conditionElement);
+                setConstraintData(bDataType.setMaxLength(value), conditionElement);
+                return true;
+            } else if ("length".equals(localName)) {
+                long value = DataTypeXml.getLongValue(conditionElement);
+                setConstraintData(bDataType.setMinLength(value), conditionElement);
+                setConstraintData(bDataType.setMaxLength(value), conditionElement);
+                return true;
             }
         }
+        return false;
     }
 
-    protected void addBigDataCondition(Element conditionElement) {
-        BigDataType bDataType = (BigDataType) dataType;
+
+    /**
+     * Considers the 'pattern' condition element.
+     * @return <code>true</code> if element was used
+     */
+
+    protected boolean addPatternCondition(Element conditionElement) {
         String localName = conditionElement.getLocalName();
-        if ("minLength".equals(localName)) {
-            int value = getIntValue(conditionElement);
-            setConstraintData(bDataType.setMinLength(value), conditionElement);
-        } else if ("maxLength".equals(localName)) {
-            int value = getIntValue(conditionElement);
-            setConstraintData(bDataType.setMaxLength(value), conditionElement);
-        } else if ("length".equals(localName)) {
-            int value = getIntValue(conditionElement);
-            setConstraintData(bDataType.setMinLength(value), conditionElement);
-            setConstraintData(bDataType.setMaxLength(value), conditionElement);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for bigdata.");
+        if (dataType instanceof StringDataType) {
+            StringDataType sDataType = (StringDataType) dataType;
+            if ("pattern".equals(localName)) {
+                String value = DataTypeXml.getAttribute(conditionElement, "value");
+                log.debug("Setting pattern on " + sDataType);
+                setConstraintData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
+                return true;
+            }
+        } else if (dataType instanceof DateTimeDataType) {
+            DateTimeDataType sDataType = (DateTimeDataType) dataType;
+            if ("pattern".equals(localName)) {
+                String value = DataTypeXml.getAttribute(conditionElement, "value");
+                Locale locale = DataTypeXml.getLocale(conditionElement);
+                sDataType.setPattern(value, locale);
+                return true;
+            }
         }
+        return false;
     }
 
-    protected void addStringCondition(Element conditionElement) {
-        StringDataType sDataType = (StringDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("pattern".equals(localName)) {
-            String value = getAttribute(conditionElement, "value");
-            setConstraintData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
-        } else {
-            addBigDataCondition(conditionElement);
+    /**
+     * Considers the condition elements associated with 'Comparables' (minInclusive, maxInclusive,
+     * minExclusive, maxExclusive).
+     * @return <code>true</code> if element was used
+     */
+
+    protected boolean addComparableCondition(Element conditionElement) {
+        if (dataType instanceof ComparableDataType) {
+            String localName = conditionElement.getLocalName();
+            ComparableDataType dDataType = (ComparableDataType) dataType;
+            if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
+                Comparable value = (Comparable) dDataType.autoCast(DataTypeXml.getValue(conditionElement));
+                setConstraintData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+                return true;
+            } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
+                Comparable value = (Comparable) dDataType.autoCast(DataTypeXml.getValue(conditionElement));
+                setConstraintData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+                return true;
+            }
         }
+        return false;
     }
 
-    protected Integer getIntegerValue(Element element) {
-        if (hasAttribute(element, "value")) {
-            return new Integer(getAttribute(element, "value"));
-        } else {
-            throw new IllegalArgumentException("no 'value' argument");
-        }
-    }
-
-    protected void addIntegerCondition(Element conditionElement) {
-        IntegerDataType iDataType = (IntegerDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
-            Integer value = getIntegerValue(conditionElement);
-            setConstraintData(iDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
-        } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
-            Integer value = getIntegerValue(conditionElement);
-            setConstraintData(iDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for integer.");
-        }
-    }
-
-    protected Long getLongValue(Element element) {
-        if (hasAttribute(element, "value")) {
-            return new Long(getAttribute(element, "value"));
-        } else {
-            throw new IllegalArgumentException("no 'value' argument");
-        }
-    }
-
-    protected void addLongCondition(Element conditionElement) {
-        LongDataType lDataType = (LongDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
-            Long value = getLongValue(conditionElement);
-            setConstraintData(lDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
-        } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
-            Long value = getLongValue(conditionElement);
-            setConstraintData(lDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for long.");
-        }
-    }
-
-    protected Float getFloatValue(Element element) {
-        if (hasAttribute(element, "value")) {
-            return new Float(getAttribute(element, "value"));
-        } else {
-            throw new IllegalArgumentException("no 'value' argument");
-        }
-    }
-
-    protected void addFloatCondition(Element conditionElement) {
-        FloatDataType fDataType = (FloatDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
-            Float value = getFloatValue(conditionElement);
-            setConstraintData(fDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
-        } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
-            Float value = getFloatValue(conditionElement);
-            setConstraintData(fDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for float.");
-        }
-    }
-
-    protected Double getDoubleValue(Element element) {
-        if (hasAttribute(element, "value")) {
-            return new Double(getAttribute(element, "value"));
-        } else {
-            throw new IllegalArgumentException("no 'value' argument");
-        }
-    }
-
-    protected void addDoubleCondition(Element conditionElement) {
-        DoubleDataType dDataType = (DoubleDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
-            Double value = getDoubleValue(conditionElement);
-            setConstraintData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
-        } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
-            Double value = getDoubleValue(conditionElement);
-            setConstraintData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for double.");
-        }
-    }
-
-    protected Date getDateTimeValue(Element element) {
-        if (hasAttribute(element, "value")) {
-            Date date = Casting.toDate(getAttribute(element, "value"));
-            return date;
-        } else {
-            throw new IllegalArgumentException("no 'value' attribute");
-        }
-    }
-
-    protected void addDateTimeCondition(Element conditionElement) {
-        DateTimeDataType dtDataType = (DateTimeDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
-            Date value = getDateTimeValue(conditionElement);
-            setConstraintData(dtDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
-        } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
-            Date value = getDateTimeValue(conditionElement);
-            setConstraintData(dtDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
-        } else if ("pattern".equals(localName)) {
-            String pattern = getAttribute(conditionElement, "value");
-            Locale locale = getLocale(conditionElement);
-            dtDataType.setPattern(pattern, locale);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for datetime.");
-        }
-    }
-
-    protected void addListCondition(Element conditionElement) {
-        ListDataType lDataType = (ListDataType) dataType;
-        String localName = conditionElement.getLocalName();
-        if ("minSize".equals(localName)) {
-            int value = getIntValue(conditionElement);
-            setConstraintData(lDataType.setMinSize(value), conditionElement);
-        } else if ("maxSize".equals(localName)) {
-            int value = getIntValue(conditionElement);
-            setConstraintData(lDataType.setMaxSize(value), conditionElement);
-        } else if ("itemDataType".equals(localName)) {
-            String value = getAttribute(conditionElement, "value");
-            setConstraintData(lDataType.setItemDataType(collector.getDataType(value)), conditionElement);
-        } else {
-            log.error("Unsupported tag '" + localName + "' for list.");
-        }
-    }
 
     public String toString() {
         return "definition(" + (dataType == null ? "NONE" : dataType.toString()) + ")";

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.1 2005-09-12 17:28:43 michiel Exp $
+ * @version $Id: SecurityContextDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {
@@ -53,12 +53,12 @@ public class SecurityContextDataType extends StringDataType {
                 col.add(new Entry(val, val));
             }
             return col;
-        }                
+        }
     }
-
+    /*
     public LocalizedEntryListFactory getEnumerationFactory() {
         throw new UnsupportedOperationException();
     }
-
+    */
 
 }

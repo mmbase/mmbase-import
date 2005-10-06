@@ -13,10 +13,10 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: XmlDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
-public class XmlDataType extends BigDataType {
+public class XmlDataType extends BasicDataType {
 
     /**
      * Constructor for xml data type.

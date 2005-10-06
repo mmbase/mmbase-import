@@ -13,10 +13,10 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: BooleanDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
-public class BooleanDataType extends DataType {
+public class BooleanDataType extends BasicDataType {
 
     /**
      * Constructor for boolean field.
