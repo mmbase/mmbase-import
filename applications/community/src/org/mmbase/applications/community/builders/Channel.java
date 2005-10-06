@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.27 2005-05-14 14:06:47 nico Exp $
+ * @version $Id: Channel.java,v 1.28 2005-10-06 14:20:33 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -601,7 +601,7 @@ public class Channel extends MMObjectBuilder {
         Vector result = new Vector();
         String id = (String)params.get("CHANNEL");
         MMObjectNode node = getNode(id);
-        if ((node == null) || !(node.parent instanceof Channel)) {
+        if ((node == null) || !(node.getBuilder() instanceof Channel)) {
             log.debug("getListUsers(): no or incorrect channel specified");
             return result;
         }
@@ -837,7 +837,7 @@ public class Channel extends MMObjectBuilder {
                 return null;
             }
             MMObjectNode commNode = (MMObjectNode)e.nextElement();
-            String url = commNode.parent.getDefaultUrl(commNode.getNumber());
+            String url = commNode.getBuilder().getDefaultUrl(commNode.getNumber());
             if (url != null) url += "+" + src;
             return url;
         } else {
