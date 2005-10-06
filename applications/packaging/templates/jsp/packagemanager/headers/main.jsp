@@ -1,5 +1,5 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
- <TR>
+ <tr>
 	<!-- bundles -->
 	<mm:compare referid="main" value="bundles" inverse="true">
 		<td align="middle">
