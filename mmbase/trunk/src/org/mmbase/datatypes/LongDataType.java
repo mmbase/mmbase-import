@@ -10,45 +10,35 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * @javadoc
+ * A NumberDataType, but provides getMin and getMax as long.
  *
  * @author Pierre van Rooden
- * @version $Id: LongDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: LongDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
 
     /**
-     * Constructor for long field.
      */
     public LongDataType(String name) {
         super(name, Long.class);
     }
 
     /**
-     * Returns the minimum value for this datatype.
-     * @return the minimum value as an <code>Long</code>, or <code>null</code> if there is no minimum.
+     * @return the minimum value as an <code>long</code>, or {@link Long#MIN_VALUE} if there is no minimum.
      */
-    public Long getMin() {
-        Number min = getMinValue();
-        if (min instanceof Long) {
-            return (Long)min;
-        } else {
-            return new Long(min.longValue());
-        }
+    public long getMin() {
+        Number min = (Number) getMinConstraint().getValue();
+        return min == null ? Long.MIN_VALUE : min.longValue();
     }
 
     /**
-     * Returns the maximum value for this datatype.
-     * @return the maximum value as an <code>Long</code>, or <code>null</code> if there is no maximum.
+     * @return the maximum value as an <code>long</code>, or {@link Long#MAX_VALUE} if there is no maximum.
      */
-    public Long getMax() {
-        Number max = getMaxValue();
-        if (max instanceof Long) {
-            return (Long)max;
-        } else {
-            return new Long(max.longValue());
-        }
+    public long getMax() {
+        Number max = (Number) getMaxConstraint().getValue();
+        return max == null ? Long.MAX_VALUE : max.longValue();
     }
 
 }

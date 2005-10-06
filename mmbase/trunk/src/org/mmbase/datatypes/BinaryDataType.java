@@ -13,10 +13,10 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.1 2005-07-22 12:35:47 pierre Exp $
+ * @version $Id: BinaryDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
  * @since MMBase-1.8
  */
-public class BinaryDataType extends BigDataType {
+public class BinaryDataType extends AbstractLengthDataType {
 
     /**
      * Constructor for binary field.
@@ -25,5 +25,10 @@ public class BinaryDataType extends BigDataType {
     public BinaryDataType(String name) {
         super(name, byte[].class);
     }
+
+    public long getLength(Object value) {
+        return ((byte[]) value).length;
+    }
+
 
 }
