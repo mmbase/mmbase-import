@@ -91,7 +91,7 @@ public class Fields {
 
     /**
      * Provide an id for the specified mmbase state description.
-     * @param type the state description to get the id of
+     * @param state the state description to get the id of
      * @return the id of the state.
      */
     public static int getState(String state) {
@@ -132,7 +132,7 @@ public class Fields {
     /**
      * Determines the MMBase type of a specified class. The MMBase base type is sue by the storage layer to
      * determine how to store a field.
-     * If the base type cannot be determined from the class, the value returned is {@link Field.TYPE_UNKNOWN}.
+     * If the base type cannot be determined from the class, the value returned is {@link Field#TYPE_UNKNOWN}.
      * @param classType
      * @return an MMBase base type constant
      */
@@ -169,7 +169,7 @@ public class Fields {
 
     /**
      * Determines the class for a specified MMBase base type.
-     * If the value is {@link Field.TYPE_UNKNOWN}), the method returns <code>null</code>.
+     * If the value is {@link Field#TYPE_UNKNOWN}), the method returns <code>null</code>.
      * @param type
      * @return an MMBase base type constant
      */

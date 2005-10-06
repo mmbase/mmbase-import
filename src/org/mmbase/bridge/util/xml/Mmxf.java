@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.6 2005-07-09 11:08:54 nklasens Exp $
+ * @version $Id: Mmxf.java,v 1.7 2005-10-06 17:42:56 michiel Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */
@@ -36,7 +36,7 @@ public class Mmxf {
 
 
     /**
-     * Defaulting version of {@link #createTree(org.w3c.dom.Node, Relationmanager, int, String, String, StringBuffer}.
+     * Defaulting version of {@link #createTree(org.w3c.dom.Node, org.mmbase.bridge.Node, RelationManager, int, String, String, Writer)}.
      */
     public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, RelationManager relationManager, int depth, Writer buf) {
         return createTree(node, null, relationManager, depth, "title", "body", buf);
