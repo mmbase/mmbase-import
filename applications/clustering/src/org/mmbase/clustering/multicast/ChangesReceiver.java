@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.3 2005-09-20 20:32:09 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.4 2005-10-06 17:37:51 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -85,11 +85,12 @@ public class ChangesReceiver implements Runnable {
             } catch(Exception e) {
                 log.error(Logging.stackTrace(e));
             }
-
-            kicker = new Thread(this, "MulticastReceiver");
-            kicker.setDaemon(true);
-            kicker.start();
-            log.debug("MulticastReceiver started");
+            if (ms != null) {
+                kicker = new Thread(this, "MulticastReceiver");
+                kicker.setDaemon(true);
+                kicker.start();
+                log.debug("MulticastReceiver started");
+            }
         }
     }
 

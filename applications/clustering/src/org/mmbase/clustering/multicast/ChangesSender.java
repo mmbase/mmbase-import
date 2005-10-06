@@ -24,11 +24,10 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.3 2005-09-20 20:32:09 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.4 2005-10-06 17:37:51 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
-    /** MMbase logging system */
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
 
     /** counter of send messages */
@@ -39,13 +38,13 @@ public class ChangesSender implements Runnable {
 
     /** Queue with messages to send to other MMBase instances */
     private Queue nodesToSend;
-    
+
     /** address to send the messages to */
     private InetAddress ia;
-    
+
     /** Socket to send the multicast packets */
     private MulticastSocket ms;
-    
+
     /** Port for sending datapackets send by Multicast */
     private int mport=4243;
     /** Time To Live for datapackets send by Multicast */
@@ -73,7 +72,7 @@ public class ChangesSender implements Runnable {
     /**
      * Start thread
      */
-    public void start() {
+    protected void start() {
         /* Start up the main thread */
         if (kicker == null && ia != null) {
             try {
@@ -91,9 +90,6 @@ public class ChangesSender implements Runnable {
         }
     }
 
-    /**
-     * Stop thread
-     */
     public void stop() {
         /* Stop thread */
         try {
@@ -119,7 +115,7 @@ public class ChangesSender implements Runnable {
 
     /**
      * Let the thread do his work
-     * 
+     *
      * @todo check what encoding to sue for getBytes()
      */
     private void doWork() {
