@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.13 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RightsRel.java,v 1.14 2005-10-06 14:00:42 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -94,7 +94,7 @@ public class RightsRel extends InsRel {
         if (!fieldName.equals(OPERATION_FIELD)) super.setValue(node, fieldName);
 
         // mm: not sure I like this.
-        String value = (String) node.values.get(OPERATION_FIELD);
+        String value = (String) node.getValue(OPERATION_FIELD);
         if (value == null)        return true;
         if (value.equals("all"))  return true;
         if (value.equals(Operation.READ.toString())) return true;

@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.39 2005-10-02 16:45:09 michiel Exp $
+ * @version $Id: Users.java,v 1.40 2005-10-06 14:00:42 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -171,7 +171,7 @@ public class Users extends MMObjectBuilder {
     //javadoc inherited
     public boolean setValue(MMObjectNode node, String field, Object originalValue) {
         if (field.equals(FIELD_USERNAME)) {
-            Object value = node.values.get(field);
+            Object value = node.getValue(field);
             if (node.getIntValue(FIELD_STATUS) >= 0) {
                 if (originalValue != null && ! originalValue.equals(value)) {
                     /*

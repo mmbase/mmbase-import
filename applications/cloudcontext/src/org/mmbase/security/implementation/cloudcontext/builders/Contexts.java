@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.42 2005-03-01 14:29:48 michiel Exp $
+ * @version $Id: Contexts.java,v 1.43 2005-10-06 14:00:42 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -246,7 +246,7 @@ public class Contexts extends MMObjectBuilder {
             MMObjectNode source      = getNode(node.getIntValue("snumber"));
             MMObjectNode destination = getNode(node.getIntValue("dnumber"));
 
-            if (source.parent instanceof Users && destination.parent instanceof Ranks) {
+            if (source.getBuilder() instanceof Users && destination.getBuilder() instanceof Ranks) {
 
                 // forbid hackery
                 if (operation == Operation.WRITE || operation == Operation.CHANGE_RELATION) {
@@ -283,7 +283,7 @@ public class Contexts extends MMObjectBuilder {
                     return mayRevoke(source, destination, Operation.getOperation(node.getStringValue("operation")), user.getNode());
                 }
             }
-            if (source.parent instanceof Groups && destination.parent instanceof Users) {
+            if (source.getBuilder() instanceof Groups && destination.getBuilder() instanceof Users) {
                 if (getNode(node.getIntValue("rnumber")).getStringValue("sname").equals("contains")) {
                     // may not change groups of higher rank users
                     if (user.getRank().getInt() <= destination.getIntValue("rank")) {
@@ -357,7 +357,7 @@ public class Contexts extends MMObjectBuilder {
         // now checking if this user is in one of these groups.
         while (iter.hasNext()) {
             MMObjectNode group = (MMObjectNode) iter.next();
-            if (! (group.parent instanceof Groups)) continue;
+            if (! (group.getBuilder() instanceof Groups)) continue;
             if (log.isDebugEnabled()) log.trace("checking group " + group);
             if(Groups.getBuilder().contains(group, user)) {
                 if (log.isDebugEnabled()) {
@@ -784,7 +784,7 @@ public class Contexts extends MMObjectBuilder {
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
         Groups groups = Groups.getBuilder();
 
-        if (groupOrUserNode.parent instanceof Groups) {
+        if (groupOrUserNode.getBuilder() instanceof Groups) {
             if (! groups.contains(groupOrUserNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group
         } else {
             if (groupOrUserNode.equals(user)) return false; // if not admin, you may not grant yourself rights. (and for admin it is not necessary)
@@ -846,7 +846,7 @@ public class Contexts extends MMObjectBuilder {
     protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
         Users users = Users.getBuilder();
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
-        if (groupOrUserNode.parent instanceof Groups) {
+        if (groupOrUserNode.getBuilder() instanceof Groups) {
             if (! Groups.getBuilder().contains(groupOrUserNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group
         } else {
             if (groupOrUserNode.equals(user)) return false; // if not admin, you may not revoke yourself rights. (and for admin it does not make sense
@@ -910,7 +910,8 @@ public class Contexts extends MMObjectBuilder {
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
         MMObjectNode groupOrUser = getNode(a.getString(PARAMETER_GROUPORUSER));
         if (groupOrUser == null) throw new IllegalArgumentException("There is no node with id '" + a.get(PARAMETER_GROUPORUSER) + "'");
-        if (! (groupOrUser.parent instanceof Groups || groupOrUser.parent instanceof Users)) {
+        MMObjectBuilder parent = groupOrUser.getBuilder();
+        if (! (parent instanceof Groups || parent instanceof Users)) {
             throw new IllegalArgumentException("Node '" + a.get(PARAMETER_GROUPORUSER) + "' does not represent a group or a user");
         }
         return groupOrUser;
