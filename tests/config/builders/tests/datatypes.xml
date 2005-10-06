@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="datatypes" maintainer="mmbase.org" version="0" extends="object">
+  <names>
+    <singular xml:lang="en">datatypes</singular>
+    <plural xml:lang="en">datatypes</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Builder voor het testen van de bridge classes, met allerlei types velden</description>
+    <description xml:lang="en">Builder to test the bridge classes, with a lot of different typed fields </description>
+  </descriptions>
+
+  <fieldlist>
+    <field>
+      <db>
+        <name>string</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>field</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <datatype  base="dutch-zipcode" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>zipcode</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <pattern value="(?i)[ab]{0,5}" />
+      </datatype>
+      <db>
+        <name>pattern</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <db>
+        <name>integer</name>
+        <type key="false" notnull="true"  state="persistent">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <minInclusive value="1" />
+        <maxExclusive value="10" />
+      </datatype>
+      <db>
+        <name>range</name>
+        <type key="false" notnull="true"  state="persistent">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <db>
+        <name>datetime</name>
+        <type key="false" notnull="true"  state="persistent">DATETIME</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="2005-10-05" />
+        <minInclusive value="2005-01-01" />
+        <maxExclusive value="2050-01-01" />
+      </datatype>
+      <db>
+        <name>period</name>
+        <type key="false" notnull="true"  state="persistent">DATETIME</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="now" />
+        <minExclusive value="today - 3 day" />
+        <maxInclusive value="today + 100 year" />
+      </datatype>
+      <db>
+        <name>dynamicperiod</name>
+        <type key="false" notnull="true"  state="persistent">DATETIME</type>
+      </db>
+    </field>
+  </fieldlist>
+
+</builder>
