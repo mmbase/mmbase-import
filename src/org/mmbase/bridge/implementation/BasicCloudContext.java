@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.44 2005-10-02 16:20:25 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.45 2005-10-06 17:42:56 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -85,7 +85,7 @@ public class BasicCloudContext implements CloudContext {
         mmb = org.mmbase.module.core.MMBase.getMMBase();
         // create transaction manager and temporary node manager
         tmpObjectManager = new TemporaryNodeManager(mmb);
-        transactionManager = new TransactionManager(mmb,tmpObjectManager);
+        transactionManager = new TransactionManager(mmb, tmpObjectManager);
         // create module list
         while(i.hasNext()) {
             Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);

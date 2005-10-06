@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.15 2005-07-12 14:52:34 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.16 2005-10-06 17:41:28 michiel Exp $
  **/
 
 public class MultiPart {
@@ -141,7 +141,6 @@ public class MultiPart {
         /**
          * Method to retrieve the bytes of an uploaded file as a string using eitehr the encoding specified in the file or
          * the default encoding.
-         * @param param The name of the parameter
          * @return <code>null</code> if parameter not found, otherwise the bytes from the parameter
          */
         protected String encodeBytesAsString(byte[] data) throws JspTagException {
