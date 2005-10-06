@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.71 2005-09-20 19:28:29 nklasens Exp $
+ * @version $Id: scanparser.java,v 1.72 2005-10-06 14:07:32 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -806,7 +806,7 @@ public class scanparser extends ProcessorModule {
 
         // Ask the builder of the node to create the path to search for the part
         // If null returned we're done and return bestFile
-        path = node.parent.getSmartPath(htmlroot, path, nodeNumber, getVersion(node.getName(), session));
+        path = node.getBuilder().getSmartPath(htmlroot, path, nodeNumber, getVersion(node.getName(), session));
         if (path==null) {
             if (log.isDebugEnabled()) log.debug("getSmartFile: no dir found for node "+nodeNumber+". Returning "+bestFile);
             return bestFile;

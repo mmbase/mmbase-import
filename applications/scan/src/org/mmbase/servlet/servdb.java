@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.61 2005-09-21 21:31:16 michiel Exp $
+ * @version $Id: servdb.java,v 1.62 2005-10-06 14:07:32 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -584,12 +584,12 @@ public class servdb extends JamesServlet {
      * @todo   This generates ad-hoc system id's and public id's.  Don't know what, why or how this is used.
      */
     private String toXML(MMObjectNode node) {
-        String tableName = node.parent.getTableName();
-        StringBuffer body = new StringBuffer("<?xml version=\"" + node.parent.getVersion()+ "\"?>\n");
+        String tableName = node.getBuilder().getTableName();
+        StringBuffer body = new StringBuffer("<?xml version=\"" + node.getBuilder().getVersion()+ "\"?>\n");
         body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmbase.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
         body.append("<" + tableName + ">\n");
         body.append("<number>" + node.getNumber() + "</number>\n");
-        for (Iterator i = node.parent.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
+        for (Iterator i = node.getBuilder().getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
             CoreField field = (CoreField)i.next();
             int type = field.getType();
             String name = field.getName();

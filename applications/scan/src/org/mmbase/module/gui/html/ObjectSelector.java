@@ -32,7 +32,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.20 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: ObjectSelector.java,v 1.21 2005-10-06 14:07:32 michiel Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -235,7 +235,7 @@ public class ObjectSelector implements CommandHandlerInterface {
                         results.add("");
                         results.add(other.getGUIIndicator());
                         results.add("insEditor");
-                        results.add(other.parent.getSingularName());
+                        results.add(other.getBuilder().getSingularName());
                         MMObjectNode reldef = obj.getNode(rel.getIntValue("rnumber"));
                         if (reldef==null) {
                             results.add("");
