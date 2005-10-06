@@ -45,10 +45,10 @@ transaction was commited, following should result anything:
 <mm:transaction name="mytranc">
   <mm:node id="node1" number="$nodenumber" />
   Creating an URL node
-  <mm:createnode id="node2" type="urls" jspvar="node">
+  <mm:createnode id="node2" type="urls" jspvar="node2">
      <mm:setfield name="description">Test node2, created in transaction, made relation to it</mm:setfield>
 	   <mm:setfield name="url">http://<mm:write referid="curtime" /></mm:setfield>
-     (using jspvar <%= node.getStringValue("url") %>)
+     (using jspvar <%= node2.getStringValue("url") %>)
      <br />
   </mm:createnode>
   Creating news-node ---posrel(pos=10)---> URL-node

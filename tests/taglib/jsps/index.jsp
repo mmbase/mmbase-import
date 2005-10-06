@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html>
+<mm:log>asdfjklasjdfkl</mm:log>
 <title>Testing MMBase/taglib</title>
 <body>
 <h1>Testing MMBase/taglib</h1>
@@ -25,14 +26,18 @@
   Start <a title="hoi" href="<mm:url referids="a,b?@c" page="transaction.jsp" />">here for transaction-tests</a>.
 </p>
 <p>
-  The cloud-tag is a rather complex thing, it has some attributes
+  <mm:import id="text">
+    bla bla The cloud-tag is a rather complex thing, it has some attributes
   which can influence each other.
   Start <a href="<mm:url page="cloud.jsp" />">here for cloud tag
-  tests</a>. It will start with a login-popup (don't try with mmbase
+  tests</a>. It will start with a login-popup (don't try with mMbase
   1.5). Run the sequence also with cookies disabled please, or perhaps
   even better in that case start <a href="cloud.html">here</a> (with
   cookies disabled, and url not encoded, cloud-tag will detect that
-  from 1.6 on).
+  from 1.6 on). http://www.mmbase.org
+  </mm:import>
+
+  <mm:write referid="text" escape="links,censor" />
 </p>
 <p>
   <a href="<mm:url page="attributes.jsp" />">Tag attribute tests</a>
