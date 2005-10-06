@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.7 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: TmpObject.java,v 1.8 2005-10-06 14:14:41 michiel Exp $
  */
 public class TmpObject {
 
@@ -116,7 +116,7 @@ public class TmpObject {
         this.uti = uti;
         this.id = objectId;
         this.node = getTmpNodeManager().getNode(uti.user.getName(), objectId);
-        this.relationFlag = (node.parent instanceof InsRel);
+        this.relationFlag = (node.getBuilder() instanceof InsRel);
     }
 
     /**
