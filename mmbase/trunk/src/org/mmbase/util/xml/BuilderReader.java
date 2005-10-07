@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.44 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.45 2005-10-07 18:42:07 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -459,7 +459,8 @@ public class BuilderReader extends DocumentReader {
                     if (test.containsParameter(Parameter.NODE)) {
                         final Function f = function;
                         function = new NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
-                                protected Object getFunctionValue(org.mmbase.module.core.MMObjectNode node, Parameters parameters) {
+                                protected Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+                                    if (parameters == null) parameters = createParameters();
                                     parameters.set(Parameter.NODE, node);
                                     return f.getFunctionValue(parameters);
                                 }

@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
+import java.util.Arrays;
+import java.util.List;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.Logger;
@@ -21,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.10 2005-10-01 20:17:36 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.11 2005-10-07 18:39:13 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -64,10 +67,15 @@ public abstract class NodeFunction extends AbstractFunction {
         super(name, getNodeParameterDef(def), returnType);
     }
     protected static Parameter[] getNodeParameterDef(Parameter[] def) {
-        if (java.util.Arrays.asList(def).contains(Parameter.NODE)) {
+        List defList = Arrays.asList(def);
+        if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
             return def;
-        } else {
+        } else if (defList.contains(Parameter.NODE)) {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD};
+        } else if (defList.contains(Parameter.CLOUD)) {
             return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE};
+        } else {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD};
         }
     }
 
@@ -84,14 +92,28 @@ public abstract class NodeFunction extends AbstractFunction {
      * bridge version has two advantages. It's easier, and mmbase security will be honoured. That
      * last thing is of course not necesary if you are not going to use other nodes.
      *
+     * XXX: made final because it does not work well if you don't implement a bridge version
      */
-    protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
+    protected final Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
-        final Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
-        if (cloud == null) throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
+        Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
+        if (cloud == null) {
+            // lets try this
+            cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "delegate", null);
+            if (cloud == null) {
+                throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
+            }
+        }
         final Node node     = cloud.getNode(coreNode.getNumber());
         return getFunctionValue(node, parameters);
 
+    }
+
+    /**
+     * Utility method to convert a {@link org.mmbase.bridge.Node} to a a {@link org.mmbase.module.core.MMObjectNode}.
+     */
+    protected final MMObjectNode getCoreNode(final MMObjectBuilder builder, final Node node) {
+        return builder.getNode(node.getNumber());
     }
 
     /**
@@ -114,7 +136,7 @@ public abstract class NodeFunction extends AbstractFunction {
         if (! parameters.containsParameter(Parameter.NODE)) {
             throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
         }
-        MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
+        Node node = (Node) parameters.get(Parameter.NODE);
         if (node == null) {
             throw new IllegalArgumentException("The node argument of  " + getClass() + " " + toString() + " must not be null ");
         }
