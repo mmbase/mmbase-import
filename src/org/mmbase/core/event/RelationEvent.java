@@ -44,16 +44,15 @@ public class RelationEvent extends NodeEvent implements Serializable {
     public RelationEvent(MMObjectNode node, int eventType) {
         super(node, NodeEvent.EVENT_TYPE_RELATION_CHANGED);
         name = "relation event";
-        if (!(node.parent instanceof InsRel))
-            throw new IllegalArgumentException(
-                "you can not create a relation changed event with this node");
+        if (!(node.getBuilder() instanceof InsRel)) {
+            throw new IllegalArgumentException( "you can not create a relation changed event with this node");
+        }
 
         relationEventType = eventType;
         eventType = NodeEvent.EVENT_TYPE_RELATION_CHANGED;
         MMObjectNode reldef = node.getNodeValue("rnumber");
-        MMObjectBuilder relationSourceBuilder = node.getNodeValue("snumber").parent;
-        MMObjectBuilder relationDestinationBuilder = node
-            .getNodeValue("dnumber").parent;
+        MMObjectBuilder relationSourceBuilder = node.getNodeValue("snumber").getBuilder();
+        MMObjectBuilder relationDestinationBuilder = node.getNodeValue("dnumber").getBuilder();
 
         relationSourceNumber = node.getStringValue("snumber");
         relationDestinationNumber = node.getStringValue("dnumber");
