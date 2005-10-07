@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.22 2005-10-05 10:00:54 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.23 2005-10-07 18:37:06 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -152,7 +152,6 @@ public class ClusterNode extends VirtualNode {
         // Circument interference by the database during initial loading of the node
         // This is not pretty, but the alternative is rewriting all support classes...
         if (initializing) {
-            if (fieldValue == null) fieldValue = MMObjectNode.VALUE_NULL;
             if (! (parent instanceof ClusterBuilder)) {
                 values.put(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
             } else {
