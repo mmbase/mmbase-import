@@ -11,7 +11,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class PostgreSqlSqlHandlerTest extends TestCase {
 
@@ -66,24 +66,18 @@ public class PostgreSqlSqlHandlerTest extends TestCase {
     /** Test of getSupportLevel method, of class org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler. */
     public void testGetSupportLevel() throws Exception{
         // Support max number.
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(-1);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
 
         // Support offset.
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(0);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
 
     /** Test of getSupportLevel2(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler. */
@@ -104,28 +98,19 @@ public class PostgreSqlSqlHandlerTest extends TestCase {
     public void testToSql() throws Exception {
         // Test use of "LIMIT/OFFSET" construct.
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images m_images WHERE m_number IS NULL"));
+                   instance.toSql(query, instance).equalsIgnoreCase("SELECT NUMBER FROM " + prefix + "images IMAGES WHERE NUMBER IS NULL"));
 
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images m_images WHERE m_number IS NULL LIMIT 100"));
+                   instance.toSql(query, instance).equalsIgnoreCase("SELECT NUMBER FROM " + prefix + "images IMAGES WHERE NUMBER IS NULL LIMIT 100"));
 
         query.setOffset(50);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix
-        + "images m_images WHERE m_number IS NULL LIMIT 100 OFFSET 50"));
-
+                   instance.toSql(query, instance).equalsIgnoreCase("SELECT NUMBER FROM " + prefix + "images IMAGES WHERE NUMBER IS NULL LIMIT 100 OFFSET 50"));
+        
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images m_images WHERE m_number IS NULL OFFSET 50"));
+                   instance.toSql(query, instance).equalsIgnoreCase("SELECT NUMBER FROM " + prefix + "images IMAGES WHERE NUMBER IS NULL OFFSET 50"));
     }
 
     public static Test suite() {
