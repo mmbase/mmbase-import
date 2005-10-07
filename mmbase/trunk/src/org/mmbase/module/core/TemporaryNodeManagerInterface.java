@@ -10,17 +10,19 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 /**
+ * @javadoc
+ *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManagerInterface.java,v 1.14 2003-03-10 11:50:33 pierre Exp $
+ * @version $Id: TemporaryNodeManagerInterface.java,v 1.15 2005-10-07 18:28:52 michiel Exp $
  */
 public interface TemporaryNodeManagerInterface {
-    public String createTmpNode(String type,String owner,String key);
-    public String createTmpRelationNode(String type,String owner,String key, String source,String destination) throws Exception;
-    public String createTmpAlias(String name,String owner,String key, String destination);
-    public String deleteTmpNode(String owner,String key);
-    public MMObjectNode getNode(String owner,String key);
-    public String getObject(String owner,String key,String dbkey);
-    public String setObjectField(String owner,String key,String field,Object value);
-    public String getObjectFieldAsString(String owner,String key,String field);
-    public Object getObjectField(String owner,String key,String field);
+    public String createTmpNode(String type, String owner, String key);
+    public String createTmpRelationNode(String type, String owner, String key, String source, String destination) throws Exception;
+    public String createTmpAlias(String name, String owner, String key, String destination);
+    public String deleteTmpNode(String owner, String key);
+    public MMObjectNode getNode(String owner, String key);
+    public String getObject(String owner, String key, String dbkey);
+    public String setObjectField(String owner, String key, String field, Object value);
+    public String getObjectFieldAsString(String owner, String key, String field);
+    public Object getObjectField(String owner, String key, String field);
 }
