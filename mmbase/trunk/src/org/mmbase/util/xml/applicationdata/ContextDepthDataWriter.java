@@ -30,7 +30,7 @@ import org.mmbase.util.xml.ApplicationReader;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.1 2005-09-19 12:32:03 pierre Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
  */
 public class ContextDepthDataWriter  {
 
@@ -141,20 +141,20 @@ public class ContextDepthDataWriter  {
         );
         // Retrieve an enumeration of sources to write
         // The list of sources retrieved is dependent on whether the nodes to write are data or relation nodes
-        Enumeration res;
+        Iterator res;
         if (isRelation) {
-            res=app.getRelationSources().elements();
+            res = app.getRelationSources().iterator();
         } else {
-            res=app.getDataSources().elements();
+            res = app.getDataSources().iterator();
         }
         // determine target path subdirectory
         String subtargetpath=targetpath+"/"+app.getName()+"/";
 
         // create a list of writer objects for the nodes
         Hashtable nodeWriters = new Hashtable();
-        while (res.hasMoreElements()) {
-            Hashtable bset = (Hashtable)res.nextElement();	// retrieve source builder name
-            String name = (String)bset.get("builder");
+        while (res.hasNext()) {
+            Hashtable bset = (Hashtable)res.next(); // retrieve source builder name
+            String name = (String) bset.get("builder");
 
             // Create nodewriter for this builder
             NodeWriter nw = new NodeWriter(mmb, logger, subtargetpath, name, isRelation);
