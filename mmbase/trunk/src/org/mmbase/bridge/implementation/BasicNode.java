@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.169 2005-10-04 19:21:40 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.170 2005-10-07 18:43:39 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -261,6 +261,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public boolean isNew() {
         return isNew;
     }
+
+    public boolean isChanged(String fieldName) {
+        return getNode().getChanged().contains(fieldName);
+    }
+    
 
     /**
      * Edit this node.
@@ -529,7 +534,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public Object getValue(String fieldName) {
         Object value = noderef.getValue(fieldName);
-        if (value == null || value == MMObjectNode.VALUE_NULL) return null;
+        if (value == null) return null;
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
             switch(type) {
@@ -563,7 +568,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public Object getValueWithoutProcess(String fieldName) {
         Object result = getNode().getValue(fieldName);
-        if (result == MMObjectNode.VALUE_NULL) result = null;
         return result;
     }
 
@@ -736,9 +740,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         StringBuffer error = new StringBuffer();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            Collection errors = field.getDataType().validate(getValueWithoutProcess(field.getName()), this, field);
+            Object value = getValueWithoutProcess(field.getName());
+            Collection errors = field.getDataType().validate(value, this, field);
             if (errors.size() > 0) {
-                error.append("field '" + field.getName() + "': " + LocalizedString.toStrings(errors, getCloud().getLocale()) + "\n");
+                error.append("field '" + field.getName() + "' with value '" + value + "': " + LocalizedString.toStrings(errors, getCloud().getLocale()) + "\n");
             }
         }
         if(error.length() > 0) {
