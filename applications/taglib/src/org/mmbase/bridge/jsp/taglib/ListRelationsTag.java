@@ -21,7 +21,7 @@ import org.mmbase.bridge.util.Queries;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.17 2005-10-07 19:01:40 michiel Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -69,6 +69,9 @@ public class ListRelationsTag extends AbstractNodeListTag {
     protected NodeQuery getRelatedQuery() throws JspTagException {
         if (relatedQuery == null) {
             relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
+            if (orderby != Attribute.NULL) {
+                Queries.addSortOrders(relatedQuery, (String) orderby.getValue(this), (String) directions.getValue(this));
+            }
             Queries.sortUniquely(relatedQuery);
         }
         return relatedQuery;
@@ -125,14 +128,23 @@ public class ListRelationsTag extends AbstractNodeListTag {
             relatedQuery.setOffset(query.getOffset());
             relatedQuery.setMaxNumber(query.getMaxNumber());            
             relatedFromNode = c.getRelatedFromNode();
+            if (orderby != Attribute.NULL) {
+                Queries.addSortOrders(relatedQuery, (String) orderby.getValue(this), (String) directions.getValue(this));
+            }
             Queries.sortUniquely(relatedQuery);
         }
+
+
+        if (orderby != Attribute.NULL) {
+            Queries.addSortOrders(query,        (String) orderby.getValue(this), (String) directions.getValue(this));
+        }       
 
         Queries.sortUniquely(query);
 
         NodesAndTrim result = getNodesAndTrim(query);
         result.nodeList.setProperty("relatedFromNode", relatedFromNode); // used to be used by mm:relatednode but not any more.
-        
+
+
         if (getId() != null) {
             getRelatedQuery();
             result.nodeList.setProperty("relatedQuery", relatedQuery); 
