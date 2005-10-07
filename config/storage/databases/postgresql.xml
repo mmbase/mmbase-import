@@ -19,6 +19,7 @@
     <scheme name="create-foreign-key-scheme" />
 
     <!-- Postgresql extends tables -->
+    <scheme name="create-object-table-scheme">CREATE TABLE {1} ({4} {5})</scheme>
     <scheme name="create-table-scheme">CREATE TABLE {1} ({4} {5}) INHERITS ({6})</scheme>
 
     <!-- Postgresql sequences (work differently) -->
