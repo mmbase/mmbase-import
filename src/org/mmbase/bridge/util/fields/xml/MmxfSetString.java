@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.19 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: MmxfSetString.java,v 1.20 2005-10-07 08:13:31 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -123,7 +123,7 @@ public class MmxfSetString implements  Processor {
      */
 
     private static Pattern copyElement   = Pattern.compile("table|tr|td|th|em|strong|ul|ol|li|p|sub|sup");
-    private static Pattern ignoreElement = Pattern.compile("tbody|thead");
+    private static Pattern ignoreElement = Pattern.compile("tbody|thead|font|span|acronym|address|abbr|base|blockquote|cite|code|pre|colgroup|col|dd|dfn|dl|dt|kbd|meta|samp|script|style|var|center");
     private static Pattern ignore        = Pattern.compile("link|#comment");
     private static Pattern hElement      = Pattern.compile("h([1-9])");
     private static Pattern crossElement  = Pattern.compile("a|img|div");
@@ -255,7 +255,8 @@ public class MmxfSetString implements  Processor {
 
             matcher = copyElement.matcher(name);
             if (matcher.matches()) {
-                if (node.getFirstChild() != null) { // ignore if empty
+                org.w3c.dom.Node firstChild = node.getFirstChild();
+                if (firstChild != null && !(firstChild.getNodeType() == org.w3c.dom.Node.TEXT_NODE && firstChild.getNodeValue().equals(""))) { // ignore if empty
                     Element imp = destination.getOwnerDocument().createElement(matcher.group(0));
                     destination.appendChild(imp);
                     copyAttributes((Element) node, imp);
@@ -308,6 +309,8 @@ public class MmxfSetString implements  Processor {
                     return;
                 }
             }
+            log.warn("Unrecognised element " + name + " ignoring");
+            parseKupu((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
         }
         if (state.mode == MODE_SECTION) {
             // drop state;
@@ -369,7 +372,10 @@ public class MmxfSetString implements  Processor {
             }
             try {
                 URL hostPart = new URL(matcher.group(1));
-                if (hostPart.sameFile(new URL(request.getScheme(), request.getServerName(), request.getServerPort(), ""))) {
+                String scheme = request.getScheme();
+                String host   = request.getServerName();
+                int port      = request.getServerPort();
+                if (scheme != null && hostPart.sameFile(new URL(scheme, host, port, ""))) {
                     return matcher.group(2);
                 } else {
                     return url;
@@ -412,7 +418,11 @@ public class MmxfSetString implements  Processor {
             // not found, create it!
             url = cloud.getNodeManager("urls").createNode();
             url.setStringValue("url", href);
-            url.setStringValue("title", a.getAttribute("alt"));
+            if (urls.hasField("title")) {
+                url.setStringValue("title", a.getAttribute("alt"));
+            } else if (urls.hasField("name")) {
+                url.setStringValue("name", a.getAttribute("alt"));
+            }
             url.commit();
         }
         return url;
@@ -457,12 +467,14 @@ public class MmxfSetString implements  Processor {
             NodeManager icaches     = cloud.getNodeManager("icaches");
             NodeManager attachments = cloud.getNodeManager("attachments");
             NodeManager urls        = cloud.getNodeManager("urls");
-            NodeManager segments = cloud.hasNodeManager("semments") ? cloud.getNodeManager("segments") : null;
+            NodeManager segments    = cloud.hasNodeManager("segments") ? cloud.getNodeManager("segments") : null;
+            NodeManager texts       = cloud.hasNodeManager("texts") ? cloud.getNodeManager("texts") : null;
             NodeManager blocks      = cloud.getNodeManager("blocks");
 
             String imageServlet      = images.getFunctionValue("servletpath", null).toString();
             String attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
-            String segmentsServlet = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/segments/";
+            String segmentsServlet   = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/segments/";
+            String textsServlet      = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/texts/";
 
             NodeList relatedImages        = Queries.getRelatedNodes(editedNode, images, "idrel", "destination", "id", null);
             NodeList usedImages           = cloud.createNodeList();
@@ -475,6 +487,12 @@ public class MmxfSetString implements  Processor {
             if (segments != null) {
                 relatedSegments = Queries.getRelatedNodes(editedNode, segments , "idrel", "destination", "id", null);
                 usedSegments = cloud.createNodeList();
+            }
+            NodeList relatedTexts = null;
+            NodeList usedTexts = null;
+            if (texts != null) {
+                relatedTexts = Queries.getRelatedNodes(editedNode, texts , "idrel", "destination", "id", null);
+                usedTexts = cloud.createNodeList();
             }
 
             NodeList relatedAttachments   = Queries.getRelatedNodes(editedNode, attachments , "idrel", "destination", "id", null);
@@ -588,6 +606,35 @@ public class MmxfSetString implements  Processor {
                             newIdRel.setStringValue("class", klass);
                             newIdRel.commit();                        
                         }
+                        a.removeAttribute("href");
+                        a.removeAttribute("alt");
+                    } else if (href.startsWith(textsServlet) && texts != null) {
+                        String nodeNumber = href.substring(textsServlet.length());
+                        if (! cloud.hasNode(nodeNumber)) {
+                            log.error("No such node '" + nodeNumber + "' (deduced from " + href + ")");
+                            continue;
+                        }
+                        Node text = cloud.getNode(nodeNumber);
+                        usedTexts.add(text);
+                        NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
+                        if (! linkedText.isEmpty()) {
+                            // ok, already related!
+                            log.info("" + text + " text already correctly related, nothing needs to be done");
+                            Node idrel = linkedText.getNode(0).getNodeValue("idrel");
+                            if (!idrel.getStringValue("class").equals(klass)) {
+                                idrel.setStringValue("class", klass);
+                                idrel.commit();
+                            }
+                        
+                        } else {
+                            log.info("Found new cross link " + text.getNumber() + ", creating new relation now");
+                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), texts, "idrel");
+                            Relation newIdRel = rm.createRelation(editedNode, text);
+                            newIdRel.setStringValue("id", id);
+                            newIdRel.setStringValue("class", klass);
+                            newIdRel.commit();                        
+                        }
+
                         a.removeAttribute("href");
                         a.removeAttribute("alt");
                     } else if (href.startsWith(attachmentServlet)) { // an attachment
@@ -716,6 +763,7 @@ public class MmxfSetString implements  Processor {
             cleanDanglingIdRels(relatedImages,   usedImages,   "images");
             cleanDanglingIdRels(relatedUrls,     usedUrls,     "urls");
             if (segments != null) cleanDanglingIdRels(relatedSegments, usedSegments, "segments1");
+            if (texts    != null) cleanDanglingIdRels(relatedTexts, usedTexts, "texts");
             cleanDanglingIdRels(relatedAttachments, usedAttachments, "attachments");
         }
         
@@ -731,7 +779,7 @@ public class MmxfSetString implements  Processor {
        while(i.hasNext()) {
            Node clusterNode = i.nextNode();
            Node node = clusterNode.getNodeValue(type);
-           log.service("Considering " + clusterNode);
+           log.debug("Considering " + clusterNode);
            if (! usedNodes.contains(node)) {
                Node idrel = clusterNode.getNodeValue("idrel");
                if (idrel.mayDelete()) {
