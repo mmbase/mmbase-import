@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.2 2005-09-02 17:02:49 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.3 2005-10-07 17:12:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends LocalizedString {
@@ -56,7 +56,11 @@ public class ReplacingLocalizedString extends LocalizedString {
         Iterator i = replacements.iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            output = output.replaceAll((String) entry.getKey(), (String) entry.getValue());
+            try {
+                output = output.replaceAll((String) entry.getKey(), (String) entry.getValue());
+            } catch (Throwable t) {
+                log.warn("Could not replace " + entry + " in " + input + " because " + t);
+            }
         }
         return output;
     }
@@ -138,6 +142,21 @@ public class ReplacingLocalizedString extends LocalizedString {
         clone.replacements = (List)((ArrayList)replacements).clone();
         return clone;
 
+    }
+    /**
+     * Utility method for second argument of replaceAll
+     */
+    public static String makeLiteral(String s) {
+        // sometimes, implementing java looks rather idiotic, but honestely, this is correct!
+        s =  s.replaceAll("\\\\", "\\\\\\\\"); 
+        return s.replaceAll("\\$", "\\\\\\$");
+    }
+
+
+    public static void main(String argv[]) {
+        ReplacingLocalizedString s = new ReplacingLocalizedString(new LocalizedString("abcd"));
+        s.replaceAll("b", makeLiteral(argv[0]));
+        System.out.println(s.get(null));
     }
 
 }
