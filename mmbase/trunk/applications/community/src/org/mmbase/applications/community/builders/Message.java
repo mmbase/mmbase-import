@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.31 2005-10-06 14:20:33 michiel Exp $
+ * @version $Id: Message.java,v 1.32 2005-10-07 20:58:32 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -316,8 +316,7 @@ public class Message extends MMObjectBuilder {
 
         // Build a temporary message node.
         String key = tmpNodeManager.createTmpNode("message", messageUser, getNewTemporaryKey());
-        MMObjectNode message = tmpNodeManager.getNode(messageUser, key);
-        message.parent = this;
+        MMObjectNode message = getNewTmpNode(messageUser, key);
 
         // Set the fields.
         int sequence = channelBuilder.getNewSequence(channelNode);
