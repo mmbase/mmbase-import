@@ -31,9 +31,9 @@ public class DataTypesTest extends BridgeTest {
                 /* {field    {valid values}   {invalid values}} */
                 new Object[] {"string", 
                               new Object[] {"abcdefg"}, 
-                              new Object[] {"abcde\nfghij"}},
+                              new Object[] {"ijklm\nopqrstx"}},
                 new Object[] {"field",  
-                              new Object[] {"abcdefg", "abcde\nfghij"} , 
+                              new Object[] {"xyz", "zyz\nkloink"} , 
                               new Object[] {}},
                 new Object[] {"zipcode",  
                               new Object[] {"7081EA", "7081  ea"}, 
@@ -64,7 +64,6 @@ public class DataTypesTest extends BridgeTest {
 
 
     public void testCheckValid() {
-        // Create a test node.
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes"); 
         for (int i = 0; i < cases.length; i++) {
@@ -80,6 +79,30 @@ public class DataTypesTest extends BridgeTest {
                 assertTrue("Field " + field + " value '" + validValues[j] + "' was expected to be invalid", 
                            field.getDataType().validate(validValues[j]).size() > 0);
             }
+        }
+
+    }
+
+    public void testDefaultValues() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes"); 
+        Node newNode = nodeManager.createNode();
+        for (int i = 0; i < cases.length; i++) {
+            Object[] kase = (Object[]) cases[i];
+            Field field = nodeManager.getField((String)kase[0]);
+            Object defaultValue = field.getDataType().getDefaultValue();
+            Object value = newNode.getValue(field.getName());
+            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + "!=" + value,
+                       value == null ? defaultValue == null : value.equals(defaultValue));
+        }
+        newNode.commit();
+        for (int i = 0; i < cases.length; i++) {
+            Object[] kase = (Object[]) cases[i];
+            Field field = nodeManager.getField((String)kase[0]);
+            Object defaultValue = field.getDataType().getDefaultValue();
+            Object value = newNode.getValue(field.getName());
+            assertTrue("default value of committed node is not as expected for field " + field + " " + defaultValue + "!=" + value,
+                       value == null ? defaultValue == null : value.equals(defaultValue));
         }
 
     }

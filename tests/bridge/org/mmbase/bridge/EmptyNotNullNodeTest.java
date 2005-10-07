@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.7 2005-10-04 22:46:02 michiel Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.8 2005-10-07 19:04:23 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
@@ -56,6 +56,10 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
                 // not-null 'empty' booleans has value 0 (false)
                 assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return 0, but " + value,
                            value == 0);
+            } else if (fieldTypes[i].equals("datatype")) {
+                Date expected = new Date();
+                long diff = Math.abs(expected.getTime() - (long)value);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return " + expected + ", but " + value + "(differs " + diff + ") value:" + node.getStringValue(fieldTypes[i] + "field"),  diff < 60000L); // allow for a minute differnce (duration of test or so..)
             } else {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return -1, but " + value,
                            value == -1.0);
@@ -191,7 +195,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             Date value = node.getDateValue(fieldTypes[i] + "field");
             assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value != null);            
-            Date expected = fieldTypes[i].equals("date") ? new Date() : new Date(-1);
+            Date expected = fieldTypes[i].equals("datetime") ? new Date() : new Date(-1);
             long diff = Math.abs(expected.getTime() - value.getTime());
             assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return " + expected + ", but " + value + "(differs " + diff + ") value:" + node.getStringValue(fieldTypes[i] + "field"),  diff < 60000L); // allow for a minute differnce (duration of test or so..)
        }
