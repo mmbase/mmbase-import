@@ -118,7 +118,7 @@ public class PostThread {
 	}
 
 	// even extra lets see if im in this thread;
-	if (isWriter(ap.getAccount())) {
+	if (isWriter(ap.getNick())) {
 		state+="me";
 	}
 
@@ -255,7 +255,7 @@ public class PostThread {
 		} else {
 			pnode.setStringValue("subject",nsubject);
 		}
-		pnode.setStringValue("c_poster",poster.getAccount());
+		pnode.setStringValue("c_poster",poster.getNick());
 		pnode.setIntValue("posternumber",poster.getId());
 
                 // This must be it, please do not change the line below. If somebody's having problems
@@ -509,6 +509,8 @@ public class PostThread {
         Vector v = (Vector) postings.clone();
         Enumeration e = v.elements();
         
+	log.info("DEL POSTINGS");
+
         // remove the postings
         while (e.hasMoreElements()) {
             Posting p = (Posting) e.nextElement();
@@ -517,8 +519,12 @@ public class PostThread {
                 return false;
             }
         }
+	log.info("DEL POSTINGS 2");
+	/* the last remove of a posting should also remove the thread
         Node node = ForumManager.getCloud().getNode(id);
+	log.info("DEL NODE="+node);
         ForumManager.nodeDeleted(node);
+	*/
 
         return true;
     }
@@ -555,7 +561,12 @@ public class PostThread {
         // if it was the last post that was removed, replace the lastpostsubject
         // with a remove-message.
         if (lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
-            lastpostsubject="removed";
+	    Posting op=(Posting)postings.lastElement();
+	    if (op!=null) {	
+	    	lastpostsubject  = op.getSubject();
+	    	lastposter  = op.getPoster();
+	    	lastposttime  = op.getPostTime();
+	    }
         }
 
         if (postings.size() == 0) {

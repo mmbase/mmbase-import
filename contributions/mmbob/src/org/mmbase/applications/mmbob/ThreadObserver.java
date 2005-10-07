@@ -154,9 +154,9 @@ public class ThreadObserver {
        while (i.hasNext()) {
                 Poster p=(Poster)i.next();
 		if (result.equals("")) {
-			result=p.getAccount();
+			result=p.getNick();
 		} else {
-			result+=","+p.getAccount();
+			result+=","+p.getNick();
 		}
        }
        return result;

@@ -4,18 +4,19 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,forum*)>
+<!ELEMENT forums (generatedata*,urls,preloadchangedthreads,swapoutunusedthreads,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,emailtexts*,layout*,filters*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postingsoverflowpostarea?,postingsoverflowthreadpage?,speedposttime?,replyoneachpage?,navigation?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (alias*,generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,postarea*)>
+<!ELEMENT forum (alias*,generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,threadstartmode*,profileentry*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?,navigation,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
 <!ATTLIST forum language CDATA #IMPLIED>
+<!ATTLIST forum alias CDATA #IMPLIED>
 
-<!ELEMENT postarea (generatedata*,guestreadmode*,guestwritemode*)>
+<!ELEMENT postarea (generatedata*,guestreadmode*,guestwritemode*,threadstartmode*)>
 <!ATTLIST postarea id CDATA #IMPLIED>
 <!ATTLIST postarea account CDATA #IMPLIED>
 <!ATTLIST postarea password CDATA #IMPLIED>
@@ -55,6 +56,9 @@
 
 <!ELEMENT guestreadmode (#PCDATA)>
 <!ATTLIST guestreadmode type CDATA #IMPLIED>
+
+<!ELEMENT threadstartmode (#PCDATA)>
+<!ATTLIST threadstartmode level CDATA #IMPLIED>
 
 <!ELEMENT avatars (upload*,gallery*)>
 <!ELEMENT upload EMPTY>
@@ -128,3 +132,13 @@
 <!ELEMENT urls (#PCDATA)>
 <!ATTLIST urls root CDATA #IMPLIED>
 <!ATTLIST urls externalroot CDATA #IMPLIED>
+
+<!ELEMENT profileentry (#PCDATA)>
+<!ATTLIST profileentry guipos CDATA #IMPLIED>
+<!ATTLIST profileentry guiname CDATA #IMPLIED>
+<!ATTLIST profileentry edit CDATA #IMPLIED>
+<!ATTLIST profileentry name CDATA #IMPLIED>
+<!ATTLIST profileentry external CDATA #IMPLIED>
+<!ATTLIST profileentry externalname CDATA #IMPLIED>
+<!ATTLIST profileentry type CDATA #IMPLIED>
+<!ATTLIST profileentry size CDATA #IMPLIED>

@@ -27,10 +27,10 @@ public class ForumConfig {
     private static Logger log = Logging.getLoggerInstance(ForumConfig.class);
     private ArrayList fieldaliases=new ArrayList();
     private HashMap subs=new HashMap();
-    private String defaultaccount, defaultpassword;
+    private String defaultaccount, defaultpassword,alias;
     private String accountcreationtype,accountremovaltype;
     private String loginmodetype,logoutmodetype;
-    private String guestreadmodetype,guestwritemodetype;
+    private String guestreadmodetype,guestwritemodetype,threadstartlevel;
     private String id="unkown";
     private String xsltpostingsodd = "xslt/posting2xhtmlDark.xslt";
     private String xsltpostingseven = "xslt/posting2xhtmlLight.xslt";
@@ -45,6 +45,8 @@ public class ForumConfig {
     private String fromEmailAddress = "";
     private String htmlHeaderPath = "header.jsp";
     private String htmlFooterPath = "footer.jsp";
+    private HashMap profiledefs = new HashMap();
+    private String navigationmethod = "list";
 
 
     private int quotamax = 100;
@@ -83,6 +85,10 @@ public class ForumConfig {
                             defaultaccount = account;
                             defaultpassword = password;
                         }
+                        n3 = nm.getNamedItem("alias");
+                        if (n3 != null) {
+                            alias = n3.getNodeValue();
+			}
 
                         accountcreationtype = getAttributeValue(reader,n,"accountcreation","type");
                         accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
@@ -90,6 +96,7 @@ public class ForumConfig {
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
                         guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
+                        threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
 
 
                         contactInfoEnabled = getAttributeValue(reader,n,"contactinfo","enable");
@@ -101,6 +108,9 @@ public class ForumConfig {
                         }
 
                         fromEmailAddress = getAttributeValue(reader,n,"email","from");
+
+                        String tmp = getAttributeValue(reader,n,"navigation","method");
+			if (tmp!=null) navigationmethod = tmp;
 
                         for(Enumeration ns2=reader.getChildElements(n,"layout");ns2.hasMoreElements(); ) {
                             Element n2=(Element)ns2.nextElement();
@@ -132,6 +142,88 @@ public class ForumConfig {
                             
                         }
 
+
+                        for(Enumeration ns2=reader.getChildElements(n,"profileentry");ns2.hasMoreElements(); ) {
+                            Element n2=(Element)ns2.nextElement();
+                            
+                            	nm = n2.getAttributes();
+                            	if (nm != null) {
+                        		String name = null;
+                      			String guiname = null;
+                        		int guipos = -1;
+                        		int size = -1;
+                        		String external = null;
+                        		String externalname = null;
+                        		String type = null;
+                        		boolean edit = false;
+
+                        		// decode name
+                        		n3 = nm.getNamedItem("name");
+                        		if (n3 != null) {
+                            			name = n3.getNodeValue();
+                        		}
+			
+                        		// decode guiname
+                        		n3 = nm.getNamedItem("guiname");
+                        		if (n3 != null) {
+                           			guiname = n3.getNodeValue();
+                        		}
+
+                        		// decode guipos
+                        		n3 = nm.getNamedItem("guipos");
+                        		if (n3 != null) {
+			   			try {
+                           				guipos = Integer.parseInt(n3.getNodeValue());
+			   			} catch (Exception e) { }
+                        		}
+
+
+                        		// decode size
+                        		n3 = nm.getNamedItem("size");
+                        		if (n3 != null) {
+			   			try {
+                           				size = Integer.parseInt(n3.getNodeValue());
+			   			} catch (Exception e) { }
+                        		}
+
+                        		// decode edit
+                        		n3 = nm.getNamedItem("edit");
+                        		if (n3 != null) {
+                           			if (n3.getNodeValue().equals("true")) edit = true;
+                        		}
+
+                        		// decode external
+                        		n3 = nm.getNamedItem("external");
+                        		if (n3 != null) {
+                            			external = n3.getNodeValue();
+                        		}
+
+                        		// decode externalname
+                        		n3 = nm.getNamedItem("externalname");
+                        		if (n3 != null) {
+                            			externalname = n3.getNodeValue();
+                        		}
+
+                        		// decode type
+                        		n3 = nm.getNamedItem("type");
+                        		if (n3 != null) {
+                            			type = n3.getNodeValue();
+                        		}
+
+					if (name!=null) {
+						ProfileEntryDef pe = new ProfileEntryDef();
+						pe.setName(name);
+						pe.setGuiPos(guipos);
+						pe.setSize(size);
+						pe.setEdit(edit);
+						if (external!=null) pe.setExternal(external);
+						if (externalname!=null) pe.setExternalName(externalname);
+						if (type!=null) pe.setType(type);
+						if (guiname!=null) pe.setGuiName(guiname);
+						profiledefs.put(name,pe);
+					}
+				}
+                        }
 
                         for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
                             Element n2 = (Element) ns2.nextElement();
@@ -339,6 +431,14 @@ public class ForumConfig {
         return loginmodetype;
    }
 
+   public String getAlias() {
+        return alias;
+   }
+
+   public void setAlias(String alias) {
+        this.alias = alias;
+   }
+
    public void setLoginModeType(String type) {
         loginmodetype = type;
    }
@@ -355,12 +455,20 @@ public class ForumConfig {
         return guestreadmodetype;
    }
 
+   public String getThreadStartLevel() {
+        return threadstartlevel;
+   }
+
    public void setGuestReadModeType(String type) {
         guestreadmodetype = type;
    }
 
    public void setAvatarsUploadEnabled(String mode) {
         avatarsUploadEnabled = mode;
+   }
+
+   public void setNavigationMethod(String navigationmethod) {
+       this.navigationmethod = navigationmethod;
    }
 
    public void setContactInfoEnabled(String mode) {
@@ -424,4 +532,23 @@ public class ForumConfig {
         return htmlFooterPath;
     }
 
+    public String getNavigationMethod() {
+        return navigationmethod;
+    }
+
+    public PostAreaConfig addPostAreaConfig(String name) {
+        PostAreaConfig config = new PostAreaConfig(name);
+        subs.put(config.getId(),config);
+	return config;
+    }
+
+    public Iterator getProfileDefs() {
+        return profiledefs.values().iterator();
+    }
+
+    public ProfileEntryDef getProfileDef(String name) {
+	Object o = profiledefs.get(name);
+	if (o != null) return (ProfileEntryDef)o;
+	return null;
+    }
 }
