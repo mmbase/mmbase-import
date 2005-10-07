@@ -28,7 +28,7 @@ import org.mmbase.module.core.*;
  * {@link ResultBuilder ResultBuilder}, that contains info on the node's fields.
  *
  * @author  Rob van Maris
- * @version $Id: ResultNode.java,v 1.5 2003-03-10 11:50:50 pierre Exp $
+ * @version $Id: ResultNode.java,v 1.6 2005-10-07 18:51:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class ResultNode extends VirtualNode {
@@ -44,7 +44,7 @@ public class ResultNode extends VirtualNode {
     
     // javadoc is inherited
     public int getDBType(String fieldName) {
-        return parent.getDBType(fieldName);
+        return getBuilder().getDBType(fieldName);
     }
 
 }
