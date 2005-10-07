@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.41 2005-07-08 12:53:38 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.42 2005-10-07 18:49:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -334,7 +334,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                                 b = null;
                             }
                             if (b == null) {
-                                value = MMObjectNode.VALUE_NULL;
+                                value = null;
                             } else {
                                 if (b.length() == -1) {
                                     value = MMObjectNode.VALUE_SHORTED;
