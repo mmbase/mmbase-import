@@ -243,4 +243,8 @@ public class XMLClass {
             return false;
         }
     }
+
+    public int hashCode() {
+        return 13 * getName().hashCode();
+    }
 }
