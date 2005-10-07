@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.3 2005-10-03 17:35:36 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.4 2005-10-07 18:41:08 michiel Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -107,7 +107,7 @@ public class ImageConversionRequestProcessor implements Runnable {
                 picture = convert.convertImage(inputPicture, req.getInputFormat(), params);
                 if (picture != null) {
                     node.setValue(Imaging.FIELD_HANDLE, picture);
-                    if (node.parent.getField("height") != null) {
+                    if (node.getBuilder().hasField("height")) {
                         try {
                             Dimension predicted = (Dimension) node.getFunctionValue("dimension", null);
                             Dimension dim = Factory.getImageInformer().getDimension(picture);
