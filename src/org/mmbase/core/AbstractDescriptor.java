@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.4 2005-10-02 17:08:04 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.5 2005-10-07 00:19:14 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
@@ -136,7 +136,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        return clone(null);
+        return clone(getName() + ".clone");
     }
 
     public Object clone(String name) throws CloneNotSupportedException {
