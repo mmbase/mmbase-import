@@ -12,6 +12,7 @@ package org.mmbase.bridge.util.xml;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
 
 import org.apache.xpath.XPathAPI;
 
@@ -46,7 +47,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.13 2005-07-09 11:08:54 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.14 2005-10-07 18:46:55 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -90,8 +91,8 @@ public  class NodeFunction {
      * @since MMBase-1.8
      */
     public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function, String arguments) {
-        // it only want to work withh a NodeList. I think by book sais that it should also work with
-        // Element, but not..
+        // it only want to work withh a NodeList. I think my book sais that it should also work with
+        // Element, but no..
 
         try {
             Node node = cloud.getNode(number);
@@ -127,15 +128,17 @@ public  class NodeFunction {
 
     public static String function(Cloud cloud, String number, String function) {
         log.debug("calling base on " + number + " for " + function);
+        Node node;
         try {
-            Node node = cloud.getNode(number);
-            return org.mmbase.util.functions.NodeFunction.getFunctionValue(node, function).toString();
-        } catch (BridgeException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("could not execute '" + function + "' on node '" + number + "'");
-                log.trace(Logging.stackTrace(e));
-            }
-            return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
+            node = cloud.getNode(number);
+            Function func = node.getFunction(function);
+            Parameters params = func.createParameters();
+            params.setIfDefined(Parameter.CLOUD, cloud);
+            return func.getFunctionValue(params).toString();
+        } catch (Throwable e) {
+            log.info("could not execute '" + function + "' on node '" + number + "'");
+            log.info(Logging.stackTrace(e) + Logging.stackTrace());
+            return "could not execute " + function + " on node " + number + "(" + e.getClass() + " " + e.getMessage() + ")";
         }
     }
 
@@ -151,6 +154,13 @@ public  class NodeFunction {
         log.debug("calling with dom node");
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(cloud, number, function);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static String guiName(Cloud cloud,  String node) {
+        return cloud.getNode(node).getNodeManager().getGUIName();
     }
 
 }
