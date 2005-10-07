@@ -15,8 +15,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.*;
 
 import org.mmbase.cache.*;
 
@@ -64,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.345 2005-10-06 13:34:31 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.346 2005-10-07 18:35:06 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -83,6 +82,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     public static final String FIELD_OBJECT_TYPE  = "otype";
+
+    /**
+     * @since MMBase-1.8
+     */
+    static final String TMP_FIELD_NUMBER  = "_number";
+    static final String TMP_FIELD_EXISTS  = "_exists";
 
     /**
      * Default (system) owner name for the owner field.
@@ -283,7 +288,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             {
                 setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be available as an 'escaper', and this version should now be considered an example.");
             }
-            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+            public Object getFunctionValue(Node node, Parameters parameters) {
                 String val  = node.getStringValue(parameters.getString("field"));
                 Number wrappos = (Number) parameters.get("length");
                 return wrap(val, wrappos.intValue());
@@ -299,15 +304,15 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             {
                 setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
             }
-            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                return MMObjectBuilder.this.getFunctions(node);
+            public Object getFunctionValue(Node node, Parameters parameters) {
+                return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
             }
             public Object getFunctionValue(Parameters parameters) {
-                MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
+                Node node = (Node) parameters.get(Parameter.NODE);
                 if (node == null) {
                     return MMObjectBuilder.this.getFunctions();
                 } else {
-                    return MMObjectBuilder.this.getFunctions(node);
+                    return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
                 }
             }
         };
@@ -339,8 +344,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     return func.getDescription();
                 }
             }
-            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                return getFunctionValue(MMObjectBuilder.this.getFunctions(node), parameters);
+            public Object getFunctionValue(Node node, Parameters parameters) {
+                return getFunctionValue(MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node)), parameters);
             }
             public Object getFunctionValue(Parameters parameters) {
                 MMObjectNode node = (MMObjectNode) parameters.get(Parameter.NODE);
@@ -524,8 +529,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             // XXX: wtf
             // add temporary fields
-            checkAddTmpField("_number");
-            checkAddTmpField("_exists");
+            checkAddTmpField(TMP_FIELD_NUMBER);
+            checkAddTmpField(TMP_FIELD_EXISTS);
 
             // get property dof maximum number of queries..
             String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
@@ -634,7 +639,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // This should in the new event-mechanism not be needed, because the NodeEvent
             // contains the node.
 
-            log.warn("New node '" + nodeNumber + "' of type " + node.parent.getTableName() + " is already in node-cache!");
+            log.warn("New node '" + nodeNumber + "' of type " + node.parent.getTableName() + " is already in node-cache!" + Logging.stackTrace());
         } else {
             safeCache(new Integer(n), node);
         }
@@ -774,17 +779,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node The node to set the defaults of.
      */
     public void setDefaults(MMObjectNode node) {
-        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {            
             CoreField field = (CoreField) i.next();
-            if (field.getType() != Field.TYPE_NODE) {
-                Object defaultValue = field.getDataType().getDefaultValue();
-                if ((defaultValue == null) && field.isNotNull()) {
-                    defaultValue = Casting.toType(Fields.typeToClass(field.getType()), "");
-                }
-                if (defaultValue != null) {
-                    node.setValue(field.getName(), defaultValue);
-                }
+            if (field.getName().equals(FIELD_NUMBER))      continue;
+            if (field.getName().equals(FIELD_OWNER))       continue;
+            if (field.getName().equals(FIELD_OBJECT_TYPE)) continue;
+            //if (field.getType() == Field.TYPE_NODE) continue; // according to Nico
+            Object defaultValue = field.getDataType().getDefaultValue();
+            if ((defaultValue == null) && field.isNotNull()) {
+                defaultValue = Casting.toType(Fields.typeToClass(field.getType()), "");
             }
+            node.setValue(field.getName(), defaultValue);
         }
     }
 
@@ -1208,13 +1213,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // the node does not exists, which according to javadoc shoulw return null
             return null;
         }
-        // if the type is not for the current buidler, determine the real builder
+        // if the type is not for the current builder, determine the real builder
         if (nodeType != oType) {
             log.debug(" " + nodeType + "!=" + oType);
             String builderName = mmb.getTypeDef().getValue(nodeType);
             if (builderName == null) {
-                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking 'object'");
-                builderName = "object";
+                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking '" + getTableName() + "'");
+                builderName = getTableName();
                 //return null; Used to return null in MMBase < 1.7.0, but that gives troubles, e.g. that the result not gets cached.
             }
             builder = mmb.getBuilder(builderName);
@@ -1272,7 +1277,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public MMObjectNode getNewTmpNode(String owner,String key) {
         MMObjectNode node = null;
         node = getNewNode(owner);
-        node.setValue("_number", key);
+        node.setValue(TMP_FIELD_NUMBER, key);
         temporaryNodes.put(key, node);
         return node;
     }
@@ -1283,8 +1288,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node The node to store
      */
     public void putTmpNode(String key, MMObjectNode node) {
-        node.setValue("_number",key);
-        temporaryNodes.put(key,node);
+        node.setValue(TMP_FIELD_NUMBER, key);
+        temporaryNodes.put(key, node);
     }
 
     /**
@@ -1969,6 +1974,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return (FieldDefs) fields.get(fieldName);
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    public boolean hasField(String fieldName) {
+        return fields.containsKey(fieldName);
+    }
+
     /**
      * Clears all field list caches, and recalculates the field list.
      */
@@ -2179,7 +2192,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (field.getType() == Field.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
             try {
                 MMObjectNode otherNode = node.getNodeValue(fieldName);
-                if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
+                if (otherNode == null) {
                     return "";
                 } else {
                     return otherNode.parent.getGUIIndicator(otherNode);
@@ -2306,6 +2319,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return genericBlobCache;
     }
 
+    /**
+     * @since MMBase-1.8
+     */
     public int clearBlobCache(int nodeNumber) {
         Iterator i = getFields().iterator();
         int result = 0;
@@ -2495,8 +2511,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         return new NodeFunction(name, parameters, returnType) {
-                public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                    return MMObjectBuilder.this.executeFunction(node, name,
+                public Object getFunctionValue(Node node, Parameters parameters) {
+                    return MMObjectBuilder.this.executeFunction(getCoreNode(MMObjectBuilder.this, node),
+                                                                name,
                                                                 parameters.subList(0, parameters.size() - 1) // removes the node-argument, some legacy impl. get confused
                                                                 );
                 }
