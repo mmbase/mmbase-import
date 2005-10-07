@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * This is done in the MyNews examples (on the news builder), and example JSP's can be found on /mmexamples/taglib/functions.jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.11 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: ExampleBuilder.java,v 1.12 2005-10-07 18:39:35 michiel Exp $
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
@@ -85,7 +85,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
             {
                 setDescription("This (rather silly) function returns the sum of the given fields of a certain node");
             }
-            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+            public Object getFunctionValue(Node node, Parameters parameters) {
                 List fields = (List) parameters.get("fields");
                 int result = 0;
                 Iterator i = fields.iterator();

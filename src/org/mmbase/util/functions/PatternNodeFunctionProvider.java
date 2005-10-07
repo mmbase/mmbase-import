@@ -4,23 +4,23 @@ import java.util.*;
 import java.util.regex.*;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This Function provider creates function objects , which can create a String function base on a
+ * This Function provider creates function objects , which can create a String function based on a
  * pattern. Several kind of patterns are recognized. {PARAM.abc} creates a parameter 'abc' and puts the
  * value of it on that place in the result. {NODE.title}, puts the title field of the node on which
  * the function was applied on that place, and {REQUEST.getContextPath} applies that method to the
  * request parameter (and that parameter is added). {INITPARAM.xyz} access the servletcontext init parameters xyz.
  *
- * The functions which are created have silly names like string0, string1 etc, do you want to wrap
+ * The functions which are created have silly names like string0, string1 etc, so you want to wrap
  * them in a function with a reasonable name (this is done when specifying this thing in the builder
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.3 2005-07-01 13:13:47 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.4 2005-10-07 18:39:35 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -80,11 +80,11 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             return (Parameter[]) params.toArray(new Parameter[] {});
         }
 
-        protected Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
+        protected Object getFunctionValue(final Node node, final Parameters parameters) {
             StringBuffer sb = new StringBuffer();
             Matcher fields = fieldsPattern.matcher(template);
             while (fields.find()) {
-                fields.appendReplacement(sb, coreNode.getStringValue(fields.group(1)));
+                fields.appendReplacement(sb, node.getStringValue(fields.group(1)));
             }
             fields.appendTail(sb);
             
@@ -107,7 +107,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                     try {
                         Method m =  (Method) requestMethods.get(request.group(1));
                         if (m == null) {
-                            log.error("Didn't finnd the method " + request.group(1) + " on request object");
+                            log.error("Didn't find the method " + request.group(1) + " on request object");
                             continue;
                         }
                         request.appendReplacement(sb, "" + m.invoke(req, new Object[] {}));
