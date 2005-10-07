@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.2 2005-10-07 00:16:34 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.3 2005-10-07 18:57:06 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -236,7 +236,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return this;
     }
 
-    
+
 
     /**
      * @javadoc
@@ -247,22 +247,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
-    /**
-     * Adds a new error message to the errors collection, based on given Constraint. If this
-     * error-collection is unmodifiable (VALID), it is replace with a new empty one first.
-     */
-    protected final Collection addError(Collection errors, DataType.ValueConstraint constraint, Object value) {
-        if (errors == VALID) errors = new ArrayList();
-        if (constraint.getErrorDescription() == null) {
-            throw new IllegalArgumentException("Failed " + constraint+ " for value " + value);
-        }
-        ReplacingLocalizedString error = new ReplacingLocalizedString(constraint.getErrorDescription());
-        error.replaceAll("\\$\\{NAME\\}",       constraint.getName());
-        error.replaceAll("\\$\\{CONSTRAINT\\}",   "" + constraint.toString());
-        error.replaceAll("\\$\\{VALUE\\}",      "" + value);
-        errors.add(error);
-        return errors;
-    }
 
     /**
      * @inheritDoc
@@ -276,7 +260,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      */
     public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
         Collection errors = VALID;
-        // test uniqueness1
+        errors = uniqueConstraint.validate(errors, value, node, field);
+        errors = requiredConstraint.validate(errors, value, node, field);
         // test enumerations
         // if (enumerationValues != null && enumerationValues.size() == 0) {
         //     ...
@@ -538,7 +523,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * 
+     *
      */
     protected abstract class AbstractValueConstraint extends StaticAbstractValueConstraint {
         protected AbstractValueConstraint(DataType.ValueConstraint source) {
@@ -562,6 +547,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected LocalizedString errorDescription;
         protected Object value;
         protected boolean fixed = false;
+        protected int    enforceStrength = DataType.ENFORCE_ALWAYS;
 
         protected StaticAbstractValueConstraint(BasicDataType parent, DataType.ValueConstraint source) {
             this.name = source.getName();
@@ -616,12 +602,48 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             this.fixed = fixed;
         }
 
-        protected Collection validate(Collection errors, Object value, Node node, Field field) {
-            if (! valid(value, node, field)) {
-                return parent.addError(errors, this, value);
-            } else {
-                return errors;
 
+
+        /**
+         * Utility method to add a new error message to the errors collection, based on this
+         * Constraint. If this error-collection is unmodifiable (VALID), it is replaced with a new
+         * empty one first.
+         */
+        protected final Collection addError(Collection errors, Object v) {
+            if (errors == VALID) errors = new ArrayList();
+            if (getErrorDescription() == null) {
+                throw new IllegalArgumentException("Failed " + this+ " for value " + v);
+            }
+            ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
+            error.replaceAll("\\$\\{NAME\\}",       error.makeLiteral(getName()));
+            error.replaceAll("\\$\\{CONSTRAINT\\}", error.makeLiteral(toString()));
+            error.replaceAll("\\$\\{VALUE\\}",      error.makeLiteral("" + v));
+            errors.add(error);
+            return errors;
+        }
+
+
+        /**
+         * Whether {@link #validate} must enforce this condition
+         */
+        protected final boolean enforce(Node node, Field field) {
+            switch(enforceStrength) {
+            case DataType.ENFORCE_ALWAYS:   return true;
+            case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
+            case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
+            case DataType.ENFORCE_NEVER:    return false;
+            default:                        return true;
+            }
+        }
+        /**
+         * This method is called by {@link BasicDataType#validate(Object, Node, Field)} for each of its conditions.
+         */
+        protected Collection validate(Collection errors, Object v, Node node, Field field) {
+            if ((! enforce(node, field)) ||  valid(v, node, field)) {
+                // no new error to add.
+                return errors;
+            } else {
+                return addError(errors, v);
             }
         }
 
@@ -634,6 +656,12 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
         }
 
+        public int getEnforceStrength() {
+            return enforceStrength;
+        }
+        public void setEnforceStrength(int e) {
+            enforceStrength = e;
+        }
 
         public String toString() {
             return name + " : " + value + ( fixed ? "." : "");

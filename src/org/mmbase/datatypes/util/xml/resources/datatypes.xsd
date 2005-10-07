@@ -99,7 +99,8 @@
     <xsd:sequence>
       <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
-    <xsd:attribute name="fixed" type="xsd:boolean" />
+    <xsd:attribute name="fixed"    type="xsd:boolean" />
+    <xsd:attribute name="enforce"  type="type_enforce" />
   </xsd:complexType>
 
   <xsd:complexType name="Comparable">
@@ -137,6 +138,14 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="type_enforce">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="always" />
+      <xsd:enumeration value="onchange" />
+      <xsd:enumeration value="never" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:complexType name="Processor">
     <xsd:sequence>
       <xsd:element ref="class"  maxOccurs="unbounded" minOccurs="1" />
@@ -154,15 +163,10 @@
   </xsd:element>
 
   <xsd:element name="param">
-    <xsd:complexType>
-      <xsd:choice>
-        <!--
-        <xsd:element ref="xsd:string" />
-        -->
-        <xsd:sequence>
-          <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
-        </xsd:sequence>
-      </xsd:choice>
+    <xsd:complexType mixed="true">
+      <xsd:sequence>
+        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>

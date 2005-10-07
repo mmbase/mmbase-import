@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.21 2005-10-07 00:16:34 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.22 2005-10-07 18:57:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -44,15 +44,6 @@ public class DateTimeDataType extends ComparableDataType {
      */
     public DateTimeDataType(String name) {
         super(name, Date.class);
-        // the default default value of a date time field is 'now'
-        // That's a good default and is more or less backwards compatible, because unfilled
-        // 'eventtime' object used to be displayed as now too.
-        try {
-            setDefaultValue(org.mmbase.util.DynamicDate.getInstance("now"));
-        } catch (org.mmbase.util.dateparser.ParseException pe) {
-            log.error(pe);
-            // could not happen, 'now' should parse
-        }
     }
 
     public DataType setDefaultValue(Object o) {
