@@ -143,7 +143,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">DateTimeField</guiname>
-        <guitype>string</guitype>
       </gui>
       <db>
         <name>datetimefield</name>
