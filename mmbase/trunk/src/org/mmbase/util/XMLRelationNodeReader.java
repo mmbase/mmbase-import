@@ -33,15 +33,12 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.26 2005-08-05 09:16:26 nklasens Exp $
+ * @version $Id: XMLRelationNodeReader.java,v 1.27 2005-10-07 18:40:30 michiel Exp $
  */
 public class XMLRelationNodeReader extends XMLBasicReader {
 
-   /**
-    * Logger routine
-    */
-   private static Logger log =
-      Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
+
+   private static final Logger log = Logging.getLoggerInstance(XMLRelationNodeReader.class);
 
     String applicationpath;
 
@@ -217,8 +214,8 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                                     newnode.setValue(key, value);
                                 } else if (type == Field.TYPE_NODE) {
                                     // do not really set it, because we need syncnodes later for this.
-                                    newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
-                                    newnode.setValue(key, MMObjectNode.VALUE_NULL);
+                                    newnode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
+                                    newnode.setValue(key, null);
                                 } else if (type == Field.TYPE_INTEGER) {
                                    try {
                                         newnode.setValue(key, Integer.parseInt(value));
