@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.36 2005-09-15 19:50:41 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.37 2005-10-07 18:40:30 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -156,8 +156,8 @@ public class XMLNodeReader extends XMLBasicReader {
                                             }
                                         } else if (type == Field.TYPE_NODE) {
                                             // do not really set it, because we need syncnodes later for this.
-                                            newNode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
-                                            newNode.setValue(key, MMObjectNode.VALUE_NULL);
+                                            newNode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
+                                            newNode.setValue(key, null);
                                         } else if (type == Field.TYPE_INTEGER) {
                                            try {
                                                 newNode.setValue(key, Integer.parseInt(value));
@@ -203,7 +203,7 @@ public class XMLNodeReader extends XMLBasicReader {
                                 }
                                 n5 = n5.getNextSibling();
                             }
-                            nodes.addElement(newNode);
+                            nodes.add(newNode);
                         }
                     }
                     n2 = n2.getNextSibling();
