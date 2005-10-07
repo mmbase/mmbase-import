@@ -43,6 +43,8 @@ public class ClassToXML {
         // test op static member classes
         xmle.setAttribute("shortname", shortName);
 
+        xmle.setAttribute("serializable", java.io.Serializable.class.isAssignableFrom(clazz) ? "true" : "false");
+
         Class[] interfaceClasses = clazz.getInterfaces();
         String implementsString = "";
         for (int counter = 0; counter < interfaceClasses.length; counter++) {
