@@ -3,9 +3,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 <mm:import externid="page" />
 <mm:import externid="pagesize" />
 <mm:import externid="postareaid" />
@@ -38,7 +38,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:node referid="postareaid"><mm:field name="name"/></mm:node> / <mm:node referid="postthreadid"><mm:field name="subject"/></mm:node></mm:compare></title>
+   <title>MMBob</title>
    <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 </head>
 <body>
@@ -49,7 +49,14 @@
 </div>
                                                                                               
 <div class="bodypart">
-
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+<mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
+<mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
+<mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
+</mm:nodefunction>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <mm:import externid="postingid" />
   
@@ -60,15 +67,12 @@
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	<mm:param name="postthreadid" value="$postthreadid" />
-	<mm:param name="postingid" value="$postingid" />
 	<mm:param name="page" value="$pagecount" />
 	</mm:url>#reply" method="post" name="posting">
-	<tr><th><mm:write referid="mlg.Name" /></th><td colspan="2">
+	<tr><th width="20%"><mm:write referid="mlg.Name" /></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
-		<mm:node number="$posterid">
-		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
-		<input name="poster" type="hidden" value="<mm:field name="account" />" >
-		</mm:node>
+		<mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
+		<input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
 		<input name="poster" size="32" value="gast" >
