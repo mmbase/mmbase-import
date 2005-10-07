@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.61 2005-10-06 17:42:56 michiel Exp $
+ * @version $Id: Queries.java,v 1.62 2005-10-07 18:47:25 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1066,7 +1066,9 @@ abstract public class Queries {
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
             }
         }
-        Node result = (Node) cloud.getList(count).get(0);
+        NodeList r = cloud.getList(count);
+        if (r.size() != 1) throw new RuntimeException("Count query " + query + " did not give one result but " + r);
+        Node result = r.getNode(0);
         return result.getIntValue(resultName);
     }
 
