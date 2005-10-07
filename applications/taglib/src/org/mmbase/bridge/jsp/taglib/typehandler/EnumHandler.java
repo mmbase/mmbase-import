@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.23 2005-09-12 17:32:45 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.24 2005-10-07 19:02:17 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -104,7 +104,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         buffer.append(prefix(field.getName()));
         buffer.append("\" ");
         addExtraAttributes(buffer);
-        buffer.append(">\n");
+        buffer.append(">");
         Object value = null;
         if (node != null) {
             value = node.getValue(field.getName());
@@ -133,7 +133,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             }
             buffer.append(">");
             buffer.append(entry.getValue());
-            buffer.append("</option>\n");
+            buffer.append("</option>");
         }
         buffer.append("</select>");
         if (search) {
@@ -145,7 +145,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             if (searchi != null) {
                 buffer.append(" checked=\"checked\"");
             }
-            buffer.append(" />\n");
+            buffer.append(" />");
         }
         return buffer.toString();
     }
