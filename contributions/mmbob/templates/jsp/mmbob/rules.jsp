@@ -3,9 +3,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 <mm:import externid="rulesid" />
 <mm:import externid="pathtype">rules</mm:import>
 <mm:import externid="posterid" id="profileid" />
@@ -27,7 +27,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node></mm:compare></title>
+   <title>MMBob</title>
 </head>
 <body>
 
@@ -42,7 +42,7 @@
 <mm:node referid="rulesid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="80%">
 	<tr><th><mm:field name="title" /></th></tr>
-	<tr><td><br /><br /><mm:field name="body" escape="p" /><br /><br /></td></tr>
+	<tr><td align="left"><br /><br /><mm:field name="body" escape="p" /><br /><br /></td></tr>
 </table>
 
 </mm:node>

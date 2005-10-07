@@ -1,19 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud>
+<mm:cloud name="mmbase" method="http" rank="administrator">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import id="forumid"></mm:import>
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<!-- action check -->
-<mm:import externid="action" />
-<mm:present referid="action">
- <mm:include page="actions.jsp" />
-</mm:present>
-<!-- end action check -->
 <mm:import externid="lang">en</mm:import>
 <mm:locale language="$lang">
-<mm:import id="forumid"></mm:import>
 <%@ include file="loadtranslations.jsp" %>
 
 <html>
@@ -24,8 +18,6 @@
 <body>
 
 <div class="header">
-    <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
-    <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                               
 <div class="bodypart">
@@ -36,7 +28,7 @@
   <form action="<mm:url page="forums.jsp" />" method="post">
 	<input type="hidden" name="action" value="changeconfigs">
 	<tr><th>Login Mode</th>
-		<td colspan="2"><select name="loginmodetype">
+		<td colspan="2" align="left"><select name="loginmodetype">
 		<mm:field name="loginmodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -50,7 +42,7 @@
 		</td>
  	</tr>
 	<tr><th>LogoutMode</th>
-		<td colspan="2"><select name="logoutmodetype">
+		<td colspan="2" align="left"><select name="logoutmodetype">
 		<mm:field name="logoutmodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -64,7 +56,7 @@
 		</td>
  	</tr>
 	<tr><th>GuestReadMode</th>
-		<td colspan="2"><select name="guestreadmodetype">
+		<td colspan="2" align="left"><select name="guestreadmodetype">
 		<mm:field name="guestreadmodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -78,7 +70,7 @@
 		</td>
  	</tr>
 	<tr><th>GuestWriteMode</th>
-		<td colspan="2"><select name="guestwritemodetype">
+		<td colspan="2" align="left"><select name="guestwritemodetype">
 		<mm:field name="guestwritemodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -92,7 +84,7 @@
 		</td>
  	</tr>
 	<tr><th>AvatarUpload</th>
-		<td colspan="2"><select name="avatarsuploadenabled">
+		<td colspan="2" align="left"><select name="avatarsuploadenabled">
 		<mm:field name="avatarsuploadenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -106,7 +98,7 @@
 		</td>
  	</tr>
 	<tr><th>AvatarGallery</th>
-		<td colspan="2"><select name="avatarsgalleryenabled">
+		<td colspan="2" align="left"><select name="avatarsgalleryenabled">
 		<mm:field name="avatarsgalleryenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -120,7 +112,7 @@
 		</td>
  	</tr>
 	<tr><th>ContactInfo</th>
-		<td colspan="2"><select name="contactinfoenabled">
+		<td colspan="2" align="left"><select name="contactinfoenabled">
 		<mm:field name="contactinfoenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -134,7 +126,7 @@
 		</td>
  	</tr>
 	<tr><th>Smileys</th>
-		<td colspan="2"><select name="smileysenabled">
+		<td colspan="2" align="left"><select name="smileysenabled">
 		<mm:field name="smileysenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -148,7 +140,7 @@
 		</td>
  	</tr>
 	<tr><th>PrivateMessages</th>
-		<td colspan="2"><select name="privatemessagesenabled">
+		<td colspan="2" align="left"><select name="privatemessagesenabled">
 		<mm:field name="privatemessagesenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -162,7 +154,7 @@
 		</td>
  	</tr>
 	<tr><th>Postings Per Page</th>
-		<td colspan="2">
+		<td colspan="2" align="left">
 		<input size="5" name="postingsperpage" value="<mm:field name="postingsperpage" />" />
 		</td>
  	</tr>
@@ -183,8 +175,6 @@
 </div>
 
 <div class="footer">
-    <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
-    <jsp:include page="<%=footerpath%>"/>
 </div>
                                                                                               
 </body>

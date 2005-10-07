@@ -3,9 +3,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
 <mm:import externid="page">1</mm:import>
@@ -53,10 +53,10 @@
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	</mm:url>" method="post" name="posting">
-	<tr><th width="100"><mm:write referid="mlg.Name" /></th><td colspan="2">
+	<tr><th width="100"><mm:write referid="mlg.Name" /></th><td colspan="2" align="left">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
-		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
+		<mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
 		<input name="poster" type="hidden" value="<mm:field name="account" />" >
 		</mm:node>
 		</mm:compare>
@@ -65,8 +65,8 @@
 		<mm:write referid="mlg.guest" />	
 		</mm:compare>
 	</td></tr>
-	<tr><th width="150"><mm:write referid="mlg.Topic" /></th><td colspan="2"><input name="subject" style="width: 100%" ></td></th>
-	<tr><th width="150"><mm:write referid="mlg.Mood" /></th><td colspan="2">
+	<tr><th width="150"><mm:write referid="mlg.Topic" /></th><td colspan="2"><input name="subject" style="width: 100%"></td></th>
+	<tr><th width="150"><mm:write referid="mlg.Mood" /></th><td colspan="2" align="left">
 		<select name="mood">
 		<option value="normal"><mm:write referid="mlg.normal"/>
 		<option value="mad"><mm:write referid="mlg.mad"/>
@@ -117,7 +117,7 @@
 	  </tr>
 	  <tr>
 		<td align="center">
-			Your message has been posted to this area
+			<mm:write referid="mlg.Been_posted" />
 			<br />
 			<br />
 			<input type="submit" value="ok" />

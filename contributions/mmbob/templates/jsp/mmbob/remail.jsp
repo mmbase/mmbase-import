@@ -8,9 +8,9 @@
 <mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -45,7 +45,7 @@
                <mm:import id="newconfirmpassword"><mm:write referid="wpassword"/></mm:import>
                 <!--  create the email node -->
                 <mm:createnode id="mail1" type="email">
-                        <mm:setfield name="from"><mm:function set="mmbob" name="getForumFromEmailAddress" referids="forumid"/></mm:setfield>
+                        <mm:setfield name="from"><mm:function set="mmbob" name="getForumFromEmailAddress" referids="forumid" /></mm:setfield>
                         <mm:setfield name="to"><mm:write referid="wemail" /></mm:setfield>
                         <mm:setfield name="subject"><mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/></mm:setfield>
                         <mm:setfield name="body"> <mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
@@ -78,7 +78,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node></mm:compare></title>
+   <title>MMBob</title>
 </head>
 <body>
 
@@ -133,6 +133,7 @@
 <div class="footer">
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
     <jsp:include page="<%=footerpath%>"/>
+
 </div>
                                                                                               
 </body>

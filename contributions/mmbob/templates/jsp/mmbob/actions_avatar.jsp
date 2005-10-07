@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<mm:cloud>
-<mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
-<mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
-</mm:cloud>
-<mm:cloud sessionname="forum" username="$dac" password="$dpw">
+<mm:cloud sessionname="forum" username="admin" password="admin2k">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="selectedavatar"/>
 <mm:import externid="pathtype">poster_index</mm:import>

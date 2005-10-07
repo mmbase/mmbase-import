@@ -2,10 +2,10 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="forumid" />
 <mm:import externid="boxname">Inbox</mm:import>
 <mm:import externid="mailboxid" />
 <mm:import externid="messageid" />
@@ -29,8 +29,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> /
-<mm:write referid="mlg.private_messages"/> </mm:compare></title>
+   <title>MMBob</title>
 </head>
 
 <body>

@@ -3,9 +3,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postingid" />
 <mm:import externid="postthreadid" />
@@ -39,9 +39,21 @@
 </div>
                                                                                               
 <div class="bodypart">
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+<mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
+<mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
+<mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
+</mm:nodefunction>
+<mm:nodefunction set="mmbob" name="getPosting" referids="forumid,postareaid,postthreadid,postingid,posterid,imagecontext">
+	<mm:field name="maychange" id="maychange" write="false" />
+</mm:nodefunction>
 
+<mm:compare referid="maychange" value="true">
+<mm:node referid="postingid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <mm:node referid="postingid">
   <tr><th colspan="3"><mm:write referid="mlg.Edit_message" /></th></tr>
   <form action="<mm:url page="thread.jsp">
 	<mm:param name="forumid" value="$forumid" />
@@ -51,10 +63,8 @@
 	</mm:url>" method="post" name="posting">
 	<tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
-		<mm:node number="$posterid">
-		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
-		<input name="poster" type="hidden" value="<mm:field name="account" />" >
-		</mm:node>
+		<mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
+		<input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
 		<input name="poster" size="32" value="gast" >
@@ -77,7 +87,6 @@
   	</form>
 	</td>
 	<td align="center">
-	</mm:node>
   	<form action="<mm:url page="thread.jsp">
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
@@ -90,6 +99,14 @@
 	</td>
 	</tr>
 </table>
+</mm:node>
+</mm:compare>
+<mm:compare referid="maychange" value="false">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
+		<tr><th>MMBob system error</th></tr>
+		<tr><td height="40"><b>ERROR: </b> action not allowed by this user </td></tr>
+	</table>
+</mm:compare>
 </div>
 
 <div class="footer">

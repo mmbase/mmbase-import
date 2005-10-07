@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud>
+<mm:cloud name="mmbase" method="http" rank="administrator">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
@@ -13,8 +14,6 @@
 <mm:import externid="remforum" />
 
 <div class="header">
-    <mm:import id="headerpath" jspvar="headerpath"><mm:function set="mmbob" name="getForumHeaderPath" referids="forumid"/></mm:import>
-    <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                               
 <div class="bodypart">
@@ -48,8 +47,6 @@
 </div>
 
 <div class="footer">
-    <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>
-    <jsp:include page="<%=footerpath%>"/>
 </div>
                                                                                               
 </body>
