@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
 <functionset>
-  <status>active</status>
-  <version>1</version>
-  <description>
-    Some util functions from org.mmbase.util, made accessible through the function-framework
-  </description>
+
+  <description>Some util functions from org.mmbase.util, made accessible through the function-framework</description>
 
   <function name="generatePassword">
     <description>
