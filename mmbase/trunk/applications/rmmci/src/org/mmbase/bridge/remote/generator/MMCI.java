@@ -127,7 +127,8 @@ public class MMCI {
         // datatypes classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType$ValueConstraint", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BigDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.LengthDataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.ComparableDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BinaryDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BooleanDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DateTimeDataType",doc));
@@ -149,7 +150,9 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameter", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
+
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.LocalizedString", doc));
+
     }
 
     public static void main(String [] argv) throws Exception{
