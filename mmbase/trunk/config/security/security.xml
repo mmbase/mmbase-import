@@ -32,6 +32,15 @@
      -->
     <!--<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="basic/authentication.xml" /> -->
 
+
+
+    <!--
+        You can wrap any authentication implementation to provide certain credentials to certain JAVA classes.
+        See the example 'wrapper.xml'.
+        -->
+    <!-- <authentication class="org.mmbase.security.classsecurity.ClassAuthenticationWrapper" url="wrapper.xml" />-->	 
+
+
     <!--
         tag authorization:
             attribute class: The class which should be used for
