@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.25 2005-10-03 08:12:05 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.26 2005-10-07 22:16:01 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -129,8 +129,8 @@ public class DateHandler extends AbstractTypeHandler {
         if (log.isDebugEnabled()) {
             log.debug("Using " + dt);
         }
-        Calendar minDate = null;
-        Calendar maxDate = null;
+        Calendar minDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance();
         DateTimePattern dateTimePattern;
         if (! (dt instanceof DateTimeDataType)) {
             // backwards compatibility
@@ -159,35 +159,19 @@ public class DateHandler extends AbstractTypeHandler {
                 buf.append("HH'h':mm'm':ss's'");
             }
             dateTimePattern = new DateTimePattern(buf.toString());
-
+            minDate.setTime(new Date(Long.MIN_VALUE));
+            maxDate.setTime(new Date(Long.MAX_VALUE));
         } else {
             dateTimePattern = ((DateTimeDataType) dt).getPattern();
             Date min = ((DateTimeDataType) dt).getMin();
-            if (min != null) {
-                minDate = Calendar.getInstance();
-                minDate.setTime(min);
-            }
+            minDate.setTime(min);
             Date max = ((DateTimeDataType) dt).getMax();
-            if (max != null) {
-                maxDate = Calendar.getInstance();
-                maxDate.setTime(max);
-            }
-
+            maxDate.setTime(max);
         }
 
-        int startYear = -100;
-        int endYear   = 4000;
-
-        long interval = -1;
-        if (minDate != null && maxDate != null) {
-            interval = maxDate.getTimeInMillis() - minDate.getTimeInMillis();
-        }
-        if (minDate != null) {
-            startYear = minDate.get(Calendar.YEAR);
-        }
-        if (maxDate != null) {
-            endYear = maxDate.get(Calendar.YEAR);
-        }
+        double interval = (double) maxDate.getTimeInMillis() - (double) minDate.getTimeInMillis();
+        int startYear = minDate.get(Calendar.YEAR);
+        int   endYear = maxDate.get(Calendar.YEAR);
 
         Locale locale = tag.getLocale();
 
@@ -209,7 +193,7 @@ public class DateHandler extends AbstractTypeHandler {
             case 'y':  {
                 String yearName = prefix(field.getName() + "_year");
                 String searchYear =  (String) container.find(tag.getPageContext(), yearName);
-                if (interval == -1 ||  interval > 1000L * 60 * 60 * 24 * 356 * 200) {
+                if (interval > 1000.0 * 60 * 60 * 24 * 356 * 200) {
                     buffer.append("<input class=\"mm_year\" type =\"text\" size=\"" + (pattern.length() + 1) + "\" name=\"");
                     buffer.append(yearName);
                     buffer.append("\" ");
