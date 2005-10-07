@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * JDBCProbe checks all JDBC connection every X seconds to find and
  * remove bad connections works using a callback into JDBC.
  *
- * @version $Id: JDBCProbe.java,v 1.11 2004-10-07 17:22:35 pierre Exp $
+ * @version $Id: JDBCProbe.java,v 1.12 2005-10-07 18:53:39 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class JDBCProbe implements Runnable {
@@ -46,7 +46,7 @@ public class JDBCProbe implements Runnable {
      * admin probe, try's to make a call to all the maintainance calls.
      */
     public void run () {
-        log.info("JDBC probe starting");
+        log.info("JDBC probe starting with sleep time of " +( checkTime / 1000) + " s");
         while (true) {
             try {
                 Thread.sleep(checkTime);
