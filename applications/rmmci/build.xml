@@ -167,15 +167,26 @@ Build-compiler: ${build.compiler}
                                                         could use those with any bridge, so you should want them -->
         <include name="org/mmbase/bridge/util/xml/Generator.class" /> <!--  used by rmmci bridge test cases , and generally useful-->
         <include name="org/mmbase/storage/search/*"/> <!-- those interface are bridge -->
+
+        <!-- perhaps we need _all_ of util ? -->
+        
         <include name="org/mmbase/util/functions/**" /> <!-- functions are bridge -->
-        <include name="org/mmbase/util/logging/**"/> <!-- wtf? -->
+        <include name="org/mmbase/util/logging/**"/> 
         <include name="org/mmbase/util/ResourceLoader*.class"/> <!-- wtf? -->
         <include name="org/mmbase/util/ResourceWatcher*.class"/><!-- wtf? -->
         <include name="org/mmbase/module/core/MMBaseObserver.class"/> <!-- resourcewatcher extends -->
         <include name="org/mmbase/util/LocalizedString.class"/> <!-- returned by bridge -->
         <include name="org/mmbase/util/Entry.class"/> <!-- used by LocalizedString -->
         <include name="org/mmbase/util/LocalizedEntryListFactory.class"/> <!-- -->
-        <include name="org/mmbase/util/SizeMeasurable.class"/> <!-- wtf? -->
+        <include name="org/mmbase/util/SizeMeasurable.class"/> 
+        <include name="org/mmbase/util/Casting.class"/>
+        <include name="org/mmbase/util/StringBufferWriter.class"/>
+        <include name="org/mmbase/util/Encode.class"/> <!-- general utility -->
+        <include name="org/mmbase/util/transformers/**.class"/> <!-- used by Encode -->
+        <include name="org/mmbase/util/xml/UtilReader*.class"/> <!-- used by Encode -->
+        <include name="org/mmbase/util/XMLEntityResolver"/> <!-- -->
+        <include name="org/mmbase/util/dateparser/**"/> <!-- used by Casting -->
+        <include name="org/mmbase/util/DynamicDate.class"/> <!-- used by Casting -->
         <include name="org/mmbase/datatypes/*" /><!-- datatype classes are bridge -->
         <include name="org/mmbase/storage/Storable.class"/> <!-- DataTypes uses .. -->
         <include name="org/mmbase/core/util/Fields.class"/> <!-- DataTypes uses .. -->
