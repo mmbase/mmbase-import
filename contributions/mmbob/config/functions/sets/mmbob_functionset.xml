@@ -46,6 +46,18 @@
 		</return> 
 	</function>
 
+
+	<function name="getBirthDateString">
+		<description>Get one specific posting</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getBirthDateString</method>
+		<param name="bname" type="String" description="MMBase node number of the forum" />
+		<param name="bvalue" type="String" description="MMBase node number of the posting" />
+		<return type="String"> 
+		</return> 
+	</function>
+
 	<function name="getPostings">
 		<description>List the postings within a postthread</description>
 		<type>class</type>
@@ -111,6 +123,17 @@
 	</function>
 
 
+	<function name="getForumAlias">
+		<description>get a forum based on a alias</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumAlias</method>
+		<param name="key" type="String" description="key" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
 	<function name="getForumsConfig">
 		<description>Provide configuration info of a forum</description>
 		<type>class</type>
@@ -158,6 +181,19 @@
                         <field name="headerpath" type="String" description="TODO" />
                         <field name="footerpath" type="String" description="TODO" />
                         <field name="isadministrator" type="String" description="is the posterid given a administrator of this forum ?  true/false." />
+		</return> 
+	</function>
+
+
+	<function name="getPostAreaConfig">
+		<description>Provide configuration info of a forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getPostAreaConfig</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
+		<param name="postareaid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
+		<return type="Node"> 
 		</return> 
 	</function>
 
@@ -329,6 +365,27 @@
 		</return> 
 	</function>
 
+
+	<function name="createPosterNick">
+		<description>create a new poster, creates a account and puts in the users admin system of the forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>createPosterNick</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="account" type="String" description="account name of the new poster" />
+		<param name="password" type="String" description="Password for the new poster" />
+		<param name="confirmpassword" type="String" description="Confirm Password for the new poster" />
+		<param name="nick" type="String" description="Nick name" />
+		<param name="firstname" type="String" description="Firstname of the new poster" />
+		<param name="lastname" type="String" description="Lastname of the new poster" />
+		<param name="email" type="String" description="Email address of the new poster" />
+		<param name="gender" type="String" description="Gender of the new poster" />
+		<param name="location" type="String" description="Location of the new poster" />
+		<return type="String"> 
+			<field name="feedback" type="String" description="Feedback from the create command (accountused for example)" />
+		</return> 
+	</function>
+
 	<function name="changeForum">
 		<description>Update forum information</description>
 		<type>class</type>
@@ -338,6 +395,7 @@
 		<param name="name" type="String" description="New name for this forum" />
 		<param name="newlang" type="String" description="New language of this forum" />
 		<param name="description" type="String" description="New description of this forum" />
+		<param name="activeid" type="int" description="current userid" />
 		<return type="Node"> 
 		</return> 
 	</function>
@@ -355,6 +413,26 @@
 		<param name="guestwritemodetype" type="String" description="New description of this forum" />
 		<param name="avatarsuploadenabled" type="String" description="New description of this forum" />
 		<param name="avatarsgalleryenabled" type="String" description="New description of this forum" />
+		<param name="navigationmethod" type="String" description="" />
+		<param name="alias" type="String" description="" />
+		<param name="activeid" type="int" description="current userid" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="changePostAreaConfig">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changePostAreaConfig</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postareaid" type="String" description="MMBase node number of the forum" />
+		<param name="guestreadmodetype" type="String" description="New description of this forum" />
+		<param name="guestwritemodetype" type="String" description="New description of this forum" />
+		<param name="threadstartlevel" type="String" description="New description of this forum" />
+		<param name="position" type="int" description="New description of this forum" />
+		<param name="activeid" type="int" description="current userid" />
 		<return type="Node"> 
 		</return> 
 	</function>
@@ -410,6 +488,7 @@
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="name" type="String" description="Name of the new post area" />
 		<param name="description" type="String" description="Description of the new post area" />
+		<param name="activeid" type="int" description="current userid" />
 		<return type="Node"> 
 			<field name="newpostareaid" type="int" description="MMBase node number of the new postarea" />
 		</return> 
@@ -703,6 +782,7 @@
 		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
 		<param name="name" type="String" description="Name of the postarea" />
 		<param name="description" type="String" description="Description of the post area" />
+		<param name="activeid" type="int" description="current userid" />
 		<return type="Node"> 
 		</return> 
 	</function>
@@ -782,6 +862,7 @@
 		<param name="description" type="String" description="Description of the new forum" />
 		<param name="account" type="String" description="default/first admin account name for this new forum" />
 		<param name="password" type="String" description="default/first admin password name for this new forum" />
+		<param name="email" type="String" description="default/first admin email for this new forum" />
 		<return type="Node"> 
 			<field name="forumid" type="int" description="The newly created forum id" />
 		</return> 
@@ -795,6 +876,19 @@
 		<param name="forumid" type="String" description="" />
 		<param name="posterid" type="int" description="" />
 		<param name="newfolder" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="removeFolder">
+		<description>Add a new folder</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>removeFolder</method>
+		<param name="forumid" type="String" description="" />
+		<param name="posterid" type="int" description="" />
+		<param name="foldername" type="String" description="" />
 		<return type="Node"> 
 		</return> 
 	</function>
@@ -819,6 +913,19 @@
 			<field name="lastsubject" type="String" description="Subject of the last postthread that changed in this postarea" />
 			<field name="moderators" type="String" description="Navigation line of the moderators of this postarea" />
 			<field name="isadministrator" type="String" description="Is active user a administrator true/false" />
+		</return> 
+	</function>
+
+
+	<function name="getTreePostAreas">
+		<description>Get the PostAreas of the given forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getTreePostAreas</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="String" description="MMBase node number of the active poster" />
+		<param name="tree" type="String" description="tree node">root</param>
+		<return type="NodeList"> 
 		</return> 
 	</function>
 
@@ -991,6 +1098,32 @@
 	</function>
 
 
+	<function name="setSingleSignature">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>setSingleSignature</method>
+		<param name="forumid" type="String" description="list mode" />
+		<param name="posterid" type="String" description="list mode" />
+		<param name="newbody" type="String" description="list mode" />
+		<param name="newencoding" type="String" description="list mode" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
+	<function name="getSingleSignature">
+		<description>List signatures of this poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getSingleSignature</method>
+		<param name="forumid" type="String" description="list mode" />
+		<param name="posterid" type="String" description="list mode" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
 	<function name="addSignature">
 		<description>List signatures of this poster</description>
 		<type>class</type>
@@ -1032,5 +1165,32 @@
 		<return type="Boolean"> 
 		</return> 
 	</function>
+
+
+	<function name="getProfileValues">
+		<description>List profilevalues</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getProfileValues</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
+	<function name="setProfileValue">
+		<description>set a profile value</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>setProfileValue</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<param name="pname" type="String" description="Name of profile value" />
+		<param name="pvalue" type="String" description="Value of profile value" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 
 </functionset>
