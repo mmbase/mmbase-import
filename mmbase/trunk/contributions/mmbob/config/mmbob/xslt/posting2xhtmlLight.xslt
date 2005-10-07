@@ -12,12 +12,12 @@
     <xsl:if test="$startdark=&apos;true&apos;">
     
     <table width="90%" cellspacing="1" cellpadding="3" border="0" align="center" class="list">
-      <tr><td class="listpaging">
+      <tr><td class="threadpagelistevenq">
           <span>
           <b><xsl:value-of select="@poster"/> wrote:</b></span>
       </td></tr>
       <tr>
-        <td class="listpaging"><xsl:apply-templates><xsl:with-param name="startdark">false</xsl:with-param></xsl:apply-templates></td>
+        <td class="threadpagelistevenq"><xsl:apply-templates><xsl:with-param name="startdark">false</xsl:with-param></xsl:apply-templates></td>
       </tr>
     </table>
     </xsl:if>
@@ -25,12 +25,12 @@
     <xsl:if test="$startdark=&apos;false&apos; or $startdark=&apos;&apos;">
                                                                                                                              
     <table width="90%" cellspacing="1" cellpadding="3" border="0" align="center" class="list">
-      <tr><td>
-           <span class="genmed">
+      <tr><td class="threadpagelistoddq">
+           <span>
            <b><xsl:value-of select="@poster"/> wrote:</b></span>
       </td></tr>
       <tr>
-        <td class="quote"><xsl:apply-templates><xsl:with-param name="startdark">true</xsl:with-param></xsl:apply-templates></td>
+        <td class="threadpagelistoddq"><xsl:apply-templates><xsl:with-param name="startdark">true</xsl:with-param></xsl:apply-templates></td>
       </tr>
     </table>
     </xsl:if>
