@@ -12,7 +12,7 @@
 
 
   <target name="dependent.jar" depends="community.tld,jar">
-    <ant dir="../taglib" />
+    <ant dir="../taglib" target="jar1" />
   </target>
   <target name="dependent.package" depends="dependent.jar,community.doc,package" />
 	<target name="dependent.install" depends="dependent.jar,install" />
