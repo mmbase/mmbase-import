@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.13 2005-10-06 17:42:56 michiel Exp $
+ * @version $Id: DateFormat.java,v 1.14 2005-10-07 18:47:41 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -107,7 +107,7 @@ public class DateFormat {
     public static String format(Cloud cloud, String number, String fieldName, String pattern, String timeZone) {
         try {
             Node node = cloud.getNode(number);
-            String fieldValue = node.getStringValue(fieldName);
+            String fieldValue = "" + node.getIntValue(fieldName);
             return format(fieldValue, pattern, 1000, timeZone,  cloud.getLocale());
         } catch (BridgeException e) {
             if (log.isDebugEnabled()) {
