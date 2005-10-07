@@ -15,11 +15,13 @@ import org.mmbase.core.CoreField;
 import org.mmbase.util.logging.*;
 
 /**
+ * @javadoc
+ *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.20 2005-07-14 20:19:49 nklasens Exp $
+ * @version $Id: TransactionResolver.java,v 1.21 2005-10-07 18:37:39 michiel Exp $
  */
 public class TransactionResolver {
-    private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
     private MMBase mmbase;
 
     public TransactionResolver(MMBase mmbase) {
@@ -28,7 +30,7 @@ public class TransactionResolver {
 
     public boolean resolve(Collection nodes) {
         Map numbers = new HashMap();
-        Map nnodes = new HashMap();
+        Map nnodes  = new HashMap();
         boolean success = true;
 
         // Find all unique keys and store them in a map to remap them later
@@ -37,7 +39,7 @@ public class TransactionResolver {
             MMObjectNode node = (MMObjectNode)i.next();
             MMObjectBuilder bul = mmbase.getMMObject(node.getName());
             log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
-            for (Iterator f = bul.getFields().iterator(); f.hasNext();) {
+            for (Iterator f = bul.getFields().iterator();f.hasNext();) {
                 CoreField fd = (CoreField)f.next();
                 int dbtype = fd.getType();
                 log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
@@ -56,7 +58,7 @@ public class TransactionResolver {
                                 if (key!=null) {
                                     log.debug("TransactionResolver - key,field " + field + " - " + key);
                                     // keep fieldnumber key
-                                    if (!numbers.containsKey(key)) numbers.put(key,new Integer(-1));
+                                    if (!numbers.containsKey(key)) numbers.put(key, new Integer(-1));
                                     // keep node + field to change
                                     Collection changedFields = (Collection)nnodes.get(node);
                                     if (changedFields!=null) {
@@ -69,19 +71,19 @@ public class TransactionResolver {
                                 } else {
                                     log.debug("TransactionResolver - Can't find key for field " + tmpfield + " node "+node+" (warning)");
                                 }
-                                if (field.equals("number")) node.setValue("_exists",TransactionManager.EXISTS_NO);
+                                if (field.equals("number")) node.setValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_NO);
                             } else {
                                 // Key is already set
                                 log.debug("TransactionResolver - Key for value " + field + " is already set "+ikey);
                                 // Mark it as existing
                                 if (field.equals("number")) {
                                     // test for remove here
-                                    String exists=node.getStringValue("_exists");
+                                    String exists=node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
                                     if (exists == null || !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
-                                        node.setValue("_exists",TransactionManager.EXISTS_YES);
+                                        node.setValue(MMObjectBuilder.TMP_FIELD_EXISTS,TransactionManager.EXISTS_YES);
                                     }
-                                    String key=node.getStringValue(tmpfield);
-                                    if (key!=null) {
+                                    String key = node.getStringValue(tmpfield);
+                                    if (key != null) {
                                         numbers.put( key, new Integer(ikey));
                                     } else {
                                         log.debug("TransactionResolver - Can't find key for field "+tmpfield+" node "+node);
