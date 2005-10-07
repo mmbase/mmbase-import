@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: UserBuilder.java,v 1.7 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: UserBuilder.java,v 1.8 2005-10-07 18:55:17 michiel Exp $
  */
 public class UserBuilder extends MMObjectBuilder {
     private static Logger log=Logging.getLoggerInstance(UserBuilder.class.getName());
@@ -43,20 +43,20 @@ public class UserBuilder extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
-    public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
+    public boolean setValue(MMObjectNode node, String fieldname, Object originalValue) {
         // the field with the name bar may not be changed.....
         if(fieldname.equals("username")) {
-            Object newValue = node.values.get(fieldname);
-            if(originalValue!=null && !originalValue.equals(newValue)) {
+            Object newValue = node.getValues().get(fieldname);
+            if(originalValue != null && !originalValue.equals(newValue)) {
                 // restore the original value...
-                node.values.put(fieldname,originalValue);
+                node.setValue(fieldname, originalValue);
                 return false;
             }
         } else if(fieldname.equals("password")) {
-            Object newValue = node.values.get(fieldname);
+            Object newValue = node.getValues().get(fieldname);
             if(originalValue!=null && !originalValue.equals(newValue)) {
                 // encode the new value...
-                node.values.put(fieldname,encode((String)newValue));
+                node.setValue(fieldname, encode((String)newValue));
             }
         }
         return true;
