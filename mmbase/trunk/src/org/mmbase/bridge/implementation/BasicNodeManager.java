@@ -39,12 +39,15 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.105 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.106 2005-10-07 18:45:42 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static final  Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
 
+    /**
+     * @javadoc
+     */
     private long internalVersion = -1;
 
     // builder on which the type is based
@@ -143,6 +146,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     /**
      * Syncs the nodemanger with the builder.
      * Loads the fieldlist from the associated builder if needed.
+     * @since MMBase-1.8
      */
     synchronized private void sync() {
         long builderVersion = builder.getInternalVersion();
@@ -164,6 +168,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     /**
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
+     * @since MMBase-1.8
      */
     protected Map getFieldTypes() {
         sync();
@@ -181,15 +186,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), "" + id);
         // odd this MMObjectNode does _not_ have the right builder?!
 
-        Iterator i = node.parent.getFields().iterator();
-        while(i.hasNext()) {
-            Field f = (Field) i.next();
-            Object def = f.getDataType().getDefaultValue();
-            if (def != null) {
-                node.setValue(f.getName(), def);
-            }
-        }
-
+        // XXX this should somehow be the default value of the owner field!!
         // set the owner to the owner field as indicated by the user
         node.setValue("owner", cloud.getUser().getOwnerField());
 
@@ -295,7 +292,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public boolean hasField(String fieldName) {
-        return getFieldTypes().get(fieldName) != null;
+        return builder.hasField(fieldName);
     }
 
 
