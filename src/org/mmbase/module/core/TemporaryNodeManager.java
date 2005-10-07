@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.40 2005-09-14 11:36:51 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.41 2005-10-07 18:28:25 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -43,14 +43,15 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
     /**
      * @javadoc
      */
-    public String createTmpNode(String type,String owner,String key) {
+    public String createTmpNode(String type, String owner, String key) {
         if (log.isDebugEnabled()) {
             log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
         }
-        if (owner.length()>12) owner=owner.substring(0,12);
-        MMObjectBuilder builder=mmbase.getMMObject(type);
+        // WTF!?
+        //        if (owner.length() > 12) owner = owner.substring(0, 12);
+        MMObjectBuilder builder = mmbase.getMMObject(type);
         MMObjectNode node;
-        if (builder !=null) {
+        if (builder != null) {
             node = builder.getNewTmpNode(owner,getTmpKey(owner,key));
             if (log.isDebugEnabled()) {
                 log.debug("New tmpnode " + node);
@@ -69,19 +70,19 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         int rnumber;
 
         // decode type to a builder using reldef
-        reldef=mmbase.getRelDef();
-        rnumber=reldef.getNumberByName(role,true);
+        reldef = mmbase.getRelDef();
+        rnumber = reldef.getNumberByName(role, true);
         if(rnumber==-1) {
-            throw new Exception("role "+role+" is not a proper relation");
+            throw new Exception("role " + role + " is not a proper relation");
         }
         MMObjectBuilder builder = reldef.getBuilder(reldef.getNode(rnumber));
         String bulname = builder.getTableName();
 
         // Create node
-        createTmpNode(bulname,owner,key);
-        setObjectField(owner,key,"_snumber",getTmpKey(owner,source));
-        setObjectField(owner,key,"_dnumber",getTmpKey(owner,destination));
-        setObjectField(owner,key,"rnumber",""+rnumber);
+        createTmpNode(bulname, owner, key);
+        setObjectField(owner, key, "_snumber", getTmpKey(owner, source));
+        setObjectField(owner, key, "_dnumber", getTmpKey(owner, destination));
+        setObjectField(owner, key, "rnumber", "" + rnumber);
         return key;
     }
 
@@ -89,13 +90,13 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String createTmpAlias(String name,String owner,String key, String destination) {
-        MMObjectBuilder builder=mmbase.getOAlias();
-        String bulname=builder.getTableName();
+        MMObjectBuilder builder = mmbase.getOAlias();
+        String bulname = builder.getTableName();
 
         // Create alias node
-        createTmpNode(bulname,owner,key);
-        setObjectField(owner,key,"_destination",getTmpKey(owner,destination));
-        setObjectField(owner,key,"name",name);
+        createTmpNode(bulname, owner, key);
+        setObjectField(owner, key, "_destination", getTmpKey(owner, destination));
+        setObjectField(owner, key, "name", name);
         return key;
     }
 
@@ -103,8 +104,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String deleteTmpNode(String owner,String key) {
-        MMObjectBuilder b=mmbase.getMMObject("typedef");
-        b.removeTmpNode(getTmpKey(owner,key));
+        MMObjectBuilder b = mmbase.getMMObject("typedef");
+        b.removeTmpNode(getTmpKey(owner, key));
         log.debug("delete node " + getTmpKey(owner,key));
         return key;
     }
@@ -117,10 +118,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         MMObjectNode node;
         node=bul.getTmpNode(getTmpKey(owner,key));
         // fallback to normal nodes
-        if (node==null) {
+        if (node == null) {
             log.debug("getNode tmp not node found " + key);
-            node=bul.getNode(key);
-            if(node==null) throw new RuntimeException("Node not found !! (key = '" + key + "')");
+            node = bul.getNode(key);
+            if(node == null) throw new RuntimeException("Node not found !! (key = '" + key + "')");
         }
         return node;
     }
@@ -170,7 +171,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         try {
                             int i = -1;
                             if (!stringValue.equals("")) i = Integer.parseInt(stringValue);
-                            node.setValue(field,i);
+                            node.setValue(field, i);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
                         }
