@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.11 2005-03-01 10:36:52 pierre Exp $
+ * @version $Id: SendMail.java,v 1.12 2005-10-07 19:00:30 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -179,7 +179,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             log.debug("JMSendMail done.");
             return true;
         } catch (MessagingException e) {
-            log.error("JMSendMail failure: " + e.getMessage());
+            log.error("JMSendMail failure: " + e.getMessage() + "from: " + from + " to: " + to);
             log.debug(Logging.stackTrace(e));
         }
         return false;
