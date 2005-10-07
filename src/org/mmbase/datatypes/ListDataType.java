@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.10 2005-10-07 00:16:34 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.11 2005-10-07 18:57:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
@@ -108,6 +108,9 @@ public class ListDataType extends AbstractLengthDataType {
         }
 
         protected Collection validate(Collection errors, Object v, Node node, Field field) {
+            if (! enforce(node, field)) {
+                return errors;
+            }
             DataType itemDataType = getItemDataType();
             if (itemDataType == Constants.DATATYPE_UNKNOWN) return errors;
             List listValue = Casting.toList(v);
@@ -119,7 +122,7 @@ public class ListDataType extends AbstractLengthDataType {
                         errors.addAll(col);
                     }
                 } catch (ClassCastException cce) {
-                    errors = ListDataType.this.addError(errors, this, v);
+                    errors = addError(errors, v);
                 }
             }
             return errors;

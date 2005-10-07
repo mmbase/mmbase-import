@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.25 2005-10-07 00:16:34 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.26 2005-10-07 18:57:06 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -283,14 +283,27 @@ public class DataTypeDefinition {
         }
     }
 
-    protected void setConstraintData(DataType.ValueConstraint property, Element element) {
-        // set fixed
+    protected void setConstraintData(DataType.ValueConstraint constraint, Element element) {
         if (DataTypeXml.hasAttribute(element, "fixed")) {
             boolean isFixed = Boolean.valueOf(DataTypeXml.getAttribute(element, "fixed")).booleanValue();
-            property.setFixed(isFixed);
+            constraint.setFixed(isFixed);
         }
-        LocalizedString descriptions = property.getErrorDescription();
-        property.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions));
+        if (DataTypeXml.hasAttribute(element, "enforce")) {
+            String enforce = DataTypeXml.getAttribute(element, "enforce").toLowerCase();
+            if (enforce.equals("always")) {
+                constraint.setEnforceStrength(DataType.ENFORCE_ALWAYS);
+            } else if (enforce.equals("onchange")) {
+                constraint.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
+            } else if (enforce.equals("oncreate")) {
+                constraint.setEnforceStrength(DataType.ENFORCE_ONCREATE);
+            } else if (enforce.equals("never")) {
+                constraint.setEnforceStrength(DataType.ENFORCE_NEVER);
+            } else {
+                log.warn("Unrecognised value for 'enforce' attribute '" + enforce + "' in " + XMLWriter.write(element, true, true));
+            }
+        }
+        LocalizedString descriptions = constraint.getErrorDescription();
+        constraint.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions));
     }
 
     /**
