@@ -41,7 +41,7 @@ import org.mmbase.util.xml.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.121 2005-10-02 16:26:46 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.122 2005-10-07 18:51:35 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -766,7 +766,7 @@ public class MMAdmin extends ProcessorModule {
                                 if (localnumber == newNode.getNumber()) {
 
                                     // determine if there were NODE fields, which need special treatment later.
-                                    Collection fields = newNode.parent.getFields();
+                                    Collection fields = newNode.getBuilder().getFields();
                                     Iterator i = fields.iterator();
                                     while (i.hasNext()) {
                                         CoreField field = (CoreField) i.next();
@@ -777,7 +777,7 @@ public class MMAdmin extends ProcessorModule {
                                             && ! field.getName().equals("number")
                                             && ! field.isNotNull()) {
 
-                                            newNode.values.put("__exportsource", exportsource);
+                                            newNode.storeValue("__exportsource", exportsource);
                                             nodeFieldNodes.add(newNode);
                                             break;
                                         }
@@ -802,11 +802,11 @@ public class MMAdmin extends ProcessorModule {
         Iterator i = nodeFieldNodes.iterator();
         while (i.hasNext()) {
             MMObjectNode importedNode = (MMObjectNode) i.next();
-            String exportsource = (String) importedNode.values.get("__exportsource");
+            String exportsource = (String) importedNode.getValues().get("__exportsource");
             // clean it up
-            importedNode.values.remove("__exportsource");
+            importedNode.storeValue("__exportsource", null); // hack to remove it.
 
-            Collection fields = importedNode.parent.getFields();
+            Collection fields = importedNode.getBuilder().getFields();
             Iterator j = fields.iterator();
             while (j.hasNext()) {
                 CoreField def = (CoreField) j.next();
@@ -831,7 +831,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc !!!
      */
     private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newNode, String exportsource, ApplicationResult result) {
-        MMObjectBuilder bul = newNode.parent;
+        MMObjectBuilder bul = newNode.getBuilder();
         if (bul != null) {
             Collection vec = bul.getFields();
             Constraint constraint = null;
@@ -921,13 +921,13 @@ public class MMAdmin extends ProcessorModule {
 
       int exportnumber;
       try {
-          exportnumber = Integer.parseInt((String) importedNode.values.get("__" + fieldname));
+          exportnumber = Integer.parseInt((String) importedNode.getValues().get("__" + fieldname));
       } catch (Exception e) {
           exportnumber = -1;
       }
 
       // clean it up (don't know if this is necessary, but don't risk anything!)
-      importedNode.values.remove("__" + fieldname);
+      importedNode.storeValue("__" + fieldname, null);
 
       int localNumber = -1;
       String query = "where exportnumber=" + exportnumber + " and exportsource='" + exportsource + "'";
@@ -1027,7 +1027,7 @@ public class MMAdmin extends ProcessorModule {
                                         if (localnumber == newNode.getNumber()) {
 
                                             // determine if there were NODE fields, which need special treatment later.
-                                            Collection fields = newNode.parent.getFields();
+                                            Collection fields = newNode.getBuilder().getFields();
                                             Iterator i = fields.iterator();
                                             while (i.hasNext()) {
                                                 CoreField def = (CoreField) i.next();
@@ -1037,8 +1037,7 @@ public class MMAdmin extends ProcessorModule {
                                                 if (def.getType() == Field.TYPE_NODE
                                                     && ! def.getName().equals("number")
                                                     && ! def.isRequired()) {
-
-                                                    newNode.values.put("__exportsource", exportsource);
+                                                    newNode.storeValue("__exportsource", exportsource);
                                                     nodeFieldNodes.add(newNode);
                                                     break;
                                                 }
@@ -1112,8 +1111,9 @@ public class MMAdmin extends ProcessorModule {
             String from = (String)bh.get("from");
             String to = (String)bh.get("to");
             String type = (String)bh.get("type");
-            if (!installTypeRel(from, to, type, -1, result))
+            if (!installTypeRel(from, to, type, -1, result)) {
                 return false;
+            }
         }
         return true;
     }
