@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.8 2005-10-01 20:11:03 michiel Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.9 2005-10-07 18:50:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -56,23 +56,23 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
-            case FieldValueDateConstraint.CENTURY:
-                datePartFunction = "CENTURY";
-                break;
-            case FieldValueDateConstraint.QUARTER:
-                datePartFunction = "QUARTER";
-                break;
-            case FieldValueDateConstraint.WEEK:
-                datePartFunction = "WEEK";
-                break;
-            case FieldValueDateConstraint.DAY_OF_YEAR:
-                datePartFunction = "DAYOFYEAR";
-                break;
-            case FieldValueDateConstraint.DAY_OF_WEEK:
-                datePartFunction = "DAYOFWEEK";
-                break;
-            default:
-                log.debug("Unknown datePart " + datePart);
+        case FieldValueDateConstraint.CENTURY:
+            datePartFunction = "CENTURY";
+            break;
+        case FieldValueDateConstraint.QUARTER:
+            datePartFunction = "QUARTER";
+            break;
+        case FieldValueDateConstraint.WEEK:
+            datePartFunction = "WEEK";
+            break;
+        case FieldValueDateConstraint.DAY_OF_YEAR:
+            datePartFunction = "DAYOFYEAR";
+            break;
+        case FieldValueDateConstraint.DAY_OF_WEEK:
+            datePartFunction = "DAYOFWEEK";
+            break;
+        default:
+            log.debug("Unknown datePart " + datePart);
         }
         if (datePartFunction != null) {
             sb.append(datePartFunction);
