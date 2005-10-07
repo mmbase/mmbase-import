@@ -17,14 +17,13 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: ListDataType.java,v 1.9 2005-10-06 23:02:03 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: ListDataType.java,v 1.10 2005-10-07 00:16:34 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
 
-    public static final DataType CONSTRAINT_ITEMDATATYPE_DEFAULT = null;
-    public static final String CONSTRAINT_ITEMDATATYPE = "itemDataType";
-    protected DataType.ValueConstraint itemDataTypeConstraint;
+    protected ItemConstraint itemConstraint = new ItemConstraint(Constants.DATATYPE_UNKNOWN);
 
     /**
      * Constructor for List field.
@@ -38,7 +37,7 @@ public class ListDataType extends AbstractLengthDataType {
         super.inherit(origin);
         if (origin instanceof ListDataType) {
             ListDataType dataType = (ListDataType)origin;
-            itemDataTypeConstraint = new AbstractValueConstraint(dataType.getItemDataTypeConstraint());
+            itemConstraint = new ItemConstraint(dataType.itemConstraint);
          }
     }
 
@@ -51,11 +50,7 @@ public class ListDataType extends AbstractLengthDataType {
      * @return the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
     public DataType getItemDataType() {
-        if (itemDataTypeConstraint == null) {
-            return CONSTRAINT_ITEMDATATYPE_DEFAULT;
-        } else {
-            return (DataType)itemDataTypeConstraint.getValue();
-        }
+        return itemConstraint.getItemDataType();
     }
 
     /**
@@ -63,8 +58,7 @@ public class ListDataType extends AbstractLengthDataType {
      * @return the property as a {@link DataType.ValueConstraint}
      */
     public DataType.ValueConstraint getItemDataTypeConstraint() {
-        if (itemDataTypeConstraint == null) itemDataTypeConstraint = new AbstractValueConstraint(CONSTRAINT_ITEMDATATYPE, CONSTRAINT_ITEMDATATYPE_DEFAULT);
-        return itemDataTypeConstraint;
+        return itemConstraint;
     }
 
     /**
@@ -72,35 +66,65 @@ public class ListDataType extends AbstractLengthDataType {
      * @param value the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
     public DataType.ValueConstraint setItemDataType(DataType value) {
-        return getItemDataTypeConstraint().setValue(value);
+        return itemConstraint.setValue(value);
     }
 
     public Collection validate(Object value, Node node, Field field) {
         Collection errors = super.validate(value, node, field);
-        if (value != null) {
-            List listValue = Casting.toList(value);
-            // test list item values
-            DataType itemDataType = getItemDataType();
-            if (itemDataType != null) {
-                for (Iterator i = listValue.iterator(); i.hasNext(); ) {
-                    try {
-                        Collection col = itemDataType.validate(i.next());
-                        if (col != VALID) {
-                            if (errors == VALID) errors = new ArrayList();
-                            errors.addAll(col);
-                        }
-                    } catch (ClassCastException cce) {
-                        errors = addError(errors, getItemDataTypeConstraint(), value);
-                    }
-                }
-            }
-        }
+        errors = itemConstraint.validate(errors, value, node, field);
         return errors;
     }
 
-    public String toString() {
-        StringBuffer buf = new StringBuffer(super.toString());
-        return buf.toString();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
+        buf.append("items: " + getItemDataType());
+        return buf;
+    }
+
+    protected class ItemConstraint extends AbstractValueConstraint {
+        ItemConstraint(ItemConstraint me) {
+            super(me);
+        }
+        ItemConstraint(DataType v) {
+            super("itemDataType", v);
+        }
+        DataType getItemDataType() {
+            return (DataType) value;
+        }
+
+        public boolean valid(Object v, Node node, Field field) {
+            DataType itemDataType = getItemDataType();
+            if (itemDataType == Constants.DATATYPE_UNKNOWN) return true;
+            List listValue = Casting.toList(v);
+            for (Iterator i = listValue.iterator(); i.hasNext(); ) {
+                try {
+                    Collection col = itemDataType.validate(i.next());
+                    if (col != VALID) return false;
+                } catch (ClassCastException cce) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        protected Collection validate(Collection errors, Object v, Node node, Field field) {
+            DataType itemDataType = getItemDataType();
+            if (itemDataType == Constants.DATATYPE_UNKNOWN) return errors;
+            List listValue = Casting.toList(v);
+            for (Iterator i = listValue.iterator(); i.hasNext(); ) {
+                Collection col = itemDataType.validate(i.next());
+                try {
+                    if (col != VALID) {
+                        if (errors == VALID) errors = new ArrayList();
+                        errors.addAll(col);
+                    }
+                } catch (ClassCastException cce) {
+                    errors = ListDataType.this.addError(errors, this, v);
+                }
+            }
+            return errors;
+        }
+
     }
 
 }

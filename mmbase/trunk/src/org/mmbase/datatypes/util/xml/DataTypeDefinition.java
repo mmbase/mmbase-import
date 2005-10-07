@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.24 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.25 2005-10-07 00:16:34 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -121,7 +121,7 @@ public class DataTypeDefinition {
         }
         if (dt == null) { // either it had no id, or it did not exist yet.
             if (baseDataType == null) {
-                log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + XMLWriter.write(dataTypeElement, true));
+                log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + XMLWriter.write(dataTypeElement, true, true));
                 baseDataType = Constants.DATATYPE_UNKNOWN;
             }
             if (id.equals("")) {
@@ -203,7 +203,7 @@ public class DataTypeDefinition {
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
-                    log.error("" + XMLWriter.write(childElement, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that");
+                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that");
                 }
             }
         }
