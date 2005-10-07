@@ -39,6 +39,8 @@ public class ForumsConfig {
    private String logoutmodetype="open";
    private String guestreadmodetype="open";
    private String guestwritemodetype="open";
+   private String threadstartlevel="all";
+   private String navigationmethod="list";
    private boolean replyoneachpage = false;
    private int preloadchangedthreadstime = 0;
    private int swapoutunusedthreadstime = 0;
@@ -89,12 +91,12 @@ public class ForumsConfig {
                         if (n3 != null) {
                             id = n3.getNodeValue();
                         }
-// decode account
+			// decode account
                         n3 = nm.getNamedItem("account");
                         if (n3 != null) {
                             account = n3.getNodeValue();
                         }
-// decode password
+			// decode password
                         n3 = nm.getNamedItem("password");
                         if (n3 != null) {
                             password = n3.getNodeValue();
@@ -197,6 +199,7 @@ public class ForumsConfig {
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
                         guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
+                        threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
 
                         contactInfoEnabled = getAttributeValue(reader,n,"contactinfo","enable");
                         smileysEnabled = getAttributeValue(reader,n,"smileys","enable");
@@ -464,6 +467,10 @@ public class ForumsConfig {
         return guestreadmodetype;
    }
 
+   public String getThreadStartLevel() {
+        return threadstartlevel;
+   }
+
    public void setGuestReadModeType(String mode) {
 	guestreadmodetype = mode;
    }
@@ -616,24 +623,48 @@ public class ForumsConfig {
 	body += "\t\t<postingsoverflowthreadpage value=\""+getPostingsOverflowThreadpage()+"\"/>\n\n";
 	body += "\t\t<speedposttime value=\""+getSpeedPostTime()+"\"/>\n\n";
 	body += "\t\t<replyoneachpage value=\""+getReplyOnEachPage()+"\"/>\n\n";
+	body += "\t\t <navigation method=\""+getNavigationMethod()+"\"/>\n\n";
 
+	log.info("SAVE 1");
 	// now loop all the forums
         for (Enumeration forums = ForumManager.getForums(); forums.hasMoreElements();) {
              Forum forum = (Forum) forums.nextElement();
-	     body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\">\n";
+	     if (forum.getAlias()!=null) {
+	     	body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\" alias=\""+forum.getAlias()+"\">\n";
+	     } else {
+	     	body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\">\n";
+	     }
 	     body += "\t\t\t<loginmode type=\""+forum.getLoginModeType()+"\" />\n";
 	     body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" />\n";
     	     body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" />\n";
 	     body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
+	
+		log.info("SAVE 2");
+	     Iterator pi=forum.getProfileDefs();
+		log.info("SAVE 2b");
+	     if (pi!=null) {
+	     while (pi.hasNext()) {
+		   ProfileEntryDef pd = (ProfileEntryDef)pi.next();
+			log.info("SAVE 2c");
+	     	   body += "\t\t\t<profileentry name=\""+pd.getName()+"\" guiname=\""+pd.getGuiName()+"\" guipos=\""+pd.getGuiPos()+"\" edit=\""+pd.getEdit()+"\" type=\""+pd.getType()+"\" size=\""+pd.getSize()+"\" external=\""+pd.getExternal()+"\" externalname=\""+pd.getExternalName()+"\" />\n";
+			log.info("SAVE 2d");
+	     }
+	     }
+	log.info("SAVE 3");
 	     body += "\t\t\t<avatars>\n\n";
 	     body += "\t\t\t\t<upload enable=\""+forum.getAvatarsUploadEnabled()+"\"/>\n";
 	     body += "\t\t\t\t<gallery enable=\""+forum.getAvatarsGalleryEnabled()+"\"/>\n";
 	     body += "\t\t\t</avatars>\n\n";
+	     body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\"/>\n\n";
+		log.info("SAVE 4");
              for (Enumeration postareas = forum.getPostAreas(); postareas.hasMoreElements();) {
              	PostArea postarea = (PostArea) postareas.nextElement();
-	        body += "\t\t\t<postarea id=\""+postarea.getName()+"\" language=\"nl\">\n";
+	        body += "\t\t\t<postarea id=\""+postarea.getName()+"\" language=\"nl\" pos=\""+postarea.getPos()+"\">\n";
     	        body += "\t\t\t\t<guestreadmode type=\""+postarea.getGuestReadModeType()+"\" />\n";
 	        body += "\t\t\t\t<guestwritemode type=\""+postarea.getGuestWriteModeType()+"\" />\n\n";
+		if (postarea.getThreadStartLevel()!=null) {
+	        	body += "\t\t\t\t<threadstart level=\""+postarea.getThreadStartLevel()+"\" />\n\n";
+		}
 		body += "\t\t\t</postarea>\n";
 	     }
 	     body += "\t\t</forum>\n\n";
@@ -641,6 +672,7 @@ public class ForumsConfig {
 	body += "\t</forums>\n";
 	body += "</mmbobconfig>\n";
 	saveFile(filename,body);
+	log.info("SAVE 10");
     }
 
 
@@ -681,6 +713,7 @@ public class ForumsConfig {
     	checkTypeRel("postareas", "forumrules", "related",-1);
     	checkTypeRel("posters", "remotehosts", "related",-1);
     	checkTypeRel("postthreads", "threadobservers", "related",-1);
+    	checkTypeRel("posters", "profileinfo", "related",-1);
     }
 
 
@@ -814,6 +847,10 @@ public class ForumsConfig {
 
    public int getPostingsOverflowThreadpage() {
 	return postingsoverflowthreadpage;
+   }
+
+   public String getNavigationMethod() {
+	return navigationmethod;
    }
 
    public String getEmailtext(String role) {

@@ -31,13 +31,20 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class PostAreaConfig {
-   private static Logger log = Logging.getLoggerInstance(ForumManager.class);
+   private static Logger log = Logging.getLoggerInstance(PostAreaConfig.class);
    private String defaultaccount, defaultpassword;
    private String id="unkown";
-   private String guestreadmodetype,guestwritemodetype;
+   private int pos = 0;
+   private String guestreadmodetype,guestwritemodetype,threadstartlevel;
 
     public PostAreaConfig(XMLBasicReader reader,Element n) {
 	decodeConfig(reader,n);
+    }
+
+    public PostAreaConfig(String id) {
+	defaultaccount = "admin";
+	defaultpassword = "admin2k";
+	this.id = id;
     }
 
     private boolean decodeConfig(XMLBasicReader reader,Element n) {
@@ -49,6 +56,14 @@ public class PostAreaConfig {
                         org.w3c.dom.Node n3 = nm.getNamedItem("id");
                         if (n3 != null) {
                             id = n3.getNodeValue();
+                        }
+// decode pos
+                        n3 = nm.getNamedItem("pos");
+                        if (n3 != null) {
+			    try {
+                            	pos = Integer.parseInt(n3.getNodeValue());
+			    } catch (Exception e) {
+			    }
                         }
 // decode account
                         n3 = nm.getNamedItem("account");
@@ -92,58 +107,10 @@ public class PostAreaConfig {
 
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
                         guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
-
-			/*
-                        for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
-                                   	Element n2=(Element)ns2.nextElement();
-                                        	nm=n2.getAttributes();
-                                		if (nm!=null) {
-							String object=null;
-							String extern=null;
-							String field=null;
-							String externfield=null;
-							String key=null;
-							String externkey=null;
-                                        		n3=nm.getNamedItem("object");
-                                        		if (n3!=null) {
-                                                		object=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("extern");
-                                        		if (n3!=null) {
-                                                		extern=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("field");
-                                        		if (n3!=null) {
-                                                		field=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("externfield");
-                                        		if (n3!=null) {
-                                                		externfield=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("key");
-                                        		if (n3!=null) {
-                                                		key=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("externkey");
-                                        		if (n3!=null) {
-                                                		externkey=n3.getNodeValue();
-                                        		}
-							id="default."+object+"."+field;
-							FieldAlias fa=new FieldAlias(id);
-							fa.setObject(object);
-							fa.setExtern(extern);
-							fa.setField(field);
-							fa.setExternField(externfield);
-							fa.setKey(key);
-							fa.setExternKey(externkey);
-							fieldaliases.put(id,fa);
-						}
-					}
-					*/
-
+                        threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
                     }
 		return true;
-	}
+   }
   
    public String getId() {
 	return id;
@@ -172,5 +139,30 @@ public class PostAreaConfig {
         return guestwritemodetype;
    }
 
+   public String getThreadStartLevel() {
+	// this should be fixed by asking the parent
+	if (threadstartlevel==null || threadstartlevel.equals("default")) return "";
+        return threadstartlevel;
+   }
+
+   public void setGuestReadModeType(String guestreadmodetype) {
+       this.guestreadmodetype = guestreadmodetype;
+   }
+
+   public void setGuestWriteModeType(String guestwritemodetype) {
+       this.guestwritemodetype = guestwritemodetype;
+   }
+
+   public void setThreadStartLevel(String threadstartlevel) {
+       this.threadstartlevel = threadstartlevel;
+   }
+
+   public int getPos() {
+	return pos;
+   }
+
+   public void setPos(int pos) {
+	this.pos = pos;	
+   }
 
 }

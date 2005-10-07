@@ -130,6 +130,12 @@ public class PostArea {
         return name;
     }
 
+    public String getShortName() {
+	int pos = name.lastIndexOf('/');
+	if (pos!=-1) return name.substring(pos+1);
+        return name;
+    }
+
     /**
      * get the description of the postarea
      * @return postareadescription
@@ -397,11 +403,11 @@ public class PostArea {
         Enumeration e = parent.getPosters();
         while (e.hasMoreElements()) {
               Poster p = (Poster) e.nextElement();
-	      if (!isModerator(p.getAccount())) {
-                 String account =  p.getAccount().toLowerCase();
+	      if (!isModerator(p.getNick())) {
+                 String nick =  p.getNick().toLowerCase();
               	 String firstname = p.getFirstName().toLowerCase();
                  String lastname = p.getLastName().toLowerCase();
-                 if (searchkey.equals("*") || account.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1) {
+                 if (searchkey.equals("*") || nick.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1) {
 			result.add(p);	
 			if (result.size()>49) {
 				return result.elements();
@@ -417,11 +423,11 @@ public class PostArea {
      * @param account accountname/nick to be evaluated
      * @return <code>true</code> if the account is moderator. Also <code>true</code> if the account is administrator of the parent forum.
      */
-    public boolean isModerator(String account) {
+    public boolean isModerator(String nick) {
         // check if he a admin then asign him
         // the moderators role too
-        if (parent.isAdministrator(account)) return true;
-        return moderators.containsKey(account);
+        if (parent.isAdministrator(nick)) return true;
+        return moderators.containsKey(nick);
     }
 
     /**
@@ -430,7 +436,7 @@ public class PostArea {
      * @return Always <code>false</code>
      */
     public boolean removeModerator(Poster mp) {
-        if (isModerator(mp.getAccount())) {
+        if (isModerator(mp.getNick())) {
             Node node = ForumManager.getCloud().getNode(id);
             RelationIterator i = node.getRelations("rolerel", "posters").relationIterator();
             while (i.hasNext()) {
@@ -445,7 +451,7 @@ public class PostArea {
                     }
                     if (p != null && p.getNumber() == mp.getId()) {
                         rel.delete();
-                        moderators.remove(mp.getAccount());
+                        moderators.remove(mp.getNick());
                         moderatorsline = null;
                     }
                 }
@@ -460,14 +466,14 @@ public class PostArea {
      * @return <code>true</code> if the action succeeded
      */
     public boolean addModerator(Poster mp) {
-        if (isModerator(mp.getAccount())) return true;
+        if (isModerator(mp.getNick())) return true;
         RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "posters", "rolerel");
         if (rm != null) {
             Node node = ForumManager.getCloud().getNode(id);
             Node rel = rm.createRelation(node, mp.getNode());
             rel.setStringValue("role", "moderator");
             rel.commit();
-            moderators.put(mp.getAccount(), mp);
+            moderators.put(mp.getNick(), mp);
             moderatorsline = null;
         } else {
             log.error("Forum can't load relation nodemanager postareas/posters/rolerel");
@@ -489,9 +495,9 @@ public class PostArea {
             Poster p = (Poster) e.nextElement();
             if (!moderatorsline.equals("")) moderatorsline += ",";
             if (baseurl.equals("")) {
-                moderatorsline += p.getAccount();
+                moderatorsline += p.getNick();
             } else {
-                moderatorsline += "<a href=\"" + baseurl + "?forumid=" + parent.getId() + "&postareaid=" + getId() + "&posterid=" + p.getId() + "\">" + p.getAccount() + "</a>";
+                moderatorsline += "<a href=\"" + baseurl + "?forumid=" + parent.getId() + "&postareaid=" + getId() + "&posterid=" + p.getId() + "\">" + p.getNick() + "</a>";
             }
         }
         return moderatorsline;
@@ -604,7 +610,7 @@ public class PostArea {
         if (nm != null) {
             Node ptnode = nm.createNode();
             ptnode.setStringValue("subject", subject);
-            ptnode.setStringValue("creator", poster.getAccount());
+            ptnode.setStringValue("creator", poster.getNick());
             ptnode.setStringValue("state", "normal");
             ptnode.setStringValue("mood", mood);
             ptnode.setStringValue("ttype", "post");
@@ -760,7 +766,7 @@ public class PostArea {
                 String role = rel.getStringValue("role");
                 if (role.equals("moderator")) {
                     Poster po = parent.getPoster(p.getNumber());
-                    moderators.put(po.getAccount(), po);
+                    moderators.put(po.getNick(), po);
                 }
             }
     }
@@ -882,6 +888,17 @@ public class PostArea {
         return parent.getGuestWriteModeType();
    }
 
+
+   public String getThreadStartLevel() {
+	if (config != null) {
+		String tmp = config.getThreadStartLevel();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return parent.getThreadStartLevel();
+   }
+
    public String filterContent(String body) {
 	if (filterwords!=null) {
 		return parent.filterContent(filterwords,body);
@@ -910,5 +927,39 @@ public class PostArea {
 	}
 	return results;
     }
+
+
+   public void setGuestReadModeType(String guestreadmodetype) {
+	if (config==null) checkConfig();
+	config.setGuestReadModeType(guestreadmodetype);
+   }
+
+   public void setGuestWriteModeType(String guestwritemodetype) {
+	if (config==null) checkConfig();
+	config.setGuestWriteModeType(guestwritemodetype);
+   }
+
+   public void setThreadStartLevel(String threadstartlevel) {
+	if (config==null) checkConfig();
+	config.setThreadStartLevel(threadstartlevel);
+   }
+
+   public void setPos(int pos) {
+	if (config==null) checkConfig();
+	config.setPos(pos);
+   }
+
+   public int getPos() {
+	if (config==null) return 0;
+	return config.getPos();
+   }
+
+
+   private boolean checkConfig() {
+        if (config==null) {
+		config = parent.getConfig().addPostAreaConfig(getName());
+        }
+        return true;
+   }
 
 }

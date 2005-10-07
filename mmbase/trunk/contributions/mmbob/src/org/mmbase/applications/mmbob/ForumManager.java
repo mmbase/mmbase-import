@@ -137,6 +137,18 @@ public class ForumManager {
         return null;
     }
 
+
+    public static Forum getForumByAlias(String key) {
+       Enumeration e = forums.elements();
+       while (e.hasMoreElements()) {
+		Forum f = (Forum)e.nextElement();
+		if (f.getAlias()!=null && key.indexOf(f.getAlias())!=-1) {
+			return f;
+		}
+       }
+       return null;
+    }
+
     /**
      * Remove a forum by it's MMBase node number
      *
@@ -204,7 +216,7 @@ public class ForumManager {
      * @param password password of the creator of the new forum
      * @return The MMBase node number of the newly created forum node
      */
-    public static int newForum(String name, String language, String description, String account, String password) {
+    public static int newForum(String name, String language, String description, String account, String password,String email) {
         org.mmbase.bridge.Node node = forumnodemanager.createNode();
         node.setStringValue("name", name);
         node.setStringValue("language", language);
@@ -224,6 +236,9 @@ public class ForumManager {
         forums.put(new Integer(f.getId()), f);
 
         Poster p = f.createPoster(account, password);
+	
+	p.setEmail(email);
+	p.savePoster();
 
         f.addAdministrator(p);
         return node.getNumber();
@@ -422,6 +437,10 @@ public class ForumManager {
        return config.getGuestReadModeType();
    }
 
+   public static String getThreadStartLevel() {
+       return config.getThreadStartLevel();
+   }
+
    public static void setGuestReadModeType(String mode) {
        config.setGuestReadModeType(mode);
    }
@@ -445,6 +464,7 @@ public class ForumManager {
     public static String getXSLTPostingsOdd() {
         return config.getXSLTPostingsOdd();
     }
+
 
     public static String getXSLTPostingsEven() {
         return config.getXSLTPostingsEven();
@@ -510,6 +530,10 @@ public class ForumManager {
         return config.getFooterPath();
     }
 
+    public static String getNavigationMethod() {
+        return config.getNavigationMethod();
+    }
+
     public int getPostThreadLoadedCount() {
         int count = 0;
         Enumeration i = forums.elements();
@@ -529,9 +553,38 @@ public class ForumManager {
    }
 
 
+   public static String longWordWrap(String body) {
+	StringTokenizer tok = new StringTokenizer(body," \n\r\t",true);	
+	String newbody = "";
+	while (tok.hasMoreTokens()) {
+		String tmp = tok.nextToken();
+		int len = tmp.length();
+		boolean first = true;
+		if (len>45) {
+			while (len>45) {
+				if (first) {
+					newbody = newbody + tmp.substring(0,44);
+					first = false;
+				} else {
+					newbody = newbody + "- "+tmp.substring(0,44);
+				}
+				log.info("newbody="+newbody);
+				tmp = tmp.substring(45);
+				log.info("tmp="+tmp);
+				len=tmp.length();
+			}	
+			newbody = newbody + "- "+tmp;
+		} else {
+			newbody = newbody+tmp;
+		}
+	}
+	return newbody;
+   }
+
    public static String filterContent(HashMap words,String body) {
+	body = longWordWrap(body);
+        StringObject obj=new StringObject(body);
         if (words!=null) {
-            	StringObject obj=new StringObject(body);
         	Iterator i = words.keySet().iterator();
         	while (i.hasNext()) {
             		String key = (String)i.next();
