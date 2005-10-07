@@ -19,6 +19,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.*;
 
 import org.mmbase.applications.mmbob.*;
 import org.mmbase.applications.mmbob.util.transformers.*;
@@ -84,6 +85,7 @@ public class Controller {
                     virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
 	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
        	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
+            	    virtual.setValue("threadstartlevel", area.getThreadStartLevel());
 		   if (mode.equals("stats")) {
             	   	 virtual.setValue("postthreadloadedcount", area.getPostThreadLoadedCount());
             	   	 virtual.setValue("postingsloadedcount", area.getPostingsLoadedCount());
@@ -95,13 +97,119 @@ public class Controller {
                         Poster ap = f.getPoster(activeid);
                         ap.signalSeen();
                         addActiveInfo(virtual, ap);
-                        if (ap != null && f.isAdministrator(ap.getAccount())) {
+                        if (ap != null && f.isAdministrator(ap.getNick())) {
                             virtual.setValue("isadministrator", "true");
                         } else {
                             virtual.setValue("isadministrator", "false");
                         }
                     }
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    /**
+     * Get the PostAreas of the given forum
+     *
+     * @param id  MMBase node number of the forum
+     * @param sactiveid MMBase node number of the active poster
+     * @return List of postareas that matches the given params
+     */
+    public List getTreePostAreas(String id, String sactiveid,String tree) {
+        List list = new ArrayList();
+        try {
+            int activeid = Integer.parseInt(sactiveid);
+            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+            Forum f = ForumManager.getForum(id);
+            if (f != null) {
+                SubArea sa = f.getSubArea(tree);
+                Iterator i = sa.getAreas();
+                while (i.hasNext()) {
+                    PostArea area = (PostArea) i.next();
+                    MMObjectNode virtual = builder.getNewNode("admin");
+                    virtual.setValue("nodetype","area");
+                    virtual.setValue("name", area.getName());
+                    virtual.setValue("shortname", area.getShortName());
+                    virtual.setValue("description", area.getDescription());
+                    virtual.setValue("id", area.getId());
+                    virtual.setValue("postthreadcount", area.getPostThreadCount());
+                    virtual.setValue("postcount", area.getPostCount());
+                    virtual.setValue("viewcount", area.getViewCount());
+                    virtual.setValue("lastposter", area.getLastPoster());
+                    virtual.setValue("lastposttime", area.getLastPostTime());
+                    virtual.setValue("lastsubject", area.getLastSubject());
+                    virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
+                    virtual.setValue("lastposternumber",area.getLastPosterNumber());
+                    virtual.setValue("lastpostnumber",area.getLastPostNumber());
+                    virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
+	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
+       	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
+            	    virtual.setValue("threadstartlevel", area.getThreadStartLevel());
+                    list.add(virtual);
+
+                    if (activeid != -1) {
+                        Poster ap = f.getPoster(activeid);
+                        ap.signalSeen();
+                        addActiveInfo(virtual, ap);
+                        if (ap != null && f.isAdministrator(ap.getNick())) {
+                            virtual.setValue("isadministrator", "true");
+                        } else {
+                            virtual.setValue("isadministrator", "false");
+                        }
+                    }
+                }
+                i = sa.getSubAreas();
+                while (i.hasNext()) {
+                   sa = (SubArea) i.next();
+                   MMObjectNode virtual = builder.getNewNode("admin");
+                   virtual.setValue("nodetype","subarea");
+                   virtual.setValue("name", sa.getName());
+                   virtual.setValue("areacount", sa.getAreaCount());
+                   virtual.setValue("postthreadcount", sa.getPostThreadCount());
+                   virtual.setValue("postcount", sa.getPostCount());
+                   virtual.setValue("viewcount", sa.getViewCount());
+                   list.add(virtual);
+               	   Iterator i2 = sa.getAreas();
+               	   while (i2.hasNext()) {
+                    	PostArea area = (PostArea) i2.next();
+                    	virtual = builder.getNewNode("admin");
+                    	virtual.setValue("nodetype","area");
+                        virtual.setValue("shortname", area.getShortName());
+                   	virtual.setValue("name", area.getName());
+                    	virtual.setValue("description", area.getDescription());
+                    	virtual.setValue("id", area.getId());
+                    	virtual.setValue("postthreadcount", area.getPostThreadCount());
+                    	virtual.setValue("postcount", area.getPostCount());
+                    	virtual.setValue("viewcount", area.getViewCount());
+                    	virtual.setValue("lastposter", area.getLastPoster());
+                    	virtual.setValue("lastposttime", area.getLastPostTime());
+                    	virtual.setValue("lastsubject", area.getLastSubject());
+                    	virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
+                    	virtual.setValue("lastposternumber",area.getLastPosterNumber());
+                    	virtual.setValue("lastpostnumber",area.getLastPostNumber());
+                    	virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
+	            	virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
+       	     	    	virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
+            	    	virtual.setValue("threadstartlevel", area.getThreadStartLevel());
+                    	list.add(virtual);
+
+                    	if (activeid != -1) {
+                        	Poster ap = f.getPoster(activeid);
+                        	ap.signalSeen();
+                        	addActiveInfo(virtual, ap);
+                        	if (ap != null && f.isAdministrator(ap.getNick())) {
+                            		virtual.setValue("isadministrator", "true");
+                        	} else {
+                            		virtual.setValue("isadministrator", "false");
+                        	}
+                    	}
+		   }
+		}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +284,10 @@ public class Controller {
             while (e.hasNext()) {
                 PostThread thread = (PostThread) e.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
-                virtual.setValue("name", thread.getSubject());
+                String subject = thread.getSubject();
+                virtual.setValue("name", subject);
+                if (subject.length()>60) subject = subject.substring(0,57)+"...";
+                virtual.setValue("shortname", subject);
                 virtual.setValue("id", thread.getId());
                 virtual.setValue("mood", thread.getMood());
 
@@ -297,10 +408,13 @@ public class Controller {
                         Posting p = (Posting) e.next();
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("pos", pos++);
-                        virtual.setValue("subject", p.getSubject());
-                        virtual.setValue("body", p.getBody(imagecontext));
+                        String subject = p.getSubject();
+                        virtual.setValue("subject", subject);
+                        if (subject.length()>60) subject = subject.substring(0,57)+"...";
+                        virtual.setValue("shortsubject", subject);
+                        virtual.setValue("body", p.getBodyHtml(imagecontext));
                         virtual.setValue("edittime", p.getEditTime());
-                        Poster po = f.getPoster(p.getPoster());
+                        Poster po = f.getPosterNick(p.getPoster());
                         if (po != null) {
                             virtual.setValue("poster", p.getPoster());
                             addPosterInfo(virtual, po);
@@ -313,9 +427,9 @@ public class Controller {
                         virtual.setValue("threadpos", p.getThreadPos());
 			// very weird way need to figure this out
 			if (p.getThreadPos()%2==0) {
-                        	virtual.setValue("tdvar", "listpaging");
+                        	virtual.setValue("tdvar", "threadpagelisteven");
 			} else {
-                        	virtual.setValue("tdvar", "");
+                        	virtual.setValue("tdvar", "threadpagelistodd");
 			}
                         // should be moved out of the loop
                         if (activeid != -1) {
@@ -323,12 +437,12 @@ public class Controller {
                             ap.signalSeen();
                             ap.seenThread(t);
                             addActiveInfo(virtual, ap);
-                            if (po != null && po.getAccount().equals(ap.getAccount())) {
+                            if (po != null && po.getNick().equals(ap.getNick())) {
                                 virtual.setValue("isowner", "true");
                             } else {
                                 virtual.setValue("isowner", "false");
                             }
-                            if (ap != null && a.isModerator(ap.getAccount())) {
+                            if (ap != null && a.isModerator(ap.getNick())) {
                                 virtual.setValue("ismoderator", "true");
                             } else {
                                 virtual.setValue("ismoderator", "false");
@@ -370,10 +484,13 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     Posting p = t.getPosting(Integer.parseInt(postingid));
-                    virtual.setValue("subject", p.getSubject());
-                    virtual.setValue("body", p.getBody(imagecontext));
+                    String subject = p.getSubject();
+                    virtual.setValue("subject", subject);
+                    if (subject.length()>60) subject = subject.substring(0,57)+"...";
+                    virtual.setValue("shortsubject", subject);
+                    virtual.setValue("body", p.getBodyHtml(imagecontext));
                     virtual.setValue("edittime", p.getEditTime());
-                    Poster po = f.getPoster(p.getPoster());
+                    Poster po = f.getPosterNick(p.getPoster());
                     if (po != null) {
                         virtual.setValue("poster", p.getPoster());
                         addPosterInfo(virtual, po);
@@ -382,13 +499,14 @@ public class Controller {
                         virtual.setValue("guest", "true");
                     }
                     virtual.setValue("posttime", p.getPostTime());
+                    virtual.setValue("postcount", t.getPostCount());
                     virtual.setValue("id", p.getId());
                     virtual.setValue("threadpos", p.getThreadPos());
 		    //very weird way need to figure this out
                     if (p.getThreadPos()%2==0) {
-                        virtual.setValue("tdvar", "listpaging");
+                        virtual.setValue("tdvar", "threadpagelisteven");
                     } else {
-                        virtual.setValue("tdvar", "");
+                        virtual.setValue("tdvar", "threadpagelistodd");
                     }
                     // should be moved out of the loop
                     if (activeid != -1) {
@@ -396,16 +514,22 @@ public class Controller {
                         ap.signalSeen();
                         ap.seenThread(t);
                         addActiveInfo(virtual, ap);
-                        if (po != null && po.getAccount().equals(ap.getAccount())) {
+                        if (po != null && po.getNick().equals(ap.getNick())) {
                             virtual.setValue("isowner", "true");
                         } else {
                             virtual.setValue("isowner", "false");
                         }
-                        if (ap != null && a.isModerator(ap.getAccount())) {
+                        if (ap != null && a.isModerator(ap.getNick())) {
                             virtual.setValue("ismoderator", "true");
                         } else {
                             virtual.setValue("ismoderator", "false");
                         }
+			log.info("PO="+po+" ap="+ap);
+                        if (po != null && po.getNick().equals(ap.getNick()) || ap != null && a.isModerator(ap.getNick())) {
+                            virtual.setValue("maychange", "true");
+			} else {
+                            virtual.setValue("maychange", "false");
+			}
                     }
                 }
             }
@@ -415,6 +539,7 @@ public class Controller {
 
         return virtual;
     }
+
 
 
     public String getPostingPageNumber(String forumid, String postareaid, String postthreadid, String postingid,int pagesize) {
@@ -464,6 +589,7 @@ public class Controller {
                     MMObjectNode virtual = builder.getNewNode("admin");
                     virtual.setValue("id", p.getId());
                     virtual.setValue("account", p.getAccount());
+                    virtual.setValue("nick", p.getNick());
                     virtual.setValue("firstname", p.getFirstName());
                     virtual.setValue("lastname", p.getLastName());
                     list.add(virtual);
@@ -493,6 +619,7 @@ public class Controller {
                MMObjectNode virtual = builder.getNewNode("admin");
                virtual.setValue("id", p.getId());
                virtual.setValue("account", p.getAccount());
+               virtual.setValue("nick", p.getNick());
                virtual.setValue("firstname", p.getFirstName());
                virtual.setValue("lastname", p.getLastName());
                list.add(virtual);
@@ -519,6 +646,7 @@ public class Controller {
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("id", p.getId());
                 virtual.setValue("account", p.getAccount());
+                virtual.setValue("nick", p.getNick());
                 virtual.setValue("firstname", p.getFirstName());
                 virtual.setValue("lastname", p.getLastName());
                 virtual.setValue("location", p.getLocation());
@@ -543,20 +671,20 @@ public class Controller {
             	Enumeration e = f.getPosters();
             	while (e.hasMoreElements()) {
                 	Poster p = (Poster) e.nextElement();
-               		String account =  p.getAccount().toLowerCase();
+               		String nick =  p.getNick().toLowerCase();
                		String firstname = p.getFirstName().toLowerCase();
                		String lastname = p.getLastName().toLowerCase();
                		String location = p.getLocation().toLowerCase();
-			if (searchkey.equals("*") || account.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1 || location.indexOf(searchkey)!=-1) {
+			if (searchkey.equals("*") || nick.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1 || location.indexOf(searchkey)!=-1) {
 				if (i>startpos) {
                 			MMObjectNode virtual = builder.getNewNode("admin");
                	 			virtual.setValue("number", p.getId());
                 			virtual.setValue("account", p.getAccount());
+                        		virtual.setValue("nick", p.getNick());
                 			virtual.setValue("firstname",p.getFirstName());
                 			virtual.setValue("lastname", p.getLastName());
                 			virtual.setValue("location", p.getLocation());
                 			virtual.setValue("lastseen", p.getLastSeen());
-                                        virtual.setValue("state", p.getState());
 					if (page!=0) {
 						virtual.setValue("prevpage",page-1);
 					} else {
@@ -614,7 +742,10 @@ public class Controller {
                	 	virtual.setValue("postareaid", pa.getId());
                	 	virtual.setValue("postareaname", pa.getName());
                	 	virtual.setValue("postthreadid", pt.getId());
-                	virtual.setValue("subject", p.getSubject());
+                        String subject = p.getSubject();
+                        virtual.setValue("subject", subject);
+                        if (subject.length()>60) subject = subject.substring(0,57)+"...";
+                        virtual.setValue("shortsubject", subject);
                 	virtual.setValue("poster", p.getPoster());
                 	virtual.setValue("posterid", f.getPoster(p.getPoster()));
 			list.add(virtual);
@@ -649,6 +780,7 @@ public class Controller {
                     MMObjectNode virtual = builder.getNewNode("admin");
                     virtual.setValue("id", p.getId());
                     virtual.setValue("account", p.getAccount());
+                    virtual.setValue("nick", p.getNick());
                     virtual.setValue("firstname", p.getFirstName());
                     virtual.setValue("lastname", p.getLastName());
                     list.add(virtual);
@@ -678,6 +810,7 @@ public class Controller {
                MMObjectNode virtual = builder.getNewNode("admin");
                virtual.setValue("id", p.getId());
                virtual.setValue("account", p.getAccount());
+               virtual.setValue("nick", p.getNick());
                virtual.setValue("firstname", p.getFirstName());
                virtual.setValue("lastname", p.getLastName());
                list.add(virtual);
@@ -711,6 +844,7 @@ public class Controller {
                 virtual.setValue("accountremovaltype", f.getAccountRemovalType());
                 virtual.setValue("loginmodetype", f.getLoginModeType());
                 virtual.setValue("logoutmodetype", f.getLogoutModeType());
+                virtual.setValue("navigationmethod", f.getNavigationMethod());
                 virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
                 virtual.setValue("description", f.getDescription());
                 virtual.setValue("postareacount", f.getPostAreaCount());
@@ -723,11 +857,12 @@ public class Controller {
                 virtual.setValue("lastposter", f.getLastPoster());
                 virtual.setValue("lastposttime", f.getLastPostTime());
                 virtual.setValue("lastsubject", f.getLastSubject());
+                virtual.setValue("hasnick", f.hasNick());
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
                     ap.signalSeen();
                     addActiveInfo(virtual, ap);
-                    if (ap != null && f.isAdministrator(ap.getAccount())) {
+                    if (ap != null && f.isAdministrator(ap.getNick())) {
                         virtual.setValue("isadministrator", "true");
                     } else {
                         virtual.setValue("isadministrator", "false");
@@ -739,6 +874,14 @@ public class Controller {
         }
 
         return virtual;
+    }
+
+    public String getForumAlias(String key) {
+	if (!key.equals("")) {
+		Forum f = ForumManager.getForumByAlias(key);
+		if (f!=null) return ""+f.getId();
+	}
+	return "unknown";
     }
 
    /**
@@ -833,17 +976,51 @@ public class Controller {
                 virtual.setValue("headerpath",f.getHeaderPath());
                 virtual.setValue("footerpath",f.getFooterPath());
         	virtual.setValue("replyoneachpage",f.getReplyOnEachPage());
+        	virtual.setValue("navigationmethod",f.getNavigationMethod());
+        	virtual.setValue("alias",f.getAlias());
 
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
                     ap.signalSeen();
                     addActiveInfo(virtual, ap);
-                    if (ap != null && f.isAdministrator(ap.getAccount())) {
+                    if (ap != null && f.isAdministrator(ap.getNick())) {
                         virtual.setValue("isadministrator", "true");
                     } else {
                         virtual.setValue("isadministrator", "false");
                     }
                 }
+            }
+        } catch (Exception e) {
+		e.printStackTrace();
+        }
+
+        return virtual;
+    }
+
+
+    /**
+     * Provide configuration info on a forum
+     *
+     * @param id MMBase node number of the forum
+     * @param sactiveid Id for the current (on the page) poster for admin/onwership checks
+     * @return (virtual) MMObjectNode representing the configuration of the given forum
+     *
+     */
+    public MMObjectNode getPostAreaConfig(String id, String sactiveid,String postareaid) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        try {
+            int activeid = Integer.parseInt(sactiveid);
+
+            Forum f = ForumManager.getForum(id);
+            if (f != null) {
+	            PostArea a = f.getPostArea(postareaid);
+		    if (a!=null) {
+                	virtual.setValue("guestreadmodetype", a.getGuestReadModeType());
+                	virtual.setValue("guestwritemodetype", a.getGuestWriteModeType());
+                	virtual.setValue("position", a.getPos());
+                	virtual.setValue("threadstartlevel", a.getThreadStartLevel());
+		   }
             }
         } catch (Exception e) {
 		e.printStackTrace();
@@ -1074,7 +1251,6 @@ public class Controller {
         if (password.equals(confirmpassword)) {
             Forum f = ForumManager.getForum(forumid);
             if (f != null) {
-                account = account.trim();
                 Poster p = f.getPoster(account);
                 if (p == null) {
 		    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
@@ -1090,6 +1266,42 @@ public class Controller {
                         p.setPassword(password);
                         p.setPostCount(0);
                         p.savePoster();
+                    } else {
+                        return "createerror";
+                    }
+                } else {
+                    return "inuse";
+                }
+            }
+            return "ok";
+        } else {
+            return ("passwordnotequal");
+        }
+    }
+
+
+    public String createPosterNick(String forumid, String account, String password, String confirmpassword,String nick, String firstname, String lastname, String email, String gender, String location) {
+        if (password.equals(confirmpassword)) {
+            Forum f = ForumManager.getForum(forumid);
+            if (f != null) {
+                Poster p = f.getPoster(account);
+                Poster n = f.getPosterNick(nick);
+                if (p == null) {
+		    if (n!=null) return "nickinuse";
+		    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
+		    if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
+		    if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
+                    p = f.createPoster(account, password);
+                    if (p != null) {
+                       	p.setFirstName(firstname); 
+                       	p.setLastName(lastname);
+                        p.setEmail(email);
+                        p.setGender(gender);
+                        p.setLocation(location);
+                        p.setPassword(password);
+                        p.setPostCount(0);
+                        p.savePoster();
+    			setProfileValue(forumid, p.getId(),"nick",nick);
                     } else {
                         return "createerror";
                     }
@@ -1173,6 +1385,7 @@ public class Controller {
             virtual.setValue("lastsubject", a.getLastSubject());
             virtual.setValue("guestreadmodetype", a.getGuestReadModeType());
             virtual.setValue("guestwritemodetype", a.getGuestWriteModeType());
+            virtual.setValue("threadstartlevel", a.getThreadStartLevel());
             virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
             virtual.setValue("smileysenabled", f.getSmileysEnabled());
             virtual.setValue("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
@@ -1181,12 +1394,12 @@ public class Controller {
                 Poster ap = f.getPoster(activeid);
                 ap.signalSeen();
                 // addActiveInfo(virtual,ap);
-                if (ap != null && f.isAdministrator(ap.getAccount())) {
+                if (ap != null && f.isAdministrator(ap.getNick())) {
                     virtual.setValue("isadministrator", "true");
                 } else {
                     virtual.setValue("isadministrator", "false");
                 }
-                if (ap != null && a.isModerator(ap.getAccount())) {
+                if (ap != null && a.isModerator(ap.getNick())) {
                     virtual.setValue("ismoderator", "true");
                 } else {
                     virtual.setValue("ismoderator", "false");
@@ -1337,6 +1550,8 @@ public class Controller {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 
+        if (subject.length()>60) subject = subject.substring(0,57)+"..."; 
+
         Forum f = ForumManager.getForum(forumid);
 	int pos = poster.indexOf("(");
 	if (pos!=-1) {
@@ -1349,7 +1564,7 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     // nobody may post in closed thread, unless you're a moderator
-		    Poster p=f.getPoster(poster);
+		    Poster p=f.getPosterNick(poster);
                     if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
 			if (body.equals("")) {
                 		virtual.setValue("error", "no_body");
@@ -1362,7 +1577,8 @@ public class Controller {
                 		virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
 			} else {
 				body = a.filterContent(body);
-				body = BBCode.decode(body);
+				subject = filterHTML(subject);
+				//body = BBCode.decode(body);
 				try {
                        	        	t.postReply(subject, p, body);
                 			virtual.setValue("error", "none");
@@ -1395,6 +1611,8 @@ public class Controller {
 
         MMObjectNode virtual = builder.getNewNode("admin");
 
+        if (subject.length()>60) subject = subject.substring(0,57)+"...";
+
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -1415,6 +1633,7 @@ public class Controller {
                 	virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
 		} else {
 			body = a.filterContent(body);
+			subject = filterHTML(subject);
                 	int postthreadid = a.newPost(subject, p, body,mood);
                 	virtual.setValue("postthreadid", postthreadid);
                 	virtual.setValue("error", "none");
@@ -1513,7 +1732,7 @@ public class Controller {
                 if (a != null) {
                     Poster ap = f.getPoster(activeid);
                     Poster mp = f.getPoster(moderatorid);
-                    if (ap != null && f.isAdministrator(ap.getAccount())) {
+                    if (ap != null && f.isAdministrator(ap.getNick())) {
                         a.addModerator(mp);
                     }
                 }
@@ -1541,7 +1760,7 @@ public class Controller {
             if (f != null) {
                     Poster ap = f.getPoster(activeid);
                     Poster mp = f.getPoster(moderatorid);
-                    if (ap != null && f.isAdministrator(ap.getAccount())) {
+                    if (ap != null && f.isAdministrator(ap.getNick())) {
                         f.addAdministrator(mp);
                     }
             }
@@ -1566,7 +1785,7 @@ public class Controller {
             if (a != null) {
                 Poster ap = f.getPoster(activeid);
                 Poster mp = f.getPoster(moderatorid);
-                if (ap != null && f.isAdministrator(ap.getAccount())) {
+                if (ap != null && f.isAdministrator(ap.getNick())) {
                     a.removeModerator(mp);
                 }
             }
@@ -1589,7 +1808,7 @@ public class Controller {
         if (f != null) {
             Poster ap = f.getPoster(activeid);
             Poster mp = f.getPoster(administratorid);
-            if (ap!=mp && f.isAdministrator(ap.getAccount())) {
+            if (ap!=mp && f.isAdministrator(ap.getNick())) {
                 f.removeAdministrator(mp);
             }
         }
@@ -1620,7 +1839,7 @@ public class Controller {
 
                     // am i allowed to edit ?
                     Poster ap = f.getPoster(activeid);
-                    if (ap.getId() == activeid || a.isModerator(ap.getAccount())) {
+                    if (ap.getNick().equals(p.getPoster()) || a.isModerator(ap.getNick())) {
                         p.setSubject(subject);
                         p.setBody(body,imagecontext);
                         p.setEditTime((int) (System.currentTimeMillis() / 1000));
@@ -1655,7 +1874,7 @@ public class Controller {
                 if (t != null) {
                     // am i allowed to edit ?
                     Poster ap = f.getPoster(activeid);
-                    if (a.isModerator(ap.getAccount())) {
+                    if (a.isModerator(ap.getNick())) {
                         t.setType(type);
                         t.setMood(mood);
                         t.setState(state);
@@ -1691,10 +1910,12 @@ public class Controller {
 
                     // am i allowed to edit ?
                     Poster ap = f.getPoster(activeid);
-                    if (ap.getId() == activeid || a.isModerator(ap.getAccount())) {
+                   if (ap.getNick().equals(p.getPoster()) || a.isModerator(ap.getNick())) {
                         p.remove();
                         ap.signalSeen();
-                    }
+                    } else {
+			log.info("DELETED KILLED");
+		    } 
                 }
             }
         }
@@ -1714,7 +1935,7 @@ public class Controller {
         if (f != null) {
             Poster posterToRemove = f.getPoster(removeposterid);
             Poster activePoster = f.getPoster(activeid);
-            if (posterToRemove != null && f.isAdministrator(activePoster.getAccount())) {
+            if (posterToRemove != null && f.isAdministrator(activePoster.getNick())) {
                 posterToRemove.remove();
             }
         }
@@ -1734,7 +1955,7 @@ public class Controller {
          if (f != null) {
              Poster posterToDisable = f.getPoster(disableposterid);
              Poster activePoster = f.getPoster(activeid);
-             if (posterToDisable != null && f.isAdministrator(activePoster.getAccount())) {
+             if (posterToDisable != null && f.isAdministrator(activePoster.getNick())) {
                  posterToDisable.disable();
              }
          }
@@ -1754,7 +1975,7 @@ public class Controller {
          if (f != null) {
              Poster posterToDisable = f.getPoster(enableposterid);
              Poster activePoster = f.getPoster(activeid);
-             if (posterToDisable != null && f.isAdministrator(activePoster.getAccount())) {
+             if (posterToDisable != null && f.isAdministrator(activePoster.getNick())) {
                  posterToDisable.enable();
              }
          }
@@ -1770,14 +1991,26 @@ public class Controller {
      * @param description Description of the new post area
      * @return (virtual) MMObjectNode containing the postareaid of the newly created postarea
      */
-    public MMObjectNode newPostArea(String forumid, String name, String description) {
+    public MMObjectNode newPostArea(String forumid, String name, String description,int activeid) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
 
+	name = filterHTML(name);
+	description = filterHTML(description);
+
         Forum f = ForumManager.getForum(forumid);
         if (f != null ) {
-            int postareaid = f.newPostArea(name, description);
-            virtual.setValue("postareaid", postareaid);
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	   		 if (!name.equals("")) {
+            			int postareaid = f.newPostArea(name, description);
+            			virtual.setValue("postareaid", postareaid);
+            		} else {
+				virtual.setValue("feedback","feedback_emptyname");
+	    		}
+		} else {
+				virtual.setValue("feedback","feedback_usernotallowed");
+		}
         }
         return virtual;
     }
@@ -1793,10 +2026,12 @@ public class Controller {
      * @param password default/first admin password name for this new forum
      * @return (virtual) MMObjectNode containing the forumid of the newly created forum
      */
-    public MMObjectNode newForum(String name, String language, String description, String account, String password) {
+    public MMObjectNode newForum(String name, String language, String description, String account, String password,String email) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
-        int forumid = ForumManager.newForum(name, language, description, account, password);
+	name = filterHTML(name);
+	description = filterHTML(description);
+        int forumid = ForumManager.newForum(name, language, description, account, password,email);
         virtual.setValue("forumid", forumid);
         return virtual;
     }
@@ -1811,28 +2046,61 @@ public class Controller {
      * @param description New description of this forum
      * @return Feedback regarding the success of this action
      */
-    public boolean changeForum(String forumid, String name, String language, String description) {
-        Forum f = ForumManager.getForum(forumid);
+    public boolean changeForum(String forumid, String name, String language, String description,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
         if (f != null) {
-            f.setName(name);
-            f.setLanguage(language);
-            f.setDescription(description);
-            f.saveDirect();
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.setName(name);
+       	     		f.setLanguage(language);
+                	f.setDescription(description);
+                	f.saveDirect();
+	   	} else {
+			return false;
+	    	}
         }
         return true;
     }
 
 
-    public boolean changeForumConfig(String forumid, String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled) {
+    public boolean changeForumConfig(String forumid, String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String navigationmethod,String alias,int activeid) {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
-		f.setLogoutModeType(logoutmodetype);
-		f.setLoginModeType(loginmodetype);
-		f.setGuestReadModeType(guestreadmodetype);
-		f.setGuestWriteModeType(guestwritemodetype);
-		f.setAvatarsUploadEnabled(avatarsuploadenabled);
-		f.setAvatarsGalleryEnabled(avatarsgalleryenabled);
-		f.saveConfig();
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+			f.setLogoutModeType(logoutmodetype);
+			f.setLoginModeType(loginmodetype);
+			f.setGuestReadModeType(guestreadmodetype);
+			f.setGuestWriteModeType(guestwritemodetype);
+			f.setAvatarsUploadEnabled(avatarsuploadenabled);
+			f.setAvatarsGalleryEnabled(avatarsgalleryenabled);
+			f.setNavigationMethod(navigationmethod);
+			f.setAlias(alias);
+			f.saveConfig();
+		} else {
+			return false;
+		}
+        }
+        return true;
+    }
+
+
+    public boolean changePostAreaConfig(String forumid, String postareaid,String guestreadmodetype,String guestwritemodetype,String threadstartlevel,int position,int activeid) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	                PostArea a = f.getPostArea(postareaid);
+       		         if (a!=null) {
+				a.setGuestReadModeType(guestreadmodetype);
+				a.setGuestWriteModeType(guestwritemodetype);
+				a.setThreadStartLevel(threadstartlevel);
+				a.setPos(position);
+				f.saveConfig();
+			}
+		} else {
+			return false;
+		}
         }
         return true;
     }
@@ -1863,15 +2131,18 @@ public class Controller {
      * @param description Description of the postarea
      * @return Feedback regarding the success of this action
      */
-    public boolean changePostArea(String forumid, String postareaid, String name, String description) {
+    public boolean changePostArea(String forumid, String postareaid, String name, String description,int activeid) {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
-            PostArea a = f.getPostArea(postareaid);
-            if (a != null) {
-                a.setName(name);
-                a.setDescription(description);
-                a.save();
-            }
+            Poster ap = f.getPoster(activeid);
+	    if (f.isAdministrator(ap.getNick())) {
+            	PostArea a = f.getPostArea(postareaid);
+            	if (a != null) {
+               	 	a.setName(name);
+                	a.setDescription(description);
+               		a.save();
+            	}
+	    }
         }
         return true;
     }
@@ -1901,6 +2172,7 @@ public class Controller {
     private void addPosterInfo(MMObjectNode node, Poster p) {
         node.setValue("posterid", p.getId());
         node.setValue("account", p.getAccount());
+        node.setValue("nick", p.getNick());
         node.setValue("firstname", p.getFirstName());
         node.setValue("lastname", p.getLastName());
         node.setValue("email", p.getEmail());
@@ -1923,6 +2195,7 @@ public class Controller {
     private void addActiveInfo(MMObjectNode node, Poster p) {
         node.setValue("active_id", p.getId());
         node.setValue("active_account", p.getAccount());
+        node.setValue("active_nick", p.getNick());
         node.setValue("active_firstname", p.getFirstName());
         node.setValue("active_lastname", p.getLastName());
         node.setValue("active_email", p.getEmail());
@@ -2037,21 +2310,17 @@ public class Controller {
 	}
 
         public List getRemoteHosts(String forumid,String sactiveid) {
-		log.info("AAA1");
        		List list = new ArrayList();
   		VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         	try {
             		int activeid = Integer.parseInt(sactiveid);
-			log.info("AAA2");
 
             		Forum f = ForumManager.getForum(forumid);
             		if (f != null) {
                        	    Poster poster = f.getPoster(activeid);
-				log.info("AAA3");
 		            Iterator e = poster.getRemoteHosts();
 			    if (e!=null)  {
             		    	while (e.hasNext()) {
-					log.info("AAA4");
                            	 	RemoteHost rm = (RemoteHost) e.next();
                     			MMObjectNode virtual = builder.getNewNode("admin");
                     			virtual.setValue("id", ""+rm.getId());
@@ -2089,6 +2358,54 @@ public class Controller {
 	            	e.printStackTrace();
         	}
 		return "";
+	}
+
+
+        public String setSingleSignature(String forumid,String sactiveid,String body,String encoding) {
+        	try {
+            		int activeid = Integer.parseInt(sactiveid);
+
+            		Forum f = ForumManager.getForum(forumid);
+            		if (f != null) {
+                       	    Poster poster = f.getPoster(activeid);
+			    if (poster != null) {
+				Signature sig = poster.getSingleSignature();
+				if (sig!=null) {
+					sig.setBody(body);
+					sig.setEncoding(encoding);
+				} else {
+					poster.addSignature(body,"create",encoding);
+				}
+			    }
+			}
+        	} catch (Exception e) {
+	            	e.printStackTrace();
+        	}
+		return "";
+	}
+
+
+        public MMObjectNode getSingleSignature(String forumid,String sactiveid) {
+        	VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+       		MMObjectNode virtual = builder.getNewNode("admin");
+        	try {
+            		int activeid = Integer.parseInt(sactiveid);
+
+            		Forum f = ForumManager.getForum(forumid);
+            		if (f != null) {
+                       	    Poster poster = f.getPoster(activeid);
+			    if (poster != null) {
+				Signature sig = poster.getSingleSignature();
+				if (sig!=null) {
+					virtual.setValue("body",sig.getBody());
+					virtual.setValue("encoding",sig.getEncoding());
+				}
+			    }
+			}
+        	} catch (Exception e) {
+	            	e.printStackTrace();
+        	}
+		return virtual;
 	}
 
 
@@ -2141,5 +2458,104 @@ public class Controller {
         }
         return false;
     }
-	
+
+    public String filterHTML(String body) {
+        StringObject obj=new StringObject(body);
+        obj.replace(">", "&gt;");
+        obj.replace("<", "&lt;");
+	return obj.toString();
+    }
+
+    public List getProfileValues(String forumid, int posterid) {
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        Forum f = ForumManager.getForum(forumid);
+	if (f!=null && posterid!=-1) {
+                Poster po = f.getPoster(posterid);
+		if (po!=null) {
+                	Iterator i = f.getProfileDefs();
+			if (i!=null) {
+                	   while (i.hasNext()) {
+        			MMObjectNode virtual = builder.getNewNode("admin");
+                    		ProfileEntryDef pd = (ProfileEntryDef) i.next();
+				if (pd.getGuiPos()!=-1) {
+					virtual.setValue("name",pd.getName());
+					virtual.setValue("guiname",pd.getGuiName());
+					virtual.setValue("guipos",pd.getGuiPos());
+					virtual.setValue("edit",""+pd.getEdit());
+					virtual.setValue("type",pd.getType());
+					ProfileEntry pe = po.getProfileValue(pd.getName());
+					if (pe!=null) {
+						virtual.setValue("value",pe.getValue());
+					}
+					list.add(virtual);
+				}
+			   }
+			}
+		}
+        }
+	return list;
+    }
+
+
+    public MMObjectNode setProfileValue(String forumid, int activeid,String name,String value) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+
+	value = filterHTML(value);
+
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null ) {
+        	Poster ap = f.getPoster(activeid);
+		if (ap!=null) {
+			String feedback = ap.setProfileValue(name,value);
+		}
+	}
+	return virtual;
+    }
+
+    public String getBirthDateString(String name,String value) {
+	String day = "1";
+	String month = "1";
+	String year = "1980";
+	StringTokenizer tok=new StringTokenizer(value,"-\n\r");
+	if (tok.hasMoreTokens()) {
+		day = tok.nextToken();
+		if (tok.hasMoreTokens()) {
+			month = tok.nextToken();
+			if (tok.hasMoreTokens()) {
+				year = tok.nextToken();
+			}
+		}
+	}
+	String body ="<select name=\""+name+"_day\">";
+	for (int i=1;i<32;i++) {
+		if (day.equals(""+i)) {
+			body+="<option selected>"+i;
+		} else {
+			body+="<option>"+i;
+		}
+	}
+	body+="</select>";
+	body +="<select name=\""+name+"_month\">";
+	for (int i=1;i<13;i++) {
+		if (month.equals(""+i)) {
+			body+="<option selected>"+i;
+		} else {
+			body+="<option>"+i;
+		}
+	}
+	body+="</select>";
+	body+="<select name=\""+name+"_year\">";
+	for (int i=1920;i<2004;i++) {
+		if (year.equals(""+i)) {
+			body+="<option selected>"+i;
+		} else {
+			body+="<option>"+i;
+		}
+	}
+	body+="</select>";
+	return body;
+    }
+
 }

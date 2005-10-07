@@ -20,6 +20,7 @@ import org.mmbase.cache.xslt.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.applications.mmbob.util.transformers.Smilies;
+import org.mmbase.applications.mmbob.util.transformers.BBCode;
 import org.mmbase.applications.thememanager.ThemeManager;
 import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 
@@ -188,6 +189,7 @@ public class Posting {
 	if (c_body.equals("")) {
 	        long start = System.currentTimeMillis();
         	Node node = ForumManager.getCloud().getNode(id);
+		log.info(body);
 		c_body = translateBody(body,imagecontext);
 		body="";
 		node.setValue("c_body",c_body);
@@ -199,6 +201,22 @@ public class Posting {
 	return c_body;
     }
 
+    /**
+     * get the html body of this posting
+     *
+     * meaning this will be decoded with BBCodes, Urls, Security checks..
+     * needs a better caching system that doesn't take memory again, probably
+     * some flipper system that either the decoded or encoded is caches depending
+     * on use.
+     *
+     * @param imagecontext The context where to find the images (eg smilies)
+     * @return body of this posting
+     */
+    public String getBodyHtml(String imagecontext) {
+	//String body = BBCode.decode(getBody(imagecontext));
+	String body = getBody(imagecontext);
+	return body;
+    }
 
     public boolean inBody(String searchkey) {
 	if (c_body.equals("")) {
@@ -244,7 +262,6 @@ public class Posting {
      * @return allways <code>true</code>
      */
     public boolean remove() {
-	log.info("SETBODY3");
         Node node = ForumManager.getCloud().getNode(id);
         log.debug("going to remove posting: " + node.getNumber());
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastpostnumber");
@@ -256,7 +273,6 @@ public class Posting {
     }
 
     private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
-	log.info("SETBODY4");
         //check if nodenumber is somewhere referenced as a foreignkey
         Node node = ForumManager.getCloud().getNode(id);
         NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
@@ -277,7 +293,6 @@ public class Posting {
      * @return allways <code>true</code>
      */
     public boolean save() {
-	log.info("SETBODY5");
         Node node = ForumManager.getCloud().getNode(id);
 	node.setStringValue("c_body",c_body);
 	node.setStringValue("c_poster",c_poster);

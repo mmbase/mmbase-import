@@ -51,6 +51,7 @@ public class Poster {
     private ArrayList bookmarked = new ArrayList();
     private ArrayList remotehosts;
     private String mailbody="";;
+    private ProfileInfo profileinfo = null;
     private static final int STATE_ACTIVE = 0;
     private static final int STATE_DISABLED = 1;
 
@@ -68,7 +69,7 @@ public class Poster {
         this.parent = parent;
         //this.node = node;
 	id = node.getIntValue(prefix+"number");
-	state = node.getIntValue(prefix+"state");
+	state = -1;
 	account = node.getStringValue(prefix+"account");
 	password = node.getStringValue(prefix+"password");
 	firstname = node.getStringValue(prefix+"firstname");
@@ -168,6 +169,14 @@ public class Poster {
      * @return accountname / nick
      */
     public String getAccount() {
+	return account;
+    }
+
+    public String getNick() {
+	ProfileEntry pe = getProfileValue("nick");
+	if (pe!=null) {
+		return pe.getValue();
+	}
 	return account;
     }
 
@@ -316,16 +325,6 @@ public class Poster {
     }
 
     /**
-     * get the the state of the poster 
-     * -1, 0 is active, 1 is disabled
-     *
-     * @return int  
-     */
-    public int getState() {
-        return state;
-    }
-
-    /**
      * get the date/time (epoch) when the poster started this session
      *
      * @return date/time (epoch)
@@ -384,7 +383,6 @@ public class Poster {
         node.setStringValue("level", level);
         node.setStringValue("gender", gender);
         node.setStringValue("location", location);
-        node.setIntValue("state",state);
         ForumManager.syncNode(node, queue);
     }
 
@@ -492,7 +490,9 @@ public class Poster {
      */
     public boolean disable() {
         this.state = STATE_DISABLED;
-        syncNode(ForumManager.FASTSYNC);
+        Node node = ForumManager.getCloud().getNode(id);
+        node.setIntValue("state",this.state);
+        ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
     }
 
@@ -503,7 +503,9 @@ public class Poster {
      */
     public boolean enable() {
         this.state = STATE_ACTIVE;
-        syncNode(ForumManager.FASTSYNC);
+        Node node = ForumManager.getCloud().getNode(id);
+        node.setIntValue("state",this.state);
+        ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
     }
 
@@ -537,6 +539,7 @@ public class Poster {
      * @return <code>true</code> if the remove action was successfull, <code>false</code> if it wasn't.
      */
     public boolean removeMailbox(String name) {
+	log.info("remove mailbox : "+name);
         Mailbox m = getMailbox(name);
         if (!m.remove()) return false;
         mailboxes.remove(name);
@@ -679,6 +682,20 @@ public class Poster {
     }
 
 
+    public Signature getSingleSignature() {
+	if (signatures!=null) {
+       		Iterator i=signatures.iterator();
+	        while (i.hasNext()) {
+                	Signature sig = (Signature)i.next();
+			if (sig.getMode().equals("active")) {
+				return sig;
+			}
+		}
+	}
+	return null;
+    }
+
+
     public Signature getSignature(int sigid) {
 	if (signatures!=null) {
        		Iterator i=signatures.iterator();
@@ -717,6 +734,33 @@ public class Poster {
 	if (signatures==null) signatures =  new ArrayList();
 	if (getSignature(sig.getId())==null) {
 		signatures.add(sig);
+	}
+    }
+
+
+    public void addProfileInfo(ProfileInfo pi) {
+	profileinfo=pi;
+    }
+
+    public String setProfileValue(String name,String value) {
+	if (profileinfo==null) profileinfo = new ProfileInfo(this);
+	profileinfo.setValue(name,value);
+	return "none";
+    }
+
+    public ProfileInfo getProfileInfo() {
+	return profileinfo;
+    }
+
+    public Iterator getProfileValues() {
+	return profileinfo.getValues();
+    }
+
+    public ProfileEntry getProfileValue(String name) {
+	if (profileinfo!=null) {
+		return profileinfo.getValue(name);
+	} else {
+		return null;
 	}
     }
 
@@ -839,6 +883,7 @@ public class Poster {
    public String filterEmail(String body) {
         StringObject obj=new StringObject(body);
         obj.replace("$account", getAccount());
+        obj.replace("$nick", getNick());
         obj.replace("$firstname", getFirstName());
         obj.replace("$lastname", getLastName());
    	return obj.toString();
@@ -857,4 +902,8 @@ public class Poster {
 	Integer tid = new Integer(threadid);
 	if (bookmarked.contains(tid)) bookmarked.remove(tid);
    }
+
+  public Forum getParent() {
+	return parent;
+  }
 }
