@@ -302,10 +302,11 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     public void setMaxLength(int size) {
         this.maxLength = size;
-        if (dataType instanceof BigDataType && size < ((BigDataType)dataType).getMaxLength()) {
-            ((BigDataType)dataType).setMaxLength(size);
-        } else if (dataType instanceof ListDataType && size < ((ListDataType)dataType).getMaxSize()) {
-            ((ListDataType)dataType).setMaxSize(size);
+        if (dataType instanceof LengthDataType  && size < ((LengthDataType)dataType).getMaxLength()) {
+            if (dataType.isFinished()) {
+                dataType = (DataType) dataType.clone();
+            }
+            ((LengthDataType)dataType).setMaxLength(size);
         }
     }
 
