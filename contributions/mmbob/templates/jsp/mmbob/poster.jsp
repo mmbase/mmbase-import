@@ -3,10 +3,10 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="forumid" />
 <mm:import externid="pathtype">poster_index</mm:import>
 <mm:import externid="postareaid" />
 <mm:import externid="posterid" id="profileid" />

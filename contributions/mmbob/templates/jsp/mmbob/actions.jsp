@@ -4,6 +4,7 @@
 <mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
 </mm:cloud>
 <mm:cloud sessionname="forum" username="$dac" password="$dpw">
+<mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="action" />
 <mm:import externid="forumid" />
 <mm:import externid="folderaction" />
@@ -48,8 +49,8 @@
         </mm:compare>
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
-	<mm:write referid="body" session="body" />
 	<mm:nodefunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
+	<mm:write referid="body" session="body" />
 		
 	<mm:import id="error"><mm:field name="error" /></mm:import>
 	<mm:import id="speedposttime"><mm:field name="speedposttime" /></mm:import>	
@@ -72,6 +73,12 @@
 	<mm:import externid="newmode" />
 	<mm:import externid="newencoding">plain</mm:import>
 	<mm:function set="mmbob" name="changeSignature" referids="forumid,posterid,sigid,newbody,newmode,newencoding" />
+</mm:compare>
+
+<mm:compare value="setsinglesignature" referid="action">
+	<mm:import externid="newbody" />
+	<mm:import externid="newencoding">plain</mm:import>
+	<mm:function set="mmbob" name="setSingleSignature" referids="forumid,posterid,newbody,newencoding" />
 </mm:compare>
 
 <mm:compare value="addsignature" referid="action">
@@ -175,13 +182,39 @@
         <mm:compare referid="feedback" value="passwordchanged">
           <mm:write referid="newpassword" cookie="cwf$forumid" />
         </mm:compare>
+
+         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid"> 
+		<mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
+		<mm:field name="type">
+		<mm:compare value="string">
+		<mm:import externid="$pname" id="pvalue" reset="true" />
+		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
+		</mm:compare>
+		<mm:compare value="field">
+		<mm:import externid="$pname" id="pvalue" reset="true" />
+		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
+		</mm:compare>
+		<mm:compare value="date">
+		<mm:import externid="birthday_day" />
+		<mm:import externid="birthday_month" />
+		<mm:import externid="birthday_year" />
+		<mm:import id="pvalue" reset="true"><mm:write referid="birthday_day" />-<mm:write referid="birthday_month" />-<mm:write referid="birthday_year" /></mm:import>
+		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
+		</mm:compare>
+		</mm:field>
+	 </mm:nodelistfunction>
  </mm:compare>
 
 <mm:compare value="true" referid="adminmode">
 <mm:compare value="newpostarea" referid="action">
 	<mm:import externid="name" />
 	<mm:import externid="description" />
-	<mm:nodefunction set="mmbob" name="newPostArea" referids="forumid,name,description">
+	<mm:nodefunction set="mmbob" name="newPostArea" referids="forumid,name,description,posterid@activeid">
+		<mm:field name="feedback">
+		<mm:compare value="" inverse="true">
+		BLA=<mm:field name="feedback" />
+		</mm:compare>
+		</mm:field>
 	</mm:nodefunction>
 </mm:compare>
 
@@ -189,7 +222,7 @@
 	<mm:import externid="name" />
 	<mm:import externid="description" />
 	<mm:import externid="postareaid" />
-	<mm:booleanfunction set="mmbob" name="changePostArea" referids="forumid,postareaid,name,description">
+	<mm:booleanfunction set="mmbob" name="changePostArea" referids="forumid,postareaid,name,description,posterid@activeid">
 	</mm:booleanfunction>
 </mm:compare>
 
@@ -197,7 +230,7 @@
 	<mm:import externid="name" />
 	<mm:import externid="newlang" />
 	<mm:import externid="description" />
-	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,newlang,description" >
+	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,newlang,description,posterid@activeid" >
 	</mm:booleanfunction>
 </mm:compare>
 
@@ -230,7 +263,20 @@
 	<mm:import externid="guestwritemodetype" />
 	<mm:import externid="avatarsuploadenabled" />
 	<mm:import externid="avatarsgalleryenabled" />
-	<mm:booleanfunction set="mmbob" name="changeForumConfig" referids="forumid,loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled" >
+	<mm:import externid="navigationmethod" />
+	<mm:import externid="alias" />
+	<mm:booleanfunction set="mmbob" name="changeForumConfig" referids="forumid,loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled,navigationmethod,alias,posterid@activeid" >
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="changepostareaconfig" referid="action">
+	<mm:import externid="postareaid" />
+	<mm:import externid="guestreadmodetype" />
+	<mm:import externid="guestwritemodetype" />
+	<mm:import externid="threadstartlevel" />
+	<mm:import externid="position" />
+	<mm:booleanfunction set="mmbob" name="changePostAreaConfig" referids="forumid,postareaid,guestreadmodetype,guestwritemodetype,threadstartlevel,position,posterid@activeid" >
 	</mm:booleanfunction>
 </mm:compare>
 
@@ -315,49 +361,10 @@
         <mm:import externid="postareaid" />
         <mm:import externid="postthreadid" />
         <mm:import externid="postingid" />
-        <mm:node referid="postingid">
-          <mm:import id="postingowner"><mm:field name="c_poster"/></mm:import> 
-          <mm:node referid="posterid">
-            <mm:import id="currentaccount"><mm:field name="account" /></mm:import> 
-             <mm:compare referid="postingowner" referid2="currentaccount"> 
-               <mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid"></mm:booleanfunction>
-             </mm:compare>
-          </mm:node>
-        </mm:node> 
+        <mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid"></mm:booleanfunction>
    </mm:compare>
 </mm:compare>
 
-<mm:compare value="newforum" referid="action">
-	<mm:import externid="name" />
-	<mm:import externid="description" />
-	<mm:import externid="language" />
-	<mm:import id="newaccount" externid="account" />
-	<mm:import id="newpassword" externid="password" />
-	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,newaccount@account,newpassword@password">
-	</mm:nodefunction>
-</mm:compare>
-
-
-<mm:compare value="changeconfigs" referid="action">
-	<mm:import externid="loginmodetype" />
-	<mm:import externid="logoutmodetype" />
-	<mm:import externid="guestreadmodetype" />
-	<mm:import externid="guestwritemodetype" />
-	<mm:import externid="avatarsuploadenabled" />
-	<mm:import externid="avatarsgalleryenabled" />
-	<mm:import externid="contactinfoenabled" />
-	<mm:import externid="smileysenabled" />
-	<mm:import externid="privatemessagesenabled" />
-	<mm:import externid="postingsperpage" />
-	<mm:booleanfunction set="mmbob" name="changeForumsConfig" referids="loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled,contactinfoenabled,smileysenabled,privatemessagesenabled,postingsperpage" >
-	</mm:booleanfunction>
-</mm:compare>
-
-<mm:compare value="removeforum" referid="action">
-	<mm:import externid="remforum" />
-	<mm:booleanfunction set="mmbob" name="removeForum" referids="remforum">
-	</mm:booleanfunction>
-</mm:compare>
-
 </mm:locale>
+</mm:content>
 </mm:cloud>

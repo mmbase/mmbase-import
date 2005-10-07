@@ -3,19 +3,17 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
-<%@ include file="thememanager/loadvars.jsp" %>
-
 <mm:import externid="forumid" />
-<mm:import externid="postareaid" />
-
+<%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:node referid="postareaid"><mm:field name="name"/></mm:node></mm:compare></title>
+   <title>MMBase Forum</title>
 </head>
 <body>
 
 <mm:import externid="adminmode">false</mm:import>
+<mm:import externid="postareaid" />
 <mm:import externid="page">1</mm:import>
 
 <!-- login part -->
@@ -49,12 +47,15 @@
 <div class="bodypart">
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
 <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
-<mm:include page="path.jsp?type=postarea" referids="logoutmodetype" />
+<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+<mm:include page="path.jsp?type=postarea" referids="logoutmodetype,forumid,posterid,active_nick" />
 </mm:nodefunction>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
   		  <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
 			<mm:import id="guestwritemodetype"><mm:field name="guestwritemodetype" /></mm:import>
+			<mm:import id="threadstartlevel"><mm:field name="threadstartlevel" /></mm:import>
 			<mm:compare referid="posterid" value="-1" inverse="true">
 				<mm:import id="guestwritemodetype" reset="true">open</mm:import>
 			</mm:compare>
@@ -94,12 +95,12 @@
 	</td>
 	</form>
 	<td align="right">
-	<mm:compare referid="posterid" value="-1" inverse="true"><a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarks</a> | </mm:compare> <a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+	<a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
   <tr>
-    <th width="15">&nbsp;</th>
+    <th width="15" class="state">&nbsp;</th>
     <th width="15">&nbsp;</th>
     <th><mm:write referid="mlg.topic"/></th>
     <th><mm:write referid="mlg.author"/></th>
@@ -115,7 +116,7 @@
   <tr>
     <td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td>
     <td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td>
-    <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /> <mm:field name="emailonchange"><mm:compare value="true">[email]</mm:compare></mm:field> <mm:field name="bookmarked"><mm:compare value="true">[bookmarked]</mm:compare></mm:field></td>
+    <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="shortname" /></a> <mm:field name="navline" /> <mm:field name="emailonchange"><mm:compare value="true">[email]</mm:compare></mm:field> <mm:field name="bookmarked"><mm:compare value="true">[bookmarked]</mm:compare></mm:field></td>
     <td align="left"><mm:field name="creator" /></td>
     <td align="left"><mm:field name="replycount" /></td>
     <td align="left"><mm:field name="viewcount" /></td>
@@ -128,7 +129,7 @@
         </mm:compare>
         <mm:compare value="-1" ><mm:field name="lastposter" /></mm:compare>
       </mm:field>
-      <a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />&page=<mm:field name="pagecount" />">></a></td>
+      <a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />&page=<mm:field name="pagecount" />#p<mm:field name="lastpostnumber" />">></a></td>
 
 
     </td>
@@ -142,20 +143,27 @@
 </table>
 
 <mm:compare referid="pagecount" value="1" inverse="true">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" border="0" width="95%">
 	<tr>
-	<td>
+	<td align="left">
 	<mm:write referid="mlg.Pages"/> : <mm:write referid="navline" />
 	</td></tr>
 </table>
 </mm:compare>
-<table cellpadding="0" cellspacing="0" style="margin-top : 5px; margin-left : 25px">
-	<tr><td><mm:compare referid="guestwritemodetype" value="open"><a href="<mm:url page="newpost.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="postareaid" value="$postareaid" /></mm:url>"><img src="<mm:write referid="image_newmsg" />" border="0" /></a></mm:compare> 
+<table cellpadding="0" cellspacing="0" style="margin-top : 5px;" width="95%">
+	<mm:compare referid="threadstartlevel" value="">
+	<tr><td align="left"><mm:compare referid="guestwritemodetype" value="open"><a href="<mm:url page="newpost.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="postareaid" value="$postareaid" /></mm:url>"><img src="<mm:write referid="image_newmsg" />" border="0" /></a></mm:compare> 
+	</mm:compare>
+	<mm:compare referid="threadstartlevel" value="moderator">
+	<mm:compare referid="ismoderator" value="true">
+	<tr><td align="left"><mm:compare referid="guestwritemodetype" value="open"><a href="<mm:url page="newpost.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="postareaid" value="$postareaid" /></mm:url>"><img src="<mm:write referid="image_newmsg" />" border="0" /></a></mm:compare> 
+	</mm:compare>
+	</mm:compare>
 	</td></tr>
 </table>
 <br />
-<br />
-<br />
+<table>
+<tr><td valign="top" width="50%">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-left : 30px" align="left">
 	<tr><td align="left">
 	<br />
@@ -168,17 +176,37 @@
 	<mm:write referid="image_state_normalme" /> <mm:write referid="mlg.topic_to_which_you_have_contributed"/><p />
 	</td></tr>
 </table>
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br /><br />
-<br /><br /><br />
-<br /><br /><br />
-<br /><br /><br />
+</td>
+<td valign="top" width="50%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-left : 30px" align="left">
+	<tr><td align="left">
+	<br />
+        <mm:compare referid="threadstartlevel" value="">
+	<mm:write referid="mlg.You_may_post_new_threads"/> <p />
+	</mm:compare>
+        <mm:compare referid="threadstartlevel" value="all">
+	<mm:write referid="mlg.You_may_post_new_threads"/> <p />
+	</mm:compare>
+        <mm:compare referid="threadstartlevel" value="moderator">
+	<mm:compare referid="ismoderator" value="true">
+	<mm:write referid="mlg.You_may_post_new_threads"/> <p />
+	</mm:compare>
+	<mm:compare referid="ismoderator" value="false">
+	<mm:write referid="mlg.You_may_not_post_new_threads"/> <p />
+	</mm:compare>
+	</mm:compare>
+	<mm:write referid="mlg.You_may_post_new_replies"/> <p />
+	<mm:write referid="mlg.You_may_edit_your_posts"/> <p />
+	<mm:write referid="mlg.You_may_delete_your_posts"/> <p />
+	</td></tr>
+</table>
+</td></tr>
+</table>
+
 <mm:compare referid="isadministrator" value="true">
-        <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-left : 20px;" width="95%" align="left">
+        <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-bottom : 20px;" width="95%" align="left">
         <tr><th align="left"><mm:write referid="mlg.Admin_tasks"/></th></tr>
-        <td>
+        <td align="left">
         <p />
   				<a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.change_area"/></a><br />
 
@@ -194,8 +222,8 @@
 				</mm:url>"><mm:write referid="mlg.remove_moderator"/></a><br />
 	</td></tr>
 </table>
+<br />
 </mm:compare>
-
 </div>
 
 <div class="footer">

@@ -3,10 +3,10 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="forumid" />
 <mm:import externid="postareaid">-1</mm:import>
 <mm:import externid="postthreadid">-1</mm:import>
 <mm:import externid="searchkey" />
@@ -33,8 +33,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-     <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:write referid="mlg.Search" /></mm:compare></title>
-
+   <title>MMBob</title>
 </head>
 <body>
 
@@ -44,7 +43,12 @@
 </div>
                                                                                                        
 <div class="bodypart">
-<mm:include page="path.jsp?type=$pathtype" />
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+<mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,posterid,forumid,active_nick" />
+</mm:nodefunction>
 
 <mm:compare referid="searchmode" value="database">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
@@ -114,10 +118,11 @@
 		   </mm:node>
 		   </mm:compare>
 		
-		   <option value="-1">All Areas
+		   <option value="-1"><mm:write referid="mlg.All_Areas" />
                   <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
-                      <mm:import reset="true" id="area_id"/>
-			<option value="<mm:field name="id" />" <mm:compare referid="searchareaid" referid2="area_id">selected</mm:compare>><mm:field name="name" />
+			<mm:field name="id">
+			<option value="<mm:field name="id" />" <mm:compare referid2="searchareaid">selected</mm:compare>><mm:field name="name" />
+			</mm:field>
 		  </mm:nodelistfunction>
 		   </select>
 		</th>
@@ -125,7 +130,7 @@
 		<input name="searchkey" size="20" value="<mm:write referid="searchkey" />">
 		</td>
 		<td>
-		<input type="submit" value="search" />
+		<input type="submit" value="<mm:write referid="mlg.Search" />" />
 		</td>
 	</td>
 	</tr>
@@ -140,7 +145,7 @@
 		   <option value="<mm:field name="number" />">Current
 		   </mm:node>
 		   </mm:compare>
-		   <option value="-1">All Areas
+		   <option value="-1"><mm:write referid="mlg.All_Areas" />
                   <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
 			<mm:field name="id">
 			<option value="<mm:field name="id" />" <mm:compare referid2="searchareaid">selected</mm:compare>><mm:field name="name" />
@@ -152,7 +157,7 @@
 		<input name="searchkey" size="20" value="<mm:write referid="searchkey" />">
 		</td>
 		<td>
-		<input type="submit" value="search" />
+		<input type="submit" value="<mm:write referid="mlg.Search" />" />
 		</td>
 	</td>
 	</tr>

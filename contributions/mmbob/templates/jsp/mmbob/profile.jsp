@@ -4,6 +4,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 
 <mm:cloud sessionname="forum">
+<mm:import id="entree" reset="true"><%= request.getHeader("aad_nummer") %></mm:import>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">poster_index</mm:import>
@@ -11,7 +12,6 @@
 <mm:import externid="posterid" id="profileid" />
 <mm:import externid="profile">personal</mm:import>
 <mm:import id="feedbackdefault"></mm:import>
-<mm:import id="page">1</mm:import>
 <mm:write session="feedback_message" referid="feedbackdefault"/>
 <%-- login part --%>
 <%@ include file="getposterid.jsp" %>
@@ -27,18 +27,15 @@
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
-
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
+      <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+      <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+      <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
 </mm:nodefunction>
-
-<mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
-  <mm:import id="privatemessagesenabled"><mm:field name="privatemessagesenabled" /></mm:import>
-</mm:nodefunction>
-
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:write referid="mlg.Profile_settings" /></mm:compare></title>
+   <title>MMBob</title>
 </head>
 <body>
 
@@ -48,8 +45,7 @@
 </div>
                                                                                               
 <div class="bodypart">
-
-<mm:include page="path.jsp?type=$pathtype" />
+<mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,forumid,posterid,active_nick" />
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
                         <tr><th colspan="2" align="left">
@@ -82,7 +78,7 @@
         </li>
         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
         <mm:field name="contactinfoenabled">
-          <mm:compare value="true">
+          <mm:compare referid="adminmode" value="true">
         <mm:compare value="contact" referid="profile">
         <li class="selected">
         </mm:compare>
@@ -97,7 +93,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="contact" />
-        </mm:url>"><mm:write referid="mlg.contact"/></a>
+        </mm:url>">admin info</a>
         </li>
         </mm:compare>
         </mm:field>
@@ -186,8 +182,9 @@
         <div class="row">
           <input type="hidden" name="action" value="editposter" />
           <span class="label"><mm:write referid="mlg.Account"/></span>
-          <span class="formw"><mm:field name="account" /></span>
+          <span class="formw"><mm:field name="nick" /></span>
         </div>
+        <mm:compare referid="entree" value="null" inverse="false">
         <div class="row">
           <span class="label"><mm:write referid="mlg.Firstname"/></span>
           <span class="formw">
@@ -212,6 +209,25 @@
             <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
           </span>
         </div>
+          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid">
+        <div class="row">
+          <span class="label"><mm:field name="guiname" /></span>
+          <span class="formw">
+	    <mm:field name="edit"><mm:compare value="true">
+	    <mm:field name="type">
+	    <mm:compare value="string"><input name="<mm:field name="name" />" type="text" size="25" value="<mm:field name="value" />"/></mm:compare>
+	    <mm:compare value="field"><textarea rows="7" cols="25" name="<mm:field name="name" />"><mm:field name="value" /></textarea></mm:compare>
+	    <mm:compare value="date"><mm:import id="bname"><mm:field name="name" /></mm:import><mm:import id="bvalue"><mm:field name="value" /></mm:import><mm:include page="bdate.jsp" referids="bname,bvalue" /></mm:compare>
+	    </mm:field>
+	    </mm:compare>
+	    <mm:compare value="false">
+            <mm:field name="value" />
+	    </mm:compare>
+	    </mm:field>
+          </span>
+        </div>
+
+	  </mm:nodelistfunction>
         <div class="row">
           <span class="label"><mm:write referid="mlg.Gender"/></span>
           <span class="formw">
@@ -241,6 +257,74 @@
             <input name="newconfirmpassword" type="password" size="25" />
           </span>
         </div>
+	</mm:compare>
+        <mm:compare referid="entree" value="null" inverse="true">
+
+          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid">
+        <div class="row">
+          <span class="label"><mm:field name="guiname" /></span>
+          <span class="formw">
+	    <mm:field name="edit"><mm:compare value="true">
+
+	    <mm:field name="type">
+	    <mm:compare value="string"><input name="<mm:field name="name" />" type="text" size="25" value="<mm:field name="value" />"/></mm:compare>
+	    <mm:compare value="field"><textarea rows="7" cols="25" name="<mm:field name="name" />"><mm:field name="value" /></textarea></mm:compare>
+	    <mm:compare value="date"><mm:import id="bname"><mm:field name="name" /></mm:import><mm:import id="bvalue"><mm:field name="value" /></mm:import><mm:include page="bdate.jsp" referids="bname,bvalue" /></mm:compare>
+	    </mm:field>
+	    </mm:compare>
+	    <mm:compare value="false">
+            <mm:field name="value" />
+	    </mm:compare>
+	    </mm:field>
+          </span>
+        </div>
+
+	  </mm:nodelistfunction>
+        <div class="row">
+          <span class="label"><mm:write referid="mlg.Firstname"/></span>
+          <span class="formw">
+            <mm:field name="firstname" /> (entree)
+          </span>
+        </div>
+        <div class="row">
+          <span class="label"><mm:write referid="mlg.Lastname"/></span>
+          <span class="formw">
+            <mm:field name="lastname" /> (entree)
+          </span>
+        </div>
+        <div class="row">
+          <span class="label"><mm:write referid="mlg.Email"/></span>
+          <span class="formw">
+            <mm:field name="email" /> (entree)
+          </span>
+        </div>
+        <div class="row">
+          <span class="label"><mm:write referid="mlg.Location"/></span>
+          <span class="formw">
+            <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
+          </span>
+        </div>
+        <div class="row">
+          <span class="label"><mm:write referid="mlg.Gender"/></span>
+          <span class="formw">
+				<mm:field name="gender">
+				<select name="newgender">
+				<mm:compare value="male">
+				<option value="male"><mm:write referid="mlg.Male"/></option>
+				<option value="female"><mm:write referid="mlg.Female"/></option>
+				</mm:compare>
+				<mm:compare value="male" inverse="true">
+				<option value="female"><mm:write referid="mlg.Female"/></option>
+				<option value="male"><mm:write referid="mlg.Male"/></option>
+				</mm:compare>
+				</select>
+				</mm:field>
+          </span>
+        </div>
+        <input name="newpassword" type="hidden" value="<mm:write referid="entree" />" />
+        <input name="newconfirmpassword" type="hidden" value="<mm:write referid="entree" />" />
+	</mm:compare>
+
         <%-- TODO: not yet implemented
           <div class="row">
           <span class="label"><mm:write referid="mlg.Level"/></span>
@@ -265,8 +349,7 @@
           <span class="formw">
             <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
-        </div> 
-    
+        </div>    
         </mm:nodefunction>
         </mm:functioncontainer>    
         </mm:node>
@@ -278,21 +361,45 @@
           </span>
         </div>
 
+
     </mm:compare>
+    <mm:compare value="contact" referid="profile">
+    <div class="row" align="left">
         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
         <mm:field name="contactinfoenabled">
-          <mm:compare value="true">
-    <mm:compare value="contact" referid="profile">
-        <mm:write referid="mlg.Not_implemented"/>  <br />
+          <mm:compare referid="adminmode" value="true">
         <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
 		<mm:compare referid="adminmode" value="true">
 		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
 		</mm:compare>
 	</mm:nodelistfunction>
+</mm:compare>
+</mm:field>
+</mm:nodefunction>
+    </div>
     </mm:compare>
     <mm:compare value="signatures" referid="profile">
-	Signatures <br />
 		<table>
+		<mm:import id="maxsig">1</mm:import>
+		<mm:compare referid="maxsig" value="1">
+        	<mm:nodefunction set="mmbob" name="getSingleSignature" referids="forumid,posterid">
+		<form action="<mm:url page="profile.jsp" referids="forumid,posterid,profile" />" method="post">
+		<input type="hidden" name="action" value="setsinglesignature" />
+		<tr>
+		<td>
+			<textarea name="newbody" rows="5" cols="45"><mm:field name="body" /></textarea>
+		</td>
+		</tr>
+		<tr>
+		<td align="center">
+		<input type="submit" value="<mm:write referid="mlg.Save"/>" />
+		</td>
+		</tr>
+		</form>
+		</table>
+		</mm:nodefunction>
+		</mm:compare>
+		<mm:compare referid="maxsig" value="1" inverse="true">
                 <mm:nodelistfunction set="mmbob" name="getSignatures" referids="forumid,posterid">
 		<form action="<mm:url page="profile.jsp" referids="forumid,posterid,profile" />" method="post">
 		<input type="hidden" name="action" value="changesignature" />
@@ -309,7 +416,7 @@
 		<input type="submit" value="save" />
 		</td>
 		<td>
-			<textarea name="newbody" rows="5" cols="50"><mm:field name="body" /></textarea>
+			<textarea name="newbody" rows="5" cols="45"><mm:field name="body" /></textarea>
 		</td>
 		</tr>
 		</form>
@@ -324,15 +431,13 @@
 		<input type="submit" value="save" />
 		</td>
 		<td>
-			<textarea name="newbody" rows="5" cols="50"></textarea>
+			<textarea name="newbody" rows="5" cols="45"></textarea>
 		</td>
 		</tr>
 		</form>
 		</table>
+		</mm:compare>
     </mm:compare>
-</mm:compare>
-</mm:field>
-</mm:nodefunction>
 
     <mm:compare value="avatar" referid="profile">
       <form enctype="multipart/form-data" action="<mm:url page="actions_avatar.jsp">
@@ -489,7 +594,7 @@
           <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
         <div class="row">
           <span class="label"><mm:write referid="mlg.Account"/></span>
-          <span class="formw"><mm:field name="account" /></span>
+          <span class="formw"><mm:field name="nick" /></span>
         </div>
         <div class="row">
           <span class="label"><mm:write referid="mlg.Firstname"/></span>
@@ -510,7 +615,11 @@
         </div>
         <div class="row">
           <span class="label"><mm:write referid="mlg.Gender"/></span>
-          <span class="formw"><mm:field name="gender" /></span>
+          <span class="formw"><mm:field name="gender">
+	<mm:compare value="male"><mm:write referid="mlg.Male"/></mm:compare>
+	<mm:compare value="female"><mm:write referid="mlg.Female"/></mm:compare>
+		</mm:field>
+		</span>
         </div>
         <%-- TODO: not yet implemented
         <div class="row">
@@ -533,19 +642,6 @@
             <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>   
-
-       <div class="row"></div>
-
-        <div class="row">
-           <span class="formw">
-           <mm:compare referid="posterid" value="-1" inverse="true">
-             <mm:compare referid="privatemessagesenabled" value="true">
-                <a href="<mm:url page="newsingleprivatemessage.jsp" referids="forumid,profileid"/>"><img src="<mm:write referid="image_privatemsg" />" border="0" /></a>
-             </mm:compare>
-          </mm:compare>
-          </span>
-        </div>
-
              </mm:nodefunction>
 </mm:functioncontainer>
         </mm:node>

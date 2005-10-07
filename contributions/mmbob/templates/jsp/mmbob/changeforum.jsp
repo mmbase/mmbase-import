@@ -3,9 +3,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -34,6 +34,11 @@
                                                                                               
 <div class="bodypart">
 
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+	<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
+</mm:nodefunction>
+
+<mm:compare referid="isadministrator" value="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Change_existing_forum" /></th></tr>
 
@@ -44,7 +49,7 @@
 	<tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
 	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
 	</td></tr>
-	<tr><th><mm:write referid="mlg.Language"/></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Language"/></th><td colspan="2" align="left">
 	<input name="newlang" size="2" value="<mm:field name="language" />" >
 	</td></tr>
 	<tr><th><mm:write referid="mlg.Description"/></th><td colspan="2">
@@ -78,8 +83,8 @@
 				</mm:url>" method="post">
         <input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="changeconfig">
-	<tr><th>Login Mode</th>
-		<td colspan="2"><select name="loginmodetype">
+	<tr><th width="30%">Login Mode</th>
+		<td colspan="2" align="left"><select name="loginmodetype">
 		<mm:field name="loginmodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -101,7 +106,7 @@
 		</td>
  	</tr>
 	<tr><th>LogoutMode</th>
-		<td colspan="2"><select name="logoutmodetype">
+		<td colspan="2" align="left"><select name="logoutmodetype">
 		<mm:field name="logoutmodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -123,7 +128,7 @@
 		</td>
  	</tr>
 	<tr><th>GuestReadMode</th>
-		<td colspan="2"><select name="guestreadmodetype">
+		<td colspan="2" align="left"><select name="guestreadmodetype">
 		<mm:field name="guestreadmodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -145,7 +150,7 @@
 		</td>
  	</tr>
 	<tr><th>GuestWriteMode</th>
-		<td colspan="2"><select name="guestwritemodetype">
+		<td colspan="2" align="left"><select name="guestwritemodetype">
 		<mm:field name="guestwritemodetype">
 		<mm:compare value="open">
 		<option>open 
@@ -167,7 +172,7 @@
 		</td>
  	</tr>
 	<tr><th>AvatarUpload</th>
-		<td colspan="2"><select name="avatarsuploadenabled">
+		<td colspan="2" align="left"><select name="avatarsuploadenabled">
 		<mm:field name="avatarsuploadenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -189,7 +194,7 @@
 		</td>
  	</tr>
 	<tr><th>AvatarGallery</th>
-		<td colspan="2"><select name="avatarsgalleryenabled">
+		<td colspan="2" align="left"><select name="avatarsgalleryenabled">
 		<mm:field name="avatarsgalleryenabled">
 		<mm:compare value="true">
 		<option value="true">on
@@ -210,6 +215,26 @@
 		</select>
 		</td>
  	</tr>
+
+	<tr><th>Navigation Method</th>
+		<td colspan="2" align="left"><select name="navigationmethod">
+		<mm:field name="navigationmethod">
+		<mm:compare value="list">
+		<option value="list">list
+		<option value="tree">tree
+		</mm:compare>
+		<mm:compare value="tree">
+		<option value="tree">tree
+		<option value="list">list
+		</mm:compare>
+		</mm:field>
+		</select>
+		</td>
+ 	</tr>
+	<tr><th>Url Alias</th>
+		<td colspan="2" align="left"><input name="alias" value="<mm:field name="alias" />" size="15" />
+		</td>
+	</tr>
   <th>&nbsp;</th>
 <td align="middle" >
 	<input type="submit" value="<mm:write referid="mlg.Save"/>">
@@ -241,7 +266,7 @@
 		<mm:import id="rulesid" reset="true"><mm:field name="number" /></mm:import>
 	<tr><th>Title</th><td colspan="2"><input name="title" value="<mm:field name="title" />" size="70" style="width: 100%"></td></tr>
 	<tr><th>Rules</th><td colspan="2">
-	<textarea name="body" rows="15" cols="70"><mm:field name="body" /></textarea>
+	<textarea name="body" rows="15" style="width: 100%"><mm:field name="body" /></textarea>
 	</td></tr>
 	<input type="hidden" name="rulesid" value="<mm:write referid="rulesid"/>" />
 	<input type="hidden" name="action" value="changerules" />
@@ -273,6 +298,13 @@
 	</td>
 	</tr>
 </table>
+</mm:compare>
+<mm:compare referid="isadministrator" value="false">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
+		<tr><th>MMBob system error</th></tr>
+		<tr><td height="40"><b>ERROR: </b> action not allowed by this user </td></tr>
+	</table>
+</mm:compare>
 
 </div>
 

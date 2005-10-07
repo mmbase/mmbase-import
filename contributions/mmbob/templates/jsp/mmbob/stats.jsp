@@ -2,6 +2,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase" method="http" rank="administrator">
+<mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
 <%@ include file="thememanager/loadvars.jsp" %>
 <HTML>
 <HEAD>
@@ -9,12 +10,6 @@
    <title>MMBob</title>
 </head>
 
-<!-- action check -->
-<mm:import externid="action" />
-<mm:present referid="action">
- <mm:include page="actions.jsp" />
-</mm:present>
-<!-- end action check -->
 <mm:import id="posterid">-1</mm:import>
 <mm:import id="mode">stats</mm:import>
 <body>

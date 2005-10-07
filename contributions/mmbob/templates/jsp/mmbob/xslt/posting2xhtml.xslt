@@ -5,7 +5,7 @@
 
   <xsl:template match="quote">
     <table width="90%" cellspacing="1" cellpadding="3" border="0" align="center">
-      <tr><td><span class="genmed"><b><xsl:value-of select="@poster"/> wrote:</b></span></td></tr>
+      <tr><td align="left"><span class="genmed"><b><xsl:value-of select="@poster"/> wrote:</b></span></td></tr>
       <tr>
         <td class="quote"><xsl:apply-templates /></td>
       </tr>

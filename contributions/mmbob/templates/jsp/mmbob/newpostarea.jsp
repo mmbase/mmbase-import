@@ -3,9 +3,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -17,7 +17,10 @@
 <!-- login part -->
   <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
-                                                                                                                    
+  
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+        <mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
+</mm:nodefunction>                                                                                                                  
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
 
@@ -35,6 +38,7 @@
                                                                                               
 <div class="bodypart">
 
+<mm:compare referid="isadministrator" value="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Add_new_postarea" /></th></tr>
 
@@ -66,6 +70,13 @@
 
 </table>
 </div>
+</mm:compare>
+<mm:compare referid="isadministrator" value="false">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
+		<tr><th>MMBob system error</th></tr>
+		<tr><td height="40"><b>ERROR: </b> action not allowed by this user </td></tr>
+	</table>
+</mm:compare>
 
 <div class="footer">
     <mm:import id="footerpath" jspvar="footerpath"><mm:function set="mmbob" name="getForumFooterPath" referids="forumid"/></mm:import>

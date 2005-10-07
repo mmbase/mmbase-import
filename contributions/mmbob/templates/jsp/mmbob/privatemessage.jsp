@@ -6,10 +6,10 @@
 <mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
 </mm:cloud>
 <mm:cloud sessionname="forum" username="$dac" password="$dpw">
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="forumid" />
 <mm:import externid="boxname">Inbox</mm:import>
 <mm:import externid="mailboxid" />
 <mm:import externid="messageid" />
@@ -32,8 +32,7 @@
 
 <html>
 <head>
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> /
-<mm:write referid="mlg.private_messages"/> </mm:compare></title>
+   <title>MMBob</title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
 </head>
 
@@ -153,7 +152,7 @@
 		</mm:compare>
 	</mm:node>
 	<mm:compare referid="viewstate" value="0">
-        <!--<mm:function set="mmbob" name="signalMailboxChange" referids="forumid,posterid,mbn@mailboxid" />-->
+        <mm:function set="mmbob" name="signalMailboxChange" referids="forumid,posterid,mbn@mailboxid" />
 	</mm:compare>
 	</mm:present>
 	</table>

@@ -3,20 +3,17 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
-<%@ include file="thememanager/loadvars.jsp" %>
-
 <mm:import externid="forumid" />
-<mm:import externid="postareaid" />
-<mm:import externid="postthreadid" />
-
+<%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:node referid="postareaid"><mm:field name="name"/></mm:node> / <mm:node referid="postthreadid"><mm:field name="subject"/></mm:node></mm:compare></title>
+   <title>MMBob</title>
    <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 </head>
 <body>
-
+<mm:import externid="postareaid" />
+<mm:import externid="postthreadid" />
 <mm:import externid="page">1</mm:import>
 <mm:import externid="postingid" />
 
@@ -80,8 +77,12 @@
                                                                                                               
 <div class="bodypart">
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import> 
-<mm:include page="path.jsp?type=postthread" referids="logoutmodetype" />
+<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+<mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
+<mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
+<mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
 </mm:nodefunction>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
@@ -119,9 +120,8 @@
 	  </b>
 	</td>
 	<td align="right">
-        <mm:compare referid="posterid" value="-1" inverse="true">
 	<a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | 
-	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarks</a> | </mm:compare> <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+	<a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
 	</td></tr>
         </mm:nodefunction>
 </table>
@@ -129,11 +129,11 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
   		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize,imagecontext">
 		  <mm:first>
-			<tr><th width="25%" align="left"><mm:write referid="mlg.Member"/></th><th align="left"><mm:write referid="mlg.Topic"/>: <mm:field name="subject" /></th></tr>
+			<tr align="left"><th width="25%" align="left"><mm:write referid="mlg.Member"/></th><th align="left"><mm:write referid="mlg.Topic"/>: <mm:field name="subject" /></th></tr>
 		  </mm:first>
-			<tr>
+			<tr align="left">
 			<td class="<mm:field name="tdvar" />" align="left">
-			<a name="p<mm:field name="id" />" />
+			<a name="p<mm:field name="id" />">&nbsp;</a>
 			<mm:field name="posttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
 			</td>
 			<td class="<mm:field name="tdvar" />" align="right">
@@ -188,7 +188,7 @@
                                 <mm:param name="postareaid" value="$postareaid" />
                                 <mm:param name="postthreadid" value="$postthreadid" />
                                 <mm:param name="postingid" value="$postingid" />
-                                </mm:url>"><img src="<mm:write referid="image_deletemsg" />" border="0" /></a> 
+                                </mm:url>"><img src="<mm:write referid="image_mdelete" />" border="0" /></a>
 
 				</mm:compare>
 			</mm:field>
@@ -269,7 +269,6 @@
 
 <mm:compare referid="guestwritemodetype" value="open">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
-   <a name="reply" />
   <tr><th colspan="3"><mm:write referid="mlg.Reply"/></th></tr>
 	<mm:import externid="error" from="session">none</mm:import>
 	<mm:compare referid="error" value="none" inverse="true">
@@ -297,10 +296,8 @@
 	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
 
 		<mm:compare referid="posterid" value="-1" inverse="true">
-		<mm:node number="$posterid">
-		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
-		<input name="poster" type="hidden" value="<mm:field name="account" />" >
-		</mm:node>
+		<mm:write referid="active_nick" /> (<mm:write referid="active_firstname" /> <mm:write referid="active_lastname" />)
+		<input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
 		<input name="poster" type="hidden" style="width: 100%" value="<mm:write referid="mlg.guest"/>" >
@@ -313,6 +310,7 @@
 	<center><input type="submit" value="<mm:write referid="mlg.Post_reply"/>"/></center>
 	</td></tr>
   </form>
+  <a name="reply">&nbsp;</a>
 </table>
 </mm:compare>
 </mm:compare>

@@ -2,12 +2,12 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="adminmode">false</mm:import>
-<mm:import externid="forumid" />
 <mm:import externid="boxname">Inbox</mm:import>
-<mm:import externid="mailboxid" />
+<mm:import externid="mailboxid"></mm:import>
 <mm:import externid="pathtype">privatemessages</mm:import>
 <mm:import externid="posterid" id="profileid" />
 
@@ -27,8 +27,8 @@
 
 <html>
 <head>
+   <title>MMBob</title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><mm:compare referid="forumid" value="unknown" inverse="true"><mm:node referid="forumid"><mm:field name="name"/></mm:node> / <mm:write referid="mlg.private_messages"/> </mm:compare></title>
 </head>
 <body>
 
@@ -89,14 +89,14 @@
    <td valign="top">
 	<table cellpadding="0" class="list" style="margin-top : 2px;" cellspacing="0" width="100%" border="1">
 	<tr><th></th><th><mm:write referid="mlg.Subject" /></th><th><mm:write referid="mlg.Sender" /></th><th><mm:write referid="mlg.Date" /></th><th></th></tr>
-	<mm:present referid="mailboxid">
+	<mm:compare referid="mailboxid" value="" inverse="true">
    	<form action="<mm:url page="privatemessagesconfirmaction.jsp" referids="forumid,mailboxid" />" method="post">
 	<mm:node referid="mailboxid">
 	<mm:relatednodes type="forumprivatemessage" orderby="createtime" directions="down">
 	<mm:first>
 		<mm:import id="messagesfound">true</mm:import>
 	</mm:first>
-	<tr><td><mm:index /></td><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject"><mm:isempty>no subject</mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a> <mm:field name="viewstate"><mm:compare value="0">*<mm:write referid="mlg.UNSEEN" />*</mm:compare></mm:field></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
+	<tr><td><mm:index /></td><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a> <mm:field name="viewstate"><mm:compare value="0">*<mm:write referid="mlg.UNSEEN" />*</mm:compare></mm:field></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
 	</mm:relatednodes>
 	</mm:node>
 	<tr>
@@ -114,7 +114,7 @@
 		</th>
 	</tr>
 	</form>
-	</mm:present>
+	</mm:compare>
 	</table>
    </td>
  </tr>
