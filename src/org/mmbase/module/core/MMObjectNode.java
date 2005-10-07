@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.159 2005-10-07 18:34:14 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.160 2005-10-07 21:12:02 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -87,8 +87,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Map which stores the current database value for fields when
-     * then change in the node. 
-     * it can be used to optimise cacheing  
+     * then change in the node.
+     * it can be used to optimise cacheing
      * @since MMBase-1.8
      */
     private Map oldValues = new HashMap();
@@ -411,6 +411,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
     /**
+     * @return <code>true</code> if field exists and may be used.
      * @since MMBase-1.8
      */
     protected boolean checkFieldExistance(String fieldName) {
@@ -420,7 +421,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return true;
         }
         if (! getBuilder().hasField(fieldName)) {
-            log.error("Tried to set non-existing field '" + fieldName + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
+            log.error("Tried to use non-existing field '" + fieldName + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
             throw new IllegalArgumentException("You cannot set non-existing field '" + fieldName + "' existing fields of '" + getBuilder().getTableName() + " are " + getBuilder().getFieldNames());
         }
         return true;
@@ -514,7 +515,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
 
         if (fieldValue instanceof DynamicDate) {
-            // 'dynamic' values can of course not be stored in database, and that is not the intentention too, so 
+            // 'dynamic' values can of course not be stored in database, and that is not the intentention too, so
             // store a static version
             fieldValue = new Date(((Date) fieldValue).getTime());
         }
@@ -529,10 +530,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             log.debug("Setting " + fieldName + " to " +  string);
         }
-        
+
         //store the old value
         storeOldValue(fieldName, originalValue);
-        
+
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
 
@@ -548,7 +549,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         setUpdate(fieldName);
         return true;
     }
-        
+
     /**
      * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
      * fill using an InputStream.
@@ -678,7 +679,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
-        if (!checkFieldExistance(fieldName)) return null;
         // get the value from the values table
         Object value = values.get(fieldName);
 
@@ -723,7 +723,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-        if (value == null) value = parent.getValue(this, fieldName);
+        if (value == null) {
+            value = parent.getValue(this, fieldName);
+        }
+        // still null!
+        if (value == null) {
+            if (!checkFieldExistance(fieldName)) return null;
+        }
 
         if (value instanceof InputStream) {
             value = useInputStream(fieldName, (InputStream) value);
@@ -800,7 +806,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * If the values map contains an InputStream, care must be taken because often an InputStream can be used only once.
      * @since MMBase-1.8
-     */ 
+     */
     private byte[] useInputStream(String fieldName, InputStream stream) {
         // first, convert to byte-array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -1074,7 +1080,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Return the names of all persistent fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
-     * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though. 
+     * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though.
      */
     public Set getChanged() {
         return changed;
@@ -1373,7 +1379,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public int getAge() {
         DayMarkers dayMarkers = ((DayMarkers) parent.mmb.getBuilder("daymarks"));
-        if (dayMarkers == null) return 0;        
+        if (dayMarkers == null) return 0;
         return dayMarkers.getAge(getNumber());
     }
 
