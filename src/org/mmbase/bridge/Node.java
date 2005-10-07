@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.61 2005-10-02 16:19:25 michiel Exp $
+ * @version $Id: Node.java,v 1.62 2005-10-07 18:43:39 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -493,6 +493,12 @@ public interface Node extends Comparable {
      * @since MMBase-1.8
      */
     public boolean isNew();
+
+    /**
+     * Whether a certain field's value was changed since the last commit.
+     * @since MMBase-1.8
+     */
+    public boolean isChanged(String fieldName);
 
     /**
      * Removes the Node.
