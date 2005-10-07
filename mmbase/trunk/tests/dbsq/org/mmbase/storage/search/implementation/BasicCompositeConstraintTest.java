@@ -9,23 +9,23 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicCompositeConstraintTest extends TestCase {
-    
+
     private final static int TEST_OPERATOR = CompositeConstraint.LOGICAL_AND;
-    
+
     /** Test instance. */
     private BasicCompositeConstraint instance = null;
-    
+
     public BasicCompositeConstraintTest(java.lang.String testName) {
         super(testName);
     }
-    
+
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
     }
-    
+
     /**
      * Sets up before each test.
      */
@@ -34,12 +34,12 @@ public class BasicCompositeConstraintTest extends TestCase {
         MMBase.getMMBase();
         instance = new BasicCompositeConstraint(TEST_OPERATOR);
     }
-    
+
     /**
      * Tears down after each test.
      */
     public void tearDown() throws Exception {}
-    
+
     /** Test of addChild method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testAddChild() {
         // Null child, should throw IllegalArgumentException.
@@ -47,16 +47,16 @@ public class BasicCompositeConstraintTest extends TestCase {
             instance.addChild(null);
             fail("Null child, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
-        
+
         // Trying to add constraint as child to itself, should throw IllegalArgumentException.
         try {
             instance.addChild(instance);
             fail("Trying to add constraint as child to itself, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
-        
+
         List childs = instance.getChilds();
         assertTrue(childs.size() == 0);
-        
+
         Constraint constraint1 = new BasicConstraint();
         instance.addChild(constraint1);
         childs = instance.getChilds();
@@ -70,7 +70,7 @@ public class BasicCompositeConstraintTest extends TestCase {
         assertTrue(childs.get(1).equals(constraint2));
         assertTrue(result == instance);
     }
-    
+
     /** Test of BasicCompositeConstraint(int) */
     public void testConstructor() {
         // Invalid logical operator value, should throw IllegalArgumentException.
@@ -79,15 +79,15 @@ public class BasicCompositeConstraintTest extends TestCase {
             fail("Invalid logical operator value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
     }
-    
+
     /** Test of getChilds method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testGetChilds() {
         // See:
         testAddChild();
-        
+
         List childs = instance.getChilds();
         Constraint item = new BasicConstraint();
-        
+
         // List returned must be unmodifiable.
         try {
             childs.add(item);
@@ -98,23 +98,23 @@ public class BasicCompositeConstraintTest extends TestCase {
             fail("Attempt to modify list, must throw UnsupportedOperationException");
         } catch (UnsupportedOperationException e) {}
     }
-    
+
     /** Test of getLogicalOperator method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testGetLogicalOperator() {
         assertTrue(instance.getLogicalOperator() == TEST_OPERATOR);
     }
-    
-    
+
+
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testEquals() {
         // TODO: implement test
     }
-    
+
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testHashCode() {
         // TODO: implement test
     }
-    
+
     /** Test of getBasicSupportLevel method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testGetBasicSupportLevel() {
         // No childs: optimal support.
@@ -135,28 +135,12 @@ public class BasicCompositeConstraintTest extends TestCase {
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL));
         assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NONE);
     }
-    
-    /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
-    public void testToString() {
-        assertTrue(instance.toString(),
-        instance.toString().equals("CompositeConstraint(inverse:"
-        + instance.isInverse() + ", operator:"
-        + instance.getLogicalOperator() + ", childs:"
-        + instance.getChilds() + ")"));
 
-        // Reverse inverse flag.
-        instance.setInverse(!instance.isInverse());
-        assertTrue(instance.toString(),
-        instance.toString().equals("CompositeConstraint(inverse:"
-        + instance.isInverse() + ", operator:"
-        + instance.getLogicalOperator() + ", childs:"
-        + instance.getChilds() + ")"));
-    }
-    
+
     public static Test suite() {
         TestSuite suite = new TestSuite(BasicCompositeConstraintTest.class);
-        
+
         return suite;
     }
-    
+
 }

@@ -10,7 +10,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicRelationStepTest extends TestCase {
 
@@ -149,44 +149,6 @@ public class BasicRelationStepTest extends TestCase {
         // TODO: implement test
     }
 
-    /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
-    public void testToString() {
-        // With default alias.
-        assertTrue(instance.toString(),
-        instance.toString().equals("RelationStep(tablename:" + instance.getTableName()
-        + ", alias:" + instance.getAlias() + ", nodes:"
-        + instance.getNodes() + ", dir:"
-        + RelationStep.DIRECTIONALITY_DESCRIPTIONS[instance.getDirectionality()]
-        + ", role:" + instance.getRole() + ")"));
-
-        // With test alias.
-        instance.setAlias(TEST_ALIAS);
-        assertTrue(instance.toString(),
-        instance.toString().equals("RelationStep(tablename:" + instance.getTableName()
-        + ", alias:" + instance.getAlias() + ", nodes:"
-        + instance.getNodes() + ", dir:"
-        + RelationStep.DIRECTIONALITY_DESCRIPTIONS[instance.getDirectionality()]
-        + ", role:" + instance.getRole() + ")"));
-
-        // With nodes.
-        instance.addNode(123)
-            .addNode(3456);
-        assertTrue(instance.toString(),
-        instance.toString().equals("RelationStep(tablename:" + instance.getTableName()
-        + ", alias:" + instance.getAlias() + ", nodes:"
-        + instance.getNodes() + ", dir:"
-        + RelationStep.DIRECTIONALITY_DESCRIPTIONS[instance.getDirectionality()]
-        + ", role:" + instance.getRole() + ")"));
-
-        // With role.
-        instance.setRole(new Integer(345));
-        assertTrue(instance.toString(),
-        instance.toString().equals("RelationStep(tablename:" + instance.getTableName()
-        + ", alias:" + instance.getAlias() + ", nodes:"
-        + instance.getNodes() + ", dir:"
-        + RelationStep.DIRECTIONALITY_DESCRIPTIONS[instance.getDirectionality()]
-        + ", role:" + instance.getRole() + ")"));
-     }
 
     public static Test suite() {
         TestSuite suite = new TestSuite(BasicRelationStepTest.class);
