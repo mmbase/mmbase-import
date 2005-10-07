@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.40 2005-10-06 14:00:42 michiel Exp $
+ * @version $Id: Users.java,v 1.41 2005-10-07 20:33:20 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -76,8 +76,8 @@ public class Users extends MMObjectBuilder {
             {
                 setDescription("Returns the rank of an mmbaseusers node");
             }
-            public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                return Users.this.getRank(node);
+            public Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+                return Users.this.getRank(getCoreNode(Users.this, node));
             }
     };
     {
