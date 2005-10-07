@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.1 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.2 2005-10-07 00:16:34 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -112,15 +112,15 @@ public abstract class ComparableDataType extends BasicDataType {
         return clone;
     }
 
-    public String toString() {
-        StringBuffer buf = new StringBuffer(super.toString());
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         if (getMinConstraint().getValue() != null) {
             buf.append(" min: " + getMinConstraint());
         }
         if (getMaxConstraint().getValue() != null) {
             buf.append(" max:" + getMaxConstraint());
         }
-        return buf.toString();
+        return buf;
     }
 
     private class MinConstraint extends AbstractValueConstraint {

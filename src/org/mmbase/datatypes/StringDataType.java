@@ -22,20 +22,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.16 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.17 2005-10-07 00:16:34 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
-
-    public static final String   CONSTRAINT_PATTERN = "pattern";
-    public static final Pattern CONSTRAINT_PATTERN_DEFAULT = Pattern.compile(".*");
-
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
-    protected DataType.ValueConstraint patternConstraint;
-
+    protected PatternConstraint patternConstraint = new PatternConstraint(Pattern.compile(".*"));
     private boolean isPassword = false;
-
     protected AbstractLengthDataType.MinConstraint minLengthConstraint = new AbstractLengthDataType.MinConstraint(this, 0);
     protected AbstractLengthDataType.MaxConstraint maxLengthConstraint = new AbstractLengthDataType.MaxConstraint(this, Long.MAX_VALUE);
 
@@ -51,7 +45,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         super.inherit(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
-            patternConstraint = new AbstractValueConstraint(dataType.getPatternConstraint());
+            patternConstraint = new PatternConstraint(dataType.patternConstraint);
             isPassword = dataType.isPassword();
             minLengthConstraint = new AbstractLengthDataType.MinConstraint(this, dataType.getMinLengthConstraint());
             maxLengthConstraint = new AbstractLengthDataType.MaxConstraint(this, dataType.getMaxLengthConstraint());
@@ -109,11 +103,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * @return the pattern.
      */
     public Pattern getPattern() {
-        if (patternConstraint == null) {
-            return CONSTRAINT_PATTERN_DEFAULT;
-        } else {
-            return (Pattern) patternConstraint.getValue();
-        }
+        return patternConstraint.getPattern();
     }
 
     /**
@@ -121,10 +111,6 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * @return the property as a {@link DataType.ValueConstraint}
      */
     public DataType.ValueConstraint getPatternConstraint() {
-        if (patternConstraint == null) {
-            patternConstraint = new AbstractValueConstraint(CONSTRAINT_PATTERN, CONSTRAINT_PATTERN_DEFAULT);
-            log.debug("instantiated " + patternConstraint + " for " + this);
-        }
         return patternConstraint;
     }
 
@@ -137,6 +123,10 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         return getPatternConstraint().setValue(value);
     }
 
+    /**
+     * Where or not not the data represents sensistive information, in which case e.g. input
+     * interface may present asterixes in stead of letters.
+     */
     public boolean isPassword() {
         return isPassword;
     }
@@ -146,24 +136,31 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     public Collection validate(Object value, Node node, Field field) {
         Collection errors = super.validate(value, node, field);
-        if (value != null) {
-            String stringValue = Casting.toString(value);
-            Pattern pattern = getPattern();
-            if (pattern != null) {
-                if (! pattern.matcher(stringValue).matches()) {
-                    errors = addError(errors, getPatternConstraint(), value);
-                }
-            }
-        }
+        errors = patternConstraint.validate(errors, value, node, field);
         return errors;
     }
 
-    public String toString() {
-        StringBuffer buf = new StringBuffer(super.toString());
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         if (getPattern() != null) {
             buf.append(" pattern:").append(getPattern()).append(" ");
         }
-        return buf.toString();
+        return buf;
+    }
+
+    protected class PatternConstraint extends AbstractValueConstraint {
+        PatternConstraint(PatternConstraint source) {
+            super(source);
+        }
+        PatternConstraint(Pattern v) {
+            super("pattern", v);
+        }
+        Pattern getPattern() {
+            return (Pattern) value;
+        }
+        public boolean valid(Object v, Node node, Field field) {
+            return value == null ? true : getPattern().matcher(Casting.toString(v)).matches();
+        }
     }
 
 }

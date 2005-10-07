@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.1 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.2 2005-10-07 00:16:34 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -41,18 +41,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * validation fails.
      */
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
-
-    private static final String CONSTRAINT_REQUIRED = "required";
-    private static final Boolean CONSTRAINT_REQUIRED_DEFAULT = Boolean.FALSE;
-
-    private static final String CONSTRAINT_UNIQUE = "unique";
-    private static final Boolean CONSTRAINT_UNIQUE_DEFAULT = Boolean.FALSE;
-
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
 
 
-    protected DataType.ValueConstraint requiredConstraint;
-    protected DataType.ValueConstraint uniqueConstraint;
+    protected RequiredConstraint requiredConstraint = new RequiredConstraint(false);
+    protected UniqueConstraint uniqueConstraint     = new UniqueConstraint(false);
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
@@ -98,10 +91,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             out.writeObject(owner == null ? null : "OWNER");
         }
         out.writeObject(classType);
-        if (defaultValue instanceof Serializable) {
+        if (defaultValue instanceof Serializable || defaultValue == null) {
             out.writeObject(defaultValue);
         } else {
-            log.warn("Default value is not serializable");
+            log.warn("Default value " + defaultValue.getClass() + " '" + defaultValue + "' is not serializable, taking it null, which may not be correct.");
             out.writeObject(null);
         }
         out.writeObject(commitProcessor);
@@ -110,8 +103,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
     // implementation of serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        requiredConstraint = (DataType.ValueConstraint) in.readObject();
-        uniqueConstraint   = (DataType.ValueConstraint) in.readObject();
+        requiredConstraint = (RequiredConstraint) in.readObject();
+        uniqueConstraint   = (UniqueConstraint) in.readObject();
         owner              = in.readObject();
         classType          = (Class) in.readObject();
         defaultValue       = in.readObject();
@@ -126,8 +119,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return Fields.getTypeDescription(Fields.classToType(classType)).toLowerCase();
     }
 
-
-
     /**
      * @inheritDoc
      */
@@ -141,8 +132,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         } else {
             enumerationValues = (LocalizedEntryListFactory) origin.getEnumerationFactory().clone();
         }
-        requiredConstraint = new AbstractValueConstraint(origin.getRequiredConstraint());
-        uniqueConstraint   = new AbstractValueConstraint(origin.getUniqueConstraint());
+        requiredConstraint = new RequiredConstraint(origin.requiredConstraint);
+        uniqueConstraint   = new UniqueConstraint(origin.uniqueConstraint);
 
         if (origin.getProcessors == null) {
             getProcessors = null;
@@ -285,29 +276,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      */
     public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
         Collection errors = VALID;
-        if (value == null && isRequired() && getDefaultValue() == null && commitProcessor == null) {
-            // only fail for fields users may actually edit
-            if (field == null || field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_SYSTEM_VIRTUAL) {
-                errors = addError(errors, getRequiredConstraint(), value);
-            }
-        }
-        // test uniqueness
-        if (node != null && field != null && value != null && isUnique() && !field.getName().equals("number")) {
-            // create a query and query for the value
-            // XXX This will test for uniquness using the cloud, so you'll miss objects you can't
-            // see (and database doesn't know that!)
-            NodeQuery query = field.getNodeManager().createQuery();
-            Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
-            Queries.addConstraint(query,constraint);
-            if (!node.isNew()) {
-                constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
-                Queries.addConstraint(query,constraint);
-            }
-            log.debug(query);
-            if (Queries.count(query) > 0) {
-                errors = addError(errors, getUniqueConstraint(), value);
-            }
-        }
+        // test uniqueness1
         // test enumerations
         // if (enumerationValues != null && enumerationValues.size() == 0) {
         //     ...
@@ -315,7 +284,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return errors;
     }
 
-    public String toString() {
+    protected StringBuffer toStringBuffer() {
         StringBuffer buf = new StringBuffer();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor.getClass().getName() + "");
@@ -338,7 +307,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         if (isFinished()) {
             buf.append(".");
         }
-        return buf.toString();
+        return buf;
+
+    }
+    public final String toString() {
+        return toStringBuffer().toString();
     }
 
 
@@ -401,14 +374,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * @inheritDoc
      */
     public boolean isRequired() {
-        return requiredConstraint == null ? CONSTRAINT_REQUIRED_DEFAULT.booleanValue() : Boolean.TRUE.equals(requiredConstraint.getValue());
+        return requiredConstraint.isRequired();
     }
 
     /**
      * @inheritDoc
      */
     public DataType.ValueConstraint getRequiredConstraint() {
-        if (requiredConstraint == null) requiredConstraint = new AbstractValueConstraint(CONSTRAINT_REQUIRED, CONSTRAINT_REQUIRED_DEFAULT);
         return requiredConstraint;
     }
 
@@ -423,14 +395,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * @inheritDoc
      */
     public boolean isUnique() {
-        return uniqueConstraint == null ? CONSTRAINT_UNIQUE_DEFAULT.booleanValue() : Boolean.TRUE.equals(uniqueConstraint.getValue());
+        return uniqueConstraint.isUnique();
     }
 
     /**
      * @inheritDoc
      */
     public DataType.ValueConstraint getUniqueConstraint() {
-        if (uniqueConstraint == null) uniqueConstraint = new AbstractValueConstraint(CONSTRAINT_UNIQUE, CONSTRAINT_UNIQUE_DEFAULT);
         return uniqueConstraint;
     }
 
@@ -569,7 +540,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * 
      */
-    protected class AbstractValueConstraint extends StaticAbstractValueConstraint {
+    protected abstract class AbstractValueConstraint extends StaticAbstractValueConstraint {
         protected AbstractValueConstraint(DataType.ValueConstraint source) {
             super(BasicDataType.this, source);
         }
@@ -585,12 +556,12 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article of inner classes,
      * cloning in java</a>
      */
-    protected static class StaticAbstractValueConstraint implements DataType.ValueConstraint {
-        private final String name;
+    protected static abstract class StaticAbstractValueConstraint implements DataType.ValueConstraint {
+        protected final String name;
         protected final BasicDataType parent;
-        private LocalizedString errorDescription;
-        private Object value;
-        private boolean fixed = false;
+        protected LocalizedString errorDescription;
+        protected Object value;
+        protected boolean fixed = false;
 
         protected StaticAbstractValueConstraint(BasicDataType parent, DataType.ValueConstraint source) {
             this.name = source.getName();
@@ -645,7 +616,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             this.fixed = fixed;
         }
 
-        protected final Collection validate(Collection errors, Object value, Node node, Field field) {
+        protected Collection validate(Collection errors, Object value, Node node, Field field) {
             if (! valid(value, node, field)) {
                 return parent.addError(errors, this, value);
             } else {
@@ -653,14 +624,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
             }
         }
-        /**
-         * Proposal: make this abstract. And see NodeDataType
-         *
-         * Validates for a given value whether this constraints applies.
-         */
-        public boolean valid(Object value, Node node, Field field) {
-            throw new UnsupportedOperationException("Not supported");
-        }
+
+        public abstract boolean valid(Object value, Node node, Field field);
 
 
         protected void inherit(DataType.ValueConstraint source) {
@@ -674,6 +639,54 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return name + " : " + value + ( fixed ? "." : "");
         }
 
+    }
+
+    protected class RequiredConstraint extends AbstractValueConstraint {
+        RequiredConstraint(RequiredConstraint source) {
+            super(source);
+        }
+        RequiredConstraint(boolean b) {
+            super("required", Boolean.valueOf(b));
+        }
+        final boolean isRequired() {
+            return value.equals(Boolean.TRUE);
+        }
+        public boolean valid(Object v, Node node, Field field) {
+            if(!isRequired()) return true;
+            return v != null || BasicDataType.this.commitProcessor != null;
+        }
+    }
+
+    protected class UniqueConstraint extends AbstractValueConstraint {
+        UniqueConstraint(UniqueConstraint source) {
+            super(source);
+        }
+        UniqueConstraint(boolean b) {
+            super("unique", Boolean.valueOf(b));
+        }
+        final boolean isUnique() {
+            return value.equals(Boolean.TRUE);
+        }
+        public boolean valid(Object v, Node node, Field field) {
+            if (! isUnique()) return true;
+            if (node != null && field != null && value != null && isUnique() && !field.getName().equals("number")) {
+                // create a query and query for the value
+                // XXX This will test for uniquness using the cloud, so you'll miss objects you can't
+                // see (and database doesn't know that!)
+                NodeQuery query = field.getNodeManager().createQuery();
+                Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
+                Queries.addConstraint(query,constraint);
+                if (!node.isNew()) {
+                    constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
+                    Queries.addConstraint(query,constraint);
+                }
+                log.debug(query);
+                return Queries.count(query) == 0;
+            } else {
+                // TODO needs to work without Node too.
+                return true;
+            }
+        }
     }
 
 }
