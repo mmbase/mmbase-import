@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.134 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.135 2005-10-07 18:44:28 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -201,24 +201,25 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // Makes a node or Relation object based on an MMObjectNode
     Node makeNode(MMObjectNode node, String nodeNumber) {
         int nodenr = node.getNumber();
+        MMObjectBuilder parent = node.getBuilder();
         if (nodenr == -1) {
             int nodeid = Integer.parseInt(nodeNumber);
-            if (node.parent instanceof TypeDef) {
+            if (parent instanceof TypeDef) {
                 return new BasicNodeManager(node, this, nodeid);
-            } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
+            } else if (parent instanceof RelDef || parent instanceof TypeRel) {
                 return new BasicRelationManager(node, this, nodeid);
-            } else if (node.parent instanceof InsRel) {
+            } else if (parent instanceof InsRel) {
                 return new BasicRelation(node, this, nodeid);
             } else {
                 return new BasicNode(node, this, nodeid);
             }
         } else {
             this.verify(Operation.READ, nodenr);
-            if (node.parent instanceof TypeDef) {
+            if (parent instanceof TypeDef) {
                 return new BasicNodeManager(node, this);
-            } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
+            } else if (parent instanceof RelDef || parent instanceof TypeRel) {
                 return new BasicRelationManager(node, this);
-            } else if (node.parent instanceof InsRel) {
+            } else if (parent instanceof InsRel) {
                 return new BasicRelation(node, this);
             } else {
                 return new BasicNode(node, this);
@@ -276,7 +277,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (node == null) {
             return false; // node does not exist
         } else {
-            if (isrelation && !(node.parent instanceof InsRel)) {
+            if (isrelation && !(node.getBuilder() instanceof InsRel)) {
                 return false;
             }
             return true;
