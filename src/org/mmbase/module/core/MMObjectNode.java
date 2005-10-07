@@ -14,6 +14,7 @@ import java.io.*;
 
 import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.security.*;
@@ -36,35 +37,16 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.158 2005-10-04 23:30:36 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.159 2005-10-07 18:34:14 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
     /**
-     * You cannot store real 'null's in a hashtable, so this constant can be used for this.
-     * @since MMBase-1.7
-     * @todo The _type_ of such a 'null' value cannot be determined. Do we need a NULL constant for every type in stead?
+     * @deprecated Simply use <code>null</code>
      */
-    public final static Object VALUE_NULL = new Serializable() {
-            private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-                // writing nothing in special, is good enough
-            }
-            private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-                // reading nothing is good enough too.
-            }
-            public String toString() { return "[FIELD VALUE NULL]"; }
-        };
-
-    /**
-     * Map which stores the current database value for fields when
-     * then change in the node. 
-     * it can be used to optimise cacheing  
-     * @since MMBase-1.8
-     */
-    private Map oldValues = new HashMap();
-
+    public final static Object VALUE_NULL = null;
     /**
      * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
      * It can be set back into the field with {@link #storeValue}, to unload the field again.
@@ -102,21 +84,26 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     // private Vector relations=null; // possibly filled with insRels
 
 
+
+    /**
+     * Map which stores the current database value for fields when
+     * then change in the node. 
+     * it can be used to optimise cacheing  
+     * @since MMBase-1.8
+     */
+    private Map oldValues = new HashMap();
+
+
     /**
      * Holds the name - value pairs of this node (the node's fields).
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
      * This collection should not be directly queried or changed -
      * use the SetValue and getXXXValue methods instead.
-     * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values.
      * It should then be made private, and methods that change the map (storeValue) be made synchronized.
      * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
-     * @scope private
      */
-    public Hashtable values = new Hashtable();
-    //private Map values = Collections.synchronizedMap(new HashMap());
-
+    protected Map values = Collections.synchronizedMap(new HashMap());
     private Map sizes = Collections.synchronizedMap(new HashMap());
-
 
     /**
      * Determines whether the node is being initialized (typically when it is loaded from the database).
@@ -144,7 +131,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Use {@link #getBuilder} instead.
      * @scope private
      */
-    public MMObjectBuilder parent;
+    protected MMObjectBuilder parent;
 
     /**
      * Pointer to the actual builder to which this node belongs.
@@ -180,13 +167,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Main constructor.
      * @param parent the node's parent, an instance of the node's builder.
+     * @throws IllegalArgumentException If parent is <code>null</code>
      */
     public MMObjectNode(MMObjectBuilder parent) {
         if (parent != null) {
             this.parent = parent;
         } else {
-            log.error("MMObjectNode-> contructor called with parent=null");
-            throw new NullPointerException("contructor called with parent=null");
+            throw new IllegalArgumentException("Contructor called with parent=null");
         }
     }
 
@@ -424,6 +411,22 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
     /**
+     * @since MMBase-1.8
+     */
+    protected boolean checkFieldExistance(String fieldName) {
+        if (fieldName.startsWith("_")) {
+            // don't complain then, a lot of hackery (apps1 import/export) is based on this.
+            // This is just a hack to make app1 import/export working, withough exposing the values map.
+            return true;
+        }
+        if (! getBuilder().hasField(fieldName)) {
+            log.error("Tried to set non-existing field '" + fieldName + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
+            throw new IllegalArgumentException("You cannot set non-existing field '" + fieldName + "' existing fields of '" + getBuilder().getTableName() + " are " + getBuilder().getFieldNames());
+        }
+        return true;
+    }
+
+    /**
      * Stores a value in the values hashtable.
      * This is a low-level method that circumvents typechecking and the triggers of extended classes.
      * You should normally call {@link #setValue} to change fields.
@@ -434,12 +437,29 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *@param fieldValue the value to assign
      */
     public void storeValue(String fieldName, Object fieldValue) {
-        if (fieldValue == null) {
+        if (fieldName.startsWith("_") && fieldValue == null) {
+            // This is just a hack to make app1 import/export working, withough exposing the values map.
             values.remove(fieldName);
-        } else {
+        }
+        if (checkFieldExistance(fieldName)) {
             values.put(fieldName, fieldValue);
         }
     }
+
+    /**
+     * this method stores a fieldvalue only once. the purpose is to
+     * store the value only the first time a field changes, so it reflects
+     * the value in the database.
+     * @param fieldName
+     * @param object
+     * @since MMBase-1.8
+     */
+    private void storeOldValue(String fieldName, Object object) {
+        if (! oldValues.containsKey(fieldName)) {
+            oldValues.put(fieldName, object);
+        }
+    }
+
 
     /**
      * Retrieves a value from the values hashtable.
@@ -486,7 +506,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public boolean setValue(String fieldName, Object fieldValue) {
         // check the value also when the parent thing is null
         Object originalValue = values.get(fieldName);
-        if (fieldValue == null) fieldValue = VALUE_NULL;
 
         if (fieldValue != VALUE_SHORTED) {
             // make sure this value remains not in the blob-cache.
@@ -529,20 +548,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         setUpdate(fieldName);
         return true;
     }
-    
-    /**
-     * this method stores a fieldvalue only once. the purpose is to
-     * store the value only the first time a field changes, so it reflects
-     * the value in the database.
-     * @param fieldName
-     * @param object
-     */
-    private void storeOldValue(String fieldName, Object object) {
-        if(oldValues.get(fieldName) == null) {
-            oldValues.put(fieldName, object);
-        }
-    }
-    
+        
     /**
      * Sets the size (in byte) of the given field. This is meant for byte-array fields, which you
      * fill using an InputStream.
@@ -641,7 +647,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the number of the node
      */
     public int getNumber() {
-        return Casting.toInt(values.get("number"));
+        return Casting.toInt(values.get(MMObjectBuilder.FIELD_NUMBER));
     }
 
     /**
@@ -650,7 +656,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the object type number of the node
      */
     public int getOType() {
-        return getIntValue("otype");
+        return Casting.toInt(values.get(MMObjectBuilder.FIELD_OBJECT_TYPE));
     }
 
 
@@ -658,9 +664,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.8
      */
     public boolean isNull(String fieldName) {
-        // get the value from the values table
-        Object value = values.get(fieldName);
-        return value == null || value.equals(VALUE_NULL);
+        if (checkFieldExistance(fieldName)) {
+            return values.get(fieldName) == null;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -670,6 +678,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
+        if (!checkFieldExistance(fieldName)) return null;
         // get the value from the values table
         Object value = values.get(fieldName);
 
@@ -697,7 +706,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // if we have an XML-dbtype field, we always have to return a Document (or null).
         // note that if the value is null we store it as a null value
-        if (parent != null && value != null && value != VALUE_NULL && !(value instanceof Document) &&
+        if (parent != null && value != null && !(value instanceof Document) &&
             getDBType(fieldName) == Field.TYPE_XML) {
             String string = Casting.toString(value).trim();
             Document doc = toXML(string, fieldName);
@@ -706,7 +715,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 value = doc;
                 values.put(fieldName, value);
             } else {
-                values.put(fieldName, VALUE_NULL);
+                values.put(fieldName, null);
             }
         }
 
@@ -822,7 +831,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public byte[] getByteValue(String fieldName) {
         Object obj = getValue(fieldName);
-        if (obj == null || obj == VALUE_NULL) {
+        if (obj == null) {
             return new byte[0];
         } else if (obj instanceof byte[]) {
             // was already unmapped so return the value
@@ -851,9 +860,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.debug("NUL on " + fieldName + " " + this, new Exception());
             return new ByteArrayInputStream(new byte[0]);
         }
-        if (VALUE_NULL.equals(value)) {
-            return new ByteArrayInputStream(new byte[0]);
-        }
+
         if (value instanceof InputStream) {
             // cannot return it directly, it would kill the inputstream, and perhaps it cannot be saved in db anymore then.
             // Sad, we have a buffer always now.
@@ -906,8 +913,27 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>int</code>
      */
     public MMObjectNode getNodeValue(String fieldName) {
-        if (fieldName == null || fieldName.equals("number")) return this;
-        return Casting.toNode(getValue(fieldName), parent);
+        if (fieldName == null || fieldName.equals(MMObjectBuilder.FIELD_NUMBER)) return this;
+        Object value = getValue(fieldName);
+        MMObjectNode res = null;
+         if (value instanceof MMObjectNode) {
+             res = (MMObjectNode) value;
+         } else if (value instanceof Node) {
+             Node node = (Node) value;
+             if (node.isNew()) {// sigh
+                 res = parent.getTmpNode("" + node.getNumber());
+             } else {
+                 res = parent.getNode(node.getNumber());
+             }
+         } else if (value instanceof Number) {
+             int nodenumber = ((Number)value).intValue();
+             if (nodenumber != -1) {
+                 res = parent.getNode(nodenumber);
+             }
+         } else if (value != null && !value.equals("")) {
+             res = parent.getNode(value.toString());
+         }
+         return res;
     }
 
     /**
@@ -1420,7 +1446,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         Iterator  i      = v.iterator();
         while(i.hasNext()) {
             MMObjectNode node = (MMObjectNode) i.next();
-            result.put(node.getStringValue("number"), node);
+            result.put(node.getStringValue(MMObjectBuilder.FIELD_NUMBER), node);
         }
         return result;
     }
@@ -1602,8 +1628,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
             convert = new MMObjectNode(parent.mmb.getBuilder(builderName));
             // parent needs to be set or else mmbase does nag nag nag on a setValue()
-            convert.setValue("number", node.getValue(type + ".number"));
-            convert.setValue("otype", ootype);
+            convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
+            convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
             list.add(convert);
             // first and only list or last list, return real values
             if(!i.hasNext()) {
