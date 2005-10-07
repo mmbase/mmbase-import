@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.3 2005-10-05 10:02:55 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.4 2005-10-07 17:12:12 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements java.io.Serializable, Cloneable {
@@ -94,7 +94,7 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         bundleSize += b.get(null).size();
     }
     /**
-     * Returns a Collection of Map.Entries for the given Locale. The collection kind of 'virtual',
+     * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
      * it only reflects the underlying memory structures.
      * @param locale The locale of <code>null</code> for the default locale.
      */
