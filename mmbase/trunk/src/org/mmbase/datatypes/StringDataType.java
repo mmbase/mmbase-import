@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.17 2005-10-07 00:16:34 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.18 2005-10-07 18:57:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -159,6 +159,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
             return (Pattern) value;
         }
         public boolean valid(Object v, Node node, Field field) {
+            String s = Casting.toString(v);
             return value == null ? true : getPattern().matcher(Casting.toString(v)).matches();
         }
     }

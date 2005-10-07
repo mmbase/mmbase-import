@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.27 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: DataType.java,v 1.28 2005-10-07 18:57:06 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -36,6 +36,28 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public static final int PROCESS_COMMIT = 0;
     public static final int PROCESS_GET    = 1;
     public static final int PROCESS_SET    = 2;
+
+
+    /**
+     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced always.
+     */
+    public static final int ENFORCE_ALWAYS   = Integer.MAX_VALUE;
+
+    /**
+     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced only if it was changed.
+     */
+    public static final int ENFORCE_ONCHANGE = 10000;
+
+    /**
+     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced only on creation.
+     */
+    public static final int ENFORCE_ONCREATE = 1000;
+
+    /**
+     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the
+     * value must be enforced never, so the constraint serves only as UI indication.
+     */
+    public static final int ENFORCE_NEVER    = 0;
 
     /**
      * An empty Parameter array.
@@ -260,12 +282,39 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public interface ValueConstraint extends java.io.Serializable {
 
         public String getName();
+        /** 
+         * A Value describing the constraint, so depending on the semantics of this constraint, it
+         * can have virtually every type.
+         */
         public Object getValue();
         public ValueConstraint setValue(Object value);
+        /**
+         * If the constraint does not hold, the following error description can be used. On default
+         * these descriptions are searched in a resource bundle based on the name of this
+         * constraint.
+         */
         public LocalizedString getErrorDescription();
         public void setErrorDescription(LocalizedString errorDescription);
+
+        /**
+         * This function should contain the actual logic of the constraint. This does not consider the 'enforceStrength'.
+         * @param value The value to check the constraint for
+         * @param node  Some constrainst may need the Node.
+         * @param field Some constrainst may need the Field.
+         * @return Whether the supplied value is a valid value for this constraint.
+         */
         public boolean valid(Object value, Node node, Field field);
+
+        /**
+         * If a constraint is 'fixed', the value and error-description cannot be changed any more.
+         */
         public void setFixed(boolean fixed);
+        
+        /**
+         * See {@link DataType.ENFORCE_ALWAYS}, {@link DataType.ENFORCE_ONCHANGE}, {@link DataType.ENFORCE_NEVER}.
+         */
+        public int getEnforceStrength();
+        public void setEnforceStrength(int v);
     }
 
 }
