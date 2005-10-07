@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.9 2005-05-18 14:20:03 michiel Exp $;
+ @version $Id: mmbase.css,v 1.10 2005-10-07 21:14:51 michiel Exp $;
 */
 
 html { 
@@ -121,14 +121,14 @@ a:hover {
   font-size: 1em;
   font-weight: bold;
   text-align: right;
-  text-weight: bold;
+  font-weight: bold;
 }
 
 .menuitem {
   color: black;
   font-size: 1em;
   text-align: right;
-  text-weight: bold;
+  font-weight: bold;
 }
 
 .link a img { 
