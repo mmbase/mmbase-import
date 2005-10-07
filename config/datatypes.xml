@@ -41,7 +41,8 @@
   <datatype id="string">
     <class name="org.mmbase.datatypes.StringDataType" />
 
-    <pattern value="(?s)[^\n\r]*" />
+    <!-- no new lines -->
+    <pattern value="(?m)\A[^\n\r]*\z" /> 
 
     <specialization id="lastmodifier">
       <unique value="false" />
@@ -83,7 +84,7 @@
     </specialization>
 
     <specialization id="field">
-      <pattern value="(?s).*" />
+      <pattern value="(?m).*" />
     </specialization>
 
     <specialization id="owner">
