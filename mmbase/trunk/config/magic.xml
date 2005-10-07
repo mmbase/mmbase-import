@@ -850,6 +850,18 @@
       </childlist>
     </detector>
     <detector>
+      <mimetype>application/postscript</mimetype>
+      <extension>ps</extension>
+      <designation>application/postscript</designation>
+      <test offset="0" type="string" comparator="=">%!</test>
+    </detector>
+    <detector>
+      <mimetype>application/postscript</mimetype>
+      <extension></extension>
+      <designation>application/postscript</designation>
+      <test offset="0" type="string" comparator="=">\004!</test>
+    </detector>
+    <detector>
       <mimetype>???</mimetype>
       <extension>???</extension>
       <designation>PostScript Type 1 font text</designation>
@@ -2073,7 +2085,7 @@
     </detector>
     <detector>
       <mimetype>???</mimetype>
-      <extension>???</extension>
+      <extension>eps</extension>
       <designation>DOS EPS Binary File</designation>
       <test offset="0" type="belong" comparator="=">0xc5d0d3c6</test>
       <childlist>
@@ -2670,6 +2682,12 @@
       <extension>html</extension>
       <designation>HTML document text</designation>
       <test offset="0" type="string" comparator="=">&lt;HTML</test>
+    </detector>
+    <detector>
+      <mimetype>text/xml</mimetype>
+      <extension>xml</extension>
+      <designation>XML file</designation>
+      <test offset="0" type="string" comparator="=">&lt;?xml </test>
     </detector>
     <detector>
       <mimetype>text/sgml</mimetype>
