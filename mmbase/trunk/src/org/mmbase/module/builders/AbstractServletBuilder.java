@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.*;
 import org.mmbase.security.Rank;
 
 /**
@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.30 2005-10-04 09:16:21 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.31 2005-10-07 18:38:22 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -270,7 +270,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             Iterator i = cp.iterator();
             while (i.hasNext()) {
                 String f = (String) i.next();
-                if (node.parent.getField(f) != null) {
+                if (node.getBuilder().hasField(f)) {
                     node.setValue(f, null);
                 }
             }
@@ -365,7 +365,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     return servlet;
                 }
 
-                public Object getFunctionValue(MMObjectNode node, Parameters a) {
+                public Object getFunctionValue(Node node, Parameters a) {
                     StringBuffer servlet = getServletPath(a);
 
                     String session = (String) a.get("session");
@@ -467,8 +467,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 {
                     setDescription("Returns an URL for an icon for this blob");
                 }
-                public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-                    String mimeType = AbstractServletBuilder.this.getMimeType(node);
+                public Object getFunctionValue(Node n, Parameters parameters) {
+                    String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
                     ResourceLoader webRoot = ResourceLoader.getWebRoot();
                     HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
                     String root;
