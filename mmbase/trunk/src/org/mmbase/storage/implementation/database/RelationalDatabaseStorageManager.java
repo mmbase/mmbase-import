@@ -18,7 +18,7 @@ import org.mmbase.storage.StorageException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.8 2005-07-15 09:51:04 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.9 2005-10-07 18:49:22 michiel Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -76,7 +76,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         }
         try {
             do {
-                super.change(node,builder);
+                super.change(node, builder);
                 builder = builder.getParentBuilder();
             } while (builder!=null);
             if (localTransaction) commit();

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.128 2005-10-05 16:27:01 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.129 2005-10-07 18:49:22 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1087,6 +1087,7 @@ public class DatabaseStorageManager implements StorageManager {
                 statement.setNull(index, type);
                 return true;
             }
+            /*
         } else if (value == MMObjectNode.VALUE_NULL) { // value explicitely set to 'null'
             if (mayBeNull) {
                 statement.setNull(index, type);
@@ -1094,7 +1095,9 @@ public class DatabaseStorageManager implements StorageManager {
             } else {
                 log.debug("Tried to set 'null' in field '" + field.getName() + "' but the field is 'NOT NULL', it will be casted.");
             }
+            */
         }
+
         return false;
     }
 
@@ -1363,7 +1366,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.7.1
      */
     protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
-        if (objectValue == null || objectValue == MMObjectNode.VALUE_NULL) {
+        if (objectValue == null) {
             if(field.isNotNull()) {
                 objectValue = "<p/>";
             }
@@ -1561,7 +1564,7 @@ public class DatabaseStorageManager implements StorageManager {
                             value = getValue(result, result.findColumn(id), field, true);
                         }
                         if (value == null) {
-                            node.storeValue(field.getName(), MMObjectNode.VALUE_NULL);
+                            node.storeValue(field.getName(), null);
                         } else {
                             node.storeValue(field.getName(), value);
                         }
