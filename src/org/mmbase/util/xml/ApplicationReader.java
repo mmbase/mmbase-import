@@ -18,7 +18,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.1 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ApplicationReader.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
  */
 public class ApplicationReader extends DocumentReader {
 
@@ -187,8 +187,8 @@ public class ApplicationReader extends DocumentReader {
     /**
      * Get datasources attached to this application
      */
-    public Vector getDataSources() {
-        Vector results=new Vector();
+    public List getDataSources() {
+        Vector results = new Vector();
         for(Iterator ns=getChildElements("application.datasourcelist","datasource");
             ns.hasNext(); ) {
             Element n3=(Element)ns.next();

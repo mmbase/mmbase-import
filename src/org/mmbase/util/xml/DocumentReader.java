@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.14 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.15 2005-10-07 18:42:49 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -268,8 +268,8 @@ public class DocumentReader  {
      * passed namespace
      */
     static public String getAttribute(Element element, String nameSpace, String localName) {
-        if (element.hasAttributeNS(nameSpace,localName)) {
-            return element.getAttributeNS(nameSpace,localName);
+        if (element.hasAttributeNS(nameSpace, localName)) {
+            return element.getAttributeNS(nameSpace, localName);
         } else {
             return element.getAttribute(localName);
         }

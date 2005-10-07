@@ -26,12 +26,11 @@ import org.mmbase.util.Encode;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.1 2005-09-19 12:32:03 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
  */
 public class NodeWriter {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(NodeWriter.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(NodeWriter.class);
 
     private MMBase mmb;
     private Logger logger;
@@ -132,7 +131,7 @@ public class NodeWriter {
                 write("\t<node number=\"" + number+"\" owner=\"" + owner + "\" alias=\"" + tm + "\">\n");
             }
         }
-        MMObjectBuilder bul=node.parent;
+        MMObjectBuilder bul = node.getBuilder();
         Iterator nd = bul.getFields().iterator();
         while (nd.hasNext()) {
             CoreField def = (CoreField)nd.next();
@@ -153,7 +152,7 @@ public class NodeWriter {
                     //those fiels always start with an underscore. If a node starts with
                     //we skip it
                     if (!key.startsWith("_")) {
-                            write(writeXMLField(key, node, directory, mmb));
+                        write(writeXMLField(key, node, directory, mmb));
                     }
                 }
             }

@@ -26,7 +26,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.2 2005-09-20 11:52:30 michiel Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.3 2005-10-07 18:42:49 michiel Exp $
  */
 public class FullBackupDataWriter {
 
@@ -112,7 +112,7 @@ public class FullBackupDataWriter {
         while (iNodes.hasNext()) {
             MMObjectNode node = (MMObjectNode) iNodes.next();
             // Write node if it's of the correct type.
-            if (node.parent == builder) {
+            if (node.getBuilder() == builder) {
                 nodeWriter.write(node);
                 nrWritten++;
             }
