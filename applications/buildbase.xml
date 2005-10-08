@@ -180,7 +180,7 @@ Create a build.xml with a DOCTYPE like this:
   </target>
 
   <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
-    <echo message="${project.jar} is up-to-date (${project.source.dir}/src/** ${jar.uptodate})" />
+    <echo message="${project.jar} is up-to-date ${project.source.dir}/src/**" />
   </target>
 
   <target name="jar.config" depends="init,jar.check" if="config.available" unless="jar.uptodate">
