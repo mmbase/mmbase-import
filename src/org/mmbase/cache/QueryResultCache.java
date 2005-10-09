@@ -17,6 +17,8 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.database.BasicQueryHandler;
+import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 
 /**
  * This cache provides a base implementation to cache the result of
@@ -30,7 +32,7 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.18 2005-09-26 20:05:49 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.19 2005-10-09 14:55:02 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -51,6 +53,12 @@ abstract public class QueryResultCache extends Cache {
      *
      * @see ChainedReleaseStrategy
      */
+    
+    /**
+     * this is only used for logging, to create readable queries out of query objects.
+     */
+    BasicSqlHandler sqlHandler = new BasicSqlHandler();
+
     private ChainedReleaseStrategy releaseStrategy;
 
     /**
@@ -60,26 +68,7 @@ abstract public class QueryResultCache extends Cache {
      *
      * @return number of entries invalidated
      */
-//    public static int invalidateAll(MMObjectNode node, int eventType) {
-//        int result = 0;
-//        MMObjectBuilder builder = node.getBuilder();
-//        while (builder != null) {
-//            String tn = builder.getTableName();
-//            Iterator i = queryCaches.entrySet().iterator();
-//            while (i.hasNext()) {
-//                Map.Entry entry = (Map.Entry) i.next();
-//                QueryResultCache cache = (QueryResultCache) entry.getValue();
-//                // get the Observers for the builder:
-//                Observer observer = (Observer) cache.observers.get(tn);
-//                if (observer != null) {
-//                    result += observer.nodeChanged(new NodeEvent(node, eventType));
-//                }
-//            }
-//            builder = builder.getParentBuilder();
-//        }
-//        return result;
-//    }
-
+    
 
     // Keep a map of the existing Observers, for each nodemanager one.
     // @todo I think it can be done with one Observer instance too, (in which
@@ -254,17 +243,7 @@ abstract public class QueryResultCache extends Cache {
          * @see org.mmbase.core.event.RelationEventListener#notify(org.mmbase.core.event.RelationEvent)
          */
         public void notify(RelationEvent event) {
-            // let's test if this event should be handeled. The event is
-            // being propagated by a mmObjectBuilder to it's ancestors.
-            // I don't think we want to haldle these events as well.
-            if (event.getRelationSourceType().equals(type)
-                || event.getRelationDestinationType().equals(type)) {
-                nodeChanged(event);
-            } else {
-                log.debug("node event was deflected by Observer for type: " + type);
-                log.debug(event.toString());
-            }
-
+            nodeChanged(event);
         }
 
         /*
@@ -282,17 +261,8 @@ abstract public class QueryResultCache extends Cache {
          * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
          */
         public void notify(NodeEvent event) {
-            // let's test if this event should be handeled. The event is
-            // being propagated by a mmObjectBuilder to it's ancestors.
-            // I don't think we want to haldle these events as well.
-            if (event.getNode().getBuilder().getTableName().equals(type)) {
                 nodeChanged(event);
-            } else {
-                log.debug("node event was deflected by Observer for type: " + type);
-                log.debug(event.toString());
-            }
-
-        }
+         }
 
         protected int nodeChanged(NodeEvent event) {
             log.debug("Considering " + event);
@@ -306,9 +276,17 @@ abstract public class QueryResultCache extends Cache {
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();
-                        log.debug("Release strategy said not to release " + key);
+                        if(log.isDebugEnabled()){ 
+                            try {
+                                log.debug("Release strategy said to release " + sqlHandler.toSql(key, sqlHandler));
+                            } catch (SearchQueryException e) {}
+                        }
                     } else {
-                        log.debug("Release strategy said NOT to release " + key);
+                        if(log.isDebugEnabled()){ 
+                            try {
+                                log.debug("Release strategy said NOT to release " + sqlHandler.toSql(key, sqlHandler));
+                            } catch (SearchQueryException e) {}
+                        }
                     }
                     totalEvaluationTime += result.getCost();
                 }

@@ -23,7 +23,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.4 2005-10-06 17:38:26 michiel Exp $
+ * @version $Id: Unicast.java,v 1.5 2005-10-09 14:56:17 ernst Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -42,11 +42,9 @@ public class Unicast extends ClusterManager {
     /** Receiver which reads the message from the line and puts message in the nodesToSpawn Queue */
     private ChangesReceiver ucr;
 
-    /**
-     */
-    public void init(MMBase mmb) {
-        super.init(mmb);
 
+    public Unicast(){
+        
         UtilReader reader = new UtilReader(CONFIG_FILE);
         Map properties = reader.getProperties();
 

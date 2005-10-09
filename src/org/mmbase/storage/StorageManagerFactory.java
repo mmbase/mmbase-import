@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.21 2005-10-05 12:26:11 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.22 2005-10-09 14:55:03 ernst Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -66,6 +66,7 @@ public abstract class StorageManagerFactory {
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
      */
     protected ChangeManager changeManager;
+    
 
     /**
      * The map with disallowed fieldnames and (if given) alternates
@@ -157,9 +158,7 @@ public abstract class StorageManagerFactory {
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         typeMappings = Collections.synchronizedList(new ArrayList());
-        MMBaseChangeInterface mmc = initializeClustering(mmbase.getInitParameter("CLUSTERING"));
-        if(mmc != null) mmc.init(mmbase);
-        changeManager = new ChangeManager(mmc);
+        changeManager = new ChangeManager();
         try {
             log.service("loading Storage Manager factory " + this.getClass().getName());
             load();
@@ -169,36 +168,6 @@ public abstract class StorageManagerFactory {
             throw new StorageError(se);
         }
     }
-
-    /**
-     * initialize Clustering
-     * @param clusterClass classname of cluster manager
-     * @since MMBase-1.7.2
-     */
-    private MMBaseChangeInterface initializeClustering(String clusterClass) {
-        MMBaseChangeInterface mmc;
-        if (clusterClass != null) {
-            log.debug("Starting Multicasting: " + clusterClass);
-
-            Class newclass;
-            try {
-                newclass = Class.forName(clusterClass);
-                mmc = (MMBaseChangeInterface) newclass.newInstance();
-            } catch (Exception e) {
-                log.error("Failed to start MMBaseChangeInterface: " + e.getMessage());
-                mmc = null;
-            }
-        } else {
-            log.debug("Not starting MMBaseChangeInterface");
-            //we don't need this anymore
-            //mmc = new MMBaseChangeDummy();
-            mmc = null;
-        }
-        return mmc;
-    }
-
-
-
 
     /**
      * Return the MMBase module for which the factory was instantiated

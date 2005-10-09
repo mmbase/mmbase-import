@@ -10,13 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering;
 
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.*;
+import org.mmbase.module.core.*;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,9 +29,10 @@ import org.mmbase.util.logging.Logging;
  *  
  * @author Nico Klasens
  * @author Michiel Meeuwissen
- * @version $Id: ClusterManager.java,v 1.12 2005-10-04 21:06:14 michiel Exp $
+ * @author Ernst Bunders
+ * @version $Id: ClusterManager.java,v 1.13 2005-10-09 14:56:17 ernst Exp $
  */
-public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
+public abstract class ClusterManager implements AllEventListener, Runnable{
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
@@ -59,16 +58,13 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
 
     protected boolean spawnThreads = true; 
     
-    /**
-     * @javadoc
-     */
-    public void init(MMBase mmb) {
-        this.mmbase = mmb;
-    }
     
-    public MMBase getMMBase() {
-        return mmbase;
+    public void shutdown(){
+        stopCommunicationThreads();
+        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker = null;
     }
+
     /**
      * Subclasses should start the communication threads in this method
      */
@@ -79,6 +75,23 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
     protected abstract void stopCommunicationThreads();
 
     
+    public void notify(Event event){
+        //we only want to propagate the local events into the cluster
+        if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
+            byte[] message = createMessage(event);
+            nodesToSend.append(message);
+        }
+    }
+    
+    
+    
+    /* (non-Javadoc)
+     * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
+     */
+    public Properties getConstraintsForEvent(Event event) {
+        return null;
+    }
+
     /**
      * Starts the Changer Thread.
      */
@@ -91,33 +104,14 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
             startCommunicationThreads();
         }
     }
-    /**
-     * Stops the ClusterManager.
-     */
-    /*
-    public void stop() {
-        stopCommunicationThreads();
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker = null;
-    }
-    */
-    
-    
-    // javadoc inherited
-    public void changedNode(NodeEvent event) {
-        byte[] message = createMessage(event);
-        nodesToSend.append(message);
-        return;
-    }
-
-    protected byte[] createMessage(NodeEvent nodeEvent) {
+    protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
-            log.debug("Serializing " + nodeEvent);
+            log.debug("Serializing " + event);
         }
         try {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(bytes);
-            out.writeObject(nodeEvent);
+            out.writeObject(event);
             return bytes.toByteArray();
         } catch (IOException ioe) {
             log.error(ioe);
@@ -125,10 +119,10 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
         }
         
     }
-    protected NodeEvent parseMessage(byte[] message) {
+    protected Event parseMessage(byte[] message) {
         try {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(message));
-            NodeEvent event = (NodeEvent) in.readObject();
+            Event event = (Event) in.readObject();
             if (log.isDebugEnabled()) {
                 log.debug("Unserialized " + event);
             }
@@ -184,21 +178,6 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
 
     
     /**
-     * @javadoc
-     */
-    public boolean waitUntilNodeChanged(MMObjectNode node) {
-        try {
-            WaitNode wnode = new WaitNode(node);
-            waitingNodes.add(wnode);
-            wnode.doWait(60*1000);
-            waitingNodes.remove(wnode);
-        } catch(Exception e) {
-            log.error(e);
-        }
-        return true;
-    }
-
-    /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
@@ -217,7 +196,7 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
                     log.debug("RECEIVED =>" + message.length + " bytes");
                 }
                 spawncount++;
-                NodeEvent event = parseMessage(message);
+                Event event = parseMessage(message);
                 if (event != null) {
                     handleEvent(event);
                 } else {
@@ -235,37 +214,18 @@ public abstract class ClusterManager implements MMBaseChangeInterface, Runnable{
      * 
      * @param event NodeEvent
      */
-    protected void handleEvent(NodeEvent event) {
+    protected void handleEvent(Event event) {
         // check if MMBase is 100% up and running, if not eat event
         if (!mmbase.getState()) return;
         if(mmbase.getMachineName().equals(event.getMachine())) {
             // ignore changes of ourselves
             return;
         }
-        MessageProbe probe = new MessageProbe(this, event);
+        MessageProbe probe = new MessageProbe(event);
         if (spawnThreads) {
             probe.run();
-        } else {
+        } else{
             org.mmbase.util.ThreadPools.jobsExecutor.execute(probe);
-        }
-    }
-    
-    /**
-     * Check collection of waiting nodes for the changed node
-     * @param snumber changed node number
-     */
-    public void checkWaitingNodes(String snumber) {
-        try {
-            int number = Integer.parseInt(snumber);
-            for (Enumeration e=waitingNodes.elements();e.hasMoreElements();) {
-                WaitNode n = (WaitNode) e.nextElement();
-                if (n.doNotifyCheck(number)) {
-                    waitingNodes.removeElement(n);
-                    log.debug("waitingNodes size=" + waitingNodes.size());
-                }
-            }
-        } catch(Exception e) {
-            log.error("not a valid number " + snumber);
         }
     }
     

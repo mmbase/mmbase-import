@@ -1,0 +1,5 @@
+<!-- Author: Ernst Bunders -->
+
+<!ELEMENT eventmanager (brokers+) >
+<!ELEMENT brokers (broker+ ) >
+<!ATTLIST broker  class  CDATA  #REQUIRED >

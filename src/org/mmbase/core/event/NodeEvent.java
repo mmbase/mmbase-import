@@ -40,10 +40,6 @@ public class NodeEvent extends Event implements Serializable {
 
     private int eventType;
 
-    private String machine;
-
-    // ernst:what object types can the 'old values' be, and what happens if they
-    // can't be serialized??
     private Map oldValues = new HashMap();
     private Map newValues = new HashMap();
 
@@ -88,10 +84,10 @@ public class NodeEvent extends Event implements Serializable {
     }
 
     public NodeEvent(MMObjectNode node, int eventType, String machine) {
+        super(machine);
         this.node = node;
         this.eventType = eventType;
-        this.machine = machine;
-        name = "node event";
+        name = "Node Event";
 
         // at this point the new value for the changed fields is
         // in the node, and the old values are in the oldValues map
@@ -215,12 +211,15 @@ public class NodeEvent extends Event implements Serializable {
     public MMObjectNode getNode() {
         return node;
     }
-
+    
     /**
-     * @return Returns the machine name.
+     * utility method: check if a certain field has changed
+     * @param fieldName
+     * @return true if the field of given name is among the changed fields 
      */
-    public String getMachine() {
-        return machine;
+    public boolean hasChanged(String fieldName){
+        if(oldValues.keySet().contains(fieldName))return true;
+        return false;
     }
 
 }
