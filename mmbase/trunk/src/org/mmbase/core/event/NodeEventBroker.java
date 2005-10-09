@@ -61,16 +61,12 @@ public class NodeEventBroker extends AbstractEventBroker {
         NodeEvent ne = (NodeEvent) event; //!!!!!
         NodeEventListener nel = (NodeEventListener) listener;
         Properties p = nel.getConstraintsForEvent(ne);
-        MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = ne.getNode().getBuilder();
         if (builder.broadcastChanges()) {
             if (p != null) {
                 String nodeType = p.getProperty(PROPERTY_NODETYPE);
                 if (nodeType.equals(builder.getTableName())) {
                     nel.notify(ne);
-                } else {
-                    log.debug("the constraints set by " + nel
-                        + " were not met by event " + ne);
                 }
             } else {
                 // no constraints

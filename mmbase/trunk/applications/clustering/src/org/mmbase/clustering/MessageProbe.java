@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
-import org.mmbase.clustering.ClusterManager;
-import org.mmbase.module.core.*;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.RelationEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,20 +20,19 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.4 2005-10-04 21:06:14 michiel Exp $
+ * @version $Id: MessageProbe.java,v 1.5 2005-10-09 14:56:17 ernst Exp $
  */
 public class MessageProbe implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(MessageProbe.class);
 
     private ClusterManager parent;
-    private NodeEvent event;
+    private Event event;
 
     /**
      * @javadoc
      */
-    MessageProbe(ClusterManager parent, NodeEvent event) {
-        this.parent = parent;
+    MessageProbe(Event event) {
         this.event = event;
     }
 
@@ -47,41 +43,13 @@ public class MessageProbe implements Runnable {
         if (log.isDebugEnabled()) {
             log.debug("Handling event " + event + " for " + event.getMachine());
         }
-        try {
 
-            // we don't have to do that here. it is done in MMObjectbuilder.notify
-            
-//            { // backwards compatibilty:
-//              
-//                MMObjectNode node = event.getNode();
-//                MMObjectBuilder bul = node.getBuilder();
-//                if (bul instanceof MMBaseObserver) {
-//                    if (remote) {
-//                        ((MMBaseObserver) bul).nodeRemoteChanged(event.getMachine(), "" + node.getNumber(), bul.getTableName(), NodeEvent.newTypeToOldType(event.getType()));
-//                        parent.checkWaitingNodes("" + event.getNode().getNumber());
-//                    } else {
-//                        ((MMBaseObserver) bul).nodeLocalChanged(event.getMachine(), "" + node.getNumber(), bul.getTableName(), NodeEvent.newTypeToOldType(event.getType()));
-//                        parent.checkWaitingNodes("" + event.getNode().getNumber());
-//                    }
-//                }
-//                
-//            }
-            
-
-        //notify all listeners. we ONLY have to do this for remote events
+        //pass on the event to the EventManager. we ONLY have to do this for remote events
         //the local events are bening send by the ChangeManager, and are
         //no longer handeled by the clustering system.
-        
+        try {
             if(! event.getMachine().equals(parent.mmbase.getMachineName())){
-                if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED) {
-                    //the relation event broker will make shure that listeners
-                    //for node-relation changes to a specific builder, will be
-                    //notified if this builder is either source or destination type
-                    //in the relation event
-                    parent.getMMBase().propagateEvent((RelationEvent)event);
-                } else {
-                    parent.getMMBase().propagateEvent(event);
-                }
+                EventManager.getInstance().propagateEvent(event);
             }
         } catch(Throwable t) {
             log.error(Logging.stackTrace(t));

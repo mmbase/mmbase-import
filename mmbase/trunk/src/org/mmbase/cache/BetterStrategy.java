@@ -9,8 +9,7 @@ import java.util.List;
 
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
-import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.SearchQuery;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -18,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.4 2005-09-23 13:59:26 pierre Exp $
+ * @version $Id: BetterStrategy.java,v 1.5 2005-10-09 14:55:02 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -49,68 +48,127 @@ public class BetterStrategy extends ReleaseStrategy {
             + "if a relation event concerns a role that is not part of this query, the event can be ignored.";
     }
 
-    /*
-     * (non-Javadoc)
-     *
+    /**
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query,
             List cachedResult) {
-        boolean shouldRelease = true;
 
-        // first lets test if the query has one step and the event is a relation
-        // event
-        if (query.getSteps().size() == 1 && !(event instanceof RelationEvent)) {
-            shouldRelease = false;
+        if(event.getType() == NodeEvent.EVENT_TYPE_RELATION_CHANGED){
+            return shouldRelease((NodeEvent)event, query);
+        }else{
+            return shouldRelease((RelationEvent)event, query);
         }
-
-        // now if a query has more than one step, all 'new node' events can be
-        // ignored, becouse this node has no relations yet, and thous can not
-        // be part of the query.
-        if (shouldRelease && query.getSteps().size() > 1) {
-            if (event.getType() == NodeEvent.EVENT_TYPE_NEW) {
-                shouldRelease = false;
-            }
-        }
-
-        // if a query has more steps that one and the event is a relation event
-        // we check if the role of the relation is allso in the query.
-        // The role need not allways be defined in the query. if an undefined
-        // role exists
-        // between the source and the target of the relation event, this
-        // optimization
-        // can not be done
-        if (shouldRelease && query.getSteps().size() > 1
-            && event instanceof RelationEvent) {
-            RelationEvent relEvent = (RelationEvent) event;
-            boolean invalidate = false;
-
-            // iterate over all the relations steps and check if one matches
-            // source - destination - role
-            for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
-                RelationStep step = (RelationStep) i.next();
-                if (step.getPrevious().getTableName().equals(
-                    relEvent.getRelationSourceType())
-                    && step.getNext().getTableName().equals(
-                        relEvent.getRelationDestinationType())) {
-                    // wow! did we do that??
-
-                    if (step.getRole() != null
-                        && step.getRole().intValue() == relEvent.getRole()) {
-                        invalidate = true;
-                    } else if (step.getRole() == null) {
-                        // alas! this could be hour role (but we don't know :( )
-                        invalidate = true;
-                    }
-
-                    if (invalidate) break;
+    }
+    
+    
+    
+    /**
+     * Check all the rules that concern node events. if no rules match we return <code>true</code>.
+     * @param event
+     * @param query
+     * @return
+     */
+    private boolean shouldRelease(NodeEvent event, SearchQuery query){
+        switch (event.getType()) {
+            default:
+                //here are all the rules that are not specific to a type (or to more than one)
+                
+                // query has one step and the event is a relation event
+                if (query.getSteps().size() == 1 && !(event instanceof RelationEvent)) {
+                    return false ;//don't release
                 }
-            }
-
-            if (invalidate) shouldRelease = true;
+            
+            case NodeEvent.EVENT_TYPE_NEW:
+                
+                // query has more than one step, all 'new node' events can be ignored, becouse this node has no relations yet.
+                if (query.getSteps().size() > 1) return false; //don't release
+        
+                break;
+                
+            case NodeEvent.EVENT_TYPE_DELETE:
+                
+                break;
+                
+            case NodeEvent.EVENT_TYPE_CHANGED:
+                
+                /* not finished
+                 
+                //if query is not aggregate, and the changed fields are not part of the select or where clouse of the query.
+                if(! query.isAggregating()){
+                    boolean shoudRelease = false;
+                    //first check the steps
+                    boolean fieldMatches = false;
+                    for (Iterator i = getNodeSteps(query, event.getNode().getBuilder()).iterator(); i.hasNext();) {
+                        Step step = (Step) i.next();
+                        for (Iterator ii = getStepFields(query, step).iterator(); ii.hasNext();) {
+                            StepField field = (StepField) ii.next();
+                            if(event.hasChanged(field.getFieldName()))fieldMatches = true;
+                        }
+                    }
+                    
+                    //if fieldMatches is still false we check the constraints
+                    if(! fieldMatches){
+                        
+                    }
+                }
+                */
+                
+                break;
+                
+  
         }
-        return shouldRelease;
+        return true;
+    }
+    
+    /**
+     * check all the rules that concern relation events. if no rules match we return <code>true</code>.
+     * @param event
+     * @param query
+     * @return
+     */
+    private boolean shouldRelease(RelationEvent event, SearchQuery query){
+        switch (event.getRelationEventType()) {
+            default:
+                //here are all the rules that are not specific to a type (or to more than one)
+                
+                // if a query has more steps that one and the event is a relation event
+                // we check if the role of the relation is allso in the query.
+                if (query.getSteps().size() > 1 && event instanceof RelationEvent) {
+                    RelationEvent relEvent = (RelationEvent) event;
+                    // iterate over all the relations steps and check if one matches
+                    // source - destination - role
+                    boolean shouldRelease = false;
+                    for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
+                        RelationStep step = (RelationStep) i.next();
+                        if (step.getPrevious().getTableName().equals(relEvent.getRelationSourceType()) && 
+                                step.getNext().getTableName().equals(relEvent.getRelationDestinationType())) {
+                            if (step.getRole() == null || step.getRole().intValue() == relEvent.getRole()) {
+                                //we found one relation that could match the one in the event
+                                shouldRelease = true;
+                            }
+                        }
+                    }
+                    if(!shouldRelease) return false; //don't release
+
+                }
+                
+            case NodeEvent.EVENT_TYPE_NEW:
+                
+                break;
+                
+            case NodeEvent.EVENT_TYPE_DELETE:
+                
+                break;
+                
+            case NodeEvent.EVENT_TYPE_CHANGED:
+                
+                break;
+                
+
+        }
+        return true;
     }
 
 }

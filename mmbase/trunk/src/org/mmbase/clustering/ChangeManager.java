@@ -9,10 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.RelationEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 
@@ -21,25 +21,12 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.8 2005-10-02 17:06:29 michiel Exp $
+ * @version $Id: ChangeManager.java,v 1.9 2005-10-09 14:55:02 ernst Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
 
-    // the class to broadcast changes with
-    private MMBaseChangeInterface mmc;
-
-    private MMBase mmbase;
-
-    /**
-     * Constructor.
-     */
-    public ChangeManager(MMBaseChangeInterface m) {
-        mmc = m;
-        mmbase = MMBase.getMMBase();
-    }
-
-    /**
+     /**
      * Commit all changes stored in a Changes map.
      * Clears the change status of all changed nodes, then broadcasts changes to the
      * nodes' builders.
@@ -57,24 +44,21 @@ public final class ChangeManager {
 
     /**
      * Commits the change to a node.
-     * Fires the node change events through MMBase.propagateEvent() for all
-     * local listeners. then calls the MMBaseChangeInterface implementation
-     * (if there is one) to propagate the event into the clustering system.
-     * Finally clears 'changed' state on the node
+     * Fires the node change events through the EventManager.
+     * Then clears 'changed' state on the node.
      * @param node the node to commit the change of
      * @param change the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
      */
     public void commit(MMObjectNode node, String change) {
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges()) {
+            //create a new local node event
             NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(change));
 
             //regardless of wether this is a relatione event we fire a node event first
-            mmbase.propagateEvent(event);
+            EventManager.getInstance().propagateEvent(event);
 
-            //now if we have a MMBaseChangeManager send the event into the clustering system
-            if (mmc != null) mmc.changedNode(event);
-
+           
             //if the changed node is a relation, we fire a relation event as well
             if(builder instanceof InsRel) {
                 RelationEvent relEvent = new RelationEvent(node, NodeEvent.oldTypeToNewType(change));
@@ -83,10 +67,7 @@ public final class ChangeManager {
                 //for node-relation changes to a specific builder, will be
                 //notified if this builder is either source or destination type
                 //in the relation event
-                mmbase.propagateEvent(relEvent);
-
-                // now if we have a MMBaseChangeManager send the event into the clustering system
-               if(mmc != null) mmc.changedNode(relEvent);
+                EventManager.getInstance().propagateEvent(relEvent);
             }
 
         }

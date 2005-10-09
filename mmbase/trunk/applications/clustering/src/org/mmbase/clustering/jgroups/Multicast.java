@@ -39,7 +39,7 @@ import org.jgroups.*;
  * @author Nico Klasens 
  * @author Costyn van Dongen 
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.2 2005-09-20 19:27:38 michiel Exp $
+ * @version $Id: Multicast.java,v 1.3 2005-10-09 14:56:17 ernst Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -86,8 +86,8 @@ public class Multicast extends ClusterManager {
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
-    public void init(MMBase mmb) {
-        super.init(mmb);
+    
+    public Multicast() {
         
         UtilReader reader = new UtilReader(CONFIG_FILE);
         Map properties = reader.getProperties();
