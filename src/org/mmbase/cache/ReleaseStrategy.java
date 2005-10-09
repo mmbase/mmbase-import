@@ -4,15 +4,11 @@
  */
 package org.mmbase.cache;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import org.mmbase.bridge.NodeList;
 import org.mmbase.core.event.NodeEvent;
-import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.SearchQuery;
-import org.mmbase.storage.search.Step;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.storage.search.*;
 
 /**
  * <p>
@@ -24,7 +20,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.2 2005-10-02 17:04:44 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.3 2005-10-09 14:55:02 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -141,7 +137,12 @@ public abstract class ReleaseStrategy {
         return null;
     }
 
-    protected List getRelationSteps(SearchQuery query) {
+    /**
+     * utility for specializations: get all the relation steps of a query
+     * @param query
+     * @return
+     */
+    protected   static List getRelationSteps(SearchQuery query) {
         List result = new ArrayList(10);
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             Object step = i.next();
@@ -149,7 +150,34 @@ public abstract class ReleaseStrategy {
         }
         return result;
     }
-
+    
+    protected static List getStepFields(SearchQuery query, Step step){
+        List result = new ArrayList();
+        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
+            StepField  field = (StepField) i.next();
+            if(field.getStep().equals(step))result.add(field);
+        }
+        return result;
+    }
+    
+    /**
+     * utility for specializations: get all the relation steps of a query
+     * @param query
+     * @return
+     */
+    protected static List getNodeSteps(SearchQuery query, MMObjectBuilder type){
+        List result = new ArrayList(10);
+        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
+            Step step = (Step) i.next();
+            if (! (step instanceof RelationStep)) {
+                if(type == null || step.getTableName().equals(type.getTableName()))
+                    result.add(step);
+            }
+        }
+        return result;
+    }
+    
+ 
     /**
      * @author Ernst Bunders This class is a bean containing shouldRelease of an
      *         event evaluation

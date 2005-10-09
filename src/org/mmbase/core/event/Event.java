@@ -7,21 +7,40 @@
  */
 package org.mmbase.core.event;
 
+import java.io.Serializable;
+
 /**
  * This class is the base class for all mmbase events
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
  */
-public abstract class Event {
+public abstract class Event implements Serializable{
 
     protected String name;
+    protected String machine;
+
+    /**
+     * @return Returns the machine.
+     */
+    public String getMachine() {
+        return machine;
+    }
 
     /**
      * @return Returns the name.
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @param machine
+     * @param name
+     */
+    public Event(String machine) {
+        this.machine = machine;
+        name="Event";
     }
 
 }

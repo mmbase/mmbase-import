@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ReloadableModule.java,v 1.9 2005-10-09 14:55:03 ernst Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -65,11 +65,10 @@ public abstract class ReloadableModule extends Module {
 
 
     /**
-     * This method should be called when the module should be reloaded. This default implementation is empty.
+     * This method should be called when the module should be reloaded.
      */
 
-    public void reload() {
-    }
+    public abstract void reload();
 
 
 }

@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.28 2005-10-02 17:04:44 michiel Exp $
+ * @version $Id: Cache.java,v 1.29 2005-10-09 14:55:02 ernst Exp $
  */
 abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
 
@@ -163,9 +163,9 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
                     if(releaseStrategy != null){
 
                         result.add(releaseStrategy);
-                        log.debug("Successfully created "+releaseStrategy.getName() + " instance");
+                        log.info("Successfully created and added "+releaseStrategy.getName() + " instance");
                     }else{
-                        log.error("release strategy instance is null (runtime exception?");
+                        log.error("release strategy instance is null.");
                     }
 
                 } catch (CacheConfigurationException e1) {
