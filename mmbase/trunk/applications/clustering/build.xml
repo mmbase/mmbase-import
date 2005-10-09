@@ -13,7 +13,7 @@
   <property name="project.package"   value="org/mmbase/clustering" />
   <property name="project.comment"   value="MMBase Clustering sollutions" />
   <property name="project.target.templates.dir"   value="clustering" />
-  <property name="project.config.dir.includes"   value="utils/**" />
+  <property name="project.config.dir.includes"   value="**" />
   <property name="project.config.jar.includes"   value="**" />
 
   <property name="project.jars.dir"        location="${project.expand.dir}/${jgroups.version}.bin/" />
