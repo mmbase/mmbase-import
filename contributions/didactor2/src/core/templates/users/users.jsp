@@ -18,6 +18,7 @@
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp" %>
+   <mm:import id="tmpreferids" reset="true">provider?</mm:import> 
 
    <mm:import externid="mode"/>
 
@@ -80,7 +81,9 @@
                      <%@include file="online_check.jsp"%>
                   </mm:related>
                   <mm:compare referid="show_this_item" value="true">
-                     class:<b><mm:field name="name"/></b>
+                     class:<b><a href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$tmpreferids">
+                                          <mm:param name="class"><mm:field name="number"/></mm:param>
+                                       </mm:treefile>"><mm:field name="name"/></a></b>
                      <br/>
                      <mm:related path="classrel,people">
                         <%@include file="add_person.jsp"%>
@@ -169,6 +172,6 @@
       }
 */
    %>
-
+   <mm:remove referid="tmpreferids"/>
 </mm:cloud>
 </mm:content>
