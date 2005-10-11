@@ -33,7 +33,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.61 2005-10-04 23:02:23 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.62 2005-10-11 19:45:04 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -407,12 +407,14 @@ public class TypeDef extends MMObjectBuilder {
      */
     public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
         Object newValue = node.retrieveValue(fieldName);
-        // the field with the name 'name' may not be changed.....
-        if (originalValue != null && !originalValue.equals(newValue)) {
-            if (fieldName.equals("name")) {
+        if (fieldName.equals("name")) {
+            // the field with the name 'name' may not be changed.....
+            if (originalValue != null && // perhaps legacy, name is null becaue name field was nullable?
+                ! originalValue.equals("") && // name field is 
+                !originalValue.equals(newValue)) {
                 // restore the original value...
                 node.storeValue(fieldName, originalValue);
-                throw new RuntimeException("Cannot change a builder's name");
+                throw new RuntimeException("Cannot change a builder's name from '" + originalValue + "' to '" + newValue + "' typedef node " + node.getNumber());
 /*            } else if (fieldName.equals("config")) {
                 MMObjectBuilder builder = getBuilder(node);
                 // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
@@ -432,17 +434,17 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public boolean fieldLocalChanged(String number,String builder,String field,String value) {
+    public boolean fieldLocalChanged(String number, String builder, String field, String value) {
         if (field.equals("state")) {
             if (value.equals("4")) {
                 // reload request
-                log.service("Reload wanted on : "+builder);
+                log.service("Reload wanted on : " + builder);
                 // perform reload
-                MMObjectNode node=getNode(number);
-                String objectname=node.getStringValue("name");
+                MMObjectNode node = getNode(number);
+                String objectname = node.getStringValue("name");
                 reloadBuilder(objectname);
-                if (node!=null) {
-                    node.setValue("state",1);
+                if (node != null) {
+                    node.setValue("state", 1);
                 }
             }
         }
