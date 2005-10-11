@@ -7,7 +7,7 @@
 </head>
 <body>
 <div id="windowopen">
-<h2>The EditWizard icons</h2>
+  <h4>The editwizard icons</h4>
   <p><img src="/mmbase/edit/wizard/media/new.gif" alt="+" />
   <strong>New</strong><br />create a new node</p>
   <p><img src="/mmbase/edit/wizard/media/search.gif" alt="o" />
