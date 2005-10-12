@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.26 2005-10-01 07:23:53 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.27 2005-10-12 09:07:51 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -64,7 +64,7 @@
 
 
   <xsl:template match="o:object[@type = 'images' or @type ='attachments' or @type='icaches']" mode="url">   
-    <xsl:value-of select="node:function($cloud, string(@id), 'servletpath()')" />
+    <xsl:value-of select="node:function($cloud, string(@id), 'servletpath')" />
   </xsl:template>
 
 
