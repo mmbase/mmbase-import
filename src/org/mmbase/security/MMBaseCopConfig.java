@@ -22,7 +22,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.24 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.25 2005-10-12 19:06:42 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -76,7 +76,7 @@ public class MMBaseCopConfig {
     /** DTD resource filename of the Builder DTD version 1.0 */
     public static final String DTD_SECURITY_1_0 = "security_1_0.dtd";
 
-    public static void registerPublicIDs() {
+    static {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0, DTD_SECURITY_1_0, MMBaseCopConfig.class);
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0_FAULT, DTD_SECURITY_1_0, MMBaseCopConfig.class);
     }
