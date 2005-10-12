@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.29 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: DataType.java,v 1.30 2005-10-12 19:09:37 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -201,7 +201,6 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
 
 
-
     // XXXX MM: I think 'action' must be gone; it is silly.
     /**
      * Processes a value, according to the processors set on this datatype.
@@ -300,7 +299,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
         public void setFixed(boolean fixed);
         
         /**
-         * See {@link DataType.ENFORCE_ALWAYS}, {@link DataType.ENFORCE_ONCHANGE}, {@link DataType.ENFORCE_NEVER}.
+         * See {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
          */
         public int getEnforceStrength();
         public void setEnforceStrength(int v);
