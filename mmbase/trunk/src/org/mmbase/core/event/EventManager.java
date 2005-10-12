@@ -57,6 +57,10 @@ public class EventManager {
     public static void configure() {
         try {
             Document config = ResourceLoader.getConfigurationRoot().getDocument("eventmanager.xml");
+            if (config == null) {
+                log.fatal("Resource " + ResourceLoader.getConfigurationRoot().getResource("eventmanager.xml") + " could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
+                return;
+            }
             DocumentReader configReader = new DocumentReader(config);
 
             log.debug("configuring the event manager");
