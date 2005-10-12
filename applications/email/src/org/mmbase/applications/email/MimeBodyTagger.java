@@ -14,11 +14,16 @@ import java.util.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * @javadoc
  * @author Daniel Ockeloen 
  */
 public class MimeBodyTagger {
+
+    static private final Logger log = Logging.getLoggerInstance(MimeBodyTagger.class); 
 
     /**
      * @javadoc
