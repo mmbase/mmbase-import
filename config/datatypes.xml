@@ -42,7 +42,7 @@
     <class name="org.mmbase.datatypes.StringDataType" />
 
     <!-- no new lines -->
-    <pattern value="(?m)\A[^\n\r]*\z" /> 
+    <pattern value="\A[^\n\r]*\z" /> 
 
     <specialization id="lastmodifier">
       <unique value="false" />
@@ -80,11 +80,14 @@
     </specialization>
 
     <specialization id="dutch-zipcode">
-      <pattern value="[0-9]{4}\s[A-Z]{2}" />
+      <pattern value="(?i)\A[0-9]{4}\s*[A-Z]{2}\z" />
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.UpperCaser" />
+      </setprocessor>
     </specialization>
 
     <specialization id="field">
-      <pattern value="(?m).*" />
+      <pattern value="(?s)\A.*\z" />
     </specialization>
 
     <specialization id="owner">
@@ -112,6 +115,15 @@
           </param>
         </class>
       </setprocessor>
+    </specialization>
+
+    <specialization id="checksum">
+      <commitprocessor>
+        <!-- the default 'checksum' datatype checksum the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields -->
+        <class name="org.mmbase.bridge.util.fields.ChecksumProcessorFactory">
+          <param name="field">handle</param>
+        </class>
+      </commitprocessor>
     </specialization>
 
   </datatype>
@@ -221,14 +233,6 @@
 
   <datatype id="binary">
     <class name="org.mmbase.datatypes.BinaryDataType" />
-    <specialization id="checksum">
-      <commitprocessor>
-        <!-- the default 'checksum' datatype checksum the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields -->
-        <class name="org.mmbase.bridge.util.fields.ChecksumProcessorFactory">
-          <param name="field">handle</param>
-        </class>
-      </commitprocessor>
-    </specialization>
   </datatype>
 
   <datatype id="node">
