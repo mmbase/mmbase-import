@@ -12,6 +12,8 @@ package org.mmbase.bridge;
 
 import java.util.*;
 import org.mmbase.util.Casting;
+import org.mmbase.bridge.Field;
+import org.mmbase.datatypes.DataType;
 import org.w3c.dom.Document;
 
 /**
@@ -19,7 +21,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.8 2005-10-07 19:04:23 michiel Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.9 2005-10-12 17:31:35 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
@@ -146,9 +148,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
                     "-1.0".equals(value));
             } else if (fieldTypes[i].equals("datetime")) {
                 // not-null 'empty' dates return a date string
-                String dateValue = Casting.toString(new Date(-1));
-                assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + dateValue + "\", but \"" + value +"\"",
-                    dateValue.equals(value));
+                Field field = node.getNodeManager().getField(fieldTypes[i] + "field");
+                String dateValue = (String) field.getDataType().process(DataType.PROCESS_GET, node, field, Casting.toString(new Date(-1)), Field.TYPE_STRING);
+                assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + dateValue + "\", but \"" + value +"\" " , dateValue.equals(value));
             } else if (fieldTypes[i].equals("xml")) {
                 // not-null 'empty' xml values return <p/>
                 assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + EMPTY_XML + "\", but \"" + value +"\"",
@@ -195,9 +197,8 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             Date value = node.getDateValue(fieldTypes[i] + "field");
             assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value != null);            
-            Date expected = fieldTypes[i].equals("datetime") ? new Date() : new Date(-1);
-            long diff = Math.abs(expected.getTime() - value.getTime());
-            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return " + expected + ", but " + value + "(differs " + diff + ") value:" + node.getStringValue(fieldTypes[i] + "field"),  diff < 60000L); // allow for a minute differnce (duration of test or so..)
+            Date expected = new Date(-1);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return " + expected + ", but " + value + " value:" + node.getStringValue(fieldTypes[i] + "field"),  value.equals(expected)); 
        }
     }
 
