@@ -110,6 +110,13 @@
           <include name="mmbase-clustering.jar" />
         </fileset>
       </classpath>
+      <classpath id="run.rmmci.client">
+        <pathelement location="${tests.source.dir}/fixme" /> <!-- dir must be empty -->
+        <pathelement location="${tests.lib}/junit.jar" />
+        <pathelement location="${tests.lib}/xercesImpl.jar" /> <!-- should not need this, Document must be somehow serialized as String, and reparsed, probably-->
+        <pathelement location="${mmbasetest.jar}" />
+        <pathelement location="${tests.lib}/mmbase-rmmci.jar" />
+      </classpath>
     </available>
   </target>
 
@@ -313,17 +320,11 @@ Build-compiler: ${build.compiler}
       <java
           classname="${ui.class}"
           fork="true"
+          classpathref="run.rmmci.client"
           >
         <arg value="org.mmbase.bridge.AllTests" />
         <jvmarg value="-Dnostartmmbase=" />
         <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
-        <classpath>
-          <pathelement location="${tests.source.dir}/fixme" /> <!-- dir must be empty -->
-          <pathelement location="${tests.lib}/junit.jar" />
-          <pathelement location="${tests.lib}/xercesImpl.jar" /> <!-- should not need this, Document must be somehow serialized as String, and reparsed, probably-->
-          <pathelement location="${mmbasetest.jar}" />
-          <pathelement location="${tests.lib}/mmbase-rmmci.jar" />
-        </classpath>
       </java>
     </parallel>
   </target>
@@ -382,6 +383,7 @@ Build-compiler: ${build.compiler}
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Dmmbaseroot.machinename=mmbase1" />
           <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
         <sequential>
           <!-- this should not be necessary, but MMBase's get a bit confused if they both at same time start to make the same tables -->
@@ -395,15 +397,16 @@ Build-compiler: ${build.compiler}
             <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
             <jvmarg value="-Dmmbaseroot.machinename=mmbase2" />
             <jvmarg value="-Drmmci.port=1222" />
+            <jvmarg value="-Duser.dir=${tests.work.dir}" />
           </java>
         </sequential>
       </daemons>
+      
       <java
           classname="${ui.class}"
           fork="true"
-          classpathref="run.classpath">
+          classpathref="run.rmmci.client">
         <arg value="org.mmbase.tests.Clustering" />
-        <jvmarg value="-Duser.dir=${tests.work.dir}" />
       </java>
     </parallel>
   </target>
