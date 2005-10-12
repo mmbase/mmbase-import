@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.28 2005-10-07 18:57:06 michiel Exp $
+ * @version $Id: DataType.java,v 1.29 2005-10-12 00:01:04 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -201,19 +201,8 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
 
 
+
     // XXXX MM: I think 'action' must be gone; it is silly.
-    /**
-     * Processes a value, according to the default processors set on this datatype.
-     * @see #process(int, Node, Field, Object, int)
-     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
-     * @param node the node for wich the values should be processed
-     * @param field the field for wioch the values should be processed
-     * @param value The value to process
-     * @return the processed value
-     */
-    public Object process(int action, Node node, Field field, Object value);
-
-
     /**
      * Processes a value, according to the processors set on this datatype.
      * Also, when committing, if the value is <code>null</code>, but is required,

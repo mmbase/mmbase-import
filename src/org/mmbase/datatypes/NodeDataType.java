@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.12 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.13 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -55,9 +55,9 @@ public class NodeDataType extends BasicDataType {
         return mustExistConstraint;
     }
 
-    public Collection validate(Object value, Node node, Field field) {
-        Collection errors = super.validate(value, node, field);
-        errors = mustExistConstraint.validate(errors, value, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, node, field);
+        errors = mustExistConstraint.validate(errors, castedValue, node, field);
         return errors;
     }
 
@@ -75,7 +75,7 @@ public class NodeDataType extends BasicDataType {
                         return node.getCloud().hasNode((String)value);
                     } else if (value instanceof Number) {
                         int num = ((Number)value).intValue();
-                        if (num == -1) return true;
+                        if (num < 0) return true;
                         return node.getCloud().hasNode(num);
                     } else if (value instanceof Node) {
                         return true;

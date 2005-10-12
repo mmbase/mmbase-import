@@ -23,7 +23,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.2 2005-10-02 16:10:32 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -48,7 +48,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
      * this object is needed for generic formation, which is probably not dependent on the Locale.
      */
     public DateFormat getDateFormat(Locale locale) {
-        return new SimpleDateFormat(pattern.get(locale), locale);
+        return new SimpleDateFormat(pattern.get(locale), locale);        
     }
 
 

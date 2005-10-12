@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.3 2005-10-07 18:57:06 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.4 2005-10-12 00:01:04 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -45,7 +45,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     protected RequiredConstraint requiredConstraint = new RequiredConstraint(false);
-    protected UniqueConstraint uniqueConstraint     = new UniqueConstraint(false);
+    protected UniqueConstraint   uniqueConstraint   = new UniqueConstraint(false);
+    protected TypeConstraint     typeConstraint     = new TypeConstraint();
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
@@ -189,6 +190,15 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
+     * Before validating the value, the value will be 'casted', on default this will be to the
+     * 'correct' type, but it can be a more generic type sometimes. E.g. for numbers this wil simply
+     * cast to Number.
+     */
+    protected Object castToValidate(Object value) {
+        return Casting.toType(classType, value);
+    }
+
+    /**
      * @inheritDoc
      */
     public Object getDefaultValue() {
@@ -258,14 +268,22 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * @inheritDoc
      */
-    public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
+    public final Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
         Collection errors = VALID;
-        errors = uniqueConstraint.validate(errors, value, node, field);
-        errors = requiredConstraint.validate(errors, value, node, field);
+        errors = typeConstraint.validate(errors, value, node, field);
+        if (errors.size() != 0) value = ""; // should always cast..
+        Object castedValue = castToValidate(value);
+        errors = uniqueConstraint.validate(errors, castedValue, node, field);
+        errors = requiredConstraint.validate(errors, castedValue, node, field);
         // test enumerations
         // if (enumerationValues != null && enumerationValues.size() == 0) {
         //     ...
         // }
+        errors = validateCastedValue(errors, castedValue, node, field);
+        return errors;
+    }
+
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
         return errors;
     }
 
@@ -416,12 +434,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return enumerationValues;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public Object process(int action, Node node, Field field, Object value) {
-        return process(action, node, field, value, Field.TYPE_UNKNOWN);
-    }
 
     /**
      * @inheritDoc
@@ -713,6 +725,23 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             } else {
                 // TODO needs to work without Node too.
                 return true;
+            }
+        }
+    }
+
+    protected class TypeConstraint extends AbstractValueConstraint {
+        TypeConstraint(TypeConstraint source) {
+            super(source);
+        }
+        TypeConstraint() {
+            super("type", BasicDataType.this.getClass());
+        }
+        public boolean valid(Object v, Node node, Field field) {
+            try {
+                BasicDataType.this.castToValidate(v);
+                return true;
+            } catch (Throwable e) {
+                return false;
             }
         }
     }

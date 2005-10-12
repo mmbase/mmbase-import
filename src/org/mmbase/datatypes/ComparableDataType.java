@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.2 2005-10-07 00:16:34 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -100,10 +100,10 @@ public abstract class ComparableDataType extends BasicDataType {
     }
 
 
-    public Collection validate(Object value, Node node, Field field) {
-        Collection errors = super.validate(value, node, field);
-        errors = minConstraint.validate(errors, value, node, field);
-        errors = maxConstraint.validate(errors, value, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, node, field);
+        errors = minConstraint.validate(errors, castedValue, node, field);
+        errors = maxConstraint.validate(errors, castedValue, node, field);
         return errors;
     }
 
@@ -134,11 +134,12 @@ public abstract class ComparableDataType extends BasicDataType {
             super("min" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
+
         public boolean valid(Object value, Node node, Field field) {
+            if (getValue() == null) return true;
             //Comparable v = Casting.toComparable(value);
             Comparable v = (Comparable) value;
-            Comparable minimum = (Comparable) getValue();
-            if (minimum == null) return true;
+            Comparable minimum = (Comparable) ComparableDataType.this.castToValidate(getValue());
             if (inclusive && (v.equals(minimum))) return true;
             return v.compareTo(minimum) > 0;
         }
@@ -158,10 +159,10 @@ public abstract class ComparableDataType extends BasicDataType {
             inclusive = inc;
         }
         public boolean valid(Object value, Node node, Field field) {
+            if (getValue() == null) return true;
             //Comparable v = Casting.toComparable(value);
             Comparable v = (Comparable) value;
-            Comparable maximum = (Comparable) getValue();
-            if (maximum == null) return true;
+            Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue());
             if (inclusive && (v.equals(maximum))) return true;
             return v.compareTo(maximum) < 0;
         }
