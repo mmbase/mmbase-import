@@ -62,9 +62,9 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
         Vector fieldlist = tagger.Values("FIELDS");
         Vector res = new Vector(v.size() / items);
-        MMObjectBuilder bul= getListBuilder(command,params);
+        MMObjectBuilder bul = getListBuilder(command,params);
         for(int i= 0; i < v.size(); i+=items) {
-            MMObjectNode node = new MMObjectNode(bul);
+            VirtualNode node = new VirtualNode(bul);
             for(int j= 0; (j<items) && (j<v.size()); j++) {
                 if ((fieldlist!=null) && (j<fieldlist.size())) {
                     node.setValue((String)fieldlist.get(j),v.get(i+j));
