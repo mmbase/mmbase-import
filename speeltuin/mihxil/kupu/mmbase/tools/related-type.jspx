@@ -28,9 +28,9 @@
           <!-- create a relation if requested -->
           <mm:import externid="relate_node" />
           <mm:present referid="relate_node">
-            <mm:relatednodes type="${type}" role="posrel" orderby="posrel.pos" max="1">
+            <mm:listrelations type="${type}" role="posrel" orderby="posrel.pos" max="1">
               <mm:field name="pos" id="pos" write="false" />
-            </mm:relatednodes>
+            </mm:listrelations>
             <mm:node referid="relate_node" id="relate_node" />
             <mm:createrelation source="node" destination="relate_node" role="posrel">
               <mm:present referid="pos">
