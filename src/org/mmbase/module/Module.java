@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.70 2005-10-06 17:46:39 michiel Exp $
+ * @version $Id: Module.java,v 1.71 2005-10-12 01:01:30 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -42,7 +42,6 @@ public abstract class Module extends FunctionProvider {
      */
     static Map modules;
 
-    // logger instance
     private static final Logger log = Logging.getLoggerInstance(Module.class);
 
     public static final ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
@@ -181,7 +180,7 @@ public abstract class Module extends FunctionProvider {
      */
     public void setInitParameter(String key,String value) {
         if (properties != null) {
-            properties.put(key,value);
+            properties.put(key, value);
         }
     }
 
