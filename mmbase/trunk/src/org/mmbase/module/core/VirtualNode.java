@@ -19,20 +19,22 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.9 2005-10-07 18:36:42 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.10 2005-10-12 00:33:03 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
 
     /**
      * Main contructor.
-     * @param parent the node's parent, generally (but not necessarily) an instance
-     * of a virtual builder.
+     * @param parent the node's parent
      */
     public VirtualNode(MMObjectBuilder parent) {
-        super(parent);
-        virtual = true;
+        super(parent, false);
     }
 
+
+    public boolean isVirtual() {
+        return true;
+    }
 
     /**
      * Overrides to no throw exception on non-existing fields
