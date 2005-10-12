@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.129 2005-10-07 18:49:22 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.130 2005-10-12 01:01:59 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -774,7 +774,7 @@ public class DatabaseStorageManager implements StorageManager {
         int nodeNumber = node.getNumber();
         if (nodeNumber == -1) {
             nodeNumber = createKey();
-            node.setValue("number", nodeNumber);
+            node.setValue(MMObjectBuilder.FIELD_NUMBER, nodeNumber);
         }
         MMObjectBuilder builder = node.getBuilder();
         // precommit call, needed to convert or add things before a save
