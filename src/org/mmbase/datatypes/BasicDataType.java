@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.6 2005-10-12 19:08:45 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.7 2005-10-12 22:12:25 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -718,7 +718,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 // XXX This will test for uniquness using the cloud, so you'll miss objects you can't
                 // see (and database doesn't know that!)
                 NodeQuery query = field.getNodeManager().createQuery();
-                Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, value);
+                Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
                 Queries.addConstraint(query,constraint);
                 if (!node.isNew()) {
                     constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
