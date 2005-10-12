@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.11 2005-10-07 18:39:13 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.12 2005-10-12 00:38:12 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -99,12 +99,17 @@ public abstract class NodeFunction extends AbstractFunction {
         Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
         if (cloud == null) {
             // lets try this
-            cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "delegate", null);
+            cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
             if (cloud == null) {
                 throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
             }
+        }         
+        Node node;
+        if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
+            node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud); 
+        } else {
+            node = cloud.getNode(coreNode.getNumber());
         }
-        final Node node     = cloud.getNode(coreNode.getNumber());
         return getFunctionValue(node, parameters);
 
     }
@@ -113,7 +118,12 @@ public abstract class NodeFunction extends AbstractFunction {
      * Utility method to convert a {@link org.mmbase.bridge.Node} to a a {@link org.mmbase.module.core.MMObjectNode}.
      */
     protected final MMObjectNode getCoreNode(final MMObjectBuilder builder, final Node node) {
-        return builder.getNode(node.getNumber());
+        if (node instanceof org.mmbase.bridge.implementation.VirtualNode) {
+            return ((org.mmbase.bridge.implementation.VirtualNode) node).getNodeRef();
+        } else {
+            return builder.getNode(node.getNumber());
+        }
+
     }
 
     /**
