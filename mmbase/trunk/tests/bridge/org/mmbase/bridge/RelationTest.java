@@ -13,7 +13,7 @@ import org.mmbase.tests.*;
 /**
  * Test cases to test the creation of relations and the retrieval of them
  * @author Kees Jongenburger
- * @version $Id: RelationTest.java,v 1.5 2003-12-09 13:37:29 keesj Exp $
+ * @version $Id: RelationTest.java,v 1.6 2005-10-12 17:32:37 michiel Exp $
  */
 public class RelationTest extends BridgeTest {
 
@@ -112,8 +112,7 @@ public class RelationTest extends BridgeTest {
             try {
                 aaSecondNode.delete();
                 fail("Should raise a BridgeException");
-            } catch (BridgeException e) {};
-            
+            } catch (BridgeException e) {};            
             aaSecondNode.delete(true);
             aaFirstNode.delete(true);
             bbNode.delete();
