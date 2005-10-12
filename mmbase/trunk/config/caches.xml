@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.15 2005-10-09 14:57:46 ernst Exp $
+  @version $Id: caches.xml,v 1.16 2005-10-12 20:32:10 michiel Exp $
   @author  Michiel Meeuwissen
   @author  Ernst Bunders
 
@@ -21,7 +21,10 @@
   	gradually become more economical.
   -->
   <releaseStrategies>
-  	<strategy>org.mmbase.cache.BetterStrategy</strategy>
+    <!--
+    <strategy>org.mmbase.cache.BetterStrategy</strategy>
+    -->
+  	<strategy>org.mmbase.cache.BasicReleaseStrategy</strategy>
   </releaseStrategies>
 
 
