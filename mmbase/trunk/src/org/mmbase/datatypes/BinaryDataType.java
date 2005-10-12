@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {
@@ -26,7 +26,12 @@ public class BinaryDataType extends AbstractLengthDataType {
         super(name, byte[].class);
     }
 
+
+
     public long getLength(Object value) {
+        if (! (value instanceof byte[])) {
+            throw new RuntimeException("Vlue " + value + " of " + getName() + " is not a byte array but" + (value == null ? "null" : value.getClass().getName()));
+        }
         return ((byte[]) value).length;
     }
 

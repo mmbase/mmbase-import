@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.22 2005-10-07 18:57:06 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.23 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -60,6 +60,9 @@ public class DateTimeDataType extends ComparableDataType {
         }
     }
 
+    protected Object castToValidate(Object value) {
+        return DynamicDate.eval(Casting.toDate(value));
+    }
 
     /**
      * @return the minimum value as an <code>Date</code>, or very very long ago if there is no minimum.

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.18 2005-10-07 18:57:06 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.19 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -134,9 +134,9 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         isPassword = pw;
     }
 
-    public Collection validate(Object value, Node node, Field field) {
-        Collection errors = super.validate(value, node, field);
-        errors = patternConstraint.validate(errors, value, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, node, field);
+        errors = patternConstraint.validate(errors, castedValue, node, field);
         return errors;
     }
 

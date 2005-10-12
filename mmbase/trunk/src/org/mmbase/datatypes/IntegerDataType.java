@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
  * A NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: IntegerDataType.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType {
@@ -22,6 +22,8 @@ public class IntegerDataType extends NumberDataType {
      */
     public IntegerDataType(String name) {
         super(name, Integer.class);
+        setMin(new Integer(Integer.MIN_VALUE), true);
+        setMax(new Integer(Integer.MAX_VALUE), true);
     }
 
     /**
@@ -37,7 +39,7 @@ public class IntegerDataType extends NumberDataType {
      */
     public int getMax() {
         Number max = (Number) getMaxConstraint().getValue();
-        return max == null ? Integer.MAX_VALUE : max.intValue();
+        return max == null ? Integer.MAX_VALUE  : max.intValue();
     }
 
 }
