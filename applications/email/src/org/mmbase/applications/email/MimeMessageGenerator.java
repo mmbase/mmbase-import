@@ -45,6 +45,7 @@ public class MimeMessageGenerator {
 		MimeBodyTag tag=(MimeBodyTag)tags.nextElement();
 
 		// get all the needed fields
+		String type=tag.getType();
 		String id=tag.getId();
 		String related=tag.getRelated();
 		String alt=tag.getAlt();
@@ -99,8 +100,7 @@ public class MimeMessageGenerator {
                     }
                 }
                 return root;
-            }
-            catch (MessagingException e) {
+            } catch (MessagingException e) {
                 log.error("Root generation error", e);
             }
     	} else {
