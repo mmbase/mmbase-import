@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.4 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.5 2005-10-12 00:47:15 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -106,6 +106,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         requiredConstraint = (RequiredConstraint) in.readObject();
         uniqueConstraint   = (UniqueConstraint) in.readObject();
+        typeConstraint     = new TypeConstraint(); // its always the same, so no need actually persisting it.
         owner              = in.readObject();
         classType          = (Class) in.readObject();
         defaultValue       = in.readObject();
