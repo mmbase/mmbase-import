@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.27 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.28 2005-10-12 00:37:05 michiel Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -147,24 +147,27 @@ public class ModuleHandler implements Module, Comparable {
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
         if (mmbase_module instanceof ProcessorInterface) {
-            BasicCloud cloud=null;
+            Cloud cloud = null;
             if (parameters!=null) {
-                cloud = (BasicCloud) parameters.get("CLOUD");
+                cloud = (Cloud) parameters.get("CLOUD");
             }
-            if (cloud==null) {
+            if (cloud == null) {
                 // anonymous access on the cloud....
-                cloud=(BasicCloud)cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
+                cloud = cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
             }
             try {
-                Vector v = ((ProcessorInterface)mmbase_module).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),command,parameters);
-                MMObjectBuilder bul = ((ProcessorInterface)mmbase_module).getListBuilder(command, parameters);
-                BasicNodeManager tempNodeManager = null;
-                if (bul.isVirtual()) {
-                   tempNodeManager = new VirtualNodeManager(bul, cloud);
+                List v = ((ProcessorInterface)mmbase_module).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),command,parameters);
+                if (v.size() == 0) {
+                    return cloud.createNodeList();
                 } else {
-                   tempNodeManager = cloud.getBasicNodeManager(bul.getTableName());
+                    MMObjectNode node = (MMObjectNode) v.get(0);
+                    if (node instanceof org.mmbase.module.core.VirtualNode) {
+                        VirtualNodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode) node, cloud);
+                        return new BasicNodeList(v, tempNodeManager);
+                    } else {
+                        return new BasicNodeList(v, cloud.getNodeManager(node.getBuilder().getTableName()));
+                    }
                 }
-                return new BasicNodeList(v,tempNodeManager);
             } catch (Exception e) {
                 throw new BridgeException(e.getMessage(), e);
             }

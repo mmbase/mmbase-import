@@ -13,8 +13,7 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.cache.MultilevelCache;
-import org.mmbase.cache.AggregatedResultCache;
+import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.135 2005-10-07 18:44:28 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.136 2005-10-12 00:37:05 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -46,9 +45,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // link to cloud context
     private CloudContext cloudContext = null;
 
-    // link to typedef object for retrieving type info (builders, etc)
-    private TypeDef typedef = null;
-
     // name of the cloud
     protected String name = null;
 
@@ -62,20 +58,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // note: in future, this is dependend on language settings!
     protected String description = null;
 
-    // transactions
+    // all transactions started by this cloud object (with createTransaction)
     protected Map transactions = new HashMap();
 
     // node managers cache
     protected Map nodeManagerCache = new HashMap();
 
-    // parent Cloud, if appropriate
-    protected BasicCloud parentCloud = null;
 
     MMBaseCop mmbaseCop = null;
 
     protected UserContext userContext = null;
 
-    private MultilevelCache multilevelCache; // should be static?
 
     private Locale locale;
 
@@ -83,7 +76,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return getByteSize(new SizeOf());
     }
     public int getByteSize(SizeOf sizeof) {
-        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(multilevelCache);
+        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache);
     }
 
     /**
@@ -93,8 +86,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     BasicCloud(String cloudName, BasicCloud cloud) {
         cloudContext = cloud.cloudContext;
-        parentCloud = cloud;
-        typedef = cloud.typedef;
         locale = cloud.locale;
         name = cloudName;
         description = cloud.description;
@@ -103,8 +94,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         userContext = cloud.userContext;
         account = cloud.account;
 
-        // start multilevel cache
-        multilevelCache = MultilevelCache.getCache();
     }
 
     /**
@@ -185,15 +174,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             throw new BridgeException(message);
         }
         log.debug("Setting up cloud object");
-        // other settings of the cloud...
-        typedef = mmb.getTypeDef();
         locale = new Locale(mmb.getLanguage(), "");
 
         // generate an unique id for this instance...
         account = "U" + uniqueId();
 
-        // start multilevel cache
-        multilevelCache = MultilevelCache.getCache();
 
 
     }
@@ -339,6 +324,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @throws NotFoundException node manager not found
      */
     public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException {
+        TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
         return getNodeManager(typedef.getValue(nodeManagerId));
     }
 
@@ -382,6 +368,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (r == -1) {
             throw new NotFoundException("Role '" + roleName + "' does not exist.");
         }
+        // other settings of the cloud...
+        TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
+
         int n1 = typedef.getIntValue(sourceManagerName);
         if (n1 == -1) {
             throw new NotFoundException("Source type '" + sourceManagerName + "' does not exist.");
@@ -415,6 +404,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
         int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r == -1)  return false;
+        TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
         int n1 = typedef.getIntValue(sourceManagerName);
         if (n1 == -1) return false;
         int n2 = typedef.getIntValue(destinationManagerName);
@@ -639,7 +629,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             if (! checked) {
                 log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
-            AggregatedResultCache cache = AggregatedResultCache.getCache();
+            Cache cache = AggregatedResultCache.getCache();
 
             List resultList = (List) cache.get(query);
             if (resultList == null) {
@@ -648,7 +638,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 cache.put(query, resultList);
             }
             query.markUsed();
-            BasicNodeManager tempNodeManager = new VirtualNodeManager(query, this);
+            NodeManager tempNodeManager = new VirtualNodeManager(query, this);
             NodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
             resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
             return resultNodeList;
@@ -666,6 +656,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @since MMBase-1.7
      */
     protected List    getClusterNodes(Query query) {
+
+        // start multilevel cache
+        Cache multilevelCache = MultilevelCache.getCache();
 
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
         // check multilevel cache if needed
@@ -798,7 +791,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         BasicNodeList resultNodeList; // this will be the result NodeList
 
         // create resultNodeList
-        BasicNodeManager  tempNodeManager = new VirtualNodeManager(query, this);
+        NodeManager  tempNodeManager = new VirtualNodeManager(query, this);
 
         resultNodeList = new BasicNodeList(resultList, tempNodeManager);
         resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);

@@ -1,0 +1,494 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+
+package org.mmbase.bridge.implementation;
+
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.security.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.fields.*;
+import org.mmbase.datatypes.DataType;
+import org.mmbase.storage.search.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.functions.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.*;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+
+/**
+ * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: VirtualNode.java,v 1.1 2005-10-12 00:37:05 michiel Exp $
+ * @see org.mmbase.bridge.Node
+ * @see org.mmbase.module.core.VirtualNode
+ * @since MMBase-1.8
+ */
+public class VirtualNode implements Node {
+
+    private static final Logger log = Logging.getLoggerInstance(VirtualNode.class);
+
+    final protected org.mmbase.module.core.VirtualNode noderef;
+
+    /**
+     * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
+     * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
+     */
+    final protected NodeManager nodeManager; 
+    final protected Cloud cloud;
+
+
+    protected VirtualNode(Cloud cloud, org.mmbase.module.core.VirtualNode node, NodeManager nm) {
+        this.cloud = cloud;
+        this.noderef = node;
+        nodeManager = nm;
+        
+    }
+
+    public VirtualNode(org.mmbase.module.core.VirtualNode node, Cloud cloud) {
+        this(cloud, node, new VirtualNodeManager(node, cloud));
+    }
+
+    /**
+     * Returns the MMObjectNode on which the VirtualNode was based
+     */
+    public org.mmbase.module.core.VirtualNode getNodeRef() {
+        return noderef;
+    }
+
+
+    public boolean isRelation() {
+        return false;
+    }
+
+    public Relation toRelation() {
+        return (Relation)this;
+    }
+
+    public boolean isNodeManager() {
+        return false;
+    }
+
+    public NodeManager toNodeManager() {
+        return (NodeManager)this;
+    }
+
+    public boolean isRelationManager() {
+        return false;
+    }
+
+    public RelationManager toRelationManager() {
+        return (RelationManager)this;
+    }
+
+
+    /**
+     * Obtains a reference to the underlying MMObjectNode.
+     * If the underlying node was deleted, this returns a virtual node with
+     * no info except the (original) node number.
+     * @return the underlying MMObjectNode
+     * @throws NotFoundException if no node was specified. This generally means the
+     */
+    protected final MMObjectNode getNode() {
+        return noderef;
+    }
+
+
+    public Cloud getCloud() {
+        return cloud;
+    }
+
+    public NodeManager getNodeManager() {
+        return nodeManager;
+    }
+
+    public int getNumber() {
+        return -1;
+    }
+
+    public boolean isNew() {
+        return true;
+    }
+
+    public boolean isChanged(String fieldName) {
+        return false;
+    }
+    
+
+    public void setValue(String fieldName, Object value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+    public void setValueWithoutProcess(String fieldName, Object value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setObjectValue(String fieldName, Object value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setBooleanValue(String fieldName,final  boolean value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setDateValue(String fieldName, final Date value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setListValue(String fieldName, final List value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setNodeValue(String fieldName, final Node value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setIntValue(String fieldName, final int value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setLongValue(String fieldName, final long value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setFloatValue(String fieldName, final float value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setDoubleValue(String fieldName, final double value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setByteValue(String fieldName, final byte[] value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setInputStreamValue(String fieldName, final InputStream value, long size) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setStringValue(String fieldName, final String value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void setXMLValue(String fieldName, final Document value) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public boolean isNull(String fieldName) {
+        return noderef.isNull(fieldName);
+    }
+
+    public Object getValue(String fieldName) {
+        Object value = noderef.getValue(fieldName);
+        if (value == null) return null;
+        if (noderef.getBuilder().hasField(fieldName)) {
+            int type = noderef.getBuilder().getField(fieldName).getType();
+            switch(type) {
+                case Field.TYPE_STRING:  return getStringValue(fieldName);
+                case Field.TYPE_BINARY:    return getByteValue(fieldName);
+                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+                case Field.TYPE_XML:     return getXMLValue(fieldName);
+                case Field.TYPE_NODE:    return getNodeValue(fieldName);
+                case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
+                case Field.TYPE_DATETIME:return getDateValue(fieldName);
+                case Field.TYPE_LIST:    return getListValue(fieldName);
+                default:
+                    log.error("Unknown fieldtype '" + type + "'");
+                    return value;
+            }
+        } else {
+            //log.warn("Requesting value of unknown field '" + fieldName + "')");
+            return value;
+        }
+
+    }
+
+    public Object getValueWithoutProcess(String fieldName) {
+        Object result = getNode().getValue(fieldName);
+        return result;
+    }
+
+    public Object getObjectValue(String fieldName) {
+        Object result = getValueWithoutProcess(fieldName);
+        return result;
+    }
+
+    public boolean getBooleanValue(String fieldName) {
+        Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
+        return result.booleanValue();
+    }
+
+    public Date getDateValue(String fieldName) {
+        Date result =  noderef.getDateValue(fieldName);
+        return result;
+    }
+
+    public List getListValue(String fieldName) {
+        List result =  noderef.getListValue(fieldName);
+        return result;
+    }
+
+    public Node getNodeValue(String fieldName) {
+        if (fieldName == null || fieldName.equals("number")) {
+            return this;
+        }
+        Node result = null;
+        MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
+        if (mmobjectNode != null) {
+            MMObjectBuilder builder = mmobjectNode.getBuilder();
+            result = cloud.getNode(mmobjectNode.getNumber());
+        }
+        return result;
+    }
+
+    public int getIntValue(String fieldName) {
+        Integer result = new Integer(getNode().getIntValue(fieldName));
+        return result.intValue();
+
+    }
+
+    public float getFloatValue(String fieldName) {
+        Float result = new Float(getNode().getFloatValue(fieldName));
+        return result.floatValue();
+    }
+
+    public long getLongValue(String fieldName) {
+        Long result = new Long(getNode().getLongValue(fieldName));
+        return result.longValue();
+    }
+
+    public double getDoubleValue(String fieldName) {
+        Double result = new Double(getNode().getDoubleValue(fieldName));
+        return result.doubleValue();
+    }
+
+    public byte[] getByteValue(String fieldName) {
+        byte[] result = getNode().getByteValue(fieldName);
+        return result;
+    }
+    public java.io.InputStream getInputStreamValue(String fieldName) {
+        java.io.InputStream result = getNode().getInputStreamValue(fieldName);
+        return result;
+    }
+
+    public String getStringValue(String fieldName) {
+        String result = getNode().getStringValue(fieldName);
+        log.info("GODVERDOMME");
+        return result;
+    }
+
+    public Document getXMLValue(String fieldName) {
+        Document result = getNode().getXMLValue(fieldName);
+        return result;
+    }
+
+    public FieldValue getFieldValue(String fieldName) throws NotFoundException {
+        return new BasicFieldValue(this, getNodeManager().getField(fieldName));
+    }
+
+    public FieldValue getFieldValue(Field field) {
+        return new BasicFieldValue(this, field);
+    }
+
+
+
+    public Element getXMLValue(String fieldName, Document tree) {
+        Document doc = getXMLValue(fieldName);
+        if (doc == null) {
+            return null;
+        }
+        return (Element)tree.importNode(doc.getDocumentElement(), true);
+    }
+
+    public void validate() {
+    }
+    public void validate(String fieldName) {
+    }
+
+    public void commit() {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void cancel() {
+    }
+
+    public void delete() {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void delete(boolean deleteRelations) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public String toString() {
+        return "VIRTUAL" + getNode().toString();
+    }
+
+    public void deleteRelations() {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public void deleteRelations(String type) throws NotFoundException {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public RelationList getRelations() {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public RelationList getRelations(String role) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public boolean hasRelations() {
+        return false;
+    }
+
+    public int countRelations() {
+        return 0;
+    }
+
+    public int countRelations(String type) {
+        return 0;
+
+    }
+
+
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
+        return 0;
+    }
+
+
+    public NodeList getRelatedNodes() {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public NodeList getRelatedNodes(String type) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public NodeList getRelatedNodes(NodeManager nodeManager) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+    public NodeList getRelatedNodes(String type, String role, String searchDir) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+    public int countRelatedNodes(String type) {
+        return 0;
+    }
+
+    public StringList getAliases() {
+        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+    }
+
+    public void createAlias(String aliasName) {
+        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+    }
+
+    public void deleteAlias(String aliasName) {
+        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+    }
+
+    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
+        throw new UnsupportedOperationException("Virtual nodes have no relations");
+    }
+
+
+    public void setContext(String context) {
+        throw new UnsupportedOperationException("Virtual nodes have no security context");
+    }
+
+    // javadoc inherited (from Node)
+    public String getContext() {
+        throw new UnsupportedOperationException("Virtual nodes have no security context");
+    }
+
+
+    // javadoc inherited (from Node)
+    public StringList getPossibleContexts() {
+        throw new UnsupportedOperationException("Virtual nodes have no security context");
+    }
+
+    public boolean mayWrite() {
+        return false;
+    }
+
+    public boolean mayDelete() {
+        return false;
+    }
+
+    public boolean mayChangeContext() {
+        return false;
+    }
+
+    public Collection  getFunctions() {
+        Collection functions = getNode().getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(this, fun));
+        }
+        return functionSet;
+    }
+
+    public Function getFunction(String functionName) {
+        Function function = getNode().getFunction(functionName);
+        if (function == null) {
+            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
+        }
+        return new BasicFunction(this, function);
+    }
+
+    public Parameters createParameters(String functionName) {
+        Parameters params =  getFunction(functionName).createParameters();
+        params.setIfDefined(Parameter.NODE, this);
+        params.setIfDefined(Parameter.CLOUD, getCloud());
+        return params;
+    }
+
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+        Function function = getFunction(functionName);
+        Parameters params = function.createParameters();
+        params.setIfDefined(Parameter.NODE,  this);
+        params.setIfDefined(Parameter.CLOUD, getCloud());
+        params.setAll(parameters);
+        return (FieldValue) function.getFunctionValue(params);
+    }
+    public int compareTo(Object o) {
+        return 1;
+    }
+}

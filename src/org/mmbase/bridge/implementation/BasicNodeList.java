@@ -19,26 +19,26 @@ import org.mmbase.module.corebuilders.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.36 2005-09-01 15:19:29 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.37 2005-10-12 00:37:05 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
-    protected BasicCloud cloud;
-    protected BasicNodeManager nodeManager = null;
+    protected Cloud cloud;
+    protected NodeManager nodeManager = null;
 
     BasicNodeList() {
         super();
     }
 
-    BasicNodeList(Collection c, BasicCloud cloud) {
+    BasicNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud = cloud;
     }
 
-    BasicNodeList(Collection c, BasicNodeManager nodeManager) {
+    BasicNodeList(Collection c, NodeManager nodeManager) {
         super(c);
         this.nodeManager = nodeManager;
-        this.cloud = nodeManager.cloud;
+        this.cloud = nodeManager.getCloud();
     }
 
 
@@ -55,45 +55,27 @@ public class BasicNodeList extends BasicList implements NodeList {
             node = cloud.getNodeManager((String)o);
         } else if (o instanceof MMObjectBuilder) { // a builder
             node = cloud.getNodeManager(((MMObjectBuilder)o).getTableName());
-        } else {
+        } else {            
             MMObjectNode coreNode = (MMObjectNode) o;
             MMObjectBuilder coreBuilder = coreNode.getBuilder();
             if (coreBuilder instanceof TypeDef) {
-                // nodemanager node
-                node = new BasicNodeManager(coreNode,  cloud);
-            } else if (coreBuilder instanceof RelDef || coreBuilder instanceof TypeRel) {
-                // relationmanager node
-                node = new BasicRelationManager(coreNode, cloud);
+                node = cloud.getNodeManager(coreNode.getStringValue("name"));
+            } else if (coreBuilder instanceof RelDef) {
+                node = cloud.getRelationManager(coreNode.getStringValue("sname"));
+            } else if (coreBuilder instanceof TypeRel) {
+                int snumber = coreNode.getIntValue("snumber");
+                int dnumber = coreNode.getIntValue("dnumber");
+                int rnumber = coreNode.getIntValue("rnumber");
+                NodeManager nm1 = (NodeManager) cloud.getNode(snumber);
+                NodeManager nm2 = (NodeManager) cloud.getNode(dnumber);
+                Node role = cloud.getNode(rnumber);
+                node = cloud.getRelationManager(nm1.getName(), nm2.getName(), role.getStringValue("sname"));
             } else if(coreBuilder instanceof InsRel) {
-                // relation node
-                if(nodeManager == null)  {
-                    node = new BasicRelation(coreNode, cloud);
-                } else {
-                    node = new BasicRelation(coreNode, nodeManager);
-                }
-            } else if (coreBuilder instanceof VirtualBuilder) {
-                // this is a hack, because we prefer to use query to instantiate the VirtualNodeManager (fields can be determined properly then)
-                Query query = (Query) getProperty(NodeList.QUERY_PROPERTY);
-                if (query != null) {
-                    node = new BasicNode(coreNode, new VirtualNodeManager(query, cloud));
-                } else {
-                    // result of node.getRelatedNodes() or so?
-                    node = new BasicNode(coreNode, new VirtualNodeManager(coreNode, cloud));
-                }
-
+                node = cloud.getNode(coreNode.getNumber());
+            } else if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
+                node = new VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
             } else {
-                // 'normal' node
-                if(nodeManager == null)  {
-                    if (cloud == null) {
-                        throw new BridgeException("Could not create a Node from object '" + o + "' because this List has no Cloud,");
-                        // otherwise init of BasicNode throws NPE.
-
-                    }
-                    node = new BasicNode(coreNode, cloud);
-                } else {                   
-                    BasicNodeManager specificNodeManager = nodeManager.cloud.getBasicNodeManager(coreNode.getBuilder().getTableName());
-                    node = new BasicNode(coreNode, specificNodeManager);
-                }
+                node = cloud.getNode(coreNode.getNumber());
             }
         }
         set(index, node);

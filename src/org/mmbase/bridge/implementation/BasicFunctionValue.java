@@ -21,14 +21,14 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.14 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.15 2005-10-12 00:37:05 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
 
     static private BridgeException CANNOTCHANGE =  new BridgeException("Cannot change function value");
 
-    private BasicNode node = null;
+    private Node node = null;
     private Object value = null;
     private Cloud cloud = null;
 
@@ -38,8 +38,8 @@ public class BasicFunctionValue implements FieldValue {
      * @param node the node that called the function
      * @param value the function value
      */
-    BasicFunctionValue(BasicNode node, Object value) {
-        this(node.cloud, value);
+    BasicFunctionValue(Node node, Object value) {
+        this(node.getCloud(), value);
         this.node  = node;
     }
 
