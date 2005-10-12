@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.5 2005-10-02 16:33:47 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.6 2005-10-12 19:07:31 michiel Exp $
  * @since MMBase-1.8
  */
 public interface  AuthenticationData {
@@ -82,10 +82,11 @@ public interface  AuthenticationData {
     /**
      * Common parameters for logon-info
      */
-    static final Parameter PARAMETER_USERNAME  = new Parameter("username", String.class, true);
-    static final Parameter PARAMETER_PASSWORD  = new Parameter("password", String.class, true);
-    static final Parameter PARAMETER_USERNAMES = new Parameter("usernames", java.util.List.class);
-    static final Parameter PARAMETER_RANK                = new Parameter("rank",     Rank.class);
+    static final Parameter PARAMETER_USERNAME   = new Parameter("username", String.class, true);
+    static final Parameter PARAMETER_PASSWORD   = new Parameter("password", String.class, true);
+    static final Parameter PARAMETER_USERNAMES  = new Parameter("usernames", java.util.List.class);
+    static final Parameter PARAMETER_RANK       = new Parameter("rank",     Rank.class);
+    //    static final Parameter PARAMETER_REMOTEADDR = new Parameter("remoteaddr",   String.class);
 
     static final Parameter PARAMETER_SESSIONNAME    = new Parameter("sessionname",  String.class);
 
