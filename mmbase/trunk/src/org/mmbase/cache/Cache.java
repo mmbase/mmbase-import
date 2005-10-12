@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.29 2005-10-09 14:55:02 ernst Exp $
+ * @version $Id: Cache.java,v 1.30 2005-10-12 16:56:51 michiel Exp $
  */
 abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
 
@@ -112,8 +112,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
                     cache.maxEntrySize = cache.getDefaultMaxEntrySize();
                     //now see if we have to load cache release strategies for this lovely cache...
                     if(cache instanceof QueryResultCache){
-                        log.debug("found a SearchQueryCache: "+cacheName);
-
+                        log.debug("found a SearchQueryCache: " + cacheName);
                         //see if there are globally configured release strategies
                         List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
                         if(strategies != null){
@@ -268,8 +267,6 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
      * The number of times an element was committed to this cache.
      */
     private int puts = 0;
-
-
 
     public Cache(int size) {
         implementation = new LRUHashtable(size);
@@ -546,7 +543,7 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
           mycache.put("eee", m);
         */
 
-        MMObjectNode node = new MMObjectNode(new MMObjectBuilder());
+        MMObjectNode node = new MMObjectNode(new MMObjectBuilder(), false);
         node.setValue("hoi", "hoi");
         mycache.put("node", node);
 
