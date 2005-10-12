@@ -44,18 +44,9 @@
          <mm:relatedcontainer path="classrel,educations">
             <mm:constraint field="educations.number" value="$education"/>
             <mm:related>
-               <mm:node element="classrel" jspvar="tmp">
-                  <%
-                     System.out.println("classrel=" + tmp.getNumber());
-                  %>
+               <mm:node element="classrel">
                   <mm:relatednodes type="copybooks" id="copybookID">
                   </mm:relatednodes>
-
-                  <mm:write referid="copybookID" jspvar="tmp2" vartype="String">
-                     <%
-                        System.out.println("copybookID=" + tmp2);
-                     %>
-                  </mm:write>
                </mm:node>
             </mm:related>
          </mm:relatedcontainer>
