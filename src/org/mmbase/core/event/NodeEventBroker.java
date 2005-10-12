@@ -37,9 +37,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#canBrokerFor(java.lang.Class)
      */
     public boolean canBrokerForListener(EventListener listener) {
-        // if(listener.getClass().equals(NodeEventListener.class))return true;
-        if (listener instanceof NodeEventListener) return true;
-        return false;
+        return listener instanceof NodeEventListener;
     }
 
     /*
@@ -48,8 +46,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
     public boolean canBrokerForEvent(Event event) {
-        if (event.getClass().equals(NodeEvent.class)) return true;
-        return false;
+        return event instanceof NodeEvent;
     }
 
     /*
