@@ -12,6 +12,9 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.CoreField;
+import org.mmbase.bridge.Field;
+import org.mmbase.core.util.Fields;
+import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
@@ -45,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.78 2005-10-06 17:46:39 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.79 2005-10-12 00:32:25 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -106,7 +109,6 @@ public class ClusterBuilder extends VirtualBuilder {
         super(m, "clusternodes");
     }
 
-
     /**
      * Translates a string to a search direction constant.
      *
@@ -147,8 +149,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return A newly initialized <code>VirtualNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        MMObjectNode node= new ClusterNode(this);
-        return node;
+        throw new UnsupportedOperationException("One cannot create new ClusterNodes");
     }
 
     /**
@@ -195,12 +196,17 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
     public String getGUIIndicator(String field, MMObjectNode node) {
-        int pos= field.indexOf('.');
+
+        if (node == null) throw new RuntimeException("Tried to get GUIIndicator for field " + field + " with NULL node");
+            
+        ClusterNode clusterNode = (ClusterNode) node;
+
+        int pos = field.indexOf('.');        
         String bulname= null;
-        if ((pos != -1) && (node instanceof ClusterNode)) {
+        if (pos != -1) {
             bulname = field.substring(0, pos);
         }
-        MMObjectNode n = ((ClusterNode)node).getRealNode(bulname);
+        MMObjectNode n = clusterNode.getRealNode(bulname);
         if (n == null) {
             n = node;
         }
@@ -264,13 +270,36 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return null;
     }
-
+                          
     public List getFields(int order) {        
         throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
     public Collection getFields() {        
         throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
+                   
+    /**
+     * @since MMBase-1.8
+     */
+    public Map getFields(MMObjectNode node) {
+        Map ret = new HashMap();
+        Iterator i = node.getValues().keySet().iterator();
+        DataType nodeType  = DataTypes.getDataType("node");
+        while (i.hasNext()) {
+            String name = (String) i.next();
+            int pos = name.indexOf(".");
+            if (pos != -1) {
+                String builderName = name.substring(0, pos);
+                if (! ret.containsKey(builderName)) {
+                    CoreField fd = Fields.createField(builderName, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
+                    ret.put(builderName, fd);
+                }
+            }
+            ret.put(name, getField(name));
+        }
+        return ret;
+    }
+                          
 
     /**
      * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
