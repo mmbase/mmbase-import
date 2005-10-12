@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.107 2005-10-07 18:52:40 michiel Exp $
+ * @version $Id: Images.java,v 1.108 2005-10-12 00:58:02 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -126,9 +126,6 @@ public class Images extends AbstractImages {
             }
             return new Integer(getCachedNode(node, (String) args.get(0)).getNumber());
         } else if ("cachednode".equals(function)) {
-            if (args == null || args.size() != 1) {
-                throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
-            }
             try {
                 return getCachedNode(node, (String) args.get(0));
             } catch (Exception e) {
