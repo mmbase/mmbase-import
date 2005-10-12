@@ -28,31 +28,33 @@
   <mm:field name="type" id="type" write="false"/>
   <mm:compare referid="type" value="0">
     <mm:import externid="$question" id="givenanswer" jspvar="sGivenAnswer" vartype="String"/>
-    <%
-        sGivenAnswer = sGivenAnswer.trim();
-    %>
-
-    <%-- Search the given answer in the possible answers --%>		
-    <mm:relatednodes type="mcanswers" role="posrel" orderby="posrel.pos" id="my_answers">
-
-      <mm:field id="answer" name="text" write="false" />
-      <mm:import jspvar="sAnswer"><mm:field name="text" escape="none"/></mm:import>
+    <mm:present referid="givenanswer">
       <%
-        if ( sAnswer.trim().equals(sGivenAnswer)) {
+          sGivenAnswer = sGivenAnswer.trim();
       %>
 
-        <%-- copy the correct field of the answer--%>
-        <mm:field id="questioncorrect" name="correct" write="false"/>
+      <%-- Search the given answer in the possible answers --%>		
+      <mm:relatednodes type="mcanswers" role="posrel" orderby="posrel.pos" id="my_answers">
+
+        <mm:field id="answer" name="text" write="false" />
+        <mm:import jspvar="sAnswer"><mm:field name="text" escape="none"/></mm:import>
+        <%
+          if ( sAnswer.trim().equals(sGivenAnswer)) {
+        %>
+
+          <%-- copy the correct field of the answer--%>
+          <mm:field id="questioncorrect" name="correct" write="false"/>
         
-        <mm:node referid="my_givenanswers">
-          <mm:setfield name="score"><mm:write referid="questioncorrect"/></mm:setfield>
-        </mm:node>
-        <mm:remove referid="questioncorrect" />
+          <mm:node referid="my_givenanswers">
+            <mm:setfield name="score"><mm:write referid="questioncorrect"/></mm:setfield>
+          </mm:node>
+          <mm:remove referid="questioncorrect" />
         
-        <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
+          <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
         <% } %>
         
-    </mm:relatednodes>
+      </mm:relatednodes>
+    </mm:present>
   </mm:compare>
 
   <%-- Multiple answers can be given --%>
@@ -75,7 +77,8 @@
         <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
         <%-- when this is a false answer, the score is incorrect --%>
         <mm:compare referid="correct" value="0">
-          <mm:remove referid="score"/><mm:import id="score">0</mm:import>
+          <mm:remove referid="score"/>
+          <mm:import id="score">0</mm:import>
         </mm:compare>
       <% } else { %> 
         <%-- when the student had to check the button of thge correct answer, the score is incorrect --%>
