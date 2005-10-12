@@ -351,6 +351,7 @@ Build-compiler: ${build.compiler}
         >
       <arg value="BaseSuite" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
   </target>
 
