@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.16 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.17 2005-10-12 00:37:05 michiel Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
 
@@ -26,12 +26,12 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
         super();
     }
 
-    BasicRelationList(Collection c, BasicCloud cloud) {
-        super(c,cloud);
+    BasicRelationList(Collection c, Cloud cloud) {
+        super(c, cloud);
     }
 
-    BasicRelationList(Collection c, BasicNodeManager nodemanager) {
-        super(c,nodemanager);
+    BasicRelationList(Collection c, NodeManager nodemanager) {
+        super(c, nodemanager);
     }
 
     protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
@@ -57,7 +57,7 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
      *
      */
     public RelationList subRelationList(int fromIndex, int toIndex) {
-        return new BasicRelationList(subList(fromIndex, toIndex),nodeManager);
+        return new BasicRelationList(subList(fromIndex, toIndex), nodeManager);
     }
 
     /**
