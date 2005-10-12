@@ -11,7 +11,7 @@ import org.mmbase.storage.search.implementation.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class InformixSqlHandlerTest extends TestCase {
 
@@ -106,13 +106,13 @@ public class InformixSqlHandlerTest extends TestCase {
         assertTrue(instance.toSql(query, instance),
         instance.toSql(query, instance).equalsIgnoreCase(
         "SELECT m_number FROM "
-        + prefix + "images m_images WHERE m_number IS NULL"));
+        + prefix + "images IMAGES WHERE m_number IS NULL"));
 
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance),
         instance.toSql(query, instance).equalsIgnoreCase(
         "SELECT FIRST 100 m_number FROM "
-        + prefix + "images m_images WHERE m_number IS NULL"));
+        + prefix + "images IMAGES WHERE m_number IS NULL"));
 
         // Distinct keyword avoided in aggregating query.
         query = new BasicSearchQuery(true);
@@ -124,8 +124,8 @@ public class InformixSqlHandlerTest extends TestCase {
         query.setDistinct(true);
         String strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equalsIgnoreCase(
-        "SELECT COUNT(m_title) "
-        + "FROM " + prefix + "images m_images"));
+        "SELECT COUNT(TITLE) "
+        + "FROM " + prefix + "images IMAGES"));
     }
 
     public static Test suite() {
