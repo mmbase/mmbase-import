@@ -65,7 +65,7 @@ public class NodeEvent extends Event implements Serializable {
         node = builder.getNode(nodeNumber);
         if (node == null) {
             // probably the node was deleted. Happily, we know more or less enough to reconstruct it.            
-            node = new MMObjectNode(builder);
+            node = new MMObjectNode(builder, false);            
             Iterator it = oldValues.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
