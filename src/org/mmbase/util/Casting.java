@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.69 2005-10-12 00:53:56 michiel Exp $
+ * @version $Id: Casting.java,v 1.70 2005-10-12 19:00:41 michiel Exp $
  */
 
 import java.util.*;
@@ -882,7 +882,7 @@ public class Casting {
 
         try {
             //make a string from the XML
-            TransformerFactory tfactory = org.mmbase.cache.xslt.FactoryCache.getCache().getDefaultFactory();
+            TransformerFactory tfactory = TransformerFactory.newInstance();
             Transformer serializer = tfactory.newTransformer();
 
             // for now, we save everything in ident form, this since it makes debugging a little bit more handy
