@@ -16,14 +16,12 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.68 2005-10-04 22:47:14 michiel Exp $
+ * @version $Id: Casting.java,v 1.69 2005-10-12 00:53:56 michiel Exp $
  */
 
 import java.util.*;
 import java.text.*;
-import java.io.Writer;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
@@ -31,8 +29,6 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.MapNode;
-import org.mmbase.module.core.*;
-import org.mmbase.module.builders.DayMarkers; // to convert Nodes to and from Dates....
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
 
@@ -151,16 +147,12 @@ public class Casting {
             } else if (type.equals(Date.class)) {
                 return toDate(value);
             } else if (type.equals(Node.class)) {
-                if (MMBase.getMMBase().getState()) {
-                    return toNode(value, ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
-                } else {
+                try {
+                    Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                    return toNode(value, cloud);
+                } catch (Exception e) {
+                    // suppose that that was because mmbase not running
                     return value instanceof Node ? value : null;
-                }
-            } else if (type.equals(MMObjectNode.class)) {
-                if (MMBase.getMMBase().getState()) {
-                    return toNode(value, MMBase.getMMBase().getTypeDef());
-                } else {
-                    return value instanceof MMObjectNode ? value : null;
                 }
             } else if (type.equals(Document.class)) {
                 return toXML(value);
@@ -191,7 +183,6 @@ public class Casting {
             Boolean.class.isAssignableFrom(type) ||
             Character.class.isAssignableFrom(type) ||
             Node.class.isAssignableFrom(type) ||
-            MMObjectNode.class.isAssignableFrom(type) ||
             Document.class.isAssignableFrom(type) ||
             Collection.class.isAssignableFrom(type) ||
             Map.class.isAssignableFrom(type);
@@ -207,7 +198,7 @@ public class Casting {
         if (o instanceof String) {
             return (String)o;
         }
-        if (o == null || o == MMObjectNode.VALUE_NULL) {
+        if (o == null) {
             return "";
         }
 
@@ -222,7 +213,7 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static StringBuffer toStringBuffer(StringBuffer buffer, Object o) {
-        if (o == null || o == MMObjectNode.VALUE_NULL) {
+        if (o == null) {
             return buffer;
         }
         try {
@@ -261,7 +252,7 @@ public class Casting {
      */
 
     public static Object wrap(final Object o, final CharTransformer escaper) {
-        if (o == null || o == MMObjectNode.VALUE_NULL) {
+        if (o == null) {
             return escape(escaper, "");
         } else if (o instanceof Node) {
             return new MapNode((Node)o) {
@@ -277,19 +268,11 @@ public class Casting {
                         return escape(escaper, "" + node.getNumber());
                     }
                 };
-        } else if (o instanceof MMObjectNode) {
-            // don't know how to wrap
-            return escape(escaper, "" + ((MMObjectNode)o).getNumber());
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
                     private static final int serialVersionUID = 1; // increase this if object chages.
                     public String toString() {
-                        String r;
-                        if (getTime()  != -1) { // datetime not set
-                            r = ISO_8601_UTC.format((Date)o);
-                        } else {
-                            r = "";
-                        }
+                        String r = ISO_8601_UTC.format((Date)o);
                         return escape(escaper, r);
                     }
                 };
@@ -299,13 +282,7 @@ public class Casting {
         } else if (o instanceof List) {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
-            try {
-                return escape(escaper, new String((byte[])o, MMBase.getMMBase().getEncoding()));
-            } catch (java.io.UnsupportedEncodingException uee) {
-                // should never happen
-                log.error(uee);
-                return o;
-            }
+            return escape(escaper, new String((byte[])o));
         } else if (o instanceof String) {
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
@@ -371,7 +348,7 @@ public class Casting {
             return new ArrayList(((Map)o).entrySet());
         } else {
             List l = new ArrayList();
-            if (o != null && o != MMObjectNode.VALUE_NULL) {
+            if (o != null) {
                 l.add(o);
             }
             return l;
@@ -421,7 +398,7 @@ public class Casting {
             return StringSplitter.split((String)o);
         } else {
             List l = new ArrayList();
-            if (o != null && o != MMObjectNode.VALUE_NULL) {
+            if (o != null) {
                 l.add(o);
             }
             return l;
@@ -442,7 +419,7 @@ public class Casting {
      * @since MMBase-1.6
      */
     static public Document toXML(Object o) {
-        if (o == null || o == MMObjectNode.VALUE_NULL) return null;
+        if (o == null) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on debug.
@@ -466,7 +443,7 @@ public class Casting {
      * @return the value as an <code>byte[]</code> (binary/blob field)
      */
     static public byte[] toByte(Object obj) {
-        if (obj == null || obj == MMObjectNode.VALUE_NULL) {
+        if (obj == null) {
             return new byte[] {};
         } else if (obj instanceof byte[]) {
             // was allready unmapped so return the value
@@ -486,55 +463,13 @@ public class Casting {
         }
     }
 
-    /**
-     * Convert an object to an MMObjectNode.
-     * If the value is Numeric, the method
-     * tries to obtrain the object with that number.
-     * If it is a String, the method tries to obtain the object with
-     * that alias. If it is a Node, the equivalent MMObjecTNode is loaded.
-     * All remaining situations return <code>null</code>.
-     * @param i the object to convert
-     * @param parent the MMObjectBuilder to use for loading a node
-     * @return the value as a <code>MMObjectNode</code>
-     */
-    public static MMObjectNode toNode(Object i, MMObjectBuilder parent) {
-        MMObjectNode res = null;
-        if (i instanceof MMObjectNode) {
-            res = (MMObjectNode)i;
-        } else if (i instanceof Node) {
-            Node node = (Node) i;
-            if (node.isNew()) {// sigh
-                res = parent.getTmpNode("" + node.getNumber());
-            } else {
-                res = parent.getNode(node.getNumber());
-            }
-        } else if (i instanceof Number) {
-            int nodenumber = ((Number)i).intValue();
-            if (nodenumber != -1) {
-                res = parent.getNode(nodenumber);
-            }
-        } else if (i instanceof Date) {
-            MMBase mmb = MMBase.getMMBase();
-            DayMarkers dm = mmb.getState() ? (DayMarkers) mmb.getBuilder("daymarkers") : null;
-            if (dm != null) {
-                long now = System.currentTimeMillis();
-                int daysAgo = (int) ((now - ((Date) i).getTime()) / (1000L * 60 * 60 * 24));
-                return parent.getNode(dm.getDayCountAge(daysAgo));
-            }            
-        } else if (i != null && i != MMObjectNode.VALUE_NULL && !i.equals("")) {
-            res = parent.getNode(i.toString());
-        }
-        return res;
-    }
-
-    
 
     /**
      * Convert an object to an Node.
      * If the value is Numeric, the method
      * tries to obtrain the object with that number.
      * If it is a String, the method tries to obtain the object with
-     * that alias. If it is a MMObjectNode, the equivalent bridge Node is loaded.
+     * that alias. 
      * All remaining situations return <code>null</code>.
      * @param i the object to convert
      * @param cloud the Cloud to use for loading a node
@@ -545,22 +480,12 @@ public class Casting {
         Node res = null;
         if (i instanceof Node) {
             res = (Node)i;
-        } else if (i instanceof MMObjectNode) {
-            res = cloud.getNode(((MMObjectNode)i).getNumber());
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
             if (nodenumber != -1) {
                 res = cloud.getNode(nodenumber);
             }
-        } else if (i instanceof Date) {
-            MMBase mmb = MMBase.getMMBase();
-            DayMarkers dm = mmb.getState() ? (DayMarkers) mmb.getBuilder("daymarkers") : null;
-            if (dm != null) {
-                long now = System.currentTimeMillis();
-                int daysAgo = (int) ((now - ((Date) i).getTime()) / (1000L * 60 * 60 * 24));
-                return cloud.getNode(dm.getDayCountAge(daysAgo));
-            }            
-        } else if (i != null &&  i != MMObjectNode.VALUE_NULL && !i.equals("")) {
+        } else if (i != null && !i.equals("")) {
             res = cloud.getNode(i.toString());
         }
         return res;
@@ -570,7 +495,7 @@ public class Casting {
      * Convert an object to an <code>int</code>.
      * Boolean values return 0 for false, 1 for true.
      * String values are parsed to a number, if possible.
-     * If a value is an MMObjectNode, it's number field is returned.
+     * If a value is an Node, it's number field is returned.
      * All remaining values return the provided default value.
      * @param i the object to convert
      * @param def the default value if conversion is impossible
@@ -579,9 +504,7 @@ public class Casting {
      */
     static public int toInt(Object i, int def) {
         int res = def;
-        if (i instanceof MMObjectNode) {
-            res = ((MMObjectNode)i).getNumber();
-        } else if (i instanceof Node) {
+        if (i instanceof Node) {
             res = ((Node)i).getNumber();
         } else if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
@@ -596,8 +519,15 @@ public class Casting {
             }
             res = (int) timeValue;
         } else if (i instanceof Number) {
-            res = ((Number)i).intValue();
-        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
+            long l = ((Number)i).longValue();
+            if (l > Integer.MAX_VALUE) {
+                res = Integer.MAX_VALUE;
+            } else if (l < Integer.MIN_VALUE) {
+                res = Integer.MIN_VALUE;
+            } else {
+                res = (int) l;
+            }
+        } else if (i != null) {
             try {
                 res = Integer.parseInt("" + i);
             } catch (NumberFormatException e) {
@@ -616,7 +546,7 @@ public class Casting {
      * Convert an object to an <code>int</code>.
      * Boolean values return 0 for false, 1 for true.
      * String values are parsed to a number, if possible.
-     * If a value is an MMObjectNode, it's number field is returned.
+     * If a value is a Node, it's number field is returned.
      * All remaining values return -1.
      * @param i the object to convert
      * @return the converted value as an <code>int</code>
@@ -624,6 +554,7 @@ public class Casting {
     static public int toInt(Object i) {
         return toInt(i, -1);
     }
+
 
     /**
      * Convert an object to a <code>boolean</code>.
@@ -644,7 +575,7 @@ public class Casting {
             return ((Boolean)b).booleanValue();
         } else if (b instanceof Number) {
             return ((Number)b).doubleValue() > 0;
-        } else if (b instanceof Node || b instanceof MMObjectNode) {
+        } else if (b instanceof Node) {
             return true; // return true if a NODE is filled
         } else if (b instanceof Date) {
             return ((Date)b).getTime() != -1;
@@ -695,11 +626,9 @@ public class Casting {
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
             if (res !=- 1) res /= 1000;
-        } else if (i instanceof MMObjectNode) {
-            res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
-        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
+        } else if (i != null) {
             try {
                 res = Long.parseLong("" + i);
             } catch (NumberFormatException e) {
@@ -745,11 +674,9 @@ public class Casting {
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
             if (res!=-1) res = res / 1000;
-        } else if (i instanceof MMObjectNode) {
-            res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
-        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
+        } else if (i != null) {
             try {
                 res = Float.parseFloat("" + i);
             } catch (NumberFormatException e) {}
@@ -788,11 +715,9 @@ public class Casting {
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
             if (res!=-1) res = res / 1000;
-        } else if (i instanceof MMObjectNode) {
-            res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
-        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
+        } else if (i != null) {
             try {
                 res = Double.parseDouble("" + i);
             } catch (NumberFormatException e) {}
@@ -823,18 +748,8 @@ public class Casting {
      * @since MMBase-1.7
      */
     static public Date toDate(Object d) {
-        if (d == null || d == MMObjectNode.VALUE_NULL) return new Date(-1);
+        if (d == null) return new Date(-1);
         Date date = null;
-        if (d instanceof MMObjectNode || d instanceof Node) {
-            MMBase mmb = MMBase.getMMBase();
-            DayMarkers dm = mmb.getState() ? (DayMarkers) mmb.getBuilder("daymarkers") : null;
-            if (dm != null) {
-                int nodeNumber = (d instanceof Node) ? ((Node)d).getNumber() : ((MMObjectNode) d).getNumber();
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_YEAR, -1 * dm.getAge(nodeNumber));
-                d = cal.getTime();                
-            }            
-        }
 
         if (d instanceof Date) {
             date = (Date) d;            
@@ -851,7 +766,10 @@ public class Casting {
                 } else if (d instanceof Collection) {
                     // impossible
                     dateInSeconds = -1;
-                } else if (d != null && d != MMObjectNode.VALUE_NULL) {
+                } else if (d instanceof Node) {
+                    // impossible
+                    dateInSeconds = -1;
+                } else if (d != null) {
                     d = toString(d);
                     if (d.equals("")) {
                         return new Date(-1);
@@ -900,7 +818,7 @@ public class Casting {
      * @throws  IllegalArgumentException if the value could not be converted
      */
     static private Document convertStringToXML(String value) {
-        if (value == null || value == MMObjectNode.VALUE_NULL) {
+        if (value == null) {
             return null;
         }
         if (log.isDebugEnabled()) {
