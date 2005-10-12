@@ -12,12 +12,12 @@ import java.io.Serializable;
 /**
  * This class is the base class for all mmbase events
  * 
- * @author Ernst Bunders
- * @since MMBase-1.8
+ * @author  Ernst Bunders
+ * @since   MMBase-1.8
+ * @version $Id: Event.java,v 1.4 2005-10-12 16:42:24 michiel Exp $
  */
 public abstract class Event implements Serializable{
 
-    protected String name;
     protected String machine;
 
     /**
@@ -31,16 +31,14 @@ public abstract class Event implements Serializable{
      * @return Returns the name.
      */
     public String getName() {
-        return name;
+        return "Event";
     }
 
     /**
      * @param machine
-     * @param name
      */
     public Event(String machine) {
         this.machine = machine;
-        name="Event";
     }
 
 }

@@ -19,10 +19,11 @@ import org.mmbase.module.core.*;
 /**
  * This class communicates a node event. in case of a change event, it contains
  * a map of changed values, mapped to their field's name, as well as the
- * preveaus values of the changed fields.
+ * previous values of the changed fields.
  *
- * @author Ernst Bunders
- * @since MMBase-1.8
+ * @author  Ernst Bunders
+ * @since   MMBase-1.8
+ * @version $Id: NodeEvent.java,v 1.12 2005-10-12 16:42:24 michiel Exp $
  */
 public class NodeEvent extends Event implements Serializable {
 
@@ -87,12 +88,15 @@ public class NodeEvent extends Event implements Serializable {
         super(machine);
         this.node = node;
         this.eventType = eventType;
-        name = "Node Event";
 
         // at this point the new value for the changed fields is
         // in the node, and the old values are in the oldValues map
         oldValues.putAll(node.getOldValues());
         newValues.putAll(node.getValues());
+    }
+
+    public String getName() {
+        return "Node Event";
     }
 
 
