@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.160 2005-10-07 21:12:02 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.161 2005-10-12 00:30:08 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -141,12 +141,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
 
-    /**
-     * Determines whether this node is virtual.
-     * A virtual node is not persistent (that is, not stored in a table).
-     * @scope private
-     */
-    protected boolean virtual = false;
+    protected boolean isNew = true;
 
     /**
      * New aliases of the node
@@ -169,7 +164,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param parent the node's parent, an instance of the node's builder.
      * @throws IllegalArgumentException If parent is <code>null</code>
      */
-    public MMObjectNode(MMObjectBuilder parent) {
+    public MMObjectNode(MMObjectBuilder parent, boolean n) {
+        isNew = n;
         if (parent != null) {
             this.parent = parent;
         } else {
@@ -479,9 +475,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * A virtual node is not persistent (that is, stored in a database table).
      */
     public boolean isVirtual() {
-        return virtual;
+        return false;
     }
 
+
+    /**
+     * If a node is still 'new' you must presistify it wit {@link #insert}, and otherwise with {@link #commit}.
+     * @since MMBase-1.8
+     */
+    public boolean isNew() {
+        return isNew;
+    }
     /*
      *
      * @since MMBase-1.6
@@ -748,7 +752,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as a <code>String</code>
      */
     public String getStringValue(String fieldName) {
-        return Casting.toString(getValue(fieldName));
+        Object value = getValue(fieldName);
+        String s = Casting.toString(value);
+        if (s.indexOf("1970") > -1) {
+            log.info("Casting " + (value == null ? "NULL" : value.getClass().getName() + " " + value) + " to string -> " + Casting.toString(value));
+            log.info(Logging.stackTrace());
+        }
+        return s;
     }
 
     /**
@@ -926,11 +936,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
              res = (MMObjectNode) value;
          } else if (value instanceof Node) {
              Node node = (Node) value;
-             if (node.isNew()) {// sigh
-                 res = parent.getTmpNode("" + node.getNumber());
-             } else {
-                 res = parent.getNode(node.getNumber());
+             if (node.isNew()) {
+                 throw new UnsupportedOperationException("dropped tmpnodemanager...");
              }
+             res = parent.getNode(node.getNumber());
          } else if (value instanceof Number) {
              int nodenumber = ((Number)value).intValue();
              if (nodenumber != -1) {
@@ -1039,7 +1048,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as a <code>Date</code>
      */
     public Date getDateValue(String fieldName) {
-        return Casting.toDate(getValue(fieldName));
+        Object value = getValue(fieldName);
+        org.mmbase.core.CoreField cf = getBuilder().getField(fieldName);
+        if (cf != null && cf.getType() == Field.TYPE_NODE) {
+            // cannot be handled by casting, becuase it would receive object-number and cannot make distinction with Nodes.
+            return new Date(-1);
+        }
+        return Casting.toDate(value);
     }
 
     /**
@@ -1632,7 +1647,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
 
 
-            convert = new MMObjectNode(parent.mmb.getBuilder(builderName));
+            convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
             // parent needs to be set or else mmbase does nag nag nag on a setValue()
             convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
             convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
@@ -1645,11 +1660,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
 
         // check that we didnt loose any nodes
-
-        // Java 1.4
-        // assert(virtuals.size() == result.size());
-
-        // Below Java 1.4
         if(virtuals.size() != result.size()) {
             log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
         }

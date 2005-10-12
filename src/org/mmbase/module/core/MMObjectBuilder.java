@@ -63,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.346 2005-10-07 18:35:06 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.347 2005-10-12 00:30:08 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -86,7 +86,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * @since MMBase-1.8
      */
-    static final String TMP_FIELD_NUMBER  = "_number";
+    public static final String TMP_FIELD_NUMBER  = "_number";
     static final String TMP_FIELD_EXISTS  = "_exists";
 
     /**
@@ -766,7 +766,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return A newly initialized <code>MMObjectNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        MMObjectNode node = new MMObjectNode(this);
+        MMObjectNode node = new MMObjectNode(this, true);
         node.setValue(FIELD_NUMBER, -1);
         node.setValue(FIELD_OWNER, owner);
         node.setValue(FIELD_OBJECT_TYPE, oType);
