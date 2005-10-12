@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: FloatDataType.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class FloatDataType extends NumberDataType {
@@ -22,7 +22,11 @@ public class FloatDataType extends NumberDataType {
      */
     public FloatDataType(String name) {
         super(name, Float.class);
+        setMin(new Float(Float.NEGATIVE_INFINITY), false);
+        setMax(new Float(Float.POSITIVE_INFINITY), false);
     }
+
+
 
     /**
      * @return the minimum value as a <code>float</code>, or {@link Float#NEGATIVE_INFINITY} if there is no minimum.
