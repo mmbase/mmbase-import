@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.15 2005-10-07 18:42:49 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.16 2005-10-12 08:27:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -122,6 +122,9 @@ public class DocumentReader  {
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
     public DocumentReader(InputSource source, boolean validating, Class resolveBase) {
+        if (source == null) {
+            throw new IllegalArgumentException("InputSource cannot be null");
+        }
         try {
             systemId = source.getSystemId();
             XMLEntityResolver resolver = null;
