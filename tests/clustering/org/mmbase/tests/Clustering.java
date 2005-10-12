@@ -17,8 +17,9 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
 import org.w3c.dom.Document;
 /**
-
+ *
  * @author Michiel Meeuwissen
+ * @since MMBase-1.8
  */
 public class Clustering extends BridgeTest {
 
@@ -47,6 +48,17 @@ public class Clustering extends BridgeTest {
         }
     }
 
+
+    /**
+     * It's no hard requirment that changes are visibility immediately on the other side. So, sometime wait a bit, to be on the safe side.
+     */
+    protected void allowLatency() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ie) {
+        }
+    }
+
     public void fieldEquals(Node n1, Node n2) {
         FieldIterator fi = n1.getNodeManager().getFields(NodeManager.ORDER_CREATE).fieldIterator();
         while (fi.hasNext()) {
@@ -69,7 +81,9 @@ public class Clustering extends BridgeTest {
 
     public void testList() {
         NodeManager aa2 = cloud2.getNodeManager("aa");
-        NodeList aa2list2 = aa2.getList(null, null, null);
+        NodeList aa2list2 = aa2.getList(null, null, null); // should not give error
+        allowLatency();
+        aa2list2 = aa2.getList(null, null, null);
         assertTrue("Check wether node-list got invalidated failed " +  aa2list2.size()  + " != " + aa2list.size() + " + 1", aa2list2.size() == aa2list.size() + 1);
     }
 
@@ -110,6 +124,7 @@ public class Clustering extends BridgeTest {
         NodeManager bb2 = cloud2.getNodeManager("bb");
         NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
         NodeList related2 = bb2.getList(nq);
+        assertTrue("list is null!", related2 != null);
         assertTrue(related2.size() == 0);
         assertTrue(bb2related.size() == 0);
 
@@ -201,7 +216,7 @@ public class Clustering extends BridgeTest {
         List related1 = object1.getList(nq1);
         List related2 = object2.getList(nq2);
         assertTrue("Size: " + related1.size() + " != 3", related1.size() == 3); // 1 to a bb, 2 to zz's.
-        assertTrue(related1.size() == related2.size());
+        assertTrue("Size: " + related1.size() + " != " + related2.size(), related1.size() == related2.size());
     }
 
     public void testCreateRelDef() {
@@ -226,7 +241,7 @@ public class Clustering extends BridgeTest {
         try {
             assertTrue(cloud2.getNode(nodea1.getNumber()).getRelatedNodes("bb", "newrole", null).size() == 1);
         } catch (Exception e) {
-            // it's stacktrace is a bit long...
+            // its stacktrace is a bit long...
             fail(e.getMessage());
         }
     }
