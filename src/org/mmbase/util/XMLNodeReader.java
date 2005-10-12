@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.37 2005-10-07 18:40:30 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.38 2005-10-12 00:54:25 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -162,28 +162,28 @@ public class XMLNodeReader extends XMLBasicReader {
                                            try {
                                                 newNode.setValue(key, Integer.parseInt(value));
                                             } catch (Exception e) {
-                                                log.warn("error setting integer-field " + e);
+                                                log.warn("error setting integer-field '" + key + "' to '" + value + "' because " + e);
                                                 newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_FLOAT) {
                                             try {
                                                 newNode.setValue(key, Float.parseFloat(value));
                                             } catch (Exception e) {
-                                                log.warn("error setting float-field " + e);
+                                                log.warn("error setting float-field '" + key + "' to '" + value + "' because " + e);
                                                 newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_DOUBLE) {
                                             try {
                                                 newNode.setValue(key, Double.parseDouble(value));
                                             } catch (Exception e) {
-                                                log.warn("error setting double-field " + e);
+                                                log.warn("error setting double-field '" + key + "' to '" + value + "' because " + e);
                                                 newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_LONG) {
                                             try {
                                                 newNode.setValue(key, Long.parseLong(value));
                                             } catch (Exception e) {
-                                                log.warn("error setting long-field " + e);
+                                                log.warn("error setting long-field '" + key + "' to '" + value + "' because " + e);
                                                 newNode.setValue(key, -1);
                                             }
                                         } else if (type == Field.TYPE_DATETIME) {                                            
