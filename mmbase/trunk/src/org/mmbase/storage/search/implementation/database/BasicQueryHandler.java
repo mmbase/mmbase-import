@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.42 2005-10-07 18:49:56 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.43 2005-10-12 01:02:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -311,7 +311,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         try {
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
-                    MMObjectNode node = new MMObjectNode(builder);
+                    MMObjectNode node = new MMObjectNode(builder, false);
                     node.start();
                     for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext(); ) {
                         CoreField field = (CoreField)i.next();
