@@ -226,7 +226,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("int")) {
                 assertTrue(integer == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("long")) {
-                assertTrue(integer == new Long(Long.MAX_VALUE).intValue());
+                assertTrue(integer == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(integer == -1);
             } else if (fieldTypes[i].equals("xml")) {
