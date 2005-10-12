@@ -60,7 +60,7 @@ public class EventManager {
             DocumentReader configReader = new DocumentReader(config);
 
             log.debug("configuring the event manager");
-            // make shure we have an instance
+            // make sure we have an instance
             getInstance();
 
             // find the event brokers
@@ -76,6 +76,7 @@ public class EventManager {
             }
         } catch (SAXException e1) {
             log.error("something went wrong configuring the event system");
+
             log.error(e1);
         } catch (IOException e1) {
             log.error("something went wrong configuring the event system");
@@ -129,7 +130,7 @@ public class EventManager {
      * @since MMBase-1.8
      */
     public void addEventListener(EventListener listener) {
-        log.service("adding listener " + listener);
+        log.debug("adding listener " + listener);
         AbstractEventBroker[] brokers = findBrokersFor(listener);
         if (brokers != null) {
             for (int i = 0; i < brokers.length; i++) {
@@ -144,7 +145,7 @@ public class EventManager {
      * @since MMBase-1.8
      */
     public void removeEventListener(EventListener listener) {
-        log.service("removing listnerer of type : " + listener.getClass().getName());
+        log.debug("removing listener of type : " + listener.getClass().getName());
         AbstractEventBroker[] brokers = findBrokersFor(listener);
         if (brokers != null) {
             for (int i = 0; i < brokers.length; i++) {
