@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.12 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.13 2005-10-12 19:10:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -44,7 +44,7 @@ public class DataTypeReader {
      * Register the namespace and XSD used by DataTypeConfigurer
      * This method is called by XMLEntityResolver.
      */
-    public static void registerSystemIDs() {
+    static  {
         XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
         XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
     }
