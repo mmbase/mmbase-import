@@ -11,6 +11,9 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.datatypes.*;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
@@ -19,7 +22,7 @@ import org.mmbase.bridge.Field;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.18 2005-10-05 10:00:54 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.19 2005-10-12 00:33:19 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -164,5 +167,29 @@ public class VirtualBuilder extends MMObjectBuilder {
      */
     public void processSearchResults(List results) {
         // empty!
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Map getFields(MMObjectNode node) {
+        Map res = new HashMap();
+        // determine fields and field types
+        Map values = node.getValues();
+        synchronized(values) {
+            Iterator i = values.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                String fieldName = (String) entry.getKey();
+                Object value = entry.getValue();
+                if (value == null) value = new Object();
+                DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
+                int type = Fields.classToType(value.getClass());
+                CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
+                fd.finish();
+                res.put(fieldName, fd);
+            }
+        }
+        return res;
     }
 }
