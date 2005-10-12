@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.5 2005-10-12 00:47:15 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.6 2005-10-12 19:08:45 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -272,7 +272,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     public final Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
         Collection errors = VALID;
         errors = typeConstraint.validate(errors, value, node, field);
-        if (errors.size() != 0) value = ""; // should always cast..
+        if (errors.size() != 0) {
+            // no need continuing, constraints will probably not know how to handle this value any way.
+            return errors;
+        }
         Object castedValue = castToValidate(value);
         errors = uniqueConstraint.validate(errors, castedValue, node, field);
         errors = requiredConstraint.validate(errors, castedValue, node, field);
@@ -324,7 +327,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * This method is final, override {@link #clone(String)} in stead.
      */
     public final Object clone() {
-        return clone(getName() + ".clone");
+        return clone(getName() + "_clone");
     }
 
     /**
@@ -739,7 +742,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
         public boolean valid(Object v, Node node, Field field) {
             try {
-                BasicDataType.this.castToValidate(v);
+                BasicDataType.this.autoCast(v);
                 return true;
             } catch (Throwable e) {
                 return false;
