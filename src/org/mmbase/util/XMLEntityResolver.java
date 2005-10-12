@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.56 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.57 2005-10-12 19:01:49 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -88,10 +88,7 @@ public class XMLEntityResolver implements EntityResolver {
         ApplicationReader.registerPublicIDs();
         ModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
-        org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
         org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
-        org.mmbase.datatypes.util.xml.DataTypeReader.registerSystemIDs();
-
 
         registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
         registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
