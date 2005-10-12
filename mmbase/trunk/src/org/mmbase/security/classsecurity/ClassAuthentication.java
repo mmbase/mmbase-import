@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.8 2005-10-02 16:35:56 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.9 2005-10-12 19:06:17 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -135,6 +135,7 @@ public class ClassAuthentication {
             watcher.start();
 
         }
+        log.debug("Class authenticating (" + authenticatedClasses + ")");
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();
 
@@ -178,7 +179,7 @@ public class ClassAuthentication {
             return map;
         }
         public String toString() {
-            return application;
+            return classPattern + (application.equals("class") ? "" : ": " + application);
         }
     }
 
