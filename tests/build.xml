@@ -98,16 +98,16 @@
           <include name="mmbase.jar" />
         </fileset>
       </classpath>
-      <classpath id="run.classpath.clustering">
-        <path refid="run.classpath"/>
-        <fileset dir="${tests.lib}">
-          <include name="mmbase-clustering.jar" />
-        </fileset>
-      </classpath>
       <classpath id="run.classpath.rmmci">
         <path refid="run.classpath"/>
         <fileset dir="${tests.lib}">
           <include name="mmbase-rmmci-server.jar" />
+        </fileset>
+      </classpath>
+      <classpath id="run.classpath.clustering">
+        <path refid="run.classpath.rmmci"/>
+        <fileset dir="${tests.lib}">
+          <include name="mmbase-clustering.jar" />
         </fileset>
       </classpath>
     </available>
@@ -268,7 +268,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.typerel" depends="jar,init,mmbase">
+  <target name="run.typerel" depends="mmbase,jar,init">
     <antcall target="clean.database" />
     <java
       classname="${ui.class}"
@@ -318,7 +318,7 @@ Build-compiler: ${build.compiler}
         <jvmarg value="-Dnostartmmbase=" />
         <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
         <classpath>
-          <path refid="run.classpath"/> <!-- should be gone -->
+          <pathelement location="${tests.source.dir}/fixme" /> <!-- dir must be empty -->
           <pathelement location="${tests.lib}/junit.jar" />
           <pathelement location="${tests.lib}/xercesImpl.jar" /> <!-- should not need this, Document must be somehow serialized as String, and reparsed, probably-->
           <pathelement location="${mmbasetest.jar}" />
