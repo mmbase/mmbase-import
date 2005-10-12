@@ -37,10 +37,10 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {}},
                 new Object[] {"zipcode",  
                               new Object[] {"7081EA", "7081  ea"}, 
-                              new Object[] {"70823b", "", null}},
+                              new Object[] {"70823b", "xx 7081 EA",  "xx\n7081 EA", null}},
                 new Object[] {"pattern",  
                               new Object[] {"ababa", "aBB"}, 
-                              new Object[] {"c", "ababab", null}},
+                              new Object[] {"c", "ababab", null, ""}},
                 new Object[] {"integer",  
                               new Object[] {new Integer(-100)}, 
                               new Object[] {new Long(Long.MAX_VALUE)}},
@@ -66,43 +66,76 @@ public class DataTypesTest extends BridgeTest {
     public void testCheckValid() {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes"); 
+        StringBuffer err = new StringBuffer();
         for (int i = 0; i < cases.length; i++) {
             Object[] kase = (Object[]) cases[i];
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
             Object[] invalidValues = (Object[]) kase[2];
             for (int j = 0; j < validValues.length; j++) {
-                assertTrue("Field " + field + " value '" + validValues[j] + "' was expected to be valid", 
-                           field.getDataType().validate(validValues[j]).size() == 0);
+                Collection errors = field.getDataType().validate(validValues[j]);
+                if(errors.size() != 0) {
+                    err.append("Field " + field + " value '" + validValues[j] + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
+                }
             }
             for (int j = 0; j < invalidValues.length; j++) {
-                assertTrue("Field " + field + " value '" + validValues[j] + "' was expected to be invalid", 
-                           field.getDataType().validate(validValues[j]).size() > 0);
+                if (field.getDataType().validate(invalidValues[j]).size() == 0) {
+                    err.append("Field " + field + " value '" + invalidValues[j] + "' was expected to be invalid\n");
+                } 
+
+                          
             }
         }
+        assertTrue(err.toString(), err.length() == 0);
 
     }
 
-    public void testDefaultValues() {
+    protected Object getDefaultValue(Field field) {
+       Object defaultValue = field.getDataType().getDefaultValue();
+       if (defaultValue == null && false) { // && field.isNotNull(),, cannot be checked through bridge. The 'datatypes' builder only has nullable fields.
+           defaultValue = Casting.toType(org.mmbase.core.util.Fields.typeToClass(field.getType()), "");
+       }
+       return defaultValue;
+    }
+
+    protected boolean sufficientlyEqual(Object value1, Object value2) {
+        if (value1 == null) return value2 == null;
+        if (value1 instanceof Date && value2 instanceof Date) {
+            // for dynamic dates.
+            return Math.abs(((Date) value1).getTime() - ((Date) value2).getTime()) < 10000L; 
+        } else {
+            return value1.equals(value2);
+        }
+    }
+
+    public void testDefaultValuesUncommited() {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes"); 
         Node newNode = nodeManager.createNode();
         for (int i = 0; i < cases.length; i++) {
             Object[] kase = (Object[]) cases[i];
             Field field = nodeManager.getField((String)kase[0]);
-            Object defaultValue = field.getDataType().getDefaultValue();
+            Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
-            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + "!=" + value,
-                       value == null ? defaultValue == null : value.equals(defaultValue));
+            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + " != " + value,
+                       sufficientlyEqual(value, defaultValue));
+
         }
+        newNode.commit();
+
+    }
+    public void testDefaultValuesCommited() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes"); 
+        Node newNode = nodeManager.createNode();
         newNode.commit();
         for (int i = 0; i < cases.length; i++) {
             Object[] kase = (Object[]) cases[i];
             Field field = nodeManager.getField((String)kase[0]);
-            Object defaultValue = field.getDataType().getDefaultValue();
+            Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
-            assertTrue("default value of committed node is not as expected for field " + field + " " + defaultValue + "!=" + value,
-                       value == null ? defaultValue == null : value.equals(defaultValue));
+            assertTrue("default value of committed node is not as expected for field " + field + " " + defaultValue + " != " + value,
+                       sufficientlyEqual(value, defaultValue));
         }
 
     }
