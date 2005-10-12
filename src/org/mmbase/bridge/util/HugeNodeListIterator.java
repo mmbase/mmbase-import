@@ -12,7 +12,7 @@ package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.cache.*;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.util.logging.*;
 
 import java.util.*;
@@ -24,17 +24,13 @@ import java.util.*;
  * are removed from the query-caches.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.2 2005-09-15 10:54:16 pierre Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.3 2005-10-12 14:26:16 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public class HugeNodeListIterator implements NodeIterator {
 
     public static final int DEFAULT_BATCH_SIZE = 10000;
-
-    // will not work through RMMCI, because caches are accessed.
-    protected static MultilevelCache multilevelCache  = MultilevelCache.getCache();
-    protected static NodeListCache nodeListCache = NodeListCache.getCache();
 
     // log
     private static final Logger log = Logging.getLoggerInstance(HugeNodeListIterator.class);
@@ -96,13 +92,12 @@ public class HugeNodeListIterator implements NodeIterator {
             log.trace("Running query: " + currentQuery);
         }
         NodeList list;
+        currentQuery.setCachePolicy(CachePolicy.NEVER);
         if (originalQuery instanceof NodeQuery) {
             NodeQuery nq = (NodeQuery) currentQuery;
             list = nq.getNodeManager().getList(nq);
-            nodeListCache.remove(nq);
         } else {
             list = currentQuery.getCloud().getList(currentQuery);
-            multilevelCache.remove(currentQuery);
         }
         if (log.isDebugEnabled()) {
             log.trace("Query result: " + list.size() + " nodes");
