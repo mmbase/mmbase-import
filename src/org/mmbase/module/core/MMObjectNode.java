@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.161 2005-10-12 00:30:08 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.162 2005-10-12 19:13:33 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -293,6 +293,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.7
      */
     public void remove(UserContext user) {
+        if (log.isDebugEnabled()) {
+            log.debug("Deleting node " + getNumber() + " because " + Logging.stackTrace(5));
+        }
         parent.removeNode(this);
         parent.getMMBase().getMMBaseCop().getAuthorization().remove(user, getNumber());
     }
@@ -418,7 +421,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         if (! getBuilder().hasField(fieldName)) {
             log.error("Tried to use non-existing field '" + fieldName + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
-            throw new IllegalArgumentException("You cannot set non-existing field '" + fieldName + "' existing fields of '" + getBuilder().getTableName() + " are " + getBuilder().getFieldNames());
+            throw new IllegalArgumentException("You cannot use non-existing field '" + fieldName + "' existing fields of '" + getBuilder().getTableName() + " are " + getBuilder().getFieldNames());
         }
         return true;
     }
