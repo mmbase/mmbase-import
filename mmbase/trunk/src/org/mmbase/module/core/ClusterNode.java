@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.24 2005-10-11 17:19:11 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.25 2005-10-12 00:31:35 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -56,7 +56,7 @@ public class ClusterNode extends VirtualNode {
 
     /**
      * Main contructor.
-     * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
+     * @param parent the node's parent
      */
     public ClusterNode(ClusterBuilder parent) {
         super(parent);
@@ -65,7 +65,7 @@ public class ClusterNode extends VirtualNode {
 
     /**
      * Main contructor.
-     * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
+     * @param parent the node's parent
      * @param nrofnodes Nr of referenced nodes.
      */
     public ClusterNode(ClusterBuilder parent, int nrofnodes) {
