@@ -21,8 +21,9 @@ import org.mmbase.module.corebuilders.InsRel;
  * caching optimization.<br/> A relation changed event is called the twoo nodes
  * that the relation links (or used to).
  * 
- * @author Ernst Bunders
- * @since MMBase-1.8
+ * @author  Ernst Bunders
+ * @since   MMBase-1.8
+ * @version $Id: RelationEvent.java,v 1.5 2005-10-12 16:42:24 michiel Exp $
  */
 public class RelationEvent extends NodeEvent implements Serializable {
 
@@ -43,7 +44,6 @@ public class RelationEvent extends NodeEvent implements Serializable {
      */
     public RelationEvent(MMObjectNode node, int eventType) {
         super(node, NodeEvent.EVENT_TYPE_RELATION_CHANGED);
-        name = "relation event";
         if (!(node.getBuilder() instanceof InsRel)) {
             throw new IllegalArgumentException( "you can not create a relation changed event with this node");
         }
@@ -62,6 +62,10 @@ public class RelationEvent extends NodeEvent implements Serializable {
         role = reldef.getNumber();
         sourceRoleName = reldef.getStringValue("sname");
         destinationRoleName = reldef.getStringValue("dname");
+    }
+
+    public String getName() {
+        return "relation event";
     }
 
     /**
