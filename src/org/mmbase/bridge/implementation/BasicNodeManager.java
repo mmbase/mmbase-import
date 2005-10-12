@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.106 2005-10-07 18:45:42 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.107 2005-10-12 00:37:05 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -105,7 +105,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      */
     private static MMObjectNode getNodeForBuilder(MMObjectBuilder builder) {
         if (builder.isVirtual()) {
-            return  new VirtualNode(BasicCloudContext.mmb.getTypeDef());
+            return  new org.mmbase.module.core.VirtualNode(BasicCloudContext.mmb.getTypeDef());
         } else {
             MMObjectNode typedefNode = builder.getNode(builder.oType);
             if (typedefNode == null) {
@@ -203,7 +203,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public NodeManager getParent() throws NotFoundException {
         MMObjectBuilder bul = getMMObjectBuilder().getParentBuilder();
-        if (bul==null) {
+        if (bul == null) {
             throw new NotFoundException("Parent of nodemanager " + getName() + "does not exist");
         } else {
             return cloud.getNodeManager(bul.getTableName());
@@ -265,8 +265,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public String getDescription(Locale locale) {
-        if (locale==null) locale = cloud.getLocale();
-        if (builder!=null) {
+        if (locale == null) locale = cloud.getLocale();
+        if (builder != null) {
             return builder.getDescription(locale.getLanguage());
         } else {
             return "";
@@ -421,8 +421,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-        MMObjectBuilder builder=getMMObjectBuilder();
-        StringTokenizer tokens= new StringTokenizer(command,"-");
+        MMObjectBuilder builder = getMMObjectBuilder();
+        StringTokenizer tokens = new StringTokenizer(command,"-");
         return builder.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),tokens);
     }
 
@@ -431,7 +431,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
-        MMObjectBuilder builder=getMMObjectBuilder();
+        MMObjectBuilder builder = getMMObjectBuilder();
         StringTagger params= new StringTagger("");
         if (parameters!=null) {
             for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
@@ -458,9 +458,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
             Vector fieldlist=params.Values("FIELDS");
-            Vector res=new Vector(v.size() / items);
+            Vector res = new Vector(v.size() / items);
             for(int i= 0; i<v.size(); i+=items) {
-                MMObjectNode node = new MMObjectNode(builder);
+                MMObjectNode node = new MMObjectNode(builder, true);
                 for(int j= 0; (j<items) && (j<v.size()); j++) {
                     if ((fieldlist!=null) && (j<fieldlist.size())) {
                         node.setValue((String)fieldlist.get(j),v.get(i+j));
@@ -471,10 +471,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 res.add(node);
             }
             if (res.size()>0) {
-                BasicNodeManager tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0), cloud);
+                NodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode)res.get(0), cloud);
                 return new BasicNodeList(res, tempNodeManager);
             }
-            return new BasicNodeList();
+            return createNodeList();
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
             throw new BridgeException(e);
@@ -552,5 +552,5 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return new BasicRelationList(Collections.EMPTY_LIST, this);
     }
 
-
 }
+

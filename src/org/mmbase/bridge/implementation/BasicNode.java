@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.170 2005-10-07 18:43:39 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.171 2005-10-12 00:37:05 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -218,7 +218,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.6.4
      */
     protected void invalidateNode() {
-        VirtualNode n = new VirtualNode(noderef.getBuilder());
+        org.mmbase.module.core.VirtualNode n = new org.mmbase.module.core.VirtualNode(noderef.getBuilder());
         n.setValue("number", noderef.getNumber());
         noderef = n;
     }
@@ -283,9 +283,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             account = cloud.getAccount();
         } else if (!account.equals(cloud.getAccount())) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
-        }
-        if (nodeManager instanceof VirtualNodeManager) {
-            throw new BridgeException("Cannot make edits to a virtual node.");
         }
 
         int realnumber = getNode().getNumber();
@@ -406,7 +403,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setObjectValue(String fieldName, Object value) {
         Field field = nodeManager.getField(fieldName);
-        value = field.getDataType().process(DataType.PROCESS_SET, this, field, value);
+        value = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_UNKNOWN);
         setValueWithoutProcess(fieldName, value);
     }
 
@@ -575,7 +572,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Object result = getValueWithoutProcess(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            Object r = field.getDataType().process(DataType.PROCESS_GET, this, field, result);
+            Object r = field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_UNKNOWN);
             if ((result != null && (! result.equals(r)))) {
                 log.info("getObjectvalue was processed! " + result + " != " + r);
                 result = r;
@@ -731,7 +728,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         FieldIterator fi = nodeManager.getFields().fieldIterator();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            field.getDataType().process(DataType.PROCESS_COMMIT, this, field, null);
+            field.getDataType().process(DataType.PROCESS_COMMIT, this, field, null, Field.TYPE_UNKNOWN); // idiotic implementation
         }
     }
 
@@ -829,13 +826,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             if (deleteRelations) {
                 // option set, remove relations
                 deleteRelations(-1);
+                assert(hasRelations());
             } else {
                 // option unset, fail if any relations exit
                 if (getNode().hasRelations()) {
-                    throw new BridgeException(
-                        "This node ("
-                            + getNode().getNumber()
-                            + ") cannot be deleted. It still has relations attached to it.");
+                    throw new BridgeException("This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.");
                 }
             }
             // remove aliases
@@ -873,7 +868,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      *
      * @param type  the type of relation (-1 = don't care)
      */
-    private void deleteRelations(int type) {
+    private void deleteRelations(int type) {        
         List relations = null;
         if (type == -1) {
             relations = mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
@@ -1163,11 +1158,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         }
         if (nodeManager != null) {
-            if (nodeManager instanceof BasicNodeManager) {
-                return new BasicNodeList(mmnodes, (BasicNodeManager) nodeManager);
-            } else {
-                return new BasicNodeList(mmnodes, cloud.getBasicNodeManager(nodeManager.getName()));
-            }
+            return new BasicNodeList(mmnodes, nodeManager);
         } else {
             return new BasicNodeList(mmnodes, cloud);
         }
