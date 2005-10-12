@@ -20,7 +20,6 @@ import org.mmbase.util.*;
 public interface ProcessorInterface  {
 
     /**
-     * Returns a virtual builder.
      * Used to create node lists from the results returned by {@link #getList}.
      * The default method does not associate the builder with a cloud (mmbase module),
      * so processormodules that need this association need to override this method.
