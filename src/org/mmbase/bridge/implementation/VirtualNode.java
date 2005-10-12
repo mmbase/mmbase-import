@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.1 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.2 2005-10-12 08:50:31 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -289,7 +289,6 @@ public class VirtualNode implements Node {
 
     public String getStringValue(String fieldName) {
         String result = getNode().getStringValue(fieldName);
-        log.info("GODVERDOMME");
         return result;
     }
 
