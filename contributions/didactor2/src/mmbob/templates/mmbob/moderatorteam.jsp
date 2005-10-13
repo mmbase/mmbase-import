@@ -50,11 +50,12 @@
 <mm:node referid="forumid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
     <tr><th><fmt:message key="Administrators"/></th><th><fmt:message key="Location"/></th><th><fmt:message key="LastSeen"/></th></tr>
-    <mm:related path="rolerel,posters"> <%-- constraints="rolerel.role like '%administrato%'"--%>
-    <mm:node element="posters">
-
-    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
-    </mm:node>
+    <mm:related path="rolerel,posters,people"> <%-- constraints="rolerel.role like '%administrato%'"--%>
+    <tr><td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                        <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                     </mm:treefile>" target="_top">
+               <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a></td>
+        <td><mm:field name="posters.location" /></td><td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
     </mm:related>
 </table>
 
@@ -64,12 +65,13 @@
     <mm:related path="postareas">
     <mm:node element="postareas">
         <tr><th><mm:field name="name" /></th><th></th><th></th></tr>
-        <mm:related path="rolerel,posters">  <%--  constraints="rolerel.role like '%moderator%'"> --%>
-        <mm:node element="posters">
-
-    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
-    </mm:node>
-    </mm:related>
+        <mm:related path="rolerel,posters,people">  <%--  constraints="rolerel.role like '%moderator%'"> --%>
+        <tr><td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                            <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                         </mm:treefile>" target="_top">
+                   <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a></td>
+            <td><mm:field name="posters.location" /></td><td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
+        </mm:related>
     </mm:node>
     </mm:related>
 </table>

@@ -50,7 +50,15 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 <tr><th><fmt:message key="Account"/></th><th><fmt:message key="Location"/></th><th><fmt:message key="LastSeen"/></th></tr>
     <mm:nodelistfunction set="mmbob" name="getPostersOnline" referids="forumid">
-    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="id" />&pathtype=onlineposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
+        <mm:import id="dummyposterid" reset="true"><mm:field name="id" /></mm:import>
+        <mm:list nodes="$dummyposterid" path="posters,people">
+            <tr><td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                                <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                             </mm:treefile>" target="_top">
+                       <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a>
+                </td>
+                <td><mm:field name="posters.location" /></td><td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
+        </mm:list>
     </mm:nodelistfunction>
 </table>
 </center>

@@ -61,14 +61,12 @@
 	<mm:field name="name" /></a>
 	</mm:node> >
 
-	<mm:node number="$posterid">
-	<a href="<mm:url page="profile.jsp">
-		<mm:param name="forumid" value="$forumid" />
-		<mm:param name="postareaid" value="$postareaid" />
-		<mm:param name="posterid" value="$posterid" />
-		</mm:url>">
-	<mm:field name="account" /></a>
-	</mm:node>
+	<mm:list nodes="$posterid" path="posters,people">
+	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                 </mm:treefile>" target="_top">
+           <mm:field name="posters.account" /></a>
+	</mm:list>
 </mm:compare>
 
 <mm:compare value="onlineposters" referid="type">
@@ -124,15 +122,12 @@
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>"><fmt:message key="membersOnline"/></a>
 	&gt;
-	<mm:node number="$posterid">
-	<a href="<mm:url page="profile.jsp">
-		<mm:param name="forumid" value="$forumid" />
-		<mm:param name="postareaid" value="$postareaid" />
-		<mm:param name="posterid" value="$posterid" />
-		<mm:param name="pathtype" value="onlineposters_poster" />
-		</mm:url>">
-	<mm:field name="account" /></a>
-	</mm:node>
+	<mm:list nodes="$posterid" path="posters,people">
+	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                 </mm:treefile>" target="_top">
+           <mm:field name="posters.account" /></a>
+	</mm:list>
 </mm:compare>
 
 
@@ -149,15 +144,12 @@
 		<mm:param name="pathtype" value="allposters" />
 		</mm:url>"><fmt:message key="allMembers"/></a>
 	&gt;
-	<mm:node number="$posterid">
-	<a href="<mm:url page="profile.jsp">
-		<mm:param name="forumid" value="$forumid" />
-		<mm:param name="postareaid" value="$postareaid" />
-		<mm:param name="posterid" value="$posterid" />
-		<mm:param name="pathtype" value="onlineposters_poster" />
-		</mm:url>">
-	<mm:field name="account" /></a>
-	</mm:node>
+	<mm:list nodes="$posterid" path="posters,people">
+	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                 </mm:treefile>" target="_top">
+           <mm:field name="posters.account" /></a>
+	</mm:list>
 </mm:compare>
 
 <mm:compare value="moderatorteam_poster" referid="type">
@@ -172,15 +164,12 @@
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>"><fmt:message key="moderatorTeam"/></a>
 	&gt;
-	<mm:node number="$posterid">
-	<a href="<mm:url page="profile.jsp">
-		<mm:param name="forumid" value="$forumid" />
-		<mm:param name="postareaid" value="$postareaid" />
-		<mm:param name="posterid" value="$posterid" />
-		<mm:param name="pathtype" value="onlineposters_poster" />
-		</mm:url>">
-	<mm:field name="account" /></a>
-	</mm:node>
+	<mm:list nodes="$posterid" path="posters,people">
+	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                 </mm:treefile>" target="_top">
+           <mm:field name="posters.account" /></a>
+	</mm:list>
 </mm:compare>
 
 
@@ -222,16 +211,12 @@
 	<mm:field name="subject" /></a>
 	</mm:node> >
 
-	<mm:node number="$posterid">
-	<a href="<mm:url page="profile.jsp">
-		<mm:param name="forumid" value="$forumid" />
-		<mm:param name="postareaid" value="$postareaid" />
-		<mm:param name="postthreadid" value="$postthreadid" />
-		<mm:param name="type" value="poster_thread" />
-		<mm:param name="posterid" value="$posterid" />
-		</mm:url>">
-	<mm:field name="account" /></a>
-	</mm:node>
+	<mm:list nodes="$posterid" path="posters,people">
+	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                 </mm:treefile>" target="_top">
+           <mm:field name="posters.account" /></a>
+	</mm:list>
 </mm:compare>
 
 <mm:compare value="postthread" referid="type">
