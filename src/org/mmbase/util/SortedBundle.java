@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.8 2005-09-07 13:21:26 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.9 2005-10-13 09:49:24 michiel Exp $
  */
 public class SortedBundle {
 
@@ -108,13 +108,14 @@ public class SortedBundle {
      * @param loader   the class loader from which to load the resource bundle
      * @param constantsProvider the class of which the constants must be used to be associated with the elements of this resource.
      * @param wrapper           the keys will be wrapped in objects of this type (which must have a
-     *                          constructor with the right type (String, or otherwise the type of the variable given by the constantsProvider).
+     *                          constructor with the right type (String, or otherwise the type of the variable given by the constantsProvider), and must be Comparable.
      *                          You could specify e.g. Integer.class if the keys of the
-     *                          map are meant to be integers. This can be <code>null</code>, in which case the keys will remain unwrapped
+     *                          map are meant to be integers. This can be <code>null</code>, in which case the keys will remain unwrapped (and therefore String).
      * @param comparator        the elements will be sorted (by key) using this comparator or by natural key order if this is <code>null</code>.
      *
      * @throws NullPointerException      if baseName or locale is <code>null</code>  (not if loader is <code>null</code>)
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
+     * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
     public static SortedMap getResource(String baseName, Locale locale, ClassLoader loader, Class constantsProvider, Class wrapper, Comparator comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : constantsProvider.getName()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
@@ -167,6 +168,9 @@ public class SortedBundle {
                 }
 
                 if (wrapper != null) {
+                    if (! Comparable.class.isAssignableFrom(wrapper)) {
+                        throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
+                    }
                     try {
                         if (wrapper.isAssignableFrom(ValueWrapper.class)) {
                             Constructor c = wrapper.getConstructor(new Class[] {String.class, Comparable.class});
