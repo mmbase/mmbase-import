@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.26 2005-10-07 18:57:06 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.27 2005-10-13 09:54:08 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -322,6 +322,10 @@ public class DataTypeDefinition {
             if (! resource.equals("")) {
                 Comparator comparator = null;
                 Class wrapper    = dataType.getTypeAsClass();
+                if (! Comparable.class.isAssignableFrom(wrapper)) {
+                    wrapper = null;
+                }
+
                 {
                     String sorterClass = enumerationElement.getAttribute("sorterclass");
                     if (!sorterClass.equals("")) {
