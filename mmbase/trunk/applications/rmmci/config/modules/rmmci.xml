@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="keesj" version="1">
-  <status>active</status>
-  <classfile>org.mmbase.module.RemoteMMCI</classfile>
+  <class>org.mmbase.module.RemoteMMCI</class>
   <properties>
+    <!-- 
+         port number is default 1111.
+         Overide this XML, or only a property by jvm option -Drmmci.port=
+    -->
+    <!--        
     <property name="port">1111</property>
+    -->
     <property name="bindname">remotecontext</property>
     <property name="RMIRegistryServer"/>
   </properties>
