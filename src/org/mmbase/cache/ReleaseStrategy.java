@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.3 2005-10-09 14:55:02 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.4 2005-10-13 17:35:03 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -40,6 +40,8 @@ public abstract class ReleaseStrategy {
     public String getName() {
         return name;
     }
+    
+    public abstract String getDescription();
 
     /*
      * (non-Javadoc)
@@ -115,6 +117,10 @@ public abstract class ReleaseStrategy {
             totalEvalueationTimeInMillis = 0;
             isActive = enabled;
         }
+    }
+    
+    public boolean isEnabled(){
+       return isActive;
     }
 
     /**
