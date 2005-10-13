@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.19 2005-10-09 14:55:02 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.20 2005-10-13 17:35:03 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -112,7 +112,7 @@ abstract public class QueryResultCache extends Cache {
     /**
      * @return Returns the releaseStrategy.
      */
-    ReleaseStrategy getReleaseStrategy() {
+    public ReleaseStrategy getReleaseStrategy() {
         return releaseStrategy;
     }
 
