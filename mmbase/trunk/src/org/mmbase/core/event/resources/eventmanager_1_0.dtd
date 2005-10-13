@@ -2,4 +2,5 @@
 
 <!ELEMENT eventmanager (brokers+) >
 <!ELEMENT brokers (broker+ ) >
-<!ATTLIST broker  class  CDATA  #REQUIRED >
+<!ELEMENT broker EMPTY >
+<!ATTLIST broker class  CDATA  #REQUIRED >
