@@ -11,8 +11,10 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <html>
 <head>
-    <%@include file="/shared/setImports.jsp" %>
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+   <%@include file="/shared/setImports.jsp" %>
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/layout/list.css" objectlist="$includePath" referids="$referids" />" />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/editwizards/style/color/list.css" objectlist="$includePath" referids="$referids" />" />
 </head>
 
 <body>
@@ -20,6 +22,7 @@
       String sReturnURL = request.getRequestURL().toString();
    %>
    <mm:import id="components_show_cockpit" reset="true">false</mm:import>
+   <mm:import id="link_to_main" reset="true"><mm:treefile page="/components/frame.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
    <%@include file="body.jsp" %>
 </body>
 
