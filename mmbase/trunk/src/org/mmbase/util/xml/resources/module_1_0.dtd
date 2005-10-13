@@ -3,7 +3,7 @@
        - DTD for MMBase builder definitions
 -->
 
-<!ELEMENT module ( status, url?, (classfile|class), properties? ) >
+<!ELEMENT module ( status?, url?, (classfile|class), properties? ) >
 <!ATTLIST module maintainer NMTOKEN #IMPLIED >
 <!ATTLIST module version NMTOKEN #IMPLIED >
 
