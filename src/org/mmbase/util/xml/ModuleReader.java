@@ -21,7 +21,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.2 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ModuleReader.java,v 1.3 2005-10-13 12:06:58 michiel Exp $
  */
 public class ModuleReader extends DocumentReader {
 
@@ -43,9 +43,7 @@ public class ModuleReader extends DocumentReader {
      * @since MMBase-1.7
      */
     public static void registerPublicIDs() {
-        // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0, DTD_MODULE_1_0, ModuleReader.class);
-
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT, DTD_MODULE_1_0, ModuleReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT2, DTD_MODULE_1_0, ModuleReader.class);
@@ -66,8 +64,9 @@ public class ModuleReader extends DocumentReader {
      * Get the status of this module
      */
     public String getStatus() {
-        Element e = getElementByPath("module.status");
-        return getElementValue(e);
+        Element e = getElementByPath("module.status");        
+        String s =  getElementValue(e);
+        return s.equals("") ? "active" : s;
     }
 
     /**
@@ -96,9 +95,9 @@ public class ModuleReader extends DocumentReader {
         Element e = getElementByPath("module");
         String tmp = getElementAttributeValue(e, "maintainer");
         if (tmp != null && !tmp.equals("")) {
-            return (tmp);
+            return tmp;
         } else {
-            return ("mmbase.org");
+            return "mmbase.org";
         }
     }
 
