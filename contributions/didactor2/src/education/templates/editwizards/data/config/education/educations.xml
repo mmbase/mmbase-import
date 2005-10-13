@@ -97,7 +97,9 @@
         <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
         <list destination="classes" role="related" extends="config/class/classes-list.xml" />
 
-        <list destination="people" role="rolerel" extends="config/people/people-list.xml" />
+        <!-- 05.08.03 / hh: it seems that the rolerel to people is no longer used after the roleditor has been implemented -->
+        <!-- list destination="people" role="rolerel" extends="config/people/people-education.xml" / -->
+        <list destination="people" role="classrel" extends="config/people/people-list.xml" />
         &extra_lists;
 
     </form-schema>
