@@ -54,10 +54,10 @@
 <!-- (Step 1 for remote) Compile the remote generator classes            -->
 <!-- =================================================================== -->
   <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
-    <javac srcdir="src" 
-           destdir="build/classes" 
-           classpathref="classpath" 
-           debug="yes" 
+    <javac srcdir="src"
+           destdir="build/classes"
+           classpathref="classpath"
+           debug="yes"
            source="1.4"
            optimize="yes">
       <include name="org/mmbase/bridge/remote/generator/*.java"/>
@@ -96,9 +96,9 @@
 <!-- (Step 3 for remote) Compile the remote classes                      -->
 <!-- =================================================================== -->
   <target name="compile.remote" description="Compile the remote classes" depends="init,generate.remote">
-    <javac destdir="build/classes" 
-           classpathref="classpath" 
-           debug="yes" 
+    <javac destdir="build/classes"
+           classpathref="classpath"
+           debug="yes"
            source="1.4"
            optimize="yes">
       <src path="build/src"/>
@@ -173,7 +173,9 @@ Build-compiler: ${build.compiler}
 
         <include name="org/mmbase/util/functions/**" />                 <!-- functions are bridge -->
 
-        <!-- perhaps we need _all_ of util ? -->        
+        <include name="org/mmbase/cache/CachePolicy*" />
+
+        <!-- perhaps we need _all_ of util ? -->
         <include name="org/mmbase/util/logging/**"/>                    <!-- every class use, and it's no real burden to have it -->
         <include name="org/mmbase/util/ResourceLoader*.class"/>         <!-- well... -->
         <include name="org/mmbase/util/ResourceWatcher*.class"/>        <!--  -->
