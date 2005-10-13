@@ -55,6 +55,7 @@
          String sReturnURL = request.getRequestURL().toString();
       %>
       <mm:import id="components_show_cockpit" reset="true">true</mm:import>
+      <mm:import id="link_to_main" reset="true"><mm:treefile page="/components/index.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
       <%@include file="body.jsp"%>
    </div>
 

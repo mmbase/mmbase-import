@@ -84,12 +84,6 @@
       <div class="mainContent">
       </mm:compare>
 
-         <div class="contentHeader">
-            <!-- TODO translate -->
-            <fmt:message key="DELETECOMPONENT" />
-         </div>
-         <div class="contentSubHeader"></div>
-
          <div class="contentBody">
             <%-- Show the form --%>
             <form name="deletecomponentform" method="post" action="<mm:treefile page="/components/deletecomponent.jsp" objectlist="$includePath" referids="$referids"/>">
@@ -121,7 +115,7 @@
    </mm:compare>
    <mm:compare referid="components_show_cockpit" value="true" inverse="true">
          </body>
-      </html
+      </html>
    </mm:compare>
 
 </mm:cloud>
