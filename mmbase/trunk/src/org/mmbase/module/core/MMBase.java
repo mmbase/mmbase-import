@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.163 2005-10-13 09:11:12 marcel Exp $
+ * @version $Id: MMBase.java,v 1.164 2005-10-13 09:12:24 marcel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -283,6 +283,7 @@ public class MMBase extends ProcessorModule {
             host        = java.net.InetAddress.getLocalHost().getHostName();
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
+            host = "UNKNOWN";
         }
 
         tmp = getInitParameter("HOST");
