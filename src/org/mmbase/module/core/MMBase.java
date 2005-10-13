@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.162 2005-10-09 14:55:03 ernst Exp $
+ * @version $Id: MMBase.java,v 1.163 2005-10-13 09:11:12 marcel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -271,11 +271,6 @@ public class MMBase extends ProcessorModule {
             dtdbase = tmp;
         }
 
-        tmp = getInitParameter("HOST");
-        if (tmp != null && !tmp.equals("")) {
-            host = tmp;
-        }
-
         tmp = getInitParameter("COOKIEDOMAIN");
         if (tmp != null && !tmp.equals("")) {
             cookieDomain = tmp;
@@ -285,8 +280,14 @@ public class MMBase extends ProcessorModule {
         // We suppose that that is sufficiently unique in most cases
         try {
             machineName = java.net.InetAddress.getLocalHost().getHostName() + MMBaseContext.getHtmlRootUrlPath();
+            host        = java.net.InetAddress.getLocalHost().getHostName();
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
+        }
+
+        tmp = getInitParameter("HOST");
+        if (tmp != null && !tmp.equals("")) {
+            host = tmp;
         }
 
         String machineNameParam = getInitParameter("MACHINENAME");
