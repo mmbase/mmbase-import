@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.165 2005-10-13 09:14:23 marcel Exp $
+ * @version $Id: MMBase.java,v 1.166 2005-10-13 09:42:35 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -280,7 +280,7 @@ public class MMBase extends ProcessorModule {
         // We suppose that that is sufficiently unique in most cases
         try {
             host        = java.net.InetAddress.getLocalHost().getHostName();
-            machineName = hostname + MMBaseContext.getHtmlRootUrlPath();
+            machineName = host + MMBaseContext.getHtmlRootUrlPath();
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
             host        = machineName;
@@ -295,15 +295,15 @@ public class MMBase extends ProcessorModule {
         if (machineNameParam != null) {
             // try to incorporate the hostname (if needed)
             int pos = machineNameParam.indexOf("${HOST}");
-            if (pos!=-1) {
-                machineNameParam = machineNameParam.substring(0,pos) +
-                    machineName +
-                    machineNameParam.substring(pos+7);
+            if (pos != -1) {
+                machineNameParam = 
+                    machineNameParam.substring(0, pos) +
+                    machineName + machineNameParam.substring(pos + 7);
             }
             // you may also try to incorporate the username in the machine name
             pos = machineNameParam.indexOf("${USER}");
-            if (pos!=-1) {
-                machineNameParam = machineNameParam.substring(0,pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
+            if (pos != -1) {
+                machineNameParam = machineNameParam.substring(0, pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
             }
             machineName = machineNameParam;
         }
