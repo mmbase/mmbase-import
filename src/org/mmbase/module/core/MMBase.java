@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.113.2.9 2005-10-13 09:13:10 marcel Exp $
+ * @version $Id: MMBase.java,v 1.113.2.10 2005-10-13 09:21:32 marcel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -344,7 +344,7 @@ public class MMBase extends ProcessorModule {
             host        = machineName;
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
-            hostname    = machineName;
+            host        = machineName;
         }
 
         tmp = getInitParameter("HOST");
