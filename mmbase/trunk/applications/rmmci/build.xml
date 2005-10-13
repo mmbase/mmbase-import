@@ -192,6 +192,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/transformers/**.class"/>            <!-- used by Encode -->
         <include name="org/mmbase/util/xml/**"/>
         <include name="org/mmbase/util/XMLEntityResolver*.class"/>          <!-- -->
+        <include name="org/mmbase/util/XMLErrorHandler.class"/>          <!-- -->
         <include name="org/mmbase/util/DynamicDate.class"/>                <!-- used by Casting -->
         <include name="org/mmbase/util/dateparser/**"/>                    <!-- used by Casting -->
 
