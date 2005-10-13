@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.164 2005-10-13 09:12:24 marcel Exp $
+ * @version $Id: MMBase.java,v 1.165 2005-10-13 09:14:23 marcel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -279,11 +279,11 @@ public class MMBase extends ProcessorModule {
         // default machine name is the local host name plus context-path.
         // We suppose that that is sufficiently unique in most cases
         try {
-            machineName = java.net.InetAddress.getLocalHost().getHostName() + MMBaseContext.getHtmlRootUrlPath();
             host        = java.net.InetAddress.getLocalHost().getHostName();
+            machineName = hostname + MMBaseContext.getHtmlRootUrlPath();
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
-            host = "UNKNOWN";
+            host        = machineName;
         }
 
         tmp = getInitParameter("HOST");
