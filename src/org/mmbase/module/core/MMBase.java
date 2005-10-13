@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.113.2.7 2005-06-30 11:54:20 pierre Exp $
+ * @version $Id: MMBase.java,v 1.113.2.8 2005-10-13 09:09:50 marcel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -333,11 +333,6 @@ public class MMBase extends ProcessorModule {
             dtdbase = tmp;
         }
 
-        tmp = getInitParameter("HOST");
-        if (tmp != null && !tmp.equals("")) {
-            host = tmp;
-        }
-
         tmp = getInitParameter("COOKIEDOMAIN");
         if (tmp != null && !tmp.equals("")) {
             cookieDomain = tmp;
@@ -346,8 +341,14 @@ public class MMBase extends ProcessorModule {
         // default machine name is the current user name
         try {
             machineName = java.net.InetAddress.getLocalHost().getHostName();
+            host        = machineName;
         } catch (java.net.UnknownHostException uhe) {
             machineName = "UNKNOWN";
+        }
+
+        tmp = getInitParameter("HOST");
+        if (tmp != null && !tmp.equals("")) {
+            host = tmp;
         }
 
         String machineNameParam = getInitParameter("MACHINENAME");
