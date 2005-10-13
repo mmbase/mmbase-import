@@ -50,10 +50,12 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 <mm:node referid="forumid">
 <tr><th><fmt:message key="Account"/></th><th><fmt:message key="Location"/></th><th><fmt:message key="LastSeen"/></th></tr>
-    <mm:related path="related,posters">
-    <mm:node element="posters">
-    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
-    </mm:node>
+    <mm:related path="related,posters,people">
+    <tr><td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                        <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                     </mm:treefile>" target="_top">
+               <mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /> (<mm:field name="posters.account" />)</a></td>
+        <td><mm:field name="posters.location" /></td><td><mm:field name="posters.lastseen"><mm:time format="<%= timeFormat %>" /></mm:field></td></tr>
     </mm:related>
 </table>
 </mm:node>

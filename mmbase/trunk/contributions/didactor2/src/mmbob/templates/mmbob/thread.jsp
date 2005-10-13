@@ -98,9 +98,14 @@
 
       <tr>
          <td class="<mm:write referid="tdvar" />" align="left">
-            <a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />">
-               <b><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)
-            </a>
+            <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
+            <mm:list nodes="$dummyposterid" path="posters,people">
+               <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                           <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                        </mm:treefile>" target="_top">
+                  <b><mm:field name="posters.account" /></b>  (<mm:field name="posters.firstname" /> <mm:field name="posters.lastname" />)
+               </a>
+            </mm:list>
             <br />
             <fmt:message key="on"/> <mm:field name="posttime"><mm:time format="<%= timeFormat %>" /></mm:field>
          </td>
@@ -160,15 +165,16 @@
 
       <tr>
          <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-            <a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />">
-               <mm:field name="avatar">
-                  <mm:compare value="-1" inverse="true">
-                     <mm:node number="$_" notfound="skip">
-                        <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-                     </mm:node>
-                  </mm:compare>
-               </mm:field>
-            </a>
+            <mm:import id="dummyposterid" reset="true"><mm:field name="posterid"/></mm:import>
+            <mm:list nodes="$dummyposterid" path="posters,people,images">
+               <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+                           <mm:param name="contact"><mm:field name="people.number"/></mm:param>
+                        </mm:treefile>" target="_top">
+                  <mm:node element="images">
+                     <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                  </mm:node>
+               </a>
+            </mm:list>
             <p />
 
 
