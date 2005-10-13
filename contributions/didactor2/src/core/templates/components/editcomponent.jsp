@@ -157,10 +157,6 @@
 
    <div class="mainContent">
    </mm:compare>
-      <div class="contentHeader">
-         <!-- TODO translate -->
-         <fmt:message key="EDITCOMPONENT" />
-      </div>
 
       <%@include file="/education/wizards/roles_defs.jsp" %>
       <mm:import id="editcontextname" reset="true">componenten</mm:import>
