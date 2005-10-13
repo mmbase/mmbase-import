@@ -26,13 +26,21 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * This class manages all event related stuff. it is the place to register event brokers, and it
  * will propagate all events. The class is set up as a singleton, with lazy instantiation. When the
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
- * @author Ernst Bunders
- * @since 1.8
- * 
+ * @author  Ernst Bunders
+ * @since   1.8
+ * @version $Id: EventManager.java,v 1.4 2005-10-13 10:51:53 michiel Exp $
  */
 public class EventManager {
 
     private static final Logger log = Logging.getLoggerInstance(EventManager.class);
+
+    public static final String PUBLIC_ID_EVENTMANAGER = "-//MMBase//DTD eventmanager config 1.0//EN";
+    public static final String DTD_EVENTMANAGER = "eventmanager_1_0.dtd";
+
+
+    static {
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_EVENTMANAGER, DTD_EVENTMANAGER, EventManager.class);
+    }
 
     /**
      * the instance that this singleton will manage
