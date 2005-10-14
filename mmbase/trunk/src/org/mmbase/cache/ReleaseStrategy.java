@@ -1,7 +1,12 @@
 /*
- * Created on 9-jul-2005 TODO To change the template for this generated file go
- * to Window - Preferences - Java - Code Style - Code Templates
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.cache;
 
 import java.util.*;
@@ -20,27 +25,22 @@ import org.mmbase.storage.search.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.4 2005-10-13 17:35:03 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.5 2005-10-14 21:44:03 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
 
     private int totalEvaluated = 0, totalPreserved = 0;
 
-    private long totalEvalueationTimeInMillis = 0;
+    private long totalEvaluationTimeInMillis = 0;
 
     private boolean isActive = true;
 
-    protected String name;
-
-    public ReleaseStrategy(String name) {
-        this.name = name;
+    public ReleaseStrategy() {
     }
 
-    public String getName() {
-        return name;
-    }
-    
+    public abstract String getName();
+   
     public abstract String getDescription();
 
     /*
@@ -49,11 +49,11 @@ public abstract class ReleaseStrategy {
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#avgEvaluationTimeInMilis()
      */
     public int getAvgEvaluationTimeInMilis() {
-        return (int) (totalEvalueationTimeInMillis / totalEvaluated);
+        return (int) (totalEvaluationTimeInMillis / totalEvaluated);
     }
 
     public long getTotalEvaluationTimeMillis() {
-        return totalEvalueationTimeInMillis;
+        return totalEvaluationTimeInMillis;
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class ReleaseStrategy {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
             totalEvaluated++;
             if (!shouldRelease) totalPreserved++;
-            totalEvalueationTimeInMillis += timer.getTimeMillis();
+            totalEvaluationTimeInMillis += timer.getTimeMillis();
             return new StrategyResult(shouldRelease, timer);
         } else {
             // if the cache is inactive it can not prevent the flush
@@ -114,7 +114,7 @@ public abstract class ReleaseStrategy {
         if (isActive != enabled) {
             totalEvaluated = 0;
             totalPreserved = 0;
-            totalEvalueationTimeInMillis = 0;
+            totalEvaluationTimeInMillis = 0;
             isActive = enabled;
         }
     }

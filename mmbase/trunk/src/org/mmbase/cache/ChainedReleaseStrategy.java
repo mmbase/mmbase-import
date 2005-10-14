@@ -1,7 +1,12 @@
 /*
- * Created on 9-jul-2005 TODO To change the template for this generated file go
- * to Window - Preferences - Java - Code Style - Code Templates
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.cache;
 
 import java.util.HashMap;
@@ -20,7 +25,7 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.4 2005-09-23 13:59:26 pierre Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.5 2005-10-14 21:44:03 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
@@ -29,7 +34,6 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     private String basicStrategyName;
 
     public ChainedReleaseStrategy() {
-        super("Chained release strategy");
         BasicReleaseStrategy st = new BasicReleaseStrategy();
         basicStrategyName = st.getName();
         addReleaseStrategy(st);
