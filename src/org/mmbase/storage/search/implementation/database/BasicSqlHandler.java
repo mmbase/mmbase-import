@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.bridge.Field;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.51 2005-10-01 20:11:03 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.52 2005-10-14 17:20:51 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -30,17 +30,13 @@ public class BasicSqlHandler implements SqlHandler {
 
     private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final SimpleDateFormat dateFormat          = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final FieldPosition dontcareFieldPosition = new FieldPosition(DateFormat.YEAR_FIELD);
-
-    /** MMBase instance. */
-    protected MMBase mmbase;
 
     /**
      * Constructor.
      */
     public BasicSqlHandler() {
-        mmbase = MMBase.getMMBase();
     }
 
     /**
@@ -205,8 +201,10 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
-        throws SearchQueryException {
+    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
+        MMBase mmbase = MMBase.getMMBase();
+
+
 
         // Buffer expressions for included nodes, like
         // "x.number in (...)".
@@ -243,7 +241,7 @@ public class BasicSqlHandler implements SqlHandler {
             }
         }
 
-        boolean storesAsFile = MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
+        boolean storesAsFile = mmbase.getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator iFields = lFields.iterator();
         boolean appended = false;
         while (iFields.hasNext()) {
@@ -891,7 +889,7 @@ public class BasicSqlHandler implements SqlHandler {
         if (value == null) {
             throw new IllegalArgumentException("Invalid value: " + value);
         }
-        return (String)mmbase.getStorageManagerFactory().getStorageIdentifier(value);
+        return (String) MMBase.getMMBase().getStorageManagerFactory().getStorageIdentifier(value);
     }
 
     /**
