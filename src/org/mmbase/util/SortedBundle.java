@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.9 2005-10-13 09:49:24 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.10 2005-10-14 18:34:39 michiel Exp $
  */
 public class SortedBundle {
 
@@ -117,7 +117,7 @@ public class SortedBundle {
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
-    public static SortedMap getResource(String baseName, Locale locale, ClassLoader loader, Class constantsProvider, Class wrapper, Comparator comparator) {
+    public static SortedMap getResource(final String baseName,  Locale locale, final ClassLoader loader, final Class constantsProvider, final Class wrapper, final Comparator comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : constantsProvider.getName()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         SortedMap m = (SortedMap) knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
@@ -129,79 +129,87 @@ public class SortedBundle {
             } else {
                 bundle = ResourceBundle.getBundle(baseName, locale, loader);
             }
+            if (comparator == null && wrapper != null && ! Comparable.class.isAssignableFrom(wrapper)) {
+                throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
+            }
             m = new TreeMap(comparator);
+
             Enumeration keys = bundle.getKeys();
             while (keys.hasMoreElements()) {
                 String bundleKey = (String) keys.nextElement();
-
-                Object key;
-
-                // if the key is numeric then it will be sorted by number
-                //key Double
-
-                Class providerClass = constantsProvider; // default class (may be null)
-                int lastDot = bundleKey.lastIndexOf('.');
-                if (lastDot > 0) {
-                    String className = bundleKey.substring(0, lastDot);
-                    try {
-                        providerClass = Class.forName(className);
-                    } catch (ClassNotFoundException cnfe) {
-                        log.warn("No class found with name " + className + " for resource " + baseName);
-                        providerClass = constantsProvider;
-                    }
-                }
-
-                if (providerClass != null) {
-                    try {
-                        Field constant = providerClass.getDeclaredField(bundleKey);
-                        key = constant.get(null);
-                    } catch (NoSuchFieldException nsfe) {
-                        log.info("No java constant with name " + bundleKey);
-                        key = bundleKey;
-                    } catch (IllegalAccessException ieae) {
-                        log.warn("The java constant with name " + bundleKey + " is not accessible");
-                        key = bundleKey;
-
-                    }
-                } else {
-                    key = bundleKey;
-                }
-
-                if (wrapper != null) {
-                    if (! Comparable.class.isAssignableFrom(wrapper)) {
-                        throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
-                    }
-                    try {
-                        if (wrapper.isAssignableFrom(ValueWrapper.class)) {
-                            Constructor c = wrapper.getConstructor(new Class[] {String.class, Comparable.class});
-                            key = c.newInstance(new Object[] { key, (Comparable) bundle.getObject(bundleKey)});
-                        } else {
-                            Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
-                            key = c.newInstance(new Object[] { key });
-                        }
-                    } catch (NoSuchMethodException nsme) {
-                        log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage());
-                        continue;
-                    } catch (SecurityException se) {
-                        log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + se.getMessage());
-                        continue;
-                    } catch (InstantiationException ie) {
-                        log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ie.getMessage());
-                        continue;
-                    } catch (InvocationTargetException ite) {
-                        log.error(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ite.getMessage());
-                        continue;
-                    } catch (IllegalAccessException iae) {
-                        log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + iae.getMessage());
-                        continue;
-                    }
-                }
-
-                m.put(key, bundle.getObject(bundleKey));
+                Object value = bundle.getObject(bundleKey);
+                Object key = castKey(bundleKey, value, constantsProvider, wrapper);
+                if (key == null) continue;
+                log.info("Putting " + new Entry(key, value));
+                m.put(key, value);
             }
-            m = Collections.unmodifiableSortedMap(m);
+            log.info("Putting " +m);
+            //m = Collections.unmodifiableSortedMap(m);
             knownResources.put(resourceKey, m);
         }
         return m;
+    }
+
+
+    public static Object castKey(final String bundleKey, final Object value, final Class constantsProvider, final Class wrapper) {
+        Object key;
+        // if the key is numeric then it will be sorted by number
+        //key Double
+        
+        Class providerClass = constantsProvider; // default class (may be null)
+        int lastDot = bundleKey.lastIndexOf('.');
+        if (lastDot > 0) {
+            String className = bundleKey.substring(0, lastDot);
+            try {
+                providerClass = Class.forName(className);
+            } catch (ClassNotFoundException cnfe) {
+                log.warn("No class found with name " + className);
+                providerClass = constantsProvider;
+            }
+        }
+        
+        if (providerClass != null) {
+            try {
+                Field constant = providerClass.getDeclaredField(bundleKey);
+                key = constant.get(null);
+            } catch (NoSuchFieldException nsfe) {
+                log.info("No java constant with name " + bundleKey);
+                key = bundleKey;
+            } catch (IllegalAccessException ieae) {
+                log.warn("The java constant with name " + bundleKey + " is not accessible");
+                key = bundleKey;
+                
+            }
+        } else {
+            key = bundleKey;
+        }
+        
+        if (wrapper != null && ! wrapper.isAssignableFrom(key.getClass())) {
+            try {
+                if (wrapper.isAssignableFrom(ValueWrapper.class)) {
+                    Constructor c = wrapper.getConstructor(new Class[] {String.class, Comparable.class});
+                    key = c.newInstance(new Object[] { key, (Comparable) value});
+                } else {
+                    Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
+                    key = c.newInstance(new Object[] { key });
+                }
+            } catch (NoSuchMethodException nsme) {
+                log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage());
+                return null;
+            } catch (SecurityException se) {
+                log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + se.getMessage());
+                return null;
+            } catch (InstantiationException ie) {
+                log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ie.getMessage());
+                return null;
+            } catch (InvocationTargetException ite) {
+                log.error(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ite.getMessage());
+                return null;
+            } catch (IllegalAccessException iae) {
+                log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + iae.getMessage());
+                return null;
+            }
+        }
+        return key;
     }
 }
