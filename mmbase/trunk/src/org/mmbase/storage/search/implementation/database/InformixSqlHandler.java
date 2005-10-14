@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.21 2005-10-01 20:11:03 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.22 2005-10-14 20:39:47 eduard Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -274,7 +274,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             String tableAlias = step.getAlias();
 
             // Tablename, prefixed with basename and underscore
-            sb.append(mmbase.getBaseName()).
+            sb.append(org.mmbase.module.core.MMBase.getMMBase().getBaseName()).
                     append("_").
                     //Currently no replacement strategy is implemented for
                     //invalid tablenames.
