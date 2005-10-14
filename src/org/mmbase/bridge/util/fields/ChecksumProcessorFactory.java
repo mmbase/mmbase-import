@@ -16,7 +16,7 @@ import java.io.StringWriter;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.2 2005-10-02 16:25:19 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.3 2005-10-14 18:33:12 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -41,6 +41,7 @@ public class ChecksumProcessorFactory implements ParameterizedProcessorFactory {
                     return value;
                 }
                 public void commit(Node node, Field field) {
+                    if (node.isNull(sourceField)) return; // leave checksum null too.
                     StringWriter writer = new StringWriter();
                     transformer.transform(node.getInputStreamValue(sourceField), writer);
                     node.setStringValue(field.getName(), writer.toString());

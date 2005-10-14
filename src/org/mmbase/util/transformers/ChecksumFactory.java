@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Creates ByteToCharTransformers
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.4 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: ChecksumFactory.java,v 1.5 2005-10-14 18:33:29 michiel Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
@@ -62,9 +62,12 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
             checksum = c;
         }
         public String transform(byte[] bytes) {
-            checksum.reset();
-            checksum.update(bytes, 0, bytes.length);
-            return "" + checksum.getValue();
+            if (bytes == null) return null;
+            synchronized(checksum) {
+                checksum.reset();
+                checksum.update(bytes, 0, bytes.length);
+                return "" + checksum.getValue();
+            }
         }
 
         public String toString() {
