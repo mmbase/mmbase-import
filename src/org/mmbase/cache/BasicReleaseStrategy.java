@@ -1,9 +1,12 @@
 /*
- * Created on 9-jul-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.cache;
 
 import java.util.List;
@@ -24,14 +27,18 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.5 2005-09-23 13:59:26 pierre Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.6 2005-10-14 21:44:03 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
 
     public BasicReleaseStrategy(){
-        super("Basic release strategy");
     }
+
+    public String getName() {
+        return "Basic release strategy";
+    }
+
 
     /* (non-Javadoc)
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
