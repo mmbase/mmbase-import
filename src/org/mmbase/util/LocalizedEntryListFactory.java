@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.4 2005-10-07 17:12:12 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.5 2005-10-14 18:35:11 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements java.io.Serializable, Cloneable {
@@ -51,7 +51,7 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
      * Ass a value for a certain key and Locale
      * @return The create Map.Entry.
      */
-    public Map.Entry add(Locale locale, String key, Object value) {
+    public Map.Entry add(Locale locale, Object key, Object value) {
         List localizedList = (List) localized.get(locale);
         List unused = (List) unusedKeys.get(locale);
         if (localizedList == null) {
@@ -85,13 +85,13 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
     public void addBundle(String baseName, ClassLoader classLoader, Class constantsProvider, Class wrapper, Comparator comparator) {
         // just for the count
         Bundle b = new Bundle(baseName, classLoader, constantsProvider, wrapper, comparator);
+        bundleSize += b.get(null).size();
         bundles.add(b);
         Iterator i = localized.values().iterator();
         while(i.hasNext()) {
             List localizedList = (List) i.next();
             localizedList.add(b);
         }
-        bundleSize += b.get(null).size();
     }
     /**
      * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
@@ -165,12 +165,33 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         return size + bundleSize;
     }
 
+    /**
+     * Since keys may be somehow wrapped, you can also 'unwrap' by this. If e.g. a constants
+     * provider was used, that values can be indicated by the name of the constants and this method
+     * casts to the value.
+     */
+    public Object castKey(final Object key) {
+        String string = Casting.toString(key);
+        Iterator i = bundles.iterator();
+        while (i.hasNext()) {
+            Bundle b = (Bundle) i.next();
+            Object nk = SortedBundle.castKey(string, null, b.constantsProvider, b.wrapper);
+            if (string != nk) return nk;
+        }
+        return key;
+
+    }
+
     public Object clone() {
         try {
             return super.clone();
         } catch (Exception e) {
             return this;
         }
+    }
+
+    public String toString() {
+        return "" + get(null);
     }
 
     private static class Bundle {
@@ -180,7 +201,7 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         private String      resource;
         private ClassLoader classLoader;
         private Class       constantsProvider;
-        private Class         wrapper;
+        private Class       wrapper;
         private Comparator  comparator;
         /**
          * Collection of Map.Entry's
@@ -204,14 +225,29 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         fact.add(nl, "b", "daag");
         fact.add(en, "b", "hello");
         fact.add(en, "a", "good bye");
-        fact.addBundle(resource1, null, null, Boolean.class, null);
+        try {
+            fact.addBundle(resource1, null, SortedBundle.NO_CONSTANTSPROVIDER, Boolean.class, SortedBundle.NO_COMPARATOR);
+        } catch (Exception e) {
+            System.out.println("" + e.getMessage() + ", probably using java 1.4");
+        }
         fact.add(nl, "c", "doegg");
-        fact.addBundle(resource2, null, null, String.class, null);
+        fact.addBundle(resource2, null, SortedBundle.NO_CONSTANTSPROVIDER, String.class, SortedBundle.NO_COMPARATOR);
 
         System.out.println("size: " + fact.size());
         System.out.println("" + fact.get(en));
         System.out.println("" + fact.get(nl));
         System.out.println("" + fact.get(dk));
+
+        LocalizedEntryListFactory fact2 = new LocalizedEntryListFactory();
+        fact2.addBundle("org.mmbase.module.builders.resources.states", null, org.mmbase.module.builders.MMServers.class, SortedBundle.NO_WRAPPER, SortedBundle.NO_COMPARATOR);
+        
+        System.out.println("size: " + fact2.size());
+        System.out.println("" + fact2.get(en));
+        System.out.println("" + fact2.get(nl));
+        Object error = fact2.castKey("ERROR");
+        System.out.println("ERROR=" + error.getClass().getName() + " " + error);
+
+        
     }
 
 }
