@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.8 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.9 2005-10-17 17:08:30 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -81,11 +81,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         owner = null;
     }
 
+    private static final int serialVersionUID = 1; // increase this if object serialization changes (which we shouldn't do!)
 
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(requiredConstraint);
         out.writeObject(uniqueConstraint);
+        out.writeObject(enumerationConstraint);
         if (owner instanceof Serializable) {
             out.writeObject(owner);
         } else {
@@ -104,15 +106,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
     // implementation of serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        requiredConstraint = (RequiredConstraint) in.readObject();
-        uniqueConstraint   = (UniqueConstraint) in.readObject();
-        typeConstraint     = new TypeConstraint(); // its always the same, so no need actually persisting it.
-        owner              = in.readObject();
-        classType          = (Class) in.readObject();
-        defaultValue       = in.readObject();
-        commitProcessor    = (CommitProcessor) in.readObject();
-        getProcessors      = (Processor[]) in.readObject();
-        setProcessors      = (Processor[]) in.readObject();
+        requiredConstraint    = (RequiredConstraint) in.readObject();
+        uniqueConstraint      = (UniqueConstraint) in.readObject();
+        enumerationConstraint = (EnumerationConstraint) in.readObject();
+        typeConstraint        = new TypeConstraint(); // its always the same, so no need actually persisting it.
+        owner                 = in.readObject();
+        classType             =  (Class) in.readObject();
+        defaultValue          = in.readObject();
+        commitProcessor       = (CommitProcessor) in.readObject();
+        getProcessors         = (Processor[]) in.readObject();
+        setProcessors         = (Processor[]) in.readObject();
     }
 
 
@@ -234,7 +237,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * @javadoc
      */
     public DataType rewrite(Object owner) {
-        if (this.owner !=null) {
+        if (this.owner != null) {
             if (this.owner != owner) {
                 throw new IllegalArgumentException("Cannot rewrite this datatype - specified owner is not correct");
             }
