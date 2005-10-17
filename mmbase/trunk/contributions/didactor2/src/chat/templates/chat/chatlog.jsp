@@ -82,6 +82,7 @@
   </div>
 
   <div class="contentSubHeader">
+    <mm:node number="component.workspace" notfound="skip">
     <a href="<mm:treefile page="/workspace/addchatlog.jsp" objectlist="$includePath" referids="$referids">
 	  	            <mm:param name="currentchatlog"><mm:write referid="chatlog"/></mm:param>
 		            <mm:param name="callerpage">/chat/chatlog.jsp</mm:param>
@@ -94,6 +95,7 @@
   		            <mm:param name="typeof">2</mm:param>
   		     </mm:treefile>">
       <img src="<mm:treefile page="/chat/gfx/shareddocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addchatlogpublic">Add chatlog to public workspace</di:translate>"/></a>
+    </mm:node>
   </div>
 
   <div class="contentBodywit">
