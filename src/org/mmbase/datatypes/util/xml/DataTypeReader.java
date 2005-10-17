@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.13 2005-10-12 19:10:01 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.14 2005-10-17 15:28:13 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -91,7 +91,7 @@ public class DataTypeReader {
                         readDataTypes(childElement, collector, dataType);
                     }
                 } catch (Exception e) {
-                    log.error("Error while parsing element  '" + org.mmbase.util.xml.XMLWriter.write(childElement, true) + "': " + e.getMessage(), e);
+                    log.error("Error while parsing element  '" + org.mmbase.util.xml.XMLWriter.write(childElement, true, true) + "': " + e.getMessage(), e);
                 }
             }
         }

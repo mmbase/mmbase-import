@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.4 2005-10-17 15:28:13 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -135,13 +135,12 @@ public abstract class ComparableDataType extends BasicDataType {
             inclusive = inc;
         }
 
-        public boolean valid(Object value, Node node, Field field) {
-            if (getValue() == null) return true;
-            //Comparable v = Casting.toComparable(value);
-            Comparable v = (Comparable) value;
+        public boolean valid(Object v, Node node, Field field) {
+            if ((v == null) || (getValue() == null)) return true;
+            Comparable comparable = (Comparable) v;
             Comparable minimum = (Comparable) ComparableDataType.this.castToValidate(getValue());
-            if (inclusive && (v.equals(minimum))) return true;
-            return v.compareTo(minimum) > 0;
+            if (inclusive && (comparable.equals(minimum))) return true;
+            return comparable.compareTo(minimum) > 0;
         }
         public boolean isInclusive() {
             return inclusive;
@@ -158,13 +157,12 @@ public abstract class ComparableDataType extends BasicDataType {
             super("max" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
-        public boolean valid(Object value, Node node, Field field) {
-            if (getValue() == null) return true;
-            //Comparable v = Casting.toComparable(value);
-            Comparable v = (Comparable) value;
+        public boolean valid(Object v, Node node, Field field) {
+            if ((v == null) || (getValue() == null)) return true;
+            Comparable comparable = (Comparable) v;
             Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue());
-            if (inclusive && (v.equals(maximum))) return true;
-            return v.compareTo(maximum) < 0;
+            if (inclusive && (comparable.equals(maximum))) return true;
+            return comparable.compareTo(maximum) < 0;
         }
 
         public boolean isInclusive() {

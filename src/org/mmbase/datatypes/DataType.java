@@ -27,42 +27,42 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.30 2005-10-12 19:09:37 michiel Exp $
+ * @version $Id: DataType.java,v 1.31 2005-10-17 15:28:13 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
 
     // XXXX MM: I think 'action' must be gone; it is silly.
-    public static final int PROCESS_COMMIT = 0;
-    public static final int PROCESS_GET    = 1;
-    public static final int PROCESS_SET    = 2;
+    static final int PROCESS_COMMIT = 0;
+    static final int PROCESS_GET    = 1;
+    static final int PROCESS_SET    = 2;
 
 
     /**
      * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced always.
      */
-    public static final int ENFORCE_ALWAYS   = Integer.MAX_VALUE;
+    static final int ENFORCE_ALWAYS   = Integer.MAX_VALUE;
 
     /**
      * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced only if it was changed.
      */
-    public static final int ENFORCE_ONCHANGE = 10000;
+    static final int ENFORCE_ONCHANGE = 10000;
 
     /**
      * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced only on creation.
      */
-    public static final int ENFORCE_ONCREATE = 1000;
+    static final int ENFORCE_ONCREATE = 1000;
 
     /**
      * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the
      * value must be enforced never, so the constraint serves only as UI indication.
      */
-    public static final int ENFORCE_NEVER    = 0;
+    static final int ENFORCE_NEVER    = 0;
 
     /**
      * An empty Parameter array.
      */
-    public static final DataType[] EMPTY  = new DataType[0];
+    static final DataType[] EMPTY  = new DataType[0];
 
     /**
      * Returned by {@link #validate} if no errors.
@@ -198,6 +198,8 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * #getEnumerationValues}. Never <code>null</code>. This can be used to add more possible values.
      */
     public LocalizedEntryListFactory getEnumerationFactory();
+
+    public DataType.ValueConstraint getEnumerationConstraint();
 
 
 

@@ -171,8 +171,19 @@
     </xsd:complexType>
   </xsd:element>
 
-
   <xsd:element name="enumeration">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="Constraint">
+          <xsd:sequence>
+            <xsd:element ref="entry" maxOccurs="unbounded" minOccurs="0" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="entry">
     <xsd:complexType>
       <xsd:attribute name="value" type="xsd:string" />
       <xsd:attribute name="display" type="xsd:string" />
