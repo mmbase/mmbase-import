@@ -55,12 +55,25 @@
                <mm:import externid="tests" required="true"/>
 
                <mm:node number="$tests">
-                  <b>Uitslag van test <mm:field name="name"/></b><br>
+                 <b>Uitslag van test <mm:field name="name"/></b><br>
+
+                 <mm:field id="mayview" name="mayview" write="false"/>
+                 <mm:field id="feedback" name="showfeedback" write="false"/>
+
+                 <mm:compare referid="showfeedback" value="1">
+                   <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids" >
+                     <mm:param name="madetes"><mm:write referid="madetest"/></mm:param>
+                     <mm:param name="tests"><mm:write referid="tests"/></mm:param>
+                   </mm:treeinclude>
+                 </mm:compare>
+                 <mm:compare referid="mayview" value="1">
+                   <mm:treeinclude page="/education/tests/viewanswers.jsp" objectlist="$includePath" referids="$referids">
+                     <mm:param name="testNo"><mm:write referid="tests"/></mm:param>
+                     <mm:param name="madetestNo"><mm:write referid="madetest"/></mm:param>
+                     <mm:param name="userNo"><mm:write referid="student"/></mm:param>
+                   </mm:treeinclude>
+                 </mm:compare>
                </mm:node>
-               <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids" >
-                  <mm:param name="madetes"><mm:write referid="madetest"/></mm:param>
-                  <mm:param name="tests"><mm:write referid="tests"/></mm:param>
-               </mm:treeinclude>
             </mm:present>
 
 
