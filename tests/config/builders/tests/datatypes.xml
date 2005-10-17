@@ -19,14 +19,14 @@
     <field>
       <db>
         <name>string</name>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+        <type size="255" state="persistent">STRING</type>
       </db>
     </field>
     <field>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>field</name>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+        <type size="255" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -35,7 +35,7 @@
       </datatype>
       <db>
         <name>zipcode</name>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+        <type size="255" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -45,30 +45,94 @@
       </datatype>
       <db>
         <name>pattern</name>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+        <type size="255" notnull="true" state="persistent">STRING</type>
       </db>
     </field>
     <field>
       <db>
         <name>integer</name>
-        <type key="false" notnull="false"  state="persistent">INTEGER</type>
+        <type  state="persistent">INTEGER</type>
       </db>
     </field>
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="6" />
         <minInclusive value="1" />
         <maxExclusive value="10" />
       </datatype>
       <db>
         <name>range</name>
-        <type key="false" notnull="false"  state="persistent">INTEGER</type>
+        <type  state="persistent">INTEGER</type>
       </db>
     </field>
     <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <enumeration>
+          <entry value="2" />
+          <entry value="4" />
+          <entry value="6" />
+          <entry value="8" />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>enumeration</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />        
+        <enumeration enforce="onchange">
+          <entry value="2" xml:lang="en" display="two" />
+          <entry value="2" xml:lang="nl" display="twee" />
+          <entry value="4" />
+          <entry value="6" xml:lang="eo" display="ses" />
+          <entry value="8" xml:lang="en" display="eight" />
+          <entry value="8" xml:lang="nl" display="acht" />
+          <entry value="8" xml:lang="eo" display="ok" />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>localized_weak_enumeration</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <enumeration enforce="never">          
+          <entry value="2" />
+          <entry value="4" />
+          <entry value="6" />
+          <entry value="8" />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>weakest_enumeration</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="ERROR" />
+        <enumeration >
+          <entry resource="org.mmbase.module.builders.resources.states"
+                 javaconstants="org.mmbase.module.builders.MMServers" 
+                 />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>mmbase_state_enumeration</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+
+    <field>
       <db>
         <name>datetime</name>
-        <type key="false" notnull="false"  state="persistent">DATETIME</type>
+        <type  state="persistent">DATETIME</type>
       </db>
     </field>
     <field>
@@ -79,7 +143,7 @@
       </datatype>
       <db>
         <name>period</name>
-        <type key="false" notnull="false"  state="persistent">DATETIME</type>
+        <type  state="persistent">DATETIME</type>
       </db>
     </field>
     <field>
@@ -89,10 +153,31 @@
         <maxInclusive value="today + 100 year" />
       </datatype>
       <db>
-        <name>dynamicperiod</name>
-        <type key="false" notnull="false"  state="persistent">DATETIME</type>
+        <name>dynamic_period</name>
+        <type  state="persistent">DATETIME</type>
       </db>
     </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minLength value="3" />
+        <maxLength value="10" />
+      </datatype>
+      <db>
+        <name>handle</name>
+        <type  size="1000"   state="persistent">BINARY</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>checksum</name>
+        <type state="system" size="255" unique="true">STRING</type>
+      </db>
+    </field>
+
+
+    
+
   </fieldlist>
 
 </builder>
