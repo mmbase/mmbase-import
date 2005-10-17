@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.27 2005-10-13 09:54:08 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.28 2005-10-17 15:28:13 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -310,56 +310,62 @@ public class DataTypeDefinition {
      * Used the enumeration element.
      */
     protected void addEnumeration(Element enumerationElement) {
-        String value = enumerationElement.getAttribute("value");
+        setConstraintData(dataType.getEnumerationConstraint(), enumerationElement);
         LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
-        if (!value.equals("")) {
-            Locale locale = DataTypeXml.getLocale(enumerationElement);
-            String display = enumerationElement.getAttribute("display");
-            if (display.equals("")) display = value;
-            fact.add(locale, value, display);
-        } else {
-            String resource = enumerationElement.getAttribute("resource");
-            if (! resource.equals("")) {
-                Comparator comparator = null;
-                Class wrapper    = dataType.getTypeAsClass();
-                if (! Comparable.class.isAssignableFrom(wrapper)) {
-                    wrapper = null;
-                }
-
-                {
-                    String sorterClass = enumerationElement.getAttribute("sorterclass");
-                    if (!sorterClass.equals("")) {
-                        try {
-                            Class sorter = Class.forName(sorterClass);
-                            if (Comparator.class.isAssignableFrom(sorter)) {
-                                comparator = (Comparator) sorter.newInstance();
-                            } else {
-                                wrapper = sorter;
-                            }
-                        } catch (Exception e) {
-                            log.error(e);
-                        }
-                    }
-                }
-                Class constantsClass = null;
-                {
-                    String javaConstants = enumerationElement.getAttribute("constantsclass");
-                    if (!javaConstants.equals("")) {
-                        try {
-                            constantsClass = Class.forName(javaConstants);
-                        } catch (Exception e) {
-                            log.error(e);
-                        }
-                    }
-                }
-                try {
-                    fact.addBundle(resource, getClass().getClassLoader(), constantsClass,
-                                   wrapper, comparator);
-                } catch (MissingResourceException mre) {
-                    log.error(mre);
-                }
+        NodeList childNodes = enumerationElement.getElementsByTagName("entry");
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Element entryElement = (Element) childNodes.item(i);
+            String value = entryElement.getAttribute("value");
+            if (!value.equals("")) {
+                Locale locale = DataTypeXml.getLocale(entryElement);
+                String display = entryElement.getAttribute("display");
+                if (display.equals("")) display = value;
+                Object key = Casting.toType(dataType.getTypeAsClass(), value);
+                fact.add(locale, key, display);
             } else {
-                throw new IllegalArgumentException("no 'value' or 'resource' attribute on enumeration element");
+                String resource = entryElement.getAttribute("resource");
+                if (! resource.equals("")) {
+                    Comparator comparator = null;
+                    Class wrapper    = dataType.getTypeAsClass();
+                    if (! Comparable.class.isAssignableFrom(wrapper)) {
+                        wrapper = null;
+                    }
+                    
+                    {
+                        String sorterClass = entryElement.getAttribute("sorterclass");
+                        if (!sorterClass.equals("")) {
+                            try {
+                                Class sorter = Class.forName(sorterClass);
+                                if (Comparator.class.isAssignableFrom(sorter)) {
+                                    comparator = (Comparator) sorter.newInstance();
+                                } else {
+                                    wrapper = sorter;
+                                }
+                            } catch (Exception e) {
+                            log.error(e);
+                            }
+                        }
+                    }
+                    Class constantsClass = null;
+                    {
+                        String javaConstants = entryElement.getAttribute("javaconstants");
+                        if (!javaConstants.equals("")) {
+                            try {
+                                constantsClass = Class.forName(javaConstants);
+                            } catch (Exception e) {
+                                log.error(e);
+                            }
+                        }
+                    }
+                    try {
+                        fact.addBundle(resource, getClass().getClassLoader(), constantsClass,
+                                       wrapper, comparator);
+                    } catch (MissingResourceException mre) {
+                        log.error(mre);
+                    }
+                } else {
+                    throw new IllegalArgumentException("no 'value' or 'resource' attribute on enumeration entry element");
+                }
             }
         }
     }
@@ -415,7 +421,7 @@ public class DataTypeDefinition {
                 sDataType.setPattern(value, locale);
                 return true;
             }
-        }
+       }
         return false;
     }
 

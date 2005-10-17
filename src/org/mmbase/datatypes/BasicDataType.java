@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.7 2005-10-12 22:12:25 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.8 2005-10-17 15:28:13 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -43,10 +43,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
 
-
-    protected RequiredConstraint requiredConstraint = new RequiredConstraint(false);
-    protected UniqueConstraint   uniqueConstraint   = new UniqueConstraint(false);
-    protected TypeConstraint     typeConstraint     = new TypeConstraint();
+    protected RequiredConstraint requiredConstraint        = new RequiredConstraint(false);
+    protected UniqueConstraint   uniqueConstraint          = new UniqueConstraint(false);
+    protected TypeConstraint     typeConstraint            = new TypeConstraint();
+    protected EnumerationConstraint enumerationConstraint  = new EnumerationConstraint((LocalizedEntryListFactory) null);
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
@@ -57,11 +57,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private Class classType;
     private Object defaultValue;
 
+    //private CommitProcessor commitProcessor;
     private Processor commitProcessor;
-    private Processor[] getProcessors;
-    private Processor[] setProcessors;
-
-    private LocalizedEntryListFactory enumerationValues = null;
+    private Processor[]     getProcessors;
+    private Processor[]     setProcessors;
 
     /**
      * Create a data type object of unspecified class type
@@ -81,6 +80,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         this.classType = classType;
         owner = null;
     }
+
 
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -129,11 +129,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         this.origin = origin;
         defaultValue = origin.getDefaultValue();
         commitProcessor = origin.commitProcessor;
-        if (origin.getEnumerationFactory() == null) {
-            enumerationValues = null;
-        } else {
-            enumerationValues = (LocalizedEntryListFactory) origin.getEnumerationFactory().clone();
-        }
+        enumerationConstraint = new EnumerationConstraint(origin.enumerationConstraint);
         requiredConstraint = new RequiredConstraint(origin.requiredConstraint);
         uniqueConstraint   = new UniqueConstraint(origin.uniqueConstraint);
 
@@ -186,8 +182,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * @inheritDoc
      */
-    public Object autoCast(Object value) {
-        return Casting.toType(classType, value);
+    public Object autoCast(Object value) {        
+        return Casting.toType(classType, enumerationConstraint.cast(value));
     }
 
     /**
@@ -196,7 +192,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * cast to Number.
      */
     protected Object castToValidate(Object value) {
-        return Casting.toType(classType, value);
+        return Casting.toType(classType,  enumerationConstraint.cast(value));
     }
 
     /**
@@ -277,12 +273,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return errors;
         }
         Object castedValue = castToValidate(value);
-        errors = uniqueConstraint.validate(errors, castedValue, node, field);
         errors = requiredConstraint.validate(errors, castedValue, node, field);
-        // test enumerations
-        // if (enumerationValues != null && enumerationValues.size() == 0) {
-        //     ...
-        // }
+        if (value == null) return errors; // null is valid, unless required.
+        errors = enumerationConstraint.validate(errors, value, node, field);
+        errors = uniqueConstraint.validate(errors, castedValue, node, field);
         errors = validateCastedValue(errors, castedValue, node, field);
         return errors;
     }
@@ -311,6 +305,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         if (isUnique()) {
             buf.append("  unique");
         }
+        buf.append(" " + enumerationConstraint);
         if (isFinished()) {
             buf.append(".");
         }
@@ -424,18 +419,18 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * @inheritDoc
      */
     public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
-        if (enumerationValues == null || enumerationValues.size() == 0) return null;
-        return enumerationValues.get(locale);
+        return enumerationConstraint.getEnumerationValues(locale, cloud, node, field);
     }
 
     /**
      * @inheritDoc
      */
     public LocalizedEntryListFactory getEnumerationFactory() {
-        if(enumerationValues == null) {
-            enumerationValues = new LocalizedEntryListFactory();
-        }
-        return enumerationValues;
+        return enumerationConstraint.getEnumerationFactory();
+    }
+
+    public DataType.ValueConstraint getEnumerationConstraint() {
+        return enumerationConstraint;
     }
 
 
@@ -574,9 +569,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected StaticAbstractValueConstraint(BasicDataType parent, String name, Object value) {
             this.name = name;
             this.parent = parent;
-            String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
-            errorDescription = new LocalizedString(key);
-            errorDescription.setBundle(DATATYPE_BUNDLE);
             this.value = value;
         }
 
@@ -599,6 +591,12 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
         public LocalizedString getErrorDescription() {
+            if (errorDescription == null) {
+                // this is postponsed to first use, because otherwis 'getBaesTypeIdentifier' give correct value only after constructor of parent.
+                String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
+                errorDescription = new LocalizedString(key);
+                errorDescription.setBundle(DATATYPE_BUNDLE);
+            }
             return errorDescription;
         }
 
@@ -627,9 +625,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
          */
         protected final Collection addError(Collection errors, Object v) {
             if (errors == VALID) errors = new ArrayList();
-            if (getErrorDescription() == null) {
-                throw new IllegalArgumentException("Failed " + this+ " for value " + v);
-            }
             ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
             error.replaceAll("\\$\\{NAME\\}",       error.makeLiteral(getName()));
             error.replaceAll("\\$\\{CONSTRAINT\\}", error.makeLiteral(toString()));
@@ -655,7 +650,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
          * This method is called by {@link BasicDataType#validate(Object, Node, Field)} for each of its conditions.
          */
         protected Collection validate(Collection errors, Object v, Node node, Field field) {
-            if ((! enforce(node, field)) ||  valid(v, node, field)) {
+            if ((! enforce(node, field)) ||  valid(v, node, field) || v == null) {
                 // no new error to add.
                 return errors;
             } else {
@@ -713,7 +708,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
         public boolean valid(Object v, Node node, Field field) {
             if (! isUnique()) return true;
-            if (node != null && field != null && value != null && isUnique() && !field.getName().equals("number")) {
+            if (node != null && field != null && value != null) {
                 // create a query and query for the value
                 // XXX This will test for uniquness using the cloud, so you'll miss objects you can't
                 // see (and database doesn't know that!)
@@ -748,6 +743,45 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 return false;
             }
         }
+    }
+
+    protected class EnumerationConstraint extends AbstractValueConstraint {
+        EnumerationConstraint(EnumerationConstraint source) {
+            super(source);
+        }
+        EnumerationConstraint(LocalizedEntryListFactory entries) {
+            super("enumeration", entries);
+        }
+        final LocalizedEntryListFactory getEnumerationFactory() {
+            if(value == null) {
+                value = new LocalizedEntryListFactory();
+            }
+            return (LocalizedEntryListFactory) value;
+        }
+        public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+            if (value == null) return null;
+            LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
+            if (ef.size() == 0) return null;
+            return ef.get(locale);
+        }
+
+        protected Object cast(Object v) {
+            if (getValue() == null) return v;
+            return ((LocalizedEntryListFactory) value).castKey(v);
+        }
+        public boolean valid(Object v, Node node, Field field) {
+            Collection validValues = getEnumerationValues(null, node != null ? node.getCloud() : null, node, field);
+            if (validValues == null) return true;
+            Object key = cast(v);
+            key = Casting.toType(BasicDataType.this.getTypeAsClass(), key);
+            Iterator i = validValues.iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
+                if (e.getKey().equals(key)) return true;
+            }
+            return false;
+        }
+
     }
 
 }
