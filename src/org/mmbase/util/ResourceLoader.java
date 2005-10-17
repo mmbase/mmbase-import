@@ -21,9 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 // used for resolving in MMBase database
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.Resources;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 
@@ -98,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.28 2005-10-08 06:47:06 keesj Exp $
+ * @version $Id: ResourceLoader.java,v 1.29 2005-10-17 17:32:18 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -146,7 +145,21 @@ public class ResourceLoader extends ClassLoader {
     private static ServletContext  servletContext = null;
 
 
-    static MMObjectBuilder resourceBuilder = null;
+
+    // these should perhaps be configurable:
+    public static final String    RESOURCENAME_FIELD  = "name";
+    public static final String    TYPE_FIELD          = "type";
+    public static final String    FILENAME_FIELD      = "filename";
+    public static final String    HANDLE_FIELD        = "handle";
+    public static final String    LASTMODIFIED_FIELD  = "lastmodified";
+    public static final String    DEFAULT_CONTEXT     = "admin";
+
+    public static final int   TYPE_CONFIG  = 0;
+    public static final int   TYPE_WEB     = 1;
+
+
+
+    static NodeManager resourceBuilder = null;
 
 
     /**
@@ -216,7 +229,7 @@ public class ResourceLoader extends ClassLoader {
      * @param b An MMObjectBuilder (this may be <code>null</code> if no such builder available)
      * @throws RuntimeException if builder was set already.
      */
-    public static void setResourceBuilder(MMObjectBuilder b) {
+    public static void setResourceBuilder(NodeManager b) {
         if (ResourceWatcher.resourceWatchers == null) {
             throw new RuntimeException("A resource builder was set already: " + resourceBuilder);
         }
@@ -272,7 +285,7 @@ public class ResourceLoader extends ClassLoader {
             configRoot = new ResourceLoader();
 
             //adds a resource that can load from nodes
-            configRoot.roots.add(configRoot.new NodeURLStreamHandler(Resources.TYPE_CONFIG));
+            configRoot.roots.add(configRoot.new NodeURLStreamHandler(TYPE_CONFIG));
 
             // mmbase.config settings
             String configPath = null;
@@ -858,7 +871,7 @@ public class ResourceLoader extends ClassLoader {
      * @return A Node associated with the resource.
      *         Used by {@link ResourceWatcher}.
      */
-    MMObjectNode getResourceNode(String name) {
+    Node getResourceNode(String name) {
         Iterator i = roots.iterator();
         while (i.hasNext()) {
             Object o = i.next();
@@ -1215,10 +1228,9 @@ public class ResourceLoader extends ClassLoader {
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
-                    NodeSearchQuery query = new NodeSearchQuery(ResourceLoader.resourceBuilder);
-                    BasicFieldValueConstraint typeConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)), new Integer(type));
-                    BasicFieldValueConstraint nameConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)), ResourceLoader.this.context.getPath().substring(1) + "%");
-                    nameConstraint.setOperator(FieldCompareConstraint.LIKE);
+                    NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
+                    Constraint typeConstraint = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="),  new Integer(type));
+                    Constraint nameConstraint = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("LIKE"),  ResourceLoader.this.context.getPath().substring(1) + "%");
 
                     BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
@@ -1226,10 +1238,10 @@ public class ResourceLoader extends ClassLoader {
 
 
                     query.setConstraint(constraint);
-                    Iterator i = resourceBuilder.getNodes(query).iterator();
+                    Iterator i = resourceBuilder.getList(query).iterator();
                     while (i.hasNext()) {
-                        MMObjectNode node = (MMObjectNode) i.next();
-                        String url = node.getStringValue(Resources.RESOURCENAME_FIELD);
+                        Node node = (Node) i.next();
+                        String url = node.getStringValue(RESOURCENAME_FIELD);
                         String subUrl = url.substring(ResourceLoader.this.context.getPath().length() - 1);
                         int pos = subUrl.indexOf('/');
 
@@ -1252,7 +1264,7 @@ public class ResourceLoader extends ClassLoader {
                         }
 
                     }
-                } catch (SearchQueryException sqe) {
+                } catch (BridgeException sqe) {
                     log.warn(sqe);
                 }
             }
@@ -1269,7 +1281,7 @@ public class ResourceLoader extends ClassLoader {
      * @see FileConnection
      */
     private class NodeConnection extends URLConnection {
-        MMObjectNode node;
+        Node node;
         String name;
         int type;
         NodeConnection(URL url, String name, int t) {
@@ -1287,31 +1299,27 @@ public class ResourceLoader extends ClassLoader {
          * Gets the Node associated with this URL if there is one.
          * @return MMObjectNode or <code>null</code>
          */
-        public  MMObjectNode getResourceNode() {
+        public  Node getResourceNode() {
             if (node != null) return node;
             if (name.equals("")) return null;
             String realName = (ResourceLoader.this.context.getPath() + name).substring(1);
             if (ResourceLoader.resourceBuilder != null) {
                 try {
-                    NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
-                    StepField urlField = query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD));
-
-                    BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(urlField, realName);
-
-                    StepField typeField = query.getField(resourceBuilder.getField(Resources.TYPE_FIELD));
-                    BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(typeField, new Integer(type));
+                    NodeQuery query = resourceBuilder.createQuery();
+                    Constraint constraint1 = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("="), realName);
+                    Constraint constraint2 = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="), new Integer(type));
 
                     BasicCompositeConstraint  constraint  = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
                     constraint.addChild(constraint1);
                     constraint.addChild(constraint2);
 
                     query.setConstraint(constraint);
-                    Iterator i = resourceBuilder.getNodes(query).iterator();
+                    Iterator i = resourceBuilder.getList(query).iterator();
                     if (i.hasNext()) {
-                        node = (MMObjectNode) i.next();
+                        node = (Node) i.next();
                         return node;
                     }
-                } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+                } catch (BridgeException sqe) {
                     log.warn(sqe);
                 }
             }
@@ -1329,7 +1337,7 @@ public class ResourceLoader extends ClassLoader {
         public InputStream getInputStream() throws IOException {
             getResourceNode();
             if (node != null) {
-                return new ByteArrayInputStream(node.getByteValue(Resources.HANDLE_FIELD));
+                return new ByteArrayInputStream(node.getByteValue(HANDLE_FIELD));
             } else {
                 throw new IOException("No such (node) resource for " + name);
             }
@@ -1338,24 +1346,25 @@ public class ResourceLoader extends ClassLoader {
             if (getResourceNode() == null) {
                 if (ResourceLoader.resourceBuilder == null) return null;
 
-                node = ResourceLoader.resourceBuilder.getNewNode(Resources.DEFAULT_CONTEXT);
+                node = ResourceLoader.resourceBuilder.createNode();
+                node.setContext(DEFAULT_CONTEXT);
                 String resourceName = (ResourceLoader.this.context.getPath() + name).substring(1);
-                node.setValue(Resources.RESOURCENAME_FIELD, resourceName);
-                node.setValue(Resources.TYPE_FIELD, type);
+                node.setStringValue(RESOURCENAME_FIELD, resourceName);
+                node.setIntValue(TYPE_FIELD, type);
                 log.info("Creating node " + resourceName + " " + name + " " + type);
-                node.insert(Resources.DEFAULT_CONTEXT);
+                node.commit();
             }
             return new OutputStream() {
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     public void close() throws IOException {
                         byte[] b = bytes.toByteArray();
-                        node.setValue(Resources.HANDLE_FIELD, b);
+                        node.setValue(HANDLE_FIELD, b);
                         String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(b));
                         if (mimeType == null) {
                             URLConnection.guessContentTypeFromName(name);
                         }
                         node.setValue("mimetype", mimeType);
-                        node.setValue(Resources.LASTMODIFIED_FIELD, new Date());
+                        node.setValue(LASTMODIFIED_FIELD, new Date());
                         node.commit();
                     }
                     public void write(int b) {
@@ -1363,7 +1372,7 @@ public class ResourceLoader extends ClassLoader {
                     }
                     public void write(byte[] b) throws IOException {
                         if (b == null) {
-                            node.getBuilder().removeNode(node);
+                            node.delete();
                             node = null;
                         } else {
                             super.write(b);
@@ -1374,7 +1383,7 @@ public class ResourceLoader extends ClassLoader {
         public long getLastModified() {
             getResourceNode();
             if (node != null) {
-                Date lm = node.getDateValue(Resources.LASTMODIFIED_FIELD);
+                Date lm = node.getDateValue(LASTMODIFIED_FIELD);
                 if (lm != null) {
                     return lm.getTime();
                 }

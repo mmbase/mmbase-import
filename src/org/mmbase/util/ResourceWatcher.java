@@ -15,11 +15,9 @@ import java.net.URL;
 import java.util.*;
 
 
-import org.mmbase.module.core.MMBaseObserver;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.Resources;
-
+import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.bridge.Node;
 
 /**
  *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
@@ -28,11 +26,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.5 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: ResourceWatcher.java,v 1.6 2005-10-17 17:32:18 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
-public abstract class ResourceWatcher implements MMBaseObserver {
+public abstract class ResourceWatcher implements NodeEventListener  {
     private static final Logger log = Logging.getLoggerInstance(ResourceWatcher.class);
 
     /**
@@ -51,7 +49,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             while (i.hasNext()) {
                 ResourceWatcher rw = (ResourceWatcher) i.next();
                 if (rw.running) {
-                    rw.observe();
+                    EventManager.getInstance().addEventListener(rw);
                 }
                 Iterator j = rw.resources.iterator();
                 while (j.hasNext()) {
@@ -119,59 +117,6 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     }
 
 
-    /**
-     * Wraps {@link #nodeChanged(String, String)}
-     * {@inheritDoc}
-     */
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(number, ctype);
-    }
-    /**
-     * Wraps {@link #nodeChanged(String, String)}
-     * {@inheritDoc}
-     */
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(number, ctype);
-    }
-
-    /**
-     * If a node (of the type 'resourceBuilder') changes, checks if it is a node belonging to one of the resource of this resource-watcher.
-     * If so, {@link #onChange} is called.
-     */
-    protected boolean nodeChanged(String number, String ctype) {
-        try {
-            if (ctype.equals("d")) {
-                // hard..
-                String name = (String) nodeNumberToResourceName.get(number);
-                if (name != null && resources.contains(name)) {
-                    nodeNumberToResourceName.remove(number);
-                    log.service("Resource " + name + " changed (node removed)");
-                    onChange(name);
-                }
-            } else {
-                MMObjectNode node = ResourceLoader.resourceBuilder.getNode(number);
-                int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
-                String name = node.getStringValue(Resources.RESOURCENAME_FIELD);
-                if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
-                    if (ctype.equals("n")) {
-                        log.service("Resource " + name + " changed (node added)");
-                        nodeNumberToResourceName.put(number, name);
-                        return true; // TODO, Should not return here.
-                        //WHY DO I GET A N AND A C? Further more, the onChange after N sometimes leads to issue #6602 (perhaps because it's earlier?)
-
-                    } else {
-                        log.service("Resource " + name + " changed (node changed)");
-                    }
-                    onChange(name);
-                }
-            }
-        } catch (Exception e) {
-            log.error(e + Logging.stackTrace(e));
-        }
-
-        return true;
-    }
-
 
     /**
      * @return Unmodifiable set of String of watched resources
@@ -193,7 +138,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      */
     public synchronized void add(String resourceName) {
         if (resourceName == null || resourceName.equals("")) {
-            log.warn("Cannot watch resource '" + resourceName + "'");
+            log.warn("Cannot watch resource '" + resourceName + "' " + Logging.stackTrace());
             return;
         }
         resources.add(resourceName);
@@ -238,7 +183,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      * @return Whether a Node as found to map.
      */
     protected synchronized boolean mapNodeNumber(String resource) {
-        MMObjectNode node = resourceLoader.getResourceNode(resource);
+        Node node = resourceLoader.getResourceNode(resource);
         if (node != null) {
             nodeNumberToResourceName.put("" + node.getNumber(), resource);
             return true;
@@ -248,16 +193,40 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
     }
 
+
+
+
     /**
-     * Add this MMBaseObserver/ResourceWatcher as an observer of the resource-builder.
+     * If a node (of the type 'resourceBuilder') changes, checks if it is a node belonging to one of the resource of this resource-watcher.
+     * If so, {@link #onChange} is called.
      */
-    protected synchronized void observe() {
-        if (ResourceLoader.resourceBuilder != null) {
-            ResourceLoader.resourceBuilder.addLocalObserver(this);
-            ResourceLoader.resourceBuilder.addRemoteObserver(this);
-        } else {
-            log.debug("No rseource-builder to register to.");
+    public void notify(NodeEvent event) {
+        String number = "" + event.getNode().getNumber();
+        switch(event.getType()) {
+        case NodeEvent.EVENT_TYPE_DELETE: {
+            // hard..
+            String name = (String) nodeNumberToResourceName.get(number);
+            if (name != null && resources.contains(name)) {
+                nodeNumberToResourceName.remove(number);
+                log.service("Resource " + name + " changed (node removed)");
+                onChange(name);
+            }
+            break;
         }
+        default: {            
+            Node node = ResourceLoader.resourceBuilder.getCloud().getNode(number);
+            int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
+            String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
+            if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
+                log.service("Resource " + name + " changed (node added)");
+                nodeNumberToResourceName.put(number, name);
+                onChange(name);
+            }
+        }
+        }
+    }
+    public Properties getConstraintsForEvent(Event event) {
+        return null;
     }
 
 
@@ -271,7 +240,9 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             createFileWatcher(resource);
 
         }
-        observe();
+        if (resourceWatchers == null) {
+            EventManager.getInstance().addEventListener(this);
+        }
         running = true;
     }
 
@@ -333,8 +304,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             i.remove();
         }
         if (ResourceLoader.resourceBuilder != null) {
-            ResourceLoader.resourceBuilder.removeLocalObserver(this);
-            ResourceLoader.resourceBuilder.removeRemoteObserver(this);
+            EventManager.getInstance().removeEventListener(this);
         }
         running = false;
     }
