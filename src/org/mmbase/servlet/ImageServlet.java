@@ -28,7 +28,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.22 2005-10-17 12:12:49 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.23 2005-10-17 12:33:59 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -160,7 +160,7 @@ public class ImageServlet extends HandleServlet {
     }
 
     /**
-     * Extensions can override this, to produce a node, even if cloud.hasNode failed. ('title aliases' e.g.).
+     * Overridden to support 'title aliases'.
      * @since MMBase-1.7.5
      */
     protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
