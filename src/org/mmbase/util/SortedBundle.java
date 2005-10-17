@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.10 2005-10-14 18:34:39 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.11 2005-10-17 15:26:40 michiel Exp $
  */
 public class SortedBundle {
 
@@ -140,11 +140,9 @@ public class SortedBundle {
                 Object value = bundle.getObject(bundleKey);
                 Object key = castKey(bundleKey, value, constantsProvider, wrapper);
                 if (key == null) continue;
-                log.info("Putting " + new Entry(key, value));
                 m.put(key, value);
             }
-            log.info("Putting " +m);
-            //m = Collections.unmodifiableSortedMap(m);
+            m = Collections.unmodifiableSortedMap(m);
             knownResources.put(resourceKey, m);
         }
         return m;
@@ -152,6 +150,7 @@ public class SortedBundle {
 
 
     public static Object castKey(final String bundleKey, final Object value, final Class constantsProvider, final Class wrapper) {
+        if (bundleKey == null) return null;
         Object key;
         // if the key is numeric then it will be sorted by number
         //key Double
@@ -173,7 +172,7 @@ public class SortedBundle {
                 Field constant = providerClass.getDeclaredField(bundleKey);
                 key = constant.get(null);
             } catch (NoSuchFieldException nsfe) {
-                log.info("No java constant with name " + bundleKey);
+                log.debug("No java constant with name " + bundleKey);
                 key = bundleKey;
             } catch (IllegalAccessException ieae) {
                 log.warn("The java constant with name " + bundleKey + " is not accessible");
@@ -203,7 +202,7 @@ public class SortedBundle {
                 log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ie.getMessage());
                 return null;
             } catch (InvocationTargetException ite) {
-                log.error(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ite.getMessage());
+                log.debug(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ite.getMessage());
                 return null;
             } catch (IllegalAccessException iae) {
                 log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + iae.getMessage());
