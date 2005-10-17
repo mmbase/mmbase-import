@@ -13,16 +13,11 @@
 <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
 <%@include file="/education/wizards/roles_chk.jsp" %>
 
-<% //education-people connector
-   EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
-%>
-
 <mm:islessthan referid="rights" referid2="RIGHTS_RW">
-    <di:hasrole role="student">
-        <jsp:forward page="student.jsp"/>
-    </di:hasrole>
+  <di:hasrole role="student">
+    <jsp:forward page="student.jsp"/>
+  </di:hasrole>
 </mm:islessthan>
-
 
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
@@ -47,27 +42,22 @@
          </div>
 
          <div class="contentBodywit">
-
             <mm:node number="$education">
+            <b><mm:field name="name" write="true"/></b>
+            <table class="font" border="1" cellspacing="0" style="border-color:#000000; border-bottom:0px; border-top:0px; border-right:0px">
+              <% List tests = new ArrayList(); %>
 
-<b><mm:field name="name" write="true"/></b>
-
-<table class="font" border="1" cellspacing="0" style="border-color:#000000; border-bottom:0px; border-top:0px; border-right:0px">
-
-<% List tests = new ArrayList(); %>
-
-<mm:relatednodescontainer type="learnobjects" role="posrel">
-   <mm:sortorder field="posrel.pos" direction="up"/>
-
-   <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
-      <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
-      <mm:compare referid="nodetype" value="tests">
-         <mm:field name="number" jspvar="testNum" vartype="String">
-            <% tests.add(testNum); %>
-         </mm:field>
-      </mm:compare>
-   </mm:tree>
-</mm:relatednodescontainer>
+              <mm:relatednodescontainer type="learnobjects" role="posrel">
+                <mm:sortorder field="posrel.pos" direction="up"/>
+                <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up">
+                  <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
+                  <mm:compare referid="nodetype" value="tests">
+                    <mm:field name="number" jspvar="testNum" vartype="String">
+                      <% tests.add(testNum); %>
+                    </mm:field>
+                  </mm:compare>
+                </mm:tree>
+              </mm:relatednodescontainer>
 
 <mm:import id="startAt" externid="startAt" jspvar="sStartAt" vartype="Integer">0</mm:import>
 
@@ -185,10 +175,12 @@
       </mm:node>
    </mm:compare>
 
-
-   <% //An old behavier person->classrel->related->education %>
-   <mm:compare referid="class" value="null" inverse="true">
-      <mm:node referid="class">
+   <%--
+     If the user has role 'teacher' he may see all students in the current class. 
+   --%>
+   <di:hasrole role="teacher">
+     <mm:compare referid="class" value="null" inverse="true">
+       <mm:node referid="class">
          <mm:relatednodes type="people">
             <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
             <di:hasrole role="student" referid="studentnumber">
@@ -198,11 +190,32 @@
                </mm:treeinclude>
             </di:hasrole>
          </mm:relatednodes>
-      </mm:node>
-   </mm:compare>
+       </mm:node>
+     </mm:compare>
+   </di:hasrole>
 
-
-
+   <%--
+     If the user has role 'coach' he may see all students in his workgroup.
+   --%>
+   <di:hasrole role="coach">
+     <mm:compare referid="class" value="null" inverse="true">
+       <mm:node referid="class">
+         <mm:related path="workgroups,people" constraints="people.number='$user'">
+           <mm:node element="workgroups">
+             <mm:relatednodes type="people">
+               <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
+               <di:hasrole role="student" referid="studentnumber">
+                 <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt,class">
+                   <mm:param name="student"><mm:field name="number"/></mm:param>
+                   <mm:param name="direct_connection">false</mm:param>
+                 </mm:treeinclude>
+               </di:hasrole>
+             </mm:relatednodes>
+           </mm:node>
+         </mm:related>
+       </mm:node>  
+     </mm:compare>
+   </di:hasrole>
 </table>
 
 <% if (showNextLink) { %>
