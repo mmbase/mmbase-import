@@ -32,7 +32,11 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.24 2005-10-17 12:12:49 michiel Exp $
+ * Object can only be accessed by alias if a mapping on query string is used (so not e.g. /images/*,
+ * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
+ * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
+ *
+ * @version $Id: BridgeServlet.java,v 1.25 2005-10-17 12:33:59 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
