@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.39 2005-10-02 16:43:55 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.40 2005-10-17 15:29:19 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -112,26 +112,29 @@ public class ContextAuthorization extends Authorization {
     }
 
     public void create(UserContext user, int nodeNumber) throws SecurityException {
-        // notify, well actually we only have to set the context to the default of the user...
-        log.service("create on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) {
+            log.debug("create on node #" + nodeNumber + " by user: " + user);
+        }
         String defaultContext = getDefaultContext(user);
         setContext(user, nodeNumber, defaultContext);
     }
 
     public void update(UserContext user, int nodeNumber) throws SecurityException {
-        // notify the log
-        log.service("update on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) {
+            log.debug("update on node #" + nodeNumber+" by user: "  + user);
+        }
     }
 
     public void remove(UserContext user, int nodeNumber) throws SecurityException{
-        // notify the log
-        log.service("remove on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) {
+            log.debug("remove on node #" + nodeNumber + " by user: " + user);
+        }
     }
 
     public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
         // notify the log
         if (log.isDebugEnabled()) {
-            log.debug("set context on node #"+nodeNumber+" by user: " +user + " to " + context );
+            log.debug("set context on node #"+nodeNumber+" by user: " + user + " to " + context );
         }
         // don't even bother if the context was already set.
         MMObjectNode node = getMMNode(nodeNumber);
@@ -159,7 +162,7 @@ public class ContextAuthorization extends Authorization {
     public String getContext(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
         if (log.isDebugEnabled()) {
-            log.debug("get context on node #"+nodeNumber+" by user: " +user);
+            log.debug("get context on node #" + nodeNumber + " by user: " + user);
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
@@ -173,7 +176,7 @@ public class ContextAuthorization extends Authorization {
     private void setAllContexts() throws SecurityException {
         allContexts = new TreeSet();
         String xpath = "/contextconfig/contexts/context";
-        log.debug("going to execute the query:" + xpath );
+        log.trace("going to execute the query:" + xpath );
         NodeIterator found;
         try {
             found = XPathAPI.selectNodeIterator(document, xpath);
@@ -191,8 +194,9 @@ public class ContextAuthorization extends Authorization {
     }
 
     public Set getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
-        // notify the log
-        log.service("get possible context on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) {
+            log.debug("get possible context on node #" + nodeNumber + " by user: " + user);
+        }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
         // TODO: research if we maybe better could use WRITE or CHANGE_CONTEXT as rights for this operation...
@@ -244,7 +248,7 @@ public class ContextAuthorization extends Authorization {
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) throws SecurityException{
         if (log.isDebugEnabled()) {
-            log.debug("check on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+            log.debug("check on node #" + nodeNumber + " by user: " + user + " for operation " + operation);
         }
 
         // is our usercontext still valid?
@@ -289,7 +293,7 @@ public class ContextAuthorization extends Authorization {
         Node found;
         try {
             if (log.isDebugEnabled()) {
-                log.debug("going to execute the query:" + xpath );
+                log.trace("going to execute the query:" + xpath );
             }
             found = XPathAPI.selectSingleNode(document, xpath);
 
@@ -300,7 +304,7 @@ public class ContextAuthorization extends Authorization {
                 xpath = "/contextconfig/contexts/context[@name = ancestor::contexts/@default]";
 
                 if (log.isDebugEnabled()) {
-                    log.debug("going to execute the query:" + xpath + " on file : " + configResource);
+                    log.trace("going to execute the query:" + xpath + " on file : " + configResource);
                 }
 
                 found  = XPathAPI.selectSingleNode(document, xpath);
@@ -439,10 +443,12 @@ public class ContextAuthorization extends Authorization {
     }
 
     public void verify(UserContext user, int nodeNumber, Operation operation) throws SecurityException {
-        if (operation.getInt() > Operation.READ_INT ) {
-            log.service("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
-        } else if (log.isDebugEnabled() ) {
-            log.debug("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+        if (log.isDebugEnabled()) {
+            if (operation.getInt() > Operation.READ_INT ) {
+                log.debug("assert on node #" + nodeNumber + " by user: "  + user + " for operation " + operation);
+            } else {                
+                log.trace("assert on node #" + nodeNumber +" by user: " + user + " for operation " + operation);
+            }
         }
         if (!check(user, nodeNumber, operation) ) {
             throw new SecurityException("Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier());
