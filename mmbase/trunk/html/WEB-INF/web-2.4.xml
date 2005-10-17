@@ -4,7 +4,7 @@
 
   One of the advantages is that you can use EL.
 
-  $Id: web-2.4.xml,v 1.4 2005-05-18 14:18:13 michiel Exp $
+  $Id: web-2.4.xml,v 1.5 2005-10-17 09:29:41 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -153,14 +153,13 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
-
-
   <error-page>
     <error-code>404</error-code>
     <location>/mmbase/errorpages/404.jsp</location>
   </error-page>
   <error-page>
     <error-code>500</error-code>
+    <exception-type>java.lang.Exception</exception-type>
     <location>/mmbase/errorpages/500.jsp</location>
   </error-page>
   <error-page>
