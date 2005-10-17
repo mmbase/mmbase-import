@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import java.util.Map;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.security.Rank;
@@ -27,7 +28,7 @@ import org.mmbase.module.builders.Images;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.15.2.1 2005-08-15 16:39:12 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.15.2.2 2005-10-17 12:30:08 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -150,6 +151,23 @@ public class ImageServlet extends HandleServlet {
         query.setServedNode(n);
         return n;
     }
+
+    /**
+     * Overridden to support 'title aliases'.
+     * @since MMBase-1.7.5
+     */
+    protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
+        log.debug("Desperately searching node '" + nodeIdentifier + "'");
+        NodeManager nm = cloud.getNodeManager("images");
+        NodeQuery nq = nm.createQuery();
+        Constraint c = nq.createConstraint(nq.createStepField("title"), nodeIdentifier);
+        nq.setConstraint(c);
+        nq.addSortOrder(nq.createStepField("number"), SortOrder.ORDER_DESCENDING);
+        NodeList result = nm.getList(nq);
+        if (result.size() == 0) return null;
+        return result.getNode(0);        
+    }
+
 
 
 }

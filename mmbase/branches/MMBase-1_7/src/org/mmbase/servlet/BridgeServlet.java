@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.16.2.1 2005-08-15 16:39:12 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.16.2.2 2005-10-17 12:30:08 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -189,6 +189,12 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             String nodeNumber = query.getNodeNumber();
             HttpServletResponse res = query.getResponse();
             if (! c.hasNode(nodeNumber)) {
+                // ok, support for 'title' aliases too....
+                Node desperateNode = desperatelyGetNode(c, nodeNumber);
+                if (desperateNode != null) {
+                    query.setNode(desperateNode);
+                    return desperateNode;
+                }
                 res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node '" + nodeNumber + "' does not exist");
                 return null;
             }
@@ -205,12 +211,24 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied for node '" + nodeNumber + "'");
                 return null;
             }
-            return c.getNode(nodeNumber);
+            Node n = c.getNode(nodeNumber);
+            query.setNode(n);
+            return n;
         } catch (Exception e) {
             query.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());           
             return null;
         }
     }
+
+
+    /**
+     * Extensions can override this, to produce a node, even if cloud.hasNode failed. ('title aliases' e.g.).
+     * @since MMBase-1.7.5
+     */
+    protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
+        return null;
+    }
+
     /**
      * If the node associated with the resonse is another node then the node associated with the request.\
      * (E.g. a icache based on a url with an image node).
