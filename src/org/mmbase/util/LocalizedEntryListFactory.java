@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import java.io.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,10 +31,10 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.5 2005-10-14 18:35:11 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.6 2005-10-17 17:30:51 michiel Exp $
  * @since MMBase-1.8
  */
-public class LocalizedEntryListFactory implements java.io.Serializable, Cloneable {
+public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedEntryListFactory.class);
     private int size = 0;
@@ -194,20 +195,45 @@ public class LocalizedEntryListFactory implements java.io.Serializable, Cloneabl
         return "" + get(null);
     }
 
-    private static class Bundle {
-        Bundle(String r, ClassLoader cl, Class cp, Class w, Comparator comp) {
-            resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
-        }
+    private static class Bundle implements Serializable {
+        private static final int serialVersionUID = 1; // increase this if object serialization changes (which we shouldn't do!)
+        
         private String      resource;
         private ClassLoader classLoader;
         private Class       constantsProvider;
         private Class       wrapper;
         private Comparator  comparator;
+
+        // implementation of serializable
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            out.writeUTF(resource);
+            out.writeObject(constantsProvider);
+            out.writeObject(wrapper);
+            out.writeObject(comparator);
+        }
+        // implementation of serializable
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            resource          = in.readUTF();
+            classLoader       = getClass().getClassLoader();
+            constantsProvider = (Class) in.readObject();
+            wrapper           = (Class) in.readObject();
+            comparator        = (Comparator) in.readObject();
+        }
+        
+        
+        
+        Bundle(String r, ClassLoader cl, Class cp, Class w, Comparator comp) {
+            resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
+        }
         /**
          * Collection of Map.Entry's
          */
         Collection get(Locale loc) {
             return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
+        }
+
+        public String toString() {
+            return resource + " " + constantsProvider + " " + wrapper + " " + comparator;
         }
     }
 
