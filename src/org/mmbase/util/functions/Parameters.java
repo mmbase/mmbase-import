@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.7.2.1 2004-05-27 17:04:42 michiel Exp $
+ * @version $Id: Parameters.java,v 1.7.2.2 2005-10-17 12:20:48 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -35,7 +35,7 @@ public class Parameters extends AbstractList implements List  {
     /**
      * No need to bother for the functions with no parameters. This is a constant you could supply.
      */
-    public static final Parameters VOID = new Parameters(new Parameter[0]);
+    public static final Parameters VOID = new Parameters(Parameter.EMPTY);
 
 
     /**
