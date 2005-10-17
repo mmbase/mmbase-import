@@ -4,7 +4,7 @@
 
   One of the advantages is that you can use EL.
 
-  $Id: web-2.4.xml,v 1.5 2005-10-17 09:29:41 michiel Exp $
+  $Id: web-2.4.xml,v 1.6 2005-10-17 09:49:41 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -56,6 +56,26 @@
   -->
   <context-param>
     <param-name>mmbase.taglib.isELIgnored</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
+  <!--
+      If true, the image tag wil produce URL's with templates in them. This is to support legacy
+      setups (e.g. with an 'servdb' image-servlet). This option is actually unneeded in 1.8, but
+      could have its use in 1.7, and is here only for completeness.
+  -->
+  <context-param>
+    <param-name>mmbase.taglib.image.urlconvert</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <!--
+      If true, the image tag will automaticly add 'f(asis)' to every template. This means that
+      e.g. a png source image will be converted to a png. This can also be arranged as a
+      image-builder property, but in that case this behaviour is not reflected in the 'ckey' of the
+      image, so that may lead to backwards-compatibility issues.
+  -->
+  <context-param>
+    <param-name>mmbase.taglib.image.format.asis</param-name>
     <param-value>false</param-value>
   </context-param>
 
