@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.23 2005-10-02 17:10:54 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.24 2005-10-17 12:12:49 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -265,9 +265,15 @@ public abstract class BridgeServlet extends  MMBaseServlet {
 
             Cloud c = getAnonymousCloud(); // first try anonymously always, because then session has not to be used
 
-            String nodeNumber = query.getNodeNumber();
+            String nodeNumber = java.net.URLDecoder.decode(query.getNodeNumber(), "UTF-8");
 
             if (c != null && ! c.hasNode(nodeNumber)) {
+                // ok, support for 'title' aliases too....
+                Node desperateNode = desperatelyGetNode(c, nodeNumber);
+                if (desperateNode != null) {
+                    query.setNode(desperateNode);
+                    return desperateNode;
+                }
                 HttpServletResponse res = query.getResponse();
                 if (res != null) {
                     res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node '" + nodeNumber + "' does not exist");
@@ -290,6 +296,14 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             }
             return null;
         }
+    }
+
+    /**
+     * Extensions can override this, to produce a node, even if cloud.hasNode failed. ('title aliases' e.g.).
+     * @since MMBase-1.7.5
+     */
+    protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
+        return null;
     }
 
     /**
@@ -354,7 +368,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         private String fileName;
         QueryParts(String sessionName, String nodeIdentifier) {
             this.sessionName = sessionName;
-            this.nodeIdentifier = nodeIdentifier;
+            this.nodeIdentifier = nodeIdentifier; 
 
         }
         void setNode(Node node) {

@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import java.util.Map;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.security.Rank;
 
 import org.mmbase.module.builders.Images;
@@ -27,7 +28,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.21 2005-08-16 09:25:43 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.22 2005-10-17 12:12:49 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -144,6 +145,7 @@ public class ImageServlet extends HandleServlet {
                         return null;
                     }
                     Node icache = cloud.getNode(icacheNodeNumber);
+                    icache.getFunctionValue("wait", null);
                     n = icache;
                 } else {
                     query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "This server does not allow you to convert an image in this way");
@@ -156,5 +158,22 @@ public class ImageServlet extends HandleServlet {
         query.setServedNode(n);
         return n;
     }
+
+    /**
+     * Extensions can override this, to produce a node, even if cloud.hasNode failed. ('title aliases' e.g.).
+     * @since MMBase-1.7.5
+     */
+    protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
+        log.debug("Desperately searching node '" + nodeIdentifier + "'");
+        NodeManager nm = cloud.getNodeManager("images");
+        NodeQuery nq = nm.createQuery();
+        Constraint c = nq.createConstraint(nq.createStepField("title"), nodeIdentifier);
+        nq.setConstraint(c);
+        nq.addSortOrder(nq.createStepField("number"), SortOrder.ORDER_DESCENDING);
+        NodeList result = nm.getList(nq);
+        if (result.size() == 0) return null;
+        return result.getNode(0);        
+    }
+
 
 }
