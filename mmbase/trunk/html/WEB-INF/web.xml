@@ -2,6 +2,10 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
+  <!-- 
+       If your servlet container supports web-app 2.4, consider replacing this file with web-2.4.xml.
+  -->
+
   <display-name>MMBase distro</display-name>
   <description>
     MMBase is an open-source content managment system. See http://www.mmbase.org/
