@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.6.2.1 2004-09-08 15:24:54 michiel Exp $
+ * @version $Id: Parameter.java,v 1.6.2.2 2005-10-17 12:20:48 michiel Exp $
  * @see Parameters
  */
 
@@ -34,6 +34,11 @@ public class Parameter {
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
+
+    /**
+     * An empty Parameter array.
+     */
+    public static final Parameter[] EMPTY  = new Parameter[0];
 
     // package for Parameters (direct access avoids function calls)
     String key;
