@@ -174,10 +174,24 @@
         <type state="system" size="255" unique="true">STRING</type>
       </db>
     </field>
-
-
-    
-
   </fieldlist>
+
+  <functionlist>
+    <!-- provide a function for the nodes by pattern -->
+    <function name="test" key="[{NODE.number}]"> <!-- key of pattern function provider is interpreted as a pattern -->
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+    <!-- provide  functions by bean -->    
+    <function key="integerFunction" name="aaa"><!-- key of bean function is interpreted as a method name-->
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function key="stringFunction" name="bbb">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <!-- this one needs a node argument, and therefore is certainly a node-function -->
+    <function name="successor"> <!-- no key given, default to name of function -->
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+  </functionlist>
 
 </builder>
