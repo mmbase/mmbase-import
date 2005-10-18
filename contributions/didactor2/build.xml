@@ -75,7 +75,7 @@
      <then>
         <echo message="Copying templates from src/core/templates/${provider}" />
         <echo message="Warning: putting provider templates in /src/core/templates is deprecated, consider using /providers/${provider}/templates instead"/>
-        <copy todir="${build.dir}/webapp/${provider}">
+        <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
             <fileset dir="src/core/templates/${provider}">
              <include name="**"/>
              <exclude name="**/CVS"/>
@@ -88,7 +88,7 @@
              <available file="providers/${provider}/templates" type="dir" />
              <then>
              <echo message="Copying templates from providers/${provider}/templates" />
-             <copy todir="${build.dir}/webapp/${provider}">
+             <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
                 <fileset dir="providers/${provider}/templates">
                  <include name="**"/>
                  <exclude name="**/CVS"/>
@@ -101,8 +101,21 @@
        </if>
     </else>
     </if>
-  </target>
 
+    <!-- copy templates -->
+    <if>
+     <available file="providers/${provider}/webinf" type="dir" />
+     <then>
+      <echo message="Copying WEB-INF files from providers/${provider}/webinf" />
+        <copy todir="${build.dir}/webapp/WEB-INF" overwrite="true">
+          <fileset dir="providers/${provider}/webinf">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
+  </target>
 
   <target name="build.component">
     <echo message="Building component ${component}" />
