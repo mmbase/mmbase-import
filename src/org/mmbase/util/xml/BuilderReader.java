@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.45 2005-10-07 18:42:07 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.46 2005-10-18 21:52:36 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -464,6 +464,9 @@ public class BuilderReader extends DocumentReader {
                                     parameters.set(Parameter.NODE, node);
                                     return f.getFunctionValue(parameters);
                                 }
+                                public  Object getFunctionValue(Parameters parameters) {
+                                    return f.getFunctionValue(parameters);
+                                } 
                             };
                     }
                 }
