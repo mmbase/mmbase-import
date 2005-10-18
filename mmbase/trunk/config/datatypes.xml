@@ -192,6 +192,7 @@
   <datatype id="long">
     <class name="org.mmbase.datatypes.LongDataType" />
     <specialization id="duration">
+      <minInclusive value="0" /> <!-- durations are positive -->
       <!-- I have no idea how to do this -->
     </specialization>
   </datatype>
