@@ -13,26 +13,26 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
 
 /**
- * This wraps the function to return 'FunctionValue' objects - rather then the more basic types of
- * the function itself - as required by bridge.
+ * This wraps the function to set the node and cloud arguments in createParameters only.
  *
- * @since MMBase-1.7
+ * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: BasicFunction.java,v 1.10 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicFunction.java,v 1.11 2005-10-18 18:21:20 michiel Exp $
  */
 public class BasicFunction extends WrappedFunction {
 
     protected Cloud cloud = null;
     protected Node node = null;
 
+
     /**
      * Constructor for Basic Function
-     * @param cloud The user's cloud
      * @param function The function to wrap
      */
     BasicFunction(Function function) {
          super(function);
     }
+
 
     /**
      * Constructor for Basic Function
@@ -40,13 +40,13 @@ public class BasicFunction extends WrappedFunction {
      * @param function The function to wrap
      */
     BasicFunction(Cloud cloud, Function function) {
-         this(function);
+         super(function);
          this.cloud = cloud;
     }
 
     /**
      * Constructor for Basic Function
-     * @param cloud The user's cloud
+     * @param node     
      * @param function The function to wrap
      */
     BasicFunction(Node node, Function function) {
@@ -54,16 +54,6 @@ public class BasicFunction extends WrappedFunction {
          this.node = node;
     }
 
-    public Object getFunctionValue(Parameters parameters) {
-        if (node != null) {
-            return new BasicFunctionValue(node, wrappedFunction.getFunctionValue(parameters));
-        } else {
-            if (cloud == null) {
-                cloud = (Cloud) parameters.get(Parameter.CLOUD);
-            }
-            return new BasicFunctionValue(cloud, wrappedFunction.getFunctionValue(parameters));
-        }
-    }
     public Parameters createParameters() {
         Parameters params = super.createParameters();
         if (node != null) {
