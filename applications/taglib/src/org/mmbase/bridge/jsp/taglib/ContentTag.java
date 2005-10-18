@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.44 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id: ContentTag.java,v 1.45 2005-10-18 22:00:27 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -486,8 +486,7 @@ public class ContentTag extends LocaleTag  {
 
 
     /** 
-     * Sets a user. This is used by cloud-tag. It does not do it if the user is anonymous, so for
-     * the moment it is only checked for 'null'.
+     * Sets a user. This is used by cloud-tag. 
      */
 
     void setUser(UserContext newUser) throws JspTagException {
