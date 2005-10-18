@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.47 2005-10-07 18:52:40 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.48 2005-10-18 21:55:50 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -83,7 +83,7 @@ public class ImageCaches extends AbstractImages {
         String heightAndWidth = "";
         if (origNode != null) {
 
-            List cacheArgs =  new ParametersImpl(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
+            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
             MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
             //heightAndWidth = "heigth=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
             heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
@@ -156,7 +156,7 @@ public class ImageCaches extends AbstractImages {
      * @return The icache node or <code>null</code> if it did not exist yet.
      **/
     public MMObjectNode getCachedNode(int imageNumber, String template) {
-        log.debug("Getting cached noded for " + template);
+        log.debug("Getting cached noded for " + template + " and image " + imageNumber);
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);

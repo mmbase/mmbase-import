@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Creates ByteToCharTransformers
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.5 2005-10-14 18:33:29 michiel Exp $
+ * @version $Id: ChecksumFactory.java,v 1.6 2005-10-18 21:52:09 michiel Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
@@ -30,7 +30,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
     };
 
     public Parameters createParameters() {
-        return new ParametersImpl(PARAMS);
+        return new Parameters(PARAMS);
     }
 
     /**
