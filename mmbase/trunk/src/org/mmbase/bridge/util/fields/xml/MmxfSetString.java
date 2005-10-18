@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.22 2005-10-18 12:23:31 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.23 2005-10-18 13:37:26 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -469,27 +469,24 @@ public class MmxfSetString implements  Processor {
             NodeManager icaches     = cloud.getNodeManager("icaches");
             NodeManager attachments = cloud.getNodeManager("attachments");
             NodeManager urls        = cloud.getNodeManager("urls");
-            NodeManager segments    = cloud.hasNodeManager("segments") ? cloud.getNodeManager("segments") : null;
             NodeManager texts       = cloud.hasNodeManager("texts") ? cloud.getNodeManager("texts") : null;
             NodeManager blocks      = cloud.getNodeManager("blocks");
 
-            String imageServlet      = images.getFunctionValue("servletpath", null).toString();
-            String attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
-            String segmentsServlet   = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/segments/";
-            String textsServlet      = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/texts/";
+            String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
+            String  attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
+            Pattern textsServlet     = Pattern.compile(org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/(.*?)/(\\d+)");
 
             NodeList relatedImages        = Queries.getRelatedNodes(editedNode, images, "idrel", "destination", "id", null);
             NodeList usedImages           = cloud.createNodeList();
 
+            NodeList relatedAttachments   = Queries.getRelatedNodes(editedNode, attachments , "idrel", "destination", "id", null);
+            NodeList usedAttachments      = cloud.createNodeList();
+
+            NodeList relatedBlocks        = Queries.getRelatedNodes(editedNode, blocks , "idrel", "destination", "id", null);
+
             NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
             NodeList usedUrls             = cloud.createNodeList();
 
-            NodeList relatedSegments = null;
-            NodeList usedSegments = null;
-            if (segments != null) {
-                relatedSegments = Queries.getRelatedNodes(editedNode, segments , "idrel", "destination", "id", null);
-                usedSegments = cloud.createNodeList();
-            }
             NodeList relatedTexts = null;
             NodeList usedTexts = null;
             if (texts != null) {
@@ -497,10 +494,6 @@ public class MmxfSetString implements  Processor {
                 usedTexts = cloud.createNodeList();
             }
 
-            NodeList relatedAttachments   = Queries.getRelatedNodes(editedNode, attachments , "idrel", "destination", "id", null);
-            NodeList usedAttachments      = cloud.createNodeList();
-
-            NodeList relatedBlocks        = Queries.getRelatedNodes(editedNode, blocks , "idrel", "destination", "id", null);
 
             Iterator linkIterator = links.iterator();
             //String imageServletPath = images.getFunctionValue("servletpath", null).toString();
@@ -545,7 +538,7 @@ public class MmxfSetString implements  Processor {
                         a.setAttribute("id", id);
                     }
 
-                    log.debug("Segments " + segmentsServlet);
+                    Matcher textsMatcher = texts == null ? null : textsServlet.matcher(href);
                     if (href.startsWith(imageServlet)) { // found an image!
                         String q = "/images/" + href.substring(imageServlet.length());
                         BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
@@ -582,63 +575,6 @@ public class MmxfSetString implements  Processor {
                         a.removeAttribute("width");
                         a.removeAttribute("class");
                         a.removeAttribute("alt");
-                    } else if (href.startsWith(segmentsServlet) && segments != null) {
-                        String nodeNumber = href.substring(segmentsServlet.length());
-                        if (! cloud.hasNode(nodeNumber)) {
-                            log.error("No such node '" + nodeNumber + "' (deduced from " + href + ")");
-                            continue;
-                        }
-                        Node segment = cloud.getNode(nodeNumber);
-                        usedSegments.add(segment);
-                        NodeList linkedSegment = get(cloud, relatedSegments, "idrel.id", id);
-                        if (! linkedSegment.isEmpty()) {
-                            // ok, already related!
-                            log.info("" + segment + " image already correctly related, nothing needs to be done");
-                            Node idrel = linkedSegment.getNode(0).getNodeValue("idrel");
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-                        
-                        } else {
-                            log.info("Found new cross link " + segment.getNumber() + ", creating new relation now");
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), segments, "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, segment);
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();                        
-                        }
-                        a.removeAttribute("href");
-                        a.removeAttribute("alt");
-                    } else if (href.startsWith(textsServlet) && texts != null) {
-                        String nodeNumber = href.substring(textsServlet.length());
-                        if (! cloud.hasNode(nodeNumber)) {
-                            log.error("No such node '" + nodeNumber + "' (deduced from " + href + ")");
-                            continue;
-                        }
-                        Node text = cloud.getNode(nodeNumber);
-                        usedTexts.add(text);
-                        NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
-                        if (! linkedText.isEmpty()) {
-                            // ok, already related!
-                            log.info("" + text + " text already correctly related, nothing needs to be done");
-                            Node idrel = linkedText.getNode(0).getNodeValue("idrel");
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-                        
-                        } else {
-                            log.info("Found new cross link " + text.getNumber() + ", creating new relation now");
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), texts, "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, text);
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();                        
-                        }
-
-                        a.removeAttribute("href");
-                        a.removeAttribute("alt");
                     } else if (href.startsWith(attachmentServlet)) { // an attachment
                         String q = "/attachments/" + href.substring(attachmentServlet.length());
                         BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
@@ -671,6 +607,35 @@ public class MmxfSetString implements  Processor {
                         a.removeAttribute("class");
                         a.removeAttribute("title");
                         a.removeAttribute("target");
+                    } else if (textsMatcher != null && textsMatcher.matches()) {
+                        String nodeNumber = textsMatcher.group(2);
+                        if (! cloud.hasNode(nodeNumber)) {
+                            log.error("No such node '" + nodeNumber + "' (deduced from " + href + ")");
+                            continue;
+                        }
+                        Node text = cloud.getNode(nodeNumber);
+                        usedTexts.add(text);
+                        NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
+                        if (! linkedText.isEmpty()) {
+                            // ok, already related!
+                            log.info("" + text + " text already correctly related, nothing needs to be done");
+                            Node idrel = linkedText.getNode(0).getNodeValue("idrel");
+                            if (!idrel.getStringValue("class").equals(klass)) {
+                                idrel.setStringValue("class", klass);
+                                idrel.commit();
+                            }
+                        
+                        } else {
+                            log.info("Found new cross link " + text.getNumber() + ", creating new relation now");
+                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), texts, "idrel");
+                            Relation newIdRel = rm.createRelation(editedNode, text);
+                            newIdRel.setStringValue("id", id);
+                            newIdRel.setStringValue("class", klass);
+                            newIdRel.commit();                        
+                        }
+
+                        a.removeAttribute("href");
+                        a.removeAttribute("alt");
                     } else if (href.startsWith("BLOCK/")) {
                     
                         String nodeNumber = href.substring(6);
@@ -764,9 +729,8 @@ public class MmxfSetString implements  Processor {
             log.service("Cleaning dangling idrels");
             cleanDanglingIdRels(relatedImages,   usedImages,   "images");
             cleanDanglingIdRels(relatedUrls,     usedUrls,     "urls");
-            if (segments != null) cleanDanglingIdRels(relatedSegments, usedSegments, "segments1");
-            if (texts    != null) cleanDanglingIdRels(relatedTexts, usedTexts, "texts");
             cleanDanglingIdRels(relatedAttachments, usedAttachments, "attachments");
+            if (texts != null) cleanDanglingIdRels(relatedTexts, usedTexts, "texts");
         }
         
         
@@ -785,7 +749,7 @@ public class MmxfSetString implements  Processor {
            if (! usedNodes.contains(node)) {
                Node idrel = clusterNode.getNodeValue("idrel");
                if (idrel == null) {
-                   log.warn("Idrel returned null from " + clusterNode);
+                   log.debug("Idrel returned null from " + clusterNode + " propbably deleted already in previous cleandDanglingIdRels");
                } else {
                    if (idrel.mayDelete()) {
                        log.service("Removing unused irel " + idrel);

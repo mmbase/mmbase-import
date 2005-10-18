@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.27 2005-10-12 09:07:51 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.28 2005-10-18 13:36:52 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -84,7 +84,7 @@
   <xsl:template match="o:object[@type = 'images']" mode="img">
     <xsl:param name="relation" />
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', 's(100x100&gt;)')" />
-    <img src="{node:function($cloud, string($icache/@id ), 'ervletpath()')}" >
+    <img src="{node:function($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
@@ -259,7 +259,7 @@
   </xsl:template>
 
   <!--
-      Presents an mmxf:section with relations.
+x      Presents an mmxf:section with relations.
       Does sections specific stuff and jumps 'relations' mode which is a more generic template to handle inline relations.
   -->
   <xsl:template match="mmxf:section" mode="with_relations">
