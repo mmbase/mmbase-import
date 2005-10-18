@@ -12,6 +12,7 @@ package org.mmbase.bridge;
 
 import java.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.tests.*;
 
 /**
@@ -26,5 +27,41 @@ public class FunctionsTest extends BridgeTest {
         super(name);
     }
 
+    public void testPatternFunction() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("datatypes");
+        Node node = nm.createNode();
+        node.commit();
+        assertTrue(node.getFunctionValue("test", null).toString().equals("[" + node.getNumber() + "]"));
+    }
 
+
+    public void testNodeManagerFunction() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("datatypes");
+        Function function = nm.getFunction("aaa");
+        Parameters params = function.createParameters();
+        System.out.println("Found " + params);
+        params.set("parameter2", new Integer(5));
+        Object result = function.getFunctionValue(params);
+        assertTrue("No instance of Integer but " + result.getClass(), result instanceof Integer);
+        Integer i = (Integer) result;
+        assertTrue(i.intValue() == 15);
+        // can also be called on a node.
+        Node node = nm.createNode();
+        node.commit();
+        assertTrue(node.getFunctionValue("aaa", params).toInt() == 15);
+    }
+
+    public void testNodeFunctionWithNodeResult() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("datatypes");
+        Node node1 = nm.createNode();
+        node1.commit();
+        Node node2 = nm.createNode();
+        node2.commit();
+        Node successorOfNode1 = node1.getFunctionValue("successor", null).toNode();
+        assertTrue(successorOfNode1.equals(node2));
+        
+    }
 }
