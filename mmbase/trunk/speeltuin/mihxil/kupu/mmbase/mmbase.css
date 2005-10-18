@@ -36,7 +36,7 @@ img {
 
 #nodefields {   
   background-color: #76a2b6;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #nodefields input {
@@ -95,6 +95,7 @@ textarea#kupu-editor-textarea {
   background-color: green;
   float: none;
   width: auto;
+  overflow-y: auto;
 }
 
 div.kupu-fulleditor-zoomed div.kupu-toolboxes {
@@ -125,8 +126,7 @@ div.kupu-toolbox, div.kupu-toolbox-active {
 div.kupu-toolbox-active { 
   background-color: #76a2b6;
 }
-div.kupu-toolbox-active #kupu-div-addbutton 
-{ 
+div.kupu-toolbox-active #kupu-div-addbutton  { 
   display: none;
                                               
 }
@@ -141,6 +141,7 @@ div#kupu-toolbox-tables {
 
 }
 div#kupu-toolbox-debug { 
+  display: none;
   top: 750px;
 }
 

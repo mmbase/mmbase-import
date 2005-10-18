@@ -19,12 +19,15 @@
         <mm:listnodescontainer id="query" type="$nodetype">
           
           <jsp:directive.include file="search.constraints.jspx" />
-          
           <mm:sortorder field="number" direction="down" />
           <mm:maxnumber value="$max" />
           <mm:offset    value="${page * max}" />
-          
-          <mm:include page="${nodetype}.items.jspx" />
+          <mm:haspage page="${nodetype}.items.jspx">
+            <mm:include page="${nodetype}.items.jspx" />
+          </mm:haspage>
+          <mm:haspage page="${nodetype}.items.jspx" inverse="true">
+            <mm:include page="texts.items.jspx" />
+          </mm:haspage>
           
         </mm:listnodescontainer>
       </mm:context>

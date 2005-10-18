@@ -11,10 +11,11 @@
     <mm:listnodescontainer referid="query">
       <items>
         <mm:listnodes id="text">
+          <mm:nodeinfo type="nodemanager" id="nm" write="false" />
           <resource id="${text.number}">          
-            <uri><mm:url page="/mmbase/texts/${text.number}" /></uri>
-            <title><mm:nodeinfo type="guitype" />: <mm:field name="title" /></title>
-            <description><mm:field name="title" /></description>
+            <uri><mm:url page="/mmbase/${nm}/${text.number}" /></uri>
+            <title><mm:function name="gui" /></title>
+            <description><mm:nodeinfo type="guitype" />: <mm:function name="gui" /></description>
             <icon>kupuimages/document.png</icon>
           </resource>
         </mm:listnodes>
