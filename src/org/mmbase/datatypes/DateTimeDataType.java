@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.24 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.25 2005-10-18 09:37:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -44,6 +44,8 @@ public class DateTimeDataType extends ComparableDataType {
      */
     public DateTimeDataType(String name) {
         super(name, Date.class);
+        setMin(MIN_VALUE, true);
+        setMax(MAX_VALUE, true);
     }
 
     public DataType setDefaultValue(Object o) {
