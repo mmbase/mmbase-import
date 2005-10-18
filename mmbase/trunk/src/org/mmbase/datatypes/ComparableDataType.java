@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.6 2005-10-18 11:43:38 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.7 2005-10-18 21:56:38 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -74,7 +74,7 @@ public abstract class ComparableDataType extends BasicDataType {
 
     /**
      * Sets the minimum Date value for this data type.
-     * @param value the minimum as an <code>Date</code>, or <code>null</code> if there is no minimum.
+     * @param value the minimum as an <code>Comparable</code> (and <code>Serializable</code>), or <code>null</code> if there is no minimum.
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMxbBase)
      */
@@ -82,13 +82,13 @@ public abstract class ComparableDataType extends BasicDataType {
         edit();
         checkType(value);
         if (inclusive != minConstraint.isInclusive()) minConstraint = new MinConstraint(inclusive);
-        return minConstraint.setValue(value);
+        return minConstraint.setValue((java.io.Serializable) value);
     }
 
 
     /**
      * Sets the maximum Date value for this data type.
-     * @param value the maximum as an <code>Date</code>, or <code>null</code> if there is no maximum.
+     * @param value the maximum as an <code>Comparable</code> (and <code>Serializable</code>), or <code>null</code> if there is no maximum.
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
@@ -96,7 +96,7 @@ public abstract class ComparableDataType extends BasicDataType {
         edit();
         checkType(value);
         if (inclusive != maxConstraint.isInclusive()) maxConstraint = new MaxConstraint(inclusive);
-        return getMaxConstraint().setValue(value);
+        return getMaxConstraint().setValue((java.io.Serializable) value);
     }
 
 
