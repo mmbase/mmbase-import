@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.171 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.172 2005-10-18 18:26:58 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -329,6 +329,18 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
+    protected Object cast(String fieldName, Object value) {
+        // cast to right type, especially to resolve enumerations by java-constant
+        if (value != null && ! (value instanceof ByteArrayInputStream)) {
+            Object casted = getNodeManager().getField(fieldName).getDataType().autoCast(value);
+            if (casted != null) {
+                value = casted;
+            }
+        }
+        return value;
+     
+    }
+
     /**
      * Setting value with default method (depending on field's type)
      * @param fieldName name of the field
@@ -339,6 +351,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (value == null) {
             setValueWithoutProcess(fieldName, value);
         } else {
+            value = cast(fieldName, value);
             switch(type) {
             case Field.TYPE_STRING:  setStringValue(fieldName, Casting.toString(value)); break;
             case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
@@ -369,7 +382,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public void setValueWithoutProcess(String fieldName, Object value) {
         edit(ACTION_EDIT);
-        if ("owner".equals(fieldName)) {
+        if (MMObjectBuilder.FIELD_OWNER.equals(fieldName)) {
             setContext(Casting.toString(value));
             return;
         }
@@ -515,7 +528,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setStringValue(String fieldName, final String value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_STRING);
+        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, cast(fieldName, value), Field.TYPE_STRING);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -1416,7 +1429,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         params.setIfDefined(Parameter.NODE,  this);
         params.setIfDefined(Parameter.CLOUD, getCloud());
         params.setAll(parameters);
-        return (FieldValue) function.getFunctionValue(params);
+        return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
 
 }
