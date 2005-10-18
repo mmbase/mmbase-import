@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.28 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.29 2005-10-18 20:22:27 michiel Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -214,14 +214,7 @@ public class ModuleHandler implements Module, Comparable {
     };
 
     public Collection getFunctions() {
-        Collection functions = mmbase_module.getFunctions();
-        // wrap functions
-        Collection functionSet = new HashSet();
-        for (Iterator i = functions.iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(fun));
-        }
-        return functionSet;
+        return  mmbase_module.getFunctions();
     }
 
     public Function getFunction(String functionName) {
@@ -229,7 +222,7 @@ public class ModuleHandler implements Module, Comparable {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist.");
         }
-        return new BasicFunction(function);
+        return function;
     }
 
     public Parameters createParameters(String functionName) {

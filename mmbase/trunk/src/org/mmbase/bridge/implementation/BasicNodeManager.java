@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.107 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.108 2005-10-18 20:22:27 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -507,14 +507,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Collection getFunctions() {
-        Collection functions = builder.getFunctions();
-        // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functions.iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(getCloud(), fun));
-        }
-        return functionSet;
+        return  builder.getFunctions();
     }
 
     public Function getFunction(String functionName) {
@@ -525,13 +518,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // it may be a node-function on the type-def node then
         // it may be gui on a typedef node or so.
         Function function = getNode().getFunction(functionName);
-        if (function != null && !functionName.equals("info") && !functionName.equals("getFunctions")) {
-            function = new BasicFunction(this, function);
-        }  else {
-            function = builder != null ? builder.getFunction(functionName) : null;
-            if (function != null) {
-                function = new BasicFunction(getCloud(), function);
-            }
+        if (function == null || functionName.equals("info") || functionName.equals("getFunctions")) {
+            function = builder != null ? builder.getFunction(functionName) : null;            
         }
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());

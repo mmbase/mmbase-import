@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.172 2005-10-18 18:26:58 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.173 2005-10-18 20:22:27 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1398,14 +1398,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public Collection  getFunctions() {
-        Collection functions = getNode().getFunctions();
-        // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functions.iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this, fun));
-        }
-        return functionSet;
+        return  getNode().getFunctions();
     }
 
     public Function getFunction(String functionName) {
@@ -1413,7 +1406,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
         }
-        return new BasicFunction(this, function);
+        return function;
     }
 
     public Parameters createParameters(String functionName) {
@@ -1426,9 +1419,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public FieldValue getFunctionValue(String functionName, List parameters) {
         Function function = getFunction(functionName);
         Parameters params = function.createParameters();
+        params.setAll(parameters);
         params.setIfDefined(Parameter.NODE,  this);
         params.setIfDefined(Parameter.CLOUD, getCloud());
-        params.setAll(parameters);
         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
 
