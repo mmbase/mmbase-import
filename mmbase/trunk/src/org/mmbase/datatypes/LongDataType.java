@@ -14,7 +14,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.3 2005-10-18 09:37:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
@@ -23,7 +23,10 @@ public class LongDataType extends NumberDataType {
      */
     public LongDataType(String name) {
         super(name, Long.class);
+        setMin(new Long(Long.MIN_VALUE), true);
+        setMax(new Long(Long.MAX_VALUE), true);
     }
+
 
     /**
      * @return the minimum value as an <code>long</code>, or {@link Long#MIN_VALUE} if there is no minimum.

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.4 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.5 2005-10-18 09:37:31 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -113,12 +113,27 @@ public abstract class ComparableDataType extends BasicDataType {
     }
 
     protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();
-        if (getMinConstraint().getValue() != null) {
-            buf.append(" min: " + getMinConstraint());
+        StringBuffer buf = super.toStringBuffer();        
+        Object minValue = minConstraint.getValue();
+        Object maxValue = maxConstraint.getValue();
+        if (minValue != null) {
+            buf.append(minConstraint.isInclusive() ? '[' : '<');
+            buf.append(minValue);
+            if (minValue instanceof Date) {
+                // tss, the toString of Date object doesn't have BC in it if needed!
+                Calendar cal = Calendar.getInstance();
+                cal.setTime((Date) minValue);
+                if (cal.get(Calendar.ERA) == GregorianCalendar.BC) {
+                    buf.append(" BC");
+                }
+            }
         }
-        if (getMaxConstraint().getValue() != null) {
-            buf.append(" max:" + getMaxConstraint());
+        if (minValue != null || maxValue != null) {
+            buf.append(", ");
+        }        
+        if (maxValue != null) {
+            buf.append(maxValue);
+            buf.append(maxConstraint.isInclusive() ? ']' : '>');
         }
         return buf;
     }

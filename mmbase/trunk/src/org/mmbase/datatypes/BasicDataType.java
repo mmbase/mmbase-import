@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.9 2005-10-17 17:08:30 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.10 2005-10-18 09:37:31 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -308,15 +308,18 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         if (isUnique()) {
             buf.append("  unique");
         }
-        buf.append(" " + enumerationConstraint);
-        if (isFinished()) {
-            buf.append(".");
+        if (enumerationConstraint.getValue() != null) {
+            buf.append(" " + enumerationConstraint);
         }
         return buf;
 
     }
     public final String toString() {
-        return toStringBuffer().toString();
+        StringBuffer buf = toStringBuffer();
+        if (isFinished()) {
+            buf.append(".");
+        }
+        return buf.toString();
     }
 
 
@@ -584,7 +587,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
         public ValueConstraint setValue(Object value) {
-            log.debug("Settign constraint " + name + " on " + parent);
+            log.debug("Setting constraint " + name + " on " + parent);
             parent.edit();
             if (fixed) {
                 throw new IllegalStateException("Constraint '" + name + "' is fixed, cannot be changed");
