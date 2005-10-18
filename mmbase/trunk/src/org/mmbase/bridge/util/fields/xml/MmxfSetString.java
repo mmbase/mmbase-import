@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.23 2005-10-18 13:37:26 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.24 2005-10-18 16:04:10 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -430,8 +430,18 @@ public class MmxfSetString implements  Processor {
         return url;
     }
 
-    final Pattern DIV_ID = Pattern.compile("block_(.*?)_(.*)");
+    final Pattern DIV_ID = Pattern.compile("block_(.*?)_(.*)");  
 
+
+    // list related withouth inheritance
+    private NodeList getRelatedNodes(Node editedNode, NodeManager dest) {
+        NodeQuery q = Queries.createRelatedNodesQuery(editedNode, dest, "idrel", "destination");
+        StepField stepField = q.createStepField(q.getNodeStep(), "otype");
+        Constraint newConstraint = q.createConstraint(stepField, new Integer(dest.getNumber()));
+        Queries.addConstraint(q, newConstraint);
+        Queries.addRelationFields(q, "idrel", "id", null);
+        return q.getCloud().getList(q);
+    }
 
     /**
      * Parses kupu-output for a certain node. First it will translate the XHTML like kupu-output to
@@ -474,23 +484,35 @@ public class MmxfSetString implements  Processor {
 
             String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
             String  attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
-            Pattern textsServlet     = Pattern.compile(org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/(.*?)/(\\d+)");
+            Pattern textsServlet      = Pattern.compile(org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/(.*?)/(\\d+)");
 
-            NodeList relatedImages        = Queries.getRelatedNodes(editedNode, images, "idrel", "destination", "id", null);
+
+            NodeList relatedImages        = getRelatedNodes(editedNode, images);
             NodeList usedImages           = cloud.createNodeList();
 
-            NodeList relatedAttachments   = Queries.getRelatedNodes(editedNode, attachments , "idrel", "destination", "id", null);
+            NodeList relatedAttachments   = getRelatedNodes(editedNode, attachments);
             NodeList usedAttachments      = cloud.createNodeList();
 
-            NodeList relatedBlocks        = Queries.getRelatedNodes(editedNode, blocks , "idrel", "destination", "id", null);
+            NodeList relatedBlocks        = getRelatedNodes(editedNode, blocks);
 
-            NodeList relatedUrls          = Queries.getRelatedNodes(editedNode, urls ,  "idrel", "destination", "id", null);
+            NodeList relatedUrls          = getRelatedNodes(editedNode, urls);
             NodeList usedUrls             = cloud.createNodeList();
 
             NodeList relatedTexts = null;
             NodeList usedTexts = null;
             if (texts != null) {
-                relatedTexts = Queries.getRelatedNodes(editedNode, texts , "idrel", "destination", "id", null);
+                NodeQuery q = Queries.createRelatedNodesQuery(editedNode, texts, "idrel", "destination");
+                StepField stepField = q.createStepField(q.getNodeStep(), "otype");
+                SortedSet nonTexts = new TreeSet(); 
+                nonTexts.add(new Integer(images.getNumber()));
+                nonTexts.add(new Integer(attachments.getNumber()));
+                nonTexts.add(new Integer(blocks.getNumber()));
+                nonTexts.add(new Integer(urls.getNumber()));
+                FieldValueInConstraint newConstraint = q.createConstraint(stepField, nonTexts);
+                q.setInverse(newConstraint, true);
+                Queries.addConstraint(q, newConstraint);
+                Queries.addRelationFields(q, "idrel", "id", null);
+                relatedTexts = q.getCloud().getList(q);
                 usedTexts = cloud.createNodeList();
             }
 
@@ -537,10 +559,11 @@ public class MmxfSetString implements  Processor {
                         id = "_" + indexCounter++;
                         a.setAttribute("id", id);
                     }
-
+                    log.debug("Considering " + href);
                     Matcher textsMatcher = texts == null ? null : textsServlet.matcher(href);
                     if (href.startsWith(imageServlet)) { // found an image!
                         String q = "/images/" + href.substring(imageServlet.length());
+                        log.debug(href + ":This is an image!!-> " + q);
                         BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
                         if (qp == null) {
                             log.error("Could not parse " + q + ", ignoring...");
@@ -550,12 +573,13 @@ public class MmxfSetString implements  Processor {
                         Node image = cloud.getNode(nodeNumber);
                         if (image.getNodeManager().equals(icaches)) {
                             image = image.getNodeValue("id");
+                            log.debug("This is an icache for " + image.getNumber());
                         }
                         usedImages.add(image);
                         NodeList linkedImage = get(cloud, relatedImages, "idrel.id", id);
                         if (! linkedImage.isEmpty()) {
                             // ok, already related!
-                            log.info("" + image + " image already correctly related, nothing needs to be done");
+                            log.service("" + image + " image already correctly related, nothing needs to be done");
                             Node idrel = linkedImage.getNode(0).getNodeValue("idrel");
                             if (!idrel.getStringValue("class").equals(klass)) {
                                 idrel.setStringValue("class", klass);
