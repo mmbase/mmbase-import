@@ -118,7 +118,7 @@
 
       
           <mm:node number="$user">
-      <mm:import id="emaildomain"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
+      <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
 
       <mm:import id="linkedlist" jspvar="linkedlist" vartype="List"/>
       <mm:import externid="addr_search" jspvar="addr_search" vartype="String"/>
