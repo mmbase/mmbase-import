@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.6 2005-10-17 17:30:51 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.7 2005-10-18 21:30:12 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -52,7 +52,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * Ass a value for a certain key and Locale
      * @return The create Map.Entry.
      */
-    public Map.Entry add(Locale locale, Object key, Object value) {
+    public Map.Entry add(Locale locale, Serializable key, Object value) {
         List localizedList = (List) localized.get(locale);
         List unused = (List) unusedKeys.get(locale);
         if (localizedList == null) {
@@ -209,7 +209,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             out.writeUTF(resource);
             out.writeObject(constantsProvider);
             out.writeObject(wrapper);
-            out.writeObject(comparator);
+            if (comparator instanceof Serializable) {
+                out.writeObject(comparator);
+            } else {
+                out.writeObject((Comparator) null);
+            }
         }
         // implementation of serializable
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
