@@ -63,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.347 2005-10-12 00:30:08 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.348 2005-10-18 21:54:16 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -740,6 +740,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Returns the datatype collector belonging to this buidler.
      * A datatype collector contains the datatypes that are local to this builder.
+     * @since MMBase-1.8
      */
     public DataTypeCollector getDataTypeCollector() {
         if (dataTypeCollector == null) {
@@ -1713,7 +1714,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.7
      */
 
-    protected List getRawNodes(NodeSearchQuery query)  throws SearchQueryException {
+    private List getRawNodes(NodeSearchQuery query)  throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         if (query.getBuilder() != this) {
             throw new IllegalArgumentException("Wrong builder for query on '" + query.getBuilder().getTableName() + "'-table: " + this.getTableName());
@@ -2624,7 +2625,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 return getGUIIndicator(node);
             } else {
                 if (! (arguments instanceof Parameters)) {
-                    arguments = new ParametersImpl(GUI_PARAMETERS, arguments);
+                    arguments = new Parameters(GUI_PARAMETERS, arguments);
                 }
                 return getGUIIndicator(node, (Parameters)arguments);
             }

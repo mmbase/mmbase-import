@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.61 2005-09-23 09:21:51 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.62 2005-10-18 22:01:07 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -109,7 +109,7 @@ public class ImageTag extends FieldTag {
                 }
             } else {
                 // the cached image
-                servletArgument = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
+                servletArgument = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
             }
         }
 

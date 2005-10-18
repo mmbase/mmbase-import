@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.60 2005-09-19 12:24:21 pierre Exp $
+     * @version  $Id: list.jsp,v 1.61 2005-10-18 21:59:16 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -202,37 +202,37 @@ for (int i=0; i < results.size(); i++) {
         obj = addObject(docel, item.getNumber(), i+1 + start, mainManager, manager.getGUIName(2));
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
-        String fieldname = (String)listConfig.fieldList.get(j);
+        String fieldName = (String)listConfig.fieldList.get(j);
 
         Field field = null;
         String value = "";
         if (listConfig.multilevel) {
-            int period=fieldname.indexOf('.');
-            String nmname=fieldname.substring(0,period);
-            if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
-            field = cloud.getNodeManager(nmname).getField(fieldname.substring(period+1));
+            int period = fieldName.indexOf('.');
+            String nmname = fieldName.substring(0, period);
+            if (nmname.charAt(period-1)<='9') nmname = nmname.substring(0, period - 1);
+            field = cloud.getNodeManager(nmname).getField(fieldName.substring(period + 1));
         } else {
-            field = item.getNodeManager().getField(fieldname);
+            field = item.getNodeManager().getField(fieldName);
         }
         if (field.getGUIType().equals("eventtime")) {
            // eventtime is formatted lateron with xslt
-           value = "" + item.getIntValue(fieldname);
+           value = "" + item.getIntValue(fieldName);
            if (value.equals("-1")) {
              value = "";
            }
-        } else {        
+        } else {    
             Locale locale = new Locale(ewconfig.language);
-            Parameters args = new ParametersImpl(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
-            args.set("field",    fieldname);
+            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
+            args.set("field",    fieldName);
             args.set("language", locale.getLanguage());
             args.set("locale",   locale);
             args.set("response", pageContext.getResponse());
             args.set("request",  pageContext.getRequest());
-            args.set("stringvalue", item.getStringValue(fieldname));
+            args.set("stringvalue", item.getStringValue(fieldName));
             value = item.getFunctionValue("gui", args).toString();
-            //value = item.getStringValue("gui(" + fieldname + ")");
+            //value = item.getStringValue("gui(" + fieldName + ")");
         }
-        addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
+        addField(obj, field.getGUIName(), fieldName, value, field.getGUIType());
     }
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);

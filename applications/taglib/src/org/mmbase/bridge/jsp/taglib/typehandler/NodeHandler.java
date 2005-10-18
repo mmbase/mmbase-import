@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.30 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: NodeHandler.java,v 1.31 2005-10-18 22:01:45 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -88,7 +88,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
 
             // args for gui function
-            Parameters args = new ParametersImpl(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    "");
             args.set("locale",   tag.getLocale());
             args.set("response", tag.getPageContext().getResponse());

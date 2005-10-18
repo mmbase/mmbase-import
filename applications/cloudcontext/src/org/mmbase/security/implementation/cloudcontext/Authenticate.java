@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.14 2005-10-02 16:45:09 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.15 2005-10-18 21:58:12 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -226,13 +226,13 @@ public class Authenticate extends Authentication {
     public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
-            return new ParametersImpl(PARAMETERS_ANONYMOUS);
+            return new Parameters(PARAMETERS_ANONYMOUS);
         } else if ("class".equals(application)) {
             return Parameters.VOID;
         } else if ("name/password".equals(application)) {
-            return new ParametersImpl(PARAMETERS_NAME_PASSWORD);
+            return new Parameters(PARAMETERS_NAME_PASSWORD);
         } else if ("name/encodedpassword".equals(application)) {
-            return new ParametersImpl(PARAMETERS_NAME_ENCODEDPASSWORD);
+            return new Parameters(PARAMETERS_NAME_ENCODEDPASSWORD);
         } else {
             return new AutodefiningParameters();
         }
