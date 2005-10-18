@@ -20,12 +20,13 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.7 2005-10-02 16:25:19 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.8 2005-10-18 11:34:59 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FieldGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(FieldGetString.class);
+    private static final int serialVersionUID = 1;
 
     public Object process(Node node, Field field, Object value) {
         

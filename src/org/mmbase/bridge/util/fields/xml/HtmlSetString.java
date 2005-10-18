@@ -16,19 +16,23 @@ import org.mmbase.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HtmlSetString.java,v 1.1 2005-06-28 14:19:54 michiel Exp $
+ * @version $Id: HtmlSetString.java,v 1.2 2005-10-18 11:34:59 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class HtmlSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(HtmlSetString.class);
-
+    private static final int serialVersionUID = 1;
     protected static final String PREF = "<p><![CDATA[";
     protected static final String POST = "]]></p>";
     public Object process(Node node, Field field, Object value) {
         if (value instanceof org.w3c.dom.Document) return value;
         log.debug("Getting " + field + " from " + node + " as a String");
         return Casting.toXML(PREF + Casting.toString(value) + POST);
+    }
+
+    public String toString() {
+        return "set_MMXF";
     }
   
 }
