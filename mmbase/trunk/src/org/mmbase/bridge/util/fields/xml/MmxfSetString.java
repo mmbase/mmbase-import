@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.21 2005-10-18 11:34:59 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.22 2005-10-18 12:23:31 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -51,9 +51,10 @@ public class MmxfSetString implements  Processor {
     /**
      * Just parses String to Document
      */
-    private Document parse(String value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
+    private Document parse(Object value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
+        if (value instanceof Document) return (Document) value;
         try {
-            return parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
+            return parse(new java.io.ByteArrayInputStream(("" + value).getBytes("UTF-8")));
         } catch (java.io.UnsupportedEncodingException uee) {
             // cannot happen, UTF-8 is supported..
             return null;
@@ -783,9 +784,13 @@ public class MmxfSetString implements  Processor {
            log.debug("Considering " + clusterNode);
            if (! usedNodes.contains(node)) {
                Node idrel = clusterNode.getNodeValue("idrel");
-               if (idrel.mayDelete()) {
-                   log.service("Removing unused irel " + idrel);
-                   idrel.delete(true);
+               if (idrel == null) {
+                   log.warn("Idrel returned null from " + clusterNode);
+               } else {
+                   if (idrel.mayDelete()) {
+                       log.service("Removing unused irel " + idrel);
+                       idrel.delete(true);
+                   }
                }
            }
        }
@@ -842,7 +847,7 @@ public class MmxfSetString implements  Processor {
             switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case Modes.KUPU: {
                 log.debug("Handeling kupu-input: " + value);
-                return parseKupu(node, parse("" + value));
+                return parseKupu(node, parse(value));
             }
             case Modes.WIKI: {
                 log.debug("Handling wiki-input: " + value);
@@ -850,7 +855,7 @@ public class MmxfSetString implements  Processor {
             }
             case Modes.DOCBOOK: {
                 log.debug("Handling docbook-input: " + value);
-                return  parseDocBook(node, parse("" + value));
+                return  parseDocBook(node, parse(value));
             }
             case Modes.FLAT: {
                 return parse(xmlField.transformBack("" + value));
@@ -858,7 +863,7 @@ public class MmxfSetString implements  Processor {
             default: {
                 // 'raw' xml
                 try {
-                    return parse("" + value);
+                    return parse(value);
                 } catch (Exception e) {
                     log.warn("Setting field " + field + " in node " + node.getNumber() + ", but " + e.getMessage());
                     // simply Istore it, as provided, then.
@@ -869,7 +874,7 @@ public class MmxfSetString implements  Processor {
 
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage() + " for " + value, e);
             return value;
         }
     }
