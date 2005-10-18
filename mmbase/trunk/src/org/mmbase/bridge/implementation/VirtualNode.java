@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.2 2005-10-12 08:50:31 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.3 2005-10-18 13:39:52 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -244,15 +244,26 @@ public class VirtualNode implements Node {
         return result;
     }
 
+
+    /**
+     * Returns the Node value of a certain field, but in the case of a VirtualNode this can also occasionally be <code>null</code>
+     * because the node can have been deleted.
+     */
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
             return this;
-        }
+        }        
         Node result = null;
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
             MMObjectBuilder builder = mmobjectNode.getBuilder();
-            result = cloud.getNode(mmobjectNode.getNumber());
+            try {
+                result = cloud.getNode(mmobjectNode.getNumber());
+            } catch (NotFoundException nfe) {
+                // don't know when this happens, perhaps the node was deleted in the mean time?
+                log.debug(nfe.getMessage());
+                return null;
+            }
         }
         return result;
     }
