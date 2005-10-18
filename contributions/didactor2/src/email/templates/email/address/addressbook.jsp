@@ -68,7 +68,7 @@ This message is used in an iframe in write.jsp, in which users can select other 
                     <td class="listHeader">naam</td>
                     <td class="listHeader">email</td>
                   </tr>
-                  <mm:import id="emaildomain"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+                  <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
                   <mm:listnodes type="administrators" orderby="firstname,lastname">
                     <mm:first>
                       <tr>
