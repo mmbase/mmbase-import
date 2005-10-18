@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.10 2005-10-18 09:37:31 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.11 2005-10-18 11:43:37 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -291,7 +291,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     protected StringBuffer toStringBuffer() {
         StringBuffer buf = new StringBuffer();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
-        buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor.getClass().getName() + "");
+        buf.append(commitProcessor == null ? "" : " commit: " + commitProcessor + "");
         if (getProcessors != null) {
             for (int i = 0; i < 13; i++) {
                 buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));

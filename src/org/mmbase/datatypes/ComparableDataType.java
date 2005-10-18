@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.5 2005-10-18 09:37:31 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.6 2005-10-18 11:43:38 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -129,7 +129,7 @@ public abstract class ComparableDataType extends BasicDataType {
             }
         }
         if (minValue != null || maxValue != null) {
-            buf.append(", ");
+            buf.append("...");
         }        
         if (maxValue != null) {
             buf.append(maxValue);
