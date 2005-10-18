@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.62 2005-10-07 18:47:25 michiel Exp $
+ * @version $Id: Queries.java,v 1.63 2005-10-18 15:56:52 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1194,6 +1194,14 @@ abstract public class Queries {
      */
     public static NodeList getRelatedNodes(Node node, NodeManager otherNodeManager, String role, String direction, String relationFields, String sortOrders) {
         NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
+        addRelationFields(q, role, relationFields, sortOrders);
+        return q.getCloud().getList(q);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static NodeQuery addRelationFields(NodeQuery q, String role, String relationFields, String sortOrders) {
         List list = StringSplitter.split(relationFields);
         List orders = StringSplitter.split(sortOrders);
         Iterator i = list.iterator();
@@ -1206,7 +1214,7 @@ abstract public class Queries {
                 q.addSortOrder(sf, getSortOrder(so));
             }
         }
-        return q.getCloud().getList(q);
+        return q;
     }
 
     /**
