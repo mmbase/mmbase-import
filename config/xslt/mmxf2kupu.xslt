@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.16 2005-10-01 07:23:53 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.17 2005-10-18 13:36:52 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -192,17 +192,13 @@
     </a>
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'segments']" mode="url">
-    <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/segments/</xsl:text><xsl:value-of select="@id" />
-  </xsl:template>
-
   <xsl:template match="o:object[@type = 'blocks']" mode="id">
     <xsl:param name="relation" />
     <xsl:text>block_</xsl:text><xsl:value-of select="@id" /><xsl:text>_</xsl:text><xsl:value-of select="$relation/o:field[@name='id']" />
   </xsl:template>
 
   <!-- other inline objects? -->
-  <xsl:template match="o:object[@type != 'images' and @type != 'attachments' and @type != 'blocks' and @type != 'segments']" mode="inline">
+  <xsl:template match="o:object" mode="inline" priority="-10">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
@@ -216,9 +212,8 @@
   </xsl:template>
 
 
-  <xsl:template match="o:object[@type != 'images' and @type != 'attachments' and @type != 'blocks' and @type != 'segments']" mode="url">
-    <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/texts/</xsl:text><xsl:value-of select="@id" />
+  <xsl:template match="o:object[@type != 'images' and @type != 'icaches' and @type != 'attachments' and @type != 'urls']" mode="url" priority="1">
+    <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/</xsl:text><xsl:value-of select="@type" /><xsl:text>/</xsl:text><xsl:value-of select="@id" />
   </xsl:template>
-
 
 </xsl:stylesheet>
