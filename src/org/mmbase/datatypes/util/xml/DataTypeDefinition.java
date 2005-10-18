@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.28 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.29 2005-10-18 21:30:37 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -321,7 +321,11 @@ public class DataTypeDefinition {
                 String display = entryElement.getAttribute("display");
                 if (display.equals("")) display = value;
                 Object key = Casting.toType(dataType.getTypeAsClass(), value);
-                fact.add(locale, key, display);
+                if (key instanceof java.io.Serializable) {
+                    fact.add(locale, (java.io.Serializable) key, display);
+                } else {
+                    log.error("key " + key + " for " + dataType + " is not serializable, cannot be added to entrylist factory.");
+                }
             } else {
                 String resource = entryElement.getAttribute("resource");
                 if (! resource.equals("")) {
