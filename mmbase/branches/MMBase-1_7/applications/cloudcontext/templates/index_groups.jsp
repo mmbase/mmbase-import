@@ -18,7 +18,7 @@
 
 <p class="action">
   <mm:maycreate type="mmbasegroups">
-    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
+    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="$[location]images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasegroups" inverse="true">
       <%=getPrompt(m, "notallowedtocreategroups")%>
@@ -46,14 +46,14 @@
         </mm:fieldlist>
         <td class="commands">
           <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
-             href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
+             href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="$[location]images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           <mm:maydelete>
             <mm:relatednodescontainer role="contains" searchdirs="destination">
               <mm:size>
                 <mm:compare value="0">
                   <mm:import id="prompt">reallydeletegroups</mm:import>
                   <a onclick="<%@include file="confirm.js" %>"
-                  href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
+                  href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="$[location]images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
                 </mm:compare>
               </mm:size>
             </mm:relatednodescontainer>

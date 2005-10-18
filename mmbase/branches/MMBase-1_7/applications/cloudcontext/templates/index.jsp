@@ -18,10 +18,10 @@
   <body>
     <% try { %>
     <mm:notpresent referid="location">
-      <mm:include debug="html" referids="parameters,$parameters" page="${location}${url}" />
+      <mm:include debug="html" referids="parameters,$parameters" page="$[location]$[url]" />
     </mm:notpresent>
     <mm:present referid="location">
-      <mm:include debug="html" page="${location}${url}" />
+      <mm:include debug="html" page="$[location]$[url]" />
     </mm:present>
     <% } catch(Throwable t) { 
     out.println("ERROR" + t.getMessage());
