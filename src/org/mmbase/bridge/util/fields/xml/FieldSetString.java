@@ -22,12 +22,13 @@ import org.mmbase.util.*;
  * noticing it too much.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldSetString.java,v 1.2 2005-06-28 12:34:04 michiel Exp $
+ * @version $Id: FieldSetString.java,v 1.3 2005-10-18 11:34:59 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FieldSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(FieldSetString.class);
+    private static final int serialVersionUID = 1;
 
     protected static final String PREF = "<field><![CDATA[";
     protected static final String POST = "]]></field>";
