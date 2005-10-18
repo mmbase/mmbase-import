@@ -33,12 +33,13 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.20 2005-10-07 08:13:31 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.21 2005-10-18 11:34:59 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfSetString.class);
+    private static final int serialVersionUID = 1;
 
     private static XmlField xmlField = new XmlField(XmlField.WIKI);
 
@@ -941,6 +942,10 @@ public class MmxfSetString implements  Processor {
         */
 
         
+    }
+
+    public String toString() {
+        return "set_MMXF";
     }
   
 }

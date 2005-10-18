@@ -26,14 +26,14 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.8 2005-10-02 16:25:19 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.9 2005-10-18 11:34:59 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfGetString.class);
 
-
+    private static final int serialVersionUID = 1;
     /**
      * Returns a 'objects' Document containing the node with the mmxf field plus all idrelated objects
      */
@@ -125,6 +125,10 @@ public class MmxfGetString implements  Processor {
             log.error(e.getMessage(), e);
             return value;
         }
+    }
+
+    public String toString() {
+        return "get_MMXF";
     }
   
 }

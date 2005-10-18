@@ -17,13 +17,15 @@ import org.mmbase.bridge.*;
  * thrown (in other words, the field is read only).
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifier.java,v 1.4 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: LastModifier.java,v 1.5 2005-10-18 11:34:59 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
 
 
 public class LastModifier implements CommitProcessor, Processor {
+
+    private static final int serialVersionUID = 1;
 
     /**
      * You can plug this in on every set-action besides 'object' which will make this
@@ -35,5 +37,9 @@ public class LastModifier implements CommitProcessor, Processor {
 
     public void commit(Node node, Field field) {
         node.setValueWithoutProcess(field.getName(),node.getCloud().getUser().getIdentifier());
+    }
+
+    public String toString() {
+        return "lastmodifier";
     }
 }
