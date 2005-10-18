@@ -14,7 +14,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DoubleDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: DoubleDataType.java,v 1.3 2005-10-18 09:37:31 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -24,6 +24,8 @@ public class DoubleDataType extends NumberDataType {
      */
     public DoubleDataType(String name) {
         super(name, Double.class);
+        setMin(new Double(Double.NEGATIVE_INFINITY), false);
+        setMax(new Double(Double.POSITIVE_INFINITY), false);
     }
 
     /**

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.31 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: DataType.java,v 1.32 2005-10-18 09:37:31 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -107,6 +107,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public Object getDefaultValue();
 
     public DataType setDefaultValue(Object def);
+
 
     public DataType rewrite(Object owner);
     public boolean isFinished();
