@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.11 2005-10-18 11:43:37 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.12 2005-10-18 21:56:38 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -87,7 +87,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(requiredConstraint);
         out.writeObject(uniqueConstraint);
-        out.writeObject(enumerationConstraint);
+        out.writeObject(enumerationConstraint.value);
         if (owner instanceof Serializable) {
             out.writeObject(owner);
         } else {
@@ -108,7 +108,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         requiredConstraint    = (RequiredConstraint) in.readObject();
         uniqueConstraint      = (UniqueConstraint) in.readObject();
-        enumerationConstraint = (EnumerationConstraint) in.readObject();
+        enumerationConstraint = new EnumerationConstraint((LocalizedEntryListFactory) in.readObject());
         typeConstraint        = new TypeConstraint(); // its always the same, so no need actually persisting it.
         owner                 = in.readObject();
         classType             =  (Class) in.readObject();
@@ -546,7 +546,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected AbstractValueConstraint(DataType.ValueConstraint source) {
             super(BasicDataType.this, source);
         }
-        protected AbstractValueConstraint(String name, Object value) {
+        protected AbstractValueConstraint(String name, Serializable value) {
             super(BasicDataType.this, name, value);
         }
     }
@@ -562,7 +562,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected final String name;
         protected final BasicDataType parent;
         protected LocalizedString errorDescription;
-        protected Object value;
+        protected Serializable value;
         protected boolean fixed = false;
         protected int    enforceStrength = DataType.ENFORCE_ALWAYS;
 
@@ -572,7 +572,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             inherit(source);
         }
 
-        protected StaticAbstractValueConstraint(BasicDataType parent, String name, Object value) {
+        protected StaticAbstractValueConstraint(BasicDataType parent, String name, Serializable value) {
             this.name = name;
             this.parent = parent;
             this.value = value;
@@ -586,7 +586,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return value;
         }
 
-        public ValueConstraint setValue(Object value) {
+        public ValueConstraint setValue(Serializable value) {
             log.debug("Setting constraint " + name + " on " + parent);
             parent.edit();
             if (fixed) {
@@ -668,7 +668,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
         protected void inherit(DataType.ValueConstraint source) {
-            value = source.getValue();
+            value = (Serializable) source.getValue();
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
         }
