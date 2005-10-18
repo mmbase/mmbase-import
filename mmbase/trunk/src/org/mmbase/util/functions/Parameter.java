@@ -13,7 +13,9 @@ package org.mmbase.util.functions;
 import org.mmbase.bridge.*;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.*;
+import org.mmbase.util.*;
 import java.util.*;
+import java.io.*;
 
 /**
  * Each (function) argument is specified by a Parameter object.
@@ -22,13 +24,15 @@ import java.util.*;
  * object (by {@link Function#createParameters}), which can contain actual values for each Parameter.
  *
  * @author Daniel Ockeloen (MMFunctionParam)
+ * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.23 2005-10-01 20:17:36 michiel Exp $
+ * @version $Id: Parameter.java,v 1.24 2005-10-18 21:51:30 michiel Exp $
  * @see Parameters
  */
 
 public class Parameter extends AbstractDescriptor implements java.io.Serializable {
 
+    private static final int serialVersionUID = 1;
     /**
      * Parameter which might be needed in lots of Parameter definitions.
      */
@@ -44,6 +48,23 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * An empty Parameter array.
      */
     public static final Parameter[] EMPTY  = new Parameter[0];
+
+
+    // implementation of serializable, I hate java. Cannot make AbstractDescriptor Serializable, so doing it here.... sigh sigh.
+    // If you would make AbstractDescriptor Serializable, CoreField will become Serializable and MMObjectBuilder needs to be serializable then (because it is a member of CoreField).
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeUTF(key);
+        out.writeObject(description);
+        out.writeObject(guiName);
+        out.writeObject(dataType);
+    }
+    // implementation of serializable
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        key          = in.readUTF();
+        description  = (LocalizedString) in.readObject();
+        guiName      = (LocalizedString) in.readObject();
+        dataType     = (DataType) in.readObject();
+    }
 
     /**
      * The parameter's data type
@@ -237,5 +258,6 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
 
         }
     }
+
 
 }

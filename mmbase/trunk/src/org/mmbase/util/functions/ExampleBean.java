@@ -11,7 +11,7 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.4 2005-06-09 22:34:25 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.5 2005-10-18 21:51:30 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
@@ -20,7 +20,7 @@ public final class ExampleBean {
     private String parameter1;
     private Integer parameter2 = new Integer(0);
     private String parameter3 = "default";
-    private MMObjectNode node;
+    private Node node;
     private Cloud cloud;
 
     public void setParameter1(String hoi) {
@@ -43,7 +43,7 @@ public final class ExampleBean {
     /**
      * Makes this bean useable as a Node function.
      */
-    public void setNode(MMObjectNode node) {
+    public void setNode(Node node) {
         this.node = node;
     }
 
@@ -72,23 +72,22 @@ public final class ExampleBean {
      */
     public Object successor() {
         if (node == null) throw new IllegalArgumentException("successor is a node-function");
-        int number = node.getNumber();
         if (cloud != null) {
             log.debug("Using bridge (security restrictions will be honoured)");
-            NodeManager nm = cloud.getNodeManager(node.getBuilder().getTableName());
+            NodeManager nm = node.getNodeManager();
             NodeQuery q = nm.createQuery();
             StepField field = q.getStepField(nm.getField("number"));
-            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, new Integer(number)));
+            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, new Integer(node.getNumber())));
             q.addSortOrder(field, SortOrder.ORDER_ASCENDING);
             q.setMaxNumber(1);
             NodeIterator i = nm.getList(q).nodeIterator();
             return i.hasNext() ? i.nextNode() : null;
         } else {
             log.debug("Using core.");
-            MMObjectBuilder builder = node.getBuilder();
+            MMObjectBuilder builder = MMBase.getMMBase().getBuilder(node.getNodeManager().getName());
             NodeSearchQuery query = new NodeSearchQuery(builder);
             StepField field = query.getField(builder.getField("number"));
-            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, new Integer(number));
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, new Integer(node.getNumber()));
             cons.setOperator(FieldCompareConstraint.GREATER);
             query.setConstraint(cons);
             query.addSortOrder(field);

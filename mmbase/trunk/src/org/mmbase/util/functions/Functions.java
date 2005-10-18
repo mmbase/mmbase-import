@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.8 2005-10-01 20:17:36 michiel Exp $
+ * @version $Id: Functions.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
  */
 public class Functions {
 
@@ -36,9 +36,9 @@ public class Functions {
      * Converts a certain List to an Parameters if it is not already one.
      */
     public static Parameters buildParameters(Parameter[] def, List args) {
-        ParametersImpl a;
-        if (args instanceof ParametersImpl) {
-            a = (ParametersImpl) args;
+        Parameters a;
+        if (args instanceof Parameters) {
+            a = (Parameters) args;
             // checking whether two ParametersImpl instances match won't work in some cases
             /*
             Parameter[] resolvedDef = (Parameter[]) define(def, new ArrayList()).toArray(new Parameter[0]); // resolve the wrappers
@@ -47,7 +47,7 @@ public class Functions {
             }
             */
         } else {
-            a = new ParametersImpl(def, args);
+            a = new Parameters(def, args);
         }
         return a;
     }

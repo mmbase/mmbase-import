@@ -13,6 +13,7 @@ import org.mmbase.cache.Cache;
 
 import java.lang.reflect.*;
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * One or more functions based on a Java-bean. Every setter method of the bean corresponds with one
@@ -26,13 +27,13 @@ import java.util.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.6 2005-06-09 21:27:13 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.7 2005-10-18 21:51:30 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
 public class BeanFunction extends AbstractFunction {
-
+    private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
      * Utility function, searches an inner class of a given class. This inner class can perhaps be used as a
      * bean. Used in JSP/taglib.
@@ -176,7 +177,8 @@ public class BeanFunction extends AbstractFunction {
                 Method method = (Method) j.next();
                 method.invoke(bean, new Object[] {value});
             }
-            return method.invoke(bean, new Object[] {});
+            Object ret =  method.invoke(bean, new Object[] {});
+            return ret;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
