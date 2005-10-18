@@ -108,7 +108,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
 
     }
     public Parameters createParameters() {
-        return new ParametersImpl(PARAM);
+        return new Parameters(PARAM);
     }
 
 }

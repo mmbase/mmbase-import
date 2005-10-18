@@ -20,7 +20,7 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.3 2005-05-09 22:07:56 michiel Exp $
+ * @version $Id: SubstringFactory.java,v 1.4 2005-10-18 21:52:09 michiel Exp $
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory {
@@ -35,10 +35,10 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
         return new Substring((Integer) parameters.get("from"), (Integer) parameters.get("to"));
     }
     public Parameters createParameters() {
-        return new ParametersImpl(PARAMS);
+        return new Parameters(PARAMS);
     }
     public Parameters createParameters(java.util.List values) {
-        return new ParametersImpl(PARAMS, values);
+        return new Parameters(PARAMS, values);
     }
 
 

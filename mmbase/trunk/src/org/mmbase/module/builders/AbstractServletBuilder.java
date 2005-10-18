@@ -28,7 +28,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.31 2005-10-07 18:38:22 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.32 2005-10-18 21:55:50 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -318,14 +318,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
     final public String getGUIIndicator(MMObjectNode node) {
-        return getSGUIIndicator(node, new ParametersImpl(GUI_PARAMETERS));
+        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS));
     }
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
-        return getSGUIIndicator(node, new ParametersImpl(GUI_PARAMETERS).set("field", field));
+        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
 
     {
@@ -543,7 +543,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 if (args instanceof Parameters) {
                     a = (Parameters) args;
                 } else {
-                    a = new ParametersImpl(GUI_PARAMETERS, args);
+                    a = new Parameters(GUI_PARAMETERS, args);
                 }
 
                 String  rtn = getSGUIIndicator(node, a);

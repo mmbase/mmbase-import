@@ -16,7 +16,7 @@ import java.io.StringWriter;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.3 2005-10-14 18:33:12 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.4 2005-10-18 21:53:04 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -56,7 +56,7 @@ public class ChecksumProcessorFactory implements ParameterizedProcessorFactory {
      * Create  empty <code>Parameters</code> object for use with {@link #createProcessor}.
      */
     public Parameters createParameters() {
-        return new ParametersImpl(PARAMS);
+        return new Parameters(PARAMS);
     }
 
 }

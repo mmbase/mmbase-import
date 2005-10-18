@@ -1,3 +1,4 @@
+
 /*
 
 This software is OSI Certified Open Source Software.
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.28 2005-09-12 17:32:45 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.29 2005-10-18 22:01:45 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {

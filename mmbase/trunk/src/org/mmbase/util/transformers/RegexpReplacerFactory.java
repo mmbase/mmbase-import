@@ -33,7 +33,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
     };
 
     public Parameters createParameters() {
-        return new ParametersImpl(PARAMS);
+        return new Parameters(PARAMS);
     }
 
     /**
