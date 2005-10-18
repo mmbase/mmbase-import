@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.60 2005-03-17 00:08:34 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.61 2005-10-18 22:02:11 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -78,7 +78,7 @@ public class IncludeTag extends UrlTag {
     }
 
     public int doStartTag() throws JspTagException {
-        if (page == null) { // for include tags, page attribute is obligatory.
+        if (page == Attribute.NULL) { // for include tags, page attribute is obligatory.
             throw new JspTagException("Attribute 'page' was not specified");
         }
         return super.doStartTag();
@@ -359,7 +359,6 @@ public class IncludeTag extends UrlTag {
                 // Fetch the current servlet from request attribute.
                 // This is needed when we are resolving relatively.
                 String includingServlet = (String) request.getAttribute(INCLUDE_PATH_KEY);
-
                 if (includingServlet == null) {
                     includingServlet = request.getServletPath();
                 }
