@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.32 2005-10-18 09:37:31 michiel Exp $
+ * @version $Id: DataType.java,v 1.33 2005-10-18 21:56:38 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -278,7 +278,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
          * can have virtually every type.
          */
         public Object getValue();
-        public ValueConstraint setValue(Object value);
+        public ValueConstraint setValue(java.io.Serializable value);
         /**
          * If the constraint does not hold, the following error description can be used. On default
          * these descriptions are searched in a resource bundle based on the name of this
