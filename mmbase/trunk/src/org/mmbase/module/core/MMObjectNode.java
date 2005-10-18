@@ -37,10 +37,10 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.162 2005-10-12 19:13:33 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.163 2005-10-18 21:53:46 michiel Exp $
  */
 
-public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
+public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
     /**
@@ -541,6 +541,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         //store the old value
         storeOldValue(fieldName, originalValue);
 
+
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
 
@@ -757,14 +758,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public String getStringValue(String fieldName) {
         Object value = getValue(fieldName);
         String s = Casting.toString(value);
-        if (s.indexOf("1970") > -1) {
-            log.info("Casting " + (value == null ? "NULL" : value.getClass().getName() + " " + value) + " to string -> " + Casting.toString(value));
-            log.info(Logging.stackTrace());
-        }
         return s;
     }
-
+   
     /**
+     * XXX: return type of this method make it impossible to make MMObjectNode implements Node, perhaps it needs change
      * @javadoc
      * @since MMBase-1.6
      */
@@ -1263,6 +1261,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Return the relations of this node.
      * Note that this returns the nodes describing the relation - not the nodes 'related to'.
+     *
+     *
+     * XXX: return type of this method makes it impossible to make MMObjectNode implements Node, perhaps it needs change
+     *
      * @return An <code>Enumeration</code> containing the nodes
      */
     public Enumeration getRelations() {
@@ -1455,6 +1457,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Get all related nodes. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
+     *
+     * XXX: return type of this method make it impossible to make MMObjectNode implements Node, perhaps it needs change
+     *
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes() {
@@ -1479,7 +1484,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Get the related nodes of a certain type. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
-     * attached to the relation nodes of this node.
+     * attached to the relation nodes of this 
+     *
+     * XXX: return type of this method make it impossible to make MMObjectNode implements Node, perhaps it needs change
      *
      * @param type the type of objects to be returned
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
