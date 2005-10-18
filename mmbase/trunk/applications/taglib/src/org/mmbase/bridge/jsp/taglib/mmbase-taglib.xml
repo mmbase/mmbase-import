@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.322 2005-10-07 19:01:40 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.323 2005-10-18 16:42:33 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4097,6 +4097,28 @@ like the parameter list or the session (where ever it is available) --&gt;
     <see tag="url" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
     </example>
+  </tag>
+  <tag>
+    <name>haspage</name>
+    <extends>condition</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.HasPageTag</tagclass>
+    <info>
+      <p>
+        Checks for the availability of a certain JSP on this server.
+      </p>
+      <since>MMBase-1.8</since>
+    </info>
+    <attribute>
+      <name>page</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The page to check. It must be a JSP on the same server, so it can either be relative to
+        current JSP, or relative to context root (if it starts with '/').
+      </info>
+    </attribute>
+    <see tag="cinlude" />
   </tag>
   <tag>
     <name>compare</name>
