@@ -1,5 +1,5 @@
     <di:hasrole role="teacher" inverse="true">
-        <mm:import id="emaildomain" reset="true"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
+        <mm:import id="emaildomain" reset="true" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
         <mm:import externid="_readrights"/>
         <mm:compare referid="_readrights" value="2">
             <%-- 
