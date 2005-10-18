@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.8 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: AbstractFunction.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -57,7 +57,7 @@ abstract public class AbstractFunction implements Function, Comparable {
         if (parameterDefinition == null) {
             throw new IllegalStateException("Definition is not set yet");
         }
-        return new ParametersImpl(parameterDefinition);
+        return new Parameters(parameterDefinition);
     }
 
     /**
@@ -80,7 +80,7 @@ abstract public class AbstractFunction implements Function, Comparable {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
          } else {
-             return getFunctionValue(new ParametersImpl(parameterDefinition, parameters));
+             return getFunctionValue(new Parameters(parameterDefinition, parameters));
          }
      }
 
