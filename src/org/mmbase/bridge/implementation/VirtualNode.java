@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.3 2005-10-18 13:39:52 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.4 2005-10-18 20:22:28 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -465,14 +465,7 @@ public class VirtualNode implements Node {
     }
 
     public Collection  getFunctions() {
-        Collection functions = getNode().getFunctions();
-        // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functions.iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this, fun));
-        }
-        return functionSet;
+        return  getNode().getFunctions();
     }
 
     public Function getFunction(String functionName) {
@@ -480,7 +473,7 @@ public class VirtualNode implements Node {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
         }
-        return new BasicFunction(this, function);
+        return function;
     }
 
     public Parameters createParameters(String functionName) {
@@ -496,7 +489,7 @@ public class VirtualNode implements Node {
         params.setIfDefined(Parameter.NODE,  this);
         params.setIfDefined(Parameter.CLOUD, getCloud());
         params.setAll(parameters);
-        return (FieldValue) function.getFunctionValue(params);
+        return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
     public int compareTo(Object o) {
         return 1;
