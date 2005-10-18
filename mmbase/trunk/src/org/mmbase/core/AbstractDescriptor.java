@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.5 2005-10-07 00:19:14 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.6 2005-10-18 21:05:23 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
@@ -28,8 +28,8 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     private static final Logger log = Logging.getLoggerInstance(AbstractDescriptor.class);
 
     protected String key;
-    private LocalizedString description;
-    private LocalizedString guiName;
+    protected LocalizedString description;
+    protected LocalizedString guiName;
 
     protected AbstractDescriptor() {}
 
