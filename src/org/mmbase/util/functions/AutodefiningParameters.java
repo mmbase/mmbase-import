@@ -16,11 +16,11 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.8 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
  * @see Parameter
  */
 
-public class AutodefiningParameters extends ParametersImpl {
+public class AutodefiningParameters extends Parameters {
     //private static Logger log = Logging.getLoggerInstance(Parameters.class);
 
 
