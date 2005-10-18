@@ -19,9 +19,8 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.4 2005-09-08 11:46:38 michiel Exp $
+ * @version $Id: AbstractField.java,v 1.5 2005-10-18 21:57:13 michiel Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -41,7 +40,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      * @param field the parent field
      */
     protected AbstractField(String name, Field field) {
-         this(name,field,false);
+         this(name, field, false);
     }
 
     /**
