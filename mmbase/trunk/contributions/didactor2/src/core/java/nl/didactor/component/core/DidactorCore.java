@@ -3,7 +3,11 @@
  */
 package nl.didactor.component.core;
 import nl.didactor.component.Component;
+import nl.didactor.builders.*;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 import java.util.Map;
 
 public class DidactorCore extends Component {
@@ -29,16 +33,44 @@ public class DidactorCore extends Component {
         return new Component[0];
     }
 
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
-        return new boolean[]{true, true};
+
+    public void init() {
+        MMBase mmbase = MMBase.getMMBase();
+        DidactorRel classrel = (DidactorRel)mmbase.getBuilder("classrel");
+        classrel.registerPostInsertComponent(this, 10);
     }
 
-    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
-        if ("something".equals(setting)) {
-            return "1";
-        } else if ("else".equals(setting)) {
-            return "2";
+    public boolean postInsert(MMObjectNode node) {
+        if (node.getBuilder().getTableName().equals("classrel")) {
+            MMBase mmbase = MMBase.getMMBase();
+            DidactorRel classrel = (DidactorRel)mmbase.getBuilder("classrel");
+            MMObjectNode source = classrel.getSource(node);
+            MMObjectNode destination = classrel.getDestination(node);
+            if (source.getBuilder().getTableName().equals("classes") && destination.getBuilder().getTableName().equals("people")) {
+                return insertCopybook(node);
+            }
+            if (source.getBuilder().getTableName().equals("people") && destination.getBuilder().getTableName().equals("classes")) {
+                return insertCopybook(node);
+            }
         }
-        return "";
+
+        return true;
+    }
+ 
+    /**
+     * When inserting a new classrel, we need to add a copybook.
+     * @param classrel The new object
+     */
+    public boolean insertCopybook(MMObjectNode classrel) {
+        String owner = classrel.getStringValue("owner");
+        MMObjectNode copybook = MMBase.getMMBase().getBuilder("copybooks").getNewNode(owner);
+        copybook.insert(owner);
+        MMObjectNode relnode = MMBase.getMMBase().getInsRel().getNewNode(owner);
+        int rnumber = MMBase.getMMBase().getRelDef().getNumberByName("related");
+        relnode.setValue("snumber", classrel.getNumber());
+        relnode.setValue("dnumber", copybook.getNumber());
+        relnode.setValue("rnumber", rnumber);
+        relnode.insert(owner);
+        return true;
     }
 }
