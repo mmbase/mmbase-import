@@ -1,4 +1,5 @@
 package nl.didactor.component.chat;
+import nl.didactor.builders.DidactorBuilder;
 import nl.didactor.component.Component;
 import nl.didactor.component.core.*;
 import org.mmbase.bridge.Cloud;
@@ -27,25 +28,18 @@ public class DidactorChat extends Component {
         return components;
     }
 
-    /**
-     * Permission framework: indicate whether or not a given operation may be done, with the
-     * given arguments. The return value is a list of 2 booleans; the first boolean indicates
-     * whether or not the operation is allowed, the second boolean indicates whether or not
-     * this result may be cached.
-     */
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
-        return new boolean[]{true, true};
+    public void init() {
+        MMBase mmbase = MMBase.getMMBase();
+        DidactorBuilder classes = (DidactorBuilder)mmbase.getBuilder("classes");
+        classes.registerPostInsertComponent(this, 10);
     }
 
-    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
-        throw new IllegalArgumentException("Unknown setting '" + setting + "'");
-    }
 
     /**
      * This method is called when a new object is added to Didactor. If the component
      * needs to insert objects for this object, it can do so. 
      */
-    public boolean notifyCreate(MMObjectNode node) {
+    public boolean postCommit(MMObjectNode node) {
         if (node.getBuilder().getTableName().equals("classes"))
             return createClass(node);
 
