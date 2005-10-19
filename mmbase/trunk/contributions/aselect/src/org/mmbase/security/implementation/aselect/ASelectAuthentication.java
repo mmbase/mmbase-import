@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.5 2005-09-29 17:30:39 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.6 2005-10-19 08:52:11 pierre Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -1141,9 +1141,9 @@ public class ASelectAuthentication extends Authentication {
         if (application.equals("class")) {
             return Parameters.VOID;
         } else if (application.equals("anonymous")) {
-            return new ParametersImpl(LOGOUT);
+            return new Parameters(LOGOUT);
         } else {
-            return new ParametersImpl(CREDENTIALS);
+            return new Parameters(CREDENTIALS);
         }
         
     }
