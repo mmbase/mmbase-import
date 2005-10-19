@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.137 2005-10-18 20:22:27 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.138 2005-10-19 12:54:50 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -339,7 +339,26 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
         Set set = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId);
         if (set.size() > 0) {
-            return new BasicRelationManager((MMObjectNode)set.iterator().next(), this);
+            Iterator i = set.iterator();
+            MMObjectNode typeRel = (MMObjectNode) i.next();
+            if (set.size() > 1 && (sourceManagerId != -1 || destinationManagerId != -1)) {
+                int quality = 
+                    (typeRel.getIntValue("snumber") == sourceManagerId ? 1 : 0) + 
+                    (typeRel.getIntValue("dnumber") == destinationManagerId ? 1 : 0);
+                    
+                while(i.hasNext()) {
+                    MMObjectNode candidate = (MMObjectNode) i.next();
+                    int candidateQuality = 
+                        (candidate.getIntValue("snumber") == sourceManagerId ? 1 : 0) + 
+                        (candidate.getIntValue("dnumber") == destinationManagerId ? 1 : 0);
+                    if (candidateQuality > quality) {
+                        typeRel = candidate;
+                        quality = candidateQuality;
+                    }
+                }
+            }
+            
+            return new BasicRelationManager(typeRel, this);
         } else {
             log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist");
             return null; // calling method throws exception
