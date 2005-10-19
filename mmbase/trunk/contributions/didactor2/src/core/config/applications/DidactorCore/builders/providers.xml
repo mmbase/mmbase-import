@@ -3,7 +3,7 @@
 <builder name="providers" maintainer="didactor.nl" version="2" extends="object">
   <status>active</status>
 
-  <classfile>nl.didactor.builders.SmartpathBuilder</classfile>
+  <classfile>nl.didactor.builders.DidactorBuilder</classfile>
   <searchage>31</searchage>
 
   <names>

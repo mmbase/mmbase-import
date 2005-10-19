@@ -3,7 +3,7 @@
 <builder name="questions" maintainer="didactor.nl" version="2" extends="learnobjects">
   <status>active</status>
 
-  <classfile>nl.didactor.versioning.builders.LOVersioningBuilder</classfile>
+  <classfile>nl.didactor.builders.DidactorBuilder</classfile>
   <searchage>31</searchage>
 
   <names>

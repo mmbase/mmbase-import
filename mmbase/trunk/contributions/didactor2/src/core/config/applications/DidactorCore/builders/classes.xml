@@ -3,7 +3,7 @@
 <builder name="classes" maintainer="didactor.nl" version="2" extends="object">
 
   <status>active</status>
-  <classfile>nl.didactor.builders.ClassBuilder</classfile>
+  <classfile>nl.didactor.builders.DidactorBuilder</classfile>
   <searchage>31</searchage>
 
   <names>
