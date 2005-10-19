@@ -15,7 +15,7 @@ import java.util.Vector;
  * a given username/password combination
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class PeopleBuilder extends CreationNotifyBuilder {
+public class PeopleBuilder extends DidactorBuilder {
     private org.mmbase.util.Encode encoder = null;
     private static Logger log=Logging.getLoggerInstance(PeopleBuilder.class.getName());
 
