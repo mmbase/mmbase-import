@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.8 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: TypeRelTest.java,v 1.9 2005-10-19 15:58:57 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -47,9 +47,9 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         assertTrue(rml.size() > 0);
         if (rml.size() == 0) {
             fail("cannot test");
-        }
-        
+        }       
     }
+
     protected Node createRelDefNode(String role, int dir) {
         // create a new relation-definition
         Node reldef = relDefManager.createNode();
@@ -178,6 +178,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         }
         // no exception should have occured.
     }
+
 
 
     public void testBidirectionalNode4() {
@@ -368,6 +369,59 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
     }
 
+    private void testDestinationManagers(NodeManager sourceManager) {
+        RelationManagerList destinationManagers = sourceManager.getAllowedRelations((NodeManager) null, null, DESTINATION);
+        RelationManagerIterator i = destinationManagers.relationManagerIterator();
+        while(i.hasNext()) {
+            RelationManager rm = i.nextRelationManager();
+            assertTrue("" + rm.getSourceManager() + " is not " + sourceManager, 
+                       rm.getSourceManager().equals(sourceManager));
+        }
+    }
+
+    public void testDestinationManagers() {
+        testDestinationManagers(newsManager);
+        testDestinationManagers(urlsManager);
+        testDestinationManagers(objectManager);
+
+    }
+    private void testSourceManagers(NodeManager destinationManager) {
+        RelationManagerList sourceManagers      = destinationManager.getAllowedRelations((NodeManager) null, null, SOURCE);
+        RelationManagerIterator i = sourceManagers.relationManagerIterator();
+        while(i.hasNext()) {
+            RelationManager rm = i.nextRelationManager();
+            assertTrue("" + rm.getSourceManager() + " is not " + destinationManager, 
+                       rm.getDestinationManager().equals(destinationManager));
+        }
+    }
+    public void testSourceManagers() {
+        testSourceManagers(newsManager);
+        testSourceManagers(urlsManager);
+        testSourceManagers(objectManager);
+    }
+    
+    
+    private void testManagers(NodeManager manager) {
+        RelationManagerList managers  = manager.getAllowedRelations((NodeManager) null, null, null);
+        RelationManagerIterator i = managers.relationManagerIterator();
+        Cloud cloud = manager.getCloud();
+        while(i.hasNext()) {
+            RelationManager rm = i.nextRelationManager();
+            assertTrue("Both " + rm.getDestinationManager() + " and " + rm.getSourceManager() + " are not " + manager, 
+                       rm.getDestinationManager().equals(manager) || rm.getSourceManager().equals(manager));
+
+            RelationManager refetched = cloud.getRelationManager(rm.getSourceManager(), rm.getDestinationManager(), rm.getForwardRole());
+            assertTrue(refetched.getSourceManager().equals(rm.getSourceManager()));
+            assertTrue(refetched.getDestinationManager().equals(rm.getDestinationManager()));
+            assertTrue(refetched.getForwardRole().equals(rm.getForwardRole()));
+        }
+    }
+
+    public void testManagers() {
+        testManagers(newsManager);
+        testManagers(urlsManager);
+        testManagers(objectManager);
+    }
 
 
     public void testClearUpMess() {
