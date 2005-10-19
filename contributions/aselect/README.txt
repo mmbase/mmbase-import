@@ -2,7 +2,7 @@
 This is an 'ASelect' (http://www.a-select.org) authentication implementation for 
 MMBase (http://www.mmbase.org)
 
-- needs MMBase.1.8.0, aselect 1.4.0
+- needs MMBase.1.8.0, aselect 1.4.1
 
 - It can work with or without the aselect agent.
 
