@@ -14,7 +14,7 @@ import org.mmbase.util.logging.*;
  * {@link #setSmartpathFields setSmartpathFields()} method.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public abstract class AbstractSmartpathBuilder extends MMObjectBuilder {
+public abstract class AbstractSmartpathBuilder extends DidactorBuilder {
     protected static Logger log = Logging.getLoggerInstance("nl.didactor.builders.AbstractSmartpathBuilder");
 
     protected String spFieldNames[];
@@ -28,11 +28,7 @@ public abstract class AbstractSmartpathBuilder extends MMObjectBuilder {
     }
 
     public boolean init() {
-      if (super.init()) {
-        return true;
-      } else {
-        return false;
-      }
+      return super.init();
     }
 
     /**
@@ -50,8 +46,7 @@ public abstract class AbstractSmartpathBuilder extends MMObjectBuilder {
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         log.debug("starting getSmartPath(" + documentRoot + "," + path + "," + nodeNumber + "," + version + ")");
         if (spFieldNames == null || spFieldNames.length == 0) {
-            log.error("No fieldname specified to look for, check your builder XML config");
-            return "";
+            return super.getSmartPath(documentRoot, path, nodeNumber, version);
         }
         log.debug("Path is '" + path + "', smartpath-prefix is '" + spPathPrefix + "'");
         if (spPathPrefix == null) spPathPrefix = "";
