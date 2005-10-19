@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.51 2005-09-08 11:52:24 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.52 2005-10-19 20:14:45 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -330,7 +330,9 @@ public class BasicQuery implements Query  {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
             BasicRelationStep step = addRelationStep(insrel, otherNodeManager, relationDir);
             if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, relationDir)) {
-                if (warnOnImpossibleStep) {
+                if (relationDir != RelationStep.DIRECTIONS_SOURCE && 
+                    relationDir != RelationStep.DIRECTIONS_DESTINATION &&
+                    warnOnImpossibleStep) {
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
                 }
             }
@@ -349,8 +351,11 @@ public class BasicQuery implements Query  {
                 step.setAlias(createAlias(role));
             }
             if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, relationDir)) {
-                if (warnOnImpossibleStep) {
-                    log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+                if (relationDir != RelationStep.DIRECTIONS_SOURCE && 
+                    relationDir != RelationStep.DIRECTIONS_DESTINATION &&
+                    warnOnImpossibleStep) {
+                    // not fully specified, and nothing found, warn about that.
+                    log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it). ");
                 }
             }
             return step;
