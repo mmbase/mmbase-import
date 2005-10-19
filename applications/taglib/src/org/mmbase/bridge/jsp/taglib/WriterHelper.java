@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.76 2005-08-25 12:33:18 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.77 2005-10-19 18:36:53 michiel Exp $
  */
 
 public class WriterHelper {
@@ -115,6 +115,7 @@ public class WriterHelper {
     private   Attribute escape         = Attribute.NULL;
     private   Boolean overrideWrite    = null;
     private   int     vartype          = TYPE_UNSET;
+    private   Attribute listDelimiter   = Attribute.NULL;
 
     private   ContextReferrerTag thisTag  = null;
 
@@ -266,7 +267,7 @@ public class WriterHelper {
         if (e == null) {
             return (CharTransformer) thisTag.getPageContext().getAttribute(ContentTag.ESCAPER_KEY);
         } else {
-            return ContentTag.getCharTransformer((String) e, thisTag.getContextProvider().getContextContainer(), thisTag);
+            return ContentTag.getCharTransformer((String) e, thisTag);
         }
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
@@ -287,98 +288,98 @@ public class WriterHelper {
         if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR) {
             switch (vartype) {
                 // these accept a value == null (meaning that they are empty)
-                case TYPE_LIST:
-                    if (! (v instanceof List)) {
-                        if ("".equals(v)) {
-                            v = new ArrayList();
-                        } else {
-                            v = Casting.toList(v);
-                        }
+            case TYPE_LIST:
+                if (! (v instanceof List)) {
+                    if ("".equals(v)) {
+                        v = new ArrayList();
+                    } else {
+                        v = Casting.toList(v, listDelimiter.getString(thisTag));
                     }
-                    break;
-                case TYPE_VECTOR: // I think the type Vector should be deprecated?
-                    if (v == null) {
-                        // if a vector is requested, but the value is not present,
-                        // make a vector of size 0.
-                        v = new Vector();
-                    } else if (! (v instanceof Vector)) {
-                        // if a vector is requested, but the value is not a vector,
-                        if (! (v instanceof Collection)) {
-                            // not even a Collection!
-                            // make a vector of size 1.
-                            Vector vector = new Vector();
-                            vector.add(v);
-                            v = vector;
-                        } else {
-                            v = new Vector((Collection)v);
-                        }
+                }
+                break;
+            case TYPE_VECTOR: // I think the type Vector should be deprecated?
+                if (v == null) {
+                    // if a vector is requested, but the value is not present,
+                    // make a vector of size 0.
+                    v = new Vector();
+                } else if (! (v instanceof Vector)) {
+                    // if a vector is requested, but the value is not a vector,
+                    if (! (v instanceof Collection)) {
+                        // not even a Collection!
+                        // make a vector of size 1.
+                        Vector vector = new Vector();
+                        vector.add(v);
+                        v = vector;
+                    } else {
+                        v = new Vector((Collection)v);
                     }
-                    break;
-                case TYPE_UNSET:
-                    break;
-                case TYPE_INTEGER:
-                    if (! (v instanceof Integer)) {
+                }
+                break;
+            case TYPE_UNSET:
+                break;
+            case TYPE_INTEGER:
+                if (! (v instanceof Integer)) {
                         v = Casting.toInteger(v);
-                    }
+                }
                     break;
-                case TYPE_DOUBLE:
-                    if (! (v instanceof Double)) {
-                        v = new Double(Casting.toDouble(v));
-                    }
-                    break;
-                case TYPE_LONG:
-                    if (! (v instanceof Long)) {
-                        v = new Long(Casting.toLong(v));
-                    }
-                    break;
-                case TYPE_FLOAT:
-                    if (! (v instanceof Float)) {
-                        v = new Float(Casting.toFloat(v));
-                    }
-                    break;
-                case TYPE_DECIMAL:
-                    if (! (v instanceof java.math.BigDecimal)) {
-                        v =  new java.math.BigDecimal(v.toString());
-                    }
-                    break;
-                case TYPE_STRING:
-                    if (! (v instanceof String)) {
-                        v = Casting.toString(v);
-                    }
-                    break;
-                case TYPE_CHARSEQUENCE:
-                    if (! (v instanceof CharSequence)) {
-                        v = Casting.toString(v);
-                    }
-                    break;
-                case TYPE_DATE:
-                    if (! (v instanceof Date)) {
-                        v = Casting.toDate(v);
-                    }
-                    break;
-                case TYPE_BOOLEAN:
-                    if (! (v instanceof Boolean)) {
-                        v = Boolean.valueOf(Casting.toBoolean(v));
-                    }
-                    break;
-                case TYPE_NODE:
-                    if (! (v instanceof org.mmbase.bridge.Node)) {
-                        throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
-                    }
-                    break;
-                case TYPE_BYTES:
-                    if (! (v instanceof byte[])) {
-                        v = Casting.toByte(v);
-                    }
-                    break;
-                case TYPE_FILEITEM:
-                    if (! (v instanceof org.apache.commons.fileupload.FileItem)) {
-                        throw new JspTagException("Variable is not of type FileItem, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
-                    }
-                    break;
-                default:
-                    log.debug("Unknown vartype" + vartype);
-                    break;
+            case TYPE_DOUBLE:
+                if (! (v instanceof Double)) {
+                    v = new Double(Casting.toDouble(v));
+                }
+                break;
+            case TYPE_LONG:
+                if (! (v instanceof Long)) {
+                    v = new Long(Casting.toLong(v));
+                }
+                break;
+            case TYPE_FLOAT:
+                if (! (v instanceof Float)) {
+                    v = new Float(Casting.toFloat(v));
+                }
+                break;
+            case TYPE_DECIMAL:
+                if (! (v instanceof java.math.BigDecimal)) {
+                    v =  new java.math.BigDecimal(v.toString());
+                }
+                break;
+            case TYPE_STRING:
+                if (! (v instanceof String)) {
+                    v = Casting.toString(v);
+                }
+                break;
+            case TYPE_CHARSEQUENCE:
+                if (! (v instanceof CharSequence)) {
+                    v = Casting.toString(v);
+                }
+                break;
+            case TYPE_DATE:
+                if (! (v instanceof Date)) {
+                    v = Casting.toDate(v);
+                }
+                break;
+            case TYPE_BOOLEAN:
+                if (! (v instanceof Boolean)) {
+                    v = Boolean.valueOf(Casting.toBoolean(v));
+                }
+                break;
+            case TYPE_NODE:
+                if (! (v instanceof org.mmbase.bridge.Node)) {
+                    throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
+                }
+                break;
+            case TYPE_BYTES:
+                if (! (v instanceof byte[])) {
+                    v = Casting.toByte(v);
+                }
+                break;
+            case TYPE_FILEITEM:
+                if (! (v instanceof org.apache.commons.fileupload.FileItem)) {
+                    throw new JspTagException("Variable is not of type FileItem, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
+                }
+                break;
+            default:
+                log.debug("Unknown vartype" + vartype);
+                break;
             }
             value = v;
         }
@@ -435,6 +436,14 @@ public class WriterHelper {
         }
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    final public void setListdelimiter(Attribute l) {
+        listDelimiter = l;
+    }
+
     public int getVartype() {
         return vartype;
     }
@@ -455,7 +464,7 @@ public class WriterHelper {
         if (useEscaper || escape != Attribute.NULL) {
             CharTransformer escaper;
             if (! escape.getString(thisTag).equals("")) {
-                escaper = ContentTag.getCharTransformer(escape.getString(thisTag), thisTag.getContextProvider().getContextContainer(), thisTag);
+                escaper = ContentTag.getCharTransformer(escape.getString(thisTag), thisTag);
             } else {
                 escaper = thisTag.getContentTag().getWriteEscaper();
             }
