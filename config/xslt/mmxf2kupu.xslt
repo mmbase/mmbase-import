@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.18 2005-10-19 08:59:03 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.19 2005-10-19 16:45:20 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -197,21 +197,6 @@
     <xsl:text>block_</xsl:text><xsl:value-of select="@id" /><xsl:text>_</xsl:text><xsl:value-of select="$relation/o:field[@name='id']" />
   </xsl:template>
 
-  <!-- other inline objects? -->
-  <!--
-  <xsl:template match="o:object" mode="inline" priority="-10">
-    <xsl:param name="relation" />
-    <xsl:param name="position" />
-    <xsl:param name="last" />
-    <a>
-      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:value-of select="node:guiName($cloud, string(@id))" />
-      :
-      <xsl:apply-templates select="." mode="title" />
-      </a>
-    <xsl:if test="$position != $last">,</xsl:if>
-  </xsl:template>
-  -->
 
   <xsl:template match="o:object[@type != 'images' and @type != 'icaches' and @type != 'attachments' and @type != 'urls' and @type != 'blocks']" mode="url" priority="1">
     <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/</xsl:text><xsl:value-of select="@type" /><xsl:text>/</xsl:text><xsl:value-of select="@id" />
