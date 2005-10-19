@@ -14,7 +14,7 @@
           <mm:nodeinfo type="nodemanager" id="nm" write="false" />
           <resource id="${text.number}">          
             <uri><mm:url page="/mmbase/${nm}/${text.number}" /></uri>
-            <title><mm:function name="gui" /></title>
+            <title><mm:function name="gui" write="true"><mm:isempty><mm:field name="number" /></mm:isempty></mm:function></title>
             <description><mm:nodeinfo type="guitype" />: <mm:function name="gui" /></description>
             <icon>kupuimages/document.png</icon>
           </resource>
