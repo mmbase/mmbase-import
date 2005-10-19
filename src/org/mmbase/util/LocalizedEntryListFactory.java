@@ -31,14 +31,13 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.8 2005-10-18 21:47:06 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.9 2005-10-19 14:54:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedEntryListFactory.class);
     private int size = 0;
-    private int bundleSize = 0;
     private List bundles = new ArrayList(); // contains Bundles
     private Map localized = new HashMap(); //Locale -> List of Entries and Bundles
     private List fallBack = new ArrayList();
@@ -86,7 +85,6 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     public void addBundle(String baseName, ClassLoader classLoader, Class constantsProvider, Class wrapper, Comparator comparator) {
         // just for the count
         Bundle b = new Bundle(baseName, classLoader, constantsProvider, wrapper, comparator);
-        bundleSize += b.get(null).size();
         bundles.add(b);
         Iterator i = localized.values().iterator();
         while(i.hasNext()) {
@@ -163,6 +161,12 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * The size of the collections returned by {@link #get}
      */
     public int size() {
+        int bundleSize = 0;
+        Iterator i = bundles.iterator();
+        while (i.hasNext()) {
+            Bundle b = (Bundle) i.next();
+            bundleSize += b.get(null).size();
+        }
         return size + bundleSize;
     }
 
