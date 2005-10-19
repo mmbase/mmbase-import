@@ -29,6 +29,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.platform.setUser;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.BuilderWriter;
+import org.mmbase.util.functions.*;
 import org.xml.sax.SAXException;
 
 /**
@@ -41,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.166 2005-10-13 09:42:35 michiel Exp $
+ * @version $Id: MMBase.java,v 1.167 2005-10-19 13:28:02 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1076,9 +1077,18 @@ public class MMBase extends ProcessorModule {
                 builder.addIndices(parser.getIndices(builder));
                 Iterator f = parser.getFunctions().iterator();
                 while (f.hasNext()) {
-                    org.mmbase.util.functions.Function func = (org.mmbase.util.functions.Function) f.next();
+                    Function func = (Function) f.next();
                     builder.addFunction(func);
                     log.service("Added " + func + " to " + builder);
+                }
+                if (parent != null) {
+                    Iterator i =  parent.getFunctions().iterator();
+                    while (i.hasNext()) {
+                        Function parentFunction = (Function) i.next();
+                        if (builder.getFunction(parentFunction.getName()) == null) {
+                            builder.addFunction(parentFunction);
+                        }
+                    }
                 }
             }
         } catch (Exception e) { // what kind of exceptions are these?
