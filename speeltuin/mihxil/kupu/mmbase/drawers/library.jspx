@@ -4,13 +4,13 @@
     type="text/xml"
     expires="-1">
   <!--
-       $Id: library.jspx,v 1.12 2005-10-18 16:53:42 michiel Exp $
+       $Id: library.jspx,v 1.13 2005-10-19 14:18:50 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:cloud>
     <mm:import externid="nodetype">images</mm:import>
-
+    <mm:import externid="source" />
     <mm:context scope="request" id="drawer">
       <library id="${nodetype}">
         <uri><mm:url referids="nodetype" page="drawers/upload.jspx" />&amp;amp;upload=</uri>
@@ -20,8 +20,11 @@
         <icon height="12" width="16">icons/map.gif</icon>	        
         <mm:remove referid="query" />
         <mm:listnodescontainer id="query" type="$nodetype">
+          <mm:present referid="source">
+            <mm:constraint field="number" inverse="true" value="${source}" />
+          </mm:present>
           <mm:sortorder field="number" direction="down" />
-          <src><mm:url referids="nodetype" page="drawers/collection.jspx" /></src>
+          <src><mm:url referids="nodetype,source?" page="drawers/collection.jspx" /></src>
         </mm:listnodescontainer>
         <mm:compare referid="nodetype" valueset="images,attachments">
           <uploadbutton type="${nodetype}" />

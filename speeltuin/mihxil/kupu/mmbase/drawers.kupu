@@ -9,7 +9,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     i18n:domain="kupu"
     >
-  <kupu:id>$Id: drawers.kupu,v 1.14 2005-10-18 16:53:42 michiel Exp $</kupu:id>
+  <kupu:id>$Id: drawers.kupu,v 1.15 2005-10-19 14:18:50 michiel Exp $</kupu:id>
 
 
   <kupu:part name="styles">
@@ -37,11 +37,11 @@
     <image_xsl_uri>drawers/drawer.xsl</image_xsl_uri>
     <link_xsl_uri>drawers/drawer.xsl</link_xsl_uri>
     
-    <image_libraries_uri>drawers/libraries.jspx?nodetypes=images</image_libraries_uri>
-    <link_libraries_uri>drawers/libraries.jspx?nodetypes=${link_nodetypes}</link_libraries_uri>
+    <image_libraries_uri>drawers/libraries.jspx?nodetypes=images&amp;amp;source=${objectnumber}</image_libraries_uri>
+    <link_libraries_uri>drawers/libraries.jspx?nodetypes=${link_nodetypes}&amp;amp;source=${objectnumber}</link_libraries_uri>
 
-    <search_images_uri>drawers/search.library.jspx?nodetypes=images</search_images_uri>
-    <search_links_uri> drawers/search.library.jspx?nodetypes=${link_nodetypes}</search_links_uri>
+    <search_images_uri>drawers/search.library.jspx?nodetypes=images&amp;amp;source=${objectnumber}</search_images_uri>
+    <search_links_uri> drawers/search.library.jspx?nodetypes=${link_nodetypes}&amp;amp;source=${objectnumber}</search_links_uri>
   </kupu:part>
 
 
