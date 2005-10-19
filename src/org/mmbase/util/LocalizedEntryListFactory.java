@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.9 2005-10-19 14:54:19 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.10 2005-10-19 15:49:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -128,7 +128,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                             }
                             public Object next() {
                                 Object res;
-                                if (subIterator != null) {
+                                if (subIterator != null && subIterator.hasNext()) {
                                     res = subIterator.next();
                                     if (! subIterator.hasNext()) {
                                         subIterator = null;
@@ -137,10 +137,15 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                     res = iterator.next();
                                     if (fallenBack) {
                                         res = new Entry(res, res);
-                                    }
-                                    if (res instanceof Bundle) {
-                                        subIterator = ((Bundle) res).get(locale).iterator();
-                                        res = subIterator.next();
+                                    } else if (res instanceof Bundle) {
+                                        try {
+                                            subIterator = ((Bundle) res).get(locale).iterator();                                            
+                                            res = subIterator.next();
+                                        } catch (Exception e) {
+                                            log.warn(e.getMessage(), e);
+                                            subIterator = null;
+                                            res = new Entry("failedbundle", e.getMessage());
+                                        } 
                                     }
                                 }
 
@@ -196,7 +201,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return "" + get(null);
+        return "" + localized;
     }
 
     private static class Bundle implements Serializable {
