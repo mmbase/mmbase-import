@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.28 2005-10-18 13:36:52 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.29 2005-10-19 16:45:20 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -107,6 +107,7 @@
     <xsl:param name="position" />
     <xsl:param name="last" />
     <a>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:apply-templates select="." mode="img">
         <xsl:with-param name="relation" select="$relation" />
@@ -127,6 +128,7 @@
     <xsl:param name="position" />
     <xsl:param name="last" />
     <a>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <img width="16" height="16" class="icon">
@@ -181,6 +183,7 @@
     <xsl:param name="last" />
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
@@ -192,6 +195,7 @@
     <xsl:element name="a">
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:apply-templates select="$body" />
     </xsl:element>
   </xsl:template>
@@ -204,6 +208,7 @@
     <xsl:param name="last" />
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
@@ -259,7 +264,7 @@
   </xsl:template>
 
   <!--
-x      Presents an mmxf:section with relations.
+      Presents an mmxf:section with relations.
       Does sections specific stuff and jumps 'relations' mode which is a more generic template to handle inline relations.
   -->
   <xsl:template match="mmxf:section" mode="with_relations">
