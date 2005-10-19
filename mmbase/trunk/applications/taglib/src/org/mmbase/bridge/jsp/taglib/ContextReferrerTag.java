@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.75 2005-10-19 18:36:53 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.76 2005-10-19 18:38:42 michiel Exp $
  * @see ContextTag
  */
 
@@ -464,7 +464,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (log.isDebugEnabled()) {
             log.debug("Getting object '" + key + "' from '" + getContextProvider().getId() + "'");
         }
-        log.info("Searing " + key + " in " + getContextProvider().getContextContainer());
         Object r = getContextProvider().getContextContainer().getObject(key);
         if (r == null) {
             log.debug("Not found, returning empty string");
