@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.48 2005-06-21 06:09:55 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.49 2005-10-19 18:36:53 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -31,14 +31,14 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     private static final int DAY = 1000 * 60 * 60 * 24;
 
-    private Attribute time = Attribute.NULL;
+    private Attribute time        = Attribute.NULL;
     private Attribute inputFormat = Attribute.NULL;
-    private Attribute offset = Attribute.NULL;
+    private Attribute offset      = Attribute.NULL;
 
-    private Attribute precision = Attribute.NULL;
-    private Attribute relevance = Attribute.NULL;
+    private Attribute precision   = Attribute.NULL;
+    private Attribute relevance   = Attribute.NULL;
 
-    private Attribute timezone = Attribute.NULL;
+    private Attribute timezone    = Attribute.NULL;
 
     private final static int PRECISION_UNSET = -1;
     private final static int PRECISION_SECONDS = 1;

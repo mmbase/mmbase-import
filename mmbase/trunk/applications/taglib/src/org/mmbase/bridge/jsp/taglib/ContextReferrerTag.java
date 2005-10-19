@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.74 2005-10-02 09:06:22 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.75 2005-10-19 18:36:53 michiel Exp $
  * @see ContextTag
  */
 
@@ -464,6 +464,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (log.isDebugEnabled()) {
             log.debug("Getting object '" + key + "' from '" + getContextProvider().getId() + "'");
         }
+        log.info("Searing " + key + " in " + getContextProvider().getContextContainer());
         Object r = getContextProvider().getContextContainer().getObject(key);
         if (r == null) {
             log.debug("Not found, returning empty string");
@@ -543,6 +544,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public void setVartype(String t) throws JspTagException {
         helper.setVartype(t);
     }
+    /**
+     * @since MMBase-1.8
+     */
+    final public void setListdelimiter(String l) throws JspTagException {
+        helper.setListdelimiter(getAttribute(l));
+    }
     public void setJspvar(String j) {
         helper.setJspvar(j);
     }
@@ -567,7 +574,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (helper.getEscape() == null) {
             return value;
         } else {
-            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer((String) helper.getEscape(), getContextProvider().getContextContainer(), this);
+            org.mmbase.util.transformers.CharTransformer ct = ContentTag.getCharTransformer((String) helper.getEscape(), this);
             if (ct != null) {
                 return ct.transform(Casting.toString(value));
             } else {
