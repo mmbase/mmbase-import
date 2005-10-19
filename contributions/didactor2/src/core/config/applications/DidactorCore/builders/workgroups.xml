@@ -2,9 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="workgroups" maintainer="didactor.nl" version="4" extends="object">
   <status>active</status>
-
-  <!-- signal componentents at object creation -->
-  <classfile>nl.didactor.builders.CreationNotifyBuilder</classfile>
+  <classfile>nl.didactor.builders.DidactorBuilder</classfile>
   <searchage>31</searchage>
 
   <names>

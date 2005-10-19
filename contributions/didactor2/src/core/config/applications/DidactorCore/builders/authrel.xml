@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="authrel" maintainer="didactor.nl" version="2" extends="insrel">
   <status>active</status>
-  <classfile>nl.didactor.builders.AuthRel</classfile>
+  <classfile>org.mmbase.module.corebuilders.InsRel</classfile>
   <searchage>14</searchage>
 
   <names>
