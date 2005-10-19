@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.45 2005-10-18 22:00:27 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.46 2005-10-19 18:36:53 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -287,12 +287,12 @@ public class ContentTag extends LocaleTag  {
      */
     protected CharTransformer getPostProcessor() throws JspTagException {
         if (! postprocessor.getString(this).equals("")) {
-            return getCharTransformer(postprocessor.getString(this), getContextProvider().getContextContainer(), this);
+            return getCharTransformer(postprocessor.getString(this), this);
         } else {
             if (type != Attribute.NULL) {
                 String defaultPostProcessor = (String) defaultPostProcessors.get(type.getString(this));
                 if (defaultPostProcessor != null) {
-                    return getCharTransformer(defaultPostProcessor,  getContextProvider().getContextContainer(), this);
+                    return getCharTransformer(defaultPostProcessor, this);
                 }
             }
             return null;
@@ -317,9 +317,9 @@ public class ContentTag extends LocaleTag  {
      * Gets a CharTransformer identified by <code>id<code>, withouth trying to create chains of
      * them.
      */
-    protected static CharTransformer getSimpleCharTransformer(String id, Map more, ContextReferrerTag tag) throws JspTagException {
+    protected static CharTransformer getSimpleCharTransformer(String id, ContextReferrerTag tag) throws JspTagException {
         CharTransformer c = (CharTransformer) charTransformers.get(id);
-        if (c == null && more != null) c = (CharTransformer) more.get(id);
+        if (c == null && tag != null) c = (CharTransformer) tag.getContextProvider().getContextContainer().get(id);
         if (c == null) {
             int paramsPos = id.indexOf('(');
             if (paramsPos > 0 && id.charAt(id.length() - 1) == ')') { // inline parameterized
@@ -358,7 +358,7 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException if not transformer with given id was configured
      */
 
-    public static CharTransformer getCharTransformer(String id, Map more, ContextReferrerTag tag) throws JspTagException {
+    public static CharTransformer getCharTransformer(String id,  ContextReferrerTag tag) throws JspTagException {
 
         List transs = org.mmbase.util.StringSplitter.splitFunctions(id);
         
@@ -368,14 +368,14 @@ public class ContentTag extends LocaleTag  {
             Iterator ids = transs.iterator();
             while (ids.hasNext()) {
                 String i = (String) ids.next();
-                CharTransformer c = getSimpleCharTransformer(i, more, tag);
+                CharTransformer c = getSimpleCharTransformer(i, tag);
                 if (ct != COPY) {
                     ct.add(c);
                 }
             }
             return ct;
         } else {
-            CharTransformer ct =  getSimpleCharTransformer(id, more, tag);
+            CharTransformer ct =  getSimpleCharTransformer(id, tag);
             if (ct != COPY) {
                 return ct;
             } else {
@@ -385,10 +385,13 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
+    /**
+     * Returns transformer factory with given id or throws exception if there is none
+     */
     public static ParameterizedTransformerFactory getTransformerFactory(String id) throws JspTagException {
         ParameterizedTransformerFactory fact = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.get(id);
-            if (fact == null) throw new JspTagException("The chartransformerfactory " + id + " is unknown");
-            return fact;
+        if (fact == null) throw new JspTagException("The chartransformerfactory " + id + " is unknown");
+        return fact;
     }
     
     /** 
@@ -405,11 +408,11 @@ public class ContentTag extends LocaleTag  {
         prevEscaper = getWriteEscaper();
         CharTransformer esc;
         if (! escaper.getString(this).equals("")) { 
-            esc =  getCharTransformer(escaper.getString(this), getContextProvider().getContextContainer(), this);
+            esc =  getCharTransformer(escaper.getString(this), this);
         }  else {
             String defaultEscaper = (String) defaultEscapers.get(getType());
             if (defaultEscaper != null) {                
-                esc = getCharTransformer(defaultEscaper, getContextProvider().getContextContainer(), this);
+                esc = getCharTransformer(defaultEscaper, this);
             } else {
                 esc = COPY;
             }

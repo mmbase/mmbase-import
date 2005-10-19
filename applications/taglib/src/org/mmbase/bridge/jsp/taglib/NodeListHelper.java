@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.16 2005-06-23 22:26:57 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.17 2005-10-19 18:36:53 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -331,6 +331,9 @@ public class NodeListHelper implements ListProvider {
         currentItemIndex ++;
         try {
             Node next = nodeIterator.nextNode();
+            if (next == null) throw new RuntimeException("Found null in node list " + returnList);
+            NodeManager nextNodeManager = next.getNodeManager();
+            if (nextNodeManager == null) throw new RuntimeException("Found node " + next + " has no NodeManager");
             // use order as stored in the nodelist (the property of the tag may not be set
             // if you use referid to get the result of a prevuious listtag)
             String listOrder=(String) returnList.getProperty("orderby");
@@ -339,7 +342,7 @@ public class NodeListHelper implements ListProvider {
                 // look only at first field of sorted for the /moment.
                 String[] fa = listOrder.trim().split("\\s*,\\s*");
                 int i = 0;
-                while(i < fa.length && ! next.getNodeManager().hasField(fa[i])) i++;
+                while(i < fa.length && ! nextNodeManager.hasField(fa[i])) i++;
                 String value = i < fa.length ? "" + next.getValue(fa[i]) : ""; // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue != null) {
                     if (value.equals(previousValue)) {
