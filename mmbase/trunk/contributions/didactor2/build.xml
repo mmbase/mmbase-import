@@ -142,6 +142,7 @@
              <include name="shared/**"/>
              <include name="users/**"/>
              <include name="metadata/**"/>
+             <include name="migrate/**"/>
              <include name="${component}/**"/>
              <include name="classes/**"/>
              <exclude name="**/CVS"/>
