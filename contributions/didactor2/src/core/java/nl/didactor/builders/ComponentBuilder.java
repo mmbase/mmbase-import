@@ -32,8 +32,9 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
             Iterator i = getNodes(query).iterator();
             while (i.hasNext()) {
                 Component c = registerComponent((MMObjectNode)i.next());
-                if (c != null) 
+                if (c != null) {
                     v.add(c); 
+                }
             }
         } catch (Exception e) {
             log.error(e);

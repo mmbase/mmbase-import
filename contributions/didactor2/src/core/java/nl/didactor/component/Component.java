@@ -73,19 +73,32 @@ public abstract class Component {
     abstract public Component[] dependsOn();
 
     /**
-     * This method is called when a new object is added to Didactor. If the component
+     * This method is called just before when a new object is added to Didactor. If the component
      * needs to insert objects for this object, it can do so. 
      */
-    public boolean notifyCreate(MMObjectNode node) {
+    public boolean preInsert(MMObjectNode node) {
         return true;
     }
 
     /**
-     * This method is called just before an object is being removed from Didactor.
-     * A component should implement this method to clean up all objects created in
-     * the #link{notifyCreate} method.
+     * This method is called just after when a new object is added to Didactor. If the component
+     * needs to insert objects for this object, it can do so. 
      */
-    public boolean notifyDelete(MMObjectNode node) {
+    public boolean postInsert(MMObjectNode node) {
+        return true;
+    }
+
+    /**
+     * This method is called just before an object is being committed.
+     */
+    public boolean preCommit(MMObjectNode node) {
+        return true;
+    }
+
+    /**
+     * This method is called right after an object is being committed.
+     */
+    public boolean postCommit(MMObjectNode node) {
         return true;
     }
 
@@ -94,8 +107,10 @@ public abstract class Component {
      * given arguments. The return value is a list of 2 booleans; the first boolean indicates
      * whether or not the operation is allowed, the second boolean indicates whether or not
      * this result may be cached.
-     */
-    abstract public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments);
+    */
+    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
+        return new boolean[]{true, true};
+    }
 
     /**
      * Settings: return a setting in the given context.
@@ -105,7 +120,10 @@ public abstract class Component {
      * to retrieve the setting value. For instance the current username or
      * education node number.
      */
-    abstract public String getSetting(String setting, Cloud cloud, Map context, String[] arguments);
+    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
+        return "";
+    }
+
 
     /**
      * Get the setting for a user and a component from MMBase.
