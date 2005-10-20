@@ -8,7 +8,7 @@
   <property name="project.package"   value="org/mmbase/security/implementation/aselect" />
 
 
-  <property name="aselect.system.jar"   value="org.aselect.system.1.4.jar" />
+  <property name="aselect.system.jar"   value="org.aselect.system.jar" />
   <!-- hack hack, just to get it working for now --> 
   <property name="applications.dir"   location="../../applications" />
   <property name="project.jars.dir"      location="../.." />
