@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.12 2005-10-18 21:56:38 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.13 2005-10-20 11:43:53 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -125,7 +125,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void inherit(BasicDataType origin) {
         edit();
@@ -149,14 +149,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType getOrigin() {
         return origin;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Class getTypeAsClass() {
         return classType;
@@ -173,7 +173,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
@@ -199,14 +199,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Object getDefaultValue() {
         return defaultValue;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType setDefaultValue(Object def) {
         edit();
@@ -259,14 +259,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public final Collection /*<LocalizedString>*/ validate(Object value) {
         return validate(value, null, null);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public final Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
         Collection errors = VALID;
@@ -324,7 +324,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * This method is final, override {@link #clone(String)} in stead.
      */
     public final Object clone() {
@@ -332,7 +332,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Object clone(String name) {
         try {
@@ -379,42 +379,42 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public boolean isRequired() {
         return requiredConstraint.isRequired();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint getRequiredConstraint() {
         return requiredConstraint;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint setRequired(boolean required) {
         return getRequiredConstraint().setValue(Boolean.valueOf(required));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public boolean isUnique() {
         return uniqueConstraint.isUnique();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint getUniqueConstraint() {
         return uniqueConstraint;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint setUnique(boolean unique) {
         return getUniqueConstraint().setValue(Boolean.valueOf(unique));
@@ -422,14 +422,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
         return enumerationConstraint.getEnumerationValues(locale, cloud, node, field);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public LocalizedEntryListFactory getEnumerationFactory() {
         return enumerationConstraint.getEnumerationFactory();
@@ -441,7 +441,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Object process(int action, Node node, Field field, Object value, int processingType) {
         Object result = value;
@@ -472,7 +472,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Processor getProcessor(int action) {
         Processor processor = null;
@@ -487,7 +487,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Processor getProcessor(int action, int processingType) {
         if (processingType == Field.TYPE_UNKNOWN) {
@@ -506,7 +506,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void setProcessor(int action, Processor processor) {
         setProcessor(action, processor, Field.TYPE_UNKNOWN);
@@ -521,7 +521,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void setProcessor(int action, Processor processor, int processingType) {
         if (processingType == Field.TYPE_UNKNOWN) {
