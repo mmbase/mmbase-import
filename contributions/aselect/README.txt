@@ -25,7 +25,7 @@ MMBase (http://www.mmbase.org)
 
 - See documentation/mmbase-aselect.html for documentation	
 
-- To build, place org.aselect.system.1.4.jar in this dir.
+- To build, place org.aselect.system.jar in this dir.
 
 
 2005-01-32
