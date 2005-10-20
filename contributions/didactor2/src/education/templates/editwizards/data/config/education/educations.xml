@@ -17,7 +17,7 @@
 
     <action type="load">
         <relation destination="providers" role="related" />
-        <relation destination="classes" role="related" />
+        <relation destination="classes" role="classrel" />
         <relation destination="news" role="related" />
         <relation destination="learnblocks" role="posrel" />
         <relation destination="people" role="rolerel">
@@ -34,7 +34,6 @@
               <relation destination="urls" role="posrel" />
            </object>
         </relation>
-        <relation destination="people" role="classrel"/>
         <relation destination="images" role="sizerel" />
         <relation destination="audiotapes" role="posrel" />
         <relation destination="videotapes" role="posrel" />
@@ -70,7 +69,6 @@
       </field>
  
 
-
         <field name="intro" ftype="${wizards.pages.text.ftype}" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
@@ -95,11 +93,11 @@
         <list destination="providers" role="related" extends="config/provider/providers-list.xml" />
         <list destination="news" extends="config/news/news-list.xml" />
         <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
-        <list destination="classes" role="related" extends="config/class/classes-list.xml" />
+        <list destination="classes" role="classrel" extends="config/class/classes-list.xml" />
 
         <!-- 05.08.03 / hh: it seems that the rolerel to people is no longer used after the roleditor has been implemented -->
-        <!-- list destination="people" role="rolerel" extends="config/people/people-education.xml" / -->
-        <list destination="people" role="classrel" extends="config/people/people-list.xml" />
+        <list destination="people" role="rolerel" extends="config/people/people-education.xml" />
+        <!-- <list destination="people" role="classrel" extends="config/people/people-list.xml" />  -->
         &extra_lists;
 
     </form-schema>
