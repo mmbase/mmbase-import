@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.163 2005-10-18 21:53:46 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.164 2005-10-20 14:14:38 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
@@ -420,8 +420,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
             return true;
         }
         if (! getBuilder().hasField(fieldName)) {
-            log.error("Tried to use non-existing field '" + fieldName + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
-            throw new IllegalArgumentException("You cannot use non-existing field '" + fieldName + "' existing fields of '" + getBuilder().getTableName() + " are " + getBuilder().getFieldNames());
+            log.error("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName() + Logging.stackTrace(5));
+            throw new IllegalArgumentException("You cannot use non-existing field of '" + fieldName + "' of node '" + getNumber() + "' existing fields of '" + getBuilder().getTableName() + " are " + getBuilder().getFieldNames());
         }
         return true;
     }
