@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.70 2005-10-12 19:00:41 michiel Exp $
+ * @version $Id: Casting.java,v 1.71 2005-10-20 11:45:19 michiel Exp $
  */
 
 import java.util.*;
@@ -412,8 +412,6 @@ public class Casting {
      * A <code>null</code> value is returned as <code>null</code>.
      * If the value cannot be converted, this method throws an IllegalArgumentException.
      * @param o the object to be converted to an XML document
-     * @param documentType the xml document type
-     * @param conversion encoder conversion type
      * @return  the value as a DOM Element or <code>null</code>
      * @throws  IllegalArgumentException if the value could not be converted
      * @since MMBase-1.6
@@ -565,7 +563,7 @@ public class Casting {
      * the value is "true" or "yes" (case-insensitive).
      * In all other cases (including calling byte fields), <code>false</code>
      * is returned.
-     * @param i the object to convert
+     * @param b the object to convert
      * @return the converted value as a <code>boolean</code>
      */
     static public boolean toBoolean(Object b) {
@@ -690,7 +688,6 @@ public class Casting {
      * String values are parsed to a number, if possible.
      * All remaining values return -1.
      * @param i the object to convert
-     * @param def the default value if conversion is impossible
      * @return the converted value as a <code>float</code>
      */
     static public float toFloat(Object i) {
@@ -731,7 +728,6 @@ public class Casting {
      * String values are parsed to a number, if possible.
      * All remaining values return -1.
      * @param i the object to convert
-     * @param def the default value if conversion is impossible
      * @return the converted value as a <code>double</code>
      */
     static public double toDouble(Object i) {

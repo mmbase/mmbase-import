@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.19 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.20 2005-10-20 11:43:53 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -56,41 +56,41 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         return ((String) value).length();
     }
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public long getMinLength() {
         return Casting.toLong(minLengthConstraint.getValue());
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint getMinLengthConstraint() {
         return minLengthConstraint;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint setMinLength(long value) {
         return getMinLengthConstraint().setValue(new Long(value));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public long getMaxLength() {
         return Casting.toLong(getMaxLengthConstraint().getValue());
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint getMaxLengthConstraint() {
         return maxLengthConstraint;
     }
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.ValueConstraint setMaxLength(long value) {
         return getMaxLengthConstraint().setValue(new Long(value));
