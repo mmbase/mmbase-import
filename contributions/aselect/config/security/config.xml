@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <aselectauthentication
- xmlns="http://www.mmbase.org/xsd"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.mmbase.org/xsd http://www.mmbase.org/xsd/aselectauthentication.xsd">
+    xmlns="http://www.mmbase.org/xmlns/aselect"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/aselect http://www.mmbase.org/xmlns/aselectauthentication.xsd">
   
   <!--
     If you want to communicate to the aselect server by the agent, 
@@ -19,7 +19,6 @@
   <protocol>raw</protocol>
   <aselect-server-id>aselectserver</aselect-server-id>
   <uri>http://localhost:8080/aselectserver/server</uri>
-
 
   <!--
     ASelect applications in order of preference. These will be returned by getAuthentication().getTypes().
