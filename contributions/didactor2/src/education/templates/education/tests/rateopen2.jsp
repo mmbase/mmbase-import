@@ -81,7 +81,7 @@
                   <a href="<mm:treefile page="/education/tests/rateopen.jsp" objectlist="$includePath" referids="$referids">
                <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
                <mm:param name="studentNo"><mm:write referid="studentNo"/></mm:param>
-              </mm:treefile>"><di:translate id="complete">Voltooien</di:translate></a>
+              </mm:treefile>"><di:translate key="education.complete" /></a>
               </div>
 </div>
 </div>
