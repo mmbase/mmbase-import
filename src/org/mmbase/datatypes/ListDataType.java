@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.13 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.14 2005-10-21 16:41:53 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
@@ -54,8 +54,8 @@ public class ListDataType extends AbstractLengthDataType {
     }
 
     /**
-     * Returns the 'itemDataType' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.Restriction}
+     * Returns the 'itemDataType' restriction, containing the value, errormessages, and fixed status of this attribute.
+     * @return the restriction as a {@link DataType.Restriction}
      */
     public DataType.Restriction getItemDataTypeRestriction() {
         return itemRestriction;

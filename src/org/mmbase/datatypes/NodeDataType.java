@@ -13,12 +13,12 @@ import java.util.Collection;
 import org.mmbase.bridge.*;
 
 /**
- * The  Node data type describes a data type which is based on an MMBase 'node' field. So the value
+ * The Node data type describes a data type which is based on an MMBase 'node' field. So the value
  * is an MMBase node, which can normally be described by a foreign key.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.14 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.15 2005-10-21 16:41:53 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
