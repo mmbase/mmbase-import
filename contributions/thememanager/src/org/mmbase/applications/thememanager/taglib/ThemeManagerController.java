@@ -157,4 +157,87 @@ public class ThemeManagerController extends ThemeManager {
 
 
 
+
+	public static List getStyleSheetClasses(String id,String cssid) {
+                List list = new ArrayList();
+                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+		Theme th=getTheme(id);
+		if (th!=null) {
+			 StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			Iterator i=sts.getStyleSheetClasses();
+			while (i.hasNext()) {
+				StyleSheetClass stc=(StyleSheetClass)i.next();
+                		MMObjectNode virtual = builder.getNewNode("admin");
+                        	virtual.setValue("id",stc.getId());
+                        	virtual.setValue("propertycount",stc.getPropertyCount());
+				list.add(virtual);
+			}
+		}
+		return list;
+        }
+
+
+	public static boolean setStyleSheetProperty(String themeid,String cssid,String id,String name,String value) { 
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				StyleSheetClass ssc=sts.getStyleSheetClass(id);
+				if (ssc!=null) {
+					StyleSheetProperty ssp  = ssc.getProperty(name);
+					if (ssp!=null) { 
+						ssp.setValue(value);
+						sts.save();
+					}
+				}
+			}
+		}
+		return true;
+ 	}
+
+	public static List getStyleSheetProperties(String themeid,String cssid,String id) {
+                List list = new ArrayList();
+                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				StyleSheetClass ssc=sts.getStyleSheetClass(id);
+				if (ssc!=null) {
+					Iterator i=ssc.getProperties();
+					while (i.hasNext()) {
+						StyleSheetProperty ssp=(StyleSheetProperty)i.next();
+                				MMObjectNode virtual = builder.getNewNode("admin");
+                        			virtual.setValue("name",ssp.getName());
+                        			virtual.setValue("value",ssp.getValue());
+						list.add(virtual);
+					}
+				}
+			}
+		}
+		return list;
+        }
+
+
+	public static List getStyleSheet(String id) {
+                List list = new ArrayList();
+                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+		Theme th=getTheme(id);
+		if (th!=null) {
+			HashMap m=th.getStyleSheets();
+			Iterator keys=m.keySet().iterator();
+			while (keys.hasNext()) {
+				String k=(String)keys.next();
+				String v=(String)m.get(k);
+                		MMObjectNode virtual = builder.getNewNode("admin");
+                        	virtual.setValue("id",k);
+                        	virtual.setValue("path",v);
+				list.add(virtual);
+			}
+		}
+		return list;
+        }
 }

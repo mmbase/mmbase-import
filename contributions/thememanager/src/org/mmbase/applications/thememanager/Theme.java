@@ -31,6 +31,7 @@ public class Theme {
     // logger
     static private Logger log = Logging.getLoggerInstance(Theme.class); 
     private HashMap stylesheets;
+    private HashMap stylesheetmanagers = new HashMap();
     private HashMap imagesets;
     private String mainid;
 
@@ -190,6 +191,22 @@ public class Theme {
 	} else {
             log.error("missing style file : "+filename);
 	}
+    }
+
+    public StyleSheetManager getStyleSheetManager(String stylesheet)  {
+	Object o = stylesheetmanagers.get(stylesheet);
+	if (o!=null) {
+		return (StyleSheetManager)o;
+	} else {
+		String filename=getStyleSheet(stylesheet);
+		log.info("F1="+filename);
+		if (filename!=null) {
+			StyleSheetManager nm =  new StyleSheetManager(filename);
+			stylesheetmanagers.put(stylesheet,nm);
+			return nm;
+		}
+	}
+	return null;
     }
 
 }
