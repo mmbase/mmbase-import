@@ -198,7 +198,7 @@
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">De pagina die getoond moet worden
-          als een student klaar is met het maken van een toets. 
+          als een student klaar is met het maken van een toets.
           0 = default; een pagina die aangeeft of de student geslaagd/gezakt is
           1 = een pagina die alle antwoorden met feedback laat zien
               (deze is alleen relevant als de vlag 'mayview' op '1' staat)
@@ -241,7 +241,7 @@
         <description xml:lang="nl">
           Aantal vragen dat geselecteerd moet worden voor deze toets.
           0  = alle vragen laten zien in de volgorde die opgegeven is
-          1+ = willekeurig dit aantal vragen selecteren 
+          1+ = willekeurig dit aantal vragen selecteren
         </description>
         <description xml:lang="en">
           Number of questions that must be selected for this test.
@@ -274,5 +274,8 @@
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
+
+
+
   </fieldlist>
 </builder>
