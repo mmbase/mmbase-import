@@ -1,5 +1,5 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="classes" role="classrel" minoccurs="0" maxoccurs="*">
+<list destination="classes" role="related" minoccurs="0" maxoccurs="*">
     <title>Bijbehorende Klassen</title>
     <item>
         <field name="name" ftype="data">
@@ -10,20 +10,20 @@
     </item>
 
     <action type="create">
-        <relation destinationtype="classes" role="classrel">
+        <relation destinationtype="classes" role="related">
           <object type="classes"/>
         </relation>
     </action>
 
     <action type="add">
-        <relation destinationtype="classes" role="classrel">
+        <relation destinationtype="classes" role="related">
             <object type="classes">
             </object>
         </relation>
     </action>
 
     <action type="load">
-        <relation destinationtype="classes" role="classrel">
+        <relation destinationtype="classes" role="related">
             <object type="classes">
               <relation destinationtype="people" role="classrel">
                 <object type="people">
