@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.7 2005-10-06 17:42:56 michiel Exp $
+ * @version $Id: Mmxf.java,v 1.8 2005-10-21 16:49:34 michiel Exp $
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */
@@ -82,14 +82,15 @@ public class Mmxf {
      * @param node Source DOM-Node (it's node-name must be 'mmxf' or 'section').
      * @param root Root node (to be used in index relations) Can be <code>null</code> in which case it will be set equal to the first node created.
      * @param relationManager Describes the object model in which it must be dispatched. Source and
-     *        Destinaion must be of the same type, the relation must have a field 'pos'.
+     *        Destination must be of the same type, the relation must have a field 'pos'.
      * @param depth How far to dispatch. If -1 then it will be split up until no sections are
      *        remaining.
      * @param titleField The h-tag of the sections are written to this field.
      * @param xmlField   A new mmxf-document is created for the test and written to this field.
      * @param feedBack   A string buffer for feedback (can be e.g. used for logging or presenting on import-jsp).
      */
-    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, org.mmbase.bridge.Node root,  RelationManager relationManager, int depth, String titleField, String xmlField, Writer feedBack) {
+    public static org.mmbase.bridge.Node createTree(org.w3c.dom.Node node, 
+                                                    org.mmbase.bridge.Node root,  RelationManager relationManager, int depth, String titleField, String xmlField, Writer feedBack) {
         String nodeName = node.getNodeName();
         if (! (nodeName.equals("section") || nodeName.equals("mmxf"))) {
             exception(feedBack, "dom-Node must be a 'section' or 'mmxf' (but is a " + node.getNodeName() + ")");
@@ -165,17 +166,24 @@ public class Mmxf {
             
     }
 
+    /**
+     * Creates an (empty) Mmxf Document
+     */
     public static Document createMmxfDocument() {
         DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document document = impl.createDocument(NAMESPACE, 
-                                       "mmxf", 
-                                       impl.createDocumentType("mmxf", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
-                                       );
+                                                "mmxf", 
+                                                impl.createDocumentType("mmxf", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
+                                                );
         document.getDocumentElement().setAttribute("version", "1.1");
         return document;
     }
 
+
+    /**
+     * main for testing purposes.
+     */
     public static void main(String[] argv) {
         try {
             CloudContext cc = ContextProvider.getDefaultCloudContext();

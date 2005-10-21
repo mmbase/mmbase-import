@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.14 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: TreeList.java,v 1.15 2005-10-21 16:49:34 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -45,7 +45,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     protected boolean foundEnd = false;
 
     /**
-     * @param q              The 'base' query defining the minimal depth of the tree elements
+     * @param q              The 'base' query defining the minimal depth of the tree elements. The trunk of the tree.
      */
 
     public TreeList(NodeQuery q) {
@@ -153,7 +153,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     /**
      * Executes one query if that did not happen yet, and stores the result in the 'results' List
-     * @return NodeList or null if queryNumber too big
+     * @return NodeList or <code>null</code> if queryNumber too big
      * @throws IndexOutOfBoundsException if queryNumber < 0
      */
     protected NodeList getList(int queryNumber) {
@@ -341,15 +341,15 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
               current-2  current-1  current       current+1                         [///]: used node
                [///]       [///]     [///]         [///]                            [|||]: last used node (lastNode)
                                                                                     [   ]: unused node               
-         ...   [///]       [///]     [|||] _       [///]    previousNodes           [ * ]: considerd next node (nextListNextNode)
+         ...   [///]       [///]     [|||] _       [///]    previousNodes           [ * ]: considered next node (nextListNextNode)
                                             \   
                [   ]       [   ]     [   ]   `---> [ * ]    nextNodes
          
                if (! [|||] contained by [ * ]) current--
          </pre>
          
-         Everytime next is called, the last used node is compared with the next node of the
-         next iterator (the arrow int the above scheme). If the last used node is 'contained' by
+         Every time next is called, the last used node is compared with the next node of the
+         next iterator (the arrow in the above scheme). If the last used node is 'contained' by
          this next node, then this next node of the next iterator will be 'next()' otherwise current
          is decreased by one and next is called recursively. This means that the next node is always
          one longer then the current one, equally long, or shorter.
