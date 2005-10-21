@@ -7,50 +7,44 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * This class implements a translation table. This table contains
- * translations for different levels, that are represented as
- * (unix) pathnames. An example:
+ * translations for a namespace with different locales.
+ * It reads the files in the translation path, and parses them. Based on the 
+ * filenames, the namespace and locale are interpreted. For example:
  * <ul>
- *  <li> /mediator/frans, contains translations for this path
- *  <li> /mediator, contains translations for the parent of the previous path
+ *  <li> core.properties, contains the base translations for the 'core' namespace.
+ *  <li> core.nl.properties, contains the translations for the 'core' namespace in the dutch locale.
+ *  <li> core.nl_eo.properties, contains the translations for the 'core' namespace in the dutch locale with 'eo' specialization.
  * </ul>
- * If a translation cannot be found in a path, it's parent will
+ * If a translation cannot be found in a specialization, it's parent will
  * be queried instead, going to the root.
  * <p>
- * The translationtable will recursively walk the current directory and
- * read all files found in it. All files together contain the translations
- * for the given path.
+ * The translationtable will walk the current directory and
+ * read all files found in it. 
  */
 public class TranslateTable {
     private static Logger log = Logging.getLoggerInstance(TranslateTable.class.getName());
-    private static Map translationTables = Collections.synchronizedMap(new HashMap());
+    private static Map translationTable = Collections.synchronizedMap(new HashMap());
     private static boolean initialized = false;
     private static TranslationFileWatcher watcher;
-    private String translationpath;
+    private String translationlocale;
 
     /**
      * Inner class that watches the translation files and 
      * reloads them into the translation table in case they are
      * changed */
     static class TranslationFileWatcher extends FileWatcher { 
-        private String basepath;
-
         /**
          * Constructor
          */
-        public TranslationFileWatcher(String basepath) { 
+        public TranslationFileWatcher() { 
             super(true); 
-            try {
-                this.basepath = (new File(basepath).getCanonicalPath());
-            } catch (IOException e) {}
         } 
         
         /**
          * Change event. Read the file and process it.
          */
         public void onChange(File file) { 
-            try {
-                readFile(basepath, file.getCanonicalPath());
-            } catch (IOException e) {}
+            readFile(file);
         } 
     } 
 
@@ -60,36 +54,35 @@ public class TranslateTable {
      * to accessing it simultaniously.
      */
     public static synchronized void init(String path) {
-        if (initialized)
+        if (initialized) {
             return;
+        }
 
         try {
             path = (new File(path)).getCanonicalPath();
         } catch (IOException e) {}
 
-        watcher = new TranslationFileWatcher(path);
+        watcher = new TranslationFileWatcher();
         watcher.setDelay(10 * 1000);
-        recAddFiles(path, new File(path), watcher);
+        addFiles(new File(path), watcher);
 
         watcher.start();
         initialized = true;
     }
 
     /**
-     * Recursively descend a given directory and add all files to the filewatcher
+     * Read a given directory and add all files to the filewatcher
      */
-    private static void recAddFiles(String basepath, File path, TranslationFileWatcher watcher) {
+    private static void addFiles(File path, TranslationFileWatcher watcher) {
         if (!path.exists()) {
             return;
         }
         File[] files = path.listFiles();
         for (int i=0; i<files.length; i++) {
             if (files[i].isDirectory()) {
-                recAddFiles(basepath, files[i], watcher);
+                // ignore
             } else {
-                try {
-                    readFile(basepath, files[i].getCanonicalPath());
-                } catch (IOException e) {}
+                readFile(files[i]);
                 watcher.add(files[i]);
             }
         }
@@ -97,29 +90,24 @@ public class TranslateTable {
 
     /**
      * Read a file into the inner data structures.
-     * @param basepath The base path 
-     * @param path the path to read the file from
+     * @param file the file to read
      */
-    protected static synchronized void readFile(String basepath, String path) {
-        File root = new File(basepath);
-        File file = new File(path);
-        String location = "";
-        boolean first = true;
-        while (root.compareTo(file) != 0) {
-            if (first) {
-                first = false;
-            } else {
-                location = "/" + file.getName() + location;
-            }
-            file = file.getParentFile();
+    protected static synchronized void readFile(File file) {
+        // filename has the form: namespace.locale.properties
+        String filename = file.getName();
+        StringTokenizer st = new StringTokenizer(filename, ".");
+        String namespace = st.nextToken();
+        String locale = st.nextToken();
+        String properties = "";
+        if (st.hasMoreTokens()) {
+            properties = st.nextToken();
+        } else {
+            properties = locale;
+            locale = "";
         }
-        Map m = (Map) translationTables.get(location);
-        if (m == null) {
-            m = Collections.synchronizedMap(new HashMap());
-            translationTables.put(location, m);
-        }        
+
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path));
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("#"))
@@ -131,42 +119,61 @@ public class TranslateTable {
 
                 String key = line.substring(0, equalsign).trim();
                 String value = line.substring(equalsign + 1, line.length()).trim();
-                m.put(key, value);
+
+                String fkey = namespace;
+                if (!"".equals(locale)) {
+                    fkey += "." + locale;
+                }
+                fkey += "." + key;
+
+                if (translationTable.containsKey(fkey)) {
+                    translationTable.remove(fkey);
+                    log.debug("removed previous definition for '" + fkey + "'");
+                }
+                translationTable.put(fkey, value);
+                log.debug("added translation value for '" + fkey + "': '" + value + "'");
             }
         } catch (Exception e) {
             log.error("Exception: " + e);
         }
-       
-        log.debug("Adding translations from file [" + path + "] with key [" + location + "]");
     }
     
     /**
      * Public constructor, it initializes the internal data structures.
      */
-    public TranslateTable(String translationpath) {
-        this.translationpath = translationpath;
+    public TranslateTable(String translationlocale) {
+        this.translationlocale = translationlocale;
     }
    
     /**
      * Fetch a translation from the translation tables.
      */
-    public String translate(String text) {
-        String path = translationpath;
-        while (path.lastIndexOf("/") != -1 || path.equals("")) {
-            log.debug("Looking for translation for [" + text + "] and key [" + path + "]");
-            Map m = (Map)translationTables.get(path);
-            if (m != null) {
-                if (m.containsKey(text)) {
-                    log.debug("Translation found");
-                    return (String)m.get(text);
+    public String translate(String tkey) {
+        log.debug("translate('" + tkey + "')");
+        String locale = translationlocale;
+        StringTokenizer st = new StringTokenizer(tkey, ".");
+        String namespace = st.nextToken();
+        String key = st.nextToken();
+
+        while (true) {
+            String gkey = namespace;
+            if (locale != null && !"".equals(locale)) {
+                gkey += "." + locale;
+            }
+            gkey += "." + key;
+            log.debug("Looking for translation for [" + gkey + "]");
+            if (translationTable.containsKey(gkey)) {
+                return (String)translationTable.get(gkey);
+            } else {
+                if (locale == null || "".equals(locale)) {
+                    return null;
                 }
             }
-            if (path.equals(""))
-                break;
-
-            path = path.substring(0, path.lastIndexOf("/"));
+            if (locale.lastIndexOf("_") > -1) {
+                locale = locale.substring(0, locale.lastIndexOf("_"));
+            } else {
+                locale = "";
+            }
         }
-
-        return null;
     }
 }
