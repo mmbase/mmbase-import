@@ -200,13 +200,17 @@
   <datatype id="boolean">
     <class name="org.mmbase.datatypes.BooleanDataType" />
     <enumeration>
-      <entry resource="org.mmbase.bridge.util.fields.resources.boolean.truefalse" />
+      <entry basename="org.mmbase.datatypes.resources.boolean.truefalse" />
     </enumeration>
     <specialization id="yesno">
-      <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.yesno" />
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.yesno" />
+      </enumeration>
     </specialization>
     <specialization id="onoff">
-      <enumeration resource="org.mmbase.bridge.util.fields.resources.boolean.onoff" />
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.onoff" />
+      </enumeration>
     </specialization>
   </datatype>
 
@@ -215,7 +219,7 @@
 
     <specialization id="dirs">
       <enumeration>
-        <entry resource="org.mmbase.bridge.jsp.taglib.typehandler.resources.dirs" />
+        <entry basename="org.mmbase.datatypes.resources.dirs" />
       </enumeration>
     </specialization>
     <specialization id="spells">
