@@ -27,6 +27,8 @@
 <mm:import id="id" reset="true">Poll</mm:import><mm:include page="bundles_list.jsp" referids="id" />
 <mm:import id="id" reset="true">Media</mm:import><mm:include page="bundles_list.jsp" referids="id" />
 <mm:import id="id" reset="true">mmproject</mm:import><mm:include page="bundles_list.jsp" referids="id" />
+<mm:import id="id" reset="true">egemmail</mm:import><mm:include page="bundles_list.jsp" referids="id" />
+
 
 
 </table>
