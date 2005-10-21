@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.63 2005-10-18 15:56:52 michiel Exp $
+ * @version $Id: Queries.java,v 1.64 2005-10-21 16:49:34 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -304,7 +304,8 @@ abstract public class Queries {
 
     /**
      * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
-     * by a string. Alreading existing constraints remain ('AND' is used)
+     * by a string. Alreading existing constraints remain ('AND' is used).
+     *
      * @param query query to add constraint to
      * @param constraints string representation of constraints
      * @return the new constraint, or null if nothing changed added.

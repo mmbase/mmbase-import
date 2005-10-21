@@ -18,13 +18,18 @@ import org.mmbase.util.logging.*;
  * associated with {@link #setBundle}, which will be used to find translations based on the key of
  * this object.
  *
+ * The idea is that objects of this type can be used in stead of normal String objects, for error
+ * messages, descriptions and other texts which need localization.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.15 2005-09-06 21:23:21 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.16 2005-10-21 16:46:11 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedString.class);
+
+    private static final int serialVersionUID = 1;
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -50,6 +55,11 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
         return defaultLocale != null ? defaultLocale : Locale.getDefault();
     }
 
+    /**
+     * Converts a collection of localized strings to a collection of normal strings.
+     * @param col    Collection of LocalizedString objects
+     * @param locale Locale to be used for the call to {@link #get(Locale)} which is needed.
+     */
     public static Collection toStrings(Collection col, Locale locale) {
         if (col == null || col.size() == 0) return col;
         Collection res = new ArrayList();
@@ -212,8 +222,8 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
         } catch (CloneNotSupportedException cnse) {
             // should not happen
             log.error("Cannot clone this LocalizedString");
-                throw new RuntimeException("Cannot clone this LocalizedString", cnse);
-       }
+            throw new RuntimeException("Cannot clone this LocalizedString", cnse);
+        }
     }
 
 }
