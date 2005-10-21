@@ -19,11 +19,11 @@ import org.mmbase.util.LocalizedString;
  * parse the String though (see {@link #getList}), which can be used to do something else
  * for parsing or formatting (think: format an editor entry).
  *
- * This utility calss is of course used in the implementation of {@link DateTimeDataType}.
+ * This utility class is of course used in the implementation of {@link DateTimeDataType}.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.4 2005-10-21 10:20:28 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {

@@ -10,10 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * @javadoc
+ * The data associated with 'XML' values ({@link org.w3c.dom.Document}). At the moment this class is
+ * empty, but of course we forsee the possibility for  restrictions on doc-type.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: XmlDataType.java,v 1.3 2005-10-21 10:20:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class XmlDataType extends BasicDataType {

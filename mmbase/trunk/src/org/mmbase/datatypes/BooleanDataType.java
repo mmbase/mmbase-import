@@ -10,10 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * @javadoc
+ * The DataType associated with a boolean values. 
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: BooleanDataType.java,v 1.3 2005-10-21 10:20:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {
