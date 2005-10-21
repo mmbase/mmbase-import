@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.108 2005-10-18 20:22:27 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.109 2005-10-21 16:52:24 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -377,9 +377,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
-        int thisOType= getMMObjectBuilder().oType;
-        int requestedRole=-1;
-        if (role!=null) {
+        int thisOType = getMMObjectBuilder().oType;
+        int requestedRole = -1;
+        if (role != null) {
             requestedRole = mmb.getRelDef().getNumberByName(role);
             if (requestedRole == -1) {
                 throw new NotFoundException("Could not get role '" + role + "'");
@@ -391,16 +391,19 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         Enumeration typerelNodes;
         if (nodeManager != null) {
             int otherOType = nodeManager.getNumber();
-            typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType,otherOType);
+            typerelNodes = mmb.getTypeRel().getAllowedRelations(thisOType, otherOType);
         } else {
-            typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType);
+            typerelNodes = mmb.getTypeRel().getAllowedRelations(thisOType);
         }
+
         List nodes = new ArrayList();
         while (typerelNodes.hasMoreElements()) {
-            MMObjectNode n= (MMObjectNode)typerelNodes.nextElement();
-            if ((requestedRole==-1) || (requestedRole==n.getIntValue("rnumber"))) {
-                if (n.getIntValue("snumber") != n.getIntValue("dnumber")) { // if types are equal, no need to check direction, it is always ok then..
-                    if (thisOType== n.getIntValue("dnumber")) {
+            MMObjectNode n = (MMObjectNode) typerelNodes.nextElement();
+            if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
+                int snumber = n.getIntValue("snumber");
+                int dnumber = n.getIntValue("dnumber");
+                if (snumber != dnumber) { // if types are equal, no need to check direction, it is always ok then..
+                    if (thisOType == dnumber) {
                         if (dir == RelationStep.DIRECTIONS_DESTINATION) {
                             continue;
                         }
@@ -413,7 +416,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 nodes.add(n);
             }
         }
-        return new BasicRelationManagerList(nodes,cloud);
+        return new BasicRelationManagerList(nodes, cloud);
     }
 
     public String getInfo(String command) {
