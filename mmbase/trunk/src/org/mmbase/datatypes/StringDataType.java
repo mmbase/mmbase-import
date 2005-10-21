@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.21 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.22 2005-10-21 16:41:53 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -107,8 +107,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     }
 
     /**
-     * Returns the 'pattern' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.Restriction}
+     * Returns the 'pattern' restriction, containing the value, error messages, and fixed status of this attribute.
+     * @return the restriction as a {@link DataType.Restriction}
      */
     public DataType.Restriction getPatternRestriction() {
         return patternRestriction;
@@ -117,15 +117,15 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     /**
      * Sets the regular expression pattern used to validate values for this datatype.
      * @param value the pattern as a <code>Pattern</code>, or <code>null</code> if no pattern should be applied.
-     * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MMBase)
+     * @throws java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MMBase)
      */
     public DataType.Restriction setPattern(Pattern value) {
         return getPatternRestriction().setValue(value);
     }
 
     /**
-     * Where or not not the data represents sensistive information, in which case e.g. input
-     * interface may present asterixes in stead of letters.
+     * Whether or not the data represents sensitive information, in which case e.g. an input
+     * interface may present asterisks in stead of letters.
      */
     public boolean isPassword() {
         return isPassword;
@@ -160,7 +160,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         }
         public boolean valid(Object v, Node node, Field field) {
             String s = Casting.toString(v);
-            return value == null ? true : getPattern().matcher(Casting.toString(v)).matches();
+            return value == null ? true : getPattern().matcher(s).matches();
         }
     }
 
