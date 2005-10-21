@@ -59,7 +59,7 @@
 			<mm:field name="path" />
 		</td>
                 <td width="15">
-                        <A HREF="<mm:url page="index.jsp"><mm:param name="main" value="$main" /><mm:param name="sub" value="stylesheet" /><mm:param name="id" value="$id" /></mm:url>"><IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
+                        <A HREF="<mm:url page="index.jsp"><mm:param name="main" value="$main" /><mm:param name="sub" value="stylesheet" /><mm:param name="id" value="$id" /><mm:param name="cssid"><mm:field name="id" /></mm:param></mm:url>"><IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
                 </td>
 </tr>
 <tr>
