@@ -50,8 +50,8 @@ public class ThemeManager {
     }
 
 
-        public static String getStyleSheet(String context,String id) {
-		String as=(String)assigned.get(id);
+        public static String getStyleSheet(String context,String themeid,String cssid) {
+		String as=(String)assigned.get(themeid);
 		if (as!=null) {
 			Theme th=(Theme)themes.get(as);
 			if (th!=null) {
