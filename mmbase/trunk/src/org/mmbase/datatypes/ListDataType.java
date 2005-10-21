@@ -18,12 +18,12 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.12 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.13 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
 
-    protected ItemConstraint itemConstraint = new ItemConstraint(Constants.DATATYPE_UNKNOWN);
+    protected ItemRestriction itemRestriction = new ItemRestriction(Constants.DATATYPE_UNKNOWN);
 
     /**
      * Constructor for List field.
@@ -37,7 +37,7 @@ public class ListDataType extends AbstractLengthDataType {
         super.inherit(origin);
         if (origin instanceof ListDataType) {
             ListDataType dataType = (ListDataType)origin;
-            itemConstraint = new ItemConstraint(dataType.itemConstraint);
+            itemRestriction = new ItemRestriction(dataType.itemRestriction);
          }
     }
 
@@ -50,28 +50,28 @@ public class ListDataType extends AbstractLengthDataType {
      * @return the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
     public DataType getItemDataType() {
-        return itemConstraint.getItemDataType();
+        return itemRestriction.getItemDataType();
     }
 
     /**
      * Returns the 'itemDataType' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.ValueConstraint}
+     * @return the property as a {@link DataType.Restriction}
      */
-    public DataType.ValueConstraint getItemDataTypeConstraint() {
-        return itemConstraint;
+    public DataType.Restriction getItemDataTypeRestriction() {
+        return itemRestriction;
     }
 
     /**
      * Sets the datatype of items in this list.
      * @param value the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
-    public DataType.ValueConstraint setItemDataType(DataType value) {
-        return itemConstraint.setValue(value);
+    public DataType.Restriction setItemDataType(DataType value) {
+        return itemRestriction.setValue(value);
     }
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
         errors = super.validateCastedValue(errors, castedValue, node, field);
-        errors = itemConstraint.validate(errors, castedValue, node, field);
+        errors = itemRestriction.validate(errors, castedValue, node, field);
         return errors;
     }
 
@@ -81,11 +81,11 @@ public class ListDataType extends AbstractLengthDataType {
         return buf;
     }
 
-    protected class ItemConstraint extends AbstractValueConstraint {
-        ItemConstraint(ItemConstraint me) {
+    protected class ItemRestriction extends AbstractRestriction {
+        ItemRestriction(ItemRestriction me) {
             super(me);
         }
-        ItemConstraint(DataType v) {
+        ItemRestriction(DataType v) {
             super("itemDataType", v);
         }
         DataType getItemDataType() {

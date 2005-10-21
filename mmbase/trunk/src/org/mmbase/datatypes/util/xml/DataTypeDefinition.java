@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.29 2005-10-18 21:30:37 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.30 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -219,11 +219,11 @@ public class DataTypeDefinition {
         String childTag = childElement.getLocalName();
         if ("required".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
-            setConstraintData(dataType.setRequired(value), childElement);
+            setRestrictionData(dataType.setRequired(value), childElement);
             ret = true;
         } else if ("unique".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
-            setConstraintData(dataType.setUnique(value), childElement);
+            setRestrictionData(dataType.setUnique(value), childElement);
             ret = true;
         } else if ("getprocessor".equals(childTag)) {
             addProcessor(DataType.PROCESS_GET, childElement);
@@ -283,34 +283,34 @@ public class DataTypeDefinition {
         }
     }
 
-    protected void setConstraintData(DataType.ValueConstraint constraint, Element element) {
+    protected void setRestrictionData(DataType.Restriction restriction, Element element) {
         if (DataTypeXml.hasAttribute(element, "fixed")) {
             boolean isFixed = Boolean.valueOf(DataTypeXml.getAttribute(element, "fixed")).booleanValue();
-            constraint.setFixed(isFixed);
+            restriction.setFixed(isFixed);
         }
         if (DataTypeXml.hasAttribute(element, "enforce")) {
             String enforce = DataTypeXml.getAttribute(element, "enforce").toLowerCase();
             if (enforce.equals("always")) {
-                constraint.setEnforceStrength(DataType.ENFORCE_ALWAYS);
+                restriction.setEnforceStrength(DataType.ENFORCE_ALWAYS);
             } else if (enforce.equals("onchange")) {
-                constraint.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
+                restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
             } else if (enforce.equals("oncreate")) {
-                constraint.setEnforceStrength(DataType.ENFORCE_ONCREATE);
+                restriction.setEnforceStrength(DataType.ENFORCE_ONCREATE);
             } else if (enforce.equals("never")) {
-                constraint.setEnforceStrength(DataType.ENFORCE_NEVER);
+                restriction.setEnforceStrength(DataType.ENFORCE_NEVER);
             } else {
                 log.warn("Unrecognised value for 'enforce' attribute '" + enforce + "' in " + XMLWriter.write(element, true, true));
             }
         }
-        LocalizedString descriptions = constraint.getErrorDescription();
-        constraint.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions));
+        LocalizedString descriptions = restriction.getErrorDescription();
+        restriction.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions));
     }
 
     /**
      * Used the enumeration element.
      */
     protected void addEnumeration(Element enumerationElement) {
-        setConstraintData(dataType.getEnumerationConstraint(), enumerationElement);
+        setRestrictionData(dataType.getEnumerationRestriction(), enumerationElement);
         LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
         NodeList childNodes = enumerationElement.getElementsByTagName("entry");
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -385,16 +385,16 @@ public class DataTypeDefinition {
             LengthDataType bDataType = (LengthDataType) dataType;
             if ("minLength".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
-                setConstraintData(bDataType.setMinLength(value), conditionElement);
+                setRestrictionData(bDataType.setMinLength(value), conditionElement);
                 return true;
             } else if ("maxLength".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
-                setConstraintData(bDataType.setMaxLength(value), conditionElement);
+                setRestrictionData(bDataType.setMaxLength(value), conditionElement);
                 return true;
             } else if ("length".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
-                setConstraintData(bDataType.setMinLength(value), conditionElement);
-                setConstraintData(bDataType.setMaxLength(value), conditionElement);
+                setRestrictionData(bDataType.setMinLength(value), conditionElement);
+                setRestrictionData(bDataType.setMaxLength(value), conditionElement);
                 return true;
             }
         }
@@ -414,7 +414,7 @@ public class DataTypeDefinition {
             if ("pattern".equals(localName)) {
                 String value = DataTypeXml.getAttribute(conditionElement, "value");
                 log.debug("Setting pattern on " + sDataType);
-                setConstraintData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
+                setRestrictionData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
                 return true;
             }
         } else if (dataType instanceof DateTimeDataType) {
@@ -441,11 +441,11 @@ public class DataTypeDefinition {
             ComparableDataType dDataType = (ComparableDataType) dataType;
             if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.autoCast(DataTypeXml.getValue(conditionElement));
-                setConstraintData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+                setRestrictionData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
                 return true;
             } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.autoCast(DataTypeXml.getValue(conditionElement));
-                setConstraintData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+                setRestrictionData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
                 return true;
             }
         }
