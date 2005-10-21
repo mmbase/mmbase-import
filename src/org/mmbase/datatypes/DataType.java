@@ -23,11 +23,20 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * A value in MMBase (such as the value of a field, or function parameter) is associated with a
+ * 'datatype'.  A DataType is actually an elaborated wrapper arround a Class object, but besides this
+ * basic type of the value, it also defines restrictions on the values, a default value, and
+ * Processors.
+ * 
+ * There are several extensions of DataType which normally add other kinds of restrictions which are
+ * specific for certain classes of values. All implementations of DataType extend from {@link
+ * BasicDataType}, but they can sometimes implement different extensions of DataType at the same time
+ * ('multipible inheritance').
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.34 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: DataType.java,v 1.35 2005-10-21 10:20:28 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {

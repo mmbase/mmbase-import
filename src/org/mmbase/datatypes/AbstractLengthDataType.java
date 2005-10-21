@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.5 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.6 2005-10-21 10:20:28 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -51,41 +51,41 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public abstract long getLength(Object value);
 
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public long getMinLength() {
         return Casting.toLong(minLengthRestriction.getValue());
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.Restriction getMinLengthRestriction() {
         return minLengthRestriction;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.Restriction setMinLength(long value) {
         return getMinLengthRestriction().setValue(new Long(value));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public long getMaxLength() {
         return Casting.toLong(getMaxLengthRestriction().getValue());
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public DataType.Restriction getMaxLengthRestriction() {
         return maxLengthRestriction;
