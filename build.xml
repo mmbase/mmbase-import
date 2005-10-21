@@ -721,9 +721,15 @@ Build-compiler: ${build.compiler}
           depends="init,lib.compile,javacc"
           unless="did.javadocs"
     >    
+    <mkdir dir="${download.dir}/j2se"/>
+    <mkdir dir="${download.dir}/j2ee"/>
     <antcall target="download">
       <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/package-list" />
+      <param name="destfile"   value="${download.dir}/j2se/package-list" />
+    </antcall>
+    <antcall target="download">
+      <param name="sourcefile" value="${j2ee-javadoc.loc}/package-list" />
+      <param name="destfile"   value="${download.dir}/j2ee/package-list" />
     </antcall>
     <javadoc packagenames="${javadoc.packages}"
              destdir="${mmdocs.dir}/javadoc"
@@ -736,7 +742,9 @@ Build-compiler: ${build.compiler}
              maxmemory="100M"
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
-      <link offline="true" packagelistLoc="${download.dir}" href="${j2se-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${download.dir}/j2se" href="${j2se-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
+      <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <fileset dir="${source.dir}" defaultexcludes="yes">
         <include name="src/**/*.java" />
         <include name="applications/*/src/**/*.java" />
