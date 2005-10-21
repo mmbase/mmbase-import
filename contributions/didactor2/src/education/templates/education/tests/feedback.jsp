@@ -109,11 +109,6 @@
 
 
    <%-- Feedback per question --%>
-   <mm:write referid="madetest" jspvar="tmp" vartype="String">
-      <%
-         System.out.println(tmp);
-      %>
-   </mm:write>
 <%--
    <mm:compare referid="feedback" valueset="1">
       <mm:treeinclude page="/education/tests/viewanswers.jsp" objectlist="$includePath" referids="$referids">
