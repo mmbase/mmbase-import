@@ -26,13 +26,13 @@ import org.mmbase.util.logging.*;
  * Every DataType extends this one. It's extensions can however implement several extensions of the
  * DataType interface (e.g. some datatypes (at least {@link StringDataType}) are both {@link LengthDataType}
  * and {@link ComparableDataType}, and some are only one ({@link BinaryDataType}, {@link
- * NumberDatatype}). In other words, this arrangement is like this, because java does not support
+ * NumberDataType}). In other words, this arrangement is like this, because java does not support
  * Multipible inheritance.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.14 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.15 2005-10-21 10:20:28 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {

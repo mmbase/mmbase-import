@@ -18,13 +18,14 @@ import org.mmbase.util.DynamicDate
 import org.mmbase.util.logging.*;
 
 /**
- * The date-time datatype further describes <code>java.util.Date</code> objects. The date can be
- * restrictioned to a certain period (using {@link #setMin}, {@link #setMax}, and {@link
- * org.mmbase.util.Casting#toDate}. The presentation logic can be specified using a pattern, see {@link #getPattern}.
+ * The date-time datatype further describes {@link java.util.Date} objects. The date can be
+ * restricted to a certain period (using {@link #setMin}, {@link #setMax}, and {@link
+ * org.mmbase.util.Casting#toDate}. The presentation logic can be specified using a pattern, see
+ * {@link #getPattern}.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.26 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.27 2005-10-21 10:20:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {

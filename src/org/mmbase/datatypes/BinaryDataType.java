@@ -10,11 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import org.mmbase.util.logging.*;
+
 /**
- * @javadoc
+ * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.4 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.5 2005-10-21 10:20:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {
