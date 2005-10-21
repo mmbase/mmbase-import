@@ -95,7 +95,7 @@
   <xsd:element name="specialization" type="DataType"/>
 
 
-  <xsd:complexType name="Constraint">
+  <xsd:complexType name="Restriction">
     <xsd:sequence>
       <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
@@ -105,7 +105,7 @@
 
   <xsd:complexType name="Comparable">
     <xsd:complexContent>
-      <xsd:extension base ="Constraint">
+      <xsd:extension base ="Restriction">
         <xsd:attribute name="value"     type="xsd:string" />
       </xsd:extension>
     </xsd:complexContent>
@@ -113,7 +113,7 @@
 
   <xsd:complexType name="Condition">
     <xsd:complexContent>
-      <xsd:extension base ="Constraint">
+      <xsd:extension base ="Restriction">
         <xsd:attribute name="value" type="xsd:boolean" />
       </xsd:extension>
     </xsd:complexContent>
@@ -174,7 +174,7 @@
   <xsd:element name="enumeration">
     <xsd:complexType>
       <xsd:complexContent>
-        <xsd:extension base="Constraint">
+        <xsd:extension base="Restriction">
           <xsd:sequence>
             <xsd:element ref="entry" maxOccurs="unbounded" minOccurs="0" />
           </xsd:sequence>

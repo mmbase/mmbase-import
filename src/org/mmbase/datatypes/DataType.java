@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.33 2005-10-18 21:56:38 michiel Exp $
+ * @version $Id: DataType.java,v 1.34 2005-10-21 09:40:13 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -39,23 +39,23 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
 
     /**
-     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced always.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced always.
      */
     static final int ENFORCE_ALWAYS   = Integer.MAX_VALUE;
 
     /**
-     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced only if it was changed.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only if it was changed.
      */
     static final int ENFORCE_ONCHANGE = 10000;
 
     /**
-     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the value must be enforced only on creation.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only on creation.
      */
     static final int ENFORCE_ONCREATE = 1000;
 
     /**
-     * Return value for {@link DataType.ValueConstraint#getEnforceStrength}. This means that the
-     * value must be enforced never, so the constraint serves only as UI indication.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the
+     * value must be enforced never, so the restriction serves only as UI indication.
      */
     static final int ENFORCE_NEVER    = 0;
 
@@ -144,9 +144,9 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
     /**
      * Returns the 'required' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.ValueConstraint}
+     * @return the property as a {@link DataType.Restriction}
      */
-    public DataType.ValueConstraint getRequiredConstraint();
+    public DataType.Restriction getRequiredRestriction();
 
     /**
      * Sets whether the data type requires a value.
@@ -154,10 +154,10 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype property that was just set
      */
-    public DataType.ValueConstraint setRequired(boolean required);
+    public DataType.Restriction setRequired(boolean required);
 
     /**
-     * Returns whether this field has a unique constraint.
+     * Returns whether this field has a unique restriction.
      * Uniqueness is generally achieved through association of the datatype with one or more sets of fields.
      * This is notably different from other datatype properties.
      *
@@ -169,9 +169,9 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
     /**
      * Returns the 'unique' property, containing the value, error messages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.ValueConstraint}
+     * @return the property as a {@link DataType.Restriction}
      */
-    public DataType.ValueConstraint getUniqueConstraint();
+    public DataType.Restriction getUniqueRestriction();
 
     /**
      * Sets whether the data type requires a value.
@@ -179,7 +179,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype property that was just set
      */
-    public DataType.ValueConstraint setUnique(boolean unique);
+    public DataType.Restriction setUnique(boolean unique);
 
     /**
      * @return A List of all possible values for this datatype, as {@link java.util.Map.Entry}s, or
@@ -200,7 +200,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      */
     public LocalizedEntryListFactory getEnumerationFactory();
 
-    public DataType.ValueConstraint getEnumerationConstraint();
+    public DataType.Restriction getEnumerationRestriction();
 
 
 
@@ -270,34 +270,38 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      */
     public Object clone(String name);
 
-    public interface ValueConstraint extends java.io.Serializable {
+
+    /**
+     * A restriction controls the acceptable values of a DataType.
+     */
+    public interface Restriction extends java.io.Serializable {
 
         public String getName();
         /** 
-         * A Value describing the constraint, so depending on the semantics of this constraint, it
+         * A Value describing the restriction, so depending on the semantics of this restriction, it
          * can have virtually every type.
          */
         public Object getValue();
-        public ValueConstraint setValue(java.io.Serializable value);
+        public Restriction setValue(java.io.Serializable value);
         /**
-         * If the constraint does not hold, the following error description can be used. On default
+         * If the restriction does not hold, the following error description can be used. On default
          * these descriptions are searched in a resource bundle based on the name of this
-         * constraint.
+         * restriction.
          */
         public LocalizedString getErrorDescription();
         public void setErrorDescription(LocalizedString errorDescription);
 
         /**
-         * This function should contain the actual logic of the constraint. This does not consider the 'enforceStrength'.
-         * @param value The value to check the constraint for
+         * This function should contain the actual logic of the restriction. This does not consider the 'enforceStrength'.
+         * @param value The value to check the restriction for
          * @param node  Some constrainst may need the Node.
          * @param field Some constrainst may need the Field.
-         * @return Whether the supplied value is a valid value for this constraint.
+         * @return Whether the supplied value is a valid value for this restriction.
          */
         public boolean valid(Object value, Node node, Field field);
 
         /**
-         * If a constraint is 'fixed', the value and error-description cannot be changed any more.
+         * If a restriction is 'fixed', the value and error-description cannot be changed any more.
          */
         public void setFixed(boolean fixed);
         

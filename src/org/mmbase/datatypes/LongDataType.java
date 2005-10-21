@@ -14,7 +14,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.3 2005-10-18 09:37:31 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.4 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
@@ -32,7 +32,7 @@ public class LongDataType extends NumberDataType {
      * @return the minimum value as an <code>long</code>, or {@link Long#MIN_VALUE} if there is no minimum.
      */
     public long getMin() {
-        Number min = (Number) getMinConstraint().getValue();
+        Number min = (Number) getMinRestriction().getValue();
         return min == null ? Long.MIN_VALUE : min.longValue();
     }
 
@@ -40,7 +40,7 @@ public class LongDataType extends NumberDataType {
      * @return the maximum value as an <code>long</code>, or {@link Long#MAX_VALUE} if there is no maximum.
      */
     public long getMax() {
-        Number max = (Number) getMaxConstraint().getValue();
+        Number max = (Number) getMaxRestriction().getValue();
         return max == null ? Long.MAX_VALUE : max.longValue();
     }
 

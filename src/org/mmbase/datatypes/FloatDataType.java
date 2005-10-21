@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.3 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: FloatDataType.java,v 1.4 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class FloatDataType extends NumberDataType {
@@ -32,7 +32,7 @@ public class FloatDataType extends NumberDataType {
      * @return the minimum value as a <code>float</code>, or {@link Float#NEGATIVE_INFINITY} if there is no minimum.
      */
     public float getMin() {
-        Number min = (Number) getMinConstraint().getValue();
+        Number min = (Number) getMinRestriction().getValue();
         return min == null ? Float.NEGATIVE_INFINITY : min.floatValue();
     }
 
@@ -40,7 +40,7 @@ public class FloatDataType extends NumberDataType {
      * @return the maximum value as a <code>float</code>, or {@link Float#POSITIVE_INFINITY} if there is no maximum.
      */
     public float getMax() {
-        Number max = (Number) getMaxConstraint().getValue();
+        Number max = (Number) getMaxRestriction().getValue();
         return max == null ? Float.POSITIVE_INFINITY : max.floatValue();
     }
 }

@@ -20,15 +20,15 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.7 2005-10-18 21:56:38 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.8 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
 
     private static final Logger log = Logging.getLoggerInstance(DateTimeDataType.class);
 
-    protected MinConstraint minConstraint  = new MinConstraint(true);
-    protected MaxConstraint maxConstraint  = new MaxConstraint(true);
+    protected MinRestriction minRestriction  = new MinRestriction(true);
+    protected MaxRestriction maxRestriction  = new MaxRestriction(true);
     protected ComparableDataType(String name, Class classType) {
         super(name, classType);
     }
@@ -37,15 +37,15 @@ public abstract class ComparableDataType extends BasicDataType {
         super.inherit(origin);
         if (origin instanceof ComparableDataType) {
             ComparableDataType dataType = (ComparableDataType)origin;
-            minConstraint  = new MinConstraint(dataType.minConstraint);
-            maxConstraint  = new MaxConstraint(dataType.maxConstraint);
+            minRestriction  = new MinRestriction(dataType.minRestriction);
+            maxRestriction  = new MaxRestriction(dataType.maxRestriction);
         }
     }
 
     /**
      */
-    public DataType.ValueConstraint getMinConstraint() {
-        return minConstraint;
+    public DataType.Restriction getMinRestriction() {
+        return minRestriction;
     }
 
     /**
@@ -53,13 +53,13 @@ public abstract class ComparableDataType extends BasicDataType {
      * @return <code>true</code> if the minimum value if inclusive, <code>false</code> if it is not, or if there is no minimum.
      */
     public boolean isMinInclusive() {
-        return minConstraint.isInclusive();
+        return minRestriction.isInclusive();
     }
 
     /**
      */
-    public DataType.ValueConstraint getMaxConstraint() {
-        return maxConstraint;
+    public DataType.Restriction getMaxRestriction() {
+        return maxRestriction;
     }
 
 
@@ -68,7 +68,7 @@ public abstract class ComparableDataType extends BasicDataType {
      * @return <code>true</code> if the maximum value if inclusive, <code>false</code> if it is not, or if there is no minimum.
      */
     public boolean isMaxInclusive() {
-        return maxConstraint.isInclusive();
+        return maxRestriction.isInclusive();
     }
 
 
@@ -78,11 +78,11 @@ public abstract class ComparableDataType extends BasicDataType {
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMxbBase)
      */
-    public DataType.ValueConstraint setMin(Comparable value, boolean inclusive) {
+    public DataType.Restriction setMin(Comparable value, boolean inclusive) {
         edit();
         checkType(value);
-        if (inclusive != minConstraint.isInclusive()) minConstraint = new MinConstraint(inclusive);
-        return minConstraint.setValue((java.io.Serializable) value);
+        if (inclusive != minRestriction.isInclusive()) minRestriction = new MinRestriction(inclusive);
+        return minRestriction.setValue((java.io.Serializable) value);
     }
 
 
@@ -92,18 +92,18 @@ public abstract class ComparableDataType extends BasicDataType {
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
      */
-    public DataType.ValueConstraint setMax(Comparable value, boolean inclusive) {
+    public DataType.Restriction setMax(Comparable value, boolean inclusive) {
         edit();
         checkType(value);
-        if (inclusive != maxConstraint.isInclusive()) maxConstraint = new MaxConstraint(inclusive);
-        return getMaxConstraint().setValue((java.io.Serializable) value);
+        if (inclusive != maxRestriction.isInclusive()) maxRestriction = new MaxRestriction(inclusive);
+        return getMaxRestriction().setValue((java.io.Serializable) value);
     }
 
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
         errors = super.validateCastedValue(errors, castedValue, node, field);
-        errors = minConstraint.validate(errors, castedValue, node, field);
-        errors = maxConstraint.validate(errors, castedValue, node, field);
+        errors = minRestriction.validate(errors, castedValue, node, field);
+        errors = maxRestriction.validate(errors, castedValue, node, field);
         return errors;
     }
 
@@ -114,10 +114,10 @@ public abstract class ComparableDataType extends BasicDataType {
 
     protected StringBuffer toStringBuffer() {
         StringBuffer buf = super.toStringBuffer();        
-        Object minValue = minConstraint.getValue();
-        Object maxValue = maxConstraint.getValue();
+        Object minValue = minRestriction.getValue();
+        Object maxValue = maxRestriction.getValue();
         if (minValue != null) {
-            buf.append(minConstraint.isInclusive() ? '[' : '<');
+            buf.append(minRestriction.isInclusive() ? '[' : '<');
             buf.append(minValue);
             if (minValue instanceof Date) {
                 // tss, the toString of Date object doesn't have BC in it if needed!
@@ -133,19 +133,19 @@ public abstract class ComparableDataType extends BasicDataType {
         }        
         if (maxValue != null) {
             buf.append(maxValue);
-            buf.append(maxConstraint.isInclusive() ? ']' : '>');
+            buf.append(maxRestriction.isInclusive() ? ']' : '>');
         }
         return buf;
     }
 
-    private class MinConstraint extends AbstractValueConstraint {
+    private class MinRestriction extends AbstractRestriction {
         private boolean inclusive;
-        MinConstraint(MinConstraint source) {
+        MinRestriction(MinRestriction source) {
             super(source.getName(), null);
             inclusive = source.inclusive;
             inherit(source);
         }
-        MinConstraint(boolean inc) {
+        MinRestriction(boolean inc) {
             super("min" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
@@ -161,14 +161,14 @@ public abstract class ComparableDataType extends BasicDataType {
             return inclusive;
         }
     }
-    private class MaxConstraint extends AbstractValueConstraint {
+    private class MaxRestriction extends AbstractRestriction {
         private boolean inclusive;
-        MaxConstraint(MaxConstraint source) {
+        MaxRestriction(MaxRestriction source) {
             super(source.getName(), null);
             inclusive = source.inclusive;
             inherit(source);
         }
-        MaxConstraint(boolean inc) {
+        MaxRestriction(boolean inc) {
             super("max" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }

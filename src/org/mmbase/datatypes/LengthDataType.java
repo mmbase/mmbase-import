@@ -17,12 +17,12 @@ import org.mmbase.util.logging.*;
 
 /**
  * A LengthDataType is a datatype that defines a length for its values ({@link #getLength(Object)}) ,
- * and constraints on that (minimal an maximal length). Sometimes you may think 'size' in stead of
+ * and restrictions on that (minimal an maximal length). Sometimes you may think 'size' in stead of
  * length, but we think that there is is not much difference between those...
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.1 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: LengthDataType.java,v 1.2 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public interface LengthDataType extends DataType {
@@ -42,9 +42,9 @@ public interface LengthDataType extends DataType {
     public long getMinLength();
     /**
      * Returns the 'minLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.ValueConstraint}
+     * @return the property as a {@link DataType.Restriction}
      */
-    public DataType.ValueConstraint getMinLengthConstraint();
+    public DataType.Restriction getMinLengthRestriction();
 
     /**
      * Sets the minimum length of binary values for this datatype.
@@ -52,7 +52,7 @@ public interface LengthDataType extends DataType {
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype property that was just set
      */
-    public DataType.ValueConstraint setMinLength(long value);
+    public DataType.Restriction setMinLength(long value);
 
     /**
      * Returns the maximum length of binary values for this datatype.
@@ -63,9 +63,9 @@ public interface LengthDataType extends DataType {
 
     /**
      * Returns the 'maxLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.ValueConstraint}
+     * @return the property as a {@link DataType.Restriction}
      */
-    public DataType.ValueConstraint getMaxLengthConstraint();
+    public DataType.Restriction getMaxLengthRestriction();
 
     /**
      * Sets the maximum length of binary values for this datatype.
@@ -73,6 +73,6 @@ public interface LengthDataType extends DataType {
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype property that was just set
      */
-    public DataType.ValueConstraint setMaxLength(long value);
+    public DataType.Restriction setMaxLength(long value);
 
 }
