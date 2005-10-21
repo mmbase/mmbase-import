@@ -16,13 +16,14 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 
 /**
- * Queries a Tree from MMBase. A Tree is presented as a List of MultiLevel results (ClusterNodes),
- * combined with a smart iterator which iterates through the elements these lists as if it was one
- * list ordered as a Tree.
+ * {@inheritDoc}
+ *
+ * This version is automaticly growing with the same 'branch' every when that is possible. For that
+ * it needs a kind of template query for every branch, which is defined by the constructor.
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.10 2005-06-17 13:23:58 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.11 2005-10-21 16:48:21 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -34,7 +35,7 @@ public  class GrowingTreeList extends TreeList {
     protected int maxNumberOfSteps;
 
     /**
-     * @param q              The 'base' query defining the minimal depth of the tree elements
+     * @param q              The 'base' query defining the minimal depth of the tree elements. The trunk of the tree.
      * @param maxDepth       You must supply a maximal depth of the nodes, because MMBase is basicly a network rather then a tree, so
      *                        tree representations could be infinitely deep.
      * @param nodeManager    Destination Nodemanager in the tree

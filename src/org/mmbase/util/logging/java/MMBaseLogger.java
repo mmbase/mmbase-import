@@ -32,16 +32,25 @@ import java.util.logging.Level;
 public class MMBaseLogger extends java.util.logging.Logger {
     
     Logger log = null;
+
+    /**
+     * Instantiates a java Logger wich logs to the MMBase logger with category {@link java.util.logging.LogRecord#getLoggerName}.
+     */
     public MMBaseLogger() {
         super(null, null);
     }
 
+    /**
+     * Instantiated a java Logger wich logs to the given MMBase logger.
+     */
     public MMBaseLogger(Logger log) {
         super(null, null);
         this.log = log;
     }
 
-    // javadoc inherited
+    /**
+     * See {@link java.util.logging.Logger#log(LogRecord)}.
+     */
     public void log(LogRecord record) {
 
         Logger l;

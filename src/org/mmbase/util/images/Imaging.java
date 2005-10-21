@@ -31,8 +31,6 @@ public abstract class Imaging {
     public static final String FIELD_CKEY    = "ckey";
 
 
-
-
     /**
      * Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * @param ext A String containing the extension.
@@ -76,6 +74,7 @@ public abstract class Imaging {
 
     }
 
+    private static final char NOQUOTING = '-';
     /**
      * Parses the 'image conversion template' to a List. I.e. it break
      * it up in substrings, with '+' delimiter. However a + char does
@@ -85,7 +84,6 @@ public abstract class Imaging {
      * @since MMBase-1.7
      */
     // @author michiel
-    protected static final char NOQUOTING = '-';
     public static List parseTemplate(String template) {
         if (log.isDebugEnabled()) log.debug("parsing " + template);
         List params = new ArrayList();

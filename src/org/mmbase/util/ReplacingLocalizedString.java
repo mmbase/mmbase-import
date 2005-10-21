@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.3 2005-10-07 17:12:46 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.4 2005-10-21 16:46:11 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends LocalizedString {
@@ -86,7 +86,7 @@ public class ReplacingLocalizedString extends LocalizedString {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * Also takes into account the replacements in the values (but only 'lazily', when actually requested).
      */
