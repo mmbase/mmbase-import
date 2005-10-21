@@ -15,7 +15,7 @@
 </mm:present>
 
 
-  <mm:import id="emaildomain"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
+  <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
   
    <mm:import id="to"></mm:import>
    <mm:import id="cc"></mm:import>
@@ -147,7 +147,7 @@
   
  
   <mm:node number="$user">
-    <mm:import id="from">"<mm:field name="firstname"/> <mm:field name="lastname"/>" <<mm:field name="username"/><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/>></mm:import>
+    <mm:import id="from">"<mm:field name="firstname"/> <mm:field name="lastname"/>" <<mm:field name="username"/><mm:write referid="emaildomain" />></mm:import>
   </mm:node>
 
  
