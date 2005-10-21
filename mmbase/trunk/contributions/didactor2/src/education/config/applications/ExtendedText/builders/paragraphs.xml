@@ -4,7 +4,7 @@
   <!-- Builder configuration for paragraphs -->
   <!-- Status of the builder: active or inactive -->
   <status>active</status>
-  <classfile>nl.didactor.builders.DidactorBuilder</classfile>
+  <classfile>nl.didactor.versioning.builders.ParagraphVersioningBuilder</classfile>
 
   <!-- The default maximum age of objects in a search
 used by some MMBase editors to limit the results of a search -->

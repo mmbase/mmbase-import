@@ -2,7 +2,6 @@
  * Component description interface.
  */
 package nl.didactor.component.email;
-import nl.didactor.builders.DidactorBuilder;
 import nl.didactor.component.Component;
 import nl.didactor.component.core.*;
 import org.mmbase.bridge.Cloud;
@@ -16,12 +15,6 @@ public class DidactorEmail extends Component {
      */
     public String getVersion() {
         return "2.0";
-    }
-
-    public void init() {
-        MMBase mmbase = MMBase.getMMBase();
-        DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
-        people.registerPostInsertComponent(this, 10);
     }
 
     /**
@@ -58,6 +51,8 @@ public class DidactorEmail extends Component {
     public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
         if ("mayforward".equals(setting)) {
             return getUserSetting(setting, "" + context.get("user"), cloud, arguments);
+        } else if ("bladiebla".equals(setting)) {
+            return "2";
         } else { 
             throw new IllegalArgumentException("Unknown setting '" + setting + "'");
         }
@@ -67,10 +62,9 @@ public class DidactorEmail extends Component {
      * This method is called when a new object is added to Didactor. If the component
      * needs to insert objects for this object, it can do so. 
      */
-    public boolean postInsert(MMObjectNode node) {
-        if (node.getBuilder().getTableName().equals("people")) {
+    public boolean notifyCreate(MMObjectNode node) {
+        if (node.getBuilder().getTableName().equals("people"))
             return createUser(node);
-        }
 
         return true;
     }
