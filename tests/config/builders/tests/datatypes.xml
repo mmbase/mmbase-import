@@ -117,7 +117,7 @@
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="ERROR" />
         <enumeration >
-          <entry resource="org.mmbase.module.builders.resources.states"
+          <entry basename="org.mmbase.module.builders.resources.states"
                  javaconstants="org.mmbase.module.builders.MMServers" 
                  />
         </enumeration>
