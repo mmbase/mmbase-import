@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.13 2005-10-20 11:43:53 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.14 2005-10-21 09:40:13 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -43,10 +43,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
 
-    protected RequiredConstraint requiredConstraint        = new RequiredConstraint(false);
-    protected UniqueConstraint   uniqueConstraint          = new UniqueConstraint(false);
-    protected TypeConstraint     typeConstraint            = new TypeConstraint();
-    protected EnumerationConstraint enumerationConstraint  = new EnumerationConstraint((LocalizedEntryListFactory) null);
+    protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
+    protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
+    protected TypeRestriction     typeRestriction            = new TypeRestriction();
+    protected EnumerationRestriction enumerationRestriction  = new EnumerationRestriction((LocalizedEntryListFactory) null);
 
     /**
      * The datatype from which this datatype originally inherited it's properties.
@@ -85,9 +85,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeObject(requiredConstraint);
-        out.writeObject(uniqueConstraint);
-        out.writeObject(enumerationConstraint.value);
+        out.writeObject(requiredRestriction);
+        out.writeObject(uniqueRestriction);
+        out.writeObject(enumerationRestriction.value);
         if (owner instanceof Serializable) {
             out.writeObject(owner);
         } else {
@@ -106,10 +106,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
     // implementation of serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        requiredConstraint    = (RequiredConstraint) in.readObject();
-        uniqueConstraint      = (UniqueConstraint) in.readObject();
-        enumerationConstraint = new EnumerationConstraint((LocalizedEntryListFactory) in.readObject());
-        typeConstraint        = new TypeConstraint(); // its always the same, so no need actually persisting it.
+        requiredRestriction    = (RequiredRestriction) in.readObject();
+        uniqueRestriction      = (UniqueRestriction) in.readObject();
+        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
+        typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
         owner                 = in.readObject();
         classType             =  (Class) in.readObject();
         defaultValue          = in.readObject();
@@ -132,9 +132,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         this.origin = origin;
         defaultValue = origin.getDefaultValue();
         commitProcessor = origin.commitProcessor;
-        enumerationConstraint = new EnumerationConstraint(origin.enumerationConstraint);
-        requiredConstraint = new RequiredConstraint(origin.requiredConstraint);
-        uniqueConstraint   = new UniqueConstraint(origin.uniqueConstraint);
+        enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
+        requiredRestriction = new RequiredRestriction(origin.requiredRestriction);
+        uniqueRestriction   = new UniqueRestriction(origin.uniqueRestriction);
 
         if (origin.getProcessors == null) {
             getProcessors = null;
@@ -186,7 +186,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * @inheritDoc
      */
     public Object autoCast(Object value) {        
-        return Casting.toType(classType, enumerationConstraint.cast(value));
+        return Casting.toType(classType, enumerationRestriction.cast(value));
     }
 
     /**
@@ -195,7 +195,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * cast to Number.
      */
     protected Object castToValidate(Object value) {
-        return Casting.toType(classType,  enumerationConstraint.cast(value));
+        return Casting.toType(classType,  enumerationRestriction.cast(value));
     }
 
     /**
@@ -270,16 +270,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      */
     public final Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
         Collection errors = VALID;
-        errors = typeConstraint.validate(errors, value, node, field);
+        errors = typeRestriction.validate(errors, value, node, field);
         if (errors.size() != 0) {
-            // no need continuing, constraints will probably not know how to handle this value any way.
+            // no need continuing, restrictions will probably not know how to handle this value any way.
             return errors;
         }
         Object castedValue = castToValidate(value);
-        errors = requiredConstraint.validate(errors, castedValue, node, field);
+        errors = requiredRestriction.validate(errors, castedValue, node, field);
         if (value == null) return errors; // null is valid, unless required.
-        errors = enumerationConstraint.validate(errors, value, node, field);
-        errors = uniqueConstraint.validate(errors, castedValue, node, field);
+        errors = enumerationRestriction.validate(errors, value, node, field);
+        errors = uniqueRestriction.validate(errors, castedValue, node, field);
         errors = validateCastedValue(errors, castedValue, node, field);
         return errors;
     }
@@ -308,8 +308,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         if (isUnique()) {
             buf.append("  unique");
         }
-        if (enumerationConstraint.getValue() != null) {
-            buf.append(" " + enumerationConstraint);
+        if (enumerationRestriction.getValue() != null) {
+            buf.append(" " + enumerationRestriction);
         }
         return buf;
 
@@ -382,42 +382,42 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * {@inheritDoc}
      */
     public boolean isRequired() {
-        return requiredConstraint.isRequired();
+        return requiredRestriction.isRequired();
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint getRequiredConstraint() {
-        return requiredConstraint;
+    public DataType.Restriction getRequiredRestriction() {
+        return requiredRestriction;
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint setRequired(boolean required) {
-        return getRequiredConstraint().setValue(Boolean.valueOf(required));
+    public DataType.Restriction setRequired(boolean required) {
+        return getRequiredRestriction().setValue(Boolean.valueOf(required));
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isUnique() {
-        return uniqueConstraint.isUnique();
+        return uniqueRestriction.isUnique();
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint getUniqueConstraint() {
-        return uniqueConstraint;
+    public DataType.Restriction getUniqueRestriction() {
+        return uniqueRestriction;
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint setUnique(boolean unique) {
-        return getUniqueConstraint().setValue(Boolean.valueOf(unique));
+    public DataType.Restriction setUnique(boolean unique) {
+        return getUniqueRestriction().setValue(Boolean.valueOf(unique));
     }
 
 
@@ -425,18 +425,18 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * {@inheritDoc}
      */
     public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
-        return enumerationConstraint.getEnumerationValues(locale, cloud, node, field);
+        return enumerationRestriction.getEnumerationValues(locale, cloud, node, field);
     }
 
     /**
      * {@inheritDoc}
      */
     public LocalizedEntryListFactory getEnumerationFactory() {
-        return enumerationConstraint.getEnumerationFactory();
+        return enumerationRestriction.getEnumerationFactory();
     }
 
-    public DataType.ValueConstraint getEnumerationConstraint() {
-        return enumerationConstraint;
+    public DataType.Restriction getEnumerationRestriction() {
+        return enumerationRestriction;
     }
 
 
@@ -542,23 +542,23 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      *
      */
-    protected abstract class AbstractValueConstraint extends StaticAbstractValueConstraint {
-        protected AbstractValueConstraint(DataType.ValueConstraint source) {
+    protected abstract class AbstractRestriction extends StaticAbstractRestriction {
+        protected AbstractRestriction(DataType.Restriction source) {
             super(BasicDataType.this, source);
         }
-        protected AbstractValueConstraint(String name, Serializable value) {
+        protected AbstractRestriction(String name, Serializable value) {
             super(BasicDataType.this, name, value);
         }
     }
     /**
-     * A Constraint is represented by these kind of objects.
+     * A Restriction is represented by these kind of objects.
      * When you override this class, take care of cloning of outer class!
      * This class itself is not cloneable. Cloning is hard when you have inner classes.
      *
      * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article of inner classes,
      * cloning in java</a>
      */
-    protected static abstract class StaticAbstractValueConstraint implements DataType.ValueConstraint {
+    protected static abstract class StaticAbstractRestriction implements DataType.Restriction {
         protected final String name;
         protected final BasicDataType parent;
         protected LocalizedString errorDescription;
@@ -566,13 +566,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected boolean fixed = false;
         protected int    enforceStrength = DataType.ENFORCE_ALWAYS;
 
-        protected StaticAbstractValueConstraint(BasicDataType parent, DataType.ValueConstraint source) {
+        protected StaticAbstractRestriction(BasicDataType parent, DataType.Restriction source) {
             this.name = source.getName();
             this.parent = parent;
             inherit(source);
         }
 
-        protected StaticAbstractValueConstraint(BasicDataType parent, String name, Serializable value) {
+        protected StaticAbstractRestriction(BasicDataType parent, String name, Serializable value) {
             this.name = name;
             this.parent = parent;
             this.value = value;
@@ -586,11 +586,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return value;
         }
 
-        public ValueConstraint setValue(Serializable value) {
-            log.debug("Setting constraint " + name + " on " + parent);
+        public Restriction setValue(Serializable value) {
+            log.debug("Setting restriction " + name + " on " + parent);
             parent.edit();
             if (fixed) {
-                throw new IllegalStateException("Constraint '" + name + "' is fixed, cannot be changed");
+                throw new IllegalStateException("Restriction '" + name + "' is fixed, cannot be changed");
             }
             this.value = value;
             return this;
@@ -617,7 +617,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
         public void setFixed(boolean fixed) {
             if (this.fixed && !fixed) {
-                throw new IllegalStateException("Constraint '" + name + "' is fixed, cannot be changed");
+                throw new IllegalStateException("Restriction '" + name + "' is fixed, cannot be changed");
             }
             this.fixed = fixed;
         }
@@ -626,7 +626,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
         /**
          * Utility method to add a new error message to the errors collection, based on this
-         * Constraint. If this error-collection is unmodifiable (VALID), it is replaced with a new
+         * Restriction. If this error-collection is unmodifiable (VALID), it is replaced with a new
          * empty one first.
          */
         protected final Collection addError(Collection errors, Object v) {
@@ -667,7 +667,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         public abstract boolean valid(Object value, Node node, Field field);
 
 
-        protected void inherit(DataType.ValueConstraint source) {
+        protected void inherit(DataType.Restriction source) {
             value = (Serializable) source.getValue();
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
@@ -686,11 +686,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     }
 
-    protected class RequiredConstraint extends AbstractValueConstraint {
-        RequiredConstraint(RequiredConstraint source) {
+    protected class RequiredRestriction extends AbstractRestriction {
+        RequiredRestriction(RequiredRestriction source) {
             super(source);
         }
-        RequiredConstraint(boolean b) {
+        RequiredRestriction(boolean b) {
             super("required", Boolean.valueOf(b));
         }
         final boolean isRequired() {
@@ -702,11 +702,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
-    protected class UniqueConstraint extends AbstractValueConstraint {
-        UniqueConstraint(UniqueConstraint source) {
+    protected class UniqueRestriction extends AbstractRestriction {
+        UniqueRestriction(UniqueRestriction source) {
             super(source);
         }
-        UniqueConstraint(boolean b) {
+        UniqueRestriction(boolean b) {
             super("unique", Boolean.valueOf(b));
         }
         final boolean isUnique() {
@@ -720,10 +720,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 // see (and database doesn't know that!)
                 NodeQuery query = field.getNodeManager().createQuery();
                 Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
-                Queries.addConstraint(query,constraint);
+                Queries.addConstraint(query, constraint);
                 if (!node.isNew()) {
                     constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
-                    Queries.addConstraint(query,constraint);
+                    Queries.addConstraint(query, constraint);
                 }
                 log.debug(query);
                 return Queries.count(query) == 0;
@@ -734,11 +734,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
-    protected class TypeConstraint extends AbstractValueConstraint {
-        TypeConstraint(TypeConstraint source) {
+    protected class TypeRestriction extends AbstractRestriction {
+        TypeRestriction(TypeRestriction source) {
             super(source);
         }
-        TypeConstraint() {
+        TypeRestriction() {
             super("type", BasicDataType.this.getClass());
         }
         public boolean valid(Object v, Node node, Field field) {
@@ -751,11 +751,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
-    protected class EnumerationConstraint extends AbstractValueConstraint {
-        EnumerationConstraint(EnumerationConstraint source) {
+    protected class EnumerationRestriction extends AbstractRestriction {
+        EnumerationRestriction(EnumerationRestriction source) {
             super(source);
         }
-        EnumerationConstraint(LocalizedEntryListFactory entries) {
+        EnumerationRestriction(LocalizedEntryListFactory entries) {
             super("enumeration", entries);
         }
         final LocalizedEntryListFactory getEnumerationFactory() {

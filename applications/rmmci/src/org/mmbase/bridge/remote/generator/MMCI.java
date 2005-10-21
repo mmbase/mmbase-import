@@ -126,7 +126,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.cache.CachePolicy",doc));
         // datatypes classes
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType$ValueConstraint", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType$Restriction", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.LengthDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.ComparableDataType",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BinaryDataType",doc));

@@ -18,12 +18,12 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.13 2005-10-12 00:01:04 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.14 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
 
-    protected MustExistConstraint mustExistConstraint = new MustExistConstraint();
+    protected MustExistRestriction mustExistRestriction = new MustExistRestriction();
 
     /**
      * Constructor for node field.
@@ -36,7 +36,7 @@ public class NodeDataType extends BasicDataType {
     public void inherit(BasicDataType origin) {
         super.inherit(origin);
         if (origin instanceof NodeDataType) {
-            mustExistConstraint = new MustExistConstraint(((NodeDataType)origin).mustExistConstraint);
+            mustExistRestriction = new MustExistRestriction(((NodeDataType)origin).mustExistRestriction);
         }
     }
 
@@ -47,25 +47,25 @@ public class NodeDataType extends BasicDataType {
      *              especially since a node field is essentially a foreign key.
      */
     public boolean mustExist() {
-        return mustExistConstraint.getValue().equals(Boolean.TRUE);
+        return mustExistRestriction.getValue().equals(Boolean.TRUE);
     }
 
-    public MustExistConstraint getMustExistConstraint() {
-        mustExistConstraint.setFixed(true);
-        return mustExistConstraint;
+    public MustExistRestriction getMustExistRestriction() {
+        mustExistRestriction.setFixed(true);
+        return mustExistRestriction;
     }
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
         errors = super.validateCastedValue(errors, castedValue, node, field);
-        errors = mustExistConstraint.validate(errors, castedValue, node, field);
+        errors = mustExistRestriction.validate(errors, castedValue, node, field);
         return errors;
     }
 
-    private class MustExistConstraint extends AbstractValueConstraint {
-        MustExistConstraint(MustExistConstraint me) {
+    private class MustExistRestriction extends AbstractRestriction {
+        MustExistRestriction(MustExistRestriction me) {
             super(me);
         }
-        MustExistConstraint() {
+        MustExistRestriction() {
             super("mustExist", Boolean.TRUE);
         }
         public boolean valid(Object value, Node node, Field field) {

@@ -12,7 +12,6 @@ package org.mmbase.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.FieldValueDateConstraint;
 import org.mmbase.util.Casting;
 import org.mmbase.util.DynamicDate
 ;
@@ -20,12 +19,12 @@ import org.mmbase.util.logging.*;
 
 /**
  * The date-time datatype further describes <code>java.util.Date</code> objects. The date can be
- * constrainted to a certain period (using {@link #setMin}, {@link #setMax}, and {@link
+ * restrictioned to a certain period (using {@link #setMin}, {@link #setMax}, and {@link
  * org.mmbase.util.Casting#toDate}. The presentation logic can be specified using a pattern, see {@link #getPattern}.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.25 2005-10-18 09:37:31 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.26 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -71,7 +70,7 @@ public class DateTimeDataType extends ComparableDataType {
      * @return the minimum value as an <code>Date</code>, or very very long ago if there is no minimum.
      */
     public Date getMin() {
-        Date min = (Date) getMinConstraint().getValue();
+        Date min = (Date) getMinRestriction().getValue();
         return min == null ? MIN_VALUE : min;
     }
 
@@ -79,7 +78,7 @@ public class DateTimeDataType extends ComparableDataType {
      * @return the maximum value as an <code>Date</code>, or a very very in the future if there is no maximum.
      */
     public Date getMax() {
-        Date max = (Date) getMaxConstraint().getValue();
+        Date max = (Date) getMaxRestriction().getValue();
         return max == null ? MAX_VALUE : max;
     }
 

@@ -22,16 +22,16 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.20 2005-10-20 11:43:53 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.21 2005-10-21 09:40:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
-    protected PatternConstraint patternConstraint = new PatternConstraint(Pattern.compile(".*"));
+    protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile(".*"));
     private boolean isPassword = false;
-    protected AbstractLengthDataType.MinConstraint minLengthConstraint = new AbstractLengthDataType.MinConstraint(this, 0);
-    protected AbstractLengthDataType.MaxConstraint maxLengthConstraint = new AbstractLengthDataType.MaxConstraint(this, Long.MAX_VALUE);
+    protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, 0);
+    protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Long.MAX_VALUE);
 
     /**
      * Constructor for string data type.
@@ -45,10 +45,10 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         super.inherit(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
-            patternConstraint = new PatternConstraint(dataType.patternConstraint);
+            patternRestriction = new PatternRestriction(dataType.patternRestriction);
             isPassword = dataType.isPassword();
-            minLengthConstraint = new AbstractLengthDataType.MinConstraint(this, dataType.getMinLengthConstraint());
-            maxLengthConstraint = new AbstractLengthDataType.MaxConstraint(this, dataType.getMaxLengthConstraint());
+            minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, dataType.getMinLengthRestriction());
+            maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, dataType.getMaxLengthRestriction());
         }
     }
 
@@ -59,41 +59,41 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * {@inheritDoc}
      */
     public long getMinLength() {
-        return Casting.toLong(minLengthConstraint.getValue());
+        return Casting.toLong(minLengthRestriction.getValue());
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint getMinLengthConstraint() {
-        return minLengthConstraint;
+    public DataType.Restriction getMinLengthRestriction() {
+        return minLengthRestriction;
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint setMinLength(long value) {
-        return getMinLengthConstraint().setValue(new Long(value));
+    public DataType.Restriction setMinLength(long value) {
+        return getMinLengthRestriction().setValue(new Long(value));
     }
 
     /**
      * {@inheritDoc}
      */
     public long getMaxLength() {
-        return Casting.toLong(getMaxLengthConstraint().getValue());
+        return Casting.toLong(getMaxLengthRestriction().getValue());
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint getMaxLengthConstraint() {
-        return maxLengthConstraint;
+    public DataType.Restriction getMaxLengthRestriction() {
+        return maxLengthRestriction;
     }
     /**
      * {@inheritDoc}
      */
-    public DataType.ValueConstraint setMaxLength(long value) {
-        return getMaxLengthConstraint().setValue(new Long(value));
+    public DataType.Restriction setMaxLength(long value) {
+        return getMaxLengthRestriction().setValue(new Long(value));
     }
 
 
@@ -103,15 +103,15 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * @return the pattern.
      */
     public Pattern getPattern() {
-        return patternConstraint.getPattern();
+        return patternRestriction.getPattern();
     }
 
     /**
      * Returns the 'pattern' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.ValueConstraint}
+     * @return the property as a {@link DataType.Restriction}
      */
-    public DataType.ValueConstraint getPatternConstraint() {
-        return patternConstraint;
+    public DataType.Restriction getPatternRestriction() {
+        return patternRestriction;
     }
 
     /**
@@ -119,8 +119,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * @param value the pattern as a <code>Pattern</code>, or <code>null</code> if no pattern should be applied.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MMBase)
      */
-    public DataType.ValueConstraint setPattern(Pattern value) {
-        return getPatternConstraint().setValue(value);
+    public DataType.Restriction setPattern(Pattern value) {
+        return getPatternRestriction().setValue(value);
     }
 
     /**
@@ -136,7 +136,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
         errors = super.validateCastedValue(errors, castedValue, node, field);
-        errors = patternConstraint.validate(errors, castedValue, node, field);
+        errors = patternRestriction.validate(errors, castedValue, node, field);
         return errors;
     }
 
@@ -148,11 +148,11 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         return buf;
     }
 
-    protected class PatternConstraint extends AbstractValueConstraint {
-        PatternConstraint(PatternConstraint source) {
+    protected class PatternRestriction extends AbstractRestriction {
+        PatternRestriction(PatternRestriction source) {
             super(source);
         }
-        PatternConstraint(Pattern v) {
+        PatternRestriction(Pattern v) {
             super("pattern", v);
         }
         Pattern getPattern() {
