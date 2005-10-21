@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.2 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: LengthDataType.java,v 1.3 2005-10-21 16:41:53 michiel Exp $
  * @since MMBase-1.8
  */
 public interface LengthDataType extends DataType {
@@ -41,8 +41,8 @@ public interface LengthDataType extends DataType {
      */
     public long getMinLength();
     /**
-     * Returns the 'minLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.Restriction}
+     * Returns the 'minLength' restriction, containing the value, errormessages, and fixed status of this attribute.
+     * @return the restriction as a {@link DataType.Restriction}
      */
     public DataType.Restriction getMinLengthRestriction();
 
@@ -50,7 +50,7 @@ public interface LengthDataType extends DataType {
      * Sets the minimum length of binary values for this datatype.
      * @param value the minimum length as an <code>long</code>, or 0 if there is no minimum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
-     * @return the datatype property that was just set
+     * @return the datatype restriction that was just set
      */
     public DataType.Restriction setMinLength(long value);
 
@@ -62,8 +62,8 @@ public interface LengthDataType extends DataType {
     public long getMaxLength();
 
     /**
-     * Returns the 'maxLength' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.Restriction}
+     * Returns the 'maxLength' restriction, containing the value, errormessages, and fixed status of this attribute.
+     * @return the restriction as a {@link DataType.Restriction}
      */
     public DataType.Restriction getMaxLengthRestriction();
 
@@ -71,7 +71,7 @@ public interface LengthDataType extends DataType {
      * Sets the maximum length of binary values for this datatype.
      * @param value see {@link #getMaxLength}
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
-     * @return the datatype property that was just set
+     * @return the datatype restriction that was just set
      */
     public DataType.Restriction setMaxLength(long value);
 

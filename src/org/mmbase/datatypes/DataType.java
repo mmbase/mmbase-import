@@ -24,19 +24,20 @@ import org.mmbase.util.logging.*;
 
 /**
  * A value in MMBase (such as the value of a field, or function parameter) is associated with a
- * 'datatype'.  A DataType is actually an elaborated wrapper arround a Class object, but besides this
- * basic type of the value, it also defines restrictions on the values, a default value, and
- * Processors.
+ * 'datatype'.  A DataType is actually an elaborated wrapper arround a Class object, but besides
+ * this basic type of the value, it also defines restrictions on the values, a default value,
+ * Processors, and perhaps other properties (e.g. properties which describe indications for edit
+ * tool implementations).
  * 
  * There are several extensions of DataType which normally add other kinds of restrictions which are
  * specific for certain classes of values. All implementations of DataType extend from {@link
  * BasicDataType}, but they can sometimes implement different extensions of DataType at the same time
- * ('multipible inheritance').
+ * ('multiple inheritance').
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.35 2005-10-21 10:20:28 michiel Exp $
+ * @version $Id: DataType.java,v 1.36 2005-10-21 16:41:53 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -117,22 +118,30 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
     public DataType setDefaultValue(Object def);
 
-
+    /**
+     * @javadoc
+     */
     public DataType rewrite(Object owner);
+    /**
+     * @javadoc
+     */
     public boolean isFinished();
+    /**
+     * @javadoc
+     */
     public DataType finish(Object owner);
 
 
     /**
      * Checks if the passed object is of the correct type (compatible with the type of this data type),
-     * and follows the restrictions defined for this type.
+     * and obeys the restrictions defined for this type.
      * @return An error message if the value is not compatible. An empty collection if valid.
      * @param value the value to validate
      */
     public Collection /*<LocalizedString>*/ validate(Object value);
 
     /**
-     * Checks if the passed object follows the restrictions defined for this type.
+     * Checks if the passed object obeys the restrictions defined for this type.
      * @param value the value to validate
      * @param node the node for which the datatype is checked. If not <code>null</code>, and the
      *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
@@ -152,8 +161,8 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public boolean isRequired();
 
     /**
-     * Returns the 'required' property, containing the value, errormessages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.Restriction}
+     * Returns the 'required' restriction, containing the value, errormessages, and fixed status of this attribute.
+     * @return the restriction as a {@link DataType.Restriction}
      */
     public DataType.Restriction getRequiredRestriction();
 
@@ -161,7 +170,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * Sets whether the data type requires a value.
      * @param required <code>true</code> if a value is required
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
-     * @return the datatype property that was just set
+     * @return the datatype restriction that was just set
      */
     public DataType.Restriction setRequired(boolean required);
 
@@ -177,8 +186,8 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public boolean isUnique();
 
     /**
-     * Returns the 'unique' property, containing the value, error messages, and fixed status of this attribute.
-     * @return the property as a {@link DataType.Restriction}
+     * Returns the 'unique' restriction, containing the value, error messages, and fixed status of this attribute.
+     * @return the restriction as a {@link DataType.Restriction}
      */
     public DataType.Restriction getUniqueRestriction();
 
@@ -186,7 +195,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * Sets whether the data type requires a value.
      * @param unique <code>true</code> if a value is unique
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
-     * @return the datatype property that was just set
+     * @return the datatype restricton that was just set
      */
     public DataType.Restriction setUnique(boolean unique);
 

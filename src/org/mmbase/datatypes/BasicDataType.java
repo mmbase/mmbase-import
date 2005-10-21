@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.15 2005-10-21 10:20:28 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.16 2005-10-21 16:41:53 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -87,7 +87,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(requiredRestriction);
         out.writeObject(uniqueRestriction);
-        out.writeObject(enumerationRestriction.value);
+        //out.writeObject(enumerationRestriction.value);
         if (owner instanceof Serializable) {
             out.writeObject(owner);
         } else {
@@ -108,7 +108,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         requiredRestriction    = (RequiredRestriction) in.readObject();
         uniqueRestriction      = (UniqueRestriction) in.readObject();
-        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
+        //enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
         typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
         owner                 = in.readObject();
         classType             =  (Class) in.readObject();
@@ -183,7 +183,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Object autoCast(Object value) {        
         return Casting.toType(classType, enumerationRestriction.cast(value));
@@ -555,7 +555,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * When you override this class, take care of cloning of outer class!
      * This class itself is not cloneable. Cloning is hard when you have inner classes.
      *
-     * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article of inner classes,
+     * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article about inner classes,
      * cloning in java</a>
      */
     protected static abstract class StaticAbstractRestriction implements DataType.Restriction {
