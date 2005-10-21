@@ -194,7 +194,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
             && maxLength == f.getMaxLength()
             && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
             && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
-            && getStorageType() == f.getStorageType() // implues equal MMBase types
+            && getStorageType() == f.getStorageType() // implies equal MMBase types
             && storagePosition == f.getStoragePosition();
     }
 
@@ -327,6 +327,10 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
      */
     public String getGUIType() {
         return dataType.getName();
+    }
+
+    public String toString() {
+        return super.toString() + " of " + parent.getTableName();
     }
 
 
