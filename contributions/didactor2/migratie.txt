@@ -1,5 +1,11 @@
 Migratie issues
 
+2005-10-22
+ALTER TABLE mmb_tests ADD always_online INT(11) NOT NULL DEFAULT '1';
+ALTER TABLE mmb_tests ADD online_date BIGINT(20) NOT NULL DEFAULT '0';
+ALTER TABLE mmb_tests ADD offline_date BIGINT(20) NOT NULL DEFAULT '0';
+
+
 2005-10-05
     ALTER TABLE mmb_people ADD islogged TINYINT(1);
 
