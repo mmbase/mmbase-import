@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.31 2005-10-21 16:41:54 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.32 2005-10-23 17:57:04 nklasens Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -368,7 +368,7 @@ public class DataTypeDefinition {
                         log.error(mre);
                     }
                 } else {
-                    throw new IllegalArgumentException("no 'value' or 'resource' attribute on enumeration entry element");
+                    throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
                 }
             }
         }
