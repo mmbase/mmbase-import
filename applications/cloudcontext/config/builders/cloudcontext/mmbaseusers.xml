@@ -128,7 +128,7 @@
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
-          <entry resource="org.mmbase.security.status" />
+          <entry basename="org.mmbase.security.status" />
         </enumeration>
       </datatype>
       <db>
