@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module.tools;
 
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -18,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application Admin, Application
  * @author Daniel Ockeloen
- * @version $Id: MMAdminProbe.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MMAdminProbe.java,v 1.10 2005-10-23 18:00:50 nklasens Exp $
  */
 public class MMAdminProbe implements Runnable {
 
@@ -33,8 +34,16 @@ public class MMAdminProbe implements Runnable {
 
     long sleeptime = DEFAULT_SLEEP_TIME;
 
+    /**
+     * reference to MMAdmin
+     */
     MMAdmin parent=null;
+    /**
+     * reference to MMBase
+     */
+    private MMBase mmb = null;
 
+    
     /**
      * DEFAULT_START_DELAY = 2000; ms
      **/
@@ -42,8 +51,9 @@ public class MMAdminProbe implements Runnable {
 
     long startdelay=DEFAULT_START_DELAY;
 
-    public MMAdminProbe(MMAdmin parent) {
+    public MMAdminProbe(MMAdmin parent, MMBase mmb) {
         this.parent=parent;
+        this.mmb = mmb;
         init();
     }
 
@@ -69,7 +79,7 @@ public class MMAdminProbe implements Runnable {
 
     public void run() {
         try {
-            while (!parent.mmb.getState()) {
+            while (!mmb.getState()) {
                 try {Thread.sleep(startdelay);} catch (InterruptedException e){ return;}
             }
             try { Thread.sleep(sleeptime); } catch (InterruptedException e){ return;}
