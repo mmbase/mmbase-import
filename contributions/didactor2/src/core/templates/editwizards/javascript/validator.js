@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+ * @version  $Id: validator.js,v 1.2 2005-10-24 13:57:01 jverelst Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -330,6 +330,29 @@ function validateDatetime(el, form, v) {
         minutes = form.elements["internal_" + id + "_minutes"].selectedIndex;
         seconds = form.elements["internal_" + id + "_seconds"].selectedIndex;
     }
+
+    // BEGIN DIDACTOR CHANGE
+    // Translate the 'days/weeks' to a real date
+    if (ftype == "dateoffset") {
+        hours = 0;
+        minutes = 0;
+        seconds = 0
+        var days = form.elements["internal_" + id + "_days"].selectedIndex;
+        var weeks = form.elements["internal_" + id + "_weeks"].selectedIndex;
+        days += 7*weeks;
+
+        var mydate = new Date();
+        mydate.setTime(days * 24 * 60 * 60 * 1000);
+
+        day = mydate.getDate();
+        month = mydate.getMonth()+1;
+
+        form.elements["internal_" + id + "_day"].value = "" + day;
+        form.elements["internal_" + id + "_month"].value = "" + month;
+        form.elements["internal_" + id + "_year"].value = "1970";
+    }
+    // END DIDACTOR CHANGE
+
 
     // We don't want -1 = 2 BC, 0 = 1 BC,  -1 = 2 BC but
     //               0 -> error, -1 = 1 BC   1 = 1 AC
