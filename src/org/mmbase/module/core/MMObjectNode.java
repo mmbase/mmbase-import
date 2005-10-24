@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.164 2005-10-20 14:14:38 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.165 2005-10-24 13:19:16 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
@@ -757,6 +757,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      */
     public String getStringValue(String fieldName) {
         Object value = getValue(fieldName);
+        if (value instanceof MMObjectNode) return "" + ((MMObjectNode)value).getNumber();
         String s = Casting.toString(value);
         return s;
     }
@@ -957,13 +958,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      * The value is returned as an int value. Values of non-int, numeric fields are converted if possible.
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
-     * If a value is an MMObjectNode, it's numberfield is returned.
+     * If a value is an MMObjectNode, its numberfield is returned.
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>int</code>
      */
     public int getIntValue(String fieldName) {
-        return Casting.toInt(getValue(fieldName));
+        Object value = getValue(fieldName);
+        if (value instanceof MMObjectNode) return ((MMObjectNode)value).getNumber();
+        return Casting.toInt(value);
     }
 
     /**
@@ -996,7 +999,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      * @return the field's value as an <code>Integer</code>
      */
     public Integer getIntegerValue(String fieldName) {
-        return Casting.toInteger(getValue(fieldName));
+        Object value = getValue(fieldName);
+        if (value instanceof MMObjectNode) return new Integer(((MMObjectNode)value).getNumber());
+        return Casting.toInteger(value);
     }
 
     /**
@@ -1007,7 +1012,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      * @return the field's value as a <code>long</code>
      */
     public long getLongValue(String fieldName) {
-        return Casting.toLong(getValue(fieldName));
+        Object value = getValue(fieldName);
+        if (value instanceof MMObjectNode) return (long) ((MMObjectNode)value).getNumber();
+        return Casting.toLong(value);
     }
 
 
@@ -1021,7 +1028,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      * @return the field's value as a <code>float</code>
      */
     public float getFloatValue(String fieldName) {
-        return Casting.toFloat(getValue(fieldName));
+        Object value = getValue(fieldName);
+        if (value instanceof MMObjectNode) return (float) ((MMObjectNode)value).getNumber();
+        return Casting.toFloat(value);
     }
 
 
@@ -1035,7 +1044,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      * @return the field's value as a <code>double</code>
      */
     public double getDoubleValue(String fieldName) {
-        return Casting.toDouble(getValue(fieldName));
+        Object value = getValue(fieldName);
+        if (value instanceof MMObjectNode) return (double) ((MMObjectNode)value).getNumber();
+        return Casting.toDouble(value);
     }
 
     /**
@@ -1052,7 +1063,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
         Object value = getValue(fieldName);
         org.mmbase.core.CoreField cf = getBuilder().getField(fieldName);
         if (cf != null && cf.getType() == Field.TYPE_NODE) {
-            // cannot be handled by casting, becuase it would receive object-number and cannot make distinction with Nodes.
+            // cannot be handled by casting, because it would receive object-number and cannot make distinction with Nodes.
             return new Date(-1);
         }
         return Casting.toDate(value);
