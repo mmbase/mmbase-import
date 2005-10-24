@@ -17,6 +17,7 @@
           <field name="mayview">0</field>
           <field name="questionsperpage">0</field>
           <field name="feedbackpage">0</field>
+          <field name="always_online">0</field>
        </object>
     </action>
 
@@ -93,6 +94,19 @@
           <optionlist select="feedbackpage" />
       </field>
 
+      <field name="always_online" ftype="enum">
+        <prompt>Altijd online</prompt>
+        <optionlist select="boolean_inverse" />
+      </field>
+    
+      <field name="online_date" ftype="date">
+        <prompt>Online Tijden</prompt>   
+      </field>  
+        
+      <field name="offline_date" ftype="date">
+        <prompt>Offline Tijden</prompt>        
+      </field>    
+        
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
             <title>Bijbehorende vragen</title>
             <item>
