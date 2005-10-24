@@ -1,5 +1,4 @@
 package nl.didactor.component.redspider.dataobjects;
-
 /**
  * DidactorActionType.java
  *
@@ -7,14 +6,12 @@ package nl.didactor.component.redspider.dataobjects;
  * by the Apache Axis 1.2.1 Jun 14, 2005 (09:15:57 EDT) WSDL2Java emitter.
  */
 
-public class DidactorActionType implements java.io.Serializable
-{
+public class DidactorActionType implements java.io.Serializable {
     private java.lang.String _value_;
     private static java.util.HashMap _table_ = new java.util.HashMap();
 
     // Constructor
-    protected DidactorActionType(java.lang.String value)
-    {
+    protected DidactorActionType(java.lang.String value) {
         _value_ = value;
         _table_.put(_value_,this);
     }
@@ -25,48 +22,35 @@ public class DidactorActionType implements java.io.Serializable
     public static final DidactorActionType add = new DidactorActionType(_add);
     public static final DidactorActionType modify = new DidactorActionType(_modify);
     public static final DidactorActionType disable = new DidactorActionType(_disable);
-
-
-    public java.lang.String getValue()
-    {
-       return _value_;
-    }
-
-
-    public static DidactorActionType fromValue(java.lang.String value) throws java.lang.IllegalArgumentException
-    {
+    public java.lang.String getValue() { return _value_;}
+    public static DidactorActionType fromValue(java.lang.String value)
+          throws java.lang.IllegalArgumentException {
         DidactorActionType enumeration = (DidactorActionType)
-        _table_.get(value);
-        if (enumeration == null)
-        {
-          throw new java.lang.IllegalArgumentException();
-        }
+            _table_.get(value);
+        if (enumeration==null) throw new java.lang.IllegalArgumentException();
         return enumeration;
     }
-
-
     public static DidactorActionType fromString(java.lang.String value)
           throws java.lang.IllegalArgumentException {
         return fromValue(value);
     }
-
     public boolean equals(java.lang.Object obj) {return (obj == this);}
     public int hashCode() { return toString().hashCode();}
     public java.lang.String toString() { return _value_;}
     public java.lang.Object readResolve() throws java.io.ObjectStreamException { return fromValue(_value_);}
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType,
-           java.lang.Class _javaType,
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return
+        return 
           new org.apache.axis.encoding.ser.EnumSerializer(
             _javaType, _xmlType);
     }
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType,
-           java.lang.Class _javaType,
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return
+        return 
           new org.apache.axis.encoding.ser.EnumDeserializer(
             _javaType, _xmlType);
     }
