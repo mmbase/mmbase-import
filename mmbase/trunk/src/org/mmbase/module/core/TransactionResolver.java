@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.21 2005-10-07 18:37:39 michiel Exp $
+ * @version $Id: TransactionResolver.java,v 1.22 2005-10-24 09:34:20 nklasens Exp $
  */
 public class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
@@ -132,11 +132,12 @@ public class TransactionResolver {
                 int dbtype = fd.getType();
                 if ((dbtype == Field.TYPE_INTEGER)||
                     (dbtype == Field.TYPE_NODE)) {
+                    
                     String field = fd.getName();
-                    int number = node.getIntValue(field);
-                    if (number == -1) {
-                        String tmpfield = "_"+field;
-                        if (node.getDBState(tmpfield) == 0) {
+                    String tmpfield = "_"+field;
+                    if (node.getDBState(tmpfield) == Field.STATE_VIRTUAL) {
+                        int number = node.getIntValue(field);
+                        if (number == -1) {
                             String key = node.getStringValue(tmpfield);
                             if (key != null && key.length() > 0) {
                                 success = false;
