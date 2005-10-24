@@ -24,11 +24,11 @@
 
     <form-schema id="step1">
         <title>Online/Offline tijd invoeren</title>
-        <field name="start" ftype="dateoffset">
+        <field name="start" ftype="dateoffset" dttype="datetime">>
             <prompt>Online vanaf</prompt>
             <postfix>na aanvang van de cursus.</postfix>
         </field>
-        <field name="stop" ftype="dateoffset">
+        <field name="stop" ftype="dateoffset" dttype="datetime">
             <postfix>na aanvang van de cursus.</postfix>
             <prompt>Offline vanaf</prompt>
         </field>
