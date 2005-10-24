@@ -1,16 +1,10 @@
 package nl.didactor.component.redspider.test;
 
 /**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2005</p>
- * <p>Company: </p>
- * @author not attributable
- * @version 1.0
+ * This is test runtime class for business logic. It contains the sample of request.
  */
 
 import java.util.HashMap;
-import java.util.Calendar;
 
 import org.mmbase.bridge.*;
 
@@ -49,7 +43,7 @@ public class Run
       Participant participant = new Participant();
       participant.setCity("New Orlean");
       participant.setAddress("trash");
-      participant.setDayofbirth(Calendar.getInstance());
+      participant.setDayofbirth("");
       participant.setFirstname("Vasia");
       participant.setInitials("Ibn");
       participant.setLastname("Pupkin");

@@ -9,10 +9,13 @@ package nl.didactor.component.redspider;
  * @version 1.0
  */
 
+import java.util.Date;
 import java.util.Iterator;
+import java.text.SimpleDateFormat;
 
 import nl.didactor.component.redspider.dataobjects.*;
 import org.mmbase.bridge.*;
+import java.text.*;
 
 
 
@@ -54,35 +57,40 @@ public class Processor
 
 
 
-   public DidactorActionType process(Participant participant)
+   public String process(Participant participant)
    {
       NodeList nlParticipant = nmPeople.getList("people.externid='" + participant.getExternid() + "'", null, null);
-      DidactorActionType didactorActionType;
+      String  sDidactorActionType;
       Node nodeParticipant;
 
       if (nlParticipant.size() > 0)
       {//This externid is already present
          nodeParticipant = nlParticipant.getNode(0);
-         didactorActionType = DidactorActionType.fromString("modify");
+         sDidactorActionType = "modify";
       }
       else
       {//If the people not found we will create a new one
          nodeParticipant = this.createNewPerson();
-         didactorActionType = DidactorActionType.fromString("add");
+         sDidactorActionType = "add";
       }
 
 
       if(participant.getStatus().equals(ParticipantStatusType.fromString("disabled")))
       {//The order is to disable the person
-         //... here
+         nodeParticipant.setValue("person_status", "0");
+         nodeParticipant.commit();
 
          this.deleteClassesRelations(nodeParticipant);
          this.deleteWorkgroupRelations(nodeParticipant);
 
-         didactorActionType = DidactorActionType.fromString("disable");
+         sDidactorActionType = "modify";
       }
       else
       {
+         //Enable person
+         nodeParticipant.setValue("person_status", "1");
+         nodeParticipant.commit();
+
          //Store fields
          this.storeParticipantFields(nodeParticipant, participant);
 
@@ -97,10 +105,9 @@ public class Processor
 
          //Store POP
          this.storePEP(nodeParticipant, (String) participant.getFirstname() + " " + participant.getSuffix() + " " + participant.getLastname() + " (" + participant.getExternid() + ")");
-
       }
 
-      return didactorActionType;
+      return sDidactorActionType;
    }
 
 
@@ -128,7 +135,19 @@ public class Processor
       nodePerson.setValue("city", participant.getCity());
       nodePerson.setValue("country", participant.getCountry());
       nodePerson.setValue("email", participant.getEmail());
-      nodePerson.setValue("dayofbirth", participant.getDayofbirth());
+
+
+      SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+      try
+      {
+         Date dateDayOfBirth = df.parse(participant.getDayofbirth());
+         nodePerson.setValue("dayofbirth", "" + dateDayOfBirth.getTime()/1000);
+      }
+      catch (ParseException ex)
+      {
+         nodePerson.setValue("dayofbirth", "-1");
+      }
+
       nodePerson.setValue("externid", participant.getExternid());
 //      nodePerson.setValue("", participant.);
 
@@ -144,38 +163,45 @@ public class Processor
       RelationList rlClassRelToDelete = nodePerson.getRelations("classrel", nmClasses);
       RelationList rlProfilesToDelete = nodePerson.getRelations("related", nmProfiles);
 
-      Object[] arrstrClasses = participantClasses.getName();
-      for(int f = 0; f < arrstrClasses.length; f++)
+      Object[] arrstrClasses;
+      if ((participantClasses != null) && (participantClasses.getName() != null))
       {
-         String sClassName = (String) arrstrClasses[f];
-         NodeList nlClasses = nmClasses.getList("name='" + sClassName + "'", null, null);
+         arrstrClasses = participantClasses.getName();
 
-         Node nodeClass;
-         if(nlClasses.size() == 0)
+         for(int f = 0; f < arrstrClasses.length; f++)
          {
-            nodeClass = this.createNewClass(sClassName);
-            nodePerson.createRelation(nodeClass, rmClassRel).commit();
-         }
-         else
-         {
-            nodeClass = nlClasses.getNode(0);
+            String sClassName = (String) arrstrClasses[f];
+            NodeList nlClasses = nmClasses.getList("name='" + sClassName + "'", null, null);
 
-            //Do we have a relation to this class already?
-            NodeList nlClassRel = nmClassRel.getList("snumber='" + nodePerson.getNumber() + "' AND dnumber='" + nodeClass.getNumber() + "'", null, null);
-            if(nlClassRel.size() == 0)
-            {//there is no relation yet
+            Node nodeClass;
+            if(nlClasses.size() == 0)
+            {
+               nodeClass = this.createNewClass(sClassName);
                nodePerson.createRelation(nodeClass, rmClassRel).commit();
             }
             else
             {
-               rlClassRelToDelete.remove(nlClassRel.get(0));
-            }
-         }
+               nodeClass = nlClasses.getNode(0);
 
-         //profile for the class
-         Node nodeProfileRelation = this.storeProfile(nodePerson, sClassName.substring(1,7));
-         rlProfilesToDelete.remove(nodeProfileRelation);
+               //Do we have a relation to this class already?
+               NodeList nlClassRel = nmClassRel.getList("snumber='" + nodePerson.getNumber() + "' AND dnumber='" + nodeClass.getNumber() + "'", null, null);
+               if(nlClassRel.size() == 0)
+               {//there is no relation yet
+                  nodePerson.createRelation(nodeClass, rmClassRel).commit();
+               }
+               else
+               {
+                  rlClassRelToDelete.remove(nlClassRel.get(0));
+               }
+            }
+/*
+            //profile for the class
+            Node nodeProfileRelation = this.storeProfile(nodePerson, sClassName.substring(1,7));
+            rlProfilesToDelete.remove(nodeProfileRelation);
+            */
+         }
       }
+
 
       //Delete all old unneeded relations
       for(Iterator it = rlClassRelToDelete.iterator(); it.hasNext();)
@@ -216,30 +242,34 @@ public class Processor
 
    private void storeWorkgroup(Node nodePerson, String sWorkgroupName)
    {
-
       RelationList rlRelatedToDelete = nodePerson.getRelations("related", nmWorkgroups);
 
-      NodeList nlWorkgroups = nmWorkgroups.getList("name='" + sWorkgroupName + "'", null, null);
-
-      Node nodeWorkgroup;
-      if(nlWorkgroups.size() == 0)
+      if ((sWorkgroupName != null) && (!"".equals(sWorkgroupName)))
       {
-         nodeWorkgroup = this.createNewWorkgroup(sWorkgroupName);
-         nodeWorkgroup.createRelation(nodePerson, rmRelated).commit();
-      }
-      else
-      {
-         nodeWorkgroup = nlWorkgroups.getNode(0);
-         //Do we have a relation to this workgroup already?
-         NodeList nlRelated = nmRelated.getList("snumber='" + nodeWorkgroup.getNumber() + "' AND dnumber='" + nodePerson.getNumber() + "'", null, null);
-         if(nlRelated.size() == 0)
-         {//there is no relation yet
+         NodeList nlWorkgroups = nmWorkgroups.getList("name='" + sWorkgroupName + "'", null, null);
 
+         Node nodeWorkgroup;
+         if (nlWorkgroups.size() == 0)
+         {
+            nodeWorkgroup = this.createNewWorkgroup(sWorkgroupName);
             nodeWorkgroup.createRelation(nodePerson, rmRelated).commit();
          }
          else
          {
-            rlRelatedToDelete.remove(nlRelated.get(0));
+            nodeWorkgroup = nlWorkgroups.getNode(0);
+            //Do we have a relation to this workgroup already?
+            NodeList nlRelated = nmRelated.getList("snumber='" +
+               nodeWorkgroup.getNumber() + "' AND dnumber='" +
+               nodePerson.getNumber() + "'", null, null);
+            if (nlRelated.size() == 0)
+            { //there is no relation yet
+
+               nodeWorkgroup.createRelation(nodePerson, rmRelated).commit();
+            }
+            else
+            {
+               rlRelatedToDelete.remove(nlRelated.get(0));
+            }
          }
       }
 
@@ -274,30 +304,34 @@ public class Processor
 
    private void storeRole(Node nodePerson, String sRoleName)
    {
-
       RelationList rlRelatedToDelete = nodePerson.getRelations("related", nmRoles);
 
-      NodeList nlRoles = nmRoles.getList("name='" + sRoleName + "'", null, null);
-
-      Node nodeRole;
-      if(nlRoles.size() == 0)
+      if((sRoleName != null) &&(!"".equals(sRoleName)))
       {
-         nodeRole = this.createNewRole(sRoleName);
-         nodePerson.createRelation(nodeRole, rmRelated).commit();
-      }
-      else
-      {
-         nodeRole = nlRoles.getNode(0);
-         //Do we have a relation to this Role already?
-         NodeList nlRelated = nmRelated.getList("snumber='" + nodePerson.getNumber() + "' AND dnumber='" + nodeRole.getNumber() + "'", null, null);
-         if(nlRelated.size() == 0)
-         {//there is no relation yet
+         NodeList nlRoles = nmRoles.getList("name='" + sRoleName + "'", null, null);
 
+         Node nodeRole;
+         if (nlRoles.size() == 0)
+         {
+            nodeRole = this.createNewRole(sRoleName);
             nodePerson.createRelation(nodeRole, rmRelated).commit();
          }
          else
          {
-            rlRelatedToDelete.remove(nlRelated.get(0));
+            nodeRole = nlRoles.getNode(0);
+            //Do we have a relation to this Role already?
+            NodeList nlRelated = nmRelated.getList("snumber='" +
+               nodePerson.getNumber() + "' AND dnumber='" + nodeRole.getNumber() +
+               "'", null, null);
+            if (nlRelated.size() == 0)
+            { //there is no relation yet
+
+               nodePerson.createRelation(nodeRole, rmRelated).commit();
+            }
+            else
+            {
+               rlRelatedToDelete.remove(nlRelated.get(0));
+            }
          }
       }
 
@@ -384,30 +418,34 @@ public class Processor
 
    private void storePEP(Node nodePerson, String sPEPName)
    {
-
       RelationList rlRelatedToDelete = nodePerson.getRelations("related", nmPEPs);
 
-      NodeList nlPEPs = nmPEPs.getList("name='" + sPEPName + "'", null, null);
-
-      Node nodePEP;
-      if(nlPEPs.size() == 0)
+      if((sPEPName !=null) && (!"".equals(sPEPName)))
       {
-         nodePEP = this.createNewPEP(sPEPName);
-         nodePerson.createRelation(nodePEP, rmRelated).commit();
-      }
-      else
-      {
-         nodePEP = nlPEPs.getNode(0);
-         //Do we have a relation to this PEP already?
-         NodeList nlRelated = nmRelated.getList("snumber='" + nodePerson.getNumber() + "' AND dnumber='" + nodePEP.getNumber() + "'", null, null);
-         if(nlRelated.size() == 0)
-         {//there is no relation yet
+         NodeList nlPEPs = nmPEPs.getList("name='" + sPEPName + "'", null, null);
 
+         Node nodePEP;
+         if (nlPEPs.size() == 0)
+         {
+            nodePEP = this.createNewPEP(sPEPName);
             nodePerson.createRelation(nodePEP, rmRelated).commit();
          }
          else
          {
-            rlRelatedToDelete.remove(nlRelated.get(0));
+            nodePEP = nlPEPs.getNode(0);
+            //Do we have a relation to this PEP already?
+            NodeList nlRelated = nmRelated.getList("snumber='" +
+               nodePerson.getNumber() + "' AND dnumber='" + nodePEP.getNumber() +
+               "'", null, null);
+            if (nlRelated.size() == 0)
+            { //there is no relation yet
+
+               nodePerson.createRelation(nodePEP, rmRelated).commit();
+            }
+            else
+            {
+               rlRelatedToDelete.remove(nlRelated.get(0));
+            }
          }
       }
 
@@ -424,5 +462,23 @@ public class Processor
       nodePEP.setValue("name", sPEPName);
       nodePEP.commit();
       return nodePEP;
+   }
+
+
+
+   public boolean check_fields_dimension(Participant participant)
+   {
+      return
+      (nmPeople.getField("externid").getMaxLength()  > participant.getExternid().length()) &&
+      (nmPeople.getField("initials").getMaxLength()  > participant.getInitials().length()) &&
+      (nmPeople.getField("firstname").getMaxLength() > participant.getFirstname().length()) &&
+      (nmPeople.getField("suffix").getMaxLength()    > participant.getSuffix().length()) &&
+      (nmPeople.getField("lastname").getMaxLength()  > participant.getLastname().length()) &&
+      (nmPeople.getField("email").getMaxLength()     > participant.getEmail().length()) &&
+      (nmPeople.getField("address").getMaxLength()   > participant.getAddress().length()) &&
+      (nmPeople.getField("zipcode").getMaxLength()   > participant.getZipcode().length()) &&
+      (nmPeople.getField("city").getMaxLength()      > participant.getCity().length()) &&
+      (nmPeople.getField("country").getMaxLength()   > participant.getCountry().length()) &&
+      true;
    }
 }

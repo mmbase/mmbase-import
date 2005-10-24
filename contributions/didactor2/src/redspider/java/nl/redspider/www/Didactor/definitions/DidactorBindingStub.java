@@ -9,7 +9,6 @@ package nl.redspider.www.Didactor.definitions;
 
 import nl.didactor.component.redspider.dataobjects.*;
 
-
 public class DidactorBindingStub extends org.apache.axis.client.Stub implements nl.redspider.www.Didactor.definitions.DidactorPortType {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
@@ -88,27 +87,6 @@ public class DidactorBindingStub extends org.apache.axis.client.Stub implements 
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("", "DatumType");
-            cachedSerQNames.add(qName);
-            cls = java.util.Calendar.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("", "DidactorActionType");
-            cachedSerQNames.add(qName);
-            cls = DidactorActionType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("", "DidactorResultType");
-            cachedSerQNames.add(qName);
-            cls = DidactorResultType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
 
             qName = new javax.xml.namespace.QName("", "ParticipantStatusType");
             cachedSerQNames.add(qName);
