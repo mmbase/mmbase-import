@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.131 2005-10-12 20:51:40 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.132 2005-10-24 09:49:48 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -845,8 +845,7 @@ public class DatabaseStorageManager implements StorageManager {
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
-                log.error(se.getMessage() + "during creation of " + UNICODE_ESCAPER.transform(node.toString()));
-                throw new StorageException(se);
+                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()), se);
             } finally {
                 releaseActiveConnection();
             }
@@ -1171,7 +1170,12 @@ public class DatabaseStorageManager implements StorageManager {
             if (nodeValue == null && field.isNotNull()) {
                 throw new StorageException("The NODE field with name " + field.getClass() + " " + field.getName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
             }
-            int nodeNumber = Casting.toInt(nodeValue);
+            int nodeNumber;
+            if (nodeValue instanceof MMObjectNode) {
+                nodeNumber = ((MMObjectNode) nodeValue).getNumber();
+            } else {
+                nodeNumber = Casting.toInt(nodeValue);
+            }
             // retrieve node as a numeric value
             statement.setInt(index, nodeNumber);
         }
