@@ -7,156 +7,170 @@
    <!ENTITY extra_lists SYSTEM "extra_lists.xml">
 ]>
 <wizard-schema id="empty">
-    <title>Toets Editor</title>
+  <title>Toets Editor</title>
 
-    <action type="create">
-       <object type="tests">
-          <field name="showtitle">1</field>
-          <field name="maychange">0</field>
-          <field name="mayview">0</field>
-          <field name="questionsperpage">0</field>
-          <field name="feedbackpage">0</field>
-       </object>
-    </action>
+  <action type="create">
+     <object type="tests">
+      <field name="showtitle">1</field>
+      <field name="maychange">0</field>
+      <field name="mayview">0</field>
+      <field name="questionsperpage">0</field>
+      <field name="feedbackpage">0</field>
+      <field name="always_online">0</field>
+     </object>
+  </action>
 
-    <action type="load">
-        <relation destination="questions" role="posrel" />
-        <relation destination="mmevents" role="related" />
-        <relation destination="feedback" role="related" />
-        &extra_loads;
-    </action>
+  <action type="load">
+    <relation destination="questions" role="posrel" />
+    <relation destination="mmevents" role="related" />
+    <relation destination="feedback" role="related" />
+    &extra_loads;
+  </action>
 
-    <action type="delete" />
+  <action type="delete" />
 
   <lists>
-      <optionlist include="config/option_list/boolean.xml" />
-      <optionlist include="config/option_list/boolean_inverse.xml" /> 
-      <optionlist name="questionsperpage">
-          <option id="0">Alle vragen op 1 pagina</option>
-          <option id="1">1 vraag per pagina</option>
-      </optionlist>
-      <optionlist name="feedbackpage">
-          <option id="0">geslaagd/gezakt</option>
-          <option id="1">overzicht van antwoorden</option>
-      </optionlist>
+    <optionlist include="config/option_list/boolean.xml" />
+    <optionlist include="config/option_list/boolean_inverse.xml" /> 
+    <optionlist name="questionsperpage">
+      <option id="0">Alle vragen op 1 pagina</option>
+      <option id="1">1 vraag per pagina</option>
+    </optionlist>
+    <optionlist name="feedbackpage">
+      <option id="0">geslaagd/gezakt</option>
+      <option id="1">overzicht van antwoorden</option>
+    </optionlist>
   </lists>
 
-    <steps>
-        <step form-schema="step1" />
-        &extra_steps;
-    </steps>
+  <steps>
+    <step form-schema="step1" />
+    &extra_steps;
+  </steps>
 
-    <form-schema id="step1">
-        <title>Toets invoeren</title>
+  <form-schema id="step1">
+    <title>Toets invoeren</title>
 
-        <field name="name" >
-            <prompt>Naam</prompt>
-        </field>
+    <field name="name" >
+      <prompt>Naam</prompt>
+    </field>
 
-      <field name="showtitle" ftype="enum">
-         <prompt xml:lang="nl">Titel laten zien</prompt>
-         <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean" />
-      </field>
+    <field name="showtitle" ftype="enum">
+     <prompt xml:lang="nl">Titel laten zien</prompt>
+     <prompt xml:lang="en">Show title</prompt>
+     <optionlist select="boolean" />
+    </field>
  
 
-        <field name="text" ftype="html" dtminlength="0">
-            <prompt>Tekst</prompt>
-        </field>
+    <field name="text" ftype="html" dtminlength="0">
+      <prompt>Tekst</prompt>
+    </field>
 
    <field name="questionamount">
-            <prompt>Aantal te stellen vragen (&lt; 1: alle)</prompt>
+      <prompt>Aantal te stellen vragen (&lt; 1: alle)</prompt>
+    </field>
+
+    <field name="requiredscore">
+      <prompt>Benodigd aantal goed</prompt>
+    </field>
+
+    <field name="maychange" ftype="enum">
+      <prompt>Mag de student deze toets opnieuw maken?</prompt>
+      <optionlist select="boolean_inverse" />
+    </field>
+
+    <field name="mayview" ftype="enum">
+      <prompt>Mag de student deze toets bekijken na het maken?</prompt>
+      <optionlist select="boolean_inverse" />
+    </field>
+
+    <field name="questionsperpage" ftype="enum">
+      <prompt>Aantal vragen per pagina</prompt>
+      <optionlist select="questionsperpage" />
+    </field>
+
+    <field name="feedbackpage" ftype="enum">
+      <prompt>Feedback na het maken van de vraag</prompt>
+      <optionlist select="feedbackpage" />
+    </field>
+
+      <field name="always_online" ftype="enum">
+        <prompt>Altijd online</prompt>
+        <optionlist select="boolean_inverse" />
+      </field>
+
+      <field name="online_date" ftype="date">
+        <prompt>Online Tijden</prompt>   
+      </field>  
+        
+      <field name="offline_date" ftype="date">
+        <prompt>Offline Tijden</prompt>      
+      </field>    
+
+    <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
+      <title>Bijbehorende vragen</title>
+      <item>
+        <field name="title" ftype="data">
+          <prompt>Titel</prompt>
+          <description>Titel van de vraag</description>
         </field>
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
+      </item>
 
-        <field name="requiredscore">
-            <prompt>Benodigd aantal goed</prompt>
-        </field>
+      <action type="create">
+        <relation role="posrel" destinationtype="questions">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+      </action>
 
-      <field name="maychange" ftype="enum">
-          <prompt>Mag de student deze toets opnieuw maken?</prompt>
-          <optionlist select="boolean_inverse" />
-      </field>
+      <command name="search" nodepath="questions" fields="title" age="-1" orderby="number" directions="down" >
+        <prompt>Zoeken naar vragen</prompt>
+        <search-filter>
+          <name>Titel bevat</name>
+          <search-fields>title</search-fields>
+        </search-filter>
+      </command>
 
-      <field name="mayview" ftype="enum">
-          <prompt>Mag de student deze toets bekijken na het maken?</prompt>
-          <optionlist select="boolean_inverse" />
-      </field>
+      <command name="startwizard" inline="true" wizardname="config/question/mcquestions" objectnumber="new">
+        <prompt>Nieuwe Multiple Choice vraag</prompt>
+      </command>
 
-      <field name="questionsperpage" ftype="enum">
-          <prompt>Aantal vragen per pagina</prompt>
-          <optionlist select="questionsperpage" />
-      </field>
+      <command name="startwizard" inline="true" wizardname="config/question/openquestions" objectnumber="new">
+        <prompt>Nieuwe Open vraag</prompt>
+      </command>
 
-      <field name="feedbackpage" ftype="enum">
-          <prompt>Feedback na het maken van de vraag</prompt>
-          <optionlist select="feedbackpage" />
-      </field>
+      <command name="startwizard" inline="true" wizardname="config/question/rankingquestions" objectnumber="new">
+        <prompt>Nieuwe Rangorde vraag</prompt>
+      </command>
 
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
-            <title>Bijbehorende vragen</title>
-            <item>
-                <field name="title" ftype="data">
-                    <prompt>Titel</prompt>
-                    <description>Titel van de vraag</description>
-                </field>
-                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
-            </item>
+      <command name="startwizard" inline="true" wizardname="config/question/valuequestions" objectnumber="new">
+        <prompt>Nieuwe Waarde vraag</prompt>
+      </command>
 
-            <action type="create">
-                <relation role="posrel" destinationtype="questions">
-                    <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-                </relation>
-            </action>
+      <command name="startwizard" inline="true" wizardname="config/couple/couplingquestions" objectnumber="new">
+        <prompt>Nieuwe Koppel vraag</prompt>
+      </command>
 
-            <command name="search" nodepath="questions" fields="title" age="-1" orderby="number" directions="down" >
-                <prompt>Zoeken naar vragen</prompt>
-                <search-filter>
-                    <name>Titel bevat</name>
-                    <search-fields>title</search-fields>
-                </search-filter>
-            </command>
+      <command name="startwizard" inline="true" wizardname="config/question/hotspotquestions" objectnumber="new">
+        <prompt>Nieuwe Hotspot vraag</prompt>
+      </command>
 
-            <command name="startwizard" inline="true" wizardname="config/question/mcquestions" objectnumber="new">
-                <prompt>Nieuwe Multiple Choice vraag</prompt>
-            </command>
-
-            <command name="startwizard" inline="true" wizardname="config/question/openquestions" objectnumber="new">
-                <prompt>Nieuwe Open vraag</prompt>
-            </command>
-
-            <command name="startwizard" inline="true" wizardname="config/question/rankingquestions" objectnumber="new">
-                <prompt>Nieuwe Rangorde vraag</prompt>
-            </command>
-
-            <command name="startwizard" inline="true" wizardname="config/question/valuequestions" objectnumber="new">
-                <prompt>Nieuwe Waarde vraag</prompt>
-            </command>
-
-            <command name="startwizard" inline="true" wizardname="config/couple/couplingquestions" objectnumber="new">
-                <prompt>Nieuwe Koppel vraag</prompt>
-            </command>
-
-            <command name="startwizard" inline="true" wizardname="config/question/hotspotquestions" objectnumber="new">
-                <prompt>Nieuwe Hotspot vraag</prompt>
-            </command>
-
-            <command name="startwizard" inline="true" wizardname="config/question/dropquestions" objectnumber="new">
-                <prompt>Nieuwe drag en drop vraag</prompt>
-            </command>
+      <command name="startwizard" inline="true" wizardname="config/question/dropquestions" objectnumber="new">
+        <prompt>Nieuwe drag en drop vraag</prompt>
+      </command>
 
 
 <!-- Not available in this version. Take care that the reuse questions is based on another question.
-            <command name="startwizard" inline="true" wizardname="config/question/reusequestions" objectnumber="new">
-                <prompt>Nieuwe Hergebruik vraag</prompt>
-            </command>
+      <command name="startwizard" inline="true" wizardname="config/question/reusequestions" objectnumber="new">
+        <prompt>Nieuwe Hergebruik vraag</prompt>
+      </command>
 -->
-        </list>
+    </list>
 
-        &extra_lists;
+    &extra_lists;
 
-        <list role="related" extends="config/online/online-list.xml" />
-        <list destination="feedback" role="related" extends="config/feedback/feedback-list.xml" />
-    </form-schema>
+    <list role="related" extends="config/online/online-list.xml" />
+    <list destination="feedback" role="related" extends="config/feedback/feedback-list.xml" />
+  </form-schema>
 
-    &extra_schemas;
+  &extra_schemas;
 </wizard-schema>
