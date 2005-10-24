@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.65 2005-09-15 09:42:42 michiel Exp $
+ * @version $Id: Dove.java,v 1.66 2005-10-24 09:33:14 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -969,7 +969,7 @@ public class Dove extends AbstractDove {
      */
     protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
         node.getCloud().setProperty(Cloud.PROP_XMLMODE, "flat");
-        log.info("Values " + values);
+        log.debug("Values " + values);
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry me = (Map.Entry)i.next();
             String key = (String)me.getKey();
@@ -1041,7 +1041,8 @@ public class Dove extends AbstractDove {
                 }
                 newnode.commit();
                 int number = newnode.getNumber();
-                if (log.isServiceEnabled()) log.service("Created new node " + number);
+                if (log.isDebugEnabled()) 
+                    log.debug("Created new node " + number);
                 aliases.put(alias,new Integer(number));
                 objectelement.setAttribute(ELM_NUMBER,""+number);
                 objectelement.setAttribute(ELM_OLDNUMBER, alias);
