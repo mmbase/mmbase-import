@@ -18,6 +18,7 @@ import org.mmbase.security.implementation.cloudcontext.builders.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import java.util.*;
 
 
 /**
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectCloudContextUser.java,v 1.2 2005-06-21 07:36:37 michiel Exp $
+ * @version $Id: ASelectCloudContextUser.java,v 1.3 2005-10-24 13:01:29 michiel Exp $
  * @since  MMBase-1.8
  * @see ASelectAuthentication
  */
@@ -42,18 +43,24 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
     // constructor, perhaps needs more argumetns
     protected ASelectCloudContextUser(String userName, long number, String app, String rank) {
         super(getUser(userName), number, app);
-        this.rank = rank;
+        if (! "".equals(rank)) {
+            this.rank = rank;
+        }
     }
 
         // javadoc inherited
     public Rank getRank() throws SecurityException {
         if (rank != null) {
-            return Rank.getRank(rank);
-        } else {
-            return super.getRank();
+            Rank r =  Rank.getRank(rank);
+            if (r != null) {
+                rank = r.toString();
+                return r;
+            } else {
+                log.error("Rank member was unknown '" + rank + "'");
+            }
         }
+        return super.getRank();
     }
-
 
     protected static MMObjectNode getUser(String userName) {
         if (userName == null) return null;
@@ -67,6 +74,7 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
             node = users.getNewNode(userName);
             node.setValue("username", userName);
             node.insert(userName);
+
 
             Ranks ranks = Ranks.getBuilder();
             MMObjectNode rankNode = ranks.getRankNode(Rank.BASICUSER);
@@ -93,12 +101,13 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
 
                 relationNode.setValue("snumber", defaultGroup.getNumber());
                 relationNode.setValue("dnumber", node.getNumber());
-                relationNode.setValue("rnumber", MMBase.getMMBase().getRelDef().getNumberByName("grants"));
+                relationNode.setValue("rnumber", MMBase.getMMBase().getRelDef().getNumberByName("contains"));
                 relationNode.setValue("dir", 2);
 
                 if (relationNode.insert(userName) ==  -1) {
                     throw new RuntimeException("Could not relate group-node to user-node");
-                }                               
+                }   
+                log.service("Grouping user " + node.getNumber() + " with group node " + defaultGroup.getNumber() + " " + relationNode);                            
             }
             
         }
