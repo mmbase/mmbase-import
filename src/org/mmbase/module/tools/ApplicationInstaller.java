@@ -512,9 +512,15 @@ public class ApplicationInstaller {
 
     private List getSyncnodes(MMObjectBuilder syncbul, String exportsource, int exportnumber) throws SearchQueryException {
         NodeSearchQuery existQuery = new NodeSearchQuery(syncbul);
-        QueryConvertor.setConstraint(existQuery, "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
+        BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportnumber")), new Integer(exportnumber));
+        BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportsource")), exportsource);
+        BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+        constraint.addChild(constraint1);
+        constraint.addChild(constraint2);
+        existQuery.setConstraint(constraint);
         List nodes  = syncbul.getNodes(existQuery);
         if (nodes == null) {
+            // could this happen?
             nodes = new ArrayList();
         }
         return nodes;
