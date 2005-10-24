@@ -40,9 +40,9 @@
       <mm:unrelatednodes id="unrelated" type="mmbasegroups" />   
       <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
         <mm:stringlist referid="_groups">              
-          <mm:node id="group" number="$_" jspvar="group">
-            <% if (unrelated.contains(group)) { %>
-            <mm:createrelation source="group" destination="user" role="contains" />
+          <mm:node id="ugroup" number="$_" jspvar="ugroup">
+            <% if (unrelated.contains(ugroup)) { %>
+            <mm:createrelation source="ugroup" destination="user" role="contains" />
             <% } %>
           </mm:node>
         </mm:stringlist>
