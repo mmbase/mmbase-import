@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.6 2005-10-19 08:52:11 pierre Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.7 2005-10-24 13:59:02 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -421,7 +421,8 @@ public class ASelectAuthentication extends Authentication {
             }
             String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
             if (useCloudContext) {
-                return new ASelectCloudContextUser(userName, uniqueNumber, "class", knownUsers.getProperty(userName));
+                String r = knownUsers.getProperty(userName);
+                return new ASelectCloudContextUser(userName, uniqueNumber, "class", r);
             } else {
                 return new ASelectUser(userName, getRank(userName), uniqueNumber, "class");
             }
@@ -454,7 +455,8 @@ public class ASelectAuthentication extends Authentication {
             if (authentication(request, response, application, requestedUser)) {
                 String userName = getASelectUserId(request);
                 if (useCloudContext) {
-                    newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, knownUsers.getProperty(userName));
+                    String r = knownUsers.getProperty(userName);
+                    newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, r);
                 } else {
                     Rank rank = getRank(userName);
                     newUser = new ASelectUser(userName, rank, uniqueNumber, application);
@@ -486,7 +488,8 @@ public class ASelectAuthentication extends Authentication {
                         return null;
                     }
                     if (useCloudContext) {
-                        newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, knownUsers.getProperty(userName));
+                        String r = knownUsers.getProperty(userName);
+                        newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, r);
                     } else {
                         Rank rank = getRank(userName);
                         newUser = new ASelectUser(userName, rank, uniqueNumber, application);
@@ -541,7 +544,7 @@ public class ASelectAuthentication extends Authentication {
      * Returns an URL for the the current request.
      */
     protected String getAppUrl(HttpServletRequest request, HttpServletResponse response) {
-        StringBuffer url = request.getRequestURL();
+        StringBuffer url   = request.getRequestURL();
         Iterator i = request.getParameterMap().entrySet().iterator();
         char sep = '?';
         while (i.hasNext()) {
@@ -553,12 +556,18 @@ public class ASelectAuthentication extends Authentication {
                 sep = '&';
             }            
         }
+
+        return response.encodeURL(url.toString());
+        /*
         try {
-            return java.net.URLEncoder.encode(response.encodeURL(url.toString()), "UTF-8");
+
+            //return response.encodeURL(url.toString());
+            //return java.net.URLEncoder.encode(response.encodeURL(url.toString()), "UTF-8");
         } catch (java.io.UnsupportedEncodingException uee) {
             // could not happen.
             return response.encodeURL(url.toString());
         }
+        */
     }
 
     protected Map authenticate(HttpServletRequest request, HttpServletResponse response, String application, String user)
