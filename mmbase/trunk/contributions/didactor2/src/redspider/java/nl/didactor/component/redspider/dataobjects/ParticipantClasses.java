@@ -1,5 +1,4 @@
 package nl.didactor.component.redspider.dataobjects;
-
 /**
  * ParticipantClasses.java
  *
@@ -8,41 +7,41 @@ package nl.didactor.component.redspider.dataobjects;
  */
 
 public class ParticipantClasses  implements java.io.Serializable {
-    private java.lang.Object[] name;
+    private java.lang.String[] name;
 
     public ParticipantClasses() {
     }
 
     public ParticipantClasses(
-           java.lang.Object[] name) {
+           java.lang.String[] name) {
            this.name = name;
     }
 
 
     /**
      * Gets the name value for this ParticipantClasses.
-     *
+     * 
      * @return name
      */
-    public java.lang.Object[] getName() {
+    public java.lang.String[] getName() {
         return name;
     }
 
 
     /**
      * Sets the name value for this ParticipantClasses.
-     *
+     * 
      * @param name
      */
-    public void setName(java.lang.Object[] name) {
+    public void setName(java.lang.String[] name) {
         this.name = name;
     }
 
-    public java.lang.Object getName(int i) {
+    public java.lang.String getName(int i) {
         return this.name[i];
     }
 
-    public void setName(int i, java.lang.Object _value) {
+    public void setName(int i, java.lang.String _value) {
         this.name[i] = _value;
     }
 
@@ -57,8 +56,8 @@ public class ParticipantClasses  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true &&
-            ((this.name==null && other.getName()==null) ||
+        _equals = true && 
+            ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               java.util.Arrays.equals(this.name, other.getName())));
         __equalsCalc = null;
@@ -96,7 +95,7 @@ public class ParticipantClasses  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("name");
         elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         elemField.setMaxOccursUnbounded(true);
@@ -114,10 +113,10 @@ public class ParticipantClasses  implements java.io.Serializable {
      * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType,
-           java.lang.Class _javaType,
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return
+        return 
           new  org.apache.axis.encoding.ser.BeanSerializer(
             _javaType, _xmlType, typeDesc);
     }
@@ -126,10 +125,10 @@ public class ParticipantClasses  implements java.io.Serializable {
      * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType,
-           java.lang.Class _javaType,
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return
+        return 
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }

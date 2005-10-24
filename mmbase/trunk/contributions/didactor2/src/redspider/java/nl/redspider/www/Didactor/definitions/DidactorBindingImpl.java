@@ -7,8 +7,6 @@
 
 package nl.redspider.www.Didactor.definitions;
 
-import java.util.Calendar;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -35,12 +33,14 @@ public class DidactorBindingImpl implements nl.redspider.www.Didactor.definition
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
       Cloud cloud = cloudProvider.getAdminCloud();
       processor = new Processor(cloud);
+
    }
 
 
 
    public ParticipantResponse publishParticipant(Participant participant) throws java.rmi.RemoteException
    {
+
 /*
       participant = new Participant();
       participant.setCity("New Orlean");
@@ -74,23 +74,47 @@ public class DidactorBindingImpl implements nl.redspider.www.Didactor.definition
          log.info("firstname=" + participant.getFirstname());
          log.info("suffix="    + participant.getSuffix());
          log.info("lastname="  + participant.getLastname());
+         log.info("workgroup=" + participant.getWorkgroups_name());
+         log.info("country="   + participant.getCountry());
+         log.info("zipcode="   + participant.getZipcode());
+         log.info("role="      + participant.getRoles_name());
 
+         //classes
          ParticipantClasses partisipantClasses = participant.getClasses();
-         Object[] arrobjClasses = partisipantClasses.getName();
-         for(int f = 0; f < arrobjClasses.length; f++)
+         if((partisipantClasses == null) || (partisipantClasses.getName() == null) || (partisipantClasses.getName().length == 0))
          {
-            String sClass = (String) arrobjClasses[f];
-            log.info("class=" + sClass);
+            log.info("there are no classes for the person");
          }
+         else
+         {
+            Object[] arrobjClasses = partisipantClasses.getName();
+            for (int f = 0; f < arrobjClasses.length; f++)
+            {
+               String sClass = (String) arrobjClasses[f];
+               log.info("class=" + sClass);
+            }
+         }
+
+         //status
+         if (participant.getStatus() == null)
+         {
+            log.info("there is no status for the person");
+         }
+         else
+         {
+            log.info("status=" + participant.getStatus().getValue());
+         }
+
+         //
 
       }
       catch(Exception e)
       {
-         String sErrorMessage = "An error during parsing requset, some fields are null:" + e.toString();
+         String sErrorMessage = "An error during *PARCING* the requset:" + e.toString();
          log.error(sErrorMessage);
 
-         respParticipant.setResultcode(DidactorResultType.fromValue("error"));
-         respParticipant.setAction(DidactorActionType.fromString("disable"));
+         respParticipant.setResultcode("error");
+         respParticipant.setAction("disable");
          respParticipant.setExternid("null");
          respParticipant.setMessage(sErrorMessage);
          return respParticipant;
@@ -100,20 +124,28 @@ public class DidactorBindingImpl implements nl.redspider.www.Didactor.definition
       //Processor
       try
       {
-         DidactorActionType didactorActionType = processor.process(participant);
+         String sDidactorActionType = processor.process(participant);
+         if(processor.check_fields_dimension(participant))
+         {
+            respParticipant.setResultcode(ParticipantResponse.sResultCodeSuccess);
+            respParticipant.setMessage("");
+         }
+         else
+         {
+            respParticipant.setResultcode(ParticipantResponse.sResultCodeWarning);
+            respParticipant.setMessage("At least one of fields is out of dimensions.");
+         }
 
-         respParticipant.setMessage("");
          respParticipant.setExternid(participant.getExternid());
-         respParticipant.setAction(didactorActionType);
-         respParticipant.setResultcode(DidactorResultType.fromValue("success"));
+         respParticipant.setAction(sDidactorActionType);
 
       }
       catch(Exception e)
       {
-         respParticipant.setResultcode(DidactorResultType.fromValue("error"));
-         respParticipant.setAction(DidactorActionType.fromString("disable"));
+         respParticipant.setResultcode(ParticipantResponse.sResultCodeError);
+         respParticipant.setAction("disable");
          respParticipant.setExternid(participant.getExternid());
-         respParticipant.setMessage(e.toString());
+         respParticipant.setMessage("A error occured during *PROCESSING* of the request: "  + e.toString());
       }
 
       return respParticipant;

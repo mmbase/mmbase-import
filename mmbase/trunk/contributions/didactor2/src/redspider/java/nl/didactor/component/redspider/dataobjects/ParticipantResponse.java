@@ -7,19 +7,24 @@ package nl.didactor.component.redspider.dataobjects;
  * by the Apache Axis 1.2.1 Jun 14, 2005 (09:15:57 EDT) WSDL2Java emitter.
  */
 
-public class ParticipantResponse  implements java.io.Serializable {
-    private java.lang.Object externid;
-    private DidactorActionType action;
-    private DidactorResultType resultcode;
+public class ParticipantResponse  implements java.io.Serializable
+{
+    public static String sResultCodeSuccess = "success";
+    public static String sResultCodeWarning = "warning";
+    public static String sResultCodeError   = "error";
+
+    private java.lang.String externid;
+    private java.lang.String action;
+    private java.lang.String resultcode;
     private java.lang.String message;
 
     public ParticipantResponse() {
     }
 
     public ParticipantResponse(
-           java.lang.Object externid,
-           DidactorActionType action,
-           DidactorResultType resultcode,
+           java.lang.String externid,
+           java.lang.String action,
+           java.lang.String resultcode,
            java.lang.String message) {
            this.externid = externid;
            this.action = action;
@@ -33,7 +38,7 @@ public class ParticipantResponse  implements java.io.Serializable {
      *
      * @return externid
      */
-    public java.lang.Object getExternid() {
+    public java.lang.String getExternid() {
         return externid;
     }
 
@@ -43,7 +48,7 @@ public class ParticipantResponse  implements java.io.Serializable {
      *
      * @param externid
      */
-    public void setExternid(java.lang.Object externid) {
+    public void setExternid(java.lang.String externid) {
         this.externid = externid;
     }
 
@@ -53,7 +58,7 @@ public class ParticipantResponse  implements java.io.Serializable {
      *
      * @return action
      */
-    public DidactorActionType getAction() {
+    public java.lang.String getAction() {
         return action;
     }
 
@@ -63,7 +68,7 @@ public class ParticipantResponse  implements java.io.Serializable {
      *
      * @param action
      */
-    public void setAction(DidactorActionType action) {
+    public void setAction(java.lang.String action) {
         this.action = action;
     }
 
@@ -73,7 +78,7 @@ public class ParticipantResponse  implements java.io.Serializable {
      *
      * @return resultcode
      */
-    public DidactorResultType getResultcode() {
+    public java.lang.String getResultcode() {
         return resultcode;
     }
 
@@ -83,7 +88,7 @@ public class ParticipantResponse  implements java.io.Serializable {
      *
      * @param resultcode
      */
-    public void setResultcode(DidactorResultType resultcode) {
+    public void setResultcode(java.lang.String resultcode) {
         this.resultcode = resultcode;
     }
 
@@ -167,19 +172,19 @@ public class ParticipantResponse  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("externid");
         elemField.setXmlName(new javax.xml.namespace.QName("", "externid"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("action");
         elemField.setXmlName(new javax.xml.namespace.QName("", "action"));
-        elemField.setXmlType(new javax.xml.namespace.QName("", "DidactorActionType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("resultcode");
         elemField.setXmlName(new javax.xml.namespace.QName("", "resultcode"));
-        elemField.setXmlType(new javax.xml.namespace.QName("", "DidactorResultType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

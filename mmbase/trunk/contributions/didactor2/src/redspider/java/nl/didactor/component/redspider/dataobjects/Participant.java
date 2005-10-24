@@ -1,5 +1,4 @@
 package nl.didactor.component.redspider.dataobjects;
-
 /**
  * Participant.java
  *
@@ -8,40 +7,40 @@ package nl.didactor.component.redspider.dataobjects;
  */
 
 public class Participant  implements java.io.Serializable {
-    private java.lang.Object externid;
-    private java.lang.Object initials;
-    private java.lang.Object firstname;
-    private java.lang.Object suffix;
-    private java.lang.Object lastname;
-    private java.util.Calendar dayofbirth;
-    private java.lang.Object email;
+    private java.lang.String externid;
+    private java.lang.String initials;
+    private java.lang.String firstname;
+    private java.lang.String suffix;
+    private java.lang.String lastname;
+    private java.lang.String dayofbirth;
+    private java.lang.String email;
     private ParticipantClasses classes;
-    private java.lang.Object address;
-    private java.lang.Object zipcode;
-    private java.lang.Object city;
-    private java.lang.Object country;
-    private java.lang.Object workgroups_name;
-    private java.lang.Object roles_name;
+    private java.lang.String address;
+    private java.lang.String zipcode;
+    private java.lang.String city;
+    private java.lang.String country;
+    private java.lang.String workgroups_name;
+    private java.lang.String roles_name;
     private ParticipantStatusType status;
 
     public Participant() {
     }
 
     public Participant(
-           java.lang.Object externid,
-           java.lang.Object initials,
-           java.lang.Object firstname,
-           java.lang.Object suffix,
-           java.lang.Object lastname,
-           java.util.Calendar dayofbirth,
-           java.lang.Object email,
+           java.lang.String externid,
+           java.lang.String initials,
+           java.lang.String firstname,
+           java.lang.String suffix,
+           java.lang.String lastname,
+           java.lang.String dayofbirth,
+           java.lang.String email,
            ParticipantClasses classes,
-           java.lang.Object address,
-           java.lang.Object zipcode,
-           java.lang.Object city,
-           java.lang.Object country,
-           java.lang.Object workgroups_name,
-           java.lang.Object roles_name,
+           java.lang.String address,
+           java.lang.String zipcode,
+           java.lang.String city,
+           java.lang.String country,
+           java.lang.String workgroups_name,
+           java.lang.String roles_name,
            ParticipantStatusType status) {
            this.externid = externid;
            this.initials = initials;
@@ -63,147 +62,147 @@ public class Participant  implements java.io.Serializable {
 
     /**
      * Gets the externid value for this Participant.
-     *
+     * 
      * @return externid
      */
-    public java.lang.Object getExternid() {
+    public java.lang.String getExternid() {
         return externid;
     }
 
 
     /**
      * Sets the externid value for this Participant.
-     *
+     * 
      * @param externid
      */
-    public void setExternid(java.lang.Object externid) {
+    public void setExternid(java.lang.String externid) {
         this.externid = externid;
     }
 
 
     /**
      * Gets the initials value for this Participant.
-     *
+     * 
      * @return initials
      */
-    public java.lang.Object getInitials() {
+    public java.lang.String getInitials() {
         return initials;
     }
 
 
     /**
      * Sets the initials value for this Participant.
-     *
+     * 
      * @param initials
      */
-    public void setInitials(java.lang.Object initials) {
+    public void setInitials(java.lang.String initials) {
         this.initials = initials;
     }
 
 
     /**
      * Gets the firstname value for this Participant.
-     *
+     * 
      * @return firstname
      */
-    public java.lang.Object getFirstname() {
+    public java.lang.String getFirstname() {
         return firstname;
     }
 
 
     /**
      * Sets the firstname value for this Participant.
-     *
+     * 
      * @param firstname
      */
-    public void setFirstname(java.lang.Object firstname) {
+    public void setFirstname(java.lang.String firstname) {
         this.firstname = firstname;
     }
 
 
     /**
      * Gets the suffix value for this Participant.
-     *
+     * 
      * @return suffix
      */
-    public java.lang.Object getSuffix() {
+    public java.lang.String getSuffix() {
         return suffix;
     }
 
 
     /**
      * Sets the suffix value for this Participant.
-     *
+     * 
      * @param suffix
      */
-    public void setSuffix(java.lang.Object suffix) {
+    public void setSuffix(java.lang.String suffix) {
         this.suffix = suffix;
     }
 
 
     /**
      * Gets the lastname value for this Participant.
-     *
+     * 
      * @return lastname
      */
-    public java.lang.Object getLastname() {
+    public java.lang.String getLastname() {
         return lastname;
     }
 
 
     /**
      * Sets the lastname value for this Participant.
-     *
+     * 
      * @param lastname
      */
-    public void setLastname(java.lang.Object lastname) {
+    public void setLastname(java.lang.String lastname) {
         this.lastname = lastname;
     }
 
 
     /**
      * Gets the dayofbirth value for this Participant.
-     *
+     * 
      * @return dayofbirth
      */
-    public java.util.Calendar getDayofbirth() {
+    public java.lang.String getDayofbirth() {
         return dayofbirth;
     }
 
 
     /**
      * Sets the dayofbirth value for this Participant.
-     *
+     * 
      * @param dayofbirth
      */
-    public void setDayofbirth(java.util.Calendar dayofbirth) {
+    public void setDayofbirth(java.lang.String dayofbirth) {
         this.dayofbirth = dayofbirth;
     }
 
 
     /**
      * Gets the email value for this Participant.
-     *
+     * 
      * @return email
      */
-    public java.lang.Object getEmail() {
+    public java.lang.String getEmail() {
         return email;
     }
 
 
     /**
      * Sets the email value for this Participant.
-     *
+     * 
      * @param email
      */
-    public void setEmail(java.lang.Object email) {
+    public void setEmail(java.lang.String email) {
         this.email = email;
     }
 
 
     /**
      * Gets the classes value for this Participant.
-     *
+     * 
      * @return classes
      */
     public ParticipantClasses getClasses() {
@@ -213,7 +212,7 @@ public class Participant  implements java.io.Serializable {
 
     /**
      * Sets the classes value for this Participant.
-     *
+     * 
      * @param classes
      */
     public void setClasses(ParticipantClasses classes) {
@@ -223,127 +222,127 @@ public class Participant  implements java.io.Serializable {
 
     /**
      * Gets the address value for this Participant.
-     *
+     * 
      * @return address
      */
-    public java.lang.Object getAddress() {
+    public java.lang.String getAddress() {
         return address;
     }
 
 
     /**
      * Sets the address value for this Participant.
-     *
+     * 
      * @param address
      */
-    public void setAddress(java.lang.Object address) {
+    public void setAddress(java.lang.String address) {
         this.address = address;
     }
 
 
     /**
      * Gets the zipcode value for this Participant.
-     *
+     * 
      * @return zipcode
      */
-    public java.lang.Object getZipcode() {
+    public java.lang.String getZipcode() {
         return zipcode;
     }
 
 
     /**
      * Sets the zipcode value for this Participant.
-     *
+     * 
      * @param zipcode
      */
-    public void setZipcode(java.lang.Object zipcode) {
+    public void setZipcode(java.lang.String zipcode) {
         this.zipcode = zipcode;
     }
 
 
     /**
      * Gets the city value for this Participant.
-     *
+     * 
      * @return city
      */
-    public java.lang.Object getCity() {
+    public java.lang.String getCity() {
         return city;
     }
 
 
     /**
      * Sets the city value for this Participant.
-     *
+     * 
      * @param city
      */
-    public void setCity(java.lang.Object city) {
+    public void setCity(java.lang.String city) {
         this.city = city;
     }
 
 
     /**
      * Gets the country value for this Participant.
-     *
+     * 
      * @return country
      */
-    public java.lang.Object getCountry() {
+    public java.lang.String getCountry() {
         return country;
     }
 
 
     /**
      * Sets the country value for this Participant.
-     *
+     * 
      * @param country
      */
-    public void setCountry(java.lang.Object country) {
+    public void setCountry(java.lang.String country) {
         this.country = country;
     }
 
 
     /**
      * Gets the workgroups_name value for this Participant.
-     *
+     * 
      * @return workgroups_name
      */
-    public java.lang.Object getWorkgroups_name() {
+    public java.lang.String getWorkgroups_name() {
         return workgroups_name;
     }
 
 
     /**
      * Sets the workgroups_name value for this Participant.
-     *
+     * 
      * @param workgroups_name
      */
-    public void setWorkgroups_name(java.lang.Object workgroups_name) {
+    public void setWorkgroups_name(java.lang.String workgroups_name) {
         this.workgroups_name = workgroups_name;
     }
 
 
     /**
      * Gets the roles_name value for this Participant.
-     *
+     * 
      * @return roles_name
      */
-    public java.lang.Object getRoles_name() {
+    public java.lang.String getRoles_name() {
         return roles_name;
     }
 
 
     /**
      * Sets the roles_name value for this Participant.
-     *
+     * 
      * @param roles_name
      */
-    public void setRoles_name(java.lang.Object roles_name) {
+    public void setRoles_name(java.lang.String roles_name) {
         this.roles_name = roles_name;
     }
 
 
     /**
      * Gets the status value for this Participant.
-     *
+     * 
      * @return status
      */
     public ParticipantStatusType getStatus() {
@@ -353,7 +352,7 @@ public class Participant  implements java.io.Serializable {
 
     /**
      * Sets the status value for this Participant.
-     *
+     * 
      * @param status
      */
     public void setStatus(ParticipantStatusType status) {
@@ -371,50 +370,50 @@ public class Participant  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true &&
-            ((this.externid==null && other.getExternid()==null) ||
+        _equals = true && 
+            ((this.externid==null && other.getExternid()==null) || 
              (this.externid!=null &&
               this.externid.equals(other.getExternid()))) &&
-            ((this.initials==null && other.getInitials()==null) ||
+            ((this.initials==null && other.getInitials()==null) || 
              (this.initials!=null &&
               this.initials.equals(other.getInitials()))) &&
-            ((this.firstname==null && other.getFirstname()==null) ||
+            ((this.firstname==null && other.getFirstname()==null) || 
              (this.firstname!=null &&
               this.firstname.equals(other.getFirstname()))) &&
-            ((this.suffix==null && other.getSuffix()==null) ||
+            ((this.suffix==null && other.getSuffix()==null) || 
              (this.suffix!=null &&
               this.suffix.equals(other.getSuffix()))) &&
-            ((this.lastname==null && other.getLastname()==null) ||
+            ((this.lastname==null && other.getLastname()==null) || 
              (this.lastname!=null &&
               this.lastname.equals(other.getLastname()))) &&
-            ((this.dayofbirth==null && other.getDayofbirth()==null) ||
+            ((this.dayofbirth==null && other.getDayofbirth()==null) || 
              (this.dayofbirth!=null &&
               this.dayofbirth.equals(other.getDayofbirth()))) &&
-            ((this.email==null && other.getEmail()==null) ||
+            ((this.email==null && other.getEmail()==null) || 
              (this.email!=null &&
               this.email.equals(other.getEmail()))) &&
-            ((this.classes==null && other.getClasses()==null) ||
+            ((this.classes==null && other.getClasses()==null) || 
              (this.classes!=null &&
               this.classes.equals(other.getClasses()))) &&
-            ((this.address==null && other.getAddress()==null) ||
+            ((this.address==null && other.getAddress()==null) || 
              (this.address!=null &&
               this.address.equals(other.getAddress()))) &&
-            ((this.zipcode==null && other.getZipcode()==null) ||
+            ((this.zipcode==null && other.getZipcode()==null) || 
              (this.zipcode!=null &&
               this.zipcode.equals(other.getZipcode()))) &&
-            ((this.city==null && other.getCity()==null) ||
+            ((this.city==null && other.getCity()==null) || 
              (this.city!=null &&
               this.city.equals(other.getCity()))) &&
-            ((this.country==null && other.getCountry()==null) ||
+            ((this.country==null && other.getCountry()==null) || 
              (this.country!=null &&
               this.country.equals(other.getCountry()))) &&
-            ((this.workgroups_name==null && other.getWorkgroups_name()==null) ||
+            ((this.workgroups_name==null && other.getWorkgroups_name()==null) || 
              (this.workgroups_name!=null &&
               this.workgroups_name.equals(other.getWorkgroups_name()))) &&
-            ((this.roles_name==null && other.getRoles_name()==null) ||
+            ((this.roles_name==null && other.getRoles_name()==null) || 
              (this.roles_name!=null &&
               this.roles_name.equals(other.getRoles_name()))) &&
-            ((this.status==null && other.getStatus()==null) ||
+            ((this.status==null && other.getStatus()==null) || 
              (this.status!=null &&
               this.status.equals(other.getStatus())));
         __equalsCalc = null;
@@ -486,43 +485,43 @@ public class Participant  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("externid");
         elemField.setXmlName(new javax.xml.namespace.QName("", "externid"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("initials");
         elemField.setXmlName(new javax.xml.namespace.QName("", "initials"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("firstname");
         elemField.setXmlName(new javax.xml.namespace.QName("", "firstname"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("suffix");
         elemField.setXmlName(new javax.xml.namespace.QName("", "suffix"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("lastname");
         elemField.setXmlName(new javax.xml.namespace.QName("", "lastname"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("dayofbirth");
         elemField.setXmlName(new javax.xml.namespace.QName("", "dayofbirth"));
-        elemField.setXmlType(new javax.xml.namespace.QName("", "DatumType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("email");
         elemField.setXmlName(new javax.xml.namespace.QName("", "email"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -534,37 +533,37 @@ public class Participant  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("address");
         elemField.setXmlName(new javax.xml.namespace.QName("", "address"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("zipcode");
         elemField.setXmlName(new javax.xml.namespace.QName("", "zipcode"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("city");
         elemField.setXmlName(new javax.xml.namespace.QName("", "city"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("country");
         elemField.setXmlName(new javax.xml.namespace.QName("", "country"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("workgroups_name");
         elemField.setXmlName(new javax.xml.namespace.QName("", "workgroups_name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("roles_name");
         elemField.setXmlName(new javax.xml.namespace.QName("", "roles_name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -586,10 +585,10 @@ public class Participant  implements java.io.Serializable {
      * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType,
-           java.lang.Class _javaType,
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return
+        return 
           new  org.apache.axis.encoding.ser.BeanSerializer(
             _javaType, _xmlType, typeDesc);
     }
@@ -598,10 +597,10 @@ public class Participant  implements java.io.Serializable {
      * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType,
-           java.lang.Class _javaType,
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return
+        return 
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
