@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.125 2005-09-22 19:57:29 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.126 2005-10-24 09:53:39 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -1087,6 +1087,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             if (rank != Attribute.NULL) {
                 log.debug("Checking for rank");
                 Rank curRank = cloud.getUser().getRank();
+                if (curRank == null) {
+                    throw new RuntimeException ("The user " + cloud.getUser() + " had rank 'null'");
+                }
                 Rank r = getRank();
                 if (curRank.getInt() < r.getInt()) {
                     if (log.isDebugEnabled()) {
