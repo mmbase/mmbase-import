@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.3 2005-03-04 10:45:49 jdiepenmaat Exp $
+    @version $Id: wizard.xsl,v 1.4 2005-10-24 13:58:11 jverelst Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -610,6 +610,11 @@
       <xsl:when test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;) or (@ftype=&apos;time&apos;) or (@ftype=&apos;duration&apos;)">
         <xsl:call-template name="ftype-datetime"/>
       </xsl:when>
+      <!-- BEGIN DIDACTOR CHANGE -->
+      <xsl:when test="(@ftype=&apos;dateoffset&apos;)">
+        <xsl:call-template name="ftype-datetime"/>
+      </xsl:when>
+      <!-- END DIDACTOR CHANGE -->
       <xsl:when test="@ftype=&apos;image&apos;">
         <xsl:call-template name="ftype-image"/>
       </xsl:when>
@@ -766,10 +771,20 @@
     <xsl:choose>
       <xsl:when test="@maywrite!=&apos;false&apos;">
         <div>
-          <input type="hidden" name="{@fieldname}" value="{@ftype}" id="{@fieldname}">
-						<xsl:attribute name="new"><xsl:value-of select="value = ''"/></xsl:attribute>
-            <xsl:apply-templates select="@*"/>
-          </input>
+          <!-- BEGIN DIDACTOR CHANGE -->
+          <xsl:if test="@ftype=&apos;dateoffset&apos;">
+            <input type="hidden" name="{@fieldname}" value="date" id="{@fieldname}">
+              <xsl:attribute name="new"><xsl:value-of select="value = ''"/></xsl:attribute>
+              <xsl:apply-templates select="@*"/>
+            </input>
+          </xsl:if>
+          <xsl:if test="@ftype!=&apos;dateoffset&apos;">
+            <input type="hidden" name="{@fieldname}" value="{@ftype}" id="{@fieldname}">
+              <xsl:attribute name="new"><xsl:value-of select="value = ''"/></xsl:attribute>
+              <xsl:apply-templates select="@*"/>
+            </input>
+          </xsl:if>
+          <!-- END DIDACTOR CHANGE -->
 
           <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;)">
             <xsl:call-template name="ftype-datetime-date"/>
@@ -784,6 +799,13 @@
           <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;time&apos;) or (@ftype=&apos;duration&apos;)">
             <xsl:call-template name="ftype-datetime-time"/>
           </xsl:if>
+
+          <!-- BEGIN DIDACTOR CHANGE -->
+          <xsl:if test="(@ftype=&apos;dateoffset&apos;)">
+            <xsl:call-template name="ftype-datetime-dateoffset"/>
+          </xsl:if>
+          <!-- END DIDACTOR CHANGE -->
+
         </div>
       </xsl:when>
       <xsl:otherwise>
@@ -937,6 +959,34 @@
       </select>
     </xsl:if>
   </xsl:template>
+
+  <!-- BEGIN DIDACTOR CHANGE -->
+  <xsl:template name="ftype-datetime-dateoffset">
+    <input type="hidden" super="{@fieldname}" name="internal_{@fieldname}_seconds" value="0" />
+    <input type="hidden" super="{@fieldname}" name="internal_{@fieldname}_minutes" value="0" />
+    <input type="hidden" super="{@fieldname}" name="internal_{@fieldname}_hours" value="0" />
+
+    <input type="hidden" super="{@fieldname}" name="internal_{@fieldname}_day" value="1" />
+    <input type="hidden" super="{@fieldname}" name="internal_{@fieldname}_month" value="0" />
+    <input type="hidden" super="{@fieldname}" name="internal_{@fieldname}_year" value="1970" />
+
+    <select name="internal_{@fieldname}_weeks" super="{@fieldname}">
+      <xsl:call-template name="loop-options">
+        <xsl:with-param name="value">0</xsl:with-param>
+        <xsl:with-param name="selected" select="date:format(string(value), 'w', $timezone, $language, $country) - 1" />
+        <xsl:with-param name="end" select="52" />
+      </xsl:call-template>
+    </select> weken,
+    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+    <select name="internal_{@fieldname}_days" super="{@fieldname}">
+      <xsl:call-template name="loop-options">
+        <xsl:with-param name="value">0</xsl:with-param>
+        <xsl:with-param name="selected" select="date:format(string(value), 'F', $timezone, $language, $country) - 1" />
+        <xsl:with-param name="end" select="6" />
+      </xsl:call-template>
+    </select> dagen
+  </xsl:template>
+  <!-- END DIDACTOR CHANGE -->
 
   <xsl:template name="ftype-image">
     <xsl:if test="@maywrite!=&apos;false&apos;">
