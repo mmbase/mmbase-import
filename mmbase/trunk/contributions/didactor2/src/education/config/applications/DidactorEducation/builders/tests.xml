@@ -198,7 +198,7 @@
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">De pagina die getoond moet worden
-          als een student klaar is met het maken van een toets.
+          als een student klaar is met het maken van een toets. 
           0 = default; een pagina die aangeeft of de student geslaagd/gezakt is
           1 = een pagina die alle antwoorden met feedback laat zien
               (deze is alleen relevant als de vlag 'mayview' op '1' staat)
@@ -241,7 +241,7 @@
         <description xml:lang="nl">
           Aantal vragen dat geselecteerd moet worden voor deze toets.
           0  = alle vragen laten zien in de volgorde die opgegeven is
-          1+ = willekeurig dit aantal vragen selecteren
+          1+ = willekeurig dit aantal vragen selecteren 
         </description>
         <description xml:lang="en">
           Number of questions that must be selected for this test.
@@ -275,9 +275,104 @@
       </db>
     </field>
 
+    <!-- POS 9 : <field> 'always_online'  -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Altijd online</description>
+        <description xml:lang="en">Always online</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Altijd online</guiname>
+        <guiname xml:lang="en">Always online</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>9</input>
+          <!-- position in list area of the editor -->
+          <list>9</list>
+          <!-- position in search area of the editor -->
+          <search>9</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>always_online</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
 
-
-
-
+    <!-- POS 10 : <field> 'online_date' -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Online Date</description>
+        <description xml:lang="nl">Online Tijden</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Online Date</guiname>
+        <guiname xml:lang="nl">Online Tijden</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>10</input>
+          <!-- position in list area of the editor -->
+          <list>10</list>
+          <!-- position in search area of the editor -->
+          <search>10</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>online_date</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent"  notnull="false" size="55" key="false">LONG</type>
+      </db>
+    </field>    
+    
+    <!-- POS 11 : <field> 'offline_date'  -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Offline Date</description>
+        <description xml:lang="nl">Offline Tijden</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Offline Date</guiname>
+        <guiname xml:lang="nl">Offline Tijden</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>11</input>
+          <!-- position in list area of the editor -->
+          <list>11</list>
+          <!-- position in search area of the editor -->
+          <search>11</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>offline_date</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent"  notnull="false" size="55" key="false">LONG</type>
+      </db>
+    </field>
+    
   </fieldlist>
 </builder>
