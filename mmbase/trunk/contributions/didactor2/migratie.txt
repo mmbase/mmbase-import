@@ -1,5 +1,8 @@
 Migratie issues
 
+2005-10-25
+    ALTER TABLE mmb_providers ADD locale VARCHAR(12);
+
 2005-10-22
     ALTER TABLE mmb_tests ADD always_online INT(11) NOT NULL DEFAULT '1';
     ALTER TABLE mmb_tests ADD online_date BIGINT(20) NOT NULL DEFAULT '0';
