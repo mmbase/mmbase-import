@@ -1,7 +1,7 @@
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
@@ -30,10 +30,9 @@
 </mm:present>
 
 
-<fmt:bundle basename="nl.didactor.component.drm.DRMMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="LICENSE" /></title>
+    <title><di:translate key="drm.license" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -41,7 +40,7 @@
 
 <div class="navigationbar">
 <div class="titlebar">
-      <fmt:message key="LICENSE" />
+      <di:translate key="drm.license" />
 </div>
 </div>
 
@@ -72,7 +71,7 @@
     </mm:node>
 
   <form method="POST">
-    <input type="submit" name="agree" value="<fmt:message key="AGREE"/>"> <input type="submit" name="notagree" value="<fmt:message key="NOTAGREE"/>">
+    <input type="submit" name="agree" value="<di:translate key="drm.agree" />"> <input type="submit" name="notagree" value="<di:translate key="drm.notagree" />">
   </form>
 
   </div>
@@ -80,6 +79,5 @@
 </div>
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>
