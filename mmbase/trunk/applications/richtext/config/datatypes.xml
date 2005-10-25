@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+
+  <datatype id="xml">
+    <specialization id="mmxf">
+      <setprocessor type="string">
+        <class name="org.mmbase.richtext.processors.xml.MmxfSetString" />
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.richtext.processors.xml.MmxfGetString" />
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+  <datatype id="string">
+    <specialization id="index">
+      <getprocessor>
+        <class name="org.mmbase.richtext.processors.GetIndex" />
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+
+</datatypes>
