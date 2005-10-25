@@ -4,7 +4,7 @@
 <%@ page import = "java.util.TreeMap" %>
 
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
@@ -14,16 +14,7 @@
 
 <%
    String sProfileID = request.getParameter("profile");
-   String bundleCompetence = null;
 %>
-<mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-   <%
-      bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + sLangCode;
-   %>
-</mm:write>
-
-
-<fmt:bundle basename="<%= bundleCompetence %>">
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />' />
@@ -94,18 +85,18 @@
    <table border="1" cellpadding="0" cellspacing="0" style="border:0px" class="titlefield2">
       <% // Let's paint the header of the table %>
       <tr>
-         <td colspan="2" style="border-color:#000000; background:#BDBDBD"><fmt:message key="CompetenceMatrixCompetences"/></td>
+         <td colspan="2" style="border-color:#000000; background:#BDBDBD"><di:translate key="competence.competencematrixcompetences" /></td>
          <td style="border:0px;">&nbsp;&nbsp;&nbsp;</td>
-         <td colspan="<%= hsetCoreTasks.size() %>" style="border-color:#000000; border-right:0px">&nbsp;<fmt:message key="CompetenceMatrixCoreTasks"/>&nbsp;</td>
+         <td colspan="<%= hsetCoreTasks.size() %>" style="border-color:#000000; border-right:0px">&nbsp;<di:translate key="competence.competencematrixcoretasks" />&nbsp;</td>
          <td style="border-color:#000000;border-top:0px; border-right:0px;">&nbsp;&nbsp;&nbsp;</td>
-         <td colspan="<%= hsetCoreAssignments.size() %>" style="border-color:#000000;border-right:0px">&nbsp;<fmt:message key="CompetenceMatrixCoreAssignments"/>&nbsp;</td>
-         <td style="border-color:#000000">&nbsp;<fmt:message key="CompetenceMatrixRatings"/>&nbsp;</td>
+         <td colspan="<%= hsetCoreAssignments.size() %>" style="border-color:#000000;border-right:0px">&nbsp;<di:translate key="competence.competencematrixcoreassignments" />&nbsp;</td>
+         <td style="border-color:#000000">&nbsp;<di:translate key="competence.competencematrixratings" />&nbsp;</td>
       </tr>
       <tr>
          <%
             String sProfileName = "";
          %>
-         <mm:import id="profile_name_template"><fmt:message key="CompetenceMatrixProfile"/></mm:import>
+         <mm:import id="profile_name_template"><di:translate key="competence.competencematrixprofile" /></mm:import>
          <mm:write referid="profile_name_template" write="false" jspvar="sTemplate" vartype="String">
             <mm:field name="name" jspvar="sProfile" vartype="String">
                <%
@@ -136,7 +127,7 @@
             else
             {//Header: click here to create a new one
                %>
-                     <td align="center" style="border-color:#000000; border-top:0px; border-right:0px"><fmt:message key="CompetenceMatrixAddNewCoreTask"/></td>
+                     <td align="center" style="border-color:#000000; border-top:0px; border-right:0px"><di:translate key="competence.competencematrixaddnewcoretask" /></td>
                <%
             }
          %>
@@ -162,7 +153,7 @@
             else
             {//Header: click here to create a new one
                %>
-                     <td align="center" style="border-color:#000000;border-top:0px;border-right:0px"><fmt:message key="CompetenceMatrixAddNewCoreAssignment"/></td>
+                     <td align="center" style="border-color:#000000;border-top:0px;border-right:0px"><di:translate key="competence.competencematrixaddnewcoreassignment" /></td>
                <%
             }
          %>
@@ -278,10 +269,9 @@
       </mm:list>
    </table>
 
-   <fmt:message key="CompetenceMatrixAddNewExplanation"/>
+   <di:translate key="competence.competencematrixaddnewexplanation" />
 
 </mm:node>
 </body>
 </html>
-</fmt:bundle>
 </mm:cloud>

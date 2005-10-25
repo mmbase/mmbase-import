@@ -5,7 +5,7 @@
 
 
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
@@ -22,16 +22,7 @@
    String sSearchAge = request.getParameter("age");
    if(sSearchAge == null) sSearchAge = "-1";
    String sDeleteNode = request.getParameter("delete_node");
-   String bundleCompetence = null;
 %>
-<mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-   <%
-      bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + sLangCode;
-   %>
-</mm:write>
-
-
-<fmt:bundle basename="<%= bundleCompetence %>">
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href='<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />' />
@@ -83,13 +74,13 @@
          <%
             String sResults = "";
          %>
-         <mm:import id="SearchResultsItems" reset="true"><fmt:message key="CompetenceTypesMatrixSearchResultsItems"/></mm:import>
+         <mm:import id="SearchResultsItems" reset="true"><di:translate key="competence.competencetypesmatrixsearchresultsitems" /></mm:import>
          <mm:write referid="SearchResultsItems" write="false" jspvar="sTemplate" vartype="String">
             <%
                sResults = sTemplate.replaceAll("\\{\\$\\$\\$\\}", "" + hsetCompetences.size());
             %>
          </mm:write>
-         <div title="<fmt:message key="CompetenceTypesMatrixSearchResultsItemsDescription"/>"><%= sResults %></div>
+         <div title="<di:translate key="competence.competencetypesmatrixsearchresultsitemsdescription" />"><%= sResults %></div>
       </td>
    </tr>
 </table>
@@ -107,7 +98,7 @@
                <td>
                   <form>
                      <input type="hidden" id="delete_node" name="delete_node" value=""/>
-                     <span class="header"><fmt:message key="CompetenceTypesMatrixSearchResultsTitle"/></span>
+                     <span class="header"><di:translate key="competence.competencetypesmatrixsearchresultstitle" /></span>
                      <br>
                      <select class="input" name="age">
                         <option value="-1"
@@ -117,7 +108,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeAll"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchtimeall" /></option>
                         <option value="0"
                            <%
                               if((sSearchAge != null) && (sSearchAge.equals("0")))
@@ -125,7 +116,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeToday"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchtimetoday" /></option>
                         <option value="1"
                            <%
                               if((sSearchAge != null) && (sSearchAge.equals("1")))
@@ -133,7 +124,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeDay"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchtimeday" /></option>
                         <option value="7"
                            <%
                               if((sSearchAge != null) && (sSearchAge.equals("7")))
@@ -141,7 +132,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeWeek"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchtimeweek" /></option>
                         <option value="31"
                            <%
                               if((sSearchAge != null) && (sSearchAge.equals("31")))
@@ -149,7 +140,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeMonth"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchtimemonth" /></option>
                         <option value="365"
                            <%
                               if((sSearchAge != null) && (sSearchAge.equals("365")))
@@ -157,7 +148,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchTimeYear"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchtimeyear" /></option>
                      </select>
 
 
@@ -169,7 +160,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchByName"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchbyname" /></option>
                         <option value="number"
                            <%
                               if((sRealSearchField != null) && (sRealSearchField.equals("number")))
@@ -177,7 +168,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchByNumber"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchbynumber" /></option>
                         <option value="owner"
                            <%
                               if((sRealSearchField != null) && (sRealSearchField.equals("owner")))
@@ -185,7 +176,7 @@
                                  %> selected="selected" <%
                               }
                            %>
-                        ><fmt:message key="CompetenceTypesMatrixSearchByOwner"/></option>
+                        ><di:translate key="competence.competencetypesmatrixsearchbyowner" /></option>
                      </select>
 
 
@@ -198,8 +189,8 @@
                      </a>
                      <br>
                      <span class="subscript">
-                        <fmt:message key="CompetenceTypesMatrixSearchTime"/>
-                        <fmt:message key="CompetenceTypesMatrixSearchTerms"/>
+                        <di:translate key="competence.competencetypesmatrixsearchtime" />
+                        <di:translate key="competence.competencetypesmatrixsearchterms" />
                      </span>
                   </form>
                </td>
@@ -325,5 +316,4 @@
 
 </body>
 </html>
-</fmt:bundle>
 </mm:cloud>
