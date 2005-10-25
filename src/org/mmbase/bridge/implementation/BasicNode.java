@@ -16,7 +16,6 @@ import java.io.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.fields.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
@@ -34,16 +33,16 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.173 2005-10-18 20:22:27 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.174 2005-10-25 18:35:28 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
-    public static final int ACTION_CREATE = 1; // create a node
-    public static final int ACTION_EDIT   = 2; // edit node, or change aliasses
-    public static final int ACTION_DELETE = 3; // delete node
-    public static final int ACTION_COMMIT = 10; // commit a node after changes
+    protected static final int ACTION_CREATE = 1; // create a node
+    protected static final int ACTION_EDIT   = 2; // edit node, or change aliasses
+    protected static final int ACTION_DELETE = 3; // delete node
+    protected static final int ACTION_COMMIT = 10; // commit a node after changes
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
 
@@ -329,17 +328,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
-    protected Object cast(String fieldName, Object value) {
-        // cast to right type, especially to resolve enumerations by java-constant
-        if (value != null && ! (value instanceof ByteArrayInputStream)) {
-            Object casted = getNodeManager().getField(fieldName).getDataType().autoCast(value);
-            if (casted != null) {
-                value = casted;
-            }
-        }
-        return value;
-     
-    }
 
     /**
      * Setting value with default method (depending on field's type)
@@ -347,13 +335,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param value set value
      */
     public void setValue(String fieldName, Object value) {
-        int type = nodeManager.getField(fieldName).getType();
+        Field field = nodeManager.getField(fieldName);
         if (value == null) {
             setValueWithoutProcess(fieldName, value);
         } else {
-            value = cast(fieldName, value);
-            switch(type) {
-            case Field.TYPE_STRING:  setStringValue(fieldName, Casting.toString(value)); break;
+            value = field.getDataType().cast(value, this, field);
+            switch(field.getType()) {
+            case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
             case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
             case Field.TYPE_BINARY:    {
                 long length = getNode().getSize(fieldName);
@@ -362,11 +350,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
             case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
             case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-            case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value)); break;
-            case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
-            case Field.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
+            case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
+            case Field.TYPE_NODE:    setNodeValue(fieldName, (Node) value); break;
+            case Field.TYPE_DATETIME:setDateValue(fieldName, (Date) value); break;
             case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-            case Field.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
+            case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
             default:                 setObjectValue(fieldName, value);
             }
         }
@@ -527,8 +515,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setStringValue(String fieldName, final String value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, cast(fieldName, value), Field.TYPE_STRING);
+        Field field = nodeManager.getField(fieldName);        
+        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, Casting.toString(field.getDataType().preCast(value, this, field)), Field.TYPE_STRING);
         setValueWithoutProcess(fieldName, v);
     }
 
