@@ -1,10 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud jspvar="cloud" method="anonymous">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <mm:import externid="number" required="true"/>
 <html>
 <head><title></title>
@@ -18,6 +17,5 @@
 </div>
 </body>
 </html>
-</fmt:bundle>
 </mm:cloud>
 </mm:content>
