@@ -2,8 +2,8 @@
   This template deletes a relation between component and education.
 --%>
 
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 
 <mm:content postprocessor="reducespace" expires="0">
@@ -21,7 +21,7 @@
       <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
          <mm:param name="extraheader">
             <!-- TODO translate -->
-            <title><fmt:message key="DELETECOMPONENT" /></title>
+            <title><di:translate key="core.deletecomponent" /></title>
          </mm:param>
       </mm:treeinclude>
    </mm:compare>
@@ -37,7 +37,7 @@
    <!-- TODO in near future settings will be registered. Deleting must then be adjusted -->
 
    <%-- Check if the yes button is pressed --%>
-   <mm:import id="action1text"><fmt:message key="YES" /></mm:import>
+   <mm:import id="action1text"><di:translate key="core.yes" /></mm:import>
    <mm:compare referid="action1" referid2="action1text">
       <mm:node number="$component">
          <mm:listrelationscontainer type="educations">
@@ -64,7 +64,7 @@
 
 
    <%-- Check if the no button is pressed --%>
-   <mm:import id="action2text"><fmt:message key="NO" /></mm:import>
+   <mm:import id="action2text"><di:translate key="core.no" /></mm:import>
    <mm:compare referid="action2" referid2="action2text">
       <mm:redirect referids="$referids,component" page="$callerpage"/>
    </mm:compare>
@@ -87,7 +87,7 @@
          <div class="contentBody">
             <%-- Show the form --%>
             <form name="deletecomponentform" method="post" action="<mm:treefile page="/components/deletecomponent.jsp" objectlist="$includePath" referids="$referids"/>">
-               <fmt:message key="DELETETHISCOMPONENTYESNO" />
+               <di:translate key="core.deletethiscomponentyesno" />
                <table class="Font">
                   <mm:node referid="component">
                      <mm:fieldlist fields="name,classname">
@@ -101,8 +101,8 @@
 
                <input type="hidden" name="component" value="<mm:write referid="component"/>"/>
                <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
-               <input class="formbutton" type="submit" name="action1" value="<fmt:message key="YES" />"/>
-               <input class="formbutton" type="submit" name="action2" value="<fmt:message key="NO" />"/>
+               <input class="formbutton" type="submit" name="action1" value="<di:translate key="core.yes" />"/>
+               <input class="formbutton" type="submit" name="action2" value="<di:translate key="core.no" />"/>
             </form>
          </div>
       <mm:compare referid="components_show_cockpit" value="true">

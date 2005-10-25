@@ -4,7 +4,7 @@
                  <mm:param name="component">-1</mm:param>
                  <mm:param name="callerpage"><%= sReturnURL %></mm:param>
                  <mm:param name="components_show_cockpit"><mm:write referid="components_show_cockpit"/></mm:param>
-             </mm:treefile>"><fmt:message key="NEWCOMPONENT" /></a>
+             </mm:treefile>"><di:translate key="core.newcomponent" /></a>
   </div>
 
   <% int maxpage = 0; 
@@ -44,8 +44,8 @@
               <table class="listcontent">
                  <tr class="listheader">
                     <th>Level</th>
-                    <th><fmt:message key="COMPONENT" /></th>
-                    <th><fmt:message key="CLASSNAME" /></th>
+                    <th><di:translate key="core.component" /></th>
+                    <th><di:translate key="core.classname" /></th>
                  </tr>
                  <mm:listnodes type="components" orderby="name" offset="<%= "" + of*10 %>" max="10">
                     <tr>

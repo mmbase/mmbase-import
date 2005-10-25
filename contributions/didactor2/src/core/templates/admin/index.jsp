@@ -1,12 +1,12 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is 0; show always new content --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 	<%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="CONFIGURATION" /></title>
+    <title><di:translate key="core.configuration" /></title>
   </mm:param>
 </mm:treeinclude>
 <mm:import externid="action"/>
@@ -19,7 +19,7 @@
 
 
 <mm:present referid="action">
-  <mm:import id="actiontext"><fmt:message key="SAVE" /></mm:import>
+  <mm:import id="actiontext"><di:translate key="core.save" /></mm:import>
   <mm:compare referid="action" referid2="actiontext">
     <mm:node referid="user">
       <mm:fieldlist field="initials,firstname,lastname,email,username,address,zipcode,city,telephone">
@@ -42,8 +42,8 @@
 <div class="rows">
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_settings.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<fmt:message key="CONFIGURATION" />" />
-    <fmt:message key="CONFIGURATION" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_settings.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="core.configuration" />" />
+    <di:translate key="core.configuration" />
   </div>
 </div>
 <div class="folders">
@@ -92,7 +92,7 @@
                 <mm:compare referid="value" value="1">
 				  <input type="checkbox" name="mayforward" checked/>
                 </mm:compare>
-                <fmt:message key="MAYFORWARDEMAIL" />
+                <di:translate key="core.mayforwardemail" />
               </td>
             </mm:compare>
           </mm:relatednodes>
@@ -101,8 +101,8 @@
         </table>
       </mm:node>
 	  <br />
-      <input class="formbutton" type="submit" name="action" value="<fmt:message key="SAVE" />"/>
-      <input class="formbutton" type="submit" name="back" value="<fmt:message key="BACK" />"/>
+      <input class="formbutton" type="submit" name="action" value="<di:translate key="core.save" />"/>
+      <input class="formbutton" type="submit" name="back" value="<di:translate key="core.back" />"/>
     </form>
   </div>
 </div>

@@ -1,5 +1,5 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@ page import = "java.util.ArrayList" %>
 <%@ page import = "java.util.Iterator" %>
@@ -40,7 +40,7 @@
     <img src="<mm:treefile write="true" page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" alt="Didactor logo" />
 
     <div class="titlefield">
-      <fmt:message key="FOLLOWEDEDUCATION" />
+      <di:translate key="core.followededucation" />
     </div>
 
     <div class="ListLeft">
@@ -66,7 +66,7 @@
   <div class="columnRight">
    <%-- list of all teachers that are online for a specific class --%>
     <div class="titlefield2">
-      <fmt:message key="TEACHERHEADER" />
+      <di:translate key="core.teacherheader" />
     </div>
     <div class="ListTeachers">
       <mm:treeinclude write="true" page="/users/teach_sel.jsp" objectlist="$includePath" referids="$referids" />
@@ -77,7 +77,7 @@
     </div>
    <%-- list of all students that are online for a specific class --%>
     <div class="titlefield">
-      <fmt:message key="STUDENTHEADER" />
+      <di:translate key="core.studentheader" />
     </div>
     <div class="ListStudents">
       <mm:treeinclude write="true" page="/users/stud_sel.jsp" objectlist="$includePath" referids="$referids" />

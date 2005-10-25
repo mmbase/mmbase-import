@@ -1,4 +1,3 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
@@ -6,7 +5,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="HELP" /></title>
+    <title><di:translate key="core.help" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -14,8 +13,8 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_help.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<fmt:message key="HELP" />" />
-    <fmt:message key="HELP" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_help.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="core.help" />" />
+    <di:translate key="core.help" />
   </div>
 </div>
 
