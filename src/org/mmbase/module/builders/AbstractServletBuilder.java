@@ -15,8 +15,9 @@ import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.servlet.BridgeServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.magicfile.MagicFile;
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
 import org.mmbase.security.Rank;
@@ -28,7 +29,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.32 2005-10-18 21:55:50 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.33 2005-10-25 12:12:27 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -41,7 +42,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     /**
      * Can be used to construct a List for executeFunction argument
-     * (new ParametersImpl(GUI_ARGUMENTS))
+     * (new Parameters(GUI_ARGUMENTS))
      */
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS) // example, does not make too much sense :-)

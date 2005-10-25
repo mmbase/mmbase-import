@@ -17,6 +17,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.magicfile.MagicFile;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.38 2005-06-27 17:02:49 michiel Exp $
+ * @version $Id: Attachments.java,v 1.39 2005-10-25 12:12:27 pierre Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
