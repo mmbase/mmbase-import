@@ -1,4 +1,3 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
@@ -53,10 +52,10 @@
 
     <div class="titlefield">
       <di:hasrole role="teacher">
-        <fmt:message key="GIVENEDUCATION" />
+        <di:translate key="core.giveneducation" />
       </di:hasrole>
       <di:hasrole role="teacher" inverse="true">
-          <fmt:message key="FOLLOWEDEDUCATION" />
+          <di:translate key="core.followededucation" />
       </di:hasrole>
     </div>
 
@@ -74,7 +73,7 @@
      <mm:node number="component.portfolio" notfound="skipbody">
        <mm:compare referid="user" value="0">
          <div>
-           <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+           <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><di:translate key="core.listallportfolios" /></a>
          </div>
        </mm:compare>
      </mm:node>
@@ -83,7 +82,7 @@
   <div class="columnRight">
    <%-- list of all teachers that are online for a specific class --%>
     <div class="titlefield2">
-      <fmt:message key="TEACHERHEADER" />
+      <di:translate key="core.teacherheader" />
     </div>
     <div class="ListTeachers">
       <mm:treeinclude write="true" page="/users/users.jsp" objectlist="$includePath" referids="$referids">
@@ -96,7 +95,7 @@
     </div>
    <%-- list of all students that are online for a specific class --%>
     <div class="titlefield">
-      <fmt:message key="STUDENTHEADER" />
+      <di:translate key="core.studentheader" />
     </div>
     <div class="ListStudents">
       <mm:treeinclude write="true" page="/users/users.jsp" objectlist="$includePath" referids="$referids">

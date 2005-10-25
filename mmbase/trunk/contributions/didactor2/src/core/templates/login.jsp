@@ -1,14 +1,6 @@
 <%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-   <%@page import ="java.util.Locale" %>
-   <%
-      Locale requestLocale = request.getLocale();
-      Locale sessionLocale = new Locale(requestLocale.getLanguage(), (requestLocale.getCountry().length()==0 ? (requestLocale.getLanguage().equals("en") ? "GB" : requestLocale.getLanguage().toUpperCase()) : requestLocale.getCountry()));
-      String localeString = sessionLocale.getLanguage() + "_" + sessionLocale.getCountry();
-   %>
-   <fmt:setLocale value="<%=localeString%>" scope="session" />
-   <fmt:setBundle basename="nl.didactor.component.core.CoreMessageBundle" scope="session" />
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
    <%@include file="/shared/setImports.jsp" %>
@@ -70,7 +62,7 @@
             <div class="columnLeft">
              <img src="<mm:treefile page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" alt="Didactor logo" />
             <div class="titlefield">
-               <fmt:message key="LOGINDIDACTOR" />
+               <di:translate key="core.logindidactor" />
             </div>
             <div class="ListLeft">
             <br />
@@ -85,11 +77,11 @@
                  <form method="post" action="<mm:write referid="referrer" />" name="loginForm" onSubmit="return(check_passwords())">
                   <input type="hidden" name="authenticate"  value="name/password"  />
                   <input type="hidden" name="command" value="login" />
-                    <fmt:message key="USERNAME" /><br />
+                    <di:translate key="core.username" /><br />
                     <input id="loginUsername" type="text" size="20" name="username" /> <br />
-                    <fmt:message key="PASSWORD" /><br />
+                    <di:translate key="core.password" /><br />
                     <input id="loginPassword" type="password" size="20" name="password" /> <br /><br />
-                    <input class="formbutton" id="loginSubmit" type="submit" value="<fmt:message key="LOGIN" />" />
+                    <input class="formbutton" id="loginSubmit" type="submit" value="<di:translate key="core.login" />" />
                   </form>
 		  <mm:node number="component.register" notfound="skipbody">
 		    <br />
@@ -100,7 +92,7 @@
             </div>
           <div class="columnMiddle">
             <p>
-               <h1><fmt:message key="WELCOME" /></h1>
+               <h1><di:translate key="core.welcome" /></h1>
             </p>
             <br />
             <p>
@@ -112,13 +104,13 @@
             </p>
             <p>
     <mm:node number="component.portfolio" notfound="skipbody">
-    <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+    <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><di:translate key="core.listallportfolios" /></a>
     </mm:node>
     </p>
     </div>
          <div class="columnRight">
             <div class="titlefield2">
-              <fmt:message key="NEWS" />
+              <di:translate key="core.news" />
             </div>
             <div class="ListRight">
               <mm:listnodes type="news" orderby="number" directions="DOWN" max="5">

@@ -1,24 +1,24 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
 <div class="applicationMenubar" style="white-space: nowrap">
   <div class="menuItemApplicationMenubar">
-    <a title="<fmt:message key="HOME" />" href="<mm:url page="/index.jsp" />" class="menubar"><fmt:message key="HOME" /></a>
+    <a title="<di:translate key="core.home" />" href="<mm:url page="/index.jsp" />" class="menubar"><di:translate key="core.home" /></a>
   </div>
       
   <mm:isgreaterthan referid="user" value="0">
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
       <mm:node number="$user">
-        <a title="<fmt:message key="LOGOUT" />" href="<mm:url page="/logout.jsp" />" class="menubar"><fmt:message key="LOGOUT" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
+        <a title="<di:translate key="core.logout" />" href="<mm:url page="/logout.jsp" />" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
       </mm:node>
     </div>
      
     <div class="menuSeperatorApplicationMenubar"></div>
                 
     <div class="menuItemApplicationMenubar">
-      <a title="<fmt:message key="HELP" />" href="<mm:treefile page="/help/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><fmt:message key="HELP" /></a>
+      <a title="<di:translate key="core.help" />" href="<mm:treefile page="/help/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.help" /></a>
     </div>
     
     <div class="menuSeperatorApplicationMenubar"></div>
@@ -28,16 +28,16 @@
         <mm:import id="hasportfolio">true</mm:import>
       </mm:node>
       <mm:present referid="hasportfolio">
-        <a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/portfolio/index.jsp?edit=true" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
+        <a title="<di:translate key="core.configuration" />" href="<mm:url page="/portfolio/index.jsp?edit=true" />" class="menubar"><di:translate key="core.configuration" /></a>
       </mm:present>
       <mm:notpresent referid="hasportfolio">
-        <a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/admin/" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
+        <a title="<di:translate key="core.configuration" />" href="<mm:url page="/admin/" />" class="menubar"><di:translate key="core.configuration" /></a>
       </mm:notpresent>
     </div>
 
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
-      <a title="<fmt:message key="PRINT" />" href="javascript:printThis();"  class="menubar"><fmt:message key="PRINT"/></a>
+      <a title="<di:translate key="core.print" />" href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
     </div>
                 
   </mm:isgreaterthan>

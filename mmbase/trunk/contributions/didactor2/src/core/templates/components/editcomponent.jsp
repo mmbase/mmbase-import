@@ -2,8 +2,8 @@
   This template adds a new component to a provider or education.
 --%>
 
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -22,7 +22,7 @@
       <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
          <mm:param name="extraheader">
          <!-- TODO translate -->
-         <title><fmt:message key="EDITCOMPONENT" /></title>
+         <title><di:translate key="core.editcomponent" /></title>
          </mm:param>
       </mm:treeinclude>
    </mm:compare>
@@ -136,7 +136,7 @@
 
 
 <%-- Check if the back button is pressed --%>
-<mm:import id="action2text"><fmt:message key="BACK" /></mm:import>
+<mm:import id="action2text"><di:translate key="core.back" /></mm:import>
 <mm:compare referid="action2" referid2="action2text">
    <mm:redirect referids="$referids,component" page="$callerpage"/>
 </mm:compare>
@@ -243,14 +243,14 @@
             <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
 
             <mm:compare referid="component" value="-1">
-               <input class="formbutton" type="submit" name="action1" value="<fmt:message key="CREATE" />"/>
+               <input class="formbutton" type="submit" name="action1" value="<di:translate key="core.create" />"/>
             </mm:compare>
 
             <mm:compare referid="component" value="-1" inverse="true">
-               <input class="formbutton" type="submit" name="action1" value="<fmt:message key="UPDATE" />"/>
+               <input class="formbutton" type="submit" name="action1" value="<di:translate key="core.update" />"/>
             </mm:compare>
 
-            <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />"/>
+            <input class="formbutton" type="submit" name="action2" value="<di:translate key="core.back" />"/>
          </form>
       </div>
    <mm:compare referid="components_show_cockpit" value="true">
