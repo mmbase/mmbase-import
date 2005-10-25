@@ -65,7 +65,7 @@ Calls itself to create the forum and foward to the newly created forum.
 	  </td>
 	  <td>
 	    <div class="button1">
-	    <a href="javascript:history.go(-1);"><di:translate key="forum.bkac" /></a>
+	    <a href="javascript:history.go(-1);"><di:translate key="forum.back" /></a>
 	    </div>
 	  </td>
 	</tr>
