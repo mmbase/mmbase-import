@@ -9,20 +9,20 @@
   <mm:compare referid="type" value="div">
     <div class="menuSeperator"> </div>
     <div class="menuItem" id="menuChat">
-      <a href="<mm:treefile page="/chat/chat.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate id="chatmenuitem">chat</di:translate></a>
+      <a href="<mm:treefile page="/chat/chat.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="chat.chatmenuitem" /></a>
     </div>
     <div class="menuSeperator"> </div>
     <div class="menuItem" id="menuChatlog">
-      <a href="<mm:treefile page="/chat/chatlog.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate id="chatlogmenuitem">chatlog</di:translate></a>
+      <a href="<mm:treefile page="/chat/chatlog.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="chat.chatlogmenuitem" /></a>
     </div>
   </mm:compare>
 
   <mm:compare referid="type" value="option">
     <option value="<mm:treefile page="/chat/chat.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
-      <di:translate id="chatmenuitem">chat</di:translate>
+      <di:translate key="chat.chatmenuitem" />
     </option>
     <option value="<mm:treefile page="/chat/chatlog.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
-      <di:translate id="chatlogmenuitem">chatlog</di:translate>
+      <di:translate key="chat.chatlogmenuitem" />
     </option>
   </mm:compare>
   </mm:cloud>

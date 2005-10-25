@@ -1,22 +1,20 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:bundle basename="nl.didactor.component.agenda.AgendaMessageBundle">
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@ page import="java.util.Calendar"%>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="CALENDAR" /></title>
+    <title><di:translate key="agenda.calendar" /></title>
     <link rel="stylesheet" type="text/css" href="css/agenda.css" />
   </mm:param>
 </mm:treeinclude>
 <div class="rows">
 <div class="navigationbar">
   <div class="titlebar">
-	  <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="CALENDAR" />"/>
-	  <fmt:message key="CALENDAR" />
+	  <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.calendar" />"/>
+	  <di:translate key="agenda.calendar" />
   </div>
 </div>
 <%
@@ -39,7 +37,7 @@
 </mm:compare>
 <div class="folders">
   <div class="folderHeader">
-  <fmt:message key="CALENDAR" />
+  <di:translate key="agenda.calendar" />
   </div>
   <div class="folderCalendarBody">
     <mm:treeinclude page="/agenda/calendar.jsp" objectlist="$includePath" referids="$referids">
@@ -55,10 +53,10 @@
 
 <div class="mainContent">
   <div class="contentHeader">
-  <di:translate id="appointments">Afspraken</di:translate>
+  <di:translate key="agenda.appointments" />
  </div>
 	<div class="contentSubHeader">    
-	<a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="viewcurrentagenda">Bekijk agenda van vandaag</di:translate>" border="0"></a>
+	<a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.viewcurrentagenda" />" border="0"></a>
 	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
 
     </div>
@@ -66,10 +64,10 @@
     <table class="listTable">
     <tr>
 	<th class="listHeader"><input type="checkbox" onclick="selectAllClicked(thios.form, this.checked);"></th>
-	<th class="listHeader"><di:translate id="type">Type</di:translate></th>
-	<th class="listHeader"><di:translate id="name">Naam</di:translate></th>
-	<th class="listHeader"><di:translate id="date">Datum</di:translate></th>
-	<th class="listHeader"><di:translate id="status">Status</di:translate></th>
+	<th class="listHeader"><di:translate key="agenda.type" /></th>
+	<th class="listHeader"><di:translate key="agenda.name" /></th>
+	<th class="listHeader"><di:translate key="agenda.date" /></th>
+	<th class="listHeader"><di:translate key="agenda.status" /></th>
     </tr>
     <%
 	String yesterday = ""+((cal.getTimeInMillis() / 1000L)
@@ -116,10 +114,10 @@
 	    </td>
 	    <td  class="listItem">
 		<mm:compare referid="mystatus" value="1">
-		    <di:translate id="sentto">Verstuurd aan</di:translate>
+		    <di:translate key="agenda.sentto" />
 		</mm:compare>
 		<mm:compare referid="hisstatus" value="1">
-		    <di:translate id="recievedfrom">Ontvangen van</di:translate>
+		    <di:translate key="agenda.recievedfrom" />
 		</mm:compare>
 	    </td>
 	    <td class="listItem"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></td>
@@ -144,24 +142,24 @@
 	    </mm:treefile>">
 		<mm:compare referid="mystatus" value="1">
 		    <mm:compare referid="hisstatus" value="2">
-			<di:translate id="accepted">Geaccepteerd</di:translate>
+			<di:translate key="agenda.accepted" />
 		    </mm:compare>
 		    <mm:compare referid="hisstatus" value="3">
-			<di:translate id="declined">Geweigerd</di:translate>
+			<di:translate key="agenda.declined" />
 		    </mm:compare>
 		    <mm:islessthan referid="hisstatus" value="2">
-			<di:translate id="accepted">Wacht op antwoord</di:translate>
+			<di:translate key="agenda.accepted" />
 		    </mm:islessthan>
 		</mm:compare>
 			<mm:compare referid="hisstatus" value="1">
 		    <mm:compare referid="mystatus" value="2">
-			<di:translate id="accepted">Geaccepteerd</di:translate>
+			<di:translate key="agenda.accepted" />
 		    </mm:compare>
 		    <mm:compare referid="mystatus" value="3">
-			<di:translate id="declined">Geweigerd</di:translate>
+			<di:translate key="agenda.declined" />
 		    </mm:compare>
 		    <mm:islessthan referid="mystatus" value="2">
-			<di:translate id="accepted">Wacht op antwoord</di:translate>
+			<di:translate key="agenda.accepted" />
 		    </mm:islessthan>
 		</mm:compare>
 	    </a>
@@ -195,5 +193,4 @@
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </mm:cloud>
 </mm:content>
-</fmt:bundle>
 

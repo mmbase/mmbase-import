@@ -3,8 +3,7 @@
 --%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:bundle basename="nl.didactor.component.agenda.AgendaMessageBundle">
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -22,16 +21,16 @@
   <mm:param name="extraheader">
     <title>
       <mm:compare referid="typeof" value="1">
-        <di:translate id="addpersonalagendaitem">Add personal agenda item</di:translate>
+        <di:translate key="agenda.addpersonalagendaitem" />
       </mm:compare>
       <mm:compare referid="typeof" value="2">
-        <di:translate id="addclassagendaitem">Add class agenda item</di:translate>
+        <di:translate key="agenda.addclassagendaitem" />
       </mm:compare>
       <mm:compare referid="typeof" value="3">
-        <di:translate id="addworkgroupagendaitem">Add workgroup agenda item</di:translate>
+        <di:translate key="agenda.addworkgroupagendaitem" />
       </mm:compare>
       <mm:compare referid="typeof" value="4">
-        <di:translate id="addinvitation">Create an invitation</di:translate>
+        <di:translate key="agenda.addinvitation" />
       </mm:compare>
 
 
@@ -117,7 +116,7 @@
 
 <%-- Check if the create button is pressed --%>
 <mm:present referid="action1">
-  <mm:import id="action1text"><di:translate id="create">create</di:translate></mm:import>
+  <mm:import id="action1text"><di:translate key="agenda.create" /></mm:import>
   <mm:compare referid="action1" referid2="action1text">
 
     <mm:import externid="startHours" jspvar="startHours" vartype="Integer"/>
@@ -223,7 +222,7 @@
 
 <%-- Check if the back button is pressed --%>
 <mm:present referid="action2">
-  <mm:import id="action2text"><di:translate id="back">back</di:translate></mm:import>
+  <mm:import id="action2text"><di:translate key="agenda.back" /></mm:import>
   <mm:compare referid="action2" referid2="action2text">
     <mm:redirect referids="$referids,currentagenda,typeof,year,day,month" page="$callerpage"/>
   </mm:compare>
@@ -234,16 +233,16 @@
 <div class="navigationbar">
   <div class="titlebar">
     <mm:compare referid="typeof" value="1">
-      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addpersonalagendaitem">Add personal agenda item</di:translate>"/>
-      <di:translate id="addpersonalagendaitem">Add personal agenda item</di:translate>
+      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addpersonalagendaitem" />"/>
+      <di:translate key="agenda.addpersonalagendaitem" />
     </mm:compare>
     <mm:compare referid="typeof" value="2">
-      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addclassagendaitem">Add class agenda item</di:translate>"/>
-      <di:translate id="addclassagendaitem">Add class agenda item</di:translate>
+      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addclassagendaitem" />"/>
+      <di:translate key="agenda.addclassagendaitem" />
     </mm:compare>
     <mm:compare referid="typeof" value="3">
-	  <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addworkgroupagendaitem">Add workgroup agenda item</di:translate>"/>
-	  <di:translate id="addworkgroupagendaitem">Add workgroup agenda item</di:translate>
+	  <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addworkgroupagendaitem" />"/>
+	  <di:translate key="agenda.addworkgroupagendaitem" />
     </mm:compare>
   </div>
 </div>
@@ -283,7 +282,7 @@
         <mm:present referid="myclasses">
           <tr>
           <mm:listnodes referid="myclasses">
-  	        <mm:first><td><di:translate id="class">Class </di:translate></td><td><select name="classname"></mm:first>
+  	        <mm:first><td><di:translate key="agenda.class" /></td><td><select name="classname"></mm:first>
 	        <option><mm:field name="name"/></option>
 	        <mm:last></select></td></mm:last>
 	      </mm:listnodes>
@@ -294,7 +293,7 @@
         <mm:present referid="myworkgroups">
           <tr>
           <mm:listnodes referid="myworkgroups">
-		<mm:first><td><fmt:message key="WORKGROUP" /></td><td><select name="workgroupname"></mm:first>
+		<mm:first><td><di:translate key="agenda.workgroup" /></td><td><select name="workgroupname"></mm:first>
 	        <option><mm:field name="name"/></option>
 	        <mm:last></select></td></mm:last>
 	      </mm:listnodes>
@@ -304,7 +303,7 @@
 	<%-- create personal invitation --%>
 	<mm:compare referid="typeof" value="4">
 	<tr>
-	<td><di:translate id="recipient">Ontvanger</di:translate></td>
+	<td><di:translate key="agenda.recipient" /></td>
 	<td>
 	<select name="recipient">
 	<mm:list nodes="$user" path="people1,classes,people2" constraints="people2.number != people1.number" fields="people2.number" distinct="true" orderby="people2.lastname, people2.firstname">
@@ -324,7 +323,7 @@
 	    </mm:fieldlist>
 
 	<tr>
-	  <td><di:translate id="date">Datum</di:translate></td>
+	  <td><di:translate key="agenda.date" /></td>
 	  <td><select name="day">
 	      <% for (int c = 1; c <=31; c++) { %>
 		  <option value="<%= c %>" <%= c == day.intValue() ? "selected" : "" %> ><%= c %></option>
@@ -345,7 +344,7 @@
 
 
         <tr>
-	  <td><fmt:message key="STARTTIME" /></td>
+	  <td><di:translate key="agenda.starttime" /></td>
           <td>
             <select name="startHours">
 	          <%for(int count = 1; count <= 23; count++) {%>
@@ -361,7 +360,7 @@
         </tr>
 
         <tr>
-	  <td><fmt:message key="ENDTIME" /></td>
+	  <td><di:translate key="agenda.endtime" /></td>
           <td>
             <select name="stopHours">
 	          <%for(int count = 1; count <= 23; count++) {%>
@@ -404,19 +403,19 @@
       <input type="hidden" name="day" value="<mm:write referid="day"/>"/>
       <input type="hidden" name="month" value="<mm:write referid="month"/>"/>--%>
 		  
-      <input class="formbutton" type="submit" name="action1" value="<di:translate id="create">create</di:translate>"/>
-      <input class="formbutton" type="submit" name="action2" value="<di:translate id="back">back</di:translate>"/>
+      <input class="formbutton" type="submit" name="action1" value="<di:translate key="agenda.create">create</di:translate>" />
+      <input class="formbutton" type="submit" name="action2" value="<di:translate key="agenda.back">back</di:translate>" />
 
       <mm:present referid="error">
         <p/>
         <mm:compare referid="error" value="1">
-	<h1><fmt:message key="STARTTIMELESSTHANENDTIME" /></h1>
+	<h1><di:translate key="agenda.starttimelessthanendtime" /></h1>
         </mm:compare>
         <mm:compare referid="error" value="2">
-	<h1><fmt:message key="TITLENOTEMPTY" /></h1>
+	<h1><di:translate key="agenda.titlenotempty" /></h1>
         </mm:compare>
         <mm:compare referid="error" value="3">
-	<h1><fmt:message key="DESCRIPTIONNOTEMPTY" /></h1>
+	<h1><di:translate key="agenda.descriptionnotempty" /></h1>
         </mm:compare>
       </mm:present>
 
@@ -430,5 +429,4 @@
 
 </mm:cloud>
 </mm:content>
-</fmt:bundle>
 

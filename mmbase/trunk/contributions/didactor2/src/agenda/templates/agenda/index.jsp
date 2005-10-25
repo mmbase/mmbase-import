@@ -1,22 +1,20 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:bundle basename="nl.didactor.component.agenda.AgendaMessageBundle">
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@ page import="java.util.Calendar"%>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="CALENDAR" /></title>
+    <title><di:translate key="agenda.calendar" /></title>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids"/>" />
   </mm:param>
 </mm:treeinclude>
 <div class="rows">
 <div class="navigationbar">
   <div class="titlebar">
-	  <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="CALENDAR" />"/>
-	  <fmt:message key="CALENDAR" />
+	  <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.calendar" />"/>
+	  <di:translate key="agenda.calendar" />
   </div>
 </div>
 <%
@@ -39,7 +37,7 @@
 </mm:compare>
 <div class="folders">
   <div class="folderHeader">
-  <fmt:message key="CALENDAR" />
+  <di:translate key="agenda.calendar" />
   </div>
   <div class="folderCalendarBody">
     <mm:treeinclude page="/agenda/calendar.jsp" objectlist="$includePath" referids="$referids">
@@ -51,7 +49,7 @@
     <p/>
 
     <mm:list nodes="$user" path="people1,invitationrel1,items,invitationrel2,people2" constraints="people1.number != people2.number AND invitationrel1.m_status <= 0" max="1">
-	<a href="<mm:treefile page="/agenda/appointments.jsp" objectlist="$includePath" referids="$referids"/>"><di:translate id="newappointments">U heeft nieuwe afspraken</di:translate></a>
+	<a href="<mm:treefile page="/agenda/appointments.jsp" objectlist="$includePath" referids="$referids"/>"><di:translate key="agenda.newappointments" /></a>
     </mm:list>
 </div>
 
@@ -84,7 +82,7 @@
 		    <mm:param name="month"><mm:write referid="month"/></mm:param>
 		    <mm:param name="day"><mm:write referid="day"/></mm:param>
   		       </mm:treefile>">
-        <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDPERSONALAGENDAITEM" />"/></a>
+        <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addpersonalagendaitem" />"/></a>
     <% }%>
 
     <%-- workgroup related agenda items --%>
@@ -98,7 +96,7 @@
 		    <mm:param name="month"><mm:write referid="month"/></mm:param>
 		    <mm:param name="day"><mm:write referid="day"/></mm:param>
 	             </mm:treefile>">
-          <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDWORKGROUPAGENDAITEM" />"/></a>
+          <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addworkgroupagendaitem" />"/></a>
       </mm:relatednodes>
     </mm:node>
 
@@ -115,7 +113,7 @@
 				<mm:param name="day"><mm:write referid="day"/></mm:param>
 			       </mm:treefile>">
 
-            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDCLASSAGENDAITEM" />"/></a>
+            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addclassagendaitem" />"/></a>
         </mm:relatednodes>
       </mm:node>
     </di:hasrole>
@@ -132,11 +130,11 @@
 				<mm:param name="day"><mm:write referid="day"/></mm:param>
 			       </mm:treefile>">
 
-            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEINVITATION" />"/></a>
+            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.createinvitation" />"/></a>
         </mm:relatednodes>
       </mm:node>
 
-      <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="listappointments">Bekijk afspraken</di:translate>" border="0" /></a>
+      <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.listappointments" />" border="0" /></a>
     
 	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"/>
     </div>
@@ -172,5 +170,4 @@
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </mm:cloud>
 </mm:content>
-</fmt:bundle>
 

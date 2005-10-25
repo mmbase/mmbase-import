@@ -2,7 +2,6 @@
   This template shows all people in the addressbooks: all students that
   are related to those classes that we are in.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.StringTokenizer"%>
@@ -10,10 +9,9 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.address.AddressMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="ADDRESSBOOK" /></title>
+    <title><di:translate key="address.addressbook" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -26,8 +24,8 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="ADDRESSBOOK" />"/>
-    <fmt:message key="ADDRESSBOOK" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="address.addressbook" />"/>
+    <di:translate key="address.addressbook" />
   </div>
 </div>
 
@@ -106,7 +104,7 @@
       </mm:present>
    
       <input type="text" size="20" name="addr_search"/><br/>
-      <input type="submit" value="<fmt:message key="SEARCH"/>"/>
+      <input type="submit" value="<di:translate key="address.search"/>" />
       </form>
                       
                                            
@@ -297,10 +295,10 @@
 	               <mm:param name="addressbook"><mm:write referid="addressbook"/></mm:param>
 	               <mm:param name="callerpage">/address/index.jsp?sf=lastname,firstname&so=up,up</mm:param>
 	             </mm:treefile>">
-	    <img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" alt="<fmt:message key="ADDCONTACT" />"/></a>
+	    <img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" alt="<di:translate key="address.addcontact" />"/></a>
 
 	    
-	    <input type="image" name="action_delete" value="delete" src="<mm:treefile page="/gfx/icon_deletecontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" alt="<fmt:message key="DELETECONTACT" />"/></a>
+	    <input type="image" name="action_delete" value="delete" src="<mm:treefile page="/gfx/icon_deletecontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" alt="<di:translate key="address.deletecontact" />"/></a>
 	  </mm:isgreaterthan>
     </mm:present></mm:notpresent>
     
@@ -322,10 +320,10 @@
                     <input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"/>
                 </di:headercell>
             </mm:present>
-            <di:headercell><fmt:message key="TYPE" /></di:headercell>
-            <di:headercell sortfield="firstname"><fmt:message key="FIRSTNAME" /></di:headercell>
-            <di:headercell sortfield="lastname" default="true"><fmt:message key="LASTNAME" /></di:headercell>
-            <di:headercell sortfield="email"><fmt:message key="EMAIL" /></di:headercell>
+            <di:headercell><di:translate key="address.type" /></di:headercell>
+            <di:headercell sortfield="firstname"><di:translate key="address.firstname" /></di:headercell>
+            <di:headercell sortfield="lastname" default="true"><di:translate key="address.lastname" /></di:headercell>
+            <di:headercell sortfield="email"><di:translate key="address.email" /></di:headercell>
           </di:row>
 
           <mm:listnodes id="mycontacts">
@@ -355,7 +353,7 @@
 
 
                 <mm:compare referid="nodetype" value="contacts">
-                  <img src="<mm:treefile page="/address/gfx/contact.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="CONTACT" />"/>
+                  <img src="<mm:treefile page="/address/gfx/contact.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.contact" />"/>
                 </mm:compare>
 
                 <mm:node number="$contactno">
@@ -364,46 +362,46 @@
 
                   <di:hasrole referid="contactno" role="contenteditor">
                     <mm:compare referid="isonline" value="0">
-                      <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="EDITOROFFLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.editoroffline" />"/>
                     </mm:compare>
                     <mm:compare referid="isonline" value="1">
-                      <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="EDITORONLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.editoronline" />"/>
                     </mm:compare>
                   </di:hasrole>
 
                   <di:hasrole referid="contactno" role="courseeditor">
                     <mm:compare referid="isonline" value="0">
-                      <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="EDITOROFFLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.editoroffline" />"/>
                     </mm:compare>
                     <mm:compare referid="isonline" value="1">
-                      <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="EDITORONLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.editoronline" />"/>
                     </mm:compare>
                   </di:hasrole>
 
                   <di:hasrole referid="contactno" role="administrator">
                     <mm:compare referid="isonline" value="0">
-                      <img src="<mm:treefile page="/address/gfx/administrators_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="ADMINISTRATOROFFLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/administrators_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.administratoroffline" />"/>
                     </mm:compare>
                     <mm:compare referid="isonline" value="1">
-                      <img src="<mm:treefile page="/address/gfx/administrators_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="ADMINISTRATORONLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/administrators_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.administratoronline" />"/>
                     </mm:compare>
                   </di:hasrole>
 
                   <di:hasrole referid="contactno" role="teacher">
                     <mm:compare referid="isonline" value="0">
-                      <img src="<mm:treefile page="/address/gfx/teachers_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="TEACHEROFFLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/teachers_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.teacheroffline" />"/>
                     </mm:compare>
                     <mm:compare referid="isonline" value="1">
-                      <img src="<mm:treefile page="/address/gfx/teachers_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="TEACHERONLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/teachers_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.teacheronline" />"/>
                     </mm:compare>
                   </di:hasrole>
 
                   <di:hasrole referid="contactno" role="student">
                     <mm:compare referid="isonline" value="0">
-                      <img src="<mm:treefile page="/address/gfx/students_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="STUDENTOFFLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/students_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.studentoffline" />"/>
                     </mm:compare>
                     <mm:compare referid="isonline" value="1">
-                      <img src="<mm:treefile page="/address/gfx/students_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="STUDENTONLINE" />"/>
+                      <img src="<mm:treefile page="/address/gfx/students_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.studentonline" />"/>
                     </mm:compare>
                   </di:hasrole>
 
@@ -463,6 +461,5 @@
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

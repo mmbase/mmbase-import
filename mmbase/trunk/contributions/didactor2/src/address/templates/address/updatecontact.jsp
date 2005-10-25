@@ -1,7 +1,7 @@
 <%--
   This template updates or shows a contact of a addressbook.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 
 <%-- expires is set so renaming a folder does not show the old name --%>
@@ -9,11 +9,10 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.address.AddressMessageBundle">
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="UPDATECONTACT" /></title>
+    <title><di:translate key="address.updatecontact" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -77,7 +76,7 @@
 <mm:present referid="editable">
 
     <%-- Check if the update button is pressed --%>
-    <mm:import id="action1text"><fmt:message key="UPDATE" /></mm:import>
+    <mm:import id="action1text"><di:translate key="address.update" /></mm:import>
     <mm:compare referid="action1" referid2="action1text">
 
         <%-- check if a firstname is given --%>
@@ -107,7 +106,7 @@
 </mm:present>
 
 <%-- Check if the back button is pressed --%>
-<mm:import id="action2text"><fmt:message key="BACK" /></mm:import>
+<mm:import id="action2text"><di:translate key="address.back" /></mm:import>
 <mm:compare referid="action2" referid2="action2text">
   <mm:redirect referids="$referids,addressbook" page="$callerpage"/>
 </mm:compare>
@@ -137,7 +136,7 @@
 <div class="mainContent">
 
   <div class="contentHeader">
-    <fmt:message key="UPDATECONTACT" />
+    <di:translate key="address.updatecontact" />
   </div>
 
   <div class="contentBodywit">
@@ -149,26 +148,26 @@
 
       <mm:present referid="editable">
       <table class="font">
-        <tr><td><fmt:message key="INITIALS" /></td><td><input type="text" name="_initials" size="80" value="<mm:write referid="initials"/>"/></td></tr>
-        <tr><td><fmt:message key="FIRSTNAME" /></td><td><input type="text" name="_firstname" size="80" value="<mm:write referid="firstname"/>"/></td></tr>
-        <tr><td><fmt:message key="LASTNAME" /></td><td><input type="text" name="_lastname" size="80" value="<mm:write referid="lastname"/>"/></td></tr>
-        <tr><td><fmt:message key="EMAIL" /></td><td><input type="text" name="_email" size="80" value="<mm:write referid="email"/>"/></td></tr>
-        <tr><td><fmt:message key="ADDRESS" /></td><td><input type="text" name="_address" size="80" value="<mm:write referid="address"/>"/></td></tr>
-        <tr><td><fmt:message key="ZIPCODE" /></td><td><input type="text" name="_zipcode" size="80" value="<mm:write referid="zipcode"/>"/></td></tr>
-        <tr><td><fmt:message key="CITY" /></td><td><input type="text" name="_city" size="80" value="<mm:write referid="city"/>"/></td></tr>
-        <tr><td><fmt:message key="TELEPHONE" /></td><td><input type="text" name="_telephone" size="80" value="<mm:write referid="telephone"/>"/></td></tr>
+        <tr><td><di:translate key="address.initials" /></td><td><input type="text" name="_initials" size="80" value="<mm:write referid="initials"/>"/></td></tr>
+        <tr><td><di:translate key="address.firstname" /></td><td><input type="text" name="_firstname" size="80" value="<mm:write referid="firstname"/>"/></td></tr>
+        <tr><td><di:translate key="address.lastname" /></td><td><input type="text" name="_lastname" size="80" value="<mm:write referid="lastname"/>"/></td></tr>
+        <tr><td><di:translate key="address.email" /></td><td><input type="text" name="_email" size="80" value="<mm:write referid="email"/>"/></td></tr>
+        <tr><td><di:translate key="address.address" /></td><td><input type="text" name="_address" size="80" value="<mm:write referid="address"/>"/></td></tr>
+        <tr><td><di:translate key="address.zipcode" /></td><td><input type="text" name="_zipcode" size="80" value="<mm:write referid="zipcode"/>"/></td></tr>
+        <tr><td><di:translate key="address.city" /></td><td><input type="text" name="_city" size="80" value="<mm:write referid="city"/>"/></td></tr>
+        <tr><td><di:translate key="address.telephone" /></td><td><input type="text" name="_telephone" size="80" value="<mm:write referid="telephone"/>"/></td></tr>
       </table>
       </mm:present>
       <mm:notpresent referid="editable">
       <table class="font">
-        <tr><td><fmt:message key="INITIALS" /></td><td><mm:write referid="initials"/></td></tr>
-        <tr><td><fmt:message key="FIRSTNAME" /></td><td><mm:write referid="firstname"/></td></tr>
-        <tr><td><fmt:message key="LASTNAME" /></td><td><mm:write referid="lastname"/></td></tr>
-        <tr><td><fmt:message key="EMAIL" /></td><td><mm:write referid="email"/></td></tr>
-        <tr><td><fmt:message key="ADDRESS" /></td><td><mm:write referid="address"/></td></tr>
-        <tr><td><fmt:message key="ZIPCODE" /></td><td><mm:write referid="zipcode"/></td></tr>
-        <tr><td><fmt:message key="CITY" /></td><td><mm:write referid="city"/></td></tr>
-        <tr><td><fmt:message key="TELEPHONE" /></td><td><mm:write referid="telephone"/></td></tr>
+        <tr><td><di:translate key="address.initials" /></td><td><mm:write referid="initials"/></td></tr>
+        <tr><td><di:translate key="address.firstname" /></td><td><mm:write referid="firstname"/></td></tr>
+        <tr><td><di:translate key="address.lastname" /></td><td><mm:write referid="lastname"/></td></tr>
+        <tr><td><di:translate key="address.email" /></td><td><mm:write referid="email"/></td></tr>
+        <tr><td><di:translate key="address.address" /></td><td><mm:write referid="address"/></td></tr>
+        <tr><td><di:translate key="address.zipcode" /></td><td><mm:write referid="zipcode"/></td></tr>
+        <tr><td><di:translate key="address.city" /></td><td><mm:write referid="city"/></td></tr>
+        <tr><td><di:translate key="address.telephone" /></td><td><mm:write referid="telephone"/></td></tr>
       </table>
  
       </mm:notpresent>
@@ -179,18 +178,18 @@
       <input type="hidden" name="contact" value="<mm:write referid="contact"/>"/>
       <% if ( text.equals( "input" ) ) { %>
           <mm:present referid="editable">
-                <input class="formbutton" type="submit" name="action1" value="<fmt:message key="UPDATE" />"/>
+                <input class="formbutton" type="submit" name="action1" value="<di:translate key="address.update" />"/>
         </mm:present>
       <% } %>
-      <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />"/>
+      <input class="formbutton" type="submit" name="action2" value="<di:translate key="address.back" />"/>
 
       <mm:present referid="error">
 	    <p/>
 	    <mm:compare referid="error" value="1">
-  	      <h1><fmt:message key="FIRSTNAMENOTEMPTY" /></h1>
+  	      <h1><di:translate key="address.firstnamenotempty" /></h1>
 	    </mm:compare>
 	    <mm:compare referid="error" value="2">
-  	      <h1><fmt:message key="LASTNAMENOTEMPTY" /></h1>
+  	      <h1><di:translate key="address.lastnamenotempty" /></h1>
 	    </mm:compare>
 	  </mm:present>
 
@@ -213,6 +212,5 @@
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
-</fmt:bundle>
 </mm:cloud>
 </mm:content>
