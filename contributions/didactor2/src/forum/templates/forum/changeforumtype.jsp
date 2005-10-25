@@ -25,7 +25,7 @@ After changes, forwards back to the forum.
     <title>Forum</title>
   </mm:param>
 </mm:treeinclude>
-   <di:translate id="notallowed_to_remove" >You are not allowed to remove this forum.</di:translate>
+   <di:translate key="forum.notallowed_to_remove" />
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
   </mm:compare>

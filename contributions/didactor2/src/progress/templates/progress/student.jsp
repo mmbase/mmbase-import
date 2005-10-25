@@ -15,14 +15,14 @@
 
    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
-         <title>Voortgang</title>
+         <title><di:translate key="progress.progresstitle" /></title>
       </mm:param>
    </mm:treeinclude>
 
 
    <div class="rows">
       <div class="navigationbar">
-         <div class="titlebar">Voortgang</div>
+         <div class="titlebar"><di:translate key="progress.progresstitle" /></div>
       </div>
 
       <div class="folders">
@@ -55,7 +55,7 @@
                <mm:import externid="tests" required="true"/>
 
                <mm:node number="$tests">
-                 <b>Uitslag van test <mm:field name="name"/></b><br>
+                 <b><di:translate key="progress.scoretest" /> <mm:field name="name"/></b><br>
 
                  <mm:field id="mayview" name="mayview" write="false"/>
                  <mm:field id="feedback" name="showfeedback" write="false"/>
@@ -86,14 +86,14 @@
                   </a>
 
                   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-                     <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="Terug naar overzicht" border="0"/></a>
+                     <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="progress.backtooverview" />" border="0"/></a>
                   </mm:islessthan>
                </div>
 
 
                <table class="Font">
                   <tr>
-                     <td>Percentage doorlopen:</td>
+                     <td><di:translate key="progress.perccompleted" /></td>
                      <td>
                         <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids">
                                                                                        <mm:param name="student"><mm:write referid="student"/></mm:param>
@@ -120,12 +120,12 @@
 
                   <mm:node referid="classrel">
                      <tr>
-                        <td>Aantal maal ingelogd:</td>
+                        <td><di:translate key="progress.logins" />:</td>
                         <td><mm:field name="logincount"/></td>
                      </tr>
 
                      <tr>
-                        <td>Duur inloggen</td>
+                        <td><di:translate key="progress.online" /></td>
                         <td>
                            <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
                               <%
@@ -140,7 +140,7 @@
                </table>
 
                <p>
-                  <b>Educatie traject:</b>
+                  <b><di:translate key="educationplan" /></b>
                </p>
 
                <table class="Font">
@@ -192,18 +192,18 @@
 
                <mm:node referid="student">
                   <p>
-                     <b>Toetsen van <mm:field name="firstname"/> <mm:field name="lastname"/></b>
+                     <b><di:translate key="progress.testsof" /> <mm:field name="firstname"/> <mm:field name="lastname"/></b>
                   </p>
 
 
                   <table class="listTable">
                      <tr>
-                        <th class="listHeader">Leerblok</th>
-                        <th class="listHeader">Toets</th>
-                        <th class="listHeader">Vragen</th>
-                        <th class="listHeader">Score</th>
-                        <th class="listHeader">Nodig</th>
-                        <th class="listHeader">Geslaagd</th>
+                        <th class="listHeader"><di:translate key="progress.learnblock" /></th>
+                        <th class="listHeader"><di:translate key="progress.tests" /></th>
+                        <th class="listHeader"><di:translate key="progress.questions" /></th>
+                        <th class="listHeader"><di:translate key="progress.score" /></th>
+                        <th class="listHeader"><di:translate key="progress.needed" /></th>
+                        <th class="listHeader"><di:translate key="progress.succeeded" /></th>
                      </tr>
 
                      <%-- find copybook --%>
@@ -300,19 +300,19 @@
                                           <td class="listItem"><mm:write referid="requiredscore"/></td>
 
                                           <mm:compare referid="teststatus" value="toberated">
-                                             <td class="listItem">Nog niet nagekeken</td>
+                                             <td class="listItem"><di:translate key="progress.toberated" /></td>
                                           </mm:compare>
 
                                           <mm:compare referid="teststatus" value="passed">
-                                             <td class="listItem">Ja</td>
+                                             <td class="listItem"><di:translate key="progress.yes" /></td>
                                           </mm:compare>
 
                                           <mm:compare referid="teststatus" value="failed">
-                                             <td class="listItem">Nee</td>
+                                             <td class="listItem"><di:translate key="progress.no" /></td>
                                           </mm:compare>
 
                                           <mm:compare referid="teststatus" value="incomplete" >
-                                             <td class="listItem">Niet afgemaakt</td>
+                                             <td class="listItem"><di:translate key="progress.notcompleted"></td>
                                           </mm:compare>
                                        </tr>
 

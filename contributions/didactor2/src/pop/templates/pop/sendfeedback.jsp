@@ -42,23 +42,23 @@
 <%-- some sending email code--%>
 <mm:import id="ratingmsg"></mm:import>
 <mm:node number="rating" notfound="skip">
-  <mm:import id="ratingmsg" reset="true"><fmt:message key="SendFeedbackPart6"/> <mm:field name="name"/><br/></mm:import>
+  <mm:import id="ratingmsg" reset="true"><di:translate key="pop.sendfeedbackpart6" /> <mm:field name="name"/><br/></mm:import>
 </mm:node>
 
-<mm:import id="subject"><fmt:message key="SendFeedbackSubject"/></mm:import>
+<mm:import id="subject"><di:translate key="pop.sendfeedbacksubject" /></mm:import>
 <mm:import id="body"><HTML>
-<fmt:message key="SendFeedbackPart1"/> <b><mm:write referid="userfname"/>,<br/>
+<di:translate key="pop.sendfeedbackpart1" /> <b><mm:write referid="userfname"/>,<br/>
 <br/>
-<fmt:message key="SendFeedbackPart2"/> <b><mm:write referid="compname"/></b> <fmt:message key="SendFeedbackPart3"/> <b><mm:write referid="inviteefname"/></b> 
-<fmt:message key="SendFeedbackPart4"/>
+<di:translate key="pop.sendfeedbackpart2" /> <b><mm:write referid="compname"/></b> <di:translate key="pop.sendfeedbackpart3" /> <b><mm:write referid="inviteefname"/></b> 
+<di:translate key="pop.sendfeedbackpart4" />
 <br/>
-<fmt:message key="SendFeedbackPart5"/> "<%= feedback1.replaceAll("\\n", "<br/>") %>"<br/>
+<di:translate key="pop.sendfeedbackpart5" /> "<%= feedback1.replaceAll("\\n", "<br/>") %>"<br/>
 <%= feedback2.replaceAll("\\n", "<br/>") %><br/>
 <br/>
 <mm:write referid="ratingmsg"/>
 </HTML></mm:import>
 <%@include file="sendmail.jsp" %>
 
-<p><fmt:message key="MsgSendFeedbackDonePart1"/> <b><mm:write referid="compname"/></b> <fmt:message key="MsgSendFeedbackDonePart2"/> <b><mm:write referid="userfname"/></b><fmt:message key="MsgSendFeedbackDonePart3"/></p>
+<p><di:translate key="pop.msgsendfeedbackdonepart1" /> <b><mm:write referid="compname"/></b> <di:translate key="pop.msgsendfeedbackdonepart2" /> <b><mm:write referid="userfname"/></b><di:translate key="pop.msgsendfeedbackdonepart3" /></p>
 
 <% } %>

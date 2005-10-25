@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page import="java.util.*" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -8,23 +7,6 @@
 <%@ include file="getids.jsp" %>
 <% boolean isEmpty = true; %>
 <mm:import externid="msg">-1</mm:import>
-   <%
-
-      String bundlePOP = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundlePOP %>">
 <div class="contentBody">
     <mm:compare referid="msg" value="-1" inverse="true">
       <mm:write referid="msg"/>
@@ -32,12 +14,12 @@
     <div><table class="poplistTable">
       <tr style="vertical-align:top;">
         <th class="listHeader">&nbsp;</th>
-        <th class="listHeader"><fmt:message key="Competence"/></th>
-        <th class="listHeader"><fmt:message key="CompTableWorkedOn"/></th>
-        <th class="listHeader"><fmt:message key="CompTableSelfAssessment"/></th>
-        <th class="listHeader"><fmt:message key="Score"/></th>
-        <th class="listHeader"><fmt:message key="CompTableTodoItems"/></th>
-        <th class="listHeader"><fmt:message key="Portfolio"/></th>
+        <th class="listHeader"><di:translate key="pop.competence" /></th>
+        <th class="listHeader"><di:translate key="pop.comptableworkedon" /></th>
+        <th class="listHeader"><di:translate key="pop.comptableselfassessment" /></th>
+        <th class="listHeader"><di:translate key="pop.score" /></th>
+        <th class="listHeader"><di:translate key="pop.comptabletodoitems" /></th>
+        <th class="listHeader"><di:translate key="pop.portfolio" /></th>
       </tr>
       <mm:node number="$currentpop">
         <%@ include file="getcompetencies.jsp" %>
@@ -49,7 +31,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/present.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="<fmt:message key="CompHave"/>"/>
+                          alt="<di:translate key="pop.comphave"/>" />
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -65,7 +47,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/developed.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="<fmt:message key="CompDeveloped"/>"/>
+                          alt="<di:translate key="pop.compdeveloped"/>" />
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -82,7 +64,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/todevelop.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="<fmt:message key="CompNeeded"/>"/>
+                          alt="<di:translate key="pop.compneeded"/>" />
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -94,6 +76,5 @@
       </mm:node>
     </table></div>
 </div>
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

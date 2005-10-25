@@ -3,18 +3,17 @@
   A link is created for every email to the 'email.jsp' page, where the user
   can view the email and do other actions.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp"%>
-<fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
 <mm:import externid="mailbox">-1</mm:import>
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="EMAIL" /></title>
+    <title><di:translate key="email.email" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -65,14 +64,14 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<fmt:message key="EMAIL" />" /> <fmt:message key="EMAIL" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="email.email" />" /> <di:translate key="email.email" />
   </div>
 </div>
 
 
 <div class="folders">
   <div class="folderHeader">
-    <fmt:message key="MAILBOXES" />
+    <di:translate key="email.mailboxes" />
   </div>
   <div class="folderBody">
 
@@ -86,26 +85,25 @@
 
 <div class="mainContent">
   <div class="contentHeader">
-    <fmt:message key="MAILRULES"/>
+    <di:translate key="email.mailrules" />
   </div>
   <div class="contentSubHeader">
     <a href="<mm:treefile page="/email/mailbox/editmailrule.jsp" objectlist="$includePath" referids="$referids"/>">
-      <img src="<mm:treefile write="true" page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" />" width="50" height="28" border="0" alt="<fmt:message key="WRITENEWRULE" />" /></a>
+      <img src="<mm:treefile write="true" page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" />" width="50" height="28" border="0" alt="<di:translate key="email.writenewrule" />" /></a>
 
-       <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETESELECTED" />" name="action_delete" value="delete"/>
+       <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.deleteselected" />" name="action_delete" value="delete"/>
        
   </div>
   <div class="contentBody">
     <mm:treeinclude page="/email/mailbox/mailrules.jsp" objectlist="$includePath" referids="$referids" />
 
 <br/>
-  <input type="submit" class="formbutton" name="action_back" value="<fmt:message key="BACK"/>"/>
+  <input type="submit" class="formbutton" name="action_back" value="<di:translate key="email.back"/>" />
   </div>
 
 </div>
 </div>
 </form>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

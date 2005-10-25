@@ -4,7 +4,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <%-- Always include the progress component --%>
   <div class="progress">
-  <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"> voortgang:</a><img src="<mm:treefile write="true" page="/gfx/spacer.gif" objectlist="$includePath" />" width="1" height="15" alt="" />
+  <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"> <di:translate key="progress.progress" />:</a><img src="<mm:treefile write="true" page="/gfx/spacer.gif" objectlist="$includePath" />" width="1" height="15" alt="" />
   </div>
 			
   <div class="progressMeter">
@@ -13,4 +13,4 @@
   </di:hasrole>
   </div>
 </mm:cloud>
-
+
