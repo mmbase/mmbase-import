@@ -177,7 +177,7 @@ Applications build file
   </target>
 
   <target name="richtext" depends="mmbase">
-     <ant dir="richtext"  target="package" inheritAll="false">
+     <ant dir="richtext"  target="dependent.package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
