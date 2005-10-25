@@ -46,13 +46,13 @@
 </div>
 <div class="folders">
   <div class="folderHeader">
-        <td class="tableheader"><di:translate  id="forum">forum</di:translate></td>
+        <td class="tableheader"><di:translate key="forum.forum" /></td>
   </div>
   <div class="folderBody">
      <di:hasrole role="teacher">
           <mm:treeinclude write="true" page="/forum/headerlink.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="icon" value="nieuw forum"/>
-            <mm:param name="text"><di:translate  id="newforum">New Forum</di:translate></mm:param>
+            <mm:param name="text"><di:translate key="forum.newforum" /></mm:param>
             <mm:param name="link"><mm:treefile write="true" page="/forum/createforum.jsp" objectlist="$includePath" referids="$referids"/></mm:param>
           </mm:treeinclude>
      </di:hasrole>
@@ -122,7 +122,7 @@
     <mm:isnotempty referid="forum">
               <mm:treeinclude write="true" page="/forum/headerlink.jsp" objectlist="$includePath" referids="$referids">
                 <mm:param name="icon" value="nieuw onderwerp"/>
-                <mm:param name="text"><di:translate  id="newtopic">New topic</di:translate></mm:param>
+                <mm:param name="text"><di:translate key="forum.newtopic" /></mm:param>
                 <mm:param name="link"><mm:treefile write="true" page="/forum/createthread.jsp" objectlist="$includePath" referids="$referids">
                   <mm:param name="forum" value="$forum" />
                   </mm:treefile></mm:param>
@@ -192,9 +192,9 @@
 
           <di:table maxitems="10">
             <di:row>
-              <di:headercell sortfield="name" default="true"><di:translate  id="table_name" >Topic</di:translate></di:headercell>
-              <di:headercell><di:translate  id="table_no_posts" >Number</di:translate></di:headercell>
-              <di:headercell><di:translate  id="table_latest_post" >Latest</di:translate></di:headercell>
+              <di:headercell sortfield="name" default="true"><di:translate key="forum.topic" /></di:headercell>
+              <di:headercell><di:translate key="forum.number" /></di:headercell>
+              <di:headercell><di:translate key="forum.latest" /></di:headercell>
             </di:row>
 
             <mm:listnodes>
@@ -241,7 +241,7 @@
                        </mm:listnodes>
                      </mm:listnodescontainer>
 
-                     <mm:import id="lastmsg"><%=datum%> <di:translate  id="by_user">by</di:translate> <mm:write referid="writer"/></mm:import>
+                     <mm:import id="lastmsg"><%=datum%> <di:translate key="forum.by_user" /> <mm:write referid="writer"/></mm:import>
                      <mm:write referid="lastmsg"/>
 
                     </mm:first>
