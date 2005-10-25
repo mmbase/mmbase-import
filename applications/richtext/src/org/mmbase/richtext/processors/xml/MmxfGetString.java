@@ -15,6 +15,7 @@ import org.mmbase.bridge.util.xml.Generator;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.XmlField;
 import org.mmbase.util.xml.XMLWriter;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -29,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.1 2005-10-25 12:33:18 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.2 2005-10-25 16:49:19 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -61,8 +62,12 @@ public class MmxfGetString implements  Processor {
         }
     }
 
+
     public Object process(Node node, Field field, Object value) {
-        log.debug("Getting " + field + " from " + node + " as a String");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting " + field + " from " + node + " as a String");
+            log.debug("Received value as " + value.getClass());
+        }
         
         try {
             switch(Modes.getMode("" + node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
