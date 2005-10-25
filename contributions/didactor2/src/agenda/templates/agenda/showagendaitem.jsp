@@ -204,9 +204,9 @@
       <input type="hidden" name="year" value="<mm:write referid="year"/>"/>
       <input type="hidden" name="day" value="<mm:write referid="day"/>"/>
       <input type="hidden" name="month" value="<mm:write referid="month"/>"/>
-      <input class="formbutton" type="submit" name="back" value="<di:translate key="agenda.back">back</di:translate>" />
+      <input class="formbutton" type="submit" name="back" value="<di:translate key="agenda.back" />"/>
       <mm:present referid="okbutton">
-      <input class="formbutton" type="submit" name="update" value="<di:translate key="agenda.ok">ok</di:translate>" />
+      <input class="formbutton" type="submit" name="update" value="<di:translate key="agenda.ok" />" />
       </mm:present>
       
 
