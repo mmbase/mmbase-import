@@ -8,12 +8,11 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.datatypes.util.xml;
-
+import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.util.fields.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
@@ -27,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.1 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.2 2005-10-25 12:30:41 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
