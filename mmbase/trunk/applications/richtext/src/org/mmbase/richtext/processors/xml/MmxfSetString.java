@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.1 2005-10-25 12:33:18 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.2 2005-10-25 16:49:19 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -52,7 +52,7 @@ public class MmxfSetString implements  Processor {
     /**
      * Just parses String to Document
      */
-    private Document parse(Object value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
+    protected static Document parse(Object value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
         if (value instanceof Document) return (Document) value;
         try {
             return parse(new java.io.ByteArrayInputStream(("" + value).getBytes("UTF-8")));
@@ -65,7 +65,7 @@ public class MmxfSetString implements  Processor {
     /**
      * Just parses InputStream  to Document (without validation).
      */
-    private Document parse(java.io.InputStream value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
+    protected static  Document parse(java.io.InputStream value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
         dfactory.setValidating(false);
         dfactory.setNamespaceAware(true);
