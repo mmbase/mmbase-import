@@ -6,12 +6,30 @@
 
 
   <datatype id="xml">
+
     <specialization id="mmxf">
       <setprocessor type="string">
         <class name="org.mmbase.richtext.processors.xml.MmxfSetString" />
       </setprocessor>
       <getprocessor type="string">
         <class name="org.mmbase.richtext.processors.xml.MmxfGetString" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="mmxfunp">
+      <description>
+        'mmxfunp' fields can be used just like 'mmxf' fields, but it anticipates that the field
+        previously was a simple String field (and on the front-end escape='p' was used).
+      </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.richtext.processors.xml.MmxfSetString" />
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.richtext.processors.xml.UnPGet" />
+        <class name="org.mmbase.richtext.processors.xml.MmxfGetString" />
+      </getprocessor>
+      <getprocessor>
+        <class name="org.mmbase.richtext.processors.xml.UnPGet" />
       </getprocessor>
     </specialization>
   </datatype>
