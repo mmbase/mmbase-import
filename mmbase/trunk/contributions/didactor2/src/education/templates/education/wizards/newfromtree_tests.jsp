@@ -1,7 +1,6 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 
-<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 
@@ -74,7 +73,7 @@
                   %>
 
                   <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><fmt:message key="<%= arrstrNames[f] %>"/></a></nobr></td>
+                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><di:translate key="<%= arrstrNames[f] %>"/></a></nobr></td>
                </tr>
             </table>
          <%
@@ -83,4 +82,3 @@
 
 </mm:node>
 </mm:cloud>
-</fmt:bundle>

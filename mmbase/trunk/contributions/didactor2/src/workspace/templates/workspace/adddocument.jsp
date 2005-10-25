@@ -1,7 +1,7 @@
 <%--
   This template adds a document to a folder.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 
 <%-- expires is set so renaming a folder does not show the old name --%>
@@ -9,10 +9,9 @@
 <mm:import externid="processupload">false</mm:import>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
-  <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title><fmt:message key="ADDDOCUMENT" /></title>
+      <title><di:translate key="workspace.adddocument" /></title>
     </mm:param>
   </mm:treeinclude>
 
@@ -34,20 +33,20 @@
     <div class="navigationbar">
       <div class="titlebar">
         <mm:compare referid="typeof" value="1">
-          <mm:import id="titletext"><fmt:message key="MYDOCUMENTS" /></mm:import>
+          <mm:import id="titletext"><di:translate key="workspace.mydocuments" /></mm:import>
         </mm:compare>
         <mm:compare referid="typeof" value="2">
-          <mm:import id="titletext"><fmt:message key="SHAREDDOCUMENTS" /></mm:import>
+          <mm:import id="titletext"><di:translate key="workspace.shareddocuments" /></mm:import>
         </mm:compare>
         <mm:compare referid="typeof" value="3">
-          <mm:import id="titletext"><fmt:message key="WORKGROUPDOCUMENTS" /></mm:import>
+          <mm:import id="titletext"><di:translate key="workspace.workgroupdocuments" /></mm:import>
         </mm:compare>
 	     <mm:compare referid="typeof" value="4">
-    	    <mm:import id="titletext"><fmt:message key="PROJECTGROUPDOCUMENTS" /></mm:import>
+    	    <mm:import id="titletext"><di:translate key="workspace.projectgroupdocuments" /></mm:import>
 	    </mm:compare>
 
 
-        <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
+        <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.mydocuments" />" />
         <mm:write referid="titletext"/>
       </div>
     </div>
@@ -59,7 +58,7 @@
 
     <div class="mainContent">
       <div class="contentHeader">
-        <fmt:message key="ADDDOCUMENT" />
+        <di:translate key="workspace.adddocument" />
       </div>
       <div class="contentBodywit">
 
@@ -88,9 +87,9 @@
         <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
         
         <%-- button to upload the file --%>
-        <input class="formbutton" type="submit" name="action1" value="<fmt:message key="CREATE" />" />
+        <input class="formbutton" type="submit" name="action1" value="<di:translate key="workspace.create" />" />
         <%-- button to go back and upload nothing --%>
-        <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
+        <input class="formbutton" type="submit" name="action2" value="<di:translate key="workspace.back" />" />
       </form>
     </div>
     </div>
@@ -155,6 +154,5 @@
   </mm:compare>  
 
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

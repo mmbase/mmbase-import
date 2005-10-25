@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.Date" %>
@@ -11,7 +10,6 @@
 
 <%@include file="/shared/setImports.jsp" %>
 
-<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 
 <html>
 <head>
@@ -28,7 +26,7 @@
    <table width="100%" border="0">
       <tr bgcolor="#CCCCCC">
          <td>
-            <fmt:message key="versionmanagement"/>: <mm:nodeinfo type="guitype" />
+            <di:translate key="versioning.versionmanagement" />: <mm:nodeinfo type="guitype" />
             <% boolean nameShowed = false; %>
             <mm:fieldlist fields="name?">
                <mm:field/>
@@ -42,8 +40,8 @@
          </td>
       </tr>
    </table>
-<fmt:message key="versioningSelectVersionToRestore"/><br />
-<b><fmt:message key="versioningNote"/>:</b> <fmt:message key="versioningNoteText"/><br />
+<di:translate key="versioning.versioningselectversiontorestore" /><br />
+<b><di:translate key="versioning.versioningnote" />:</b> <di:translate key="versioning.versioningnotetext" /><br />
 <table class="body">
    <tr class="listcanvas">
       <td>
@@ -51,8 +49,8 @@
             <tr class="listheader">
                <th>&nbsp;</th>
                <th>#</th>
-               <th><fmt:message key="date"/></th>
-               <th><fmt:message key="created_by"/></th>
+               <th><di:translate key="versioning.date" /></th>
+               <th><di:translate key="versioning.created_by" /></th>
             </tr>
             <% int archiveNum = 0; %>
             <mm:listnodes type="archives" orderby="number" directions="DOWN" constraints="<%= "original_node = '" + nodeId + "'" %>">
@@ -61,7 +59,7 @@
                   <td class="deletebutton">
                      <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=delete&archiveid=<mm:field name="number"/>'
-                        onclick="return doDelete('<fmt:message key="versioningDeleteWarning"/>');">
+                        onclick="return doDelete('<di:translate key="versioning.versioningdeletewarning" />');">
                            <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
                      </a>
                   </td>
@@ -75,7 +73,7 @@
                         <% SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm"); %>
                      <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=restore&archiveid=<mm:field name="number"/>'
-                        onclick="return doDelete('<fmt:message key="versioningRestoreWarning"/>');">
+                        onclick="return doDelete('<di:translate key="versioning.versioningrestorewarning" />');">
                            <%= df.format(archiveDate) %>
                      </a>
                      </mm:field>
@@ -83,7 +81,7 @@
                   <td class="field">
                      <a
                         href='vers_cmd.jsp?nodeid=<%= nodeId %>&command=restore&archiveid=<mm:field name="number"/>'
-                        onclick="return doDelete('<fmt:message key="versioningRestoreWarning"/>');">
+                        onclick="return doDelete('<di:translate key="versioning.versioningrestorewarning" />');">
                            <mm:field name="archived_by" jspvar="userName" vartype="String">
                               <mm:listnodes type="people" constraints="<%= "username = '" + userName + "'" %>">
                                  <mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/>
@@ -103,6 +101,5 @@
 </body>
 </html>
 
-</fmt:bundle>
 </mm:cloud>
 </mm:content>
