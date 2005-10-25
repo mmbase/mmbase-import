@@ -87,13 +87,13 @@ this stylesheet can be overridden in the same manner as other parts of the site.
             <table width="100%" class="calWeek" cellspacing="0">
               <tr>
                 <td class="calWeek" align="center">&nbsp;&nbsp;</td>
-                <td class="calWeek" align="center"><di:translate>zo</di:translate></td>
-                <td class="calWeek" align="center"><di:translate>ma</di:translate></td>
-                <td class="calWeek" align="center"><di:translate>di</di:translate></td>
-                <td class="calWeek" align="center"><di:translate>wo</di:translate></td>
-                <td class="calWeek" align="center"><di:translate>do</di:translate></td>
-                <td class="calWeek" align="center"><di:translate>vr</di:translate></td>
-                <td class="calWeek" align="center"><di:translate>za</di:translate></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.sunday" /></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.monday" /></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.tuesday" /></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.wednesday" /></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.thursday" /></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.friday" /></td>
+                <td class="calWeek" align="center"><di:translate key="agenda.saturday" /></td>
                 <td class="calWeek" align="center">&nbsp;&nbsp;</td>
               </tr>
             </table>
