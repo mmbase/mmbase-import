@@ -1,7 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:bundle basename="nl.didactor.component.agenda.AgendaMessageBundle">
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -68,10 +67,10 @@
   <di:table maxitems="10">
 
     <di:row>      <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked);" /></di:headercell>
-      <di:headercell><fmt:message key="CALENDAR" /></di:headercell>
-      <di:headercell sortfield="title" default="true"><fmt:message key="APPOINTMENT" /></di:headercell>
-      <di:headercell><fmt:message key="STARTTIME" /></di:headercell>
-      <di:headercell><fmt:message key="ENDTIME" /></di:headercell>
+      <di:headercell><di:translate key="agenda.calendar" /></di:headercell>
+      <di:headercell sortfield="title" default="true"><di:translate key="agenda.appointment" /></di:headercell>
+      <di:headercell><di:translate key="agenda.starttime" /></di:headercell>
+      <di:headercell><di:translate key="agenda.endtime" /></di:headercell>
     </di:row>
 
     <mm:listnodes orderby="title">
@@ -91,17 +90,17 @@
         <mm:relatednodes type="agendas" max="1">
             <mm:relatednodes type="classes">
                 <mm:import id="agendaname" reset="true">
-                    <fmt:message key="AGENDA_OF"/> <fmt:message key="CLASS"/> <mm:field name="name"/>
+                    <di:translate key="agenda.agenda_of" /> <di:translate key="agenda.class" /> <mm:field name="name"/>
                 </mm:import>    
             </mm:relatednodes>
             <mm:relatednodes type="workgroups">
                 <mm:import id="agendaname" reset="true">
-                    <fmt:message key="AGENDA_OF"/> <fmt:message key="WORKGROUP"/> <mm:field name="name"/>
+                    <di:translate key="agenda.agenda_of" /> <di:translate key="agenda.workgroup" /> <mm:field name="name"/>
                 </mm:import>    
             </mm:relatednodes>
             <mm:relatednodes type="people">
                 <mm:import id="agendaname" reset="true">
-                    <fmt:message key="AGENDA_OF"/> <mm:field name="firstname"/> <mm:field name="lastname"/>
+                    <di:translate key="agenda.agenda_of" /> <mm:field name="firstname"/> <mm:field name="lastname"/>
                 </mm:import>    
             </mm:relatednodes>
         </mm:relatednodes>
@@ -134,6 +133,5 @@
 
 </mm:cloud>
 </mm:content>
-</fmt:bundle>
 
-
+

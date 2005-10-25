@@ -22,7 +22,7 @@
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><di:translate id="chatlogtitle">Chatlog</di:translate></title>
+    <title><di:translate key="chat.chatlogtitle" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -30,14 +30,14 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_chatlog.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="chatverslag" /> <di:translate id="chatlogtitle">Chatlog</di:translate>
+    <img src="<mm:treefile write="true" page="/gfx/icon_chatlog.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="chatverslag" /> <di:translate key="chat.chatlogtitle" />
   </div>
 </div>
 
 <div class="folders">
 
   <div class="folderHeader">
-    <di:translate id="chatlogtitlelowercase">chatlog</di:translate>
+    <di:translate key="chat.chatlogtitlelowercase" />
   </div>
 
   <div class="folderBody">
@@ -88,13 +88,13 @@
 		            <mm:param name="callerpage">/chat/chatlog.jsp</mm:param>
 		            <mm:param name="typeof">1</mm:param>
 		     </mm:treefile>">
-      <img src="<mm:treefile page="/chat/gfx/mydocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addchatlogpersonal">Add chatlog to personal workspace</di:translate>"/></a>
+      <img src="<mm:treefile page="/chat/gfx/mydocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="chat.addchatlogpersonal" />"/></a>
     <a href="<mm:treefile page="/workspace/addchatlog.jsp" objectlist="$includePath" referids="$referids">
  	  	            <mm:param name="currentchatlog"><mm:write referid="chatlog"/></mm:param>
   		            <mm:param name="callerpage">/chat/chatlog.jsp</mm:param>
   		            <mm:param name="typeof">2</mm:param>
   		     </mm:treefile>">
-      <img src="<mm:treefile page="/chat/gfx/shareddocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addchatlogpublic">Add chatlog to public workspace</di:translate>"/></a>
+      <img src="<mm:treefile page="/chat/gfx/shareddocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="chat.addchatlogpublic" />"/></a>
     </mm:node>
   </div>
 

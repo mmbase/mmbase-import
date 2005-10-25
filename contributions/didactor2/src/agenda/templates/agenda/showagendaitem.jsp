@@ -3,8 +3,7 @@
 --%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:bundle basename="nl.didactor.component.agenda.AgendaMessageBundle">
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -14,7 +13,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="APPOINTMENT" /></title>
+    <title><di:translate key="agenda.appointment" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -67,7 +66,7 @@
                <mm:param name="month"><mm:write referid="month"/></mm:param>
                <mm:param name="day"><mm:write referid="day"/></mm:param>
              </mm:treefile>">
-      <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETEAGENDAITEM" />"/></a>
+      <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.deleteagendaitem" />"/></a>
       </mm:first>
     </mm:list>
   </div>
@@ -132,11 +131,11 @@
  
       <mm:list nodes="$currentitem" path="items,invitationrel,people" constraints="invitationrel.status!=1 AND people.number=$user" max="1">
 	    <tr>
-		<th><di:translate id="sender">Afzender</di:translate></th>
+		<th><di:translate key="agenda.sender" /></th>
 		<td><mm:write referid="sendername"/></td>
 	    </tr>
 	    <tr>
-		<th><di:translate id="invitationstatus">Status</di:translate></th>
+		<th><di:translate key="agenda.invitationstatus" /></th>
 		<td>
 		    <%-- Check for update --%>
 		    <mm:import id="mystatus" externid="status"/>
@@ -153,9 +152,9 @@
 		    <mm:import id="status" reset="true"><mm:field name="invitationrel.status"/></mm:import>
 
 		    <select name="status">
-			<option value="2" <mm:compare referid="status" value="2">selected</mm:compare>><di:translate id="accepted">Geaccepteerd</di:translate></option>
-			<option value="3" <mm:compare referid="status" value="3">selected</mm:compare>><di:translate id="declined">Geweigerd</di:translate></option>
-			<option value="0" <mm:islessthan referid="status" value="2">selected</mm:islessthan>><di:translate id="pending">Wacht op antwoord</di:translate></option>
+			<option value="2" <mm:compare referid="status" value="2">selected</mm:compare>><di:translate key="agenda.accepted" /></option>
+			<option value="3" <mm:compare referid="status" value="3">selected</mm:compare>><di:translate key="agenda.declined" /></option>
+			<option value="0" <mm:islessthan referid="status" value="2">selected</mm:islessthan>><di:translate key="agenda.pending" /></option>
 		    </select>
 		    </td>
 		</tr>
@@ -171,8 +170,8 @@
 	<mm:first>
           <table class="Font"> 
 	    <tr>
-		<th><di:translate id="recipients">Ontvanger</di:translate></th>
-		<th><di:translate id="invitationstatus">Status</di:translate></th>
+		<th><di:translate key="agenda.recipients" /></th>
+		<th><di:translate key="agenda.invitationstatus" /></th>
 	    </tr>
 	</mm:first>
 	    <tr>
@@ -184,13 +183,13 @@
 
 
 		    <mm:compare referid="status" value="2">
-			<di:translate id="accepted">Geaccepteerd</di:translate>
+			<di:translate key="agenda.accepted" />
 		    </mm:compare>
 		    <mm:compare referid="status" value="3">
-			<di:translate id="declined">Geweigerd</di:translate>
+			<di:translate key="agenda.declined" />
 		    </mm:compare>
 		    <mm:islessthan referid="status" value="2">
-			<di:translate id="pending">Wacht op antwoord</di:translate>
+			<di:translate key="agenda.pending" />
 		    </mm:islessthan>
 		    </td>
 		</tr>
@@ -205,9 +204,9 @@
       <input type="hidden" name="year" value="<mm:write referid="year"/>"/>
       <input type="hidden" name="day" value="<mm:write referid="day"/>"/>
       <input type="hidden" name="month" value="<mm:write referid="month"/>"/>
-      <input class="formbutton" type="submit" name="back" value="<di:translate id="back">back</di:translate>"/>
+      <input class="formbutton" type="submit" name="back" value="<di:translate key="agenda.back">back</di:translate>" />
       <mm:present referid="okbutton">
-      <input class="formbutton" type="submit" name="update" value="<di:translate id="ok">ok</di:translate>"/>
+      <input class="formbutton" type="submit" name="update" value="<di:translate key="agenda.ok">ok</di:translate>" />
       </mm:present>
       
 
@@ -222,5 +221,4 @@
 
 </mm:cloud>
 </mm:content>
-</fmt:bundle>
 
