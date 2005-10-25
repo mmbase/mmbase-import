@@ -26,7 +26,11 @@ public interface Descriptor {
     public String getName();
 
 
+    // XXX mm
     // 5 methods for one property
+    // I propose to replace it with one:
+    // LocalizedString getGUIName(); (or perhaps for backwards compatibliy with Field getLocalizedGUIName)
+    // That was the point of LocalizedString.
 
     /**
      * Returns the GUI name for this object.
@@ -64,8 +68,12 @@ public interface Descriptor {
     public void setGUIName(String g);
 
 
-
+    // XXX mm:
     /// 6 (!) methods just for one property!
+    // I would propose to replace this with one: 
+    // LocalizedString getDescription() (or perhaps for backwards compatibliy with Field getLocalizedDescription)
+    // That was the whole point of LocalizedString.
+
     /**
      * Returns the set of (localized) descriptions of this object.
      * @return the description as a LocalizedString
