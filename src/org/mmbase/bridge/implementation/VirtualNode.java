@@ -16,7 +16,6 @@ import java.io.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.fields.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
@@ -32,7 +31,7 @@ import org.w3c.dom.Document;
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.4 2005-10-18 20:22:28 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.5 2005-10-25 21:26:30 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
