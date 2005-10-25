@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.34 2005-10-25 17:43:51 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.35 2005-10-25 18:33:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -442,11 +442,11 @@ public class DataTypeDefinition {
             String localName = conditionElement.getLocalName();
             ComparableDataType dDataType = (ComparableDataType) dataType;
             if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
-                Comparable value = (Comparable) dDataType.autoCast(DataTypeXml.getValue(conditionElement));
+                Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
                 setRestrictionData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
                 return true;
             } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
-                Comparable value = (Comparable) dDataType.autoCast(DataTypeXml.getValue(conditionElement));
+                Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
                 setRestrictionData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
                 return true;
             }

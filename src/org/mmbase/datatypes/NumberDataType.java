@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.13 2005-10-17 15:28:13 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.14 2005-10-25 18:33:21 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
@@ -30,7 +30,7 @@ abstract public class NumberDataType extends ComparableDataType {
     }
 
 
-    protected Object castToValidate(Object value) {
+    protected Object castToValidate(Object value, Node node, Field field) {
         if (value == null) return null;
         return new Double(Casting.toDouble(value)); // this makes it e.g. possible to report that 1e20 is too big for an integer.
     }
