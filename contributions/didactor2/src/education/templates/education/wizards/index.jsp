@@ -1,11 +1,11 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="EDITWIZARDS" /></title>
+    <title><di:translate key="education.editwizards" /></title>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids"/>" />
     <style type="text/css">
       a {
@@ -17,7 +17,7 @@
 <div class="rows">
   <div class="navigationbar">
     <div class="titlebar">
-      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="EDITWIZARDS" />" />
+      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="education.editwizards" />" />
       Editwizards:  <mm:treeinclude page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />
     </div>
   </div>

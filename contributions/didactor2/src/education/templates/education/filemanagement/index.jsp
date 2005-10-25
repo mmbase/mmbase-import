@@ -1,7 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator"%>
 <%
@@ -63,18 +61,6 @@
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
 <%@include file="/education/wizards/roles_chk.jsp" %>
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-
-<%
-   String bundleEducation = null;
-%>
-
-<mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-   <%
-      bundleEducation  = "nl.didactor.component.education.EducationMessageBundle";
-   %>
-</mm:write>
-
-<fmt:bundle basename="<%= bundleEducation %>">
 
 <% request.getSession().setAttribute("mayupload","true"); %>
 <%
@@ -144,7 +130,7 @@ if (top == self) {
          <%
             String sResults = "";
          %>
-         <mm:import id="FTPfiles" jspvar="sTemplate" vartype="String" reset="true"><fmt:message key="FTPfiles"/></mm:import>
+         <mm:import id="FTPfiles" jspvar="sTemplate" vartype="String" reset="true"><di:translate key="education.ftpfiles" /></mm:import>
          <%
             sResults = sTemplate.replaceAll("\\{\\$\\$\\$\\}", "" + farray.length);
          %>
@@ -168,7 +154,7 @@ if (top == self) {
                      </select>
                      <input type="submit" value="Upload" style="width:60px; text-align:center">
                   </form>
-                  <% if (uploadOK) { %><b><fmt:message key="fileUploadOk"/></b><% } %><b><%= msg %></b>
+                  <% if (uploadOK) { %><b><di:translate key="education.fileuploadok" /></b><% } %><b><%= msg %></b>
                </td>
             </tr>
          </table>
@@ -183,10 +169,10 @@ if (top == self) {
                </mm:islessthan>
 
                <th>#</th>
-               <th><fmt:message key="filemanagementTableName"/></th>
-               <th><fmt:message key="filemanagementTableType"/></th>
-               <th><fmt:message key="filemanagementTableSize"/></th>
-               <th><fmt:message key="filemanagementTableFileExt"/></th>
+               <th><di:translate key="education.filemanagementtablename" /></th>
+               <th><di:translate key="education.filemanagementtabletype" /></th>
+               <th><di:translate key="education.filemanagementtablesize" /></th>
+               <th><di:translate key="education.filemanagementtablefileext" /></th>
             </tr>
             <%
                List files = new ArrayList();
@@ -237,7 +223,7 @@ if (top == self) {
                         <td class="deletebutton">
                            <a
                               href='index.jsp?deletefile=<mm:write referid="filename"/>'
-                              onclick="return confirm('<fmt:message key="filemanagementDeletePrompt"/>');">
+                              onclick="return confirm('<di:translate key="education.filemanagementdeleteprompt" />');">
                                 <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
                            </a>
                         </td>
@@ -295,7 +281,6 @@ if (top == self) {
 </body>
 </html>
 
-</fmt:bundle>
 </mm:islessthan>
 </mm:cloud>
 </mm:content>

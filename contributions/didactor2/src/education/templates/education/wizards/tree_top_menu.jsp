@@ -2,7 +2,7 @@
 <%@ page import = "java.util.Iterator" %>
 <%@page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:cloud jspvar="cloud" method="asis">
    <%@include file="/shared/setImports.jsp" %>
    <%@include file="/education/wizards/roles_defs.jsp" %>
@@ -32,17 +32,16 @@
    </mm:node>
 
 
-   <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=components" style="font-weight:bold;"><fmt:message key="educationMenuComponents"/></a>
+     <a href="?mode=components" style="font-weight:bold;"><di:translate key="education.educationmenucomponents" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">rollen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=roles" style="font-weight:bold;"><fmt:message key="educationMenuPersons"/></a>
+     <a href="?mode=roles" style="font-weight:bold;"><di:translate key="education.educationmenupersons" /></a>
    </mm:islessthan>
 
    <mm:node number="component.pop" notfound="skipbody">
@@ -51,7 +50,7 @@
        <mm:import id="editcontextname" reset="true">competentie</mm:import>
        <%@include file="/education/wizards/roles_chk.jsp" %>
        <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-         <a href="?mode=competence" style="font-weight:bold;"><fmt:message key="educationMenuCompetence"/></a>
+         <a href="?mode=competence" style="font-weight:bold;"><di:translate key="education.educationmenucompetence" /></a>
        </mm:islessthan>
      </mm:relatednodes>
    </mm:node>
@@ -60,35 +59,35 @@
      <mm:import id="editcontextname" reset="true">metadata</mm:import>
      <%@include file="/education/wizards/roles_chk.jsp" %>
      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-       <a href="?mode=metadata" style="font-weight:bold;"><fmt:message key="educationMenuMetadata"/></a>
+       <a href="?mode=metadata" style="font-weight:bold;"><di:translate key="education.educationmenumetadata" /></a>
      </mm:islessthan>
    </mm:node>
 
    <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=content_metadata" style="font-weight:bold;"><fmt:message key="educationMenuContentMetadata"/></a>
+     <a href="?mode=content_metadata" style="font-weight:bold;"><di:translate key="education.educationmenucontentmetadata" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=filemanagement" style="font-weight:bold;"><fmt:message key="educationMenuFilemanagement"/></a>
+     <a href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=tests" style="font-weight:bold;"><fmt:message key="educationMenuTests"/></a>
+     <a href="?mode=tests" style="font-weight:bold;"><di:translate key="education.educationmenutests" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
      <% if (hsetEducations.size() < 2) { %>
-       <a href="?mode=educations" style="font-weight:bold;"><fmt:message key="educationMenuEducations"/></a>
+       <a href="?mode=educations" style="font-weight:bold;"><di:translate key="education.educationmenueducations" /></a>
      <% } else { %>
-       <fmt:message key="educationMenuEducations"/>
+       <di:translate key="education.educationmenueducations" />
        <script>
          function chooseEducation(eid) {
            if (eid != 0) {
@@ -113,5 +112,4 @@
        </select>
      <% } %>
   </mm:islessthan>
-</fmt:bundle>
 </mm:cloud>

@@ -1,17 +1,16 @@
 <%--
   This template shows a existing folderitem.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="OPENITEM" /></title>
+    <title><di:translate key="workspace.openitem" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -24,7 +23,7 @@
 
 <%-- Open the content of the object --%>
 <mm:present referid="action1">
-  <mm:import id="action1text"><fmt:message key="OPEN" /></mm:import>
+  <mm:import id="action1text"><di:translate key="workspace.open" /></mm:import>
   <mm:compare referid="action1" referid2="action1text">
 
     <mm:node number="$currentitem">
@@ -37,7 +36,7 @@
 
 <%-- Check if the back button is pressed --%>
 <mm:present referid="action2">
-  <mm:import id="action2text"><fmt:message key="BACK" /></mm:import>
+  <mm:import id="action2text"><di:translate key="workspace.back" /></mm:import>
   <mm:compare referid="action2" referid2="action2text">
     <mm:redirect referids="$referids,currentfolder,typeof" page="$callerpage"/>
   </mm:compare>
@@ -61,8 +60,8 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
-  <fmt:message key="MYDOCUMENTS" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.mydocuments" />" />
+  <di:translate key="workspace.mydocuments" />
   </div>
 </div>
 
@@ -77,19 +76,19 @@
 
   <div class="contentHeader">
     <mm:node number="$currentitem">
-      <fmt:message key="OPENITEM" />:
+      <di:translate key="workspace.openitem" />:
       <mm:import id="nodetype"><mm:nodeinfo type="type"/></mm:import>
       <mm:compare referid="nodetype" value="attachments">
-        <fmt:message key="FOLDERITEMTYPEDOCUMENT" />
+        <di:translate key="workspace.folderitemtypedocument" />
       </mm:compare>
       <mm:compare referid="nodetype" value="urls">
-        <fmt:message key="FOLDERITEMTYPEURL" />
+        <di:translate key="workspace.folderitemtypeurl" />
       </mm:compare>
       <mm:compare referid="nodetype" value="pages">
-        <fmt:message key="FOLDERITEMTYPEPAGE" />
+        <di:translate key="workspace.folderitemtypepage" />
       </mm:compare>
       <mm:compare referid="nodetype" value="chatlogs">
-        <fmt:message key="FOLDERITEMTYPECHATLOG" />
+        <di:translate key="workspace.folderitemtypechatlog" />
       </mm:compare>
     </mm:node>
   </div>
@@ -113,8 +112,8 @@
 
 
     <tr><td colspan="2">
-       <input class="formbutton" type="submit" name="action1" value="<fmt:message key="OPEN" />" />
-      <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
+       <input class="formbutton" type="submit" name="action1" value="<di:translate key="workspace.open" />" />
+      <input class="formbutton" type="submit" name="action2" value="<di:translate key="workspace.back" />" />
     
     </form>
     </td></tr>
@@ -122,7 +121,7 @@
     <tr><td colspan="2">
     <p>
     
-    <b><fmt:message key="REACTIONS"/></b>
+    <b><di:translate key="workspace.reactions" /></b>
     </p>
     </td></tr>
     <tr><td></td><td>
@@ -151,7 +150,7 @@
             </tr>
             <tr>
             <td>
-            <input type="submit" value="<fmt:message key="REACT"/>" class="formbutton">
+            <input type="submit" value="<di:translate key="workspace.react" />" class="formbutton">
             </td></tr>
     </form>
           </mm:compare>
@@ -162,6 +161,5 @@
 </div>
 </div>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

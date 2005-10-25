@@ -1,7 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
-<fmt:bundle basename="nl.didactor.component.search.SearchMessageBundle">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <div class="menuItemSearch">
@@ -11,10 +10,9 @@
   <input type="hidden" name="search_component" value=""/>
   </div>
     zoeken:&nbsp; <input class="search" type="text" name="search_query" />
-	<input type="image" src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" />" alt="<fmt:message key="SENDSEARCHREQUEST"/>" value="<fmt:message key="SENDSEARCHREQUEST"/>" name="searchbutton" />
+	<input type="image" src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" />" alt="<di:translate key="search.sendsearchrequest" />" value="<di:translate key="search.sendsearchrequest" />" name="searchbutton" />
   <div style="display:none"></form></div>
 </div>
 <div class="spacer"> </div>
 </mm:cloud>
-</fmt:bundle>
 </mm:content>

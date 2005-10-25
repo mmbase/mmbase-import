@@ -1,17 +1,16 @@
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="MYDOCUMENTS" /></title>
+    <title><di:translate key="workspace.mydocuments" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -126,16 +125,16 @@
 <div class="titlebar">
 <%-- determine if the context is my documents or shared documents --%>
 <mm:compare referid="typeof" value="1">
-  <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />"/>
-      <fmt:message key="MYDOCUMENTS" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.mydocuments" />"/>
+      <di:translate key="workspace.mydocuments" />
 </mm:compare>
 <mm:compare referid="typeof" value="2">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />"/>
-      <fmt:message key="SHAREDDOCUMENTS" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />"/>
+      <di:translate key="workspace.shareddocuments" />
 </mm:compare>
 <mm:compare referid="typeof" value="3">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />"/>
-      <fmt:message key="WORKGROUPDOCUMENTS" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />"/>
+      <di:translate key="workspace.workgroupdocuments" />
 </mm:compare>
 
 </div>
@@ -144,7 +143,7 @@
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="FOLDERS" />
+    <di:translate key="workspace.folders" />
 </div>
 
 <div class="folderBody">
@@ -154,7 +153,7 @@
 <mm:present referid="workgroup">
 <mm:compare referid="typeof" value="4">
   <a href="<mm:treefile page="/projectgroup/index.jsp" objectlist="$includePath" referids="$referids,workgroup"/>">
-<img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDCONTACTS" />"/>
+<img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.addcontacts" />"/>
 </a>
 </mm:compare>	     
 </mm:present>
@@ -172,7 +171,7 @@
            <mm:param name="callerpage">/workspace/index.jsp</mm:param>
 	   <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 	 </mm:treefile>">
-  <img src="<mm:treefile page="/workspace/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEFOLDER" />" /></a>
+  <img src="<mm:treefile page="/workspace/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.createfolder" />" /></a>
 
 <mm:isgreaterthan referid="currentfolder" value="0">
   <a href="<mm:treefile page="/workspace/changefolder.jsp" objectlist="$includePath" referids="$referids">
@@ -181,14 +180,14 @@
 	     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 	       </mm:treefile>">
 
-    <img src="<mm:treefile page="/workspace/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="RENAMEFOLDER" />" /></a>
+    <img src="<mm:treefile page="/workspace/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.renamefolder" />" /></a>
 
   <a href="<mm:treefile page="/workspace/deletefolder.jsp" objectlist="$includePath" referids="$referids">
 	     <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
 	     <mm:param name="callerpage">/workspace/index.jsp</mm:param>
 	     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 	   </mm:treefile>">
-    <img src="<mm:treefile page="/workspace/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETEFOLDER" />" /></a>
+    <img src="<mm:treefile page="/workspace/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deletefolder" />" /></a>
 </mm:isgreaterthan>
     <br clear="all"/>
 
@@ -198,12 +197,12 @@
 
       <%-- folder is open --%>
       <mm:compare referid="currentfolder" referid2="currentnumber">
-	<img src="<mm:treefile page="/workspace/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
+	<img src="<mm:treefile page="/workspace/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="workspace.folderopened" />" />
       </mm:compare>
 
       <%-- folder is closed --%>
       <mm:compare referid="currentfolder" referid2="currentnumber" inverse="true">
-	<img src="<mm:treefile page="/workspace/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
+	<img src="<mm:treefile page="/workspace/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="workspace.folderclosed" />" />
       </mm:compare>
 
       <a href="<mm:treefile page="/workspace/index.jsp" objectlist="$includePath" referids="$referids">
@@ -243,19 +242,19 @@
 		            <mm:param name="callerpage">/workspace/index.jsp</mm:param>
                     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 		     </mm:treefile>">
-        <img src="<mm:treefile page="/workspace/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDDOCUMENT" />" /></a>
+        <img src="<mm:treefile page="/workspace/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.adddocument" />" /></a>
 
       <a href="<mm:treefile page="/workspace/addurl.jsp" objectlist="$includePath" referids="$referids">
 		            <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
 		            <mm:param name="callerpage">/workspace/index.jsp</mm:param>
                     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 		     </mm:treefile>">
-        <img src="<mm:treefile page="/workspace/gfx/bron plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="ADDSOURCE" />" /></a>
+        <img src="<mm:treefile page="/workspace/gfx/bron plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.addsource" />" /></a>
 
 	
-        <input type="image" name="action_move" src="<mm:treefile page="/workspace/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="MOVESELECTED" />" />
+        <input type="image" name="action_move" src="<mm:treefile page="/workspace/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.moveselected" />" />
 
-        <input type="image" name="action_delete" src="<mm:treefile page="/workspace/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETESELECTED" />"/>
+        <input type="image" name="action_delete" src="<mm:treefile page="/workspace/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deleteselected" />"/>
     </mm:isgreaterthan>
 
   </div>
@@ -309,11 +308,11 @@
 
           <di:row>
             <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"></input></di:headercell>
-            <di:headercell><fmt:message key="TYPE" /></di:headercell>
-            <di:headercell><fmt:message key="TITLE" /></di:headercell>
-            <di:headercell><fmt:message key="DESCRIPTION" /></di:headercell>
-            <di:headercell><fmt:message key="FILENAME" /></di:headercell>
-            <di:headercell><fmt:message key="DATE" /></di:headercell>
+            <di:headercell><di:translate key="workspace.type" /></di:headercell>
+            <di:headercell><di:translate key="workspace.title" /></di:headercell>
+            <di:headercell><di:translate key="workspace.description" /></di:headercell>
+            <di:headercell><di:translate key="workspace.filename" /></di:headercell>
+            <di:headercell><di:translate key="workspace.date" /></di:headercell>
           </di:row>
 
           <mm:listnodes>
@@ -333,7 +332,7 @@
               <mm:remove referid="objecttype"/>
               <mm:import id="objecttype"><mm:nodeinfo type="type"/></mm:import>
               <mm:compare referid="objecttype" value="attachments">
-                <di:cell><img src="<mm:write referid="gfx_attachment"/>" alt="<fmt:message key="FOLDERITEMTYPEDOCUMENT" />" /></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_attachment"/>" alt="<di:translate key="workspace.folderitemtypedocument" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="title" /></a></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
                 <di:cell><mm:field name="filename" /></di:cell>
@@ -349,22 +348,22 @@
 			  	<%
 			  	  }
 			  	%>
-                <di:cell><img src="<mm:write referid="gfx_url"/>" alt="<fmt:message key="FOLDERITEMTYPEURL" />" /></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_url"/>" alt="<di:translate key="workspace.folderitemtypeurl" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
                 <di:cell><a href="<mm:write referid="urllink" />" target="unknownframe"><mm:field name="url"/></a></di:cell>
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
               </mm:compare>
               <mm:compare referid="objecttype" value="pages">
-                <di:cell><img src="<mm:write referid="gfx_page"/>" alt="<fmt:message key="FOLDERITEMTYPEPAGE" />" /></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_page"/>" alt="<di:translate key="workspace.folderitemtypepage" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
                 <di:cell><mm:field name="text" /></di:cell>
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
               </mm:compare>
               <mm:compare referid="objecttype" value="chatlogs">
-                <di:cell><img src="<mm:write referid="gfx_chatlog"/>" alt="<fmt:message key="FOLDERITEMTYPECHATLOG" />" /></di:cell>
-                <di:cell><mm:write referid="link" escape="none"/><fmt:message key="FOLDERITEMTYPECHATLOG" /><mm:field name="number"/></a></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_chatlog"/>" alt="<di:translate key="workspace.folderitemtypechatlog" />" /></di:cell>
+                <di:cell><mm:write referid="link" escape="none"/><di:translate key="workspace.folderitemtypechatlog" /><mm:field name="number"/></a></di:cell>
                 <di:cell>&nbsp;</di:cell>
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
                 <di:cell><mm:field name="date"></mm:field></di:cell> <!-- TODO show correct date -->
@@ -401,6 +400,5 @@
 
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

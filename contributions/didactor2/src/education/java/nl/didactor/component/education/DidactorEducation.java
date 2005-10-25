@@ -1,15 +1,21 @@
 package nl.didactor.component.education;
-import nl.didactor.component.Component;
-import org.mmbase.bridge.Cloud;
+
 import java.util.Map;
 import java.util.Vector;
 import java.lang.Integer;
-import org.mmbase.module.core.*;
 import javax.servlet.jsp.JspTagException;
+import nl.didactor.component.Component;
 import nl.didactor.util.ClassRoom;
+import org.mmbase.module.core.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 public class DidactorEducation extends Component {
     private Vector interestedComponents = new Vector();
+    private static Logger log = Logging.getLoggerInstance(DidactorEducation.class.getName());
 
     /**
      * Returns the version of the component
@@ -123,7 +129,13 @@ public class DidactorEducation extends Component {
 
     /**
      * Return the 'show' status of a given object (either learnobject or learnblock).
-     * Possible values:
+     * It will base the decision on related 'mmevents' objects:
+     * <ul>
+     *  <li>If there are no mmevents, then show this object
+     *  <li>If there are mmevents, check if there is one that allows viewing
+     * </ul>
+     * The mmevents save an 'offset' that has to be added to the startdate of the current education.
+     * Possible return values:
      * <ul>
      *   <li>0, Do not show this object
      *   <li>1, Show the object, but 'grayed out'.
@@ -131,6 +143,36 @@ public class DidactorEducation extends Component {
      * </ul>
      */
     private int showLo(Cloud cloud, Map context, String lo) {
-        return 2;
+        String classno = (String)context.get("class");
+        if (classno == null || "".equals(classno) || "null".equals(classno)) {
+            // no class, so it must be an administrator, who may always view everything
+            return 2;
+        }
+
+        Node learnobject = cloud.getNode(lo);
+        NodeList events = learnobject.getRelatedNodes("mmevents", "related", "destination");
+        if (events.size() == 0) {
+            return 2;
+        }
+        Node cls = cloud.getNode(classno);
+        NodeList clsRuntime = cls.getRelatedNodes("mmevents", "related", "destination");
+        if (clsRuntime.size() == 0) {
+            // THIS SHOULD NEVER HAPPEN!
+            log.error("Class '" + classno + "' does not have a runtime!!! FIX THIS!");
+            return 2;
+        }
+        Node classRuntime = clsRuntime.getNode(0);
+        long classStart = classRuntime.getLongValue("start");
+        long currenttime = System.currentTimeMillis() / 1000;
+
+        for (int i=0; i<events.size(); i++) {
+            long start = events.getNode(i).getLongValue("start");
+            long stop = events.getNode(i).getLongValue("stop");
+            if (currenttime > (classStart + start) && currenttime < (classStart + stop)) {
+                return 2;
+            }
+        }
+
+        return 0;
     }
 }
