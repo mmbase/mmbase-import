@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.109 2005-10-21 16:52:24 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.110 2005-10-25 12:27:32 nklasens Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -292,7 +292,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public boolean hasField(String fieldName) {
-        return builder.hasField(fieldName);
+        return getFieldTypes().containsKey(fieldName);
     }
 
 
