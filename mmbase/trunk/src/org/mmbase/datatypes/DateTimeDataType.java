@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.27 2005-10-21 10:20:28 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.28 2005-10-25 18:33:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -62,7 +62,7 @@ public class DateTimeDataType extends ComparableDataType {
         }
     }
 
-    protected Object castToValidate(Object value) {
+    protected Object castToValidate(Object value, Node node, Field field) {
         if (value == null) return null;
         return DynamicDate.eval(Casting.toDate(value));
     }
