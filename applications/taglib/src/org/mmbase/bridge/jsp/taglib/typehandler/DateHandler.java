@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.26 2005-10-07 22:16:01 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.27 2005-10-25 08:53:14 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -187,6 +187,7 @@ public class DateHandler extends AbstractTypeHandler {
         boolean first = true;
         while(parsedPattern.hasNext()) {
             String pattern = (String) parsedPattern.next();
+            if (pattern.length() < 1) continue;
             char firstChar = pattern.charAt(0);
             switch(firstChar) {
             case '\'': buffer.append(pattern.substring(1)); break;
