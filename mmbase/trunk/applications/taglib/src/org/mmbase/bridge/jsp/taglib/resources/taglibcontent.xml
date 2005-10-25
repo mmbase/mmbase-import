@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.40 2005-07-12 14:54:10 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.41 2005-10-25 22:30:28 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -19,9 +19,9 @@
     defaultpostprocessor="reducespace"
     />
 
-  <!-- 
-    see http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/ 
-    The trouble is that IE (_all_ versions)  does absolutely not support it 
+  <!--
+    see http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/
+    The trouble is that IE (_all_ versions)  does absolutely not support it
   -->
   <content
     id="xhtml"
@@ -156,10 +156,6 @@
     <class config="RICHBODY"  back="true">org.mmbase.util.transformers.XmlField</class>
     <info>Generates piece of XHTML2 compatible XML</info>
   </escaper>
-  <escaper id="mmxf">
-    <class config="RICH"  back="true">org.mmbase.util.transformers.XmlField</class>
-    <info>Generates piece of mmxf XML which can be converted to XHTML1 using mm:formatter.</info>
-  </escaper>
 
   <escaper id="sql">
     <class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
@@ -210,12 +206,12 @@
     <info>Filters through the command-line tool 'figlet', which can have amusing results.</info>
   </escaper>
   <escaper id="trimmer">
-    <class>org.mmbase.util.transformers.Trimmer</class>    
+    <class>org.mmbase.util.transformers.Trimmer</class>
     <info>Trims leading and trailing whitespace</info>
   </escaper>
 
   <escaper id="cp1252">
-    <class>org.mmbase.util.transformers.CP1252Surrogator</class>    
+    <class>org.mmbase.util.transformers.CP1252Surrogator</class>
     <info>
       Escapes the CP1252 characters which are not in ISO-8859-1. You don't want to serve your
       pages as CP1252 (it is not a standard encoding). It is adviceable to do it using UTF-8, but if
@@ -224,19 +220,19 @@
   </escaper>
 
   <escaper id="cp1252wrong">
-    <class config="WRONG_ENCODED">org.mmbase.util.transformers.CP1252Surrogator</class>    
+    <class config="WRONG_ENCODED">org.mmbase.util.transformers.CP1252Surrogator</class>
     <info>
       Escapes	the CP1252 characters, but suppose that the String was originally wrongly encoded
       (CP1252 bytes were incorrectly supposed ISO-8859-1)
-    </info>	
+    </info>
   </escaper>
 
   <escaper id="spaceremover">
-    <class>org.mmbase.util.transformers.SpaceRemover</class>    
+    <class>org.mmbase.util.transformers.SpaceRemover</class>
     <info>
       Replace 1 or more white space characters by one space, unless, those are the first or last of
       the string.
-    </info>	
+    </info>
   </escaper>
 
   <escaper id="roman">
@@ -248,38 +244,38 @@
   </escaper>
 
   <escaper id="rot13">
-    <class>org.mmbase.util.transformers.Rot13</class>    
+    <class>org.mmbase.util.transformers.Rot13</class>
     <info>
       Performs 'rot 13' encoding of the string, to scramble letters. Can be decoded by doing a rot13 again.
     </info>
   </escaper>
   <escaper id="rot5">
-    <class>org.mmbase.util.transformers.Rot5</class>    
+    <class>org.mmbase.util.transformers.Rot5</class>
     <info>
       Performs 'rot 5' encoding of the string. This scrambles the digits.
     </info>
   </escaper>
 
   <escaper id="md5">
-    <class>org.mmbase.util.transformers.MD5</class>    
+    <class>org.mmbase.util.transformers.MD5</class>
   </escaper>
 
   <escaper id="adler32">
-    <class config="java.util.zip.Adler32">org.mmbase.util.transformers.ChecksumFactory</class>    
+    <class config="java.util.zip.Adler32">org.mmbase.util.transformers.ChecksumFactory</class>
     <info>
       Performs a 'adler32' checksum.
     </info>
   </escaper>
 
   <escaper id="crc32">
-    <class config="java.util.zip.CRC32">org.mmbase.util.transformers.ChecksumFactory</class>    
+    <class config="java.util.zip.CRC32">org.mmbase.util.transformers.ChecksumFactory</class>
     <info>
       Performs a 'crc32' checksum.
     </info>
   </escaper>
 
   <escaper id="java">
-    <class>org.mmbase.util.transformers.UnicodeEscaper</class>    
+    <class>org.mmbase.util.transformers.UnicodeEscaper</class>
     <info>
       Escapes non-ASCII characters to java escape sequences.
     </info>
@@ -287,7 +283,7 @@
 
 
   <parameterizedescaper id="regexps">
-    <class>org.mmbase.util.transformers.RegexpReplacerFactory</class>    
+    <class>org.mmbase.util.transformers.RegexpReplacerFactory</class>
     <info>
       Regexp-replacing.
     </info>
@@ -298,7 +294,7 @@
     </param>
   </parameterizedescaper>
   <parameterizedescaper id="substring">
-    <class>org.mmbase.util.transformers.SubstringFactory</class>    
+    <class>org.mmbase.util.transformers.SubstringFactory</class>
     <info>
       Take substring.
     </info>
@@ -308,7 +304,7 @@
     </param>
   </parameterizedescaper>
   <parameterizedescaper id="google">
-    <class>org.mmbase.util.transformers.GoogleHighlighterFactory</class>    
+    <class>org.mmbase.util.transformers.GoogleHighlighterFactory</class>
     <info>
       Explores the request for the 'referer' http header. If this is from google, the google search
       words are highlighted in the text.
@@ -366,7 +362,7 @@
   <postprocessor id="sitestat">
     <class>org.mmbase.util.transformers.Sitestat</class>
     <info>
-      Rewrites the input to the characters which are alowed in Sitestat keys for 
+      Rewrites the input to the characters which are alowed in Sitestat keys for
       page statistics, being: "A-Z, a-z, 0-9, - . _".
     </info>
   </postprocessor>
