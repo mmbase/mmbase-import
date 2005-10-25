@@ -1,14 +1,12 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.HashMap"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="LEARNENVIRONMENTTITLE" /></title>
+    <title><di:translate key="education.learnenvironmenttitle" /></title>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
   </mm:param>
 </mm:treeinclude>
@@ -226,7 +224,7 @@
   </div>
 <div class="folders">
   <div class="folderHeader">
-    <fmt:message key="EDUCATION" />
+    <di:translate key="education.education" />
   </div>
   <div class="folderLesBody">
 <mm:node number="$education" notfound="skip">
@@ -240,48 +238,63 @@
   <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
   <mm:relatednodescontainer type="learnobjects" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
+    <mm:import id="showsubtree" reset="true">true</mm:import>
+
     <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
-      <%-- TODO here... to continue... How to implement --%>
-      <%-- Determine if the learnobject is active or not --%>
-    
       <mm:import id="learnobjectnumber"><mm:field name="number"/></mm:import>
-      
-  
-      <mm:relatednodescontainer type="mmevents" id="my_mmevents">
-        <mm:time time="now" id="currenttime" write="false"/>
-	    <mm:constraint field="start" value="$currenttime" operator="LESS_EQUAL"/>
-	    <mm:constraint field="stop" value="$currenttime" operator="GREATER_EQUAL"/>
-	  <%-- TODO here... to continue --%>
       <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
-      <mm:grow>
-        <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
-        <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
-          <script type="text/javascript">
-            document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
-          </script>
-        </mm:compare>
-        <mm:onshrink></div></mm:onshrink>
-      </mm:grow>
-      <mm:remove referid="previousnumber"/>
-      <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
-      <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
-        <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-        <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;"><script type="text/javascript">
-        <!--
-        addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
-        //-->
-        </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
-          <mm:node number="component.pop" notfound="skip">
-            <mm:relatednodes type="providers" constraints="providers.number=$provider">
-              <mm:list nodes="$user" path="people,related,pop">
-                <mm:first><%@include file="popcheck.jsp" %></mm:first>
-              </mm:list>
-            </mm:relatednodes>
-          </mm:node> 
-        </div>
+      <mm:depth id="currentdepth" write="false" />
+
+      <mm:compare referid="showsubtree" value="false">
+        <mm:isgreaterthan inverse="true" referid="currentdepth" referid2="ignoredepth">
+          <%-- we are back on the same or lower level, so we must show the learnobject again --%>
+          <mm:import id="showsubtree" reset="true">true</mm:import>
+        </mm:isgreaterthan>
       </mm:compare>
-      <mm:shrink/>
-      </mm:relatednodescontainer>
+
+      <mm:compare referid="showsubtree" value="true">
+        <mm:grow>
+          <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
+          <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
+            <script type="text/javascript">
+              document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
+            </script>
+          </mm:compare>
+          <mm:onshrink></div></mm:onshrink>
+        </mm:grow>
+        <mm:remove referid="previousnumber"/>
+        <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+
+        <%-- determine if we may show this learnobject and its children --%>
+        <mm:import id="mayshow"><di:getsetting component="education" setting="showlo" arguments="$previousnumber" /></mm:import>
+
+        <%-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth --%>
+        <mm:compare referid="mayshow" value="0">
+          <mm:import id="showsubtree" reset="true">false</mm:import>
+          <mm:import id="ignoredepth" reset="true"><mm:write referid="currentdepth" /></mm:import>
+          <!-- Ignored subtree at depth <mm:write referid="currentdepth" /> -->
+        </mm:compare>
+        
+        <mm:compare referid="showsubtree" value="true">
+          <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
+            <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
+            <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;"><script type="text/javascript">
+            <!--
+            addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+            //-->
+            </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+              <mm:node number="component.pop" notfound="skip">
+                <mm:relatednodes type="providers" constraints="providers.number=$provider">
+                  <mm:list nodes="$user" path="people,related,pop">
+                    <mm:first><%@include file="popcheck.jsp" %></mm:first>
+                  </mm:list>
+                </mm:relatednodes>
+              </mm:node> 
+            </div>
+          </mm:compare>
+        </mm:compare>
+        <mm:shrink/>
+      </mm:compare>
     </mm:tree>
   </mm:relatednodescontainer>
   </div>
@@ -313,7 +326,6 @@
 </mm:node>
 <br />
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
-</fmt:bundle>
 </mm:cloud>
 
 </mm:content>

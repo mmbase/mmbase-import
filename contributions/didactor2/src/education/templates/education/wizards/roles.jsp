@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -8,7 +7,6 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/wizards/roles_defs.jsp" %>
 
-<fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 
 <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp</mm:import>
 <mm:import externid="command">-1</mm:import>
@@ -68,10 +66,10 @@
                   <td class="tightborder"><a href="<mm:treefile page="/education/wizards/roles_cmd.jsp" objectlist="$includePath" referids="$referids">
                                                      <mm:param name="command">deleterole</mm:param>
                                                      <mm:param name="rolenumber"><mm:field name="number"/></mm:param>
-                                                   </mm:treefile>" onClick="return doDelete('<fmt:message key="areYouSureDelRole"/>');" 
+                                                   </mm:treefile>" onClick="return doDelete('<di:translate key="education.areyousuredelrole" />');" 
                                               target="text"><img src="<mm:treefile page="/education/wizards/gfx/minus.gif" 
                                                                           objectlist="$includePath" referids="$referids"/>" border="0"
-                                                                alt="<fmt:message key="deleteThisRole"/>"/></a></td>
+                                                                alt="<di:translate key="education.deletethisrole"/>" /></a></td>
                 </mm:listnodes>
               </mm:islessthan>
               <mm:islessthan referid="rights" referid2="RIGHTS_RWD">
@@ -80,7 +78,7 @@
                 <% } %>
               </mm:islessthan>
               <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>&wizard=config/role/roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
-                                          alt="<fmt:message key="createNewRole"/>"/></a></td>
+                                          alt="<di:translate key="education.createnewrole"/>" /></a></td>
             </tr>
             <% String sSelectName = ""; %>
             <mm:listnodes type="editcontexts" orderby="number">
@@ -111,14 +109,13 @@
             </mm:listnodes>
           </table>
         </form>
-        <span style="background-color:#33FF00">rwd</span> = <fmt:message key="abbreviationRWD"/><br/>
-        <span style="background-color:#FFFF00">rw&nbsp;</span> = <fmt:message key="abbreviationRW"/><br/>
+        <span style="background-color:#33FF00">rwd</span> = <di:translate key="education.abbreviationrwd" /><br/>
+        <span style="background-color:#FFFF00">rw&nbsp;</span> = <di:translate key="education.abbreviationrw" /><br/>
         <br/>
-        <input type="button" class="formbutton" onClick="roleform.command.value='accept';roleform.submit()" value="<fmt:message key="save"/>">
-        <input type="button" class="formbutton" onClick="roleform.reset()" value="<fmt:message key="reset"/>">
+        <input type="button" class="formbutton" onClick="roleform.command.value='accept';roleform.submit()" value="<di:translate key="education.save" />">
+        <input type="button" class="formbutton" onClick="roleform.reset()" value="<di:translate key="education.reset" />">
       </mm:islessthan>
     </body>
   </html>
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

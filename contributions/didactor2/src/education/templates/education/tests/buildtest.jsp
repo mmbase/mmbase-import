@@ -357,7 +357,7 @@
 
   <mm:compare referid="pagesamount" value="0">
 
-    <di:translate id="testwithoutquestions">This test has no questions.</di:translate>
+    <di:translate key="education.testwithoutquestions" />
 
     <p/>
 
@@ -369,11 +369,11 @@
 
   <% if ( pageCounter.intValue() == pagesAmount.intValue() || pagesAmount.intValue() == 0 ) { %>
 
-       <input type="submit" value="<di:translate id="buttontextdone">OK</di:translate>" class="formbutton"/>
+       <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton"/>
 
   <% } else { %>
 
-       <input type="submit" value="<di:translate id="buttontextnext">Volgende</di:translate>" class="formbutton"/>
+       <input type="submit" value="<di:translate key="education.buttontextnext" />" class="formbutton"/>
 
   <% } %>
 

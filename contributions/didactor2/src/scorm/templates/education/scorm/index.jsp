@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 
 <%@page import="java.io.File"%>
@@ -255,19 +254,6 @@
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
 <%@include file="/education/wizards/roles_chk.jsp" %>
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-
-<%
-   String bundleEducation = null;
-%>
-
-<mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-   <%
-      bundleEducation  = "nl.didactor.component.education.EducationMessageBundle";
-   %>
-</mm:write>
-
-<fmt:bundle basename="<%= bundleEducation %>">
-
 <% request.getSession().setAttribute("mayupload","true"); %>
 
 
@@ -305,7 +291,7 @@ if (top == self) {
             String sResults = "";
             String sTotalItems = "0";
          %>
-         <mm:import jspvar="sTemplate" vartype="String" reset="true"><fmt:message key="scormPackageListTotalAmount"/></mm:import>
+         <mm:import jspvar="sTemplate" vartype="String" reset="true"><di:translate key="scorm.scormpackagelisttotalamount" /></mm:import>
          <mm:listnodes type="packages">
             <mm:size jspvar="sItems" vartype="String">
                <%
@@ -334,7 +320,7 @@ if (top == self) {
                   <%
                      if (uploadOK)
                      {
-                        %><b><fmt:message key="scormPackageListUploadOk"/></b><%
+                        %><b><di:translate key="scorm.scormpackagelistuploadok" /></b><%
                      }
                   %>
                   <b><%= msg %></b>
@@ -352,11 +338,11 @@ if (top == self) {
                </mm:islessthan>
 
                <th>#</th>
-               <th><fmt:message key="scormPackageListTableName"/></th>
-               <th><fmt:message key="scormPackageListTableVersion"/></th>
-               <th><fmt:message key="scormPackageListTableStatus"/></th>
-               <th><fmt:message key="scormPackageListTableUploadDate"/></th>
-               <th><fmt:message key="scormPackageListTableImportDate"/></th>
+               <th><di:translate key="scorm.scormpackagelisttablename" /></th>
+               <th><di:translate key="scorm.scormpackagelisttableversion" /></th>
+               <th><di:translate key="scorm.scormpackagelisttablestatus" /></th>
+               <th><di:translate key="scorm.scormpackagelisttableuploaddate" /></th>
+               <th><di:translate key="scorm.scormpackagelisttableimportdate" /></th>
             </tr>
 
             <%
@@ -373,7 +359,7 @@ if (top == self) {
                      <td class="deletebutton">
                         <a
                            href='index.jsp?delete_package=<mm:field name="number"/>'
-                           onclick="return confirm('<fmt:message key="filemanagementDeletePrompt"/>');">
+                           onclick="return confirm('<di:translate key="education.filemanagementdeleteprompt" />');">
                              <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
                         </a>
                      </td>
@@ -384,10 +370,10 @@ if (top == self) {
                   <td class="field"><mm:field name="version"/></td>
                   <td>
                      <mm:compare referid="imported" value="-1" inverse="true">
-                        <fmt:message key="scormPackageListImported"/> (<a href="?publish_package=<mm:field name="number"/>"><fmt:message key="scormPackageListPublishLink"/></a>)
+                        <di:translate key="scorm.scormpackagelistimported" /> (<a href="?publish_package=<mm:field name="number"/>"><di:translate key="scorm.scormpackagelistpublishlink" /></a>)
                      </mm:compare>
                      <mm:compare referid="imported" value="-1">
-                        <fmt:message key="scormPackageListUploaded"/> (<a href="?import_package=<mm:field name="number"/>"><fmt:message key="scormPackageListImportLink"/></a>)
+                        <di:translate key="scorm.scormpackagelistuploaded" /> (<a href="?import_package=<mm:field name="number"/>"><di:translate key="scorm.scormpackagelistimportlink" /></a>)
                      </mm:compare>
                   </td>
                   <td>
@@ -412,7 +398,6 @@ if (top == self) {
 </body>
 </html>
 
-</fmt:bundle>
 </mm:islessthan>
 </mm:cloud>
 

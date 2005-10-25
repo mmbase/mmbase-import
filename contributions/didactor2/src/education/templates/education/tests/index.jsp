@@ -189,7 +189,7 @@
     
                        <mm:param name="userNo"><mm:write referid="user"/></mm:param>
     
-                       </mm:treefile>"><di:translate id="view">Inzien</di:translate></a>
+                       </mm:treefile>"><di:translate key="education.view" /></a>
     
                    </div></td>
     
@@ -203,7 +203,7 @@
     
                      <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
     
-                    </mm:treefile>"><mm:compare referid="feedback" value="1"><di:translate id="again">Opnieuw maken</di:translate></mm:compare><mm:compare referid="feedback" value="0"><di:translate id="retry">Herkans</di:translate></a></mm:compare></a>
+                    </mm:treefile>"><mm:compare referid="feedback" value="1"><di:translate key="education.again" /></mm:compare><mm:compare referid="feedback" value="0"><di:translate key="education.retry" /></a></mm:compare></a>
     
                    </div></td>
     

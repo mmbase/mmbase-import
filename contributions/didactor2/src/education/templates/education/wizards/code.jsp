@@ -1,4 +1,3 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
@@ -17,17 +16,6 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
    <%@include file="/education/wizards/roles_defs.jsp" %>
-
-   <%
-      String bundleCompetence = null;
-      String bundleEducation = null;
-   %>
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-      <%
-         bundleCompetence = "nl.didactor.component.competence.CompetenceMessageBundle_" + sLangCode;
-         bundleEducation  = "nl.didactor.component.education.EducationMessageBundle";
-      %>
-   </mm:write>
 
    <%//education-people connector
       EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
@@ -114,38 +102,35 @@
 
 
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="components">
    <% //----------------------- Components come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/frame.jsp" objectlist="$includePath" />' title='<fmt:message key="editComponentsDescription"/>' target="text"><fmt:message key="editComponents"/></nobr></a>
+      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/frame.jsp" objectlist="$includePath" />' title='<di:translate key="education.editcomponentsdescription" />' target="text"><di:translate key="education.editcomponents" /></nobr></a>
       <br>
       <div id='components_0' style='display: none'>
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
 
 
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="roles">
    <% //----------------------- Roles come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">rollen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("persons_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_persons_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("persons_0")'><fmt:message key="personsTab"/></nobr></a>
+      <a href='javascript:clickNode("persons_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_persons_0' /></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("persons_0")'><di:translate key="education.personstab" /></nobr></a>
       <br>
       <div id='persons_0' style='display: none'>
          <%// edit people,rolerel, education %>
          <%-- doesn't work properly, so commented it out for the moment
-            rolestree.addItem("<fmt:message key="editPeopleRoleRelEducation"/>",
+            rolestree.addItem("<di:translate key="education.editpeoplerolereleducation" />",
                               "<mm:treefile write="true" page="/education/wizards/roles.jsp" objectlist="$includePath" />",
                               null,
-                              "<fmt:message key="editPeopleRoleRelEducationDescription"/>",
+                              "<di:translate key="education.editpeoplerolereleducationdescription" />",
                               "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
          --%>
          <%// create new role %>
@@ -156,7 +141,7 @@
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/people/people&nodepath=people&fields=firstname,suffix,lastname,externid&orderby=lastname&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title='<fmt:message key="persons"/>' target="text"><fmt:message key="persons"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/people/people&nodepath=people&fields=firstname,suffix,lastname,externid&orderby=lastname&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title='<di:translate key="education.persons" />' target="text"><di:translate key="education.persons" /></a></nobr></td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -165,7 +150,7 @@
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/class/classes&nodepath=classes&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="classes"/>" target="text"><fmt:message key="classes"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/class/classes&nodepath=classes&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="education.classes" />" target="text"><di:translate key="education.classes" /></a></nobr></td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -174,7 +159,7 @@
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/workgroup/workgroups&nodepath=workgroups&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="workgroups"/>" target="text"><fmt:message key="workgroups"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/workgroup/workgroups&nodepath=workgroups&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="education.workgroups" />" target="text"><di:translate key="education.workgroups" /></a></nobr></td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -183,7 +168,7 @@
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='roles.jsp' title='<fmt:message key="roles"/>' target="text"><fmt:message key="roles"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='roles.jsp' title='<di:translate key="education.roles" />' target="text"><di:translate key="education.roles" /></a></nobr></td>
             </tr>
          </table>
          <mm:node number="component.report" notfound="skip">
@@ -208,7 +193,7 @@
                      <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
 
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <td><nobr>&nbsp;<a href='../../isbo/index.jsp' title='<fmt:message key="isboimport"/>' target="text"><fmt:message key="isboimport"/></a></nobr></td>
+                     <td><nobr>&nbsp;<a href='../../isbo/index.jsp' title='<di:translate key="education.isboimport" />' target="text"><di:translate key="education.isboimport" /></a></nobr></td>
                   </tr>
                </table>
             </di:hasrole>
@@ -216,15 +201,13 @@
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="content_metadata">
    <% //----------------------- Metadata for components comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("content_metadata_0")' title="<fmt:message key="educationMenuContentMetadata"/>"><fmt:message key="educationMenuContentMetadata"/></a></nobr>
+      <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("content_metadata_0")' title="<di:translate key="education.educationmenucontentmetadata" />"><di:translate key="education.educationmenucontentmetadata" /></a></nobr>
       <br>
       <div id='content_metadata_0' style='display: none'>
          <%
@@ -296,15 +279,13 @@
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="filemanagement">
    <% //----------------------- Filemanagement comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("filemanagement_0")'><fmt:message key="filemanagement"/></a></nobr>
+      <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("filemanagement_0")'><di:translate key="education.filemanagement" /></a></nobr>
       <br>
       <div id='filemanagement_0' style='display: none'>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -312,7 +293,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<fmt:message key="ftpUpload"/>" target="text"><fmt:message key="ftpUpload"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<di:translate key="education.ftpupload" />" target="text"><di:translate key="education.ftpupload" /></a></nobr></td>
             </tr>
          </table>
 
@@ -321,21 +302,19 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/scorm/index.jsp" objectlist="$includePath" />' title="<fmt:message key="ftpUpload"/>" target="text"><fmt:message key="SCORMimport"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/scorm/index.jsp" objectlist="$includePath" />' title="<di:translate key="education.ftpupload" />" target="text"><di:translate key="education.scormimport" /></a></nobr></td>
             </tr>
          </table>
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
-<fmt:bundle basename="<%= bundleCompetence %>">
 <mm:compare referid="mode" value="competence">
    <% //----------------------- Competence comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">competentie</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("competence_0")' title="<fmt:message key="CompetenceTreeRootDescription"/>"><fmt:message key="CompetenceTreeRoot"/></nobr></a>
+      <a href='javascript:clickNode("competence_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_competence_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='javascript:clickNode("competence_0")' title="<di:translate key="competence.competencetreerootdescription" />"><di:translate key="competence.competencetreeroot" /></nobr></a>
       <br>
       <div id='competence_0' style='display: none'>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -343,7 +322,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<%= request.getContextPath() %>/competence/competence_by_type.jsp' title="<fmt:message key="CompetenceTreeItemCompetencesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCompetences"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<%= request.getContextPath() %>/competence/competence_by_type.jsp' title="<di:translate key="competence.competencetreeitemcompetencesdescription" />" target="text"><di:translate key="competence.competencetreeitemcompetences" /></a></nobr></td>
             </tr>
          </table>
 
@@ -352,7 +331,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/core/coretasks&nodepath=coretasks&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemCoreTasksDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreTasks"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/core/coretasks&nodepath=coretasks&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="competence.competencetreeitemcoretasksdescription" />" target="text"><di:translate key="competence.competencetreeitemcoretasks" /></a></nobr></td>
             </tr>
          </table>
 
@@ -361,7 +340,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/core/coreassignments&nodepath=coreassignments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemCoreAssignmentsDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCoreAssignments"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/core/coreassignments&nodepath=coreassignments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="competence.competencetreeitemcoreassignmentsdescription" />" target="text"><di:translate key="competence.competencetreeitemcoreassignments" /></a></nobr></td>
             </tr>
          </table>
 
@@ -370,7 +349,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/assessment/preassessments&nodepath=preassessments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemPreGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPreGrades"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/assessment/preassessments&nodepath=preassessments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="competence.competencetreeitempregradesdescription" />" target="text"><di:translate key="competence.competencetreeitempregrades" /></a></nobr></td>
             </tr>
          </table>
 
@@ -379,7 +358,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/assessment/postassessments&nodepath=postassessments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemPostGradesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPostGrades"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/assessment/postassessments&nodepath=postassessments&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="competence.competencetreeitempostgradesdescription" />" target="text"><di:translate key="competence.competencetreeitempostgrades" /></a></nobr></td>
             </tr>
          </table>
 
@@ -394,7 +373,7 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><a href='javascript:clickNode("profiles_root")'><img src="gfx/tree_plus.gif" border="0" align="middle" id='img_profiles_root'/></a></td>
                <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_profiles_root"/>'/></td>
-               <td><nobr><a href='<mm:write referid="listjsp"/>&wizard=config/profile/profiles&nodepath=profiles&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemProfilesDescription"/>" target="text"><fmt:message key="CompetenceTreeItemProfiles"/></a></nobr></td>
+               <td><nobr><a href='<mm:write referid="listjsp"/>&wizard=config/profile/profiles&nodepath=profiles&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="competence.competencetreeitemprofilesdescription" />" target="text"><di:translate key="competence.competencetreeitemprofiles" /></a></nobr></td>
             </tr>
          </table>
          <div id="profiles_root" style="display:none">
@@ -409,7 +388,7 @@
                      <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
                   </mm:compare>
                   <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                  <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/profile/profiles&objectnumber=new' title="<fmt:message key="CompetenceTreeItemCreateNewProfileDescription"/>" target="text"><fmt:message key="CompetenceTreeItemCreateNewProfile"/></a></nobr></td>
+                  <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/profile/profiles&objectnumber=new' title="<di:translate key="competence.competencetreeitemcreatenewprofiledescription" />" target="text"><di:translate key="competence.competencetreeitemcreatenewprofile" /></a></nobr></td>
                </tr>
 
                <mm:listnodes type="profiles">
@@ -434,25 +413,23 @@
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/pop/pop&nodepath=pop&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<fmt:message key="CompetenceTreeItemPEPDescription"/>" target="text"><fmt:message key="CompetenceTreeItemPEP"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/pop/pop&nodepath=pop&searchfields=name&fields=name<mm:write referid="forbidtemplate" escape="text/plain" />' title="<di:translate key="competence.competencetreeitempepdescription" />" target="text"><di:translate key="competence.competencetreeitempep" /></a></nobr></td>
             </tr>
          </table>
 
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
 
 
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="metadata">
    <% //----------------------- Metadata comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">metadata</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title='' target="text"><fmt:message key="metadata"/></nobr></a>
+      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title='' target="text"><di:translate key="education.metadata" /></nobr></a>
       <br>
 
       <mm:import id="number_of_metadata" reset="true">0</mm:import>
@@ -475,7 +452,7 @@
                   </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=new' title='<fmt:message key="createNewMetadatastandardDescription"/>' target="text"><fmt:message key="createNewMetadatastandard"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=new' title='<di:translate key="education.createnewmetadatastandarddescription" />' target="text"><di:translate key="education.createnewmetadatastandard" /></a></nobr></td>
             </tr>
          </table>
 
@@ -501,7 +478,7 @@
                   <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
                   <td>
                     <nobr>
-                      <a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatMetastandard"/>' target="text"><mm:field name="name" /></a>
+                      <a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treatmetastandard" />' target="text"><mm:field name="name" /></a>
                       <a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'></a>
                     </nobr>
                   </td>
@@ -543,7 +520,7 @@
                         </mm:compare>
 
                      <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/metadefinition/metadefinition&objectnumber=new&origin=<mm:write referid="metastandardNumber" />' title='<fmt:message key="createNewMetadefinitionDescription"/>' target="text"><fmt:message key="createNewMetadefinition"/></a></nobr></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/metadefinition/metadefinition&objectnumber=new&origin=<mm:write referid="metastandardNumber" />' title='<di:translate key="education.createnewmetadefinitiondescription" />' target="text"><di:translate key="education.createnewmetadefinition" /></a></nobr></td>
                   </tr>
                </table>
 
@@ -568,7 +545,7 @@
                            </mm:last>
 
                         <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                        <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatMetadefinition"/> <mm:nodeinfo type="type" />' target="text"><mm:field name="name" /></a></nobr></td>
+                        <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treatmetadefinition" /> <mm:nodeinfo type="type" />' target="text"><mm:field name="name" /></a></nobr></td>
                      </tr>
                   </table>
                </mm:relatednodes>
@@ -577,19 +554,17 @@
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
 
 
 
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="tests">
    <% //----------------------- Tests come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("tests_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_tests_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href='<mm:write referid="listjsp"/>&wizard=config/tests/tests&nodepath=tests&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' target="text"><fmt:message key="tests"/></a></span>
+      <a href='javascript:clickNode("tests_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_tests_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href='<mm:write referid="listjsp"/>&wizard=config/tests/tests&nodepath=tests&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' target="text"><di:translate key="education.tests" /></a></span>
       <br>
       <div id='tests_0' style='display: none'>
 
@@ -611,7 +586,7 @@
                   </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=new' title='<fmt:message key="createNewTestDescription"/>' target="text"><fmt:message key="createNewTest"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=new' title='<di:translate key="education.createnewtestdescription" />' target="text"><di:translate key="education.createnewtest" /></a></nobr></td>
             </tr>
          </table>
 
@@ -630,7 +605,7 @@
                      </mm:last>
 
                   <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
-                  <td><nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />' title='<fmt:message key="treatTest"/>' target="text"><mm:field name="name" /></a></nobr></td>
+                  <td><nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treattest" />' target="text"><mm:field name="name" /></a></nobr></td>
                </tr>
             </table>
 
@@ -743,17 +718,15 @@
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 
 
 
-<fmt:bundle basename="<%= bundleEducation %>">
 <mm:compare referid="mode" value="educations">
    <% //----------------------- Educations come from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("node_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_node_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href="<mm:write referid="listjsp"/>&wizard=config/education/educations&nodepath=educations&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />" target="text"><fmt:message key="educationMenuEducations"/></a></span>
+      <a href='javascript:clickNode("node_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_node_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href="<mm:write referid="listjsp"/>&wizard=config/education/educations&nodepath=educations&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />" target="text"><di:translate key="education.educationmenueducations" /></a></span>
       <br>
       <div id='node_0' style='display: none'>
 
@@ -782,7 +755,7 @@
                </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<fmt:message key="createNewEducationDescription"/>" target="text"><fmt:message key="createNewEducation"/></a></nobr></td>
+               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<di:translate key="education.createneweducationdescription" />" target="text"><di:translate key="education.createneweducation" /></a></nobr></td>
             </tr>
          </table>
 
@@ -813,7 +786,7 @@
                      <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
                      <td>
                        <nobr>
-                         <a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations&objectnumber=<mm:field name="number" />" title="<fmt:message key="editEducation"/>" target="text"><mm:field name="name" /></a>
+                         <a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations&objectnumber=<mm:field name="number" />" title="<di:translate key="education.editeducation" />" target="text"><mm:field name="name" /></a>
                          <mm:present referid="pdfurl">
                            <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
                          </mm:present>
@@ -864,7 +837,7 @@
                            <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         </mm:islessthan>
                         <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                        <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<fmt:message key="createNewLearnblockDescription"/>" target="text"><fmt:message key="createNewLearnblock"/></a></nobr></td>
+                        <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<di:translate key="education.createnewlearnblockdescription" />" target="text"><di:translate key="education.createnewlearnblock" /></a></nobr></td>
                      </tr>
                   </table>
 
@@ -910,7 +883,7 @@
                                  <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_node_0_0_<%= iLearnblockCounter %>'/></td>
                                  <td>
                                    <nobr>
-                                     <a href="<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />" target="text"><mm:field name="name" /></a>
+                                     <a href="<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />" target="text"><mm:field name="name" /></a>
                                      <mm:present referid="pdfurl">
                                        <mm:compare referid="this_node_type" value="pages">
                                          <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
@@ -957,6 +930,5 @@
       </div>
    </mm:islessthan>
 </mm:compare>
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

@@ -103,7 +103,7 @@
 
 	    <p>
 
-	    <di:translate id="selecthotspot">Kies een gebied</di:translate>: 
+	    <di:translate key="education.selecthotspot" />: 
 
 	      <select name="hotspot<mm:write referid="question"/>">
 
