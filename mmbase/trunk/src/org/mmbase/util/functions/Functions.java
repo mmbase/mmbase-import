@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: Functions.java,v 1.10 2005-10-25 12:12:29 pierre Exp $
  */
 public class Functions {
 
@@ -39,7 +39,7 @@ public class Functions {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
-            // checking whether two ParametersImpl instances match won't work in some cases
+            // checking whether two Parameters instances match won't work in some cases
             /*
             Parameter[] resolvedDef = (Parameter[]) define(def, new ArrayList()).toArray(new Parameter[0]); // resolve the wrappers
             if ( ! Arrays.equals(a.definition, resolvedDef))  {

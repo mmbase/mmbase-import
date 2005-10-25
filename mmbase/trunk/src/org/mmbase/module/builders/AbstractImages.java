@@ -11,7 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.cache.BlobCache;
-import org.mmbase.util.MagicFile;
+import org.mmbase.util.magicfile.MagicFile;
 import org.mmbase.util.images.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.36 2005-10-04 09:15:16 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.37 2005-10-25 12:12:25 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {

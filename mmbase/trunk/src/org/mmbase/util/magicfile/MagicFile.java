@@ -7,21 +7,21 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.util.magicfile;
 
-import java.io.*;
-import java.util.*;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.magicfile.*;
 
 /**
  * Tries to determine the mime-type of a byte array (or a file).
  *
- * @move org.mmbase.util.magicfile
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.17 2005-10-05 10:09:05 michiel Exp $
+ * @version $Id: MagicFile.java,v 1.1 2005-10-25 12:12:29 pierre Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
