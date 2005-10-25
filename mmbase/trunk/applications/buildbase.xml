@@ -248,8 +248,11 @@ This is the '${project.name}' package of MMBase.
 It can contain:
 
 web-app/WEB-INF/lib:     Libraries which can be copied to your WEB-INF/lib
-web-app/WEB-INF/config:  Needed configuration (example only). Needes to be merged with existitn config.
-web-app/WEB-INF/web.xml: Example web.xml.
+web-app/WEB-INF/config:  Configuration. Mostly for reference, because often this can be disposed because it is in the jar of
+                         'lib' too. If you make changes in configuration, then you copy or merge
+                         this to your WEB-INF/config.
+web-app/WEB-INF/web.xml: Example web.xml, if relevant, for example if the application implements
+                         servlet or needs context-params. So this may need merging with your web.xml.
 README-PACKAGE.txt:      This file
 README.txt:              More specific read-worthy stuff.
 src:                     The source codes.
