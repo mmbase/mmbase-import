@@ -23,7 +23,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.4 2005-10-21 10:20:28 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.5 2005-10-25 08:33:58 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -44,10 +44,10 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     }
 
     /**
-     * Returns a DateFormat object associated with this object. The locale is always US, because
-     * this object is needed for generic formation, which is probably not dependent on the Locale.
+     * Returns a DateFormat object associated with this object. 
      */
     public DateFormat getDateFormat(Locale locale) {
+        if (locale == null) locale = LocalizedString.getDefault();
         return new SimpleDateFormat(pattern.get(locale), locale);        
     }
 
@@ -63,7 +63,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     private List parse(String p) {
         List parsed = new ArrayList();
         StringBuffer buf = new StringBuffer();
-        boolean inString = true;
+        boolean inString = false;
         boolean inQuote = false;
         char    nonStringChar = (char) -1;
         for (int i = 0; i < p.length(); i++) {
@@ -88,8 +88,10 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 }
             } else {
                 if (! inString) {
-                    parsed.add(buf.toString());
-                    buf.setLength(0);
+                    if (i != 0) {
+                        parsed.add(buf.toString());
+                        buf.setLength(0);
+                    }
                     buf.append("\'");
                     inQuote = false;
                     inString = true;
