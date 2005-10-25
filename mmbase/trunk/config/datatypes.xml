@@ -7,30 +7,22 @@
 
   <datatype id="xml">
     <class name="org.mmbase.datatypes.XmlDataType" />
-    <specialization id="mmxf">
-      <setprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.xml.MmxfSetString" />
-      </setprocessor>
-      <getprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.xml.MmxfGetString" />
-      </getprocessor>
-    </specialization>
 
     <specialization id="html">
       <setprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.xml.HtmlSetString" />
+        <class name="org.mmbase.datatypes.processors.xml.HtmlSetString" />
       </setprocessor>
       <getprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.xml.HtmlGetString" />
+        <class name="org.mmbase.datatypes.processors.xml.HtmlGetString" />
       </getprocessor>
     </specialization>
 
     <specialization id="xmlfield">
       <setprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.xml.FieldSetString" />
+        <class name="org.mmbase.datatypes.processors.xml.FieldSetString" />
       </setprocessor>
       <getprocessor>
-        <class name="org.mmbase.bridge.util.fields.xml.FieldGetString" />
+        <class name="org.mmbase.datatypes.processors.xml.FieldGetString" />
       </getprocessor>
     </specialization>
 
@@ -48,10 +40,10 @@
       <unique value="false" />
       <setprocessor>
         <!-- only makes it unmodifiable -->
-        <class name="org.mmbase.bridge.util.fields.LastModifier" />
+        <class name="org.mmbase.datatypes.processors.LastModifier" />
       </setprocessor>
       <commitprocessor>
-        <class name="org.mmbase.bridge.util.fields.LastModifier" />
+        <class name="org.mmbase.datatypes.processors.LastModifier" />
       </commitprocessor>
     </specialization>
 
@@ -70,12 +62,6 @@
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.util.transformers.UpperCaser" />
-      </getprocessor>
-    </specialization>
-
-    <specialization id="index">
-      <getprocessor>
-        <class name="org.mmbase.bridge.util.fields.GetIndex" />
       </getprocessor>
     </specialization>
 
@@ -120,7 +106,7 @@
     <specialization id="checksum">
       <commitprocessor>
         <!-- the default 'checksum' datatype checksum the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields -->
-        <class name="org.mmbase.bridge.util.fields.ChecksumProcessorFactory">
+        <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
           <param name="field">handle</param>
         </class>
       </commitprocessor>
@@ -135,15 +121,15 @@
     <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
     <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
     <getprocessor type="string">
-      <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
+      <class name="org.mmbase.datatypes.processors.FormatDateTime" />
     </getprocessor>
 
     <specialization id="lastmodified">
       <setprocessor>
-        <class name="org.mmbase.bridge.util.fields.LastModified" />
+        <class name="org.mmbase.datatypes.processors.LastModified" />
       </setprocessor>
       <commitprocessor>
-        <class name="org.mmbase.bridge.util.fields.LastModified" />
+        <class name="org.mmbase.datatypes.processors.LastModified" />
       </commitprocessor>
     </specialization>
 
@@ -152,7 +138,7 @@
       <default value="100" />
       <pattern value="HH:mm:ss" />
       <getprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
+        <class name="org.mmbase.datatypes.processors.FormatDateTime" />
       </getprocessor>
     </specialization>
 
@@ -161,7 +147,7 @@
       <pattern value="yyyy-MM-dd" />
       <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
       <getprocessor type="string">
-        <class name="org.mmbase.bridge.util.fields.FormatDateTime" />
+        <class name="org.mmbase.datatypes.processors.FormatDateTime" />
       </getprocessor>
 
       <specialization id="20th-century">
@@ -181,6 +167,11 @@
         <default value="today - 30 year" />
         <minInclusive value="today - 140 year" />
         <maxInclusive value="today"    />
+      </specialization>
+
+      <specialization id="weeknumbers">
+        <pattern value="'dag: 'EEEEE 'week :'ww 'jaar: 'yyyy" xml:lang="nl" />
+        <pattern value="'day: 'EEEEE 'week':'ww 'year: 'yyyy" xml:lang="en" />
       </specialization>
       
     </specialization>
