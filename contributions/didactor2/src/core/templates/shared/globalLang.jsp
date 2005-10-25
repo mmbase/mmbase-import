@@ -1,26 +1,27 @@
 <%// Global language code %>
-<%
-{
-   String sDefaultLanguage = "nl";
-   String[] sSupportedLanguages = {"en", "nl"};
-   String sLangCode = request.getLocale().getLanguage();
+<mm:present referid="provider">
+  <mm:node number="$provider">
+    <mm:field name="locale">
+      <mm:isnotempty>
+        <mm:field name="path">
+          <mm:isnotempty>
+            <mm:import jspvar="locale"><mm:field name="locale" />_<mm:field name="path" /></mm:import>
+            <di:translate locale="<%=locale%>" debug="true" />
+          </mm:isnotempty>
+          <mm:isempty>
+            <mm:import jspvar="locale"><mm:field name="locale" /></mm:import>
+            <di:translate locale="<%=locale%>" debug="true" />
+          </mm:isempty>
+        </mm:field>
+      </mm:isnotempty>
+      <mm:isempty>
+        <di:translate locale="" debug="true" />
+      </mm:isempty>
+    </mm:field>
+  </mm:node>
+</mm:present>
 
-   boolean bLangCodeIsCorrect = false;
-   for(int f = 0; f < sSupportedLanguages.length; f ++)
-   {
-      if(sSupportedLanguages[f].equals(sLangCode))
-      {
-         bLangCodeIsCorrect = true;
-         break;
-      }
-   }
-   if(!bLangCodeIsCorrect)
-   {
-      sLangCode = sDefaultLanguage;
-   }
-
-   %>
-      <mm:import id="lang_code"><%= sLangCode %></mm:import>
-   <%
-}
-%> 
+<%-- fall back to the default: english (no locale specified) --%>
+<mm:notpresent referid="provider">
+  <di:translate locale="" debug="true" />
+</mm:notpresent>
