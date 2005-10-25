@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator, java.io.InputStream, nl.didactor.isbo.ISBOReader"%>
@@ -57,7 +56,6 @@
 
     }
 %>
-<fmt:bundle basename="nl.didactor.component.isbo.ISBOMessageBundle">
 
 <html>
 <head>
@@ -95,7 +93,6 @@ if (top == self) {
 </body>
 </html>
 
-</fmt:bundle>
 </di:hasrole>
 </mm:cloud>
 </mm:content>
