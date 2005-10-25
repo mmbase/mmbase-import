@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * messages, descriptions and other texts which need localization.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.16 2005-10-21 16:46:11 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.17 2005-10-25 17:43:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -209,7 +209,7 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
     }
 
     public String toString() {
-        return "localized(" + key + ")";
+        return get(null);
     }
 
     public Object clone() {
