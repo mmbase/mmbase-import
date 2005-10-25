@@ -26,7 +26,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.24 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: Parameter.java,v 1.25 2005-10-25 21:19:37 michiel Exp $
  * @see Parameters
  */
 
@@ -212,7 +212,7 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      * @param value The value to be filled in in this Parameter.
      */
     protected Object autoCast(Object value) {
-        return dataType.autoCast(value);
+        return dataType.cast(value, null, null);
     }
 
     /**
