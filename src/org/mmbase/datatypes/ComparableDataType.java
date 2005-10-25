@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.8 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.9 2005-10-25 18:33:21 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -153,7 +153,7 @@ public abstract class ComparableDataType extends BasicDataType {
         public boolean valid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
-            Comparable minimum = (Comparable) ComparableDataType.this.castToValidate(getValue());
+            Comparable minimum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
             if (inclusive && (comparable.equals(minimum))) return true;
             return comparable.compareTo(minimum) > 0;
         }
@@ -175,7 +175,7 @@ public abstract class ComparableDataType extends BasicDataType {
         public boolean valid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
-            Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue());
+            Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
             if (inclusive && (comparable.equals(maximum))) return true;
             return comparable.compareTo(maximum) < 0;
         }

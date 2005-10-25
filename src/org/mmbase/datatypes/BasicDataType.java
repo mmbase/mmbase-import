@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.17 2005-10-25 12:30:41 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.18 2005-10-25 18:33:21 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -182,11 +182,20 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
-    public Object autoCast(Object value) {        
-        return Casting.toType(classType, enumerationRestriction.cast(value));
+    public Object preCast(Object value, Node node, Field field) {
+        return enumerationRestriction.cast(value);
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object cast(Object value, Node node, Field field) {
+        return Casting.toType(classType, preCast(value, node, field));
     }
 
     /**
@@ -194,8 +203,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * 'correct' type, but it can be a more generic type sometimes. E.g. for numbers this wil simply
      * cast to Number.
      */
-    protected Object castToValidate(Object value) {
-        return Casting.toType(classType,  enumerationRestriction.cast(value));
+    protected Object castToValidate(Object value, Node node, Field field) {
+        return Casting.toType(classType,  preCast(value, node, field));
     }
 
     /**
@@ -210,7 +219,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      */
     public DataType setDefaultValue(Object def) {
         edit();
-        defaultValue = autoCast(def);
+        defaultValue = cast(def, null, null);
         return this;
     }
 
@@ -275,7 +284,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             // no need continuing, restrictions will probably not know how to handle this value any way.
             return errors;
         }
-        Object castedValue = castToValidate(value);
+        Object castedValue = castToValidate(value, node, field);
         errors = requiredRestriction.validate(errors, castedValue, node, field);
         if (value == null) return errors; // null is valid, unless required.
         errors = enumerationRestriction.validate(errors, value, node, field);
@@ -743,7 +752,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
         public boolean valid(Object v, Node node, Field field) {
             try {
-                BasicDataType.this.autoCast(v);
+                BasicDataType.this.cast(v, node, field);
                 return true;
             } catch (Throwable e) {
                 return false;

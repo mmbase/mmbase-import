@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.37 2005-10-25 12:30:41 michiel Exp $
+ * @version $Id: DataType.java,v 1.38 2005-10-25 18:33:21 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -106,9 +106,23 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     /**
      * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
      * parameter is of type Integer, then the string can be parsed to Integer.
-     * @param value The value to be filled in in this Parameter.
+     * @param value The value to be filled in a value with this DataType.
+     * @param cloud A coud wich may be needed to this correctly (to cast to Node, mainly).
      */
-    public Object autoCast(Object value);
+    public Object cast(Object value, Node node, Field field);
+
+
+    /**
+     * Before actually 'cast' an object to the right type, it may undergo some conversion by the
+     * datatype, e.g. enumerations may get resolved.
+     *
+     * This does not yet garantuee that the value is the right type, but only that it now can be
+     * casted to the right type without further problems. (Casting.toType should often do).
+     * 
+     * XXX: perhaps this can be removed and replaced by processors.
+     */
+    public Object preCast(Object value, Node node, Field field);
+
 
     /**
      * Returns the default value of this data type.
