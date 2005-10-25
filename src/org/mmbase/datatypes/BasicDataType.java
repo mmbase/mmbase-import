@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 import java.io.*; // because of Serializable
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.fields.*;
+import org.mmbase.datatypes.processors.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.core.util.Fields;
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.16 2005-10-21 16:41:53 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.17 2005-10-25 12:30:41 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {

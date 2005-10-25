@@ -13,7 +13,7 @@ import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.util.fields.*;
+import org.mmbase.datatypes.processors.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.32 2005-10-23 17:57:04 nklasens Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.33 2005-10-25 12:30:41 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
