@@ -1,11 +1,9 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.cms.CMSMessageBundle">
 <mm:import externid="page" required="true"/>
 <mm:import externid="menupage" required="true"/>
 <mm:node referid="menupage">
@@ -22,6 +20,5 @@
 <mm:compare referid="menupage" value="$page"></b></mm:compare>
 </div>
 </mm:node>
-</fmt:bundle>
 </mm:cloud>
 </mm:content>
