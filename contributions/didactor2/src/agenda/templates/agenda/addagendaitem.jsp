@@ -403,8 +403,8 @@
       <input type="hidden" name="day" value="<mm:write referid="day"/>"/>
       <input type="hidden" name="month" value="<mm:write referid="month"/>"/>--%>
 		  
-      <input class="formbutton" type="submit" name="action1" value="<di:translate key="agenda.create">create</di:translate>" />
-      <input class="formbutton" type="submit" name="action2" value="<di:translate key="agenda.back">back</di:translate>" />
+      <input class="formbutton" type="submit" name="action1" value="<di:translate key="agenda.create" />" />
+      <input class="formbutton" type="submit" name="action2" value="<di:translate key="agenda.back" />" />
 
       <mm:present referid="error">
         <p/>
