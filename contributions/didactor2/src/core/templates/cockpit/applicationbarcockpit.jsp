@@ -1,28 +1,28 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
 <div class="applicationMenubarCockpit" style="white-space: nowrap">
   <mm:node number="$user" notfound="skipbody">
     <div class="menuItemApplicationMenubar">
-      <a title="<fmt:message key="LOGOUT" />" href="<mm:url page="/logout.jsp" />" class="menubar"><fmt:message key="LOGOUT" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
+      <a title="<di:translate key="core.logout" />" href="<mm:url page="/logout.jsp" />" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
     </div>
 
     <div class="menuSeperatorApplicationMenubar"></div>
     
     <div class="menuItemApplicationMenubar">
-      <a title="<fmt:message key="HELP" />" href="<mm:treefile page="/help/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><fmt:message key="HELP" /></a>
+      <a title="<di:translate key="core.help" />" href="<mm:treefile page="/help/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.help" /></a>
     </div>
     
     <div class="menuSeperatorApplicationMenubar"></div>
     
     <div class="menuItemApplicationMenubar">
-      <a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/admin/" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
+      <a title="<di:translate key="core.configuration" />" href="<mm:url page="/admin/" />" class="menubar"><di:translate key="core.configuration" /></a>
     </div>
 
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
-      <a title="<fmt:message key="PRINT" />" href="javascript:printThis();"  class="menubar"><fmt:message key="PRINT"/></a>
+      <a title="<di:translate key="core.print" />" href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
     </div>
  <script language="JavaScript">
 <!--

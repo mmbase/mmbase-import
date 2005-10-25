@@ -1,4 +1,3 @@
- <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" expires="0">
@@ -7,7 +6,7 @@
   <mm:node referid="provider">
     <mm:countrelations type="flashpages" write="false">
         <mm:islessthan value="1">
-          <h1><fmt:message key="WELCOME" /></h1>
+          <h1><di:translate key="core.welcome" /></h1>
           <br />
             <h3>Bij Didactor, de elektronische leeromgeving.</h3>
           <br />

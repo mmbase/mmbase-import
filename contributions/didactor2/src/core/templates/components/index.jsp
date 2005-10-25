@@ -2,7 +2,6 @@
   This template shows all components in the current education
 --%>
 
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
@@ -16,7 +15,7 @@
    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
          <!-- TODO translate -->
-         <title><fmt:message key="COMPONENT" /></title>
+         <title><di:translate key="core.component" /></title>
       </mm:param>
    </mm:treeinclude>
 
@@ -25,8 +24,8 @@
    <div class="navigationbar">
       <div class="titlebar">
          <!-- TODO translate -->
-         <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="COMPONENT" />"/>
-         <fmt:message key="COMPONENT" />
+         <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="core.component" />"/>
+         <di:translate key="core.component" />
       </div>
    </div>
 
@@ -38,13 +37,13 @@
 
       <div class="folderBody">
          <mm:node number="$provider" notfound="skip">
-            <fmt:message key="PROVIDER" /><mm:field name="name"/>
+            <di:translate key="core.provider" /><mm:field name="name"/>
          </mm:node>
 
          </br>
 
          <mm:node number="$education" notfound="skip">
-            <fmt:message key="EDUCATION" /><mm:field name="name"/>
+            <di:translate key="core.education" /><mm:field name="name"/>
          </mm:node>
       </div>
    </div>
