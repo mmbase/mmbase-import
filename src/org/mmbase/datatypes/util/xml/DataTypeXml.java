@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.2 2005-10-25 12:30:41 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.3 2005-10-25 17:43:51 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -66,8 +66,19 @@ public abstract class DataTypeXml {
         return loc;
     }
 
+    /**
+     * Reads a number of tags with 'xml:lang' attributes.
+     *
+     * @param tagName Wich tags to read. The bodies are the values.
+     * @param element From which element this tags must be childs.
+     * @param descriptions Existing LocalizedString instance or <code>null</code> if a new one must be created.
+     * @param defaultKey   If the localized string was created with some silly automatic key, it can be provided here, in
+     *                     which case it will be changed if a tag withouth xml:lang is found, or with xml:lang equals the current default. 
+     *                     It can also be <code>null</code>
+     * @return A new LocalizedString or the updated 'descriptions' parameter if that was not <code>null</code>
+     */
 
-    public static LocalizedString getLocalizedDescription(String tagName, Element element, LocalizedString descriptions) {
+    public static LocalizedString getLocalizedDescription(final String tagName, final Element element, LocalizedString descriptions, final String defaultKey) {
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -77,6 +88,11 @@ public abstract class DataTypeXml {
                     String description = DocumentReader.getNodeTextValue(childElement);
                     if (descriptions ==  null) {
                         descriptions = new LocalizedString(description);
+                    }
+                    if (defaultKey != null && 
+                        (locale == null || locale.getLanguage().equals(LocalizedString.getDefault().getLanguage())) && 
+                        descriptions.getKey().equals(defaultKey)) {
+                        descriptions.setKey(description);
                     }
                     descriptions.set(description, locale);
                 }
