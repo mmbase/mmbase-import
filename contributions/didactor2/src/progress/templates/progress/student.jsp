@@ -140,7 +140,7 @@
                </table>
 
                <p>
-                  <b><di:translate key="educationplan" /></b>
+                  <b><di:translate key="progress.educationplan" /></b>
                </p>
 
                <table class="Font">
