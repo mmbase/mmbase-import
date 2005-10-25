@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.33 2005-10-25 12:30:41 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.34 2005-10-25 17:43:51 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -171,6 +171,8 @@ public class DataTypeDefinition {
 
         baseDataType = requestBaseDataType;
         getImplementation(dataTypeElement, id);
+        LocalizedString description = dataType.getLocalizedDescription();
+        DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());        
         configureConditions(dataTypeElement);
 
         return this;
@@ -178,7 +180,7 @@ public class DataTypeDefinition {
 
 
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|description");
 
 
     /**
@@ -303,7 +305,7 @@ public class DataTypeDefinition {
             }
         }
         LocalizedString descriptions = restriction.getErrorDescription();
-        restriction.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions));
+        restriction.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions, null));
     }
 
     /**
