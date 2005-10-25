@@ -22,13 +22,13 @@
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
    <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
-         <title>Voortgang</title>
+         <title><di:translate key="progress.progresstitle"/></title>
       </mm:param>
    </mm:treeinclude>
 
    <div class="rows">
       <div class="navigationbar">
-         <div class="titlebar">Voortgang</div>
+         <div class="titlebar"><di:translate key="progress.progresstitle"/></div>
       </div>
 
       <div class="folders">
@@ -65,13 +65,13 @@
    <th style="border-color:#000000; border-left:0px">&nbsp;</th>
    <mm:node number="progresstextbackground">
       <th style="border-color:#000000; border-left:0px">
-         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'Voortgang')+rotate(90)"/>">
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<di:translate key="progress.progresstitle" />')+rotate(90)"/>">
       </th>
       <th style="border-color:#000000; border-left:0px">
-         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'Keer ingelogd')+rotate(90)"/>">
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<di:translate key="progress.logins" />')+rotate(90)"/>">
       </th>
       <th style="border-color:#000000; border-left:0px">
-         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'Tijd ingelogd')+rotate(90)"/>">
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<di:translate key="progress.online"/>')+rotate(90)"/>">
       </th>
    </mm:node>
 
@@ -138,7 +138,7 @@
          </mm:relatednodescontainer>
 
          <tr>
-            <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b>Direct connection to the education:</b></td>
+            <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.directconnection" />:</b></td>
          </tr>
          <mm:related path="classrel,people" orderby="people.lastname">
             <mm:node element="people">
@@ -154,7 +154,7 @@
          <mm:related path="related,classes" orderby="classes.name">
             <mm:node element="classes">
                <tr>
-                  <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b>Class: <mm:field name="name"/></b></td>
+                  <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
                </tr>
                <mm:import id="temp_class" reset="true"><mm:field name="number"/></mm:import>
                <mm:related path="classrel,people">
@@ -224,7 +224,7 @@
 
     <mm:param name="startAt"><%= startAt + 15 %></mm:param>
 
-</mm:treefile>">Volgende 15</a></span>
+</mm:treefile>"><di:translate key="progress.next15" /></a></span>
 
 <%
    }
@@ -234,7 +234,7 @@
       %>
          <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids">
                      <mm:param name="startAt"><%= startAt - 15 %></mm:param>
-                  </mm:treefile>">Vorige 15</a>
+                  </mm:treefile>"><di:translate key="progress.previous15" /></a>
       <%
    }
 %>

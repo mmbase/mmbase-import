@@ -1,17 +1,15 @@
 <%--
 This message is used in an iframe in write.jsp, in which users can select other users on the same course to send message to
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
-<fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="ADDRESSBOOK" /></title>
+    <title><di:translate key="email.addressbook" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -48,10 +46,10 @@ This message is used in an iframe in write.jsp, in which users can select other 
 
 		<di:table maxitems="30">
 			<di:row>
-				<di:headercell sortfield="to"><fmt:message key="TO" /></di:headercell>
-				<di:headercell sortfield="cc"><fmt:message key="CC" /></di:headercell>
-				<di:headercell sortfield="name"><fmt:message key="NAME" /></di:headercell>
-				<di:headercell sortfield="email"><fmt:message key="EMAIL" /></di:headercell>
+				<di:headercell sortfield="to"><di:translate key="email.to" /></di:headercell>
+				<di:headercell sortfield="cc"><di:translate key="email.cc" /></di:headercell>
+				<di:headercell sortfield="name"><di:translate key="email.name" /></di:headercell>
+				<di:headercell sortfield="email"><di:translate key="email.email" /></di:headercell>
 			</di:row>
 		</di:table>
 		
@@ -68,12 +66,12 @@ This message is used in an iframe in write.jsp, in which users can select other 
                     <td class="listHeader">naam</td>
                     <td class="listHeader">email</td>
                   </tr>
-                  <mm:import id="emaildomain"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+                  <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
                   <mm:listnodes type="administrators" orderby="firstname,lastname">
                     <mm:first>
                       <tr>
                         <td colspan=2 class="listItem"></td>
-                        <td colspan=2 class="listItem"><font class="specialFont"><fmt:message key="ADMINISTRATORS" /></font></td>
+                        <td colspan=2 class="listItem"><font class="specialFont"><di:translate key="email.administrators" /></font></td>
                       </tr>
                     </mm:first>
                     <tr>
@@ -90,7 +88,7 @@ This message is used in an iframe in write.jsp, in which users can select other 
                       <mm:first>
                         <tr>
                           <td colspan=2 class="listItem"></td>
-                          <td colspan=2 class="listItem"><font class="specialFont"><fmt:message key="TEACHTERS" /></font></td>
+                          <td colspan=2 class="listItem"><font class="specialFont"><di:translate key="email.teachters" /></font></td>
                         </tr>
                       </mm:first>
                       <tr>
@@ -107,7 +105,7 @@ This message is used in an iframe in write.jsp, in which users can select other 
                       <mm:first>
                         <tr>
                           <td colspan=2 class="listItem"></td>
-                          <td colspan=2 class="listItem"><font class="specialFont"><fmt:message key="STUDENTS" /></font></td>
+                          <td colspan=2 class="listItem"><font class="specialFont"><di:translate key="email.students" /></font></td>
                         </tr>
                       </mm:first>
                       <tr>
@@ -129,13 +127,13 @@ This message is used in an iframe in write.jsp, in which users can select other 
                 <tr>
                   <td>
                     <mm:treeinclude write="true" page="/email/button/default.jsp" objectlist="$includePath"  referids="$referids">
-                      <mm:param name="caption"><fmt:message key="USETHESE" /></mm:param>
+                      <mm:param name="caption"><di:translate key="email.usethese" /></mm:param>
                       <mm:param name="onclick">javascript:useThese()</mm:param>
                     </mm:treeinclude>
                   </td>
                   <td>
                     <mm:treeinclude write="true" page="/email/button/default.jsp" objectlist="$includePath"  referids="$referids">
-                      <mm:param name="caption"><fmt:message key="HIDE" /></mm:param>
+                      <mm:param name="caption"><di:translate key="email.hide" /></mm:param>
                       <mm:param name="onclick">javascript:parent.showAddressbook()</mm:param>
                     </mm:treeinclude>
                   </td>
@@ -148,6 +146,5 @@ This message is used in an iframe in write.jsp, in which users can select other 
     </body>
   </html>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />  
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

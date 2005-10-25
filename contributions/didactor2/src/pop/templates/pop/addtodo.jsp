@@ -31,29 +31,29 @@
     <input type="hidden" name="myfeedback2" value="<mm:write referid="myfeedback2"/>">
     <table class="font" width="90%">
       <tr>
-        <td width="80"><fmt:message key="TodoTask"/></td>
+        <td width="80"><di:translate key="pop.todotask" /></td>
         <td><input name="todoname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="todoname"/>"></td>
       </tr>
       <tr>
-        <td><fmt:message key="Description"/></td>
+        <td><di:translate key="pop.description" /></td>
         <td><textarea name="tododesc" class="popFormInput" cols="50" rows="5"><mm:write referid="tododesc"/></textarea></td>
       </tr>
       <tr>
-        <td><fmt:message key="TodoDuration"/></td>
+        <td><di:translate key="pop.tododuration" /></td>
         <td>
           <input name="durationvalue" class="popDurationFormInput" type="text" size="15" maxlength="15" value="<mm:write referid="durationvalue"/>">
           <select name="durationmeasure" class="popDurationFormSelect">
-            <option value="1"<mm:compare referid="durationmeasure" value="1"> selected</mm:compare>><fmt:message key="TodoHour"/></option>
-            <option value="2"<mm:compare referid="durationmeasure" value="2"> selected</mm:compare>><fmt:message key="TodoDay"/></option>
-            <option value="3"<mm:compare referid="durationmeasure" value="3"> selected</mm:compare>><fmt:message key="TodoWeek"/></option>
-            <option value="4"<mm:compare referid="durationmeasure" value="4"> selected</mm:compare>><fmt:message key="TodoMonth"/></option>
-            <option value="5"<mm:compare referid="durationmeasure" value="5"> selected</mm:compare>><fmt:message key="TodoYear"/></option>
+            <option value="1"<mm:compare referid="durationmeasure" value="1"> selected</mm:compare>><di:translate key="pop.todohour" /></option>
+            <option value="2"<mm:compare referid="durationmeasure" value="2"> selected</mm:compare>><di:translate key="pop.tododay" /></option>
+            <option value="3"<mm:compare referid="durationmeasure" value="3"> selected</mm:compare>><di:translate key="pop.todoweek" /></option>
+            <option value="4"<mm:compare referid="durationmeasure" value="4"> selected</mm:compare>><di:translate key="pop.todomonth" /></option>
+            <option value="5"<mm:compare referid="durationmeasure" value="5"> selected</mm:compare>><di:translate key="pop.todoyear" /></option>
           </select>
         </td>
       </tr>
       <mm:compare referid="currentcomp" value="-1">
         <tr>
-          <td><fmt:message key="Competence"/></td>
+          <td><di:translate key="pop.competence" /></td>
           <td>
             <select name="todocomp" class="popCompFormSelect">
               <option value="-1">...</option>
@@ -74,11 +74,11 @@
       </mm:compare>
     </table>
     <mm:compare referid="todonumber" value="-1">
-      <input type="submit" class="formbutton" value="<fmt:message key="MakeButton"/>">
+      <input type="submit" class="formbutton" value="<di:translate key="pop.makebutton" />">
     </mm:compare>
     <mm:compare referid="todonumber" value="-1" inverse="true">
-      <input type="submit" class="formbutton" value="<fmt:message key="SaveButton"/>">
+      <input type="submit" class="formbutton" value="<di:translate key="pop.savebutton" />">
     </mm:compare>
-    <input type="submit" class="formbutton" value="<fmt:message key="BackButtonLC"/>" onClick="newtodoform.command.value='continue'">
+    <input type="submit" class="formbutton" value="<di:translate key="pop.backbuttonlc" />" onClick="newtodoform.command.value='continue'">
   </form>
 </div>

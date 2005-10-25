@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@page import="java.util.*" %>
 
@@ -16,24 +15,6 @@
 <%@ include file="getids.jsp" %>
 
 <mm:import externid="direct_connection" reset="true">false</mm:import>
-
-   <%
-
-      String bundlePOP = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundlePOP %>">
   <div class="contentBody">
 
 <mm:node number="$education">
@@ -75,17 +56,17 @@
     <mm:node number="progresstextbackground">
 
     <th>
-        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="Progress"/>')+rotate(90)</mm:import>
+        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<di:translate key="pop.progress" />')+rotate(90)</mm:import>
         <img src="<mm:image template="$template"/>">
     </th>
 
     <th>
-        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="NumberOfVisits"/>')+rotate(90)</mm:import>
+        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<di:translate key="pop.numberofvisits" />')+rotate(90)</mm:import>
         <img src="<mm:image template="$template"/>">
     </th>
 
     <th>
-        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<fmt:message key="TimeOfVisits"/>')+rotate(90)</mm:import>
+        <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<di:translate key="pop.timeofvisits" />')+rotate(90)</mm:import>
         <img src="<mm:image template="$template"/>">
     </th>
 
@@ -166,7 +147,7 @@
     <mm:param name="command">detail</mm:param>
     <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
 
-</mm:treefile>"><fmt:message key="NextResults"/></a></span>
+</mm:treefile>"><di:translate key="pop.nextresults" /></a></span>
 
 <% }
 
@@ -178,7 +159,7 @@
     <mm:param name="command">detail</mm:param>
     <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
 
-</mm:treefile>"><fmt:message key="PrevResults"/></a>
+</mm:treefile>"><di:translate key="pop.prevresults" /></a>
 
 <% } %>
 
@@ -186,7 +167,6 @@
 
 
   </div>
-</fmt:bundle>
 
 </mm:cloud>
 

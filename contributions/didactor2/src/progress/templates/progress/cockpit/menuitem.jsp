@@ -10,13 +10,13 @@
   <mm:compare referid="type" value="div">
     <div class="menuSeperator"> </div>
     <div class="menuItem" id="menuProgress">
-      <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">voortgang</a>
+      <a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="progress.progress" /></a>
     </div>
   </mm:compare>
   
   <mm:compare referid="type" value="option">
     <option value="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
-      voortgang
+      <di:translate key="progress.progress" />
     </option>
   </mm:compare>
   </mm:cloud>

@@ -1,26 +1,9 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-   <%
-
-      String bundleMMBob = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundleMMBob = "nl.didactor.component.mmbob.MMBobMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundleMMBob %>">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
 <html>
@@ -46,20 +29,20 @@
 
 <center>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3"><fmt:message key="CreateNewPM"/></th></tr>
+  <tr><th colspan="3"><di:translate key="mmbob.createnewpm" /></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
-    <tr><th><fmt:message key="To"/></th><td colspan="2">
+    <tr><th><di:translate key="mmbob.to" /></th><td colspan="2">
         <mm:node number="$postingid">
         <mm:field name="poster" />
         <input name="to" type="hidden" value="<mm:field name="poster" />">
         <input name="poster" type="hidden" value="<mm:node referid="posterid"><mm:field name="account" /></mm:node>">
     </td></tr>
-    <tr><th><fmt:message key="Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
+    <tr><th><di:translate key="mmbob.subject" /></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
     </mm:node>
-    <tr><th><fmt:message key="Message"/></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
+    <tr><th><di:translate key="mmbob.message" /></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
     <tr><th>&nbsp;</th><td>
     <input type="hidden" name="action" value="newprivatemessage">
-    <center><input type="submit" value="<fmt:message key="commit" />">
+    <center><input type="submit" value="<di:translate key="mmbob.commit" />">
     </form>
     </td>
     <td>
@@ -70,7 +53,7 @@
     method="post">
     <p />
     <center>
-    <input type="submit" value="<fmt:message key="cancel" />">
+    <input type="submit" value="<di:translate key="mmbob.cancel" />">
     </form>
     </td>
     </tr>
@@ -78,5 +61,4 @@
 </table>
 </center>
 </html>
-</fmt:bundle>
 </mm:cloud>

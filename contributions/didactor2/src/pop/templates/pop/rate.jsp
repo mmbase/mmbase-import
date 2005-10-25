@@ -1,11 +1,8 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.*" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
-
-
 
 <mm:import externid="tests" required="true"/>
 <mm:import externid="learnobject" required="true"/>
@@ -14,8 +11,6 @@
 <mm:import externid="pagecounter" jspvar="pageCounter" vartype="Integer"/>
 <mm:import externid="questionamount" jspvar="questionAmount" vartype="Integer"/>
 
-
-
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 <%@include file="/education/wizards/roles_defs.jsp" %>
@@ -23,25 +18,6 @@
 <%@include file="/education/wizards/roles_chk.jsp" %>
 
 <mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
-
-   <%
-
-      String bundlePOP = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundlePOP %>">
-
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
       <title>POP</title>
@@ -60,7 +36,7 @@
 
     <%-- right section --%>
     <div class="mainContent">
-<div class="contentHeader"><fmt:message key="Progressmonitor"/>
+<div class="contentHeader"><di:translate key="pop.progressmonitor" />
   <%@include file="nameintitle.jsp" %>
 </div>
   <div class="contentBody">
@@ -309,7 +285,7 @@
 
        </mm:treeinclude>
 
-       <input type="button" class="formbutton" value="<fmt:message key="LaterButton"/>" 
+       <input type="button" class="formbutton" value="<di:translate key="pop.laterbutton" />" 
 	     onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
              <mm:param name="command">intake</mm:param>
            </mm:treeinclude>'"> 
@@ -345,6 +321,5 @@
   </div>
 </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

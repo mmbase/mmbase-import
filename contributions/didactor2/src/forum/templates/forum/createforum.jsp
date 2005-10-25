@@ -53,19 +53,19 @@ Calls itself to create the forum and foward to the newly created forum.
   <table cellspacing="0" cellpadding="0" border="0">
 	<tr>
 	    <td colspan="2">
-	      <di:translate id="create_forum_name" >Forum Name</di:translate> :
+	      <di:translate key="forum.create_forum_name" /> :
 	      <input type="text" name="name" class="forminput" style="width:240px;">&nbsp;
 	    </td>
 	</tr>
 	<tr>
 	  <td align="center">
 	    <div class="button1">
-	    <a href="javascript:submitForm('newforum');"><di:translate id="create">create</di:translate></a>
+	    <a href="javascript:submitForm('newforum');"><di:translate key="forum.create" /></a>
 	    </div>
 	  </td>
 	  <td>
 	    <div class="button1">
-	    <a href="javascript:history.go(-1);"><di:translate id="bkac">back</di:translate></a>
+	    <a href="javascript:history.go(-1);"><di:translate key="forum.bkac" /></a>
 	    </div>
 	  </td>
 	</tr>
@@ -73,13 +73,13 @@ Calls itself to create the forum and foward to the newly created forum.
           
             <%--<table cellspacing=2>
               <tr>
-                <td colspan=2><di:translate id="create_forum_name" >Forum Name</di:translate> :</td>
+                <td colspan=2><di:translate key="forum.create_forum_name" /> :</td>
               </tr>
               <tr>
                 <td><input type="text" name="name" class="forminput" style="width:240px;">&nbsp;</td>
                 <td>
                   <mm:treeinclude write="true" page="/forum/default.jsp" objectlist="$includePath" referids="referids">
-                    <mm:param name="caption"><di:translate id="create" >Create</di:translate></mm:param>
+                    <mm:param name="caption"><di:translate key="forum.create" /></mm:param>
                     <mm:param name="onclick">javascript:submitForm('newforum');</mm:param>
                   </mm:treeinclude>
                 </td>
@@ -88,7 +88,7 @@ Calls itself to create the forum and foward to the newly created forum.
                 <td></td>
                 <td>
                   <mm:treeinclude write="true" page="/forum/default.jsp" objectlist="$includePath" referids="referids">
-                    <mm:param name="caption"><di:translate id="back" >Back</di:translate></mm:param>
+                    <mm:param name="caption"><di:translate key="forum.back" /></mm:param>
                     <mm:param name="onclick">javascript:history.go(-1);</mm:param>
                   </mm:treeinclude>
                  </td>

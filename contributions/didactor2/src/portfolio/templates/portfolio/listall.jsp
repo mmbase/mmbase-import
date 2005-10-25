@@ -1,32 +1,30 @@
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="MYDOCUMENTS" /></title>
+    <title><di:translate key="portfolio.mydocuments" /></title>
   </mm:param>
 </mm:treeinclude>
 
 <div class="rows">
 <div class="navigationbar">
 <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
-      <fmt:message key="PORTFOLIO" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="portfolio.portfolio" />"/>
+      <di:translate key="portfolio.portfolio" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="PORTFOLIO" />
+    <di:translate key="portfolio.portfolio" />
 </div>
   <div class="folderBody">
   </div>
@@ -42,7 +40,7 @@
   </div>
 
   <div class="contentBodywit">
-  <h2><fmt:message key="CHOOSE_A_LETTER_OR_SEARCH"/></h2>
+  <h2><di:translate key="portfolio.choose_a_letter_or_search" /></h2>
   <mm:import id="startChar" externid="c" jspvar="startChar"/>
   <% 
   boolean cvalid = false;
@@ -57,7 +55,7 @@
     <mm:import externid="portfolio_query"></mm:import>
 
   <form action="<mm:treefile page="/portfolio/listall.jsp" objectlist="$includePath" referids="$referids" />" method="GET">
-  <input type="text" name="portfolio_query" value="<mm:write referid="portfolio_query"/>"> <input type="submit" value="<fmt:message key="SEARCH"/>">
+  <input type="text" name="portfolio_query" value="<mm:write referid="portfolio_query"/>"> <input type="submit" value="<di:translate key="portfolio.search" />">
   </form>
 
   
@@ -88,6 +86,5 @@
 </div>
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

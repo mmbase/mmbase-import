@@ -16,8 +16,11 @@
                 <mm:import id="classforum" reset="true"><mm:field name="number"/></mm:import>
             </mm:relatednodes>
             <mm:compare referid="classforum" value="-1">
+                <mm:node number="$provider">
+                    <mm:import id="lang_code" reset="true"><mm:field name="locale" /></mm:import>
+                </mm:node>
                 <mm:import id="name" reset="true"><mm:write referid="class"/></mm:import>
-                <mm:import id="description" reset="true"><fmt:message key="ForumForClass" /> '<mm:field name="name"/>'</mm:import>
+                <mm:import id="description" reset="true"><di:translate key="mmbob.forumforclass" /> '<mm:field name="name"/>'</mm:import>
     	        <mm:import id="language" reset="true"><mm:write referid="lang_code"/></mm:import>
                 <mm:import id="account" reset="true">admin</mm:import>
                 <mm:import id="password" reset="true">admin2k</mm:import>
@@ -50,7 +53,7 @@
             </mm:relatednodes>
             <mm:compare referid="educationforum" value="-1">
             	<mm:import id="name" reset="true"><mm:write referid="education"/></mm:import>
-    	        <mm:import id="description" reset="true"><fmt:message key="ForumForEducation" /> '<mm:field name="name"/>'</mm:import>
+    	        <mm:import id="description" reset="true"><di:translate key="mmbob.forumforeducation" /> '<mm:field name="name"/>'</mm:import>
         	    <mm:import id="language" reset="true"><mm:write referid="lang_code"/></mm:import>
     	        <mm:import id="account" reset="true">admin</mm:import>
                 <mm:import id="password" reset="true">admin2k</mm:import>

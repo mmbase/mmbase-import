@@ -1,26 +1,9 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-   <%
-
-      String bundleMMBob = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundleMMBob = "nl.didactor.component.mmbob.MMBobMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundleMMBob %>">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
 <html>
@@ -69,7 +52,7 @@
             </tr>
 </table>
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
-    <tr><td align="left"><b><fmt:message key="Pages"/>
+    <tr><td align="left"><b><di:translate key="mmbob.pages" />
           <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
              (<mm:field name="pagecount" />)
              <mm:field name="navline" />
@@ -87,7 +70,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
    <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page">
       <mm:first>
-         <tr><th width="25%" align="left"><fmt:message key="poster" /></th><th align="left"><fmt:message key="topic" /> : <mm:field name="subject" /></th></tr>
+         <tr><th width="25%" align="left"><di:translate key="mmbob.poster" /></th><th align="left"><di:translate key="mmbob.topic" /> : <mm:field name="subject" /></th></tr>
       </mm:first>
 
       <mm:remove referid="tdvar" />
@@ -107,7 +90,7 @@
                </a>
             </mm:list>
             <br />
-            <fmt:message key="on"/> <mm:field name="posttime"><mm:time format="<%= timeFormat %>" /></mm:field>
+            <di:translate key="mmbob.on" /> <mm:field name="posttime"><mm:time format="<%= timeFormat %>" /></mm:field>
          </td>
          <td class="<mm:write referid="tdvar" />" align="right">
             <mm:remove referid="postingid" />
@@ -181,11 +164,11 @@
          <mm:field name="guest">
          <mm:compare value="true" inverse="true">
 <%-- hh            Level : <mm:field name="level" /><br /> --%>
-            <fmt:message key="numberofposts" /> : <mm:field name="accountpostcount" /><br />
+            <di:translate key="mmbob.numberofposts" /> : <mm:field name="accountpostcount" /><br />
 <%-- hh            Geslacht : <mm:field name="gender" /><br />
       Lokatie : <mm:field name="location" /><br /> --%>
-      <fmt:message key="MemberSince"/> : <mm:field name="firstlogin"><mm:time format="<%= timeFormat %>" /></mm:field><br />
-      <fmt:message key="LastVisit"/> : <mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /> </mm:field><br />
+      <di:translate key="mmbob.membersince" /> : <mm:field name="firstlogin"><mm:time format="<%= timeFormat %>" /></mm:field><br />
+      <di:translate key="mmbob.lastvisit" /> : <mm:field name="lastseen"><mm:time format="<%= timeFormat %>" /> </mm:field><br />
       </mm:compare>
       <mm:compare value="true">
       </mm:compare>
@@ -195,7 +178,7 @@
 
 
       <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-      <mm:field name="edittime"><mm:compare value="-1" inverse="true"><fmt:message key="LastTimeModify"/> : <mm:field name="edittime"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare><p /></mm:field>
+      <mm:field name="edittime"><mm:compare value="-1" inverse="true"><di:translate key="mmbob.lasttimemodify" /> : <mm:field name="edittime"><mm:time format="<%= timeFormat %>" /></mm:field></mm:compare><p /></mm:field>
 
       <mm:node referid="postingid">
 
@@ -218,7 +201,7 @@
 
 
 <table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%">
-    <tr><td align="left"><b><fmt:message key="Pages"/>
+    <tr><td align="left"><b><di:translate key="mmbob.pages" />
           <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
             <mm:field name="navline" />
           </mm:nodefunction>
@@ -230,9 +213,9 @@
 <mm:compare referid="showreplyform" value="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
-  <tr><th colspan="3"><fmt:message key="quickResponse"/></th></tr>
+  <tr><th colspan="3"><di:translate key="mmbob.quickresponse" /></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" enctype="multipart/form-data" name="posting">
-    <tr><th width="25%"><fmt:message key="Name"/></th><td>
+    <tr><th width="25%"><di:translate key="mmbob.name" /></th><td>
 
         <mm:compare referid="posterid" value="-1" inverse="true">
         <mm:node number="$posterid">
@@ -246,11 +229,11 @@
 
         </td></tr>
     <tr>
-        <th><fmt:message key="Response"/> <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th>
+        <th><di:translate key="mmbob.response" /> <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th>
         <td>
            <textarea name="body" rows="5" style="width: 100%"></textarea>
            <table width="100%" border="0">
-              <tr><td colspan="2" style="border-width:0px"><b><fmt:message key="AddDocument"/></b></td></tr>
+              <tr><td colspan="2" style="border-width:0px"><b><di:translate key="mmbob.adddocument" /></b></td></tr>
               <mm:fieldlist nodetype="attachments" fields="title,handle">
                  <tr>
                     <td width="80" style="border-width:0px"><mm:fieldinfo type="guiname"/></td>
@@ -261,7 +244,7 @@
         </td>
     </tr>
     <tr><td colspan="3"><input type="hidden" name="action" value="postreply">
-    <center><input type="submit" value="       <fmt:message key="placeResponse"/>"></center>
+    <center><input type="submit" value="       <di:translate key="mmbob.placeresponse" />"></center>
     </td></tr>
   </form>
 </table>
@@ -271,5 +254,4 @@
 <p />
 <p />
 </html>
-</fmt:bundle>
 </mm:cloud>

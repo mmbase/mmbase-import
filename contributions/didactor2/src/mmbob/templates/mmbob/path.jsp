@@ -1,24 +1,7 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-   <%
-
-      String bundleMMBob = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundleMMBob = "nl.didactor.component.mmbob.MMBobMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundleMMBob %>">
 <mm:import externid="type" />
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
@@ -92,7 +75,7 @@
 
 	<a href="<mm:url page="allposters.jsp">
 		<mm:param name="forumid" value="$forumid" />
-		</mm:url>"><fmt:message key="allMembers"/></a>
+		</mm:url>"><di:translate key="mmbob.allmembers" /></a>
 </mm:compare>
 
 
@@ -106,7 +89,7 @@
 
 	<a href="<mm:url page="privatemessages.jsp">
 		<mm:param name="forumid" value="$forumid" />
-		</mm:url>"><fmt:message key="pm"/></a>
+		</mm:url>"><di:translate key="mmbob.pm" /></a>
 </mm:compare>
 
 
@@ -120,7 +103,7 @@
 
 	<a href="<mm:url page="onlineposters.jsp">
 		<mm:param name="forumid" value="$forumid" />
-		</mm:url>"><fmt:message key="membersOnline"/></a>
+		</mm:url>"><di:translate key="mmbob.membersonline" /></a>
 	&gt;
 	<mm:list nodes="$posterid" path="posters,people">
 	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
@@ -142,7 +125,7 @@
 	<a href="<mm:url page="allposters.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		<mm:param name="pathtype" value="allposters" />
-		</mm:url>"><fmt:message key="allMembers"/></a>
+		</mm:url>"><di:translate key="mmbob.allmembers" /></a>
 	&gt;
 	<mm:list nodes="$posterid" path="posters,people">
 	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
@@ -162,7 +145,7 @@
 
 	<a href="<mm:url page="moderatorteam.jsp">
 		<mm:param name="forumid" value="$forumid" />
-		</mm:url>"><fmt:message key="moderatorTeam"/></a>
+		</mm:url>"><di:translate key="mmbob.moderatorteam" /></a>
 	&gt;
 	<mm:list nodes="$posterid" path="posters,people">
 	<a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
@@ -183,7 +166,7 @@
 
 	<a href="<mm:url page="moderatorteam.jsp">
 		<mm:param name="forumid" value="$forumid" />
-		</mm:url>"><fmt:message key="moderatorTeam"/></a>
+		</mm:url>"><di:translate key="mmbob.moderatorteam" /></a>
 </mm:compare>
 
 
@@ -245,5 +228,4 @@
 </td>
 </tr>
 </table>
-</fmt:bundle>
 </mm:cloud>
