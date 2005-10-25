@@ -20,7 +20,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: GetIndex.java,v 1.3 2005-10-25 12:37:37 michiel Exp $
+ * @version $Id: GetIndex.java,v 1.4 2005-10-25 22:29:17 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -28,7 +28,7 @@ public class GetIndex implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(GetIndex.class);
 
     public static final String CLOUDPROP_INDEXROOT = "org.mmbase.index-root";
-
+ 
     private static final int serialVersionUID = 1;
 
     private Map cache = Collections.synchronizedMap(new HashMap());

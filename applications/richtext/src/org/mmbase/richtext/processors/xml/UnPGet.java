@@ -15,7 +15,7 @@ import org.mmbase.bridge.util.xml.Generator;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
-import org.mmbase.util.transformers.XmlField;
+import org.mmbase.richtext.transformers.XmlField;
 import org.mmbase.util.xml.XMLWriter;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * chained before MmxfGetString to ensure that the field is really Mmxf, even if such 'p' fields are stored.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnPGet.java,v 1.1 2005-10-25 16:49:20 michiel Exp $
+ * @version $Id: UnPGet.java,v 1.2 2005-10-25 22:29:17 michiel Exp $
  * @since MMBase-1.8
  */
 
