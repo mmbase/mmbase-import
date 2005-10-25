@@ -51,17 +51,17 @@
   <div class="contentSubHeader">
 	<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
 	    <mm:param name="reply"><mm:write referid="email"/></mm:param>
-	</mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="reply">Beantwoorden</di:translate>" border="0"></a>
+	</mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.reply" />" border="0"></a>
     &nbsp; &nbsp;&nbsp;	
 
 	<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="replyAll"><mm:write referid="email"/></mm:param>
-        </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_all_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="replyall">Beantwoorden aan groep</di:translate>" border="0"></a>
+        </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_all_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.replyall" />" border="0"></a>
 	    &nbsp; &nbsp;&nbsp;	
 
 	<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
 	    <mm:param name="forward"><mm:write referid="email"/></mm:param>
-	</mm:treefile>"><img src="<mm:treefile page="/email/gfx/forward_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="forward">Doorsturen</di:translate>" border="0"></a>
+	</mm:treefile>"><img src="<mm:treefile page="/email/gfx/forward_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.forward" />" border="0"></a>
     
   </div>
   <div class="contentBodywit">

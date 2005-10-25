@@ -10,7 +10,7 @@
   </mm:compare>
   <mm:compare referid="command" value="deldocs">
     <%@ include file="deldocs.jsp" %>
-    <mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><fmt:message key="MsgDelSelectedDocDone"/></mm:import>
+    <mm:import id="dummy" jspvar="dummy" vartype="String" reset="true"><di:translate key="pop.msgdelselecteddocdone" /></mm:import>
     <% msgString = dummy; %>
     <mm:remove referid="command"/>
     <mm:import id="command">continue</mm:import>

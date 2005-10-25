@@ -1,26 +1,9 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-   <%
-
-      String bundleMMBob = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundleMMBob = "nl.didactor.component.mmbob.MMBobMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundleMMBob %>">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
 <html>
@@ -45,12 +28,12 @@
                 <mm:createnode id="mail1" type="email">
                         <mm:setfield name="from"><mm:write referid="webmastermail" /></mm:setfield>
                         <mm:setfield name="to"><mm:write referid="wemail" /></mm:setfield>
-                        <mm:setfield name="subject"><fmt:message key="YourAccInfo" /></mm:setfield>
-                        <mm:setfield name="body"> <fmt:message key="YourAccInfo1" /> <mm:write referid="wforum" />  <fmt:message key="YourAccInfo2" /> :
+                        <mm:setfield name="subject"><di:translate key="mmbob.youraccinfo" /></mm:setfield>
+                        <mm:setfield name="body"> <di:translate key="mmbob.youraccinfo1" /> <mm:write referid="wforum" />  <di:translate key="mmbob.youraccinfo2" /> :
 
 
-            <fmt:message key="account" />=<mm:write referid="waccount" />
-            <fmt:message key="wachtwoord" />=<mm:write referid="wpassword" />
+            <di:translate key="mmbob.account" />=<mm:write referid="waccount" />
+            <di:translate key="mmbob.wachtwoord" />=<mm:write referid="wpassword" />
             </mm:setfield>
                 </mm:createnode>
 
@@ -69,12 +52,12 @@
     <mm:present referid="mailed">
     <form action="<mm:url page="start.jsp" referids="forumid" />" method="post">
     <tr><th align="left" ><p />
-    <fmt:message key="EmailWithInfoHBSend" /> : <mm:write referid="wemail" />, <br />
-    <fmt:message key="WithInfoYouCanLogon" />.<p />
+    <di:translate key="mmbob.emailwithinfohbsend" /> : <mm:write referid="wemail" />, <br />
+    <di:translate key="mmbob.withinfoyoucanlogon" />.<p />
     </th></tr>
     <tr><td>
     <center>
-    <input type="submit" value="<fmt:message key="BacktoForum" />">
+    <input type="submit" value="<di:translate key="mmbob.backtoforum" />">
     </form>
     </td></tr>
     </mm:present>
@@ -83,23 +66,23 @@
     <tr><th colspan="3" align="left" >
     <mm:present referid="action">
     <p />
-    <center>    <fmt:message key="AccountNotFound" /> </center>
+    <center>    <di:translate key="mmbob.accountnotfound" /> </center>
     </mm:present>
     <p />
-    <fmt:message key="EnterLogin" /><p />
-    <fmt:message key="LoginName" /> : <input name="wantedaccount" size="15">
+    <di:translate key="mmbob.enterlogin" /><p />
+    <di:translate key="mmbob.loginname" /> : <input name="wantedaccount" size="15">
     </th></tr>
   <tr><td>
     <input type="hidden" name="action" value="remail">
     <center>
-    <input type="submit" value="<fmt:message key="commit" />">
+    <input type="submit" value="<di:translate key="mmbob.commit" />">
     </form>
     </td>
     <td>
     <form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
     <p />
     <center>
-    <input type="submit" value="<fmt:message key="cancel" />">
+    <input type="submit" value="<di:translate key="mmbob.cancel" />">
     </form>
     </td>
     </tr>
@@ -107,6 +90,5 @@
 
 </table>
 </html>
-</fmt:bundle>
 </mm:cloud>
 

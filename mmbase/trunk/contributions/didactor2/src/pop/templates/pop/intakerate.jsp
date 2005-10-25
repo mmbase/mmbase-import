@@ -1,4 +1,3 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.*" %>
@@ -15,25 +14,6 @@
 <%@include file="/education/wizards/roles_chk.jsp" %>
 
 <mm:import externid="student" reset="true"><mm:write referid="user"/></mm:import>
-
-   <%
-
-      String bundlePOP = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundlePOP %>">
-
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
       <title>POP</title>
@@ -58,7 +38,7 @@
 
     <%-- right section --%>
     <div class="mainContent">
-<div class="contentHeader"><fmt:message key="Progressmonitor"/>
+<div class="contentHeader"><di:translate key="pop.progressmonitor" />
   <%@include file="nameintitle.jsp" %>
 </div>
   <div class="contentBody">
@@ -159,12 +139,11 @@
 
   <%@ include file="intakecheck.jsp" %>
 
-  <p><fmt:message key="IntakeMsgYouReady"/></p>
+  <p><di:translate key="pop.intakemsgyouready" /></p>
   <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
-      </mm:treefile>'" value="start" title="<fmt:message key="BeginCourseButton"/>">
+      </mm:treefile>'" value="start" title="<di:translate key="pop.begincoursebutton" />">
   </div>
 </div>
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$popreferids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

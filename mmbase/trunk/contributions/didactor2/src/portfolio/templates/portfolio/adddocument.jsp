@@ -1,7 +1,7 @@
 <%--
   This template adds a document to a folder.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 
 <%-- expires is set so renaming a folder does not show the old name --%>
@@ -9,10 +9,9 @@
 <mm:import externid="processupload">false</mm:import>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
-  <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
-      <title><fmt:message key="ADDDOCUMENT" /></title>
+      <title><di:translate key="portfolio.adddocument" /></title>
     </mm:param>
   </mm:treeinclude>
 
@@ -37,22 +36,22 @@
 
 <div class="navigationbar">
 <div class="titlebar">
-<img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
-<fmt:message key="PORTFOLIO" />
+<img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="portfolio.portfolio" />"/>
+<di:translate key="portfolio.portfolio" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-<fmt:message key="PORTFOLIO" />
+<di:translate key="portfolio.portfolio" />
 </div>
 <div class="folderBody"></div>
 </div>
 
     <div class="mainContent">
       <div class="contentHeader">
-        <fmt:message key="ADDDOCUMENT" />
+        <di:translate key="portfolio.adddocument" />
       </div>
       <div class="contentBodywit">
       <br><br><br>
@@ -104,9 +103,9 @@
         </mm:compare>
         
         <%-- button to upload the file --%>
-        <input class="formbutton" type="submit" name="action1" value="<fmt:message key="CREATE" />" />
+        <input class="formbutton" type="submit" name="action1" value="<di:translate key="portfolio.create" />" />
         <%-- button to go back and upload nothing --%>
-        <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
+        <input class="formbutton" type="submit" name="action2" value="<di:translate key="portfolio.back" />" />
       </form>
     </div>
     </div>
@@ -184,6 +183,5 @@
   </mm:compare>  
 
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

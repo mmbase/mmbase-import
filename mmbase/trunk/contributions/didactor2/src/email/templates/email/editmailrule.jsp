@@ -1,12 +1,9 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp"%>
-<fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 	<mm:import externid="mailbox">-1</mm:import>
 
 	<mm:compare referid="mailbox" value="-1">
@@ -22,14 +19,14 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<fmt:message key="EMAIL" />" /> <fmt:message key="EMAIL" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="email.email" />" /> <di:translate key="email.email" />
   </div>
 </div>
 
 
 <div class="folders">
   <div class="folderHeader">
-    <fmt:message key="MAILBOXES" />
+    <di:translate key="email.mailboxes" />
   </div>
   <div class="folderBody">
 
@@ -40,7 +37,7 @@
     
 <div class="mainContent">
   <div class="contentHeader">
-    <fmt:message key="MAILRULES"/>
+    <di:translate key="email.mailrules" />
   </div>
   <div class="contentSubHeader">
   </div>
@@ -50,9 +47,9 @@
       <table class="listTable">
           <tr>
             <th class="listHeader"><input type="checkbox" onclick="selectAllClicked(this.form,this.checked)"></input></th>
-            <th class="listHeader"><fmt:message key="MATCHWHAT"/></th>
-            <th class="listHeader"><fmt:message key="SUBSTRING"/></th>
-            <th class="listHeader"><fmt:message key="FOLDER"/></th>
+            <th class="listHeader"><di:translate key="email.matchwhat" /></th>
+            <th class="listHeader"><di:translate key="email.substring" /></th>
+            <th class="listHeader"><di:translate key="email.folder" /></th>
           </tr>
       <mm:list nodes="$mailbox" path="mailboxes1,mailrule,mailboxes2">
 	<mm:field name="mailboxes2.name" id="destbox" write="false"/>
@@ -65,10 +62,10 @@
 		<mm:node number="$rulereldef">
 		<mm:field id="ruletype" name="sname" write="false"/>
 		<mm:compare referid="ruletype" value="subjectmailrule">
-		    <fmt:message key="SUBJECT"/>
+		    <di:translate key="email.subject" />
 		</mm:compare>
 		<mm:compare referid="ruletype" value="sendermailrule">
-		    <fmt:message key="SENDER"/>
+		    <di:translate key="email.sender" />
 		</mm:compare>
 		</mm:node>
               </td>
@@ -100,6 +97,5 @@
 </div>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

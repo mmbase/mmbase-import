@@ -47,15 +47,15 @@
 </mm:node>
 
 <%-- some sending email code--%>
-<mm:import id="subject"><fmt:message key="SendInviteSubject"/></mm:import>
+<mm:import id="subject"><di:translate key="pop.sendinvitesubject" /></mm:import>
 <mm:import id="body"><HTML>
-<fmt:message key="SendInvitePart1"/> <mm:write referid="inviteefname"/><br/>
+<di:translate key="pop.sendinvitepart1" /> <mm:write referid="inviteefname"/><br/>
 <br/>
-<b><mm:write referid="userfname"/></b> <fmt:message key="SendInvitePart2"/> <b><mm:write referid="compname"/></b> <fmt:message key="SendInvitePart3"/><br/>
+<b><mm:write referid="userfname"/></b> <di:translate key="pop.sendinvitepart2" /> <b><mm:write referid="compname"/></b> <di:translate key="pop.sendinvitepart3" /><br/>
 <br/>
 <%= querytext.replaceAll("\\n", "<br/>") %><br/>
 <br/>
-<fmt:message key="SendInvitePart4"/> <a href="<%= linktofeedback %>"><fmt:message key="SendInvitePart5"/></a><fmt:message key="SendInvitePart6"/><br/>
+<di:translate key="pop.sendinvitepart4" /> <a href="<%= linktofeedback %>"><di:translate key="pop.sendinvitepart5" /></a><di:translate key="pop.sendinvitepart6" /><br/>
 <br/>
-<fmt:message key="SendInvitePart7"/></HTML></mm:import>
+<di:translate key="pop.sendinvitepart7" /></HTML></mm:import>
 <%@include file="sendmail.jsp" %>

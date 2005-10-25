@@ -50,7 +50,7 @@ try {
     if (hit) {
 	%>
 	    <tr>
-		<td class="listItem"><di:translate id="education">Opleiding</di:translate></td>
+		<td class="listItem"><di:translate key="core.education" /></td>
 		<td class="listItem">
 		    <mm:node number="$education">
 		        <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">

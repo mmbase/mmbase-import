@@ -1,33 +1,12 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
-
-
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 <%@ include file="getids.jsp" %>
-
-   <%
-
-      String bundlePOP = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundlePOP = "nl.didactor.component.pop.PopMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundlePOP %>">
   <div class="contentBody">
 
   <%
@@ -62,12 +41,12 @@
 
 <mm:compare referid="gatekeeper" value="0">
   <%-- "you failed the test for this education and are not allowed to continue, please contact your teacher / coach for advice" --%>
-  <p><fmt:message key="IntakeMsgYouFailedTest"/></p>
+  <p><di:translate key="pop.intakemsgyoufailedtest" /></p>
 <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>'" value="terug">
 </mm:compare>
 <mm:compare referid="gatekeeper" value="0" inverse="true">
   <mm:compare referid="incompletetestNo" value="-1" inverse="true">
-    <p><fmt:message key="IntakeMsgYouNowStartWithIntake"/></p>
+    <p><di:translate key="pop.intakemsgyounowstartwithintake" /></p>
     <mm:treeinclude page="/pop/buildtest.jsp" objectlist="$includePath" referids="$popreferids">
       <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
     </mm:treeinclude> 
@@ -77,7 +56,7 @@
     
     <% if (!notpassedIntakes.equals("")) { %>
 
-    <p><fmt:message key="IntakeMsgYouPassedAndContinue"/></p>
+    <p><di:translate key="pop.intakemsgyoupassedandcontinue" /></p>
 
     <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 
@@ -113,13 +92,13 @@
       </mm:node>
     </mm:list>
     <input type="hidden" name="intakes" value="<%= notpassedIntakes %>"/>
-    <input type="submit" value="<di:translate id="buttontextdone">OK</di:translate>" class="formbutton"/>
+    <input type="submit" value="<di:translate key="pop.buttontextdone" />" class="formbutton"/>
     </form>
 
     <% } else { %>
-      <p><fmt:message key="IntakeMsgYouReady"/></p>
+      <p><di:translate key="pop.intakemsgyouready" /></p>
       <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
-          </mm:treefile>'" value="start" title="<fmt:message key="BeginCourseButton"/>">
+          </mm:treefile>'" value="start" title="<di:translate key="pop.begincoursebutton" />">
     <% } %>
 
   </mm:compare>
@@ -127,7 +106,6 @@
 
 </div>
 
-</fmt:bundle>
 
 </mm:cloud>
 

@@ -1,17 +1,16 @@
 <%--
   This template moves a folder item from one folder to another.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="MOVEITEMS" /></title>
+    <title><di:translate key="portfolio.moveitems" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -36,7 +35,7 @@
 
 <%-- Check if the move button is pressed --%>
 <mm:present referid="action1">
-  <mm:import id="action1text"><fmt:message key="MOVE" /></mm:import>
+  <mm:import id="action1text"><di:translate key="portfolio.move" /></mm:import>
   <mm:compare referid="action1" referid2="action1text">
 
 
@@ -135,7 +134,7 @@
 
 <%-- Check if the back button is pressed --%>
 <mm:present referid="action2">
-  <mm:import id="action2text"><fmt:message key="BACK" /></mm:import>
+  <mm:import id="action2text"><di:translate key="portfolio.back" /></mm:import>
   <mm:compare referid="action2" referid2="action2text">
     <mm:redirect referids="$referids,currentfolder,typeof,contact?" page="$callerpage"/>
   </mm:compare>
@@ -144,15 +143,15 @@
 <div class="rows">
 <div class="navigationbar">
 <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
-      <fmt:message key="PORTFOLIO" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="portfolio.portfolio" />"/>
+      <di:translate key="portfolio.portfolio" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="PORTFOLIO" />
+    <di:translate key="portfolio.portfolio" />
 </div>
   <div class="folderBody">
   </div>
@@ -161,7 +160,7 @@
 <div class="mainContent">
 
   <div class="contentHeader">
-    <fmt:message key="MOVESELECTED" />
+    <di:translate key="portfolio.moveselected" />
   </div>
   <div class="contentBodywit">
   <br><br><br>
@@ -171,7 +170,7 @@
 
       <tr>
       <td>
-      <fmt:message key="MOVESINGLE" /> <fmt:message key="FILESTO" />
+      <di:translate key="portfolio.movesingle" /> <di:translate key="portfolio.filesto" />
       </td>
       </tr>
 
@@ -184,7 +183,7 @@
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                  <option value="<mm:field name="number"/>"><fmt:message key="MYDOCUMENTS" /> &gt; <mm:field name="name"/></option>
+                  <option value="<mm:field name="number"/>"><di:translate key="portfolio.mydocuments" /> &gt; <mm:field name="name"/></option>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
@@ -196,19 +195,18 @@
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                  <option value="<mm:field name="number"/>"><fmt:message key="SHAREDDOCUMENTS" /> &gt; <mm:field name="name"/></option>
+                  <option value="<mm:field name="number"/>"><di:translate key="portfolio.shareddocuments" /> &gt; <mm:field name="name"/></option>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
           </mm:node>
         </mm:present>
-        <fmt:bundle basename="nl.didactor.component.portfolio.PortfolioMessageBundle">
           <mm:node number="$user">
             <mm:relatednodes type="portfolios" constraints="m_type = 0">
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                  <option value="<mm:field name="number"/>"><fmt:message key="DEVELOPMENTPORTFOLIO" /> &gt; <mm:field name="name"/></option>
+                  <option value="<mm:field name="number"/>"><di:translate key="portfolio.developmentportfolio" /> &gt; <mm:field name="name"/></option>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
            </mm:relatednodes>
@@ -227,7 +225,7 @@
                   <mm:relatednodescontainer type="folders">
                     <mm:relatednodes>
                       <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                      <option value="<mm:field name="number"/>"><fmt:message key="ASSESSMENTPORTFOLIO" /> &gt; <mm:field name="name"/></option>
+                      <option value="<mm:field name="number"/>"><di:translate key="portfolio.assessmentportfolio" /> &gt; <mm:field name="name"/></option>
                     </mm:relatednodes>
                   </mm:relatednodescontainer>
                 </mm:relatednodes>
@@ -236,12 +234,11 @@
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                  <option value="<mm:field name="number"/>"><fmt:message key="SHOWCASEPORTFOLIO" /> &gt; <mm:field name="name"/></option>
+                  <option value="<mm:field name="number"/>"><di:translate key="portfolio.showcaseportfolio" /> &gt; <mm:field name="name"/></option>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
           </mm:node>
-        </fmt:bundle>
       </td>
       </tr>
 
@@ -254,8 +251,8 @@
       <mm:compare referid="contact" value="-1" inverse="true">
         <input type="hidden" name="contact" value="<mm:write referid="contact"/>"/>
       </mm:compare>
-      <input class="formbutton" type="submit" name="action1" value="<fmt:message key="MOVE" />" />
-      <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
+      <input class="formbutton" type="submit" name="action1" value="<di:translate key="portfolio.move" />" />
+      <input class="formbutton" type="submit" name="action2" value="<di:translate key="portfolio.back" />" />
     </form>
 
   </div>
@@ -263,6 +260,5 @@
 </div>
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

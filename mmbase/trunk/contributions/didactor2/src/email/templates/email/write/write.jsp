@@ -1,9 +1,7 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="java.util.Calendar,
                  java.util.Enumeration"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
 <mm:content postprocessor="none"><%-- no reducespace: it messes with the textarea --%>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -279,17 +277,17 @@
     
     function checkFields(frm) {
       if(frm.elements['to'].value.length == 0) {
-        alert('<fmt:message key="TOEMPTY" />');
+        alert('<di:translate key="email.toempty" />');
         return false;
       }
 
       if(frm.elements['subject'].value.length == 0) {
-		alert('<fmt:message key="SUBJECTEMPTY" />');
+		alert('<di:translate key="email.subjectempty" />');
         return false;
       }
 
       if(frm.elements['body'].value.length == 0) {
-        alert('<fmt:message key="BODYEMPTY" />');
+        alert('<di:translate key="email.bodyempty" />');
         return false;
       }
 	return true;
@@ -300,7 +298,7 @@
 
   <mm:treeinclude write="true" page="/email/cockpit/menuitem.jsp" objectlist="$includePath">
     <mm:param name="icon">write message</mm:param>
-    <mm:param name="text"><fmt:message key="WRITEMESSAGE" /></mm:param>
+    <mm:param name="text"><di:translate key="email.writemessage" /></mm:param>
   </mm:treeinclude>
 
   </div>
@@ -320,21 +318,21 @@
 		</mm:present>
     <table class="font">
             <tr>
-              <td><fmt:message key="TO" /> :&nbsp;</td>
+              <td><di:translate key="email.to" /> :&nbsp;</td>
               <td>
 	      <input type="text" class="formInput" name="to" value="<mm:write referid="to"/>"> 
-	      <input type="submit" name="lookup_to_action" value="<di:translate id="lookup_to">Uit adresboek</di:translate>" class="formbutton"></td>
+	      <input type="submit" name="lookup_to_action" value="<di:translate key="email.lookup_to" />" class="formbutton"></td>
               </tr>
  
             </tr>
             <tr>
-              <td><fmt:message key="CC" /> :&nbsp;</td>
+              <td><di:translate key="email.cc" /> :&nbsp;</td>
               <td>
 	      <input type="text" class="formInput" name="cc" value="<mm:write referid="cc"/>">
-	      <input type="submit" name="lookup_cc_action" value="<di:translate id="lookup_cc">Uit adresboek</di:translate>" class="formbutton"></td>
+	      <input type="submit" name="lookup_cc_action" value="<di:translate key="email.lookup_cc" />" class="formbutton"></td>
 	      </tr>
            <tr>
-              <td><fmt:message key="SUBJECT" /> :&nbsp;</td>
+              <td><di:translate key="email.subject" /> :&nbsp;</td>
               <td><input type="text" class="formInput" name="subject" value="<mm:write referid="subject"/>">
               </td>
             </tr>
@@ -348,7 +346,7 @@
               </td>
             </tr>
             <tr>
-              <td style="vertical-align: top"><fmt:message key="ATTACHMENTS" /> :&nbsp;</td>
+              <td style="vertical-align: top"><di:translate key="email.attachments" /> :&nbsp;</td>
               <td>
               <div class="attachment">
               <table border="0" class="Font">
@@ -371,7 +369,7 @@
               <tr><td colspan="2">
                     <input type="file" class="formInput" name="att_handle" class="formbutton">
                 </td><td>
-		    <input type="submit" name="att_attachment_action" value="<di:translate id="updateattachments">toevoegen/verwijderen</di:translate>" class="formbutton">
+		    <input type="submit" name="att_attachment_action" value="<di:translate key="email.updateattachments" />" class="formbutton">
             </td></tr>
             </table>
             </div>
@@ -379,10 +377,10 @@
             </tr>
             <tr>
               <td>
-		    <input type="submit" name="send_action" value="<di:translate id="send">Verstuur</di:translate>" onclick="return checkFields(this.form)" class="formbutton">
+		    <input type="submit" name="send_action" value="<di:translate key="email.send" />" onclick="return checkFields(this.form)" class="formbutton">
               </td>
               <td>
-				<input type="submit" name="back" value="<di:translate id="back">Terug</di:translate>" class="formbutton">
+				<input type="submit" name="back" value="<di:translate key="email.back" />" class="formbutton">
 				</div>
               </td>
             </tr>
@@ -399,6 +397,5 @@
 
 </mm:cloud>
 </mm:content>
-</fmt:bundle>
 
 

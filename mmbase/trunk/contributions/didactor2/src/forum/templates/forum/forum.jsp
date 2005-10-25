@@ -134,7 +134,7 @@
                   <mm:compare referid="type" value="0">
                     <mm:treeinclude write="true" page="/forum/headerlink.jsp" objectlist="$includePath" referids="$referids">
                       <mm:param name="icon" value="sluit forum voor studenten"/>
-                      <mm:param name="text"><di:translate id="closeforum" >Close forum for students</di:translate></mm:param>
+                      <mm:param name="text"><di:translate key="forum.closeforum" /></mm:param>
                       <mm:param name="link"><mm:treefile write="true" page="/forum/changeforumtype.jsp" objectlist="$includePath" referids="$referids">
                               <mm:notpresent referid="class"><mm:param name="provider" value="$provider"/></mm:notpresent>
                               <mm:param name="number" value="$forum"/>
@@ -146,7 +146,7 @@
                   <mm:compare referid="type" value="1">
                     <mm:treeinclude write="true" page="/forum/headerlink.jsp" objectlist="$includePath" referids="$referids">
                       <mm:param name="icon" value="open forum voor studenten"/>
-                      <mm:param name="text"><di:translate id="openforum" >open forum voor studenten</di:translate></mm:param>
+                      <mm:param name="text"><di:translate key="forum.openforum" /></mm:param>
                       <mm:param name="link"><mm:treefile write="true" page="/forum/changeforumtype.jsp" objectlist="$includePath" referids="$referids">
                               <mm:notpresent referid="class"><mm:param name="provider" value="$provider"/></mm:notpresent>
                               <mm:param name="number" value="$forum"/>

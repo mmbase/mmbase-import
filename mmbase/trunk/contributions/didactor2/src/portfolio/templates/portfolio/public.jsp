@@ -1,17 +1,15 @@
 <%--
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="MYDOCUMENTS" /></title>
+    <title><di:translate key="portfolio.mydocuments" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -41,15 +39,15 @@
 <div class="rows">
 <div class="navigationbar">
 <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
-      <fmt:message key="PORTFOLIO" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="portfolio.portfolio" />"/>
+      <di:translate key="portfolio.portfolio" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="PORTFOLIO" />
+    <di:translate key="portfolio.portfolio" />
 </div>
   <div class="folderBody">
   </div>
@@ -57,11 +55,11 @@
 
 <%-- folder is open --%>
 <mm:compare referid="typeof" value="-1">
-  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderopened" />" />
 </mm:compare>
 <%-- folder is closed --%>
 <mm:compare referid="typeof" value="-1" inverse="true">
-  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
 
 <a href="index.jsp">Portfolio cockpit</a><br/>
@@ -80,11 +78,11 @@
 <%-- folder is open --%>
 <mm:compare referid="typeof" value="0">
   <mm:import id="currentportfolioisopen">true</mm:import>
-  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderopened" />" />
 </mm:compare>
 <%-- folder is closed --%>
 <mm:compare referid="typeof" value="0" inverse="true">
-  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
 <a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">0</mm:param></mm:treefile>">Ontwikkelingsgericht portfolio</a><br/>
 
@@ -94,11 +92,11 @@
 <%-- folder is open --%>
 <mm:compare referid="typeof" value="1">
   <mm:import id="currentportfolioisopen">true</mm:import>
-  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderopened" />" />
 </mm:compare>
 <%-- folder is closed --%>
 <mm:compare referid="typeof" value="1" inverse="true">
-  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
 <a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">1</mm:param></mm:treefile>">Assessment portfolio</a><br/>
 
@@ -108,11 +106,11 @@
 <%-- folder is open --%>
 <mm:compare referid="typeof" value="2">
   <mm:import id="currentportfolioisopen">true</mm:import>
-  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderopened" />" />
 </mm:compare>
 <%-- folder is closed --%>
 <mm:compare referid="typeof" value="2" inverse="true">
-  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
+  <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderclosed" />" />
 </mm:compare>
 <a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">2</mm:param></mm:treefile>">Showcase portfolio</a><br/>
 
@@ -127,13 +125,13 @@
 
       <%-- folder is open --%>
       <mm:compare referid="currentfolder" referid2="currentnumber">
-        &nbsp;<img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDEROPENED" />" />
+        &nbsp;<img src="<mm:treefile page="/portfolio/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderopened" />" />
       </mm:compare>
 
       <%-- folder is closed --%>
       <mm:compare referid="currentfolder" referid2="currentnumber" inverse="true">
 
-        &nbsp;<img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
+        &nbsp;<img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="portfolio.folderclosed" />" />
       </mm:compare>
 
       <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids,contact?">
@@ -218,11 +216,11 @@
 
           <di:row>
             <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"></input></di:headercell>
-            <di:headercell><fmt:message key="TYPE" /></di:headercell>
-            <di:headercell><fmt:message key="TITLE" /></di:headercell>
-            <di:headercell><fmt:message key="REACTIONS"/></di:headercell>
-            <di:headercell><fmt:message key="DATE" /></di:headercell>
-            <di:headercell><fmt:message key="DESCRIPTION" /></di:headercell>
+            <di:headercell><di:translate key="portfolio.type" /></di:headercell>
+            <di:headercell><di:translate key="portfolio.title" /></di:headercell>
+            <di:headercell><di:translate key="portfolio.reactions" /></di:headercell>
+            <di:headercell><di:translate key="portfolio.date" /></di:headercell>
+            <di:headercell><di:translate key="portfolio.description" /></di:headercell>
 
           </di:row>
 
@@ -277,7 +275,7 @@
               <mm:remove referid="objecttype"/>
               <mm:import id="objecttype"><mm:nodeinfo type="type"/></mm:import>
               <mm:compare referid="objecttype" value="attachments">
-                <di:cell><img src="<mm:write referid="gfx_attachment"/>" alt="<fmt:message key="FOLDERITEMTYPEDOCUMENT" />" /></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_attachment"/>" alt="<di:translate key="portfolio.folderitemtypedocument" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="title" /></a></di:cell>
                 <di:cell><mm:countrelations type="forummessages"/></di:cell>
                 <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
@@ -293,22 +291,22 @@
 			  	<%
 			  	  }
 			  	%>
-                <di:cell><img src="<mm:write referid="gfx_url"/>" alt="<fmt:message key="FOLDERITEMTYPEURL" />" /></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_url"/>" alt="<di:translate key="portfolio.folderitemtypeurl" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
                  <di:cell><mm:countrelations type="forummessages"/></di:cell>
                  <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
               </mm:compare>
               <mm:compare referid="objecttype" value="pages">
-                <di:cell><img src="<mm:write referid="gfx_page"/>" alt="<fmt:message key="FOLDERITEMTYPEPAGE" />" /></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_page"/>" alt="<di:translate key="portfolio.folderitemtypepage" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
                  <di:cell><mm:countrelations type="forummessages"/></di:cell>
                  <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="text" /></di:cell>
               </mm:compare>
               <mm:compare referid="objecttype" value="chatlogs">
-                <di:cell><img src="<mm:write referid="gfx_chatlog"/>" alt="<fmt:message key="FOLDERITEMTYPECHATLOG" />" /></di:cell>
-                <di:cell><mm:write referid="link" escape="none"/><fmt:message key="FOLDERITEMTYPECHATLOG" /><mm:field name="number"/></a></di:cell>
+                <di:cell><img src="<mm:write referid="gfx_chatlog"/>" alt="<di:translate key="portfolio.folderitemtypechatlog" />" /></di:cell>
+                <di:cell><mm:write referid="link" escape="none"/><di:translate key="portfolio.folderitemtypechatlog" /><mm:field name="number"/></a></di:cell>
                   <di:cell><mm:countrelations type="forummessages"/></di:cell>
                 <di:cell><mm:field name="date"></mm:field></di:cell> <!-- TODO show correct date -->
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
@@ -444,12 +442,12 @@ Mijn gegevens:
   </tr>
 </table>
 
-<input class="formbutton" type="submit" name="change" value="<fmt:message key="SAVE"/>"/>
+<input class="formbutton" type="submit" name="change" value="<di:translate key="portfolio.save"/>" />
 
 </form>
 
 <form name="cancel" method="POST" action="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath"/>">
-  <input class="formbutton" type="submit" name="cancel" value="<fmt:message key="BACK"/>"/>
+  <input class="formbutton" type="submit" name="cancel" value="<di:translate key="portfolio.back"/>" />
 </form>
 
 </mm:compare>
@@ -483,6 +481,5 @@ Mijn gegevens:
 
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

@@ -1,16 +1,13 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp"%>
-<fmt:bundle basename="nl.didactor.component.email.EmailMessageBundle">
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="EMAIL" /></title>
+    <title><di:translate key="email.email" /></title>
   </mm:param>
 </mm:treeinclude>
 
@@ -18,14 +15,14 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<fmt:message key="EMAIL" />" /> <fmt:message key="EMAIL" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="email.email" />" /> <di:translate key="email.email" />
   </div>
 </div>
 
 
 <div class="folders">
   <div class="folderHeader">
-    <fmt:message key="MAILRULES" />
+    <di:translate key="email.mailrules" />
   </div>
   <div class="folderBody">
 
@@ -77,20 +74,20 @@
     <form action="editmailrule.jsp" method="POST">
     <table class="Font">
 	<tr>
-	    <th><fmt:message key="MATCHWHAT"/></th>
+	    <th><di:translate key="email.matchwhat" /></th>
 	    <td>
 	    <select name="type">
-		<option value="subjectmailrule"><fmt:message key="SUBJECT"/></option>
-		<option value="sendermailrule"><fmt:message key="SENDER"/></option>
+		<option value="subjectmailrule"><di:translate key="email.subject" /></option>
+		<option value="sendermailrule"><di:translate key="email.sender" /></option>
 	    </select>
 	    </td>
 	</tr>
 	<tr>
-	    <th><fmt:message key="SUBSTRING"/></th>
+	    <th><di:translate key="email.substring" /></th>
 	    <td><input type="text" name="rule" size="80" class="formbutton"></td>
 	</tr>
 	<tr>
-	    <th><fmt:message key="FOLDER"/></th>
+	    <th><di:translate key="email.folder" /></th>
 	    <td><select name="folder">
 		<mm:node number="$user">
 		<mm:relatednodes type="mailboxes" orderby="type, name">
@@ -100,7 +97,7 @@
 		</select>
 	    </td>
 	</tr>
-	<tr><td></td><td><input class="formbutton" type="submit" name="action_back" value="<fmt:message key="BACK"/>"/> <input type="submit" name="action_commit" value="Ok" class="formbutton"></td></tr>
+	<tr><td></td><td><input class="formbutton" type="submit" name="action_back" value="<di:translate key="email.back"/>" /> <input type="submit" name="action_commit" value="Ok" class="formbutton"></td></tr>
     </table>
     </form>
 		
@@ -110,6 +107,5 @@
 </div>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

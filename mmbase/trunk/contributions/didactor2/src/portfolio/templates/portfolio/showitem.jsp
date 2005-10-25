@@ -1,7 +1,7 @@
 <%--
   This template shows a existing folderitem.
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
@@ -10,11 +10,10 @@
 <mm:cloud method="asis" jspvar="cloud">
 <!-- get imports -->
 <%@include file="/shared/setImports.jsp" %>
-<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <!-- get cockpit header -->
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title><fmt:message key="OPENITEM" /></title>
+    <title><di:translate key="portfolio.openitem" /></title>
   </mm:param>
 </mm:treeinclude>
 <!-- header done -->
@@ -164,15 +163,15 @@
 
 <div class="navigationbar">
 <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
-      <fmt:message key="PORTFOLIO" />
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="portfolio.portfolio" />"/>
+      <di:translate key="portfolio.portfolio" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="PORTFOLIO" />
+    <di:translate key="portfolio.portfolio" />
 </div>
   <div class="folderBody">
   </div>
@@ -183,19 +182,19 @@
 
   <div class="contentHeader">
     <mm:node number="$currentitem">
-      <fmt:message key="OPENITEM" />:
+      <di:translate key="portfolio.openitem" />:
       <mm:import id="nodetype"><mm:nodeinfo type="type"/></mm:import>
       <mm:compare referid="nodetype" value="attachments">
-        <fmt:message key="FOLDERITEMTYPEDOCUMENT" />
+        <di:translate key="portfolio.folderitemtypedocument" />
       </mm:compare>
       <mm:compare referid="nodetype" value="urls">
-        <fmt:message key="FOLDERITEMTYPEURL" />
+        <di:translate key="portfolio.folderitemtypeurl" />
       </mm:compare>
       <mm:compare referid="nodetype" value="pages">
-        <fmt:message key="FOLDERITEMTYPEPAGE" />
+        <di:translate key="portfolio.folderitemtypepage" />
       </mm:compare>
       <mm:compare referid="nodetype" value="chatlogs">
-        <fmt:message key="FOLDERITEMTYPECHATLOG" />
+        <di:translate key="portfolio.folderitemtypechatlog" />
       </mm:compare>
     </mm:node>
   </div>
@@ -305,8 +304,8 @@
       <input type="hidden" name="contact" value="<mm:write referid="contact"/>"/>
      <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
       <tr><td>
-      <mm:compare referid="mayeditthis" value="true"><input class="formbutton" type="submit" name="action1" value="<fmt:message key="SAVE" />" /></mm:compare>
-      <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
+      <mm:compare referid="mayeditthis" value="true"><input class="formbutton" type="submit" name="action1" value="<di:translate key="portfolio.save" />" /></mm:compare>
+      <input class="formbutton" type="submit" name="action2" value="<di:translate key="portfolio.back" />" />
       </td></tr>
     </form>
 
@@ -321,7 +320,7 @@
     <tr><td colspan="2">
     <br><br>
     <p>
-    <b><fmt:message key="REACTIONS"/></b>
+    <b><di:translate key="portfolio.reactions" /></b>
     </p>
     </td></tr>
     <tr><td></td><td>
@@ -350,7 +349,7 @@
             </tr>
             <tr>
             <td>
-            <input type="submit" value="<fmt:message key="REACT"/>" class="formbutton">
+            <input type="submit" value="<di:translate key="portfolio.react" />" class="formbutton">
             </td></tr>
         </form>
     </mm:compare>
@@ -363,6 +362,5 @@
 
 </mm:notpresent>
 </mm:compare>
-</fmt:bundle>
 </mm:cloud>
 </mm:content>

@@ -1,35 +1,17 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-   <%
-
-      String bundleMMBob = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundleMMBob = "nl.didactor.component.mmbob.MMBobMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundleMMBob %>">
-<%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
-   <title><fmt:message key="MMBaseForum"/></title>
+   <title><di:translate key="mmbob.mmbaseforum" /></title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
 </head>
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
-<mm:import externid="boxname"><fmt:message key="Inbox"/></mm:import>
+<mm:import externid="boxname"><di:translate key="mmbob.inbox" /></mm:import>
 <mm:import externid="mailboxid" />
 <mm:import externid="pathtype">privatemessages</mm:import>
 <mm:import externid="posterid" id="profileid" />
@@ -54,7 +36,7 @@
     <table cellpadding="0" width="150">
     <tr><td>
     <table cellpadding="0" class="list" cellspacing="0" width="150">
-    <tr><th><fmt:message key="Folder"/></th></tr>
+    <tr><th><di:translate key="mmbob.folder" /></th></tr>
     <mm:node referid="posterid">
     <mm:related path="posrel,forummessagebox">
         <mm:node element="forummessagebox">
@@ -75,7 +57,7 @@
     <tr><td>
         <form action="<mm:url page="privatemessages.jsp" referids="forumid,mailboxid" />" METHOD="POST">
     <table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
-    <tr><th><fmt:message key="AddFolder"/></th></tr>
+    <tr><th><di:translate key="mmbob.addfolder" /></th></tr>
     <tr><td><input name="newfolder" style="width: 98%" /></td></tr>
         <input name="action" type="hidden" value="newfolder">
     </table>
@@ -83,8 +65,8 @@
     </td></tr>
     <tr><td>
     <table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
-    <tr><th colspan="3"><fmt:message key="PMQuota"/></th></tr>
-    <tr><td colspan="3"><fmt:message key="YouUsing"/></td></tr>
+    <tr><th colspan="3"><di:translate key="mmbob.pmquota" /></th></tr>
+    <tr><td colspan="3"><di:translate key="mmbob.youusing" /></td></tr>
     <tr><td colspan="3"><img src="images/green.gif" height="7" width="20"></td></tr>
     <tr><td align="left" width="33%">0%</td><td align="middle" width="34%">50%</td><td align="right" width="33%">100%</td></tr>
     </table>
@@ -93,7 +75,7 @@
    </td>
    <td valign="top">
     <table cellpadding="0" class="list" style="margin-top : 2px;" cellspacing="0" width="100%" border="1">
-    <tr><th><fmt:message key="Subject"/></th><th><fmt:message key="Sender"/></th><th><fmt:message key="Date"/></th><th></th></tr>
+    <tr><th><di:translate key="mmbob.subject" /></th><th><di:translate key="mmbob.sender" /></th><th><di:translate key="mmbob.date" /></th><th></th></tr>
     <mm:present referid="mailboxid">
     <form action="<mm:url page="privatemessagesconfirmaction.jsp" referids="forumid,mailboxid" />" method="post">
     <mm:node referid="mailboxid">
@@ -106,7 +88,7 @@
     </mm:node>
     <tr>
         <th colspan="4">
-        <fmt:message key="Actions"/> : <input type="submit" name="folderaction" value="new"> -
+        <di:translate key="mmbob.actions" /> : <input type="submit" name="folderaction" value="new"> -
         <mm:present referid="messagesfound">
         <input type="submit" name="folderaction" value="delete"> - 
         <input type="submit" name="folderaction" value="forward"> -
@@ -126,5 +108,4 @@
 </table>
 </center>
 </html>
-</fmt:bundle>
 </mm:cloud>

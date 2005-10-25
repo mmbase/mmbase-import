@@ -1,32 +1,15 @@
 <%-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd" --%>
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-   <%
-
-      String bundleMMBob = null;
-
-   %>
-
-   <mm:write referid="lang_code" jspvar="sLangCode" vartype="String" write="false">
-
-      <%
-
-         bundleMMBob = "nl.didactor.component.mmbob.MMBobMessageBundle_" + sLangCode;
-
-      %>
-
-   </mm:write>
-
-<fmt:bundle basename="<%= bundleMMBob %>">
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title><fmt:message key="MMBaseForum"/></title>
+   <title><di:translate key="mmbob.mmbaseforum" /></title>
 </head>
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
@@ -58,11 +41,11 @@
                     <center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
                     <br />
                     </mm:compare>
-            <b><fmt:message key="area" /></b> : <mm:field name="name" /><br />
-            <b><fmt:message key="numberoftopics" /></b> : <mm:field name="postthreadcount" /><br />
-            <b><fmt:message key="numberofmessages" /></b> : <mm:field name="postcount" /><br />
-            <b><fmt:message key="numberofviews" /></b> : <mm:field name="viewcount" /><br />
-            <b><fmt:message key="lastmessage" /></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> <b><fmt:message key="VisitorsOnline1"/></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><fmt:message key="VisitorsOnline2"/></mm:compare></mm:field><br />
+            <b><di:translate key="mmbob.area" /></b> : <mm:field name="name" /><br />
+            <b><di:translate key="mmbob.numberoftopics" /></b> : <mm:field name="postthreadcount" /><br />
+            <b><di:translate key="mmbob.numberofmessages" /></b> : <mm:field name="postcount" /><br />
+            <b><di:translate key="mmbob.numberofviews" /></b> : <mm:field name="viewcount" /><br />
+            <b><di:translate key="mmbob.lastmessage" /></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="<%= timeFormat %>" /></mm:field> <b><di:translate key="mmbob.visitorsonline1" /></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><di:translate key="mmbob.visitorsonline2" /></mm:compare></mm:field><br />
             <mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
           </mm:nodefunction>
     <br />
@@ -76,7 +59,7 @@
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
    <tr><%-- hh <th width="15">&nbsp;</th><th width="15">&nbsp;</th> --%>
-        <th><fmt:message key="topic" /></th><th><fmt:message key="StartedBy"/></th><th><fmt:message key="numberofmessages" /></th><th><fmt:message key="numberofviews" /></th><th><fmt:message key="lastmessage" /></th><mm:compare referid="isadministrator" value="true"><th><fmt:message key="admin"/></th></mm:compare></tr>
+        <th><di:translate key="mmbob.topic" /></th><th><di:translate key="mmbob.startedby" /></th><th><di:translate key="mmbob.numberofmessages" /></th><th><di:translate key="mmbob.numberofviews" /></th><th><di:translate key="mmbob.lastmessage" /></th><mm:compare referid="isadministrator" value="true"><th><di:translate key="mmbob.admin" /></th></mm:compare></tr>
       <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
             <tr>
             <%-- hh <td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td> --%>
@@ -91,7 +74,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;" align="right">
     <tr>
     <td>
-    <fmt:message key="Pages"/> : <mm:write referid="navline" />
+    <di:translate key="mmbob.pages" /> : <mm:write referid="navline" />
     </td></tr>
 </table>
 </mm:compare>
@@ -125,21 +108,21 @@
 <br /><br /><br />
 <mm:compare referid="isadministrator" value="true">
         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-left : 20px;" width="95%" align="left">
-        <tr><th align="lef"><fmt:message key="AdminFunctions"/></th></tr>
+        <tr><th align="lef"><di:translate key="mmbob.adminfunctions" /></th></tr>
         <td>
         <p />
-                <a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><fmt:message key="changeArea"/></a><br />
+                <a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><di:translate key="mmbob.changearea" /></a><br />
 
-                <a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />"><fmt:message key="removeArea"/></a><br />
+                <a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />"><di:translate key="mmbob.removearea" /></a><br />
 
                 <a href="<mm:url page="newmoderator.jsp">
                 <mm:param name="forumid" value="$forumid" />
                 <mm:param name="postareaid" value="$postareaid" />
-                </mm:url>"><fmt:message key="addModerator"/></a><br />
+                </mm:url>"><di:translate key="mmbob.addmoderator" /></a><br />
                 <a href="<mm:url page="removemoderator.jsp">
                 <mm:param name="forumid" value="$forumid" />
                 <mm:param name="postareaid" value="$postareaid" />
-                </mm:url>"><fmt:message key="removeModerator"/></a><br />
+                </mm:url>"><di:translate key="mmbob.removemoderator" /></a><br />
     </td></tr>
 </table>
 </mm:compare>
@@ -147,5 +130,4 @@
 </center>
 </mm:locale>
 </html>
-</fmt:bundle>
 </mm:cloud>

@@ -50,9 +50,9 @@
                     <mm:field name="ratings.pos" jspvar="dummy" vartype="String">
                       <% int compRating = (new Integer(dummy)).intValue();
                          if (averageRating < compRating) { %>
-                           <mm:import id="thisrating" reset="true"><fmt:message key="CompTableGoodRating"/></mm:import>
+                           <mm:import id="thisrating" reset="true"><di:translate key="pop.comptablegoodrating" /></mm:import>
                          <% } else { %>
-                           <mm:import id="thisrating" reset="true"><fmt:message key="CompTableNotGoodRating"/></mm:import>
+                           <mm:import id="thisrating" reset="true"><di:translate key="pop.comptablenotgoodrating" /></mm:import>
                          <% }
                       %>
                     </mm:field>
