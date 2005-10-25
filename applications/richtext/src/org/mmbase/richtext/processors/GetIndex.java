@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.datatypes.processors;
+package org.mmbase.richtext.processors;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
@@ -19,7 +19,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: GetIndex.java,v 1.1 2005-10-25 12:33:18 michiel Exp $
+ * @version $Id: GetIndex.java,v 1.2 2005-10-25 12:36:11 michiel Exp $
  * @since MMBase-1.8
  */
 
