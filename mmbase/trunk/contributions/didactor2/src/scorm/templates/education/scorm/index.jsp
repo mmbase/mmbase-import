@@ -359,7 +359,7 @@ if (top == self) {
                      <td class="deletebutton">
                         <a
                            href='index.jsp?delete_package=<mm:field name="number"/>'
-                           onclick="return confirm('<di:translate key="education.filemanagementdeleteprompt" />');">
+                           onclick="return confirm('<di:translate key="scorm.filemanagementdeleteprompt" />');">
                              <img border="0" src="<%= request.getContextPath() %>/editwizards/media/remove.gif"/>
                         </a>
                      </td>
