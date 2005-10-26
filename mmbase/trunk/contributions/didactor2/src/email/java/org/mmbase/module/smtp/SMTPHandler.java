@@ -8,7 +8,7 @@ import javax.mail.*;
 import nl.didactor.mail.*;
 
 /**
- * Listener thread, that accepts connection on port 25 (default) and 
+ * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads. It is a minimum implementation,
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
@@ -22,9 +22,9 @@ public class SMTPHandler extends Thread {
 
     private Cloud cloud;
     private Hashtable properties;
-    
+
     /** State indicating we sent our '220' initial session instantiation message, and are now waiting for a HELO */
-    private final int STATE_HELO = 1; 
+    private final int STATE_HELO = 1;
 
     /** State indicating we received a HELO and we are now waiting for a 'MAIL FROM:' */
     private final int STATE_MAILFROM = 2;
@@ -34,10 +34,10 @@ public class SMTPHandler extends Thread {
 
     /** State indicating we received a DATA and we are now processing the data */
     private final int STATE_DATA = 4;
-    
+
     /** State indicating we received a QUIT, and that we may close the connection */
     private final int STATE_FINISHED = 5;
-    
+
     /** The current state of this handler */
     private int state = 0;
 
@@ -115,7 +115,7 @@ public class SMTPHandler extends Thread {
             writer.flush();
             return;
         }
-        
+
         if (line.toUpperCase().startsWith("HELO")) {
             if (state > STATE_HELO) {
                 writer.write("503 5.0.0 " + properties.get("hostname") + "Duplicate HELO/EHLO\r\n");
@@ -124,7 +124,7 @@ public class SMTPHandler extends Thread {
                 writer.write("250 " + properties.get("hostname") + " Good day [" + socket.getInetAddress().getHostAddress() + "], how are you today?\r\n");
                 writer.flush();
                 state = STATE_MAILFROM;
-            } 
+            }
             return;
         }
 
@@ -221,7 +221,7 @@ public class SMTPHandler extends Thread {
                         last5chars[i] = last5chars[i + 1];
                     }
                     last5chars[last5chars.length - 1] = (char)c;
-                   
+
                     isreading = false;
                     for (int i=0; i<last5chars.length; i++) {
                         if (last5chars[i] != endchars[i]) {
@@ -230,7 +230,7 @@ public class SMTPHandler extends Thread {
                         }
                     }
                 }
-                
+
                 // Copy everything but the '.\r\n' to the result
                 String result = data.substring(0, data.length() - 3);
                 if (handleData(result)) {
@@ -273,15 +273,15 @@ public class SMTPHandler extends Thread {
         int colon = address.indexOf(":");
 
         // If we have source routing, we must ignore everything before the colon
-        if (colon > 0) 
+        if (colon > 0)
             leftbracket = colon;
 
         // if the left or right brackets are not supplied, we MAY bounce the message. We
         // however try to parse the address still
-        
-        if (leftbracket < 0) 
+
+        if (leftbracket < 0)
             leftbracket = 0;
-        if (rightbracket < 0) 
+        if (rightbracket < 0)
             rightbracket = address.length();
 
         // Trim off any whitespace that may be left
@@ -295,11 +295,11 @@ public class SMTPHandler extends Thread {
         retval[1] = finaladdress.substring(atsign + 1, finaladdress.length());
         return retval;
     }
-    
+
     /**
-     * Handle the data from the DATA command. This method does all the work: it creates 
-     * objects in mailboxes. 
-     */ 
+     * Handle the data from the DATA command. This method does all the work: it creates
+     * objects in mailboxes.
+     */
     private boolean handleData(String data) {
         log.debug("Data: [" + data + "]");
         NodeManager emailbuilder = cloud.getNodeManager((String)properties.get("emailbuilder"));
@@ -319,14 +319,14 @@ public class SMTPHandler extends Thread {
         } else {
             body = data;
         }
-        
+
         for (int i=0; i<mailboxes.size(); i++) {
 
             Node mailbox = (Node)mailboxes.get(i);
             Node email = emailbuilder.createNode();
-	    if (properties.containsKey("emailbuilder.typefield")) {
-	         email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
-	    }
+       if (properties.containsKey("emailbuilder.typefield")) {
+            email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
+       }
             if (properties.containsKey("emailbuilder.headersfield")) {
                 email.setStringValue((String)properties.get("emailbuilder.headersfield"), "" + headers);
             }
@@ -367,7 +367,7 @@ public class SMTPHandler extends Thread {
                     email.setIntValue((String)properties.get("emailbuilder.datefield"), (int)(d.getTime() / 1000));
                 } catch (javax.mail.MessagingException e) {}
             }
-            try { 
+            try {
                 if (message.isMimeType("text/plain") || message.isMimeType("text/html")) {
                     if (message.getContent() != null)
                         email.setStringValue((String)properties.get("emailbuilder.bodyfield"), "" + message.getContent());
@@ -377,9 +377,9 @@ public class SMTPHandler extends Thread {
                     try {
                         Vector attachmentsVector = extractPart(message, new Vector(), email);
                         email.commit();
-    
-                        for (Enumeration enum = attachmentsVector.elements(); enum.hasMoreElements();) {
-                            Node attachment = (Node)enum.nextElement();
+
+                        for (Enumeration enumEnum = attachmentsVector.elements(); enumEnum.hasMoreElements();) {
+                            Node attachment = (Node)enumEnum.nextElement();
                             Relation rel = email.createRelation(attachment, cloud.getRelationManager("related"));
                             rel.commit();
                         }
@@ -463,10 +463,10 @@ public class SMTPHandler extends Thread {
         }
         return attachments;
     }
-            
+
     /**
      * Store an attachment (contained in a Part) in the MMBase object cloud.
-     * @param p 
+     * @param p
      * @return Node in the MMBase object cloud
      */
     private Node storeAttachment(Part p) throws javax.mail.MessagingException {
@@ -476,21 +476,21 @@ public class SMTPHandler extends Thread {
 
         if (filename.equals(""))
             filename="unknown";
-        
+
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
-        
+
         if (attachmentManager == null) {
             log.error("Attachments builder not activated");
             return null;
         }
-        
+
         Node attachmentNode = attachmentManager.createNode();
-        
+
         attachmentNode.setStringValue("title", "privatemail Attachment");
         attachmentNode.setStringValue("mimetype",p.getContentType());
         attachmentNode.setStringValue("filename", filename);
         attachmentNode.setIntValue("size", p.getSize());
-        
+
         try {
             byte[] ba = new byte[(int)p.getSize()];
             InputStream is = p.getInputStream();
@@ -500,16 +500,16 @@ public class SMTPHandler extends Thread {
         } catch (Exception ex) {
             log.error("Caught exception while trying to read attachment data: " + ex);
         }
-        
+
         attachmentNode.commit();
         log.debug("committed attachment to MMBase");
 
         return attachmentNode;
     }
-        
-            
+
+
     /**
-     * This method returns a Node to which the email should be related. 
+     * This method returns a Node to which the email should be related.
      * This node can be the user object represented by the given string parameter,
      * or it can be another object that is related to this user. This behaviour
      * is defined in the config file for this module.
@@ -538,7 +538,7 @@ public class SMTPHandler extends Thread {
                 null,                                   //directions
                 null,                                   //searchdir
                 true                                    //distinct
-            ); 
+            );
             if (nodelist.size() == 1) {
                 String number = nodelist.getNode(0).getStringValue(mailboxbuilder + ".number");
                 mailboxes.add(cloud.getNode(number));
@@ -554,7 +554,7 @@ public class SMTPHandler extends Thread {
                 }
                 /* this needs to be implemented
                 if ("create".equals(notfoundaction)) {
-                    
+
                 }
                 */
             } else {
