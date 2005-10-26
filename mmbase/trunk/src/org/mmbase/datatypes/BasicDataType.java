@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.19 2005-10-26 11:29:50 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.20 2005-10-26 20:07:43 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -433,8 +433,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * {@inheritDoc}
      */
-    public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
-        return enumerationRestriction.getEnumerationValues(locale, cloud, node, field);
+    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+        Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field);
+        return i.hasNext() ? i : null;
     }
 
     /**
@@ -800,6 +801,51 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return false;
         }
 
+    }
+
+
+    /**
+     * Iterates over the collection provided by the EnumerationRestriction, but skips the values which are invalid because of the other restrictions on this DataType
+     */
+    protected class RestrictedEnumerationIterator implements Iterator {
+        private final Iterator baseIterator;
+        private final Node node;
+        private final Field field;
+        private Object next = null;
+
+        RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
+            Collection col = enumerationRestriction.getEnumerationValues(locale, cloud, node, field);            
+            baseIterator =  col != null ? col.iterator() : Collections.EMPTY_LIST.iterator();
+            this.node = node;
+            this.field = field;
+            determinNext();
+        }
+        protected void determinNext() {
+            next = null;
+            while(baseIterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) baseIterator.next();
+                Object value = entry.getKey();
+                if (BasicDataType.this.validate(value, node, field).size() == 0) {
+                    next = entry;
+                    break;
+                }
+            }
+        }
+
+        public boolean hasNext() {
+            return next != null;
+        }
+        public Object next() {
+            if (next == null) {
+                throw new NoSuchElementException();
+            }
+            Object n = next;
+            determinNext();
+            return n;
+        }
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove entries from " + getClass());
+        }
     }
 
 }
