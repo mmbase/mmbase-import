@@ -582,10 +582,9 @@ public class RemoteGenerator {
         helper.append("package org.mmbase.bridge.remote;");
         helper.append("import java.util.*;\n");
         helper.append("import java.rmi.*;\n");
-        helper.append("import java.util.Vector;\n");
 
         helper.append("import org.mmbase.bridge.*;\n");
-        helper.append("import org.mmbase.bridge.util.fields.*;\n");
+        helper.append("import org.mmbase.datatypes.processors.*;\n");
         helper.append("import org.mmbase.datatypes.*;\n");
         helper.append("import org.mmbase.security.*;\n");
         helper.append("import org.mmbase.bridge.remote.*;\n");
@@ -593,7 +592,6 @@ public class RemoteGenerator {
         helper.append("import org.mmbase.bridge.remote.implementation.*;\n");
 
         helper.append("import org.mmbase.storage.search.*;\n");
-        helper.append("import org.mmbase.storage.search.Step;\n");
         helper.append("import org.mmbase.util.functions.*;\n");
         helper.append("import org.mmbase.util.logging.*;\n");
 
