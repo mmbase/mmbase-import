@@ -33,7 +33,7 @@
 
 
             <di:translate key="mmbob.account" />=<mm:write referid="waccount" />
-            <di:translate key="mmbob.wachtwoord" />=<mm:write referid="wpassword" />
+            <di:translate key="mmbob.password" />=<mm:write referid="wpassword" />
             </mm:setfield>
                 </mm:createnode>
 
