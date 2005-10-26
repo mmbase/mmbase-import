@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.9 2005-10-25 18:33:21 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.10 2005-10-26 11:29:50 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -126,6 +126,7 @@ public abstract class ComparableDataType extends BasicDataType {
                 if (cal.get(Calendar.ERA) == GregorianCalendar.BC) {
                     buf.append(" BC");
                 }
+                buf.append(minRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
             }
         }
         if (minValue != null || maxValue != null) {
@@ -133,6 +134,7 @@ public abstract class ComparableDataType extends BasicDataType {
         }        
         if (maxValue != null) {
             buf.append(maxValue);
+            buf.append(maxRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
             buf.append(maxRestriction.isInclusive() ? ']' : '>');
         }
         return buf;

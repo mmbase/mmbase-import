@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.18 2005-10-25 18:33:21 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.19 2005-10-26 11:29:50 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -680,6 +680,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             value = (Serializable) source.getValue();
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
             errorDescription = (LocalizedString) source.getErrorDescription().clone();
+            enforceStrength = source.getEnforceStrength();
         }
 
         public int getEnforceStrength() {
@@ -690,7 +691,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
         public String toString() {
-            return name + " : " + value + ( fixed ? "." : "");
+            return name + " : " + 
+                (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") +
+                value + ( fixed ? "." : "");
         }
 
     }
