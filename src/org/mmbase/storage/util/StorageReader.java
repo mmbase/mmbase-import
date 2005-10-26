@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.5 2004-03-05 14:52:15 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.5.2.1 2005-10-26 12:17:44 michiel Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -40,9 +40,8 @@ public class StorageReader extends DocumentReader  {
 
     /**
      * Register the Public Ids for DTDs used by StorageReader
-     * This method is called by XMLEntityResolver.
      */
-    public static void registerPublicIDs() {
+    static {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_STORAGE_1_0, DTD_STORAGE_1_0, StorageReader.class);
     }
 
