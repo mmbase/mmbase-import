@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.46 2005-10-19 18:36:53 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.47 2005-10-26 22:04:42 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -113,11 +113,38 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    private static ParameterizedTransformerFactory readTransformerFactory(DocumentReader reader, Element parentElement, String id) {
+    private static ParameterizedTransformerFactory readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
         Iterator e = reader.getChildElements(parentElement, "class");
         Element element = (Element) e.next();
-        String claz = reader.getElementValue(element);        
-        return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+        final String claz = reader.getElementValue(element);   
+     
+        e = reader.getChildElements(parentElement, "param");
+        final Map configuredParams = new HashMap();
+        while (e.hasNext()) {
+            Element param = (Element) e.next();
+            String name = param.getAttribute("name");
+            String value = param.getAttribute("value");
+            if (! value.equals("")) {
+                configuredParams.put(name, value);
+            }            
+        }
+        if (configuredParams.size() == 0) { 
+            return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+        } else {
+            return new ParameterizedTransformerFactory() {
+                    ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+                    
+                    public Transformer createTransformer(Parameters parameters) {
+                        return wrapped.createTransformer(parameters);
+                    }
+                    public Parameters createParameters() {
+                        Parameters params = wrapped.createParameters();
+                        params.setAll(configuredParams);
+                        return params;
+                    }
+                    
+                };
+        }
     }
     /**
      * Initialize the write-escapers for MMBase taglib.
