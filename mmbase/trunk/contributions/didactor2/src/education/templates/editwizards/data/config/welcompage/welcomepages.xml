@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title>Welkom Pagina Editor</title>
+    <title xml:lang="nl">Welkom Pagina Editor</title>
+    <title xml:lang="en">Welcomepage Editor</title>
 
     <action type="create">
        <object type="flashpages">
@@ -26,9 +27,11 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Pagina gegevens invoeren</title>
+        <title xml:lang="nl">Pagina gegevens invoeren</title>
+        <title xml:lang="nl">Enter page data</title>
         <field name="name" >
-            <prompt>Naam</prompt>
+            <prompt xml:lang="nl">Naam</prompt>
+            <prompt xml:lang="en">name</prompt>
         </field>
 
       <field name="showtitle" ftype="enum">
@@ -39,10 +42,12 @@
  
 
         <field name="text" ftype="html" dtminlength="0">
-            <prompt>Tekst</prompt>
+            <prompt xml:lang="nl">Tekst</prompt>
+            <prompt xml:lang="en">Text</prompt>
         </field>
         <field name="layout" ftype="enum">
-            <prompt>Layout</prompt>
+            <prompt xml:lang="nl">Layout</prompt>
+            <prompt xml:lang="en">Layout</prompt>
             <optionlist select="layout_ext" />
         </field>
 

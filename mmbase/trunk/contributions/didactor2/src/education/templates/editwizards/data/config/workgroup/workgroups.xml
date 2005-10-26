@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title>Werkgroep Editor</title>
+    <title xml:lang="nl">Werkgroep Editor</title>
+    <title xml:lang="en">Workgroup Editor</title>
 
     <action type="create">
       <object type="workgroups">
@@ -29,9 +30,11 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Werkgroep Invoeren</title>
+        <title xml:lang="nl">Werkgroep Invoeren</title>
+        <title xml:lang="en">Enter workgroup</title>
         <field name="name" dtminlength="1">
-            <prompt>Werkgroep naam</prompt>
+            <prompt xml:lang="nl">Werkgroep naam</prompt>
+            <prompt xml:lang="en">Workgroup name</prompt>
         </field>
  
       <field name="protected" ftype="enum">

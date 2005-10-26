@@ -6,7 +6,8 @@
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema>
-    <title>Bestand Invoeren</title>
+    <title xml:lang="nl">Bestand Invoeren</title>
+    <title xml:lang="en">Enter file</title>
 
     <action type="create">
         <object type="attachments">
@@ -34,21 +35,25 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Invoeren bestand</title>
+        <title xml:lang="nl">Invoeren bestand</title>
+        <title xml:lang="en">Enter file</title>
         <field name="title" dtminlength="1">
-            <prompt>Titel</prompt>
+            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
         </field>
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
-        <field name="description"  rows="8">
-            <prompt>Omschrijving</prompt>
+        <field name="description" rows="8">
+            <prompt xml:lang="nl">Omschrijving</prompt>
+            <prompt xml:lang="en">Description</prompt>
         </field>
         
         <field name="handle">
-            <prompt>Bestand</prompt>
+            <prompt xml:lang="nl">Bestand</prompt>
+            <prompt xml:lang="en">File</prompt>
         </field>
     </form-schema>    
 
