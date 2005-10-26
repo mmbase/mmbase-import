@@ -33,8 +33,8 @@
     <mm:listnodes type="mmservers" >
       <tr>
         <td class="data"><mm:field name="name" /></td>
-        <td class="data"><mm:field name="showstate" /></td>
-        <td class="data"><mm:field name="showatime" /></td>
+        <td class="data"><mm:field name="state" /></td>
+        <td class="data"><mm:field name="atime" /></td>
         <td class="data"><mm:field name="host" /></td>
         <td class="data"><mm:field name="os" /></td>
         <td class="navigate">
