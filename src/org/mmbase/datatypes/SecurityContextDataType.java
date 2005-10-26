@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.2 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: SecurityContextDataType.java,v 1.3 2005-10-26 20:07:43 michiel Exp $
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {
@@ -31,28 +31,39 @@ public class SecurityContextDataType extends StringDataType {
         super(name);
     }
 
-    public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+    public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         if (node == null && cloud == null) return null; // we don't know..
-        if (cloud == null) cloud = node.getCloud();
 
         if (node == null) {
-            Collection col = new ArrayList();
-            String defaultContext = cloud.getUser().getOwnerField();
-            col.add(new Entry(defaultContext, defaultContext));
-            return col;
+            return new Iterator() {
+                    private boolean next = true;
+                    public boolean hasNext() {
+                        return next;
+                    }
+                    public Object next() {
+                        String defaultContext = cloud.getUser().getOwnerField();
+                        next = false;
+                        return new Entry(defaultContext, defaultContext);
+                    }
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
         } else {
             String value = field != null ? node.getStringValue(field.getName()) : null;
-
-            // bit silly that  a new list..
-            Collection col = new ArrayList();
-            StringList possibleContexts = node.getPossibleContexts();
-            if (value != null && ! possibleContexts.contains(value)) col.add(new Entry(value, value));
-            StringIterator i = possibleContexts.stringIterator();
-            while (i.hasNext()) {
-                String val = i.nextString();
-                col.add(new Entry(val, val));
-            }
-            return col;
+            return new Iterator() {
+                    StringIterator i = node.getPossibleContexts().stringIterator();
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+                    public Object next() {
+                        String val = i.nextString();
+                        return new Entry(val, val);
+                    }
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
         }
     }
     /*

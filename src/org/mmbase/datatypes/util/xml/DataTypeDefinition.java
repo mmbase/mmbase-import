@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.36 2005-10-26 11:29:50 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.37 2005-10-26 20:07:43 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -331,6 +331,7 @@ public class DataTypeDefinition {
             } else {
                 String resource = entryElement.getAttribute("basename");
                 if (! resource.equals("")) {
+                    log.info("Found bundle with basename '" + resource + " while parsing " + XMLWriter.write(enumerationElement, true, true));
                     Comparator comparator = null;
                     Class wrapper    = dataType.getTypeAsClass();
                     if (! Comparable.class.isAssignableFrom(wrapper)) {
