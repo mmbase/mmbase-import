@@ -2,9 +2,9 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <mm:import externid="search_component"/>
 <mm:compare referid="search_component" value="metadata">
-    <option value="metadata" selected="selected"><di:translate key="core.metadata" /></option>
+    <option value="metadata" selected="selected"><di:translate key="education.metadata" /></option>
 </mm:compare>
 <mm:compare referid="search_component" value="metadata" inverse="true">
-    <option value="metadata"><di:translate key="core.metadata" /></option>
+    <option value="metadata"><di:translate key="education.metadata" /></option>
 </mm:compare>
 

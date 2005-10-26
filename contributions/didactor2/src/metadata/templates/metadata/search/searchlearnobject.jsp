@@ -51,7 +51,7 @@ try {
     if (hit) {
 	%>
 	    <tr>
-		<td class="listItem"><di:translate key="core.learnobject" /></td>
+		<td class="listItem"><di:translate key="education.learnobject" /></td>
 		<td class="listItem">
 		    <mm:node number="$learnobject">
 			<mm:import id="learnobjecttype" reset="true"><mm:nodeinfo type="type"/></mm:import>

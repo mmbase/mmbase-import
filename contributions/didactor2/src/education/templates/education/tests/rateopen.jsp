@@ -161,7 +161,7 @@
 
 <input type="hidden" name="studentNo" value="<mm:write referid="studentNo"/>"/>
 
-<input type="submit" value="<di:translate key="education.ok">ok</di:translate>" />
+<input type="submit" value="<di:translate key="education.ok" />"/>
 
 <%--
 
