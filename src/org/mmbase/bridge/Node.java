@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.62 2005-10-07 18:43:39 michiel Exp $
+ * @version $Id: Node.java,v 1.63 2005-10-26 20:10:57 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -448,19 +448,10 @@ public interface Node extends Comparable {
      * This method is called by the {@link #commit} method, after commit processors are run.
      * Note that because commit processors may make necessary changes to field values, it is possible for
      * validate() to fail when used outside the commit process if the constraints are set too strict.
-     * @throws IllegalArgumentException when a field value is not valid.
+     * @return Collection of errors as <code>String</code> (in the current locale of the cloud) or an empty collection if everything ok.
      * @since MMBase-1.8
      */
-    public void validate();
-
-    /**
-     * Validates a field of a node by checking the value against the constraints of
-     * the field's datatype. See also {@link #validate}.
-     *
-     * @throws IllegalArgumentException when the field value is not valid.
-     * @since MMBase-1.8
-     */
-    public void validate(String fieldname);
+    public Collection validate();
 
     /**
      * Commit the node to the database.
@@ -473,6 +464,7 @@ public interface Node extends Comparable {
      * This action fails if the current node is not in edit mode.
      * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
      * @throws BridgeException
+     * @throws IllegalArgumentException If certain value of the node are invalid according to their data type.
      */
     public void commit();
 

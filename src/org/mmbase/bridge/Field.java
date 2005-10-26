@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.31 2005-10-01 20:09:37 michiel Exp $
+ * @version $Id: Field.java,v 1.32 2005-10-26 20:10:57 michiel Exp $
  */
 public interface Field extends Descriptor {
 
@@ -191,8 +191,9 @@ public interface Field extends Descriptor {
 
     /**
      * Checks whether a given value is valid for this field.
+     * @return Collection of error-strings (describing the problem) in the current locale, or an empty collection if the value is ok.
      * @since MMBase-1.8
      */
-    public void validate(Object value);
+    public java.util.Collection validate(Object value);
 
 }

@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.9 2005-10-07 18:43:39 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.10 2005-10-26 20:10:57 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -73,8 +73,7 @@ public abstract class NodeWrapper implements Node, Comparable {
         return node.getFieldValue(fieldName);
     }
     public FieldValue getFieldValue(Field field) { return node.getFieldValue(field); }
-    public void validate() { node.validate(); }
-    public void validate(String fieldName) { node.validate(fieldName); }
+    public Collection validate() { return node.validate(); }
     public void commit() { node.commit(); }
     public void cancel() { node.cancel(); }
     public boolean isNew() {  return node.isNew(); }
