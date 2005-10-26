@@ -15,7 +15,8 @@
 <!ATTLIST parameterizedescaper  id    CDATA  #REQUIRED > 
 
 <!ELEMENT param  (info?) >
-<!ATTLIST param  id    CDATA  #REQUIRED > 
+<!ATTLIST param  name   CDATA  #REQUIRED > 
+<!ATTLIST param  value  CDATA  #IMPLIED > 
 
 <!ELEMENT postprocessor  (class*, info?) >
 <!ATTLIST postprocessor  id    CDATA  #REQUIRED > 

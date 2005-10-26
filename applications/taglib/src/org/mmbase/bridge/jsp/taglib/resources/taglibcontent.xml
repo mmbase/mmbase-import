@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.41 2005-10-25 22:30:28 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.42 2005-10-26 22:04:42 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -287,7 +287,7 @@
     <info>
       Regexp-replacing.
     </info>
-    <param id="regexps">
+    <param name="regexps">
       <info>
         A list of entries describing regular expresions replacements. Replacements happens per word.
       </info>
@@ -298,10 +298,29 @@
     <info>
       Take substring.
     </info>
-    <param id="from">
+    <param name="from">
     </param>
-    <param id="to">
+    <param name="to">
     </param>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="resourcebundle">
+    <class>org.mmbase.util.transformers.ResourceBundleReplacerFactory</class>
+    <info>
+      Replaces the words which are present as key in given resourcebundle with the values. Since
+      resource bundles are localized, this gives a way to translate (mm:write is nearly fmt:message).
+    </info>
+    <param name="basename" />
+    <param name="locale" />
+  </parameterizedescaper>
+
+  <parameterizedescaper id="ordinals">
+    <class>org.mmbase.util.transformers.ResourceBundleReplacerFactory</class>
+    <info>
+      Replaces numerics with ordinals ('first', 'second'...).
+    </info>
+    <param name="basename" value="org.mmbase.datatypes.resources.ordinals" />
+    <param name="locale" />
   </parameterizedescaper>
   <parameterizedescaper id="google">
     <class>org.mmbase.util.transformers.GoogleHighlighterFactory</class>
