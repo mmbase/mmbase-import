@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.35 2005-10-25 18:33:21 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.36 2005-10-26 11:29:50 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -460,4 +460,3 @@ public class DataTypeDefinition {
     }
 
 }
-
