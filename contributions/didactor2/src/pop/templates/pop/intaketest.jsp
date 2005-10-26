@@ -92,7 +92,7 @@
       </mm:node>
     </mm:list>
     <input type="hidden" name="intakes" value="<%= notpassedIntakes %>"/>
-    <input type="submit" value="<di:translate key="pop.buttontextdone" />" class="formbutton"/>
+    <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton"/>
     </form>
 
     <% } else { %>
