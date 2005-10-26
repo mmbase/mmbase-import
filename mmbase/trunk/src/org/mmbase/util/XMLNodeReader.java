@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.38 2005-10-12 00:54:25 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.39 2005-10-26 20:18:12 andre Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -209,7 +209,7 @@ public class XMLNodeReader extends XMLBasicReader {
                     n2 = n2.getNextSibling();
                 }
             } else {
-                log.error("Could not find builder with name: " + n1.getNodeName() + "'");
+                log.error("Could not find builder with name  '" + n1.getNodeName() + "'");
             }
             n1 = n1.getNextSibling();
         }
