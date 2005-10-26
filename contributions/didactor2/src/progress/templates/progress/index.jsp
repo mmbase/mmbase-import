@@ -65,13 +65,16 @@
    <th style="border-color:#000000; border-left:0px">&nbsp;</th>
    <mm:node number="progresstextbackground">
       <th style="border-color:#000000; border-left:0px">
-         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<di:translate key="progress.progresstitle" />')+rotate(90)"/>">
+         <mm:import jspvar="tr_progresstitle" vartype="String"><di:translate key="progress.progresstitle" /></mm:import>
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<%=tr_progresstitle%>')+rotate(90)"/>">
       </th>
       <th style="border-color:#000000; border-left:0px">
-         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<di:translate key="progress.logins" />')+rotate(90)"/>">
+         <mm:import jspvar="tr_logins" vartype="String"><di:translate key="progress.logins" /></mm:import>
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<%=tr_logins%>')+rotate(90)"/>">
       </th>
       <th style="border-color:#000000; border-left:0px">
-         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<di:translate key="progress.online"/>')+rotate(90)"/>">
+         <mm:import jspvar="tr_online" vartype="String"><di:translate key="progress.online"/></mm:import>
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'<%=tr_online%>')+rotate(90)"/>">
       </th>
    </mm:node>
 
