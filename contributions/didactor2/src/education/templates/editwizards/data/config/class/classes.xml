@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-    <title>Klas Editor</title>
+    <title xml:lang="nl">Klas Editor</title>
+    <title xml:lang="en">Class Editor</title>
 
     <action type="create">
         <object type="classes" />
@@ -35,18 +36,23 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Klas Invoeren</title>
+        <title xml:lang="nl">Klas Invoeren</title>
+        <title xml:lang="en">Enter class</title>
         <field name="name" dtminlength="1">
-            <prompt>Klas naam</prompt>
+            <prompt xml:lang="nl">Klas naam</prompt>
+            <prompt xml:lang="en">Class name</prompt>
         </field>
         <list destination="mmevents" role="related" minoccurs="1" maxoccurs="*" ordertype="number" orderby="field[@name='start']">
-            <title>Looptijd van de klas</title>
+            <title xml:lang="nl">Looptijd van de klas</title>
+            <title xml:lang="en">Runtime of the class</title>
             <item>
                 <field name="start" ftype="datetime" dttype="datetime">
-                    <prompt>Begin van de klas</prompt>
+                    <prompt xml:lang="nl">Begin van de klas</prompt>
+                    <prompt xml:lang="en">Start of the class</prompt>
                 </field>
                 <field name="stop" ftype="datetime" dttype="datetime">
-                    <prompt>Eind van de klas</prompt>
+                    <prompt xml:lang="nl">Eind van de klas</prompt>
+                    <prompt xml:lang="en">End of the class</prompt>
                 </field>
             </item>
         

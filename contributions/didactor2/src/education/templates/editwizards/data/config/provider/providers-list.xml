@@ -1,10 +1,12 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="providers" role="related" minoccurs="1" maxoccurs="1">
-    <title>Aanbieder van de opleiding</title>
+    <title xml:lang="nl">Aanbieder van de opleiding</title>
+    <title xml:lang="en">Provider of the education</title>
 
     <item>
         <field name="name" ftype="data">
-            <prompt>Naam van de aanbieder</prompt>
+            <prompt xml:lang="nl">Naam van de aanbieder</prompt>
+            <prompt xml:lang="en">Name of the provider</prompt>
         </field>
     </item>
 
@@ -30,14 +32,12 @@
     </action>
 
     <command name="search" nodepath="providers" fields="name" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar aanbieders</prompt>
+        <prompt xml:lang="nl">Zoeken naar aanbieders</prompt>
+        <prompt xml:lang="en">Search providers</prompt>
         <search-filter>
-             <name>Naam bevat</name>
+             <name xml:lang="nl">Naam bevat</name>
+             <name xml:lang="en">Name contains</name>
              <search-fields>name</search-fields>
         </search-filter>
     </command>
-    <!--
-    This command is being misused; we will not allow teachers to add providers
-    <command name="insert" /> 
-    -->
 </list>
