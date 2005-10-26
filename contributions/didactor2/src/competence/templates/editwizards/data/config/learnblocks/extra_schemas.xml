@@ -1,12 +1,14 @@
     <form-schema id="step_assessments">
-        <title>Assessments invoeren</title>
+        <title xml:lang="nl">Assessments invoeren</title>
+        <title xml:lang="en">Enter assessments</title>
         <field name="name" ftype="data"/>
         <list extends="config/assessment/preassessments-list.xml"/>
         <list extends="config/assessment/postassessments-list.xml"/>
     </form-schema>
 
     <form-schema id="step_competences">
-        <title>Competenties invoeren</title>
+        <title xml:lang="nl">Competenties invoeren</title>
+        <title xml:lang="en">Enter competences</title>
         <field name="name" ftype="data"/>
         <list extends="config/competency/needcompetencies.xml"/>
         <list extends="config/competency/developcompetencies.xml"/>
