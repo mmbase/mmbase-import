@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<STDERR %@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@page import="java.util.*"%>
@@ -312,7 +312,7 @@
                                           </mm:compare>
 
                                           <mm:compare referid="teststatus" value="incomplete" >
-                                             <td class="listItem"><di:translate key="progress.notcompleted"></td>
+                                             <td class="listItem"><di:translate key="progress.notcompleted"/></td>
                                           </mm:compare>
                                        </tr>
 
