@@ -27,13 +27,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.24 2005-10-07 19:02:17 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.25 2005-10-26 20:12:38 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
-    private Collection bundle;
+    private Iterator bundle;
     private boolean available;
     /**
      * @param tag
@@ -80,7 +80,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
 
                     bundle    = SortedBundle.getResource(resource, tag.getLocale(), getClass().getClassLoader(),
-                                                         SortedBundle.NO_CONSTANTSPROVIDER, type, SortedBundle.NO_COMPARATOR).entrySet();
+                                                         SortedBundle.NO_CONSTANTSPROVIDER, type, SortedBundle.NO_COMPARATOR).entrySet().iterator();
                 } catch (java.util.MissingResourceException e) {
                     log.warn(e.toString() + " for field " + field.getName() + " of builder " + field.getNodeManager().getName());
                 }
@@ -117,8 +117,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             buffer.append(">--</option>");
         }
 
-        for(Iterator i = bundle.iterator(); i.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) i.next();
+        while(bundle.hasNext()) {
+            Map.Entry entry = (Map.Entry) bundle.next();
             buffer.append("<option value=\"");
             Object key = entry.getKey();
             buffer.append(key);
