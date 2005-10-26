@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.174 2005-10-25 18:35:28 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.175 2005-10-26 23:59:08 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -733,31 +733,24 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
-    public void validate() {
+    public Collection validate() {
+        List errors = new ArrayList();
         FieldIterator fi = nodeManager.getFields().fieldIterator();
-        StringBuffer error = new StringBuffer();
+        Locale locale = getCloud().getLocale();
         while (fi.hasNext()) {
             Field field = fi.nextField();
             Object value = getValueWithoutProcess(field.getName());
-            Collection errors = field.getDataType().validate(value, this, field);
-            if (errors.size() > 0) {
-                error.append("field '" + field.getName() + "' with value '" + value + "': " + LocalizedString.toStrings(errors, getCloud().getLocale()) + "\n");
+            Collection fieldErrors = field.getDataType().validate(value, this, field);
+            Iterator i = fieldErrors.iterator();
+            while(i.hasNext()) {
+                LocalizedString error = (LocalizedString) i.next();
+                errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
+                           error.get(locale));
             }
         }
-        if(error.length() > 0) {
-            throw new IllegalArgumentException("node " + getNumber() + ", builder '" + nodeManager.getName() + "' " + error.toString());
-        }
+        return errors;
     }
 
-    public void validate(String fieldName) {
-        if (nodeManager.hasField(fieldName)) {
-            Field field = nodeManager.getField(fieldName);
-            Collection errors = field.getDataType().validate(getValueWithoutProcess(fieldName), this, field);
-            if (errors.size() > 0) {
-                throw new IllegalArgumentException(fieldName + ": " + LocalizedString.toStrings(errors, getCloud().getLocale()));
-            }
-        }
-    }
 
     public void commit() {
         if (isNew) {
@@ -765,7 +758,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         edit(ACTION_COMMIT);
         processCommit();
-        validate();
+        Collection errors = validate();
+        if (errors.size() > 0) {
+            throw new IllegalArgumentException("node " + getNumber() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
+        }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();

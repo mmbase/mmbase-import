@@ -173,11 +173,9 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         this.listItemType = listItemType;
     }
 
-    public void validate(Object value) {
+    public Collection validate(Object value) {
         Collection errors = getDataType().validate(value, null, this);
-        if (errors.size() > 0) {
-            throw new IllegalArgumentException("CORE: " + getName() + ": " + LocalizedString.toStrings(errors, parent.mmb.getLocale()));
-        }
+        return LocalizedString.toStrings(errors, parent.mmb.getLocale());
     }
 
 
