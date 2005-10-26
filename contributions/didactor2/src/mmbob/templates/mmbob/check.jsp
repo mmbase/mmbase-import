@@ -54,7 +54,10 @@
             <mm:compare referid="educationforum" value="-1">
             	<mm:import id="name" reset="true"><mm:write referid="education"/></mm:import>
     	        <mm:import id="description" reset="true"><di:translate key="mmbob.forumforeducation" /> '<mm:field name="name"/>'</mm:import>
-        	    <mm:import id="language" reset="true"><mm:write referid="lang_code"/></mm:import>
+                <mm:node number="$provider">
+                    <mm:import id="lang_code" reset="true"><mm:field name="locale" /></mm:import>
+                </mm:node>
+        	<mm:import id="language" reset="true"><mm:write referid="lang_code"/></mm:import>
     	        <mm:import id="account" reset="true">admin</mm:import>
                 <mm:import id="password" reset="true">admin2k</mm:import>
             	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,account,password">
