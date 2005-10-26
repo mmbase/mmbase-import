@@ -360,7 +360,7 @@
 
   <mm:compare referid="pagesamount" value="0">
 
-    <di:translate key="pop.testwithoutquestions" />
+    <di:translate key="education.testwithoutquestions" />
 
     <p/>
 
@@ -372,11 +372,11 @@
 
   <% if ( pageCounter.intValue() == pagesAmount.intValue() || pagesAmount.intValue() == 0 ) { %>
 
-       <input type="submit" value="<di:translate key="pop.buttontextdone" />" class="formbutton"/>
+       <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton"/>
 
   <% } else { %>
 
-       <input type="submit" value="<di:translate key="pop.buttontextnext" />" class="formbutton"/>
+       <input type="submit" value="<di:translate key="education.buttontextnext" />" class="formbutton"/>
 
   <% } %>
 
