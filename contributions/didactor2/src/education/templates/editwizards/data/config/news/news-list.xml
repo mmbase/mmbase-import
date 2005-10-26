@@ -1,10 +1,13 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="news" role="related" minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']">
-    <title>Bijbehorende nieuwsberichten</title>
+    <title xml:lang="nl">Bijbehorende nieuwsberichten</title>
+    <title xml:lang="en">Related newsitems</title>
     <item>
         <field name="title" ftype="data">
-            <prompt>Titel</prompt>
-            <description>Titel van het nieuwsbericht</description>
+            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
+            <description xml:lang="nl">Titel van het nieuwsbericht</description>
+            <description xml:lang="en">Title of the newsitem</description>
         </field>
         <field fdatapath="field[@name='pos']"  ftype="line" />
    <field wizardname="config/news/news" ftype="startwizard" />
@@ -18,9 +21,11 @@
     <command name="startwizard" inline="true" wizardname="config/news/news" objectnumber="new" />
 
     <command name="search" nodepath="news" fields="title" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar nieuwsberichten</prompt>
+        <prompt xml:lang="nl">Zoeken naar nieuwsberichten</prompt>
+        <prompt xml:lang="en">Search newsitems</prompt>
         <search-filter>
-            <name>Titel bevat</name>
+            <name xml:lang="nl">Titel bevat</name>
+            <name xml:lang="en">Title contains</name>
             <search-fields>title</search-fields>
         </search-filter>
     </command>

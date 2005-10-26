@@ -1,13 +1,16 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="urls" minoccurs="0" maxoccurs="*" role="related">
-    <title>Bijbehorende urls</title>
+    <title xml:lang="nl">Bijbehorende urls</title>
+    <title xml:lang="en">Related urls</title>
 
     <item>
       <field name="url" ftype="data">
-          <prompt>URL</prompt>
+          <prompt xml:lang="nl">URL</prompt>
+          <prompt xml:lang="en">URL</prompt>
       </field>
         <field name="name" ftype="data">
-            <prompt>Naam</prompt>
+            <prompt xml:lang="nl">Naam</prompt>
+            <prompt xml:lang="en">Name</prompt>
         </field>
         <field wizardname="config/url/urls" ftype="startwizard" />
     </item>
@@ -19,13 +22,16 @@
     </action>
 
     <command name="search" nodepath="urls" fields="name" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar URLS</prompt>
+        <prompt xml:lang="nl">Zoeken naar URLS</prompt>
+        <prompt xml:lang="en">Search URLS</prompt>
         <search-filter>
-            <name>URL bevat</name>
+            <name xml:lang="nl">URL bevat</name>
+            <name xml:lang="en">URL contains</name>
             <search-fields>url</search-fields>
         </search-filter>
         <search-filter>
-            <name>Naam bevat</name>
+            <name xml:lang="nl">Naam bevat</name>
+            <name xml:lang="en">Name contains</name>
             <search-fields>name</search-fields>
         </search-filter>
     </command>

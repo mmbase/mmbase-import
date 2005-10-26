@@ -1,16 +1,20 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="videotapes" role="related" minoccurs="0" maxoccurs="*">
-    <title>Bijbehorende videofragmenten</title>
+    <title xml:lang="nl">Bijbehorende videofragmenten</title>
+    <title xml:lang="en">Related videofragments</title>
 
     <item>
         <field ftype="data" name="title">
-            <prompt>Titel</prompt>
+            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
         </field>
         <field name="subtitle" ftype="data">
-            <prompt>Subtitel</prompt>
+            <prompt xml:lang="nl">Subtitel</prompt>
+            <prompt xml:lang="en">Subtitle</prompt>
         </field>
         <field name="url" ftype="data">
-            <prompt>URL</prompt>
+            <prompt xml:lang="nl">URL</prompt>
+            <prompt xml:lang="en">URL</prompt>
         </field>
         <field wizardname="config/videotape/videotapes" ftype="startwizard" />
    </item>
@@ -22,13 +26,16 @@
     </action>
 
     <command name="search" nodepath="videotapes" fields="title" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar Videofragmenten</prompt>
+        <prompt xml:lang="nl">Zoeken naar Videofragmenten</prompt>
+        <prompt xml:lang="en">Search videofragments</prompt>
         <search-filter>
-            <name>Titel bevat</name>
+            <name xml:lang="nl">Titel bevat</name>
+            <name xml:lang="en">Title contains</name>
             <search-fields>title</search-fields>
         </search-filter>
         <search-filter>
-            <name>Subtitel bevat</name>
+            <name xml:lang="nl">Subtitel bevat</name>
+            <name xml:lang="nl">Subtitle contains</name>
             <search-fields>subtitle</search-fields>
         </search-filter>
     </command>

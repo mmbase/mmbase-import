@@ -6,7 +6,8 @@
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-    <title>Audiofragment editor</title>
+    <title xml:lang="nl">Audiofragment editor</title>
+    <title xml:lang="en">Audiofragment editor</title>
 
     <action type="create">
         <object type="audiotapes">
@@ -30,9 +31,11 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Invoeren audiofragment</title>
+        <title xml:lang="nl">Invoeren audiofragment</title>
+        <title xml:lang="en">Enter audiofragment</title>
         <field name="title" dttype="string" dtminlength="2" >
-            <prompt>Titel</prompt>
+            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
         </field>
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
@@ -41,21 +44,26 @@
         </field>
 
         <field name="subtitle" dttype="string">
-            <prompt>Subtitel</prompt>
+            <prompt xml:lang="nl">Subtitel</prompt>
+            <prompt xml:lang="en">Subtitle</prompt>
         </field>
 
         <field name="intro" ftype="text" rows="4" >
-            <prompt>Intro</prompt>
+            <prompt xml:lang="nl">Intro</prompt>
+            <prompt xml:lang="en">Intro</prompt>
         </field>
         
 
         <field name="body" ftype="text" rows="8" >
-            <prompt>Tekst</prompt>
+            <prompt xml:lang="nl">Tekst</prompt>
+            <prompt xml:lang="en">Text</prompt>
         </field>
 
         <field name="url" ftype="line" dttype="string" dtminlength="2">
-            <prompt>URL</prompt>
-            <description>Verwijst naar een audio-fragment</description>
+            <prompt xml:lang="nl">URL</prompt>
+            <prompt xml:lang="en">URL</prompt>
+            <description xml:lang="nl">Verwijst naar een audio-fragment</description>
+            <description xml:lang="en">URL that points to an audio-fragment</description>
         </field>
 
     </form-schema>
