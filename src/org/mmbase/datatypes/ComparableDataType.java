@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.10 2005-10-26 11:29:50 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.11 2005-10-26 20:07:43 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -29,6 +29,7 @@ public abstract class ComparableDataType extends BasicDataType {
 
     protected MinRestriction minRestriction  = new MinRestriction(true);
     protected MaxRestriction maxRestriction  = new MaxRestriction(true);
+
     protected ComparableDataType(String name, Class classType) {
         super(name, classType);
     }
@@ -41,6 +42,7 @@ public abstract class ComparableDataType extends BasicDataType {
             maxRestriction  = new MaxRestriction(dataType.maxRestriction);
         }
     }
+
 
     /**
      */
@@ -179,7 +181,8 @@ public abstract class ComparableDataType extends BasicDataType {
             Comparable comparable = (Comparable) v;
             Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
             if (inclusive && (comparable.equals(maximum))) return true;
-            return comparable.compareTo(maximum) < 0;
+            boolean res = comparable.compareTo(maximum) < 0;
+            return res;
         }
 
         public boolean isInclusive() {

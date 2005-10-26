@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.38 2005-10-25 18:33:21 michiel Exp $
+ * @version $Id: DataType.java,v 1.39 2005-10-26 20:07:43 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -214,9 +214,12 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public DataType.Restriction setUnique(boolean unique);
 
     /**
-     * @return A List of all possible values for this datatype, as {@link java.util.Map.Entry}s, or
-     * <code>null</code> if no restrictions apply. Every Map entry contains as key the 'value' for
-     * this datatype and as value it contains the description for this value in the given locale.
+     * Returns an iterator over all possible values for this datatype, as {@link java.util.Map.Entry}s, or
+     * <code>null</code> if no enumeration restrictions apply. Every Map entry contains as key the
+     * 'value' for this datatype and as value it contains the description for this value in the
+     * given locale.
+     *
+     * This Iterator skips all entries which are impossible because of other restrictions on this datatype.
      *
      * @param locale for which locale to produce
      * @param cloud  Possibly the possible values depend on a cloud (security)
@@ -224,7 +227,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      *
      */
-    public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
+    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
