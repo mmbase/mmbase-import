@@ -23,20 +23,20 @@
                                 "config/question/valuequestions-origin",
                                 "config/question/dropquestions-origin"};
 
-      String[] arrstrNames = {"createNewMcquestions",
-                              "createNewOpenquestions",
-                              "createNewRankingquestions",
-                              "createNewCouplingquestions",
-                              "createNewHotspotquestions",
-                              "createNewValuequestions",
-                              "createNewDropquestions"};
-      String[] arrstrDescriptionsIDs = {"createNewMcquestionsDescription",
-                                        "createNewOpenquestionsDescription",
-                                        "createNewRankingquestionsDescription",
-                                        "createNewCouplingquestionsDescription",
-                                        "createNewHotspotquestionsDescription",
-                                        "createNewValuequestionsDescription",
-                                        "createNewDropquestionsDescription"};
+      String[] arrstrNames = {"createnewmcquestions",
+                              "createnewopenquestions",
+                              "createnewrankingquestions",
+                              "createnewcouplingquestions",
+                              "createnewhotspotquestions",
+                              "createnewvaluequestions",
+                              "createnewdropquestions"};
+      String[] arrstrDescriptionsIDs = {"createnewmcquestionsdescription",
+                                        "createnewopenquestionsdescription",
+                                        "createnewrankingquestionsdescription",
+                                        "createnewcouplingquestionsdescription",
+                                        "createnewhotspotquestionsdescription",
+                                        "createnewvaluequestionsdescription",
+                                        "createnewdropquestionsdescription"};
 
       for(int f = 0; f < arrstrBuilders.length; f++)
       {

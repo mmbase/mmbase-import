@@ -88,7 +88,7 @@ This message is used in an iframe in write.jsp, in which users can select other 
                       <mm:first>
                         <tr>
                           <td colspan=2 class="listItem"></td>
-                          <td colspan=2 class="listItem"><font class="specialFont"><di:translate key="email.teachters" /></font></td>
+                          <td colspan=2 class="listItem"><font class="specialFont"><di:translate key="email.teachers" /></font></td>
                         </tr>
                       </mm:first>
                       <tr>

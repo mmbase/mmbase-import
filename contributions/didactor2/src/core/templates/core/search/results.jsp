@@ -14,7 +14,7 @@
     <%--
 	    <mm:list path="classes" constraints="<%= searchConstraints("classes.name", request) %>">
 	    <tr>
-		<td class="listItem"><di:translate key="core.classes" /></td>
+		<td class="listItem"><di:translate key="education.classes" /></td>
 		<td class="listItem"><mm:field name="classes.name"/></td>
 	    </tr>
 	    </mm:list>
@@ -23,7 +23,7 @@
     <%-- search news --%>
 	    <mm:list path="news" constraints="<%= searchConstraints("CONCAT(news.title, news.intro, news.body)", request) %>">
 	    <tr>
-		<td class="listItem"><di:translate key="core.classes" /></td>
+		<td class="listItem"><di:translate key="education.classes" /></td>
 		<td class="listItem"><a href="<mm:treefile page="/news.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="newsid"><mm:field name="news.number"/></mm:param>
   </mm:treefile>"><mm:field name="news.title"/></a></td>
@@ -34,7 +34,7 @@
     <%-- disabled for now, there is no clear resulting page anyway --%>
     <%-- <mm:list path="educations" constraints="<%= searchConstraints("CONCAT(educations.name, educations.intro)",request) %>">
 	    <tr>
-		<td class="listItem"><di:translate key="core.educations" /></td>
+		<td class="listItem"><di:translate key="education.educations" /></td>
 		<td class="listItem"><mm:field name="educations.name"/></td>
 	    </tr>
 	    </mm:list> 
