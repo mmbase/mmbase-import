@@ -15,7 +15,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.5 2005-10-04 13:21:21 johannes Exp $
+ * @version $Id: Attributes.java,v 1.6 2005-10-26 13:28:08 michiel Exp $
  */
 public final class Attributes {
 
@@ -79,7 +79,7 @@ public final class Attributes {
     /**
      * This attribute can be used to specify the maximum identifier length for
      * table names and key names. 
-     * @since MMBase-1.8.1
+     * @since MMBase-1.8.0
      */
     public static final String MAX_IDENTIFIER_LENGTH = "max-identifier-length";
 }
