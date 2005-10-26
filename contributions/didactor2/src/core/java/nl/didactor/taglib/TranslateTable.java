@@ -97,6 +97,11 @@ public class TranslateTable {
         String filename = file.getName();
         StringTokenizer st = new StringTokenizer(filename, ".");
         String namespace = st.nextToken();
+
+        // If there is no '.' in the filename then it's not a valid translation file
+        if (!st.hasMoreTokens()) {
+            return;
+        }
         String locale = st.nextToken();
         String properties = "";
         if (st.hasMoreTokens()) {
