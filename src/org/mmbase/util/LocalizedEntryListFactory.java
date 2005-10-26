@@ -31,17 +31,19 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.10 2005-10-19 15:49:55 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.11 2005-10-26 20:09:29 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedEntryListFactory.class);
+    private static final int serialVersionUID = 1; // increase this if object serialization changes (which we shouldn't do!)
+
     private int size = 0;
-    private List bundles = new ArrayList(); // contains Bundles
-    private Map localized = new HashMap(); //Locale -> List of Entries and Bundles
-    private List fallBack = new ArrayList();
-    private Map unusedKeys = new HashMap(); // Locale -> unused Keys;
+    private ArrayList bundles = new ArrayList(); // contains Bundles
+    private HashMap localized = new HashMap(); //Locale -> List of Entries and Bundles
+    private ArrayList fallBack = new ArrayList();
+    private HashMap unusedKeys = new HashMap(); // Locale -> unused Keys;
 
     public LocalizedEntryListFactory() {
 
@@ -85,6 +87,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     public void addBundle(String baseName, ClassLoader classLoader, Class constantsProvider, Class wrapper, Comparator comparator) {
         // just for the count
         Bundle b = new Bundle(baseName, classLoader, constantsProvider, wrapper, comparator);
+        if (bundles.contains(b)) {
+            log.info("Adding bundle " + b + " for second time in " + b + ", because " + Logging.stackTrace());
+        }
         bundles.add(b);
         Iterator i = localized.values().iterator();
         while(i.hasNext()) {
@@ -194,8 +199,15 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     public Object clone() {
         try {
-            return super.clone();
+            LocalizedEntryListFactory clone = (LocalizedEntryListFactory) super.clone();
+            clone.bundles   = (ArrayList) bundles.clone();
+            clone.localized = (HashMap) localized.clone();
+            clone.fallBack  = (ArrayList) fallBack.clone();
+            clone.unusedKeys = (HashMap) unusedKeys.clone();
+
+            return clone;
         } catch (Exception e) {
+            log.error(e);
             return this;
         }
     }
@@ -216,6 +228,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         // implementation of serializable
         private void writeObject(ObjectOutputStream out) throws IOException {
             out.writeUTF(resource);
+            // dont'r write class-loader, it is not serializable
             out.writeObject(constantsProvider);
             out.writeObject(wrapper);
             if (comparator instanceof Serializable) {
@@ -247,6 +260,29 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
         public String toString() {
             return resource + " " + constantsProvider + " " + wrapper + " " + comparator;
+        }
+        public boolean equals(Object o) {
+            if (o instanceof Bundle) {
+                Bundle b = (Bundle) o;
+                return 
+                    (resource == null ? b.resource == null : resource.equals(b.resource)) &&
+                    (classLoader == null ? b.classLoader == null : classLoader.equals(b.classLoader)) &&
+                    (constantsProvider == null ? b.constantsProvider == null : constantsProvider.equals(b.constantsProvider)) &&
+                    (wrapper == null ? b.wrapper == null : wrapper.equals(b.wrapper)) &&
+                    (comparator == null ? b.comparator == null : comparator.equals(b.comparator));
+                    
+            } else {
+                return false;
+            }
+        }
+        public int hashCode() {
+            int result = 0;
+            result = HashCodeUtil.hashCode(result, resource);
+            result = HashCodeUtil.hashCode(result, classLoader);
+            result = HashCodeUtil.hashCode(result, constantsProvider);
+            result = HashCodeUtil.hashCode(result, wrapper);
+            result = HashCodeUtil.hashCode(result, comparator);
+            return result;
         }
     }
 
