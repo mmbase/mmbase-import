@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.5 2005-10-25 21:26:30 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.6 2005-10-26 20:10:57 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -325,9 +325,9 @@ public class VirtualNode implements Node {
         return (Element)tree.importNode(doc.getDocumentElement(), true);
     }
 
-    public void validate() {
-    }
-    public void validate(String fieldName) {
+    public Collection validate() {
+        // I have no idea..
+        return Collections.EMPTY_SET;
     }
 
     public void commit() {
