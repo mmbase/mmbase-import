@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.72 2005-10-06 14:07:32 michiel Exp $
+ * @version $Id: scanparser.java,v 1.73 2005-10-26 07:35:36 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -64,8 +64,6 @@ public class scanparser extends ProcessorModule {
     /**
      * Init the servscan, this is needed because it was created using
      * a newInstanceOf().
-     *
-     * @param int worker id
      */
     public void init() {
         Roots=getRoots();
@@ -948,8 +946,8 @@ public class scanparser extends ProcessorModule {
     }
 
     /**
-     * @param in:  A string with the location of the to be parsed file
-     * @param out: A html-page
+     * @param where A string with the location of the to be parsed file
+     * @return A html-page
      */
     public final String getfile(String where) {
         File scanfile=null;
