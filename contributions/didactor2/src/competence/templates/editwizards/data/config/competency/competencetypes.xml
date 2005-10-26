@@ -44,11 +44,13 @@
            
            <command name="search" nodepath="competencetypes,competencies" fields="competencetypes.name,competencies.name" age="-1" orderby="competencetypes.name,competencies.name" directions="up,up">
               <search-filter>
-                 <name>Competentie type bevat</name>
+                 <name xml:lang="nl">Competentie type bevat</name>
+                 <name xml:lang="en">Competence type contains</name>
                  <search-fields>competencetypes.name</search-fields>
               </search-filter>
               <search-filter>
-                 <name>Competentie bevat</name>
+                 <name xml:lang="nl">Competentie bevat</name>
+                 <name xml:lang="en">Competence contains</name>
                  <search-fields>competencies.name</search-fields>
               </search-filter>
            </command>
