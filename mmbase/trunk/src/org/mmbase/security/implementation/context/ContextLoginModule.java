@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.14 2005-10-04 11:15:24 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.15 2005-10-27 18:00:37 andre Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -68,19 +68,19 @@ public abstract class ContextLoginModule {
             xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify";
         }
         if (log.isDebugEnabled()) {
-            log.debug("going to execute the query:" + xpath);
+            log.debug("going to execute the query: " + xpath);
         }
         Node found;
         try {
             found = XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
-            String msg = "error executing query: '"+xpath+"'";
+            String msg = "error executing query: '" + xpath + "'";
             log.error(msg);
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
-            log.warn("user :" + username + " was not found for module: " + name);
+            log.warn("user '" + username + "' was not found for module: " + name);
             return null;
         }
 
@@ -122,24 +122,28 @@ public abstract class ContextLoginModule {
             userCons.append("@rank='" + rank + "'");
         }
         if (identifyType != null) {
+            // xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
             xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
         } else {
-            xpath = "/contextconfig/accounts/user[" + userCons + "]";
+            // xpath = "/contextconfig/accounts/user[" + userCons + "]";
+            xpath = "/contextconfig/accounts/user/identify[" + userCons + "]";
         }
+        
         if (log.isDebugEnabled()) {
-            log.debug("going to execute the query:" + xpath);
+            log.debug("going to execute the query: " + xpath);
         }
+        
         Element found;
         try {
             found = (Element) XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
-            String msg = "error executing query: '"+xpath+"'";
+            String msg = "error executing query: '" + xpath + "'";
             log.error(msg);
             log.error(Logging.stackTrace(te));
             throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
-            log.warn("user :" + userName + " was not found for identify type: " + identifyType);
+            log.warn("user '" + userName + "' was not found for identify type: '" + identifyType  + "'");
             return null;
         }
         if (identifyType != null) {
