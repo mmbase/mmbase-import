@@ -62,7 +62,10 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"-2", new Long(71221111112L)}},
                 new Object[] {"enumeration",
                               new Object[] {"2", "4", new Integer(6), null},
-                              new Object[] {"-1", "xxx"}}
+                              new Object[] {"-1", "xxx"}},
+                new Object[] {"restricted_ordinals",
+                              new Object[] {"2", "4", new Integer(6), null},
+                              new Object[] {"1", "21", new Integer(10)}}
             };
         } catch (Exception e) {
             System.err.println(e.getMessage());

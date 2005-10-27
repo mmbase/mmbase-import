@@ -114,6 +114,17 @@
     </field>
 
     <field>
+      <datatype base="ordinals" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="2" />
+        <maxInclusive value="10" />
+      </datatype>
+      <db>
+        <name>restricted_ordinals</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="ERROR" />
         <enumeration >
