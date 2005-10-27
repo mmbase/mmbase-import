@@ -39,7 +39,7 @@
 		</tr>
 		<tr valign="top">
 		  <td>&nbsp;</td>
-		  <td><mm:node number="$nr"><b><mm:field name="gui()" /></b></mm:node></td>
+		  <td><mm:node number="$nr"><b><mm:function name="gui" /></b></mm:node></td>
 		</tr>
 	</mm:present>
 	</table>

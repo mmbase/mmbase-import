@@ -1,5 +1,4 @@
 <%-- Relations --%>
-<mm:context id="relaties">
 <table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">
 <% // Stuff about relations: possible relations and the ones that are allready made
 Node node = wolk.getNode(nr);
@@ -52,8 +51,9 @@ while(relIterator.hasNext()) {
 		<mm:compare referid="my_type" value="<%= otherManagerName %>">
 		<tr valign="bottom" bgcolor="#FFFFFF">
 		  <td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
-		  <td nowrap="nowrap"> <mm:field name="gui()" /> </td>
-		  <td nowrap="nowrap" align="right"><a href="<mm:url page="edit_relation.jsp">
+		  <td nowrap="nowrap"> <mm:function name="gui" /> </td>
+		  <td nowrap="nowrap" align="right">
+		    <a href="<mm:url page="edit_relation.jsp">
 		  	<mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
 		  	<mm:param name="ref"><%= nr %></mm:param>
 		  	<mm:param name="ntype"><%= nodeNM.getName() %></mm:param>
@@ -111,7 +111,7 @@ while(relIterator.hasNext()) {
 		<mm:compare referid="my_type" value="<%= otherManagerName %>">
 		<tr valign="bottom" bgcolor="#FFFFFF">
 		  <td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
-		  <td nowrap="nowrap"> <mm:field name="gui()" /> </td>
+		  <td nowrap="nowrap"> <mm:function name="gui" /> </td>
 		  <td nowrap="nowrap" align="right"><a href="<mm:url page="edit_relation.jsp">
 		  	<mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
 		  	<mm:param name="ref"><%= nr %></mm:param>
@@ -126,5 +126,4 @@ while(relIterator.hasNext()) {
 <%-- /MMBase taglib 1.1.0 only (MMBase v1.7) --%>
 <% } // end while %>
 </table>
-</mm:context>
 <%-- End of relations --%>

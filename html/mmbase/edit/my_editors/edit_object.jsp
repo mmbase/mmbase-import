@@ -7,7 +7,6 @@ String node_gui = "";		// GUI variable set in builder
 String path1 = "";
 %>
 
-<mm:context id="change_node">
 <mm:import jspvar="nr" externid="nr" id="nr" />		<%-- the node we're going to edit --%>
 
 <mm:import externid="change" />
@@ -106,7 +105,7 @@ title = "Edit " + ntype + " node";
 			<mm:createalias name="$alias_name" />
 		  </mm:node>
 		</mm:present>
-		<p class="message">The node <b><mm:field name="gui()" /></b> (<%= nr %>) is changed.</p>
+		<p class="message">The node <b><mm:function name="gui" /></b> (<%= nr %>) is changed.</p>
 	  </td>
 	</tr>
 	</mm:present>
@@ -201,6 +200,5 @@ title = "Node not found";
 <p class="message">The node you were looking for <mm:present referid="nr">with number <mm:write referid="nr" /></mm:present> could not be found.</p>
 <p>&nbsp;</p>
 </mm:notpresent>
-</mm:context>
 <%@ include file="inc_foot.jsp" %>
 </mm:cloud>
