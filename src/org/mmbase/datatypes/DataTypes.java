@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.14 2005-10-27 13:05:01 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.15 2005-10-27 17:12:19 simon Exp $
  */
 
 public class DataTypes {
@@ -122,7 +122,7 @@ public class DataTypes {
             name = classType.getName();
         }
         if (type != Field.TYPE_UNKNOWN || classType == null) {
-            return createDataType(name, type);
+            return createDataType(name, type, classType.isPrimitive());
         } else {
             return new BasicDataType(name, classType);
         }
@@ -130,15 +130,19 @@ public class DataTypes {
 
     /**
      * Create an instance of a DataType based on the MMBase type passed.
+     *
+     * @param primitive in case of integer, long, float, double, boolean this
+     *        parameter determines whether a primitive type or the wrapper class
+     *        should be used
      */
-    private static BasicDataType createDataType(String name, int type) {
+    private static BasicDataType createDataType(String name, int type, boolean primitive) {
         switch (type) {
         case Field.TYPE_BINARY: return new BinaryDataType(name);
-        case Field.TYPE_INTEGER : return new IntegerDataType(name);
-        case Field.TYPE_LONG: return new LongDataType(name);
-        case Field.TYPE_FLOAT: return new FloatDataType(name);
-        case Field.TYPE_DOUBLE: return new DoubleDataType(name);
-        case Field.TYPE_BOOLEAN: return new BooleanDataType(name);
+        case Field.TYPE_INTEGER : return new IntegerDataType(name, primitive);
+        case Field.TYPE_LONG: return new LongDataType(name, primitive);
+        case Field.TYPE_FLOAT: return new FloatDataType(name, primitive);
+        case Field.TYPE_DOUBLE: return new DoubleDataType(name, primitive);
+        case Field.TYPE_BOOLEAN: return new BooleanDataType(name, primitive);
         case Field.TYPE_STRING : return new StringDataType(name);
         case Field.TYPE_XML: return new XmlDataType(name);
         case Field.TYPE_NODE: return new NodeDataType(name);
@@ -146,6 +150,14 @@ public class DataTypes {
         case Field.TYPE_LIST: return new ListDataType(name);
         default: return new BasicDataType(name);
         }
+    }
+    /**
+     * Create an instance of a DataType based on the MMBase type passed. In case
+     * a type is used that has both a primitive and a wrapper class the wrapped
+     * version will be used.
+     */
+    private static BasicDataType createDataType(String name, int type) {
+        return createDataType(name, type, false);
     }
 
     /**
