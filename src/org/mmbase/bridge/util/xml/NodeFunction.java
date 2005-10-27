@@ -13,6 +13,7 @@ package org.mmbase.bridge.util.xml;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.xpath.XPathAPI;
 
@@ -47,7 +48,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.14 2005-10-07 18:46:55 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.15 2005-10-27 15:41:02 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -127,6 +128,14 @@ public  class NodeFunction {
     }
 
     public static String function(Cloud cloud, String number, String function) {
+        return function(cloud, number, function, "");
+    }
+
+    /**
+     * @param request Meant to be an HttpServletRequest. If not, will be ignored (empty string e.g.).
+     * @since MMBase-1.8
+     */
+    public static String function(Cloud cloud, String number, String function, Object request) {
         log.debug("calling base on " + number + " for " + function);
         Node node;
         try {
@@ -134,6 +143,9 @@ public  class NodeFunction {
             Function func = node.getFunction(function);
             Parameters params = func.createParameters();
             params.setIfDefined(Parameter.CLOUD, cloud);
+            if (request instanceof HttpServletRequest) {
+                params.setIfDefined(Parameter.REQUEST, request);
+            }
             return func.getFunctionValue(params).toString();
         } catch (Throwable e) {
             log.info("could not execute '" + function + "' on node '" + number + "'");
