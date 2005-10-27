@@ -14,6 +14,7 @@ import java.util.regex.*;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,14 +23,16 @@ import org.mmbase.util.logging.Logging;
  * pattern. Several kind of patterns are recognized. {PARAM.abc} creates a parameter 'abc' and puts the
  * value of it on that place in the result. {NODE.title}, puts the title field of the node on which
  * the function was applied on that place, and {REQUEST.getContextPath} applies that method to the
- * request parameter (and that parameter is added). {INITPARAM.xyz} access the servletcontext init parameters xyz.
+ * request parameter (and the result is added). {INITPARAM.xyz} access the servletcontext init parameters xyz.
+ *
+ * It is also possible to use request parameters and attributes with {REQUESTPARAM.xxx} and {REQUESTATTRIBUTE.yyy}.
  *
  * The functions which are created have silly names like string0, string1 etc, so you want to wrap
  * them in a function with a reasonable name (this is done when specifying this thing in the builder
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.5 2005-10-26 07:21:07 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.6 2005-10-27 15:43:30 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -50,6 +53,8 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
 
     private static final Pattern fieldsPattern   = Pattern.compile("\\{NODE\\.(.+?)\\}");
     private static final Pattern requestPattern  = Pattern.compile("\\{REQUEST\\.(.+?)\\}");
+    private static final Pattern requestParamPattern  = Pattern.compile("\\{REQUESTPARAM\\.(.+?)\\}");
+    private static final Pattern requestAttributePattern  = Pattern.compile("\\{REQUESTATTRIBUTE\\.(.+?)\\}");
     private static final Pattern paramPattern    = Pattern.compile("\\{PARAM\\.(.+?)\\}");
     private static final Pattern initParamPattern    = Pattern.compile("\\{INITPARAM\\.(.+?)\\}");
 
@@ -78,8 +83,12 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         }
         protected static Parameter[] getParameterDef(String template) {
             List params = new ArrayList();
-            Matcher matcher = requestPattern.matcher(template);
-            if (matcher.find()) {
+            log.info(" " + requestPattern + " " + requestParamPattern + " " + requestAttributePattern + " " + template);
+            if (requestPattern.matcher(template).find() ||
+                requestParamPattern.matcher(template).find() ||
+                requestAttributePattern.matcher(template).find()
+                ) {
+                log.info("Adding 'REQUEST' parameter");
                 params.add(Parameter.REQUEST);
             }
             Matcher args = paramPattern.matcher(template);
@@ -91,63 +100,107 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
 
         protected Object getFunctionValue(final Node node, final Parameters parameters) {
             StringBuffer sb = new StringBuffer();
-            Matcher fields = fieldsPattern.matcher(template);
-            while (fields.find()) {
-                fields.appendReplacement(sb, node.getStringValue(fields.group(1)));
+            {
+                Matcher fields = fieldsPattern.matcher(template);
+                while (fields.find()) {
+                    fields.appendReplacement(sb, node.getStringValue(fields.group(1)));
+                }
+                fields.appendTail(sb);
             }
-            fields.appendTail(sb);
-            
-            Matcher request = requestPattern.matcher(sb.toString());
-            if (request.find()) {
-                request.reset();
-                HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
-                sb = new StringBuffer();
-                while(request.find()) {
-                    if(request.group(1).equals("getContextPath")) {
-                        String r = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath();
-                        request.appendReplacement(sb, r.substring(0, r.length() - 1));
-                        continue;
-                    }
-
-                    if (req == null) {
-                        log.error("Did't find the request among the parameters");
-                        continue;
-                    }
-                    try {
-                        Method m =  (Method) requestMethods.get(request.group(1));
-                        if (m == null) {
-                            log.error("Didn't find the method " + request.group(1) + " on request object");
+            {
+                Matcher request = requestPattern.matcher(sb.toString());
+                if (request.find()) {
+                    request.reset();
+                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    sb = new StringBuffer();
+                    while(request.find()) {
+                        if(request.group(1).equals("getContextPath")) {
+                            String r = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath();
+                            request.appendReplacement(sb, r.substring(0, r.length() - 1));
                             continue;
                         }
-                        request.appendReplacement(sb, "" + m.invoke(req, new Object[] {}));
-                    } catch (IllegalAccessException iae) {
-                        log.error(iae.getMessage(), iae);
-                    } catch (java.lang.reflect.InvocationTargetException ite) {
-                        log.error(ite.getMessage(), ite);
+                        
+                        if (req == null) {
+                            log.error("Did't find the request among the parameters");
+                            continue;
+                        }
+                        try {
+                            Method m =  (Method) requestMethods.get(request.group(1));
+                            if (m == null) {
+                                log.error("Didn't find the method " + request.group(1) + " on request object");
+                                continue;
+                            }
+                            request.appendReplacement(sb, "" + m.invoke(req, new Object[] {}));
+                        } catch (IllegalAccessException iae) {
+                            log.error(iae.getMessage(), iae);
+                        } catch (java.lang.reflect.InvocationTargetException ite) {
+                            log.error(ite.getMessage(), ite);
+                        }
+                    }
+                    request.appendTail(sb);
+                }
+            }
+            {
+                Matcher requestParam = requestParamPattern.matcher(sb.toString());
+                if (requestParam.find()) {
+                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    if (req == null) {
+                        log.error("Did't find the request among the parameters");
+                    } else {
+                        requestParam.reset();
+                        sb = new StringBuffer();
+                        while(requestParam.find()) {
+                            String paramName = requestParam.group(1);
+                            String value = req.getParameter(paramName);
+                            if (value == null) value = "";                    
+                            requestParam.appendReplacement(sb, value);
+                        }
+                        requestParam.appendTail(sb);
                     }
                 }
-                request.appendTail(sb);
             }
-            Matcher params = paramPattern.matcher(sb);
-            if (params.find()) {
-                params.reset();
-                sb = new StringBuffer();
-                while(params.find()) {
-                    params.appendReplacement(sb, (String) parameters.get(params.group(1)));
+            {
+                Matcher requestAttribute = requestAttributePattern.matcher(sb.toString());
+                if (requestAttribute.find()) {
+                    HttpServletRequest req = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    if (req == null) {
+                        log.error("Did't find the request among the parameters");
+                    } else {
+                        requestAttribute.reset();
+                        sb = new StringBuffer();
+                        while(requestAttribute.find()) {
+                            String paramName = requestAttribute.group(1);
+                            String value = Casting.toString(req.getAttribute(paramName));
+                            requestAttribute.appendReplacement(sb, value);
+                        }
+                        requestAttribute.appendTail(sb);
+                    }
                 }
-                params.appendTail(sb);
             }
-
-            Matcher initParams = initParamPattern.matcher(sb);
-            if (initParams.find()) {
-                initParams.reset();
-                sb = new StringBuffer();
-                while(initParams.find()) {
-                    String s = org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1));
-                    if (s == null) s = "";
-                    initParams.appendReplacement(sb, s);
+            {
+                Matcher params = paramPattern.matcher(sb.toString());
+                if (params.find()) {
+                    params.reset();
+                    sb = new StringBuffer();
+                    while(params.find()) {
+                        params.appendReplacement(sb, (String) parameters.get(params.group(1)));
+                    }
+                    params.appendTail(sb);
                 }
-                initParams.appendTail(sb);
+            }
+            {
+                
+                Matcher initParams = initParamPattern.matcher(sb.toString());
+                if (initParams.find()) {
+                    initParams.reset();
+                    sb = new StringBuffer();
+                    while(initParams.find()) {
+                        String s = org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1));
+                        if (s == null) s = "";
+                        initParams.appendReplacement(sb, s);
+                    }
+                    initParams.appendTail(sb);
+                }
             }
             return sb.toString();
             
