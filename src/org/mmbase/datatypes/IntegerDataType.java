@@ -13,15 +13,16 @@ package org.mmbase.datatypes;
  * A NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.4 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: IntegerDataType.java,v 1.5 2005-10-27 17:12:19 simon Exp $
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType {
 
     /**
+     * @param primitive indicate if a primitive type should be used
      */
-    public IntegerDataType(String name) {
-        super(name, Integer.class);
+    public IntegerDataType(String name, boolean primitive) {
+        super(name, primitive ? Integer.TYPE : Integer.class);
         setMin(new Integer(Integer.MIN_VALUE), true);
         setMax(new Integer(Integer.MAX_VALUE), true);
     }

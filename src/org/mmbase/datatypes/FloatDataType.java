@@ -13,15 +13,16 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.4 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: FloatDataType.java,v 1.5 2005-10-27 17:12:19 simon Exp $
  * @since MMBase-1.8
  */
 public class FloatDataType extends NumberDataType {
 
     /**
+     * @param primitive indicate if a primitive type should be used
      */
-    public FloatDataType(String name) {
-        super(name, Float.class);
+    public FloatDataType(String name, boolean primitive) { 
+        super(name, primitive ? Float.TYPE : Float.class);
         setMin(new Float(Float.NEGATIVE_INFINITY), false);
         setMax(new Float(Float.POSITIVE_INFINITY), false);
     }

@@ -14,15 +14,16 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.4 2005-10-21 09:40:13 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.5 2005-10-27 17:12:19 simon Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
 
     /**
+     * @param primitive indicate if a primitive type should be used
      */
-    public LongDataType(String name) {
-        super(name, Long.class);
+    public LongDataType(String name, boolean primitive) {
+        super(name, primitive ? Long.TYPE : Long.class);
         setMin(new Long(Long.MIN_VALUE), true);
         setMax(new Long(Long.MAX_VALUE), true);
     }
