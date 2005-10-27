@@ -313,7 +313,16 @@ public abstract class NodeTest extends BridgeTest {
         node.setContext(otherContext);
 
         // now, the new context must be equal to otherContext
-        assertTrue("KNOWN - bug #6186:", otherContext.equals(node.getContext()));
+        assertTrue("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext.equals(node.getContext()));
+    }
+
+    public void testFieldGUI() {
+        try {
+            node.getStringValue("gui()");
+            node.getValue("gui()");
+        } catch (Throwable  e) {
+            fail("Should not raise exception but gave: " + e.getMessage());
+        }
     }
 
 }
