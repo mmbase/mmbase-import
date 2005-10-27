@@ -16,9 +16,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.datatypes.DataTypes;
-import org.mmbase.datatypes.DataTypeCollector;
+import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -37,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.46 2005-10-18 21:52:36 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.47 2005-10-27 13:07:21 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -477,6 +475,8 @@ public class BuilderReader extends DocumentReader {
             }
 
         }
+
+        
         return results;
 
     }
@@ -519,7 +519,7 @@ public class BuilderReader extends DocumentReader {
     private void decodeFieldDef(Element field, CoreField def, DataTypeCollector collector) {
         // Gui
         Element descriptions = getElementByPath(field, "field.descriptions");
-        if (descriptions!=null) {
+        if (descriptions != null) {
             for (Iterator iter = getChildElements(descriptions, "description"); iter.hasNext(); ) {
                 Element tmp = (Element) iter.next();
                 String lang = getElementAttributeValue(tmp, "xml:lang");
@@ -598,14 +598,14 @@ public class BuilderReader extends DocumentReader {
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
-    protected DataType decodeDataType(DataTypeCollector collector, String fieldName, Element field, int type, int listItemType, boolean forceInstance) {
-        DataType baseDataType;
+    protected DataType decodeDataType(final DataTypeCollector collector, final String fieldName, final Element field, final int type, final int listItemType, final boolean forceInstance) {
+        final BasicDataType baseDataType;
         if (type == Field.TYPE_LIST) {
             baseDataType = DataTypes.getListDataType(listItemType);
         } else {
             baseDataType = DataTypes.getDataType(type);
         }
-        DataType dataType = null;
+        BasicDataType dataType = null;
         Element guiTypeElement = getElementByPath(field, "field.gui.guitype");
 
         // XXX: deprecated tag 'type'
@@ -613,6 +613,7 @@ public class BuilderReader extends DocumentReader {
             guiTypeElement = getElementByPath(field, "field.gui.type");
         }
 
+        // Backwards compatible 'guitype' support
         if (guiTypeElement != null && collector != null) {
             String guiType = getElementValue(guiTypeElement);
             dataType = collector.getDataTypeInstance(guiType, baseDataType);
@@ -620,6 +621,13 @@ public class BuilderReader extends DocumentReader {
                 log.warn("Could not find data type for " + baseDataType + " / " + guiType);
             } else {
                 if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
+            }
+            if (! baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
+                // the thus configured datatype is not compatible with the database type.
+                // Fix that as good as possible:
+                BasicDataType newDataType = (BasicDataType) baseDataType.clone();
+                newDataType.inherit(dataType);
+                dataType = newDataType;
             }
         }
 
@@ -629,23 +637,34 @@ public class BuilderReader extends DocumentReader {
                 log.warn("Using both deprecated 'gui/guitime' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
             }
             String base = dataTypeElement.getAttribute("base");
+            BasicDataType requestedBaseDataType;
             if (base.equals("")) {
                 log.debug("No base defined, using '" + baseDataType + "'");
+                requestedBaseDataType = baseDataType;
             } else {
-                DataType newBaseDataType = collector.getDataType(base, true);
-                if (newBaseDataType != null) {
-                    baseDataType = newBaseDataType;
-                } else {
+                requestedBaseDataType = collector.getDataType(base, true);
+                if (requestedBaseDataType == null) {
                     log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType);
+                    requestedBaseDataType = baseDataType;
+                } else {
+                    if (! baseDataType.getClass().isAssignableFrom(requestedBaseDataType.getClass())) {
+                        // the thus configured datatype is not compatible with the database type.
+                        // Fix that as good as possible:
+                        BasicDataType newDataType = (BasicDataType) baseDataType.clone();
+                        newDataType.inherit(requestedBaseDataType);
+                        log.warn("" + requestedBaseDataType + " is not compatible with " + baseDataType + ". Repared to " + newDataType);
+                        requestedBaseDataType = newDataType;
+                    }
                 }
             }
-            dataType = (DataType) DataTypeReader.readDataType(dataTypeElement, baseDataType, collector).dataType.clone();
-            // must do a clone because readDataType somewhy returns a 'finished' datatype.
+            // i'm not sure why it must be clone here.
+            dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType.clone();
         }
 
         if (dataType == null && forceInstance) {
-            dataType = (DataType)baseDataType.clone();
+            dataType = (BasicDataType)baseDataType.clone();
         }
+
         return dataType;
     }
 
