@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.14 2005-10-02 09:08:24 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.15 2005-10-27 15:19:44 pierre Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -82,8 +82,8 @@ public class EmailHandler {
                 headers.put("CC", null);
                 headers.put("BCC", null);
 
-            } 
-        } else {            
+            }
+        } else {
             // one simple mail
             NodeRecipient to = new NodeRecipient(-1, node.getStringValue("to"));
             sendMail(node, from, to, body, headers);
@@ -177,7 +177,7 @@ public class EmailHandler {
             }
         }
         return toUsers;
-    }  
+    }
 
 
 
@@ -209,7 +209,7 @@ public class EmailHandler {
                    } else if (value.equals("text/xml")) {
                        // default encoding for text/xml
                        encoding = "utf-8";
-                   } 
+                   }
                    // default encoding for text/html en text/plain is ISO-8859-1
 
                }
@@ -304,7 +304,7 @@ public class EmailHandler {
         String osubject = (String) headers.get("Subject");
 
         // if the subject starts with a url call that url
-        if (osubject.indexOf("http://") == 0) {
+        if (osubject != null && osubject.indexOf("http://") == 0) {
             String subject = getUrlExtern(osubject, "" , "" + to.nodeNumber);
             subject = stripToOneLine(subject);
             headers.put("Subject", subject);
@@ -330,7 +330,7 @@ public class EmailHandler {
             String subject = (String) headers.get("Subject");
             if (subject != null && subject.indexOf("fakemail")!=-1) {
                 // add one to the sendmail counter
-                // refix numberofmailsend++;                
+                // refix numberofmailsend++;
                 log.info("Email -> fake send to " + to);
                 return true;
             } else {
@@ -339,8 +339,8 @@ public class EmailHandler {
                 // get mail text to see if we have a mime msg
                 if (body.indexOf("<multipart") == -1) {
                     mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
-                } else {            
-                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body);            
+                } else {
+                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body);
                     mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
                 }
 
@@ -363,7 +363,7 @@ public class EmailHandler {
             return true;
         }
     }
-    /** 
+    /**
      * Simple structure representing an email-adres which is associated with a node-number.
      */
 
