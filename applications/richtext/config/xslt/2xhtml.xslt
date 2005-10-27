@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.2 2005-10-27 13:20:36 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.3 2005-10-27 15:42:46 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -20,6 +20,7 @@
   <xsl:output method="xml" omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
   <xsl:param name="cloud">mmbase</xsl:param>
+  <xsl:param name="request"></xsl:param>
   <xsl:param name="formatter_requestcontext">/</xsl:param>
 
   <xsl:variable name="newstype">xmlnews</xsl:variable>
@@ -60,7 +61,7 @@
 
   <xsl:template match="o:field[@format='xml']">
     <xsl:choose>
-      <xsl:when test="mmxf"><!-- null -->
+      <xsl:when test="mmxf:mmxf"><!-- null -->
         <xsl:apply-templates  />
       </xsl:when>
       <xsl:otherwise>
@@ -81,7 +82,7 @@
   </xsl:template>
 
   <xsl:template match="o:object" mode="url">
-    <xsl:value-of select="node:function($cloud, string(@id ), 'url')" />
+    <xsl:value-of select="node:function($cloud, string(@id ), 'url', $request)" />
   </xsl:template>
 
 
