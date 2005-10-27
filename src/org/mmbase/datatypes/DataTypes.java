@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.13 2005-10-06 23:02:03 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.14 2005-10-27 13:05:01 michiel Exp $
  */
 
 public class DataTypes {
@@ -116,7 +116,7 @@ public class DataTypes {
      * @param classType The class of the datatype to create. If <code>null</code> is passed, the
      *          dataType returned is based on Object.class.
      */
-    public static DataType createDataType(String name, Class classType) {
+    public static BasicDataType createDataType(String name, Class classType) {
         int type = Fields.classToType(classType);
         if (name == null && classType != null) {
             name = classType.getName();
@@ -131,7 +131,7 @@ public class DataTypes {
     /**
      * Create an instance of a DataType based on the MMBase type passed.
      */
-    private static DataType createDataType(String name, int type) {
+    private static BasicDataType createDataType(String name, int type) {
         switch (type) {
         case Field.TYPE_BINARY: return new BinaryDataType(name);
         case Field.TYPE_INTEGER : return new IntegerDataType(name);
@@ -156,7 +156,7 @@ public class DataTypes {
      * @return the dataType added.
      * @throws IllegalArgumentException if the datatype does not have a name or already occurs in the set
      */
-    public static DataType addFinalDataType(DataType dataType) {
+    public static DataType addFinalDataType(BasicDataType dataType) {
         String name = dataType.getName();
         if (name == null) {
             throw new IllegalArgumentException("Passed datatype " + dataType + " does not have a name assigned.");
@@ -176,7 +176,7 @@ public class DataTypes {
      * @param name the name of the DataType to look for
      * @return A DataType instance or <code>null</code> if none can be found
      */
-    public static synchronized DataType getDataType(String name) {
+    public static synchronized BasicDataType getDataType(String name) {
         return  dataTypeCollector.getDataType(name);
     }
 
@@ -191,7 +191,7 @@ public class DataTypes {
      * @param baseDataType the dataType to match against. Can be <code>null</code>.
      * @return A DataType instance or <code>null</code> if none can be instantiated
      */
-    public static synchronized DataType getDataTypeInstance(String name, DataType baseDataType) {
+    public static synchronized BasicDataType getDataTypeInstance(String name, BasicDataType baseDataType) {
         return dataTypeCollector.getDataTypeInstance(name, baseDataType);
     }
 
@@ -205,7 +205,7 @@ public class DataTypes {
      * @param type the base type to use for a default datatype instance
      * @return A DataType instance
      */
-    public static synchronized DataType getDataTypeInstance(String name, int type) {
+    public static synchronized BasicDataType getDataTypeInstance(String name, int type) {
         return getDataTypeInstance(name, getDataType(type));
     }
 
@@ -232,9 +232,9 @@ public class DataTypes {
      * @param type the base type whose DataType to return
      * @return the DataType instance
      */
-    public static synchronized DataType getDataType(int type) {
+    public static synchronized BasicDataType getDataType(int type) {
         String name = Fields.getTypeDescription(type).toLowerCase();
-        DataType dataType = getDataType(name);
+        BasicDataType dataType = getDataType(name);
         if (dataType == null) {
             if (type == Field.TYPE_LIST) {
                 dataType = getListDataType(Field.TYPE_UNKNOWN);

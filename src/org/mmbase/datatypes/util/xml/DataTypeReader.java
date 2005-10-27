@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.15 2005-10-18 09:37:31 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.16 2005-10-27 13:05:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -68,7 +68,7 @@ public class DataTypeReader {
     /**
      * Initialize the data types default supported by the system.
      */
-    public static void readDataTypes(Element dataTypesElement, DataTypeCollector collector, DataType baseDataType) {
+    public static void readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
         NodeList childNodes = dataTypesElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -79,9 +79,9 @@ public class DataTypeReader {
                     if ("fieldtype".equals(localName) ||  // backward compatibility   XXXX DO WE NEED BACKWARDS COMPATIBILITY??!
                         "specialization".equals(localName) ||  // backward compatibility
                         "datatype".equals(localName)) {
-                        DataType dataType = readDataType(childElement, baseDataType, collector).dataType;
+                        BasicDataType dataType = readDataType(childElement, baseDataType, collector).dataType;
                         collector.finish(dataType);
-                        DataType old = collector.addDataType(dataType);
+                        BasicDataType old = collector.addDataType(dataType);
                         if (log.isServiceEnabled()) {
                             log.service((old == null ? "Created "  : "Configured ") + dataType + (baseDataType != null ? " based on " + baseDataType : ""));
                             if (log.isDebugEnabled()) {
@@ -100,7 +100,7 @@ public class DataTypeReader {
     /**
      * Reads a datatype.
      */
-    public  static DataTypeDefinition readDataType(Element typeElement, DataType baseDataType, DataTypeCollector collector) {
+    public  static DataTypeDefinition readDataType(Element typeElement, BasicDataType baseDataType, DataTypeCollector collector) {
         DataTypeDefinition definition = collector.getDataTypeDefinition();
         definition.configure(typeElement, baseDataType);
         return definition;

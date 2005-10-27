@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.37 2005-10-26 20:07:43 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.38 2005-10-27 13:05:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -42,12 +42,12 @@ public class DataTypeDefinition {
     /**
      * The data type which will be produced
      */
-    public DataType dataType = null;
+    public BasicDataType dataType = null;
 
     /**
      * The base data type on which it was based, or <code>null</code>
      */
-    private DataType baseDataType = null;
+    private BasicDataType baseDataType = null;
 
     /**
      * The data type collector that contains the data datatype with this definition.
@@ -82,7 +82,7 @@ public class DataTypeDefinition {
      *
      */
     private  void getImplementation(Element dataTypeElement, String id) {
-        DataType dt = id.equals("") ? null : collector.getDataType(id);
+        BasicDataType dt = id.equals("") ? null : collector.getDataType(id);
         if (dt != null) {
             collector.rewrite(dt);
         }
@@ -104,7 +104,7 @@ public class DataTypeDefinition {
                             Class claz = Class.forName(className);
                             log.info("Instantiating " + claz + " for " + dataType);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
-                            dt = (DataType) constructor.newInstance(new Object[] { getId(id) });
+                            dt = (BasicDataType) constructor.newInstance(new Object[] { getId(id) });
                             if (baseDataType != null) {
                                 // should check class here, perhaps
                                 dt.inherit((BasicDataType) baseDataType);
@@ -129,7 +129,7 @@ public class DataTypeDefinition {
                 dataType = baseDataType;
             } else {
                 log.debug("Id given, cloning " + baseDataType);
-                dataType = (DataType) baseDataType.clone(id);
+                dataType = (BasicDataType) baseDataType.clone(id);
             }
         } else { // means that it existed it already
             log.debug("Existing datatype " + dt + " with base " + baseDataType);
@@ -141,7 +141,7 @@ public class DataTypeDefinition {
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    DataTypeDefinition configure(Element dataTypeElement, DataType requestBaseDataType) {
+    DataTypeDefinition configure(Element dataTypeElement, BasicDataType requestBaseDataType) {
 
         String id = DataTypeXml.getAttribute(dataTypeElement, "id");
 
@@ -156,7 +156,7 @@ public class DataTypeDefinition {
         }
         if (! base.equals("")) { // also specified, let's see if it is correct
 
-            DataType definedBaseDataType = collector.getDataType(base, true);
+            BasicDataType definedBaseDataType = collector.getDataType(base, true);
             if (requestBaseDataType != null) {
                 if (requestBaseDataType != definedBaseDataType) {
                     log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + baseDataType + "'");
@@ -201,7 +201,7 @@ public class DataTypeDefinition {
                 }
                 if (dataType == baseDataType) {
                     log.debug("About to add/change conditions, need clone first!");
-                    dataType = (DataType) baseDataType.clone(getId(""));
+                    dataType = (BasicDataType) baseDataType.clone(getId(""));
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
@@ -268,7 +268,7 @@ public class DataTypeDefinition {
                 String type = processorElement.getAttribute("type");
                 if (!type.equals("") && !type.equals("*")) { // "" was not equal to "*" !
                     int processingType = Field.TYPE_UNKNOWN;
-                    DataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
+                    BasicDataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
                     if (basicDataType != null) {
                         processingType = Fields.classToType(basicDataType.getTypeAsClass());
                     } else {
@@ -331,7 +331,6 @@ public class DataTypeDefinition {
             } else {
                 String resource = entryElement.getAttribute("basename");
                 if (! resource.equals("")) {
-                    log.info("Found bundle with basename '" + resource + " while parsing " + XMLWriter.write(enumerationElement, true, true));
                     Comparator comparator = null;
                     Class wrapper    = dataType.getTypeAsClass();
                     if (! Comparable.class.isAssignableFrom(wrapper)) {

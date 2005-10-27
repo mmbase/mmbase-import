@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.7 2005-10-02 16:08:23 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.8 2005-10-27 13:05:01 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -103,7 +103,7 @@ public final class DataTypeCollector {
      * @return  a {@link DataType} with the given name, as defined for this collector, or <code>null</code>
      *      if no datatype is defined.
      */
-    public DataType getDataType(String name) {
+    public BasicDataType getDataType(String name) {
         return getDataType(name, false);
     }
 
@@ -111,8 +111,8 @@ public final class DataTypeCollector {
      * Adds a datatype to this collector.
      * @param dataType the datatype to add
      */
-    public DataType addDataType(DataType dataType) {
-        DataType old = (DataType) dataTypes.put(dataType.getName(), dataType);
+    public BasicDataType addDataType(BasicDataType dataType) {
+        BasicDataType old = (BasicDataType) dataTypes.put(dataType.getName(), dataType);
         if (old != null && old != dataType) {
             log.warn("Replaced " + dataType.getName() + " " + old  + " with " + dataType);
         }
@@ -129,9 +129,8 @@ public final class DataTypeCollector {
      * @return  a {@link DataType} with the given name, as defined for this collector, or <code>null</code>
      *      if no datatype is defined.
      */
-    public DataType getDataType(String name, boolean recursive) {
-        DataType dataType = null;
-        dataType = (DataType) dataTypes.get(name);
+    public BasicDataType getDataType(String name, boolean recursive) {
+        BasicDataType dataType = (BasicDataType) dataTypes.get(name);
         if (this != systemDataTypeCollector && dataType == null && recursive) {
             for (Iterator i = collectors.iterator(); dataType == null && i.hasNext();) {
                 DataTypeCollector collector = (DataTypeCollector) i.next();
@@ -155,14 +154,14 @@ public final class DataTypeCollector {
      * @return  a {@link DataType} with the given name, as defined for this collector, or <code>null</code>
      *      if no datatype is defined and no base datatype was passed.
      */
-    public DataType getDataTypeInstance(String name, DataType baseDataType) {
-        DataType dataType = getDataType(name, true);
+    public BasicDataType getDataTypeInstance(String name, BasicDataType baseDataType) {
+        BasicDataType dataType = getDataType(name, true);
         if (dataType == null && baseDataType == null) {
             return null;
         } else if (dataType == null) {
-            return (DataType)baseDataType.clone(name);
+            return (BasicDataType)baseDataType.clone(name);
         } else {
-            return (DataType)dataType.clone();
+            return (BasicDataType)dataType.clone();
         }
     }
 
