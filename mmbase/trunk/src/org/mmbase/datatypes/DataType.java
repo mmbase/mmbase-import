@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.39 2005-10-26 20:07:43 michiel Exp $
+ * @version $Id: DataType.java,v 1.40 2005-10-27 13:05:01 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -181,7 +181,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     public DataType.Restriction getRequiredRestriction();
 
     /**
-     * Sets whether the data type requires a value.
+     * Sets whether the data type requires a value, which means that it may not remain unfilled.
      * @param required <code>true</code> if a value is required
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      * @return the datatype restriction that was just set
