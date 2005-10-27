@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.20 2005-10-26 20:07:43 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.21 2005-10-27 13:05:01 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -550,7 +550,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     *
+     * Abstract inner class Restriction. Based on static StaticAbstractRestriction
      */
     protected abstract class AbstractRestriction extends StaticAbstractRestriction {
         protected AbstractRestriction(DataType.Restriction source) {
@@ -825,7 +825,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             while(baseIterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) baseIterator.next();
                 Object value = entry.getKey();
-                if (BasicDataType.this.validate(value, node, field).size() == 0) {
+                if (BasicDataType.this.validate(value, node, field) == VALID) {
                     next = entry;
                     break;
                 }
