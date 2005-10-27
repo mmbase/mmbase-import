@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.19 2005-10-04 11:15:24 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.20 2005-10-27 18:00:37 andre Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -99,19 +99,19 @@ public class ContextAuthentication extends Authentication {
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();
 
-            log.debug("going to try to load module with the name:"+moduleName+ " with class:" + className);
+            log.debug("going to try to load module with the name '" + moduleName + "' with class: " + className);
             ContextLoginModule module;
             try {
                 Class moduleClass = Class.forName(className);
                 module = (ContextLoginModule) moduleClass.newInstance();
             } catch(Exception e) {
-                String msg = "could not load module with the name:"+moduleName+ " with class:" + className;
+                String msg = "could not load module with the name: '" + moduleName + "' with class: " + className;
                 log.error(msg);
                 log.error( Logging.stackTrace(e));
                 throw new SecurityException(msg);
             }
             module.load(document, validKey, moduleName, manager);
-            log.info("loaded module with the name:"+moduleName+ " with class:" + className);
+            log.info("loaded module with the name: '" + moduleName + "' with class: " + className);
             loginModules.put(moduleName, module);
         }
 
@@ -122,17 +122,17 @@ public class ContextAuthentication extends Authentication {
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
-            throw new UnknownAuthenticationMethodException("could not load module with name:" +  moduleName);
+            throw new UnknownAuthenticationMethodException("could not load module with name: '" +  moduleName + "'");
         }
         ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
         // and we do the login...
         UserContext user = module.login(loginInfo, parameters);
         if (log.isServiceEnabled()) {
             if(user == null) {
-                log.debug("login on module with name:" + moduleName + "failed");
+                log.debug("login on module with name '" + moduleName + "' failed");
             } else {
                 if (user.getRank().getInt() > Rank.ANONYMOUS_INT) {
-                    log.debug("login on module with name:" + moduleName + " was succesfull for user with id:" + user.getIdentifier());
+                    log.debug("login on module with name '" + moduleName + "' was succesfull for user with id: '" + user.getIdentifier() + "'");
                 }
             }
         }
