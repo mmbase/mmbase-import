@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.12 2005-10-07 19:00:30 michiel Exp $
+ * @version $Id: SendMail.java,v 1.13 2005-10-27 15:18:49 pierre Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -104,7 +104,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 Context initCtx = new InitialContext();
                 Context envCtx = (Context)initCtx.lookup(context);
                 session = (Session)envCtx.lookup(datasource);
-                log.info("Module JMSendMail started (datasource = " + datasource + ")");
+                log.info("Module SendMail started (datasource = " + datasource + ")");
             } else {
                 if (context != null) {
                     log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
@@ -127,11 +127,11 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 Properties prop = System.getProperties();
                 prop.put("mail.smtp.host", smtphost);
                 session = Session.getInstance(prop, null);
-                log.info("Module JMSendMail started (smtphost = " + smtphost + ")");
+                log.info("Module SendMail started (smtphost = " + smtphost + ")");
             }
 
         } catch (javax.naming.NamingException e) {
-            log.fatal("JMSendMail failure: " + e.getMessage());
+            log.fatal("SendMail failure: " + e.getMessage());
             log.debug(Logging.stackTrace(e));
         }
     }
@@ -141,7 +141,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      */
     protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
         if (log.isServiceEnabled()) {
-            log.service("JMSendMail sending mail to " + to);
+            log.service("SendMail sending mail to " + to);
         }
         // construct a message
         MimeMessage msg = new MimeMessage(session);
@@ -176,10 +176,10 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
 
             msg.setText(data, mailEncoding);
             Transport.send(msg);
-            log.debug("JMSendMail done.");
+            log.debug("SendMail done.");
             return true;
         } catch (MessagingException e) {
-            log.error("JMSendMail failure: " + e.getMessage() + "from: " + from + " to: " + to);
+            log.error("SendMail failure: " + e.getMessage() + "from: " + from + " to: " + to);
             log.debug(Logging.stackTrace(e));
         }
         return false;
