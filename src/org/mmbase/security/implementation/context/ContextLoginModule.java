@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.15 2005-10-27 18:00:37 andre Exp $
+ * @version $Id: ContextLoginModule.java,v 1.16 2005-10-27 19:49:01 andre Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -122,10 +122,8 @@ public abstract class ContextLoginModule {
             userCons.append("@rank='" + rank + "'");
         }
         if (identifyType != null) {
-            // xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
             xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
         } else {
-            // xpath = "/contextconfig/accounts/user[" + userCons + "]";
             xpath = "/contextconfig/accounts/user/identify[" + userCons + "]";
         }
         
