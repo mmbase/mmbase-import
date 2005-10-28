@@ -22,8 +22,8 @@
    %>
 
    <mm:import externid="showcode">false</mm:import>
-   <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp</mm:import>
-   <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" />?a=1</mm:import>
+   <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="language" /></mm:import>
+   <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" />?language=<mm:write referid="language" /></mm:import>
    <mm:import externid="mode">components</mm:import>
       <mm:node number="component.pdf" notfound="skip">
          <mm:relatednodes type="providers" constraints="providers.number=$provider">
