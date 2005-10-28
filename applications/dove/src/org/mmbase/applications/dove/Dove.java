@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.66 2005-10-24 09:33:14 nklasens Exp $
+ * @version $Id: Dove.java,v 1.67 2005-10-28 13:36:00 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -474,7 +474,7 @@ public class Dove extends AbstractDove {
                     }
                     data.setAttribute(ELM_ROLE,rolename);
                     out.appendChild(data);
-                    getDataNode(null,data,n);
+                    getDataNode(null, data, n);
                 } finally  {
                     n.cancel();  // have to cancel node !
                 }
@@ -810,13 +810,13 @@ public class Dove extends AbstractDove {
                         Map values = new HashMap();
                         if (isRelation) {
                             if (isOriginal) {
-                                originalRelations.put(node.getAttribute(ELM_NUMBER),values);
+                                originalRelations.put(node.getAttribute(ELM_NUMBER), values);
                             } else {
-                                newRelations.put(node.getAttribute(ELM_NUMBER),values);
+                                newRelations.put(node.getAttribute(ELM_NUMBER), values);
                             }
                         } else {
                             if (isOriginal) {
-                                originalNodes.put(node.getAttribute(ELM_NUMBER),values);
+                                originalNodes.put(node.getAttribute(ELM_NUMBER), values);
                             } else {
                                 newNodes.put(node.getAttribute(ELM_NUMBER),values);
                             }
@@ -826,8 +826,8 @@ public class Dove extends AbstractDove {
                         }
 
                         String context = node.getAttribute(ELM_CONTEXT);
-                        if (context!=null && !context.equals("")) {
-                            values.put("_context",context);
+                        if (context != null && !context.equals("")) {
+                            values.put("_context", context);
                         }
 
                         if (isRelation) {
@@ -838,10 +838,10 @@ public class Dove extends AbstractDove {
                             if (source!=null) values.put("_source",source);
 
                             String destination = node.getAttribute(ELM_DESTINATION);
-                            if (destination!=null) values.put("_destination",destination);
+                            if (destination!=null) values.put("_destination", destination);
                         } else {
                             String type = node.getAttribute(ELM_TYPE);
-                            if (type!=null) values.put("_otype",type);
+                            if (type!=null) values.put("_otype", type);
                         }
                         Element field = getFirstElement(node);
                         while (field != null) { // select all child tags, should be 'fields'
@@ -851,12 +851,12 @@ public class Dove extends AbstractDove {
                                 String encoding = field.getAttribute(ELM_ENCODING);
                                 if (!href.equals("")) {
                                     // binary data.
-                                    Object repval=repository.get(href);
-                                    if (repval!=null) {
-                                        values.put(fieldname,repval);
+                                    Object repval = repository.get(href);
+                                    if (repval != null) {
+                                        values.put(fieldname, repval);
                                         // also retrieve and set filename
-                                        if(field.getFirstChild()!=null) {
-                                            values.put("filename",field.getFirstChild().getNodeValue());
+                                        if(field.getFirstChild() != null) {
+                                            values.put("filename", field.getFirstChild().getNodeValue());
                                         }
                                     }
                                 } else if (!encoding.equals("")) {
@@ -865,7 +865,7 @@ public class Dove extends AbstractDove {
                                     }
                                 } else {
                                     if(field.getFirstChild() == null) {
-                                        values.put(fieldname,"");
+                                        values.put(fieldname, "");
                                     } else {
                                         values.put(fieldname, field.getFirstChild().getNodeValue());
                                     }
@@ -895,7 +895,7 @@ public class Dove extends AbstractDove {
                         Map.Entry me=(Map.Entry)i.next();
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element oe = (Element)me.getValue();
-                        oe.setAttribute(ELM_NUMBER,n.getStringValue("number"));
+                        oe.setAttribute(ELM_NUMBER, n.getStringValue("number"));
                     }
                     // retrieve all numbers, snumbers, dnumbers and reset them to the right value
                     for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
@@ -969,7 +969,6 @@ public class Dove extends AbstractDove {
      */
     protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
         node.getCloud().setProperty(Cloud.PROP_XMLMODE, "flat");
-        log.debug("Values " + values);
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry me = (Map.Entry)i.next();
             String key = (String)me.getKey();
@@ -977,34 +976,42 @@ public class Dove extends AbstractDove {
                 Object value = me.getValue();
                 if ((originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
-                    String originalValue = (String)originalValues.get(key);
-                    String mmbaseValue;
+                    String originalValue = (String) originalValues.get(key);
+                    String  mmbaseValue;
                     if (node.getNodeManager().getField(key).getType() ==  Field.TYPE_DATETIME) {
                         mmbaseValue = "" + node.getDateValue(key).getTime() / 1000;
                     } else {
-                        mmbaseValue = node.getStringValue(key);
+                        mmbaseValue = node.isNull(key) ? null : node.getStringValue(key);
                     }
-                    /*
-                    if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
+                    if (mmbaseValue == null) {
+                        if ("".equals(originalValue)) {
+                            // XML Cannot make difference between NULL and empty.
+                            originalValue = null;
+                        }
+                        if ("".equals(value)) {
+                            value = null;
+                        }
+                    }
+
+                    if ((originalValue != null ) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
-                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key + " value found: " + mmbaseValue + "value expected: " + originalValue, out);
+                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name '" + key + "' value found: '" + mmbaseValue + "' value expected '" + originalValue + "'", out);
                         err.setAttribute(ELM_TYPE, IS_SERVER);
                         return false;
                     }
-                    */
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("Setting field " + key + " to '" + value + "'");
                 }
                 if (value instanceof byte[]) {
                     node.setValue(key, value);
-                } else {
-                    node.setStringValue(key, org.mmbase.util.Casting.toString(value));
+                } else {                    
+                    node.setStringValue(key, value != null ? org.mmbase.util.Casting.toString(value) : null);
                 }
                 Element fieldElement = doc.createElement(FIELD);
                 fieldElement.setAttribute(ELM_NAME, key);
                 if (!(value instanceof byte[])) {
-                    Text tel = doc.createTextNode(value.toString());
+                    Text tel = doc.createTextNode(value == null ? "" : value.toString());
                     fieldElement.appendChild(tel);
                 }
                 out.appendChild(fieldElement);
@@ -1033,7 +1040,7 @@ public class Dove extends AbstractDove {
             org.mmbase.bridge.Node newnode = nm.createNode();
             Element objectelement = doc.createElement(OBJECT);
             objectelement.setAttribute(ELM_TYPE, type);
-            fillFields(alias,newnode,objectelement, values);
+            fillFields(alias, newnode, objectelement, values);
             try {
                 String context = (String) values.get("_context");
                 if (context!=null) {
@@ -1210,7 +1217,6 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean putChangeNode(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
-        log.info(" values " +  values);
         // now check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
@@ -1280,10 +1286,10 @@ public class Dove extends AbstractDove {
         for (Iterator i = newNodes.entrySet().iterator(); i.hasNext(); ) {
             // handle the several cases we have when we have
             // a new node (merge, really new)
-            Map.Entry me=(Map.Entry)i.next();
-            String alias=(String)me.getKey();
-            Map values=(Map)me.getValue();
-            String status=(String)values.get("_status");
+            Map.Entry me = (Map.Entry)i.next();
+            String alias = (String)me.getKey();
+            Map values = (Map)me.getValue();
+            String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
             if (status != null && status.equals("new")) {
@@ -1295,11 +1301,11 @@ public class Dove extends AbstractDove {
                 if (originalValues!=null) {
                     if (!putDeleteNode(alias, originalValues, newElement, cloud)) return false;;
                 }
-            } else if (status==null || status.equals("") || status.equals("change")) {
+            } else if (status == null || status.equals("") || status.equals("change")) {
                 // check if they send a original
                 Map originalValues = (Map )originalNodes.get(alias);
-                if (originalValues!=null) {
-                    if(!putChangeNode(alias, values, originalValues,aliases, newElement, cloud)) return false;
+                if (originalValues != null) {
+                    if(!putChangeNode(alias, values, originalValues, aliases, newElement, cloud)) return false;
                 } else {
                     // give error not a org. node
                     Element err = addContentElement(ERROR,"Node not defined in original tag, node number : " + alias, out);
@@ -1324,9 +1330,9 @@ public class Dove extends AbstractDove {
             String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
-            if (status!=null && status.equals("new")) {
+            if (status != null && status.equals("new")) {
                 if (!putNewRelation(alias, values, aliases, addedRelations, newElement, cloud)) return false;
-            } else if (status!=null && status.equals("delete")) {
+            } else if (status != null && status.equals("delete")) {
                 Map originalValues = (Map)originalRelations.get(alias);
                 if (originalValues != null) {
                     if(!putDeleteRelation(alias, originalValues, newElement, cloud)) return false;;
