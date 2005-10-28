@@ -2,6 +2,6 @@
 <components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20020516170724">
     <node number="10020" owner="system" alias="component.versioning">
         <name>versioning</name>
-        <classname>nl.didactor.versioning.component.DidactorVersioning</classname>
+        <classname>nl.didactor.component.versioning.DidactorVersioning</classname>
     </node>
 </components>
