@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.16 2005-10-27 19:49:01 andre Exp $
+ * @version $Id: ContextLoginModule.java,v 1.17 2005-10-28 09:56:34 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -124,7 +124,7 @@ public abstract class ContextLoginModule {
         if (identifyType != null) {
             xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
         } else {
-            xpath = "/contextconfig/accounts/user/identify[" + userCons + "]";
+            xpath = "/contextconfig/accounts/user[" + userCons + "]";
         }
         
         if (log.isDebugEnabled()) {
