@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
+import java.util.Arrays;
 import java.lang.reflect.*;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -18,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.10 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.11 2005-10-28 15:07:45 simon Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -99,7 +101,7 @@ class SetFunction extends AbstractFunction {
         try {
             functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
         } catch(NoSuchMethodException e) {
-            throw new RuntimeException("Function method not found : " + className + "." + methodName + "(" + getParameterDefinition()+")", e);
+            throw new RuntimeException("Function method not found : " + className + "." + methodName + "(" +  Arrays.asList(getParameterDefinition()) +")", e);
         }
         if (Modifier.isStatic(functionMethod.getModifiers())) {
             functionInstance = null;
