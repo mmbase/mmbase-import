@@ -8,7 +8,7 @@
 <%@include file="/education/wizards/roles_defs.jsp" %>
 
 
-<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp</mm:import>
+<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="language" /></mm:import>
 <mm:import externid="command">-1</mm:import>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
