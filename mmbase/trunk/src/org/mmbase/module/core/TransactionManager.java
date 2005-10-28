@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.28 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: TransactionManager.java,v 1.29 2005-10-28 13:38:14 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -56,7 +56,7 @@ public class TransactionManager implements TransactionManagerInterface {
     synchronized protected Collection createTransaction(String transactionName) throws TransactionManagerException {
         if (!transactions.containsKey(transactionName)) {
             Collection transactionNodes = new Vector();
-            transactions.put(transactionName,transactionNodes);
+            transactions.put(transactionName, transactionNodes);
             return transactionNodes;
         } else {
             throw new TransactionManagerException("Transaction "+transactionName+" already exists");
@@ -156,8 +156,7 @@ public class TransactionManager implements TransactionManagerInterface {
         return transactionName;
     }
 
-    public String commit(Object user, String transactionName)
-        throws TransactionManagerException {
+    public String commit(Object user, String transactionName) throws TransactionManagerException {
         Collection transaction = getTransaction(transactionName);
         try {
             boolean resolved = transactionResolver.resolve(transaction);
@@ -238,9 +237,9 @@ public class TransactionManager implements TransactionManagerInterface {
                         commitOK = node.parent.safeCommit(node);
                     }
                     if (commitOK) {
-                        nodestate[i]=COMMITED;
+                        nodestate[i] = COMMITED;
                     } else {
-                        nodestate[i]=FAILED;
+                        nodestate[i] = FAILED;
                     }
                 } else if (nodeexist[i] == I_EXISTS_NO ) {
                     int insertOK;
@@ -268,6 +267,7 @@ public class TransactionManager implements TransactionManagerInterface {
         for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (node.getBuilder() instanceof InsRel) {
+                // excactly the same code as 10 lines ago. Should be dispatched to some method..
                 if (nodeexist[i] == I_EXISTS_YES ) {
                     boolean commitOK;
                     if (user instanceof UserContext) {
@@ -276,9 +276,9 @@ public class TransactionManager implements TransactionManagerInterface {
                         commitOK = node.parent.safeCommit(node);
                     }
                     if (commitOK) {
-                        nodestate[i]=COMMITED;
+                        nodestate[i] = COMMITED;
                     } else {
-                        nodestate[i]=FAILED;
+                        nodestate[i] = FAILED;
                     }
                 } else if (nodeexist[i] == I_EXISTS_NO ) {
                     int insertOK;
