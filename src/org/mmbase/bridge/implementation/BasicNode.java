@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.175 2005-10-26 23:59:08 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.176 2005-10-28 13:42:16 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -352,7 +352,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
             case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
             case Field.TYPE_NODE:    setNodeValue(fieldName, (Node) value); break;
-            case Field.TYPE_DATETIME:setDateValue(fieldName, (Date) value); break;
+            case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
             case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
             case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
             default:                 setObjectValue(fieldName, value);
@@ -516,7 +516,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setStringValue(String fieldName, final String value) {
         Field field = nodeManager.getField(fieldName);        
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, Casting.toString(field.getDataType().preCast(value, this, field)), Field.TYPE_STRING);
+        Object setValue = field.getDataType().preCast(value, this, field);
+        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, setValue, Field.TYPE_STRING);
         setValueWithoutProcess(fieldName, v);
     }
 
