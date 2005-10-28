@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.17 2005-07-28 17:08:17 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.18 2005-10-28 15:07:45 simon Exp $ 
  */
 public class FunctionSets {
 
@@ -244,6 +244,8 @@ public class FunctionSets {
                     functionSet.addFunction(fun);
                 } catch (Exception e) {
                     log.error(e);
+                    log.error(Logging.stackTrace(e));
+                    log.error(Logging.stackTrace(e.getCause()));
                 }
             }
         }
