@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.45 2005-08-25 12:33:18 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.46 2005-10-29 14:47:56 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -97,7 +97,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return Character.isLetter(c) || Character.isDigit(c) || c == '_';
     }
     static boolean isContextIdentifierChar(char c) {
-        return isContextVarNameChar(c) || c == '.'; 
+        return isContextVarNameChar(c) || c == '.';
         // || c =='/'; // / for forward compatibility?
     }
 
@@ -132,7 +132,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * has an id.
      */
 
-    public ContextContainer(String i, ContextContainer p) {        
+    public ContextContainer(String i, ContextContainer p) {
         id = i;
         parent = p;
     }
@@ -152,7 +152,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * @since MMBase-1.7
      */
-    ContextContainer getParent() {        
+    ContextContainer getParent() {
         return parent;
     }
 
@@ -171,7 +171,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             throw new RuntimeException("Error, key should be string in ContextContainers! (Tried " + key.getClass().getName() + ")");
         }
     }
-        
+
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
      */
@@ -197,9 +197,21 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
     protected Pair getPair(String key, boolean checkParent) throws JspTagException {
         // checking if key contains a 'dot'.
-        int dotpos = key.indexOf('.');
-        if (dotpos > 0) {
-            String contextKey = key.substring(0, dotpos);
+        int dotPos = -1;
+        {
+            int pos = 0;
+            while (pos < key.length()) {
+                char c = key.charAt(pos);
+                if (! isContextVarNameChar(c)) return null;
+                if (c == '.') {
+                    dotPos = c;
+                    break;
+                }
+                pos++;
+            }
+        }
+        if (dotPos > 0) {
+            String contextKey = key.substring(0, dotPos);
             // find the Context:
             boolean wentDown = true;
             Object c = simpleGet(contextKey, checkParent);
@@ -214,7 +226,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             if (! (c instanceof ContextContainer)) {
                 throw new JspTagException(contextKey + " is not a Context, but a " + c.getClass().getName());
             }
-            String newKey = key.substring(dotpos + 1);
+            String newKey = key.substring(dotPos + 1);
             // and search with that one:
             return new Pair((ContextContainer)c, newKey, wentDown);
         } else {
@@ -331,7 +343,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     /**
      * @since MMBase-1.8
      */
-    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {   
+    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {
         register(newId, helper.getValue(), check, true);
     }
 
@@ -377,7 +389,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
                 log.info(Logging.stackTrace(exception));
                 throw exception;
             }
-            
+
             log.debug("Valid");
             //pageContext.setAttribute(id, n);
             if ((! newId.equals("_")) && check && isRegistered(newId)) {
@@ -412,7 +424,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             String key = (String) entry.getKey();
             register(key, entry.getValue());
         }
-        
+
     }
     /**
      * @since MMBase-1.7
@@ -424,7 +436,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             String key = (String) i.next();
             unRegister(key);
         }
-     
+
     }
     /**
      * @since MMBase-1.7 (here)
@@ -450,7 +462,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * @since MMBase-1.7
      */
     protected void unRegister(String key, boolean checkParent) throws JspTagException {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("removing object '" + key + "' from Context '" + id + "'");
         }
         Pair pair = getPair(key, checkParent);
@@ -482,7 +494,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      */
     protected static Object fixEncoding(Object value, String encoding) throws TaglibException {
         if(value instanceof String) {
-            try {                
+            try {
                 value = new String(((String)value).getBytes("ISO-8859-1"), encoding);
             } catch (java.io.UnsupportedEncodingException e) {
                 throw new TaglibException("Unsupported Encoding ", e);
@@ -510,12 +522,12 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
 
         if (enc.equalsIgnoreCase("ISO-8859-1")) {
-            enc = "CP1252";                                
-        }                 
+            enc = "CP1252";
+        }
         log.debug("Fixing char encoding of " + value + " to " + enc);
         return fixEncoding(value, enc);
     }
-   
+
     /**
      * @since MMBase-1.7
      */
@@ -575,7 +587,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
-                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);                    
+                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
                 } else {
                     result = fixEncoding(resultvec[0], pageContext);
                 }
@@ -608,7 +620,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             result = null;
         }
         return result;
- 
+
     }
 
     /**
@@ -657,7 +669,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
         Object result = find(pageContext, from, referId);
         // if it cannot be found, then 'null' will be put in the hashmap ('not present')
-  
+
         register(newId, result, check);
         if (log.isDebugEnabled()) {
             log.debug("found " + newId + " (" + result + ")");
