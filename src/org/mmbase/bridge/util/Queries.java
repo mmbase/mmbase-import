@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.64 2005-10-21 16:49:34 michiel Exp $
+ * @version $Id: Queries.java,v 1.65 2005-10-30 23:50:30 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1225,7 +1225,7 @@ abstract public class Queries {
      * @return The changed Query
      */
     public static Query sortUniquely(Query q) {
-        List steps = new ArrayList(q.getSteps());
+        List steps = null;
 
         // remove the ones which are already sorted
         Iterator i = q.getSortOrders().iterator();
@@ -1233,18 +1233,130 @@ abstract public class Queries {
             SortOrder sortOrder = (SortOrder)i.next();
             if (sortOrder.getField().getFieldName().equals("number")) {
                 Step step = sortOrder.getField().getStep();
+                if (steps == null) {
+                    // instantiate new ArrayList only if really necessary
+                    steps = new ArrayList(q.getSteps());
+                }
                 steps.remove(step);
             }
+        }
+        if (steps == null) {
+            steps = q.getSteps();
         }
         // add sort order on the remaining ones:
         i = steps.iterator();
         while (i.hasNext()) {
             Step step = (Step)i.next();
-            q.addSortOrder(q.createStepField(step, "number"), SortOrder.ORDER_DESCENDING);
+            StepField sf = q.createStepField(step, "number");
+            if (sf == null) {
+                throw new RuntimeException("Create stepfield for 'number' field returned null!");
+            }
+            q.addSortOrder(sf, SortOrder.ORDER_DESCENDING);
         }
         return q;
     }
 
+    /**
+     * Make sure all sorted fields are queried
+     * @since MMBase-1.8
+     */
+    public static Query addSortedFields(Query q) {
+        List fields = q.getFields();
+        Iterator i = q.getSortOrders().iterator();
+        while (i.hasNext()) {
+            SortOrder order = (SortOrder) i.next();
+            StepField field = order.getField();
+            Step s = field.getStep();
+            StepField sf = q.createStepField(s, q.getCloud().getNodeManager(s.getTableName()).getField(field.getFieldName()));
+            if (! fields.contains(sf)) {
+                q.addField(s, q.getCloud().getNodeManager(s.getTableName()).getField(field.getFieldName()));
+            }
+        }
+        return q;
+    }
 
+    /**
+     * Obtains a value for the field of a sortorder from a given node.
+     * Used to set constraints based on sortorder.
+     * @since MMBase-1.8
+     */
+    public static Object getSortOrderFieldValue(Node node, SortOrder sortOrder) {
+        String fieldName = sortOrder.getField().getFieldName();
+        Object value = node.getValue(fieldName);
+        if (value == null) {
+            value = node.getValue(sortOrder.getField().getStep().getAlias() + "." + fieldName);
+            if (value == null) {
+                value = node.getValue(sortOrder.getField().getStep().getTableName() + "." + fieldName);
+            }
+        }
+        if (value instanceof Node) {
+            value = new Integer(((Node)value).getNumber());
+        }
+        return value;
+    }
+
+
+    /**
+     * Compare tho nodes, with a SortOrder. This determins where a certain node is smaller or bigger than a certain other node, with respect to some SortOrder.
+     * This is used by {@link #compare(Node, Node, List)}
+     * 
+     * If node2 is only 'longer' then node1, but otherwise equal, then it is bigger.
+     *
+     * @since MMBase-1.8
+     */
+    public static int compare(Node node1, Node node2, SortOrder sortOrder) {
+        int result;
+        Object value  = getSortOrderFieldValue(node1, sortOrder);
+        Object value2 = getSortOrderFieldValue(node2, sortOrder);
+        // compare values - if they differ, detemrine whether
+        // they are bigger or smaller and return the result
+        // remaining fields are not of interest ionce a difference is found
+        if (value == null) {
+            if (value2 != null) {
+                return 1;
+            } else {
+                result = 0;
+            }
+        } else if (value2 == null) {
+            return -1;
+        } else {
+            // compare the results
+            try {
+                result = ((Comparable)value).compareTo(value2);
+            } catch (ClassCastException cce) {
+                // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
+                // warn and ignore this sortorder
+                log.warn("Cannot compare values " + value +" and " + value2 + " in sortorder field " +
+                         sortOrder.getField().getFieldName() + " in step " + sortOrder.getField().getStep().getAlias());
+                result = 0;
+            }
+        }
+        // if the order of this field is descending,
+        // then the result of the comparison is the reverse (the node is 'greater' if the value is 'less' )
+        if (sortOrder.getDirection() == SortOrder.ORDER_DESCENDING) {
+            result = -result;
+        }
+        return result;
+    }
+
+    /**
+     * Does a field-by-field compare of two Node objects, on the fields used to order the nodes.
+     * This is used to determine whether a node comes after or before another, in a certain query result.
+     *
+     * @return -1 if node1 is smaller than node 2, 0 if both nodes are equals, and +1 is node 1 is greater than node 2.
+     * @since MMBase-1.8
+     */
+    public static int compare(Node node1, Node node2, List sortOrders) {
+        if (node1 == null) return -1;
+        if (node2 == null) return +1;
+        int result = 0;
+        Iterator i = sortOrders.iterator();
+        while (result == 0 && i.hasNext()) {            
+            SortOrder order = (SortOrder) i.next();
+            result = compare(node1, node2, order);
+        }
+        // if all fields match - return 0 as if equal
+        return result;
+    }
 
 }
