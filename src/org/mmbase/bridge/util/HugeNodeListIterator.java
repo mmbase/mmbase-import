@@ -20,11 +20,11 @@ import java.util.*;
 /**
  * Iterates the big result of a query. It avoids using a lot of memory (which you would need if you
  * get the complete NodeList first), and pollution of the (node) cache. In this current
- * implementation the Query is 'batched' to avoid reading in all nodes in memory, and the batches
- * are removed from the query-caches.
+ * implementation the Query is 'batched' to avoid reading in all nodes in memory, and the queries
+ * are marked with {@link CachePolicy.NEVER}.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.3 2005-10-12 14:26:16 michiel Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.4 2005-10-30 23:50:30 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -184,61 +184,7 @@ public class HugeNodeListIterator implements NodeIterator {
      * @return -1 if node1 is smaller than node 2, 0 if both nodes are equals, and +1 is node 1 is greater than node 2.
      */
     protected int compares(Node node1, Node node2) {
-        if (node1 == null) return -1;
-        if (node2 == null) return +1;
-        int result = 0;
-        Iterator i = originalQuery.getSortOrders().iterator();
-        while (result == 0 && i.hasNext()) {
-            SortOrder order = (SortOrder) i.next();
-            Object value = getOrderFieldValue(node1, order);
-            Object value2 = getOrderFieldValue(node2, order);
-            // compare values - if they differ, detemrine whether
-            // they are bigger or smaller and return the result
-            // remaining fields are not of interest ionce a difference is found
-            if (value == null) {
-                if (value2 != null) {
-                    result = -1;
-                }
-            } else if (value2 == null) {
-                result = 1;
-            } else {
-                // compare the results
-                try {
-                    result = ((Comparable)value).compareTo(value2);
-                } catch (ClassCastException cce) {
-                    // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
-                    // warn and ignore this sortorder
-                    log.warn("Cannot compare values " + value +" and " + value2 + " in sortorder field " +
-                        order.getField().getFieldName() + " in step " + order.getField().getStep().getAlias());
-                }
-            }
-            // if the order of this field is descending,
-            // then the result of the comparison is the reverse (the node is 'greater' if the value is 'less' )
-            if (order.getDirection() == SortOrder.ORDER_DESCENDING) {
-                result = -result;
-            }
-        }
-        // if all fields match - return 0 as if equal
-        return result;
-    }
-
-    /**
-     * Obtains a value for the field of a sortorder from a given node.
-     * Used to set constraints based on sortorder.
-     */
-    private Object getOrderFieldValue(Node node, SortOrder order) {
-        String fieldName = order.getField().getFieldName();
-        Object value = node.getValue(fieldName);
-        if (value == null) {
-            value = node.getValue(order.getField().getStep().getAlias() + "." + fieldName);
-            if (value == null) {
-                value = node.getValue(order.getField().getStep().getTableName() + "." + fieldName);
-            }
-        }
-        if (value instanceof Node) {
-            value = new Integer(((Node)value).getNumber());
-        }
-        return value;
+        return Queries.compare(node1, node2, originalQuery.getSortOrders());
     }
 
     /**
@@ -260,7 +206,7 @@ public class HugeNodeListIterator implements NodeIterator {
                 // because there could have been deletions/insertions.
                 // We use the sort-order to apply a constraint.
                 SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
-                Object value = getOrderFieldValue(previousNode, order);
+                Object value = Queries.getSortOrderFieldValue(previousNode, order);
                 Constraint cons;
                 if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
                     cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.GREATER_EQUAL, value);
@@ -302,7 +248,7 @@ public class HugeNodeListIterator implements NodeIterator {
             } else {
                 Query currentQuery = (Query) originalQuery.clone();
                 SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
-                Object value = getOrderFieldValue(nextNode, order);
+                Object value = Queries.getSortOrderFieldValue(nextNode, order);
                 Constraint cons;
                 if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
                     cons = currentQuery.createConstraint(order.getField(), FieldCompareConstraint.LESS_EQUAL, value);
@@ -353,10 +299,11 @@ public class HugeNodeListIterator implements NodeIterator {
     public static void main(String[] args) {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         NodeQuery q = cloud.getNodeManager("object").createQuery();
-        HugeNodeListIterator nodeIterator = new HugeNodeListIterator(q);
+        HugeNodeListIterator nodeIterator = new HugeNodeListIterator(q, 20);
+        int i = 0;
         while (nodeIterator.hasNext()) {
             Node node = nodeIterator.nextNode();
-            System.out.println(node.getFunctionValue("gui", null).toString());
+            System.out.println("" + (i++) + ": " + node.getNumber() + " " + node.getNodeManager().getName() + " " + node.getFunctionValue("gui", null).toString());
         }
 
     }
