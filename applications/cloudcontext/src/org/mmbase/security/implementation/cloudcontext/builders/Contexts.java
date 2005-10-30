@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.43 2005-10-06 14:00:42 michiel Exp $
+ * @version $Id: Contexts.java,v 1.44 2005-10-30 15:32:07 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -283,10 +283,11 @@ public class Contexts extends MMObjectBuilder {
                     return mayRevoke(source, destination, Operation.getOperation(node.getStringValue("operation")), user.getNode());
                 }
             }
-            if (source.getBuilder() instanceof Groups && destination.getBuilder() instanceof Users) {
+            if (source.getBuilder() instanceof Groups && destination.getBuilder() instanceof Users && operation != Operation.READ) {
                 if (getNode(node.getIntValue("rnumber")).getStringValue("sname").equals("contains")) {
                     // may not change groups of higher rank users
-                    if (user.getRank().getInt() <= destination.getIntValue("rank")) {
+                    Rank destRank = ((Users) destination.getBuilder()).getRank(destination);
+                    if (user.getRank().getInt() <= destRank.getInt()) {
                         return false;
                     }
                 }
