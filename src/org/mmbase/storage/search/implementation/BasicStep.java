@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.7 2005-05-02 13:05:58 michiel Exp $
+ * @version $Id: BasicStep.java,v 1.8 2005-10-30 19:08:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -109,8 +109,8 @@ public class BasicStep implements Step {
         if (obj instanceof Step && !(obj instanceof RelationStep)) {
             Step step = (Step) obj;
             return getTableName().equals(step.getTableName())
-            && (alias == null? true: alias.equals(step.getAlias()))
-            && nodes.equals(step.getNodes());
+                && (alias == null ? step.getAlias() == null : alias.equals(step.getAlias()))
+                && nodes.equals(step.getNodes());
         } else {
             return false;
         }
