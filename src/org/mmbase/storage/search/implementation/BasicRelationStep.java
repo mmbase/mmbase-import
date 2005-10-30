@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Id: BasicRelationStep.java,v 1.10 2005-05-02 13:03:30 michiel Exp $
+ * @version $Id: BasicRelationStep.java,v 1.11 2005-10-30 19:08:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
@@ -49,17 +49,14 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     // package visibility!
-    BasicRelationStep(InsRel builder,
-        Step previous, Step next) {
+    BasicRelationStep(InsRel builder, Step previous, Step next) {
         super(builder);
         if (previous == null) {
-            throw new IllegalArgumentException(
-            "Invalid previous value: " + previous);
+            throw new IllegalArgumentException("Invalid previous value: " + previous);
         }
         this.previous = previous;
         if (next == null) {
-            throw new IllegalArgumentException(
-            "Invalid next value: " + next);
+            throw new IllegalArgumentException("Invalid next value: " + next);
         }
         this.next = next;
     }
@@ -71,8 +68,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      * @return This <code>BasicRelationStep</code> instance.
      * @see #getCheckedDirectionality
      */
-    public BasicRelationStep setCheckedDirectionality(
-            boolean checkedDirectionality) {
+    public BasicRelationStep setCheckedDirectionality(boolean checkedDirectionality) {
         this.checkedDirectionality = checkedDirectionality;
         return this;
     }
