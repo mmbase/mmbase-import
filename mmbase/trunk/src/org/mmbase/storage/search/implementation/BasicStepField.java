@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.20 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicStepField.java,v 1.21 2005-10-30 19:09:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -152,8 +152,7 @@ public class BasicStepField implements StepField {
      */
     public BasicStepField setAlias(String alias) {
         if (alias != null && alias.trim().length() == 0) {
-            throw new IllegalArgumentException(
-            "Invalid alias value: " + alias);
+            throw new IllegalArgumentException("Invalid alias value: " + alias);
         }
         this.alias = alias;
         return this;
@@ -194,7 +193,7 @@ public class BasicStepField implements StepField {
             StepField field = (StepField) obj;
             return BasicStepField.compareSteps(getStep(), field.getStep())
                 && getFieldName().equals(field.getFieldName())
-                && (alias == null? true: alias.equals(field.getAlias()));
+                && (alias == null? field.getAlias() == null : alias.equals(field.getAlias()));
         } else {
             return false;
         }
