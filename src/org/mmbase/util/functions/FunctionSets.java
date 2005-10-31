@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.18 2005-10-28 15:07:45 simon Exp $ 
+ * @version $Id: FunctionSets.java,v 1.19 2005-10-31 12:34:11 simon Exp $ 
  */
 public class FunctionSets {
 
@@ -262,16 +262,16 @@ public class FunctionSets {
             if (className.equals("int")) { // needed?
                 return int.class;
             } else if (className.equals("NodeList")) { 
-		return org.mmbase.bridge.NodeList.class;
+                return org.mmbase.bridge.NodeList.class;
             } else if (className.equals("Node")) { 
-		return org.mmbase.bridge.Node.class;
-	    } 
+                return org.mmbase.bridge.Node.class;
+            } 
             fullClassName = "java.lang." + fullClassName;
         }
         try {
             return Class.forName(fullClassName);
         } catch (ClassNotFoundException cne) {
-            log.warn("Cannot determine parameter type : " + className + ", using Object as type instead.");
+            log.warn("Cannot determine parameter type : '" + className + "' (expanded to: '" + fullClassName + "'), using Object as type instead.");
             return Object.class;
         }
     }
