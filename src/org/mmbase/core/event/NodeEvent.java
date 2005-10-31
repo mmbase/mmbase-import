@@ -8,12 +8,13 @@
 package org.mmbase.core.event;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
@@ -23,7 +24,7 @@ import org.mmbase.module.core.*;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.12 2005-10-12 16:42:24 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.13 2005-10-31 13:20:02 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable {
 
@@ -76,9 +77,19 @@ public class NodeEvent extends Event implements Serializable {
     }
 
     /**
-     * @param node
-     * @param eventType
+     * @param nodeNumber valid node number
+     * @param type event type
+     * @param machineName valid machine name or null (than the local machine name is used)
+     * @return new NodeEvent instance
+     * @throws NotFoundException when node of given number can not be found
      */
+    public static NodeEvent getNodeEventInstance(int nodeNumber, int type, String machineName)throws NotFoundException{
+        MMObjectNode node = MMBase.getMMBase().getBuilder("object").getNode(nodeNumber);
+        if( node == null) throw new NotFoundException("node with number " + nodeNumber + "was not found in cloud");
+        if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
+        return new NodeEvent(node, type, machineName);
+    }
+    
 
     public NodeEvent(MMObjectNode node, int eventType) {
         this(node, eventType, MMBase.getMMBase().getMachineName());
@@ -127,6 +138,13 @@ public class NodeEvent extends Event implements Serializable {
      */
     public Object getOldValue(String fieldName) {
         return oldValues.get(fieldName);
+    }
+    
+    /**
+     * @return a set containing the names of the fields that have changed
+     */
+    public Set getChangedFields(){
+        return oldValues.keySet();
     }
 
     /**
