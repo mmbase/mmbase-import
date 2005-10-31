@@ -13,15 +13,20 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
 import java.util.Collection;
 
+import org.mmbase.util.logging.*;
+
 /**
  * @since MMBase-1.8
  */
 public class CoreField extends AbstractField implements Field, Storable, Cloneable {
+
+    private static final Logger log = Logging.getLoggerInstance(CoreField.class);
 
     private static final int NO_POSITION = -1;
 
@@ -308,7 +313,11 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         }
     }
 
-    public void setDataType(DataType dataType) {
+    public void setDataType(DataType dataType) throws IllegalArgumentException {
+        int dataTypeType = Fields.classToType(dataType.getTypeAsClass());
+        if (dataTypeType != type) {
+            throw new IllegalArgumentException("DataType (" + Fields.getTypeDescription(dataTypeType) + ") is differnent from db type (" + Fields.getTypeDescription(type) + "). Cannot set DataType " + dataType);
+        }
         this.dataType = dataType;
         // datatype can be influenced by size
         setMaxLength(maxLength);
