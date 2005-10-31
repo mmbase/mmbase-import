@@ -10,10 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.editor.EditTag;
 import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.*;
-
+import org.mmbase.storage.search.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -22,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.52 2005-08-18 14:40:00 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.53 2005-10-31 20:51:58 andre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -69,7 +71,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
             fieldName = n;
             if (getReferid() != null) {
-                throw new JspTagException ("Could not indicate both  'referid' and 'name' attribute");
+                throw new JspTagException ("Could not indicate both 'referid' and 'name' attribute");
             }
         } else {
             if (getReferid() == null) {
@@ -95,13 +97,74 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
 
     /**
-     * @todo  EXPERIMENTAL
+	 * Method to handle the EditTag if it is present around fields and their nodes.
+	 * <br /><br />
+	 * When the FieldTag finds itself inside an EditTag then it will register its
+	 * contents with the EditTag. The EditTag can provide access to an editor. 
+	 * Not only the field and its nodes will be registered but also the query it 
+	 * originated from. It passes these to the method
+	 * EditTag#registerField(Query query, int nodenr, String fieldName).
+	 * 
      * @since MMBase-1.8
+	 * @todo  EXPERIMENTAL
      */
     protected void handleEditTag() {
-        // Andre is busy with this.
-    }
+    	// See if this FieldTag has a parent EditTag
+		Tag t = findAncestorWithClass(this, EditTag.class);
+		if (t == null) {
+	        if (log.isDebugEnabled()) log.debug("No EditTag as parent. We don't want to edit, i presume.");
+		} else {
+			EditTag et = (EditTag)t;
+			Query query = null;
+			try {
+				query = findNodeProvider().getGeneratingQuery();
+			} catch (JspTagException jte) {
+				log.error("JspTagException, no GeneratingQuery found : " + jte);
+			}
+			
+			Node node = null;
+			try {
+				node = getNodeVar();
+			} catch (JspTagException jte) {
+				if (log.isDebugEnabled()) log.debug("Node not found in getNodeVar() " + jte);
+			}
+			int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
+			if (nodenr < 0) {
+				java.util.List steps = query.getSteps();
+        		Step nodeStep = null;
+        		if (query instanceof NodeQuery) {
+            		nodeStep = ((NodeQuery) query).getNodeStep();
+            	}
+				for (int j = 0; j < steps.size(); j++) {
+					Step step = (Step)steps.get(j);
+					if (step.equals(nodeStep)) {
+						nodenr = node.getIntValue("number");
+					} else {
+						String pref = step.getAlias();
+						if (pref == null) pref = step.getTableName();
+						nodenr = node.getIntValue(pref + ".number");                 
+					}
+				}
+        	}
+			
+			if (fieldName == null) {
+				if (log.isDebugEnabled()) log.debug("fieldName still null. Image tag? URL tag? Attachment?");
+				if (this instanceof ImageTag) {
+					if (log.isDebugEnabled()) log.debug("Image! fieldName = handle");
+					fieldName = "handle";
+				}
+			}
+			if (fieldName.indexOf(".") < 0) {	// No nodemanager
+				fieldName = node.getNodeManager().getName() + "." + fieldName;
+			}
 
+			// Register field and its node with EditTag
+			log.info("Field: " + field);
+			if (log.isDebugEnabled()) log.debug("EditTag register fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
+			et.registerField(query, nodenr, fieldName);
+		}
+	}
+    
     public int doStartTag() throws JspTagException {
         Node node = getNode();
         fieldName = (String) name.getValue(this);
@@ -212,7 +275,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
      * write the value of the field.
      **/
     public int doEndTag() throws JspTagException {
-        log.debug("doEndTag van FieldTag");
+        log.debug("doEndTag of FieldTag");
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
         }
