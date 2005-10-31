@@ -236,6 +236,7 @@
       <src path="${tests.source.dir}/common"/>
       <src path="${tests.source.dir}/util"/>
       <src path="${tests.source.dir}/clustering"/>
+      <src path="${tests.source.dir}/releasestrategy"/>
       <include name="**/*.java"/>
     </javac>
   </target>
@@ -289,6 +290,20 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
+  <target name="run.releasestrategy" depends="mmbase,jar,init">
+    <antcall target="clean.database" />
+    <java
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"
+      >
+      <arg value="org.mmbase.cache.ReleaseStrategyTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+    </java>
+  </target>
+
+  
   <target name="run.bridge" depends="mmbase,jar,init">
     <antcall target="clean.database" />
     <java
@@ -433,7 +448,7 @@ Build-compiler: ${build.compiler}
   <!-- Run the tests -->
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util,run.clustering">
+          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util,run.clustering,run.releasestrategy">
 
   </target>
 
