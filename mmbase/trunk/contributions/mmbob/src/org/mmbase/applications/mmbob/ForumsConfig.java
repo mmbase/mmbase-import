@@ -625,7 +625,6 @@ public class ForumsConfig {
 	body += "\t\t<replyoneachpage value=\""+getReplyOnEachPage()+"\"/>\n\n";
 	body += "\t\t <navigation method=\""+getNavigationMethod()+"\"/>\n\n";
 
-	log.info("SAVE 1");
 	// now loop all the forums
         for (Enumeration forums = ForumManager.getForums(); forums.hasMoreElements();) {
              Forum forum = (Forum) forums.nextElement();
@@ -639,24 +638,18 @@ public class ForumsConfig {
     	     body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" />\n";
 	     body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
 	
-		log.info("SAVE 2");
 	     Iterator pi=forum.getProfileDefs();
-		log.info("SAVE 2b");
 	     if (pi!=null) {
 	     while (pi.hasNext()) {
 		   ProfileEntryDef pd = (ProfileEntryDef)pi.next();
-			log.info("SAVE 2c");
 	     	   body += "\t\t\t<profileentry name=\""+pd.getName()+"\" guiname=\""+pd.getGuiName()+"\" guipos=\""+pd.getGuiPos()+"\" edit=\""+pd.getEdit()+"\" type=\""+pd.getType()+"\" size=\""+pd.getSize()+"\" external=\""+pd.getExternal()+"\" externalname=\""+pd.getExternalName()+"\" />\n";
-			log.info("SAVE 2d");
 	     }
 	     }
-	log.info("SAVE 3");
 	     body += "\t\t\t<avatars>\n\n";
 	     body += "\t\t\t\t<upload enable=\""+forum.getAvatarsUploadEnabled()+"\"/>\n";
 	     body += "\t\t\t\t<gallery enable=\""+forum.getAvatarsGalleryEnabled()+"\"/>\n";
 	     body += "\t\t\t</avatars>\n\n";
 	     body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\"/>\n\n";
-		log.info("SAVE 4");
              for (Enumeration postareas = forum.getPostAreas(); postareas.hasMoreElements();) {
              	PostArea postarea = (PostArea) postareas.nextElement();
 	        body += "\t\t\t<postarea id=\""+postarea.getName()+"\" language=\"nl\" pos=\""+postarea.getPos()+"\">\n";
@@ -672,7 +665,6 @@ public class ForumsConfig {
 	body += "\t</forums>\n";
 	body += "</mmbobconfig>\n";
 	saveFile(filename,body);
-	log.info("SAVE 10");
     }
 
 
@@ -835,6 +827,14 @@ public class ForumsConfig {
 
     public HashMap getFilterWords() {
 	return filterwords;
+    }
+
+    public void addWordFilter(String name,String value) {
+	filterwords.put(name,value);
+    }
+
+    public void removeWordFilter(String name) {
+	filterwords.remove(name);
     }
  
     public int getSpeedPostTime() {

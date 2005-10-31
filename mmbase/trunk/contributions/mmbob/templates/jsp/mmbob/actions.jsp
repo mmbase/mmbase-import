@@ -79,6 +79,8 @@
 	<mm:import externid="newbody" />
 	<mm:import externid="newencoding">plain</mm:import>
 	<mm:function set="mmbob" name="setSingleSignature" referids="forumid,posterid,newbody,newencoding" />
+	<mm:import id="feedback">signaturesaved</mm:import>
+        <mm:write referid="feedback" session="feedback_message"/>
 </mm:compare>
 
 <mm:compare value="addsignature" referid="action">
@@ -231,6 +233,21 @@
 	<mm:import externid="newlang" />
 	<mm:import externid="description" />
 	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,newlang,description,posterid@activeid" >
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="addwordfilter" referid="action">
+	<mm:import externid="name" />
+	<mm:import externid="value" />
+	<mm:booleanfunction set="mmbob" name="addWordFilter" referids="forumid,name,value,posterid@activeid" >
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="removewordfilter" referid="action">
+	<mm:import externid="name" />
+	<mm:booleanfunction set="mmbob" name="removeWordFilter" referids="forumid,name,posterid@activeid" >
 	</mm:booleanfunction>
 </mm:compare>
 

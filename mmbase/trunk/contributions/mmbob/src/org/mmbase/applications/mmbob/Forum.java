@@ -1566,6 +1566,32 @@ public class Forum {
         }
    }
 
+   public HashMap getFilterWords() {
+	if (filterwords!=null) {
+		return filterwords;
+	} else {
+		return ForumManager.getFilterWords();
+	}
+   }
+
+
+   public void addWordFilter(String name,String value) {
+	if (filterwords!=null) {
+		filterwords.put(name,value);
+	} else {
+		ForumManager.addWordFilter(name,value);
+	}
+   }
+
+
+   public void removeWordFilter(String name) {
+	if (filterwords!=null) {
+		filterwords.remove(name);
+	} else {
+		ForumManager.removeWordFilter(name);
+	}
+   }
+
 
    public String filterContent(HashMap filterwords, String body) {
        return ForumManager.filterContent(filterwords,body);

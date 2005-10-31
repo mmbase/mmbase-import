@@ -47,7 +47,7 @@
 <div class="bodypart">
 <mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,forumid,posterid,active_nick" />
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%"> 
                         <tr><th colspan="2" align="left">
                                         
 			</th>
@@ -113,7 +113,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="signatures" />
-        </mm:url>">signatures</a>
+        </mm:url>"><mm:write referid="mlg.signature"/></a>
         </li>
 
         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
@@ -164,18 +164,18 @@
         <span class="feedback">
         <mm:import externid="feedback_message" from="session" id="feedback"/>
         <mm:compare referid="feedback" value="true">
-          <mm:write referid="mlg.ProfileUpdated"/>
+          <font color="red"><b>** <mm:write referid="mlg.ProfileUpdated"/> **</b></font>
         </mm:compare>
         <mm:compare referid="feedback" value="false">
-          <mm:write referid="mlg.ProfileUpdateFailed"/>
+          <font color="red"><b>** <mm:write referid="mlg.ProfileUpdateFailed"/> **</b></font>
         </mm:compare>
         <mm:compare referid="feedback" value="passwordchanged">
-          <mm:write referid="mlg.PasswordChanged"/>
+          <font color="red"><b>** <mm:write referid="mlg.PasswordChanged"/> **</b></font>
 <mm:import id="accounttocookie"><mm:field name="account" /></mm:import>
           <mm:write referid="accounttocookie" cookie="caf$forumid"/>
         </mm:compare>
         <mm:compare referid="feedback" value="newpasswordnotequal">
-          <mm:write referid="mlg.Password_notequal"/>
+          <font color="red"><b>** <mm:write referid="mlg.Password_notequal"/> **</b></font>
         </mm:compare>
         </span>
         </div>
@@ -381,17 +381,27 @@
     <mm:compare value="signatures" referid="profile">
 		<table>
 		<mm:import id="maxsig">1</mm:import>
+        	<mm:import externid="feedback_message" from="session" id="feedback"/>
+		<mm:present referid="feedback">
+		<mm:compare value="signaturesaved" referid="feedback">
+		<tr><td align="left">
+		<font color="red"><b>** <mm:write referid="mlg.SignatureSaved"/> **</b></font>
+		<br />
+		<br />
+		</td></tr>
+		</mm:compare>
+		</mm:present>
 		<mm:compare referid="maxsig" value="1">
         	<mm:nodefunction set="mmbob" name="getSingleSignature" referids="forumid,posterid">
 		<form action="<mm:url page="profile.jsp" referids="forumid,posterid,profile" />" method="post">
 		<input type="hidden" name="action" value="setsinglesignature" />
 		<tr>
 		<td>
-			<textarea name="newbody" rows="5" cols="45"><mm:field name="body" /></textarea>
+			<textarea name="newbody" rows="5" cols="50"><mm:field name="body" /></textarea>
 		</td>
 		</tr>
 		<tr>
-		<td align="center">
+		<td align="left">
 		<input type="submit" value="<mm:write referid="mlg.Save"/>" />
 		</td>
 		</tr>
