@@ -9,8 +9,7 @@
  */
 package org.mmbase.cache;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.NodeEvent;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.7 2005-10-31 13:20:02 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.8 2005-10-31 19:53:49 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -56,7 +55,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if query should be released
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
-
+        log.debug(event.toString());
         if (event instanceof RelationEvent) {
             return shouldRelease((RelationEvent) event, query);
         } else {
@@ -75,7 +74,19 @@ public class BetterStrategy extends ReleaseStrategy {
          * Here are all the preconditions that must be met to proceed. Basic checks to determin
          * if this event has to be evaluated on this query at all
          */
-        log.debug("event: " + event.toString());
+        
+        //check if this event matches the path of the query
+        if(getStepsForType(query, event.getNode().getBuilder()).size() == 0 ){
+            log.debug("no flush: type of event is not found in query path");
+            return false;
+        }
+        
+        //check if the step(s) matching this event's node type have 'nodes' set, and if so, check
+        //if changed node is included
+        if(checkNodesSet(event, query)){
+            log.debug("no flush: the query has nodes set and this event's node is not one of them");
+            return false;
+        }
 
         switch (event.getType()) {
             case NodeEvent.EVENT_TYPE_NEW:
@@ -120,7 +131,6 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return
      */
     private boolean shouldRelease(RelationEvent event, SearchQuery query) {
-        log.debug("relation event: " + event.toString());
 
         /*
          * Here are all the preconditions that must be met to proceed. Basic checks to determin
@@ -128,11 +138,17 @@ public class BetterStrategy extends ReleaseStrategy {
          */
 
          //query has one step and the event is a relation event
-         if (query.getSteps().size() == 1 )return false ;//don't release
+         if (query.getSteps().size() == 1 ){
+             log.debug("no flush: query has one step and event is relation event");
+             return false ;//don't release
+         }
          
          // if a query has more steps that one and the event is a relation event
          // we check if the role of the relation is allso in the query.
-         if (! checkPathMatches(event, query)) return false;
+         if (! checkPathMatches(event, query)){
+             log.debug("no flush: either source, destination or role dous not match to the query");
+             return false;
+         }
 
              
          switch (event.getRelationEventType()) {
@@ -165,10 +181,12 @@ public class BetterStrategy extends ReleaseStrategy {
     }
 
     private boolean checkPathMatches(RelationEvent event, SearchQuery query){
-        // decide if the path in the query maches the relation event:
+        // check if the path in the query maches the relation event:
         // - the source and destination objects should be there
         // - the role either matches or is not specified 
         log.debug("method: checkPathMatches()");
+        log.debug(event.toString());
+        log.debug("query: "+query.toString());
         boolean match = false;
         for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
             RelationStep step = (RelationStep) i.next();
@@ -180,6 +198,11 @@ public class BetterStrategy extends ReleaseStrategy {
         }
         return match;
     }
+    
+ 
+    
+    
+    
     
     /**
      * Checks if a query object contains reference to (one of) the changed field(s).
@@ -224,5 +247,27 @@ public class BetterStrategy extends ReleaseStrategy {
         //now test the result
         return (fieldsFound || constraintsFound);
     }
- 
+    
+    /**
+     * This method investigates all the steps of a query that correspond to the nodetype of the 
+     * node event. for each step a check is made if this step has 'nodes' set, and so, if the changed 
+     * node is one of them.
+     * @param event a NodeEvent
+     * @param query
+     * @return true if (all) the step(s) matching this event have nodes set, and non of these 
+     * match the number of the changed node (in which case the query should not be flused)
+     */
+    private boolean checkNodesSet(NodeEvent event, SearchQuery query){
+        //this simple optimization only works for nodeEvents
+        List steps = getStepsForType(query, event.getNode().getBuilder());
+        for (Iterator i = steps.iterator(); i.hasNext();) {
+            Step step = (Step) i.next();
+            Set nodes = step.getNodes();
+            if (nodes == null || nodes.size() == 0 || nodes.contains(new Integer(event.getNode().getNumber()))) {
+                //we're done. if one of the steps dous not meet one of the abouve conditions:
+                return false;
+            }
+        }
+        return true; 
+    }
 }

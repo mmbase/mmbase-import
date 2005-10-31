@@ -26,7 +26,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.7 2005-10-31 13:20:02 ernst Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.8 2005-10-31 19:53:49 ernst Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -56,7 +56,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
         //this simple optimization only works for nodeEvents
         int shouldKeep = 0;
         if(event.getType() != NodeEvent.EVENT_TYPE_RELATION_CHANGED){
-            List steps = getStepForType(query, event.getNode().getBuilder());
+            List steps = getStepsForType(query, event.getNode().getBuilder());
             for (Iterator i = steps.iterator(); i.hasNext();) {
                 Step step = (Step) i.next();
                 Set nodes = step.getNodes();
