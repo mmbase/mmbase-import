@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.323 2005-10-18 16:42:33 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.324 2005-10-31 13:05:21 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3222,6 +3222,15 @@ transaction was commited, following should result anything:
         <since>MMBase-1.7</since>
       </examplevalue>
     </attribute>
+    <attribute>
+      <name>datatype</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        On default, the datatype of the specified field is used. But this can be overriden. 
+      </info>
+      <since>MMBase-1.8</since>
+    </attribute>
     <example>See the example for tags `cloud' and `nodeinfo'.</example>
   </tag>
   <tag>
@@ -4693,7 +4702,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       The index of the current item of the current list. It can also act as a
       `querycontainerreferrer' in which case the `offset' and `maxnumber' properties of the query
       are used to calculate the current page (offset/maxnumber). This index can be used in combination
-      with the index-tags inside mm:nextbatches and mm:previousbatched.
+      with the index-tags inside mm:nextbatches and mm:previousbatches.
     </info>
     <see tag="first" />
     <see tag="last" />
@@ -6794,6 +6803,26 @@ The 0 is just counter, which starts at 0 on every page.
         a `network' of nodes), there should always be a `maximal' depth to which relations are followed. This defaults to 5.
       </info>
     </attribute>
+  </tag>
+  <tag>
+    <name>leafconstraints</name>
+    <type>mmbase.tree.list</type>
+    <extends>treereferrer</extends>
+    <extends>contextreader</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.tree.LeafConstraintsTag</tagclass>
+    <info>
+      <p>
+        Lives in a tree-container tag. Constraints inside this tag are not defined as normal tree
+        constraints but as 'leaf' constraint, which means that they are only taken into constraint
+        on the 'leafs' of the tree. 
+      </p>
+      <p>
+        Practicly, this means that it can be used to search a tree.
+      </p>
+    </info>
+    <see type="tree" />
+    <see tag="queryreferrer" />
+    <since>MMBase-1.8.0</since>
   </tag>
 
 
