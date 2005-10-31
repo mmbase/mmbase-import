@@ -154,7 +154,7 @@
                </di:hasrole>
             </mm:node>
          </mm:related>
-         <mm:related path="related,classes" orderby="classes.name">
+         <mm:related path="classrel,classes" orderby="classes.name">
             <mm:node element="classes">
                <tr>
                   <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="<%= iNumberOfColumns %>"><b><di:translate key="progress.class" />: <mm:field name="name"/></b></td>
