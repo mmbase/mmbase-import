@@ -9,6 +9,8 @@ package org.mmbase.core.event;
 
 import java.io.Serializable;
 
+import org.mmbase.bridge.NotFoundException;
+import org.mmbase.module.core.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.InsRel;
@@ -23,7 +25,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.5 2005-10-12 16:42:24 michiel Exp $
+ * @version $Id: RelationEvent.java,v 1.6 2005-10-31 13:20:02 ernst Exp $
  */
 public class RelationEvent extends NodeEvent implements Serializable {
 
@@ -36,14 +38,34 @@ public class RelationEvent extends NodeEvent implements Serializable {
     private int relationEventType;
 
     private int role;
-
+    /**
+     * @param nodeNumber valid node number
+     * @param type event type
+     * @param machineName valid machine name or null (than the local machine name is used)
+     * @return new NodeEvent instance
+     * @throws NotFoundException when node of given number can not be found
+     */
+    public static RelationEvent getRelationEventInstance(int nodeNumber, int type, String machineName)throws NotFoundException{
+        MMObjectNode node = MMBase.getMMBase().getBuilder("object").getNode(nodeNumber);
+        if( node == null) throw new NotFoundException("node with number " + nodeNumber + "was not found in cloud");
+        if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
+        return new RelationEvent(node, type, machineName);
+    }
+    
+    /**
+     * @param node the relation node
+     * @param eventType the type of relation event
+     */
+    public RelationEvent(MMObjectNode node, int eventType) {
+        this(node, eventType, MMBase.getMMBase().getMachineName());
+    }
     /**
      * @param node the changed relation node
      * @param eventType the type of change
      * @throws IllegalArgumentException if the node is not of type InsRel
      */
-    public RelationEvent(MMObjectNode node, int eventType) {
-        super(node, NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+    public RelationEvent(MMObjectNode node, int eventType, String machineName) {
+        super(node, NodeEvent.EVENT_TYPE_RELATION_CHANGED, machineName);
         if (!(node.getBuilder() instanceof InsRel)) {
             throw new IllegalArgumentException( "you can not create a relation changed event with this node");
         }
