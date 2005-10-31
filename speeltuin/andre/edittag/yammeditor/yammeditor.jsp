@@ -49,12 +49,12 @@ Breakdown:
     <%-- change --%>
     <mm:present referid="change">
         <mm:fieldlist type="edit"><mm:fieldinfo type="useinput" /></mm:fieldlist>
-        <div class="message"><strong><mm:field name="gui()" /></strong> is changed.</div>
+        <div class="message"><strong><mm:function name="gui" /></strong> is changed.</div>
     </mm:present>
     <%-- /change --%>
 
     <form id="startnode" enctype="multipart/form-data" method="post" action="<mm:url referids="nrs,nodes,fields,paths,nr" />">
-    <h2>#<mm:field name="number" id="nodenr" /> (<mm:nodeinfo type="type" id="nm" />) <mm:field name="gui()" /></h2>
+    <h2>#<mm:field name="number" id="nodenr" /> (<mm:nodeinfo type="type" id="nm" />) <mm:function name="gui" /></h2>
 
         <mm:import jspvar="nodenr" vartype="String"><mm:write referid="nodenr" /></mm:import>
         <mm:import jspvar="nm" vartype="String"><mm:write referid="nm" /></mm:import>

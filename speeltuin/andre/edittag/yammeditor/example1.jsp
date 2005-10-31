@@ -9,11 +9,13 @@
 <%@ include file="inc/nav.jsp" %>
 <h4>eerste voorbeeld met edittag</h4>
 
-<mm:edit editor="yammeditor.jsp" icon="/mmbase/edit/my_editors/img/mmbase-edit.gif">
-  <h3>Magazine</h3>
+<mm:edit type="yammeditor">
+  <mm:param name="icon">/mmbase/edit/my_editors/img/mmbase-edit.gif</mm:param>
+  <mm:param name="url">/yammeditor/yammeditor.jsp</mm:param>
   <mm:import id="mynewsinstalled">no</mm:import>
   <mm:node number="default.mags" notfound="skip">
     <mm:import reset="true" id="mynewsinstalled">yes</mm:import>
+    <h3><mm:field name="title" /></h3>
     <mm:related path="posrel,news,people"
       fields="news.number,news.title,people.email,posrel.pos" orderby="posrel.pos">
       [<mm:field name="news.number" />] <strong><mm:field name="news.title" /></strong><br />

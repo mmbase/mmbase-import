@@ -3,7 +3,7 @@
 
 André van Toly
 andre@toly.nl
-24 May 2005
+31 october 2005
 
 The EditTag is a simple MMBase JSP tag that can make the data being displayed by 
 <mm:field> tags accessible. It builds on the principle that data in MMBase nodes
@@ -16,7 +16,9 @@ example is installed:
 
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
-  <mm:edit editor="/yammeditor/yammeditor.jsp">
+  <mm:edit type="yammeditor">
+  <mm:param name="icon">/mmbase/edit/my_editors/img/mmbase-edit.gif</mm:param>
+  <mm:param name="url">/yammeditor/yammeditor.jsp</mm:param>
   <mm:node number="default.mags">
     <strong><mm:field name="title" /></strong>
     <mm:related path="posrel,news"
@@ -39,24 +41,6 @@ Currently this principle has a problem: when a node or a field does not contain
 any data, it is not displayed on the page, and will thus not be found by the 
 EditTag. You can not 'fill' a page using YAMMeditor.
 
-
-Installation
-------------
-1. Copy the contents of the directory 'yammeditor' to the root of your 
-MMBase 1.8 installation.
-2. Move to your local cvs directory:
-'mmbase/applications/taglib/src/org/mmbase/bridge/jsp/taglib'. Copy the files
-'FieldTag.java' and 'mmbase-taglib.xml' to a save location and replace them with
-the new Java files in 'src'.
-3. Move some directories up to 'mmbase/applications/taglib' and build a new
-'mmbase-taglib.jar' with the command 'ant jar'.
-4. Copy the 'mmbase-taglib.jar' (in: 'mmbase/applications/taglib/build') to
-'WEB-INF/lib' in your MMBase 1.8 installation. Restart your web application.
-
-Notice: 
-- Sometimes you'll need to do a 'ant clean' before a build.
-- And it can be necessary to clean the 'work' directory of your web application
-server. The new tag may not be recognised.
 
 How-to
 ------
