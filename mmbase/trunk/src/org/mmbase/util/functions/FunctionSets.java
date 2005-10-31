@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.19 2005-10-31 12:34:11 simon Exp $ 
+ * @version $Id: FunctionSets.java,v 1.20 2005-10-31 12:45:53 simon Exp $ 
  */
 public class FunctionSets {
 
@@ -87,7 +87,7 @@ public class FunctionSets {
                     public void onChange(String resource) {
                         functionSets.clear();
                         clear();
-                        add("functionssets.xml");
+                        add(resource);
                         readSets(this);
                     }
                 };
