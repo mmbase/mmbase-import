@@ -219,6 +219,13 @@
         <exclude name="build*"/>
         <exclude name="core"/>
       </fileset>
+      <fileset dir="${tests.source.dir}/bridge" >
+        <include name="**/*.xml"/>
+        <exclude name="**/*.java"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
     </copy>
 
     <echo message="compiling" />
@@ -312,6 +319,19 @@ Build-compiler: ${build.compiler}
         classpathref="run.classpath"
         >
       <arg value="org.mmbase.bridge.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+    </java>
+  </target>
+  
+  <target name="run.simon" depends="mmbase,jar,init">
+    <antcall target="clean.database" />
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
+      <arg value="org.mmbase.bridge.SimonsTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
