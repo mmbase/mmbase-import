@@ -38,7 +38,7 @@
          %>
       </mm:node>
    </mm:list>
-   <mm:list path="people,classrel,classes,related,educations" constraints="people.number=$user">
+   <mm:list path="people,classrel,classes,classrel,educations" constraints="people.number=$user">
       <mm:node element="educations" jspvar="nodeEducation">
          <%
             String[] arrstrEducation = new String[3];
@@ -126,7 +126,7 @@
             <mm:related path="classrel,people">
                <%@include file="add_person.jsp"%>
             </mm:related>
-            <mm:related path="related,classes">
+            <mm:related path="classrel,classes">
                <mm:node element="classes">
                   <mm:related path="classrel,people">
                      <%@include file="add_person.jsp"%>
