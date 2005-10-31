@@ -158,6 +158,10 @@ public class TranslateTable {
         String locale = translationlocale;
         StringTokenizer st = new StringTokenizer(tkey, ".");
         String namespace = st.nextToken();
+        if (!st.hasMoreTokens()) {
+            log.error("Cannot translate key with no namespace: '" + tkey + "'");
+            return null;
+        }
         String key = st.nextToken();
 
         while (true) {
