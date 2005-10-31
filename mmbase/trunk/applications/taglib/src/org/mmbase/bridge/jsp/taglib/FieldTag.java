@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.53 2005-10-31 20:51:58 andre Exp $
+ * @version $Id: FieldTag.java,v 1.54 2005-10-31 21:21:41 andre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -158,8 +158,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 				fieldName = node.getNodeManager().getName() + "." + fieldName;
 			}
 
-			// Register field and its node with EditTag
-			log.info("Field: " + field);
+			// Register stuff with EditTag
 			if (log.isDebugEnabled()) log.debug("EditTag register fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
 			et.registerField(query, nodenr, fieldName);
 		}
