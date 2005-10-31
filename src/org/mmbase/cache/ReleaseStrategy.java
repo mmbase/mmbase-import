@@ -26,7 +26,7 @@ import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.6 2005-10-31 13:20:02 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.7 2005-10-31 21:38:58 andre Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -192,7 +192,7 @@ public abstract class ReleaseStrategy {
      * @param query
      * @return
      */
-    protected static List getStepForType(SearchQuery query, MMObjectBuilder type){
+    protected static List getStepsForType(SearchQuery query, MMObjectBuilder type){
         List result = new ArrayList(10);
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             Step step = (Step) i.next();
