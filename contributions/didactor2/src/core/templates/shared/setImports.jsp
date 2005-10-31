@@ -21,9 +21,9 @@
   <mm:constraint operator="equal" field="username" referid="username" />
   <mm:listnodes>
     <mm:first>
-        <mm:node>
-            <mm:field id="user" name="number" write="false" />
-        </mm:node>
+      <mm:node>
+        <mm:field id="user" name="number" write="false" />
+      </mm:node>
     </mm:first>
   </mm:listnodes>
   <mm:notpresent referid="user">
@@ -135,8 +135,25 @@
   </mm:notpresent>
 </mm:present>
 
-<%-- TODO: Should we determine these also if possible? Based on the current user? --%>
+<%--
+  Step 6: Based on the student and the education, try to find the class.
+--%>
 <mm:import externid="class" />
+<mm:isempty referid="class">
+  <mm:isgreaterthan referid="user" value="0">
+    <mm:present referid="education">
+      <mm:listcontainer path="people,classes,educations" fields="people.number,educations.number,classes.number">
+        <mm:constraint field="people.number" operator="EQUAL" referid="user" />
+        <mm:constraint field="educations.number" operator="EQUAL" referid="education" />
+          <mm:list>
+            <mm:remove referid="class"/>
+            <mm:field name="classes.number" id="class" write="false" />
+          </mm:list>
+        </mm:listcontainer>
+      </mm:present>
+  </mm:isgreaterthan>
+</mm:isempty>
+
 <mm:import externid="workgroup" />
 
 <mm:present referid="education">
@@ -147,3 +164,21 @@
 </mm:notpresent>
 <mm:import id="referids">provider?,education?,class?,workgroup?</mm:import>
 <%@ include file="globalLang.jsp" %>
+
+<%--
+  Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
+  to make sure that this user may log in. 
+--%>
+<mm:import escape="trimmer" id="validatemessage">
+  <mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="user"><mm:write referid="user" /></mm:param>
+  </mm:treeinclude>
+</mm:import>
+
+<mm:isnotempty referid="validatemessage">
+  <mm:cloud method="logout" />
+  <mm:redirect page="/login.jsp">
+    <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
+    <mm:param name="message"><mm:write referid="validatemessage" /></mm:param>
+  </mm:redirect>
+</mm:isnotempty>
