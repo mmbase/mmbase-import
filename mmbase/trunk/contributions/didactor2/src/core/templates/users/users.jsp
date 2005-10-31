@@ -61,19 +61,17 @@
          <mm:related path="classrel,people">
             <%@include file="online_check.jsp"%>
          </mm:related>
-         <mm:related path="related,classes,classrel,people">
+         <mm:related path="classrel,classes,classrel,people">
             <%@include file="online_check.jsp"%>
          </mm:related>
          <mm:compare referid="show_this_item" value="true">
-            EDUCATION:<b><mm:field name="name"/></b>
+            <di:translate key="core.users_educationheader" /><b><mm:field name="name"/></b>
             <br/>
             <mm:related path="classrel,people">
                <%@include file="add_person.jsp"%>
             </mm:related>
 
-
-
-            <mm:related path="related,classes" orderby="classes.name">
+            <mm:related path="classrel,classes" orderby="classes.name">
                <mm:node element="classes" jspvar="nodeClass">
 
                   <mm:import id="show_this_item" reset="true">false</mm:import>
@@ -81,7 +79,7 @@
                      <%@include file="online_check.jsp"%>
                   </mm:related>
                   <mm:compare referid="show_this_item" value="true">
-                     class:<b><a href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$tmpreferids">
+                     <di:translate key="core.users_classheader" /><b><a href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$tmpreferids">
                                           <mm:param name="class"><mm:field name="number"/></mm:param>
                                        </mm:treefile>"><mm:field name="name"/></a></b>
                      <br/>
