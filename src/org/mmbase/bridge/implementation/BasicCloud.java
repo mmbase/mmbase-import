@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.138 2005-10-19 12:54:50 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.139 2005-10-31 13:53:38 simon Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -972,7 +972,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
         Function fun = set.getFunction(functionName);
         if (fun == null) {
-            throw new NotFoundException("Function with name '" + functionName + "' does not exist in function set with name "+ setName + ".");
+            throw new NotFoundException("Function with name '" + functionName + "' does not exist in function set with name '"+ setName + "'.");
         }
         return fun;
     }
