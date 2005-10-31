@@ -4,14 +4,14 @@
 <%@include file="/shared/setImports.jsp" %>
 <div class="applicationMenubar" style="white-space: nowrap">
   <div class="menuItemApplicationMenubar">
-    <a title="<di:translate key="core.home" />" href="<mm:url page="/index.jsp" />" class="menubar"><di:translate key="core.home" /></a>
+    <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.home" /></a>
   </div>
       
   <mm:isgreaterthan referid="user" value="0">
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
       <mm:node number="$user">
-        <a title="<di:translate key="core.logout" />" href="<mm:url page="/logout.jsp" />" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
+        <a title="<di:translate key="core.logout" />" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
       </mm:node>
     </div>
      
@@ -28,10 +28,10 @@
         <mm:import id="hasportfolio">true</mm:import>
       </mm:node>
       <mm:present referid="hasportfolio">
-        <a title="<di:translate key="core.configuration" />" href="<mm:url page="/portfolio/index.jsp?edit=true" />" class="menubar"><di:translate key="core.configuration" /></a>
+        <a title="<di:translate key="core.configuration" />" href="<mm:treefile page="/portfolio/index.jsp?edit=true" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.configuration" /></a>
       </mm:present>
       <mm:notpresent referid="hasportfolio">
-        <a title="<di:translate key="core.configuration" />" href="<mm:url page="/admin/" />" class="menubar"><di:translate key="core.configuration" /></a>
+        <a title="<di:translate key="core.configuration" />" href="<mm:treefile page="/admin/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="core.configuration" /></a>
       </mm:notpresent>
     </div>
 
