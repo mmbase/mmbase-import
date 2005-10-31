@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.3 2005-10-27 15:42:46 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.4 2005-10-31 15:23:33 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -15,7 +15,6 @@
     version="1.0" >
 
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
-  <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
 
   <xsl:output method="xml" omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
@@ -61,11 +60,11 @@
 
   <xsl:template match="o:field[@format='xml']">
     <xsl:choose>
-      <xsl:when test="mmxf:mmxf"><!-- null -->
+      <xsl:when test="mmxf:mmxf">
         <xsl:apply-templates  />
       </xsl:when>
-      <xsl:otherwise>
-        <p> </p>
+      <xsl:otherwise><!-- null -->
+        <p>.</p>
       </xsl:otherwise>
     </xsl:choose>
 
