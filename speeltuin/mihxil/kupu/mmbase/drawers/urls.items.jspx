@@ -13,7 +13,19 @@
         <mm:listnodes id="url">
           <resource id="${url.number}">   
             <uri><mm:field name="url" /></uri>
-            <title><mm:field name="title"><mm:write /><mm:isempty><mm:field name="url"><mm:write /><mm:isempty>No title</mm:isempty></mm:field></mm:isempty></mm:field></title>
+            <title>
+              <mm:hasfield name="title">
+                <mm:field id="title" name="title"><mm:write /><mm:isempty><mm:field name="url"><mm:write /><mm:isempty>No title</mm:isempty></mm:field></mm:isempty></mm:field>
+              </mm:hasfield>
+              <mm:hasfield name="name">
+                <mm:field id="name"  name="name"><mm:write /><mm:isempty><mm:field name="url"><mm:write /><mm:isempty>No title</mm:isempty></mm:field></mm:isempty></mm:field>
+              </mm:hasfield>
+              <mm:notpresent referid="title">
+                <mm:notpresent referid="name">
+                  <mm:field name="url" />
+                </mm:notpresent>
+              </mm:notpresent>
+            </title>
             <description><mm:field name="url" /></description>
           <icon>kupuimages/link.png</icon>
           </resource>
