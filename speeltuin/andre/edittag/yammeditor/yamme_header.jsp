@@ -43,7 +43,7 @@ public static Map createMap(String paths) {
 // startnodes: 676 (startnode)
 // paths: 676_news,posrel,images (startnode.path)
 // nodes: 676_345 (startnode_nodenr)
-// fields: 676_news.number (startnode.nodetype.field)
+// fields: 676_news.number (startnode_nodetype.field)
 Map nmap = createMap(nodes);		// Map with nodes: key = nodenr, value = startnode
 Map pmap = createMap(paths);
 Map fmap = createMap(fields);
