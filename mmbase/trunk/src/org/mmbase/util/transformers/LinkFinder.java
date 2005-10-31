@@ -31,6 +31,11 @@ public class LinkFinder extends RegexpReplacer {
         new LinkFinder().readPatterns(urlPatterns);   
     }
 
+    public LinkFinder() {
+        super(XMLTEXT_WORDS);
+    }
+
+
     protected String getConfigFile() {
         return "linkfinder.xml";
     }
