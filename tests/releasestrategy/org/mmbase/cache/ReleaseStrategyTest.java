@@ -15,6 +15,7 @@ import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.storage.search.implementation.BasicLegacyConstraint;
 import org.mmbase.tests.BridgeTest;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -119,25 +120,35 @@ public class ReleaseStrategyTest extends BridgeTest {
          
         }
     }
-
     
-    public void testMultiStepQueryNewNode(){
-        log.debug("method: testMultiStepQueryNewNode()");
-        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
+    /**
+     * here go all the tests for checks that are done for every type of node event
+     */
+    public void testNodeEvent(){
+        //a node event that has a type that is not part of the query path should not flush the query
         
-        //a new node should not flush the cache
         NodeEvent event = NodeEvent.getNodeEventInstance(newsNode.getNumber(), NodeEvent.EVENT_TYPE_NEW, null);
-        assertFalse("node event of new node on multi step query should not release the query",
-            strategy.evaluate(event, q1, null).shouldRelease());
+        Query q1 = Queries.createQuery(cloud, null, "people,posrel,urls", "urls.name", null, null, null, null, false);
         
-        //a new relation node should not flush cache either
-        event = NodeEvent.getNodeEventInstance(posrelNode.getNumber(), NodeEvent.EVENT_TYPE_NEW, null);
-        assertFalse("node event of new relation node on multi step query should not release the query",
+        assertFalse("a node event should not flush a query if it's type is not in the path",
             strategy.evaluate(event, q1, null).shouldRelease());
+    }
+    
+    
+    
+    
+    
+    /**
+     * here go all the tests for checks that are done for every type of relation event
+     */
+    public void testRelaionEvent(){
         
-        //but the subsequent relation event should
         RelationEvent relEvent = RelationEvent.getRelationEventInstance(posrelNode.getNumber(), RelationEvent.EVENT_TYPE_NEW, null);
-        assertTrue("relation event of new relation between nodes in multi step query should flush the cache",
+        
+        //if the query has one step, a relaion event should not flush the query
+        Query q1 = Queries.createQuery(cloud, null, "urls", "urls.name", null, null, null, null, false);
+        
+        assertFalse("relation event should not flush query with one step",
             strategy.evaluate(relEvent, q1, null).shouldRelease());
         
         //if either source, destination or role dous not match, a relation event should not flush the query
@@ -165,19 +176,53 @@ public class ReleaseStrategyTest extends BridgeTest {
             strategy.evaluate(relEvent, q6, null).shouldRelease());
         assertFalse("relation event of new relation between nodes in multi step query where is not specified (and destination dous not match) should not be flushed",
             strategy.evaluate(relEvent, q7, null).shouldRelease());
+        
     }
+
+    
+    
+    
+    
+    
+    public void testMultiStepQueryNewNode(){
+        log.debug("method: testMultiStepQueryNewNode()");
+        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
+        
+        //a new node should not flush a multistep query frome the cache
+        NodeEvent event = NodeEvent.getNodeEventInstance(newsNode.getNumber(), NodeEvent.EVENT_TYPE_NEW, null);
+        assertFalse("node event of new node on multi step query should not release the query",
+            strategy.evaluate(event, q1, null).shouldRelease());
+        
+    }
+    
+    
+    public void testMultiStepQueryNewRelation(){
+        log.debug("method: testMultiStepQueryNewRelation()");
+        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
+        
+        //a new relation node should not flush cache the cache
+        NodeEvent event = NodeEvent.getNodeEventInstance(posrelNode.getNumber(), NodeEvent.EVENT_TYPE_NEW, null);
+        assertFalse("node event of new relation node on multi step query should not release the query",
+            strategy.evaluate(event, q1, null).shouldRelease());
+        
+        //but the subsequent relation event should
+        RelationEvent relEvent = RelationEvent.getRelationEventInstance(posrelNode.getNumber(), RelationEvent.EVENT_TYPE_NEW, null);
+        assertTrue("relation event of new relation between nodes in multi step query should flush the cache",
+            strategy.evaluate(relEvent, q1, null).shouldRelease());
+     
+    }
+    
+    
+    
     
     public void testMultiStepQueryChangedNode(){
         log.debug("method: testMultiStepQueryChangedNode()");
         
-        //if a none of the fields that have changed are part of the step > fiels part
-        //or the constraint part of the query it should not be flushed
+        //if a none of the fields that have changed are part of the select or the constraint part of the query it should not be flushed
        
-        //this is crap. we dont want to use core stuff in this test.
         MMObjectNode testNode = MMBase.getMMBase().getBuilder("object").getNode(newsNode.getNumber());
         testNode.setValue("title", "another title");
         
-        //NodeEvent event = NodeEvent.getNodeEventInstance(newsNode.getNumber(), NodeEvent.EVENT_TYPE_CHANGED, null);
         NodeEvent event = new NodeEvent(testNode, NodeEvent.EVENT_TYPE_CHANGED);
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000", null, null, null, false);
         Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
@@ -187,12 +232,35 @@ public class ReleaseStrategyTest extends BridgeTest {
             strategy.evaluate(event, q1, null).shouldRelease());
         assertTrue("changed field is in constraints section of query: it should be flused",
             strategy.evaluate(event, q2, null).shouldRelease());
-        assertTrue("changed field is in fields section of query: it should be flused",
+        assertTrue("changed field is in select section of query: it should be flused",
             strategy.evaluate(event, q3, null).shouldRelease());
         
+        //also test  composite constraints
+        Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000 AND urls.name = 'hi'", null, null, null, false);
+        Query q5 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title='something' AND urls.name = 'hi'", null, null, null, false);
+        
+        assertFalse("changed field is not used by (composite) constraint: it should not be flused",
+            strategy.evaluate(event, q4, null).shouldRelease());
+        assertTrue("changed field is used by (composite) constraint: it should be flused",
+            strategy.evaluate(event, q5, null).shouldRelease());
+        
+        //also test legacy constraints
+        Query q6 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", null, null, null, null, false);
+        q6.setConstraint(new BasicLegacyConstraint("news.number < 1000 AND urls.name = 'hi'"));
+        
+        assertFalse("changed field is not used by (legacy) constraint: it should not be flused",
+            strategy.evaluate(event, q6, null).shouldRelease());
+        
+        q6.setConstraint(new BasicLegacyConstraint("news.title='something' AND urls.name = 'hi'"));
+        
+        assertTrue("changed field is used by (legacy) constraint: it should be flused",
+            strategy.evaluate(event, q6, null).shouldRelease());
     }
     
-    
+    public void testMultiStepQueryChangedRelation(){
+        //if a none of the fields that have changed are part of the select or the constraint part of the query it should not be flushed
+        //TODO: implementation
+    }
     
     
     protected Node createRelDefNode(String role, int dir) {
