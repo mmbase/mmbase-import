@@ -45,9 +45,8 @@
                         %>
                      </mm:node>
                   </mm:related>
-
                   <%// the person has connected to the education throw the class %>
-                  <mm:related path="related,classes,classrel,people" constraints="<%= sConstraints %>">
+                  <mm:related path="classrel,classes,classrel,people" constraints="<%= sConstraints %>">
                      <mm:node element="classes" jspvar="nodeClass">
                         <%
                            String[] arrstrTemp = new String[3];
