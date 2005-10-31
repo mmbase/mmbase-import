@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.324 2005-10-31 13:05:21 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.325 2005-10-31 21:07:04 andre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2111,6 +2111,29 @@ access the value of title:
     &lt;mm:field name="title" write="true" /&gt;
 &lt;/mm:node&gt;
      </example>
+  </tag>
+  <tag>
+    <name>edit</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.editor.EditTag</tagclass>
+    <info>
+      <since>MMBase-1.8</since>
+      <p>
+      Makes the fields it contains in its body 'editable' or reachable for an editor for that mather.
+      </p>
+    </info>
+    <example>
+      <include base="examples.taglib" href="codesamples/edittag.jsp" />
+    </example>
+    <attribute>
+      <name>type</name>
+      <required>true</required>
+      <info>
+        <p>
+          The type of editor you wish to use which should be specified in the tag's parameters.
+          The rest of it is configured using parameters.
+        </p>
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>field</name>
