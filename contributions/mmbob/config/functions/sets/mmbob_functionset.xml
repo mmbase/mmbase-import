@@ -401,6 +401,33 @@
 	</function>
 
 
+	<function name="addWordFilter">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>addWordFilter</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="name" type="String" description="New name for this forum" />
+		<param name="value" type="String" description="New language of this forum" />
+		<param name="activeid" type="int" description="current userid" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="removeWordFilter">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>removeWordFilter</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="name" type="String" description="New name for this forum" />
+		<param name="activeid" type="int" description="current userid" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
 	<function name="changeForumConfig">
 		<description>Update forum information</description>
 		<type>class</type>
@@ -1174,6 +1201,17 @@
 		<method>getProfileValues</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
+	<function name="getFilterWords">
+		<description>get filter words</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getFilterWords</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<return type="NodeList"> 
 		</return> 
 	</function>
