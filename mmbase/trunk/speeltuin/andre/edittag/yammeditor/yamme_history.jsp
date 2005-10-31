@@ -20,7 +20,7 @@ if (session.getAttribute("yammedithistory") != null) {
 		<mm:node number="<%= hisnr %>">
 			<h3><span class="buttons"><a href="<mm:url referids="nrs,nodes,fields,paths">
 			  <mm:param name="nr"><%= hisnr %></mm:param>
-			</mm:url>"><img src="/mmbase/edit/my_editors/img/mmbase-edit.gif" alt="edit" width="21" height="20" /></a></span><mm:field name="gui()" /></h3>
+			</mm:url>"><img src="/mmbase/edit/my_editors/img/mmbase-edit.gif" alt="edit" width="21" height="20" /></a></span><mm:function name="gui" /></h3>
 		</mm:node>
 	<% 
 		}

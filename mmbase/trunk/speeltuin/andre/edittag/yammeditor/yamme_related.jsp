@@ -186,7 +186,7 @@ if (pmap.containsKey(nr)) {
 			related <mm:nodeinfo type="type" /> :
 			<mm:maywrite><a href="<mm:url referids="nrs,nodes,fields,paths">
 			  <mm:param name="nr" value="<%= yannr %>"/>
-			</mm:url>"></mm:maywrite><mm:field name="gui()" /><mm:maywrite></a></mm:maywrite>
+			</mm:url>"></mm:maywrite><mm:function name="gui" /><mm:maywrite></a></mm:maywrite>
 			
 		  </mm:node>
 		  </div>
