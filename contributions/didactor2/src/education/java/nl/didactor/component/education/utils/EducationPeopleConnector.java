@@ -27,7 +27,7 @@ public class EducationPeopleConnector
          hsetResult.add("" + ((Node) it.next()).getNumber());
       }
 
-      NodeList nodelistClasses = nodeEducation.getRelatedNodes("classes", "related", "destination");
+      NodeList nodelistClasses = nodeEducation.getRelatedNodes("classes", "classrel", "destination");
       for(Iterator it = nodelistClasses.iterator(); it.hasNext();)
       {
          Node nodeClass = (Node) it.next();
@@ -57,7 +57,7 @@ public class EducationPeopleConnector
       for(Iterator it = nodelistClasses.iterator(); it.hasNext(); )
       {
          Node nodeClass = (Node) it.next();
-         NodeList nodelistPeople = nodeClass.getRelatedNodes("educations", "related", "source");
+         NodeList nodelistPeople = nodeClass.getRelatedNodes("educations", "classrel", "source");
          for(Iterator it2 = nodelistPeople.iterator(); it2.hasNext();)
          {
             hsetResult.add("" + ((Node) it2.next()).getNumber());
