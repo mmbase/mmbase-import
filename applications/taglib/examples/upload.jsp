@@ -14,7 +14,7 @@
   <h1>Uploading a file into MMBase</h1>
   <p>
     This page shows an example of how to upload an attachment into mmbase
-    the page constist of two parts and depending on the processupload paramteter
+    the page constist of two parts and depending on the processupload parameter
     one part of the document is shown
   </p>
   <%-- the form part --%>
