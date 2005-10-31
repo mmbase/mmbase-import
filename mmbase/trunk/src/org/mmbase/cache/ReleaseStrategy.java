@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 
 /**
  * <p>
@@ -25,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.5 2005-10-14 21:44:03 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.6 2005-10-31 13:20:02 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -122,27 +123,41 @@ public abstract class ReleaseStrategy {
     public boolean isEnabled(){
        return isActive;
     }
+    
 
     /**
-     * Utility method to get step from a query that the event relates to
-     *
-     * @param event
+     * utility for specializations: get all the constraints in the query that apply to 
+     * a certain field
+     * @param field
+     * @param constraint
      * @param query
-     * @return a Step instance or null if the event object type was not found in
-     *         the query
+     * @return
      */
-    protected Step getStepForEvent(NodeEvent event, SearchQuery query) {
-        Step step;
-        String builderName  = event.getNode().getBuilder().getTableName();
-        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
-            step = (Step) i.next();
-            if (builderName.equals(step.getTableName())) {
-                return step;
+    protected static List getConstraintsForField(String  fieldName, String builderName, Constraint constraint, SearchQuery query){
+        List result = new ArrayList();
+        if(constraint instanceof BasicCompositeConstraint){
+            for (Iterator i = ((BasicCompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
+                Constraint c = (Constraint) i.next();
+                result.addAll(getConstraintsForField(fieldName, builderName, c, query));
+            }
+        }else if(constraint instanceof LegacyConstraint){
+            if(query.getSteps().size() > 1){
+                fieldName = builderName + "." + fieldName;
+            }
+            if(((LegacyConstraint)constraint).getConstraint().indexOf(fieldName) > -1){
+                result.add(constraint);
+                return result;
+            }
+        }else if(constraint instanceof FieldConstraint){
+            StepField sf = ((FieldConstraint)constraint).getField();
+            if(sf.getFieldName().equals(fieldName) && sf.getStep().getTableName().equals(builderName)){
+                result.add(constraint);
+                return result;
             }
         }
-        return null;
+        return result;
     }
-
+        
     /**
      * utility for specializations: get all the relation steps of a query
      * @param query
@@ -157,7 +172,13 @@ public abstract class ReleaseStrategy {
         return result;
     }
     
-    protected static List getStepFields(SearchQuery query, Step step){
+    /**
+     * utility for specializations: get all the field steps of a query
+     * @param query
+     * @param step
+     * @return
+     */
+    protected static List getFieldSteps(SearchQuery query, Step step){
         List result = new ArrayList();
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             StepField  field = (StepField) i.next();
@@ -167,11 +188,11 @@ public abstract class ReleaseStrategy {
     }
     
     /**
-     * utility for specializations: get all the relation steps of a query
+     * utility for specializations: get all the steps in a query of a give type
      * @param query
      * @return
      */
-    protected static List getNodeSteps(SearchQuery query, MMObjectBuilder type){
+    protected static List getStepForType(SearchQuery query, MMObjectBuilder type){
         List result = new ArrayList(10);
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             Step step = (Step) i.next();

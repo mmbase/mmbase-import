@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.storage.search.SearchQuery;
@@ -27,7 +26,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.6 2005-10-14 21:44:03 michiel Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.7 2005-10-31 13:20:02 ernst Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -55,17 +54,20 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
-        boolean shouldRelease = true;
+        int shouldKeep = 0;
         if(event.getType() != NodeEvent.EVENT_TYPE_RELATION_CHANGED){
-            Step thisStep = getStepForEvent(event, query);
-            if(thisStep != null){
-                Set nodes = thisStep.getNodes();
+            List steps = getStepForType(query, event.getNode().getBuilder());
+            for (Iterator i = steps.iterator(); i.hasNext();) {
+                Step step = (Step) i.next();
+                Set nodes = step.getNodes();
                 if(nodes != null && nodes.size() > 0 && ! nodes.contains(new Integer(event.getNode().getNumber()))) {
-                    shouldRelease = false;
+                    shouldKeep ++; 
                 }
             }
+            //if not all steps of this type had nodes that did not include this one, flush
+            return shouldKeep != steps.size(); //shouldrelease 
         }
-        return shouldRelease;
+        return true;
     }
 
 }
