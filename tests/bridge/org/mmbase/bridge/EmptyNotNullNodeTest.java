@@ -21,11 +21,11 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.9 2005-10-12 17:31:35 michiel Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.10 2005-10-31 12:47:47 ernst Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
-    private static final String EMPTY_XML = "<p/>\n";
+    private static final String EMPTY_XML = "<p/>\r\n";
 
     public EmptyNotNullNodeTest(String name) {
         super(name);
@@ -153,13 +153,23 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + dateValue + "\", but \"" + value +"\" " , dateValue.equals(value));
             } else if (fieldTypes[i].equals("xml")) {
                 // not-null 'empty' xml values return <p/>
-                assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + EMPTY_XML + "\", but \"" + value +"\"",
+                assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + EMPTY_XML + "\", but \"" + value +"\" " +
+                        "\n field: \"" + getBytesString(value.getBytes())+"\" teststring: \"" + getBytesString(EMPTY_XML.getBytes()) + "\"",
                            EMPTY_XML.equals(value));
             } else {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but \"" + value +"\"",
                     "".equals(value));
             }
         }
+    }
+    
+    private String getBytesString(byte[] bytes){
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < bytes.length; i++){
+            sb.append(bytes[i]);
+            sb.append(",");
+        }
+      return sb.toString();
     }
 
     public void testGetXMLValue() {
