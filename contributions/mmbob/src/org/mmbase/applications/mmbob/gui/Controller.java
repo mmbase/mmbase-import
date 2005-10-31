@@ -2063,6 +2063,36 @@ public class Controller {
     }
 
 
+    public boolean addWordFilter(String forumid, String name, String value,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.addWordFilter(name,value);
+                	f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
+    public boolean removeWordFilter(String forumid, String name,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.removeWordFilter(name);
+                	f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
     public boolean changeForumConfig(String forumid, String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String navigationmethod,String alias,int activeid) {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -2496,6 +2526,27 @@ public class Controller {
         }
 	return list;
     }
+
+
+    public List getFilterWords(String forumid) {
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        Forum f = ForumManager.getForum(forumid);
+	if (f!=null) {
+		HashMap words = f.getFilterWords();
+                Iterator i = words.keySet().iterator();
+                while (i.hasNext()) {
+			String key =  (String)i.next();
+			String value = (String)words.get(key);
+       			MMObjectNode virtual = builder.getNewNode("admin");
+			virtual.setValue("name",key);
+			virtual.setValue("value",value);
+			list.add(virtual);
+		}
+        }
+	return list;
+    }
+
 
 
     public MMObjectNode setProfileValue(String forumid, int activeid,String name,String value) {

@@ -4,6 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
+<mm:import externid="sub">info</mm:import>
 <%@ include file="thememanager/loadvars.jsp" %>
 
 
@@ -33,17 +34,53 @@
 </div>
                                                                                               
 <div class="bodypart">
+  <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+  <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+  <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+  <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+  </mm:nodefunction>
+  <mm:include page="path.jsp?type=index" referids="logoutmodetype,forumid,posterid,active_nick" />
 
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
 	<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
 </mm:nodefunction>
 
 <mm:compare referid="isadministrator" value="true">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="75%" align="center">
+	<tr>
+	<mm:compare referid="sub" value="info">
+	<th align="center" align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="info" /></mm:url>">info</a></th>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="login" /></mm:url>">login</a></td>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="rules" /></mm:url>">rules</a></td>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="filter" /></mm:url>">filter</a></td>
+	</mm:compare>
+	<mm:compare referid="sub" value="login">
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="info" /></mm:url>">info</a></td>
+	<th align="center" align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="login" /></mm:url>">login</a></th>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="rules" /></mm:url>">rules</a></td>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="filter" /></mm:url>">filter</a></td>
+	</mm:compare>
+	<mm:compare referid="sub" value="rules">
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="info" /></mm:url>">info</a></td>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="login" /></mm:url>">login</a></td>
+	<th align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="rules" /></mm:url>">rules</a></th>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="filter" /></mm:url>">filter</a></td>
+	</mm:compare>
+	<mm:compare referid="sub" value="filter">
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="info" /></mm:url>">info</a></td>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="login" /></mm:url>">login</a></td>
+	<td align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="rules" /></mm:url>">rules</a></td>
+	<th align="center"><a href="<mm:url page="changeforum.jsp" referids="forumid"><mm:param name="sub" value="filter" /></mm:url>">filter</a></th>
+	</mm:compare>
+	</tr>
+</table>
+
+<mm:compare referid="sub" value="info">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
   <tr><th colspan="3"><mm:write referid="mlg.Change_existing_forum" /></th></tr>
 
   <mm:node number="$forumid">
-  <form action="<mm:url page="index.jsp">
+  <form action="<mm:url page="changeforum.jsp">
         <mm:param name="forumid" value="$forumid" />
 				</mm:url>" method="post">
 	<tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
@@ -58,27 +95,28 @@
         <input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="changeforum">
 	<tr><th>&nbsp;</th>
-<td align="middle" >
+<td align="center">
 	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
 	</mm:node>
-	<td>
-  	<form action="<mm:url page="index.jsp">
+  	<form action="<mm:url page="changeforum.jsp">
         <mm:param name="forumid" value="$forumid" />
 	</mm:url>"
  	method="post">
-	<p />
+	<td align="center">
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
-  	</form>
 	</td>
+  	</form>
 	</tr>
 </table>
+</mm:compare>
 
+<mm:compare referid="sub" value="login">
 <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
   <tr><th colspan="3">Login instellingen</th></tr>
-  <form action="<mm:url page="index.jsp">
+  <form action="<mm:url page="changeforum.jsp">
         <mm:param name="forumid" value="$forumid" />
 				</mm:url>" method="post">
         <input type="hidden" name="admincheck" value="true">
@@ -236,29 +274,30 @@
 		</td>
 	</tr>
   <th>&nbsp;</th>
-<td align="middle" >
+<td align="center" >
 	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
-  <td>
-  	<form action="<mm:url page="index.jsp">
+  	<form action="<mm:url page="changeforum.jsp">
         <mm:param name="forumid" value="$forumid" />
 	</mm:url>"
  	method="post">
-	<p />
+        <td align="center">
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   </form>
   </td>
   </tr>
 </table>
 </mm:nodefunction>
+</mm:compare>
 
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+<mm:compare referid="sub" value="rules">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
   <tr><th colspan="3">Change forum rules</th></tr>
 
   <mm:node number="$forumid">
-  <form action="<mm:url page="index.jsp">
+  <form action="<mm:url page="changeforum.jsp">
         <mm:param name="forumid" value="$forumid" />
 				</mm:url>" method="post">
 	<mm:import id="rulesid">-1</mm:import>
@@ -281,26 +320,68 @@
 	<input type="hidden" name="action" value="addrules" />
 	<tr><th>&nbsp;</th>
 	</mm:compare>
-        <td align="middle" >
+        <td align="center" >
         <input type="hidden" name="admincheck" value="true">
 	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
 	</mm:node>
-	<td>
-  	<form action="<mm:url page="index.jsp">
+	<td align="center">
+  	<form action="<mm:url page="changeforum.jsp">
         <mm:param name="forumid" value="$forumid" />
 	</mm:url>"
  	method="post">
-	<p />
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
-  	</form>
 	</td>
+  	</form>
 	</tr>
 </table>
 </mm:compare>
+
+<mm:compare referid="sub" value="filter">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
+  <tr><th colspan="4">Forum filter</th></tr>
+    <mm:nodelistfunction set="mmbob" name="getFilterWords" referids="forumid">
+    <form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post">
+    <input type="hidden" name="admincheck" value="true">
+    <input type="hidden" name="action" value="addwordfilter">
+    <tr>
+    <th><mm:field name="name" />
+       <input type="hidden" name="name" value="<mm:field name="name" />">
+    </th>
+    <td> 
+       <input name="value" style="width: 98%" value="<mm:field name="value" />">
+    </td>
+    <td> 
+	<input type="submit" value="<mm:write referid="mlg.Save"/>" />
+    </td>
+    </form>
+    <form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post">
+    <input type="hidden" name="admincheck" value="true">
+    <input type="hidden" name="action" value="removewordfilter">
+       <input type="hidden" name="name" value="<mm:field name="name" />">
+    <td> 
+	<input type="submit" value="<mm:write referid="mlg.Delete"/>" />
+    </td>
+    </form>
+    </tr>
+   </mm:nodelistfunction>
+   <form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post">
+   <tr>
+        <input type="hidden" name="admincheck" value="true">
+	<input type="hidden" name="action" value="addwordfilter">
+	<th><input name="name" style="width: 98%"></th>
+	<td><input name="value" style="width: 98%"></td>
+        <td><input type="submit" value="<mm:write referid="mlg.Save"/>" /></td>
+        <td>&nbsp;</td>
+   </tr>
+   </form>
+</table>
+</mm:compare>
+
+</mm:compare>
 <mm:compare referid="isadministrator" value="false">
-	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%" align="center">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="55%" align="center">
 		<tr><th>MMBob system error</th></tr>
 		<tr><td height="40"><b>ERROR: </b> action not allowed by this user </td></tr>
 	</table>

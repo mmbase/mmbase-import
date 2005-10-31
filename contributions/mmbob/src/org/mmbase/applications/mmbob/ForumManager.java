@@ -552,6 +552,28 @@ public class ForumManager {
 	}
    }
 
+   public static HashMap getFilterWords() {
+        if (config.getFilterWords()!=null) {
+		return config.getFilterWords();
+	} else {
+		return null;
+	}
+   }
+
+
+   public static void addWordFilter(String name,String value) {
+        if (config.getFilterWords()!=null) {
+		config.addWordFilter(name,value);
+	}
+   }
+
+
+   public static void removeWordFilter(String name) {
+        if (config.getFilterWords()!=null) {
+		config.removeWordFilter(name);
+	}
+   }
+
 
    public static String longWordWrap(String body) {
 	StringTokenizer tok = new StringTokenizer(body," \n\r\t",true);	
