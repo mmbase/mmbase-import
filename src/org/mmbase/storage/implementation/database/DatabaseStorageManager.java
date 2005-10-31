@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 
 import org.mmbase.datatypes.DataType;
+import org.mmbase.datatypes.BasicDataType;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.DataTypes;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.132 2005-10-24 09:49:48 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.133 2005-10-31 14:10:37 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2072,7 +2073,7 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Guess the (mmbase) type in storage using the JDNC type.
+     * Guess the (mmbase) type in storage using the JDBC type.
      * Because a JDBC type can represent more than one mmbase Type,
      * the current type is also passed - if the current type matches, that type
      * is returned, otherwise the method returns the closest matching MMBase type.
@@ -2086,7 +2087,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_LONG || mmbaseType == Field.TYPE_NODE) {
                 return mmbaseType;
             } else {
-                return Field.TYPE_INTEGER;
+                return Field.TYPE_LONG;
             }
         case Types.FLOAT :
         case Types.REAL :
@@ -2228,7 +2229,18 @@ public class DatabaseStorageManager implements StorageManager {
                                       + Fields.getTypeDescription(curtype)
                                       + ", but in storage " + Fields.getTypeDescription(type)
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
-                            field.setDataType((DataType)DataTypes.getDataType(type).clone());
+                            DataType originalDataType = field.getDataType();
+                            DataType newDataType      = (DataType)DataTypes.getDataType(type).clone();
+                            field.setType(Fields.classToType(newDataType.getTypeAsClass()));
+                            if (originalDataType instanceof BasicDataType) {
+                                newDataType.inherit((BasicDataType) originalDataType); // takes as much possible...
+                            } else {
+                                // cannot happen, I think
+                                log.warn("original data type is no BasicDataType, but a " + originalDataType.getClass());
+                            }
+                            field.setDataType(newDataType);
+                            log.info("" + originalDataType + " -> " + field.getDataType());
+
                         }
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.isNotNull()) {
