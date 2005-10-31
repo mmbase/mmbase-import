@@ -9,16 +9,16 @@
   <%@include file="/mmbob/check.jsp" %>
   <mm:import id="template" reset="true"><mm:treefile page="/mmbob/index.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
   <mm:compare referid="type" value="div">
-    <mm:present referid="class">
-      <mm:node number="$class" notfound="skip">
+    <mm:present referid="classforum">
+      <mm:node number="$classforum" notfound="skip">
         <div class="menuSeperator"> </div>
         <div class="menuItem" id="menuMMBob">
           <a href='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="classforum"/>' class="menubar"><di:translate key="mmbob.groupforum" /></a>
         </div>
       </mm:node>
     </mm:present>
-    <mm:present referid="education">
-      <mm:node number="$education" notfound="skip">
+    <mm:present referid="educationforum">
+      <mm:node number="$educationforum" notfound="skip">
         <div class="menuSeperator"> </div>
         <div class="menuItem" id="menuMMBob">
           <a href='<mm:write referid="template" escape="text/plain" />&forumid=<mm:write referid="educationforum"/>' class="menubar"><di:translate key="mmbob.educationforum" /></a>
