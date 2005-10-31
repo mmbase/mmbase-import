@@ -32,6 +32,8 @@
   |
   <a href="<mm:url page="preedit.jsp" />" >edit</a>
   |
+  <a href="<mm:url page="edittag.jsp" />" >edittag</a>
+  |
   <a href="<mm:url page="nodemanagerinfo.jsp" />" >nodemanagerinfo</a>
   |
   <a href="<mm:url page="formatter.jsp" />" >formatter</a>
