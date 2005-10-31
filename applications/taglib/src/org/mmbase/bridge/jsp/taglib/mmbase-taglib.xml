@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.325 2005-10-31 21:07:04 andre Exp $
+version: $Id: mmbase-taglib.xml,v 1.326 2005-10-31 21:10:58 andre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2129,7 +2129,7 @@ access the value of title:
       <required>true</required>
       <info>
         <p>
-          The type of editor you wish to use which should be specified in the tag's parameters.
+          The type of editor you wish to use which should be specified in the tag's resource file.
           The rest of it is configured using parameters.
         </p>
       </info>
