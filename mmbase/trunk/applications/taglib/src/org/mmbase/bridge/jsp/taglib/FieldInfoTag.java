@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.85 2005-10-18 22:01:07 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.86 2005-11-01 22:13:51 nklasens Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -238,7 +238,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (node == null) { // try to find nodeProvider
                 node = fieldProvider.getNodeVar();
             } // node can stay null.
-            if (field.getState() == Field.STATE_SYSTEM) { 
+            if (field.isSystem()) { 
                 // This means it is 'read-only'
                 // in that case simply show gui
                 if (node != null) {
@@ -251,7 +251,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             // these types do really need a NodeProvider somewhere:
             // so 'node' may not stay null.
         case TYPE_USEINPUT:
-            if (field.getState() == Field.STATE_SYSTEM) { 
+            if (field.isSystem()) { 
                 // This means 'read-only'
                 // in that case simply ignore useinput
                 infoType = TYPE_UNSET;

@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.47 2005-10-27 13:07:21 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.48 2005-11-01 22:13:52 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -573,7 +573,7 @@ public class BuilderReader extends DocumentReader {
         } else {
             // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
             if (def.getType() != Field.TYPE_BINARY
-                && def.getState() == Field.STATE_PERSISTENT  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
+                && def.isPersistent()  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
                 ) {
                 int i = 1;
                 while (searchPositions.contains(new Integer(i))) {
