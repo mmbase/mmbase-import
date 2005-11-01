@@ -37,27 +37,27 @@ import org.mmbase.util.XMLBasicReader;
  * to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.1 2005-10-31 20:57:01 andre Exp $
+ * @version $Id: EditTag.java,v 1.2 2005-11-01 11:00:55 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
- * @see org.mmbase.bridge.jsp.taglib.editor.EditTagYAMMe
+ * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  */
 public class EditTag extends ContextReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
     private Attribute type = Attribute.NULL;
     
-    private static Query query;
-    private static int nodenr;
-    private static String fieldName;
+    private Query query;
+    private int nodenr;
+    private String fieldName;
 
-    private static ArrayList queryList = new ArrayList();		// query List
-    private static ArrayList nodenrList = new ArrayList();      // nodenr List
-    private static ArrayList fieldList = new ArrayList();       // fieldname List
+    private List queryList = new ArrayList();       // query List
+    private List nodenrList = new ArrayList();      // nodenr List
+    private List fieldList = new ArrayList();       // fieldname List
 
-    private static final Map edittagTypes = new HashMap();	// edittagtype -> class
+    private static final Map edittagTypes = new HashMap();  // edittagtype -> class
     protected List parameters;
     
-    private Editor yaeditor = null;		// should do all the work
+    private Editor yaeditor = null;     // should do all the work
     
     /**
      * The type of editor, see resources/edittagtypes.xml for different types or
@@ -77,7 +77,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      */ 
     public String getType() throws JspTagException {
         if (type == Attribute.NULL) {
-            return "edittag";			// the default
+            return "edittag";           // the default
         } else {
             return type.getString(this);
         }
@@ -116,23 +116,23 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
             String type = element.getAttribute("type");
             String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
             if (!claz.equals("")) {
-	            edittagTypes.put(type, claz);
+                edittagTypes.put(type, claz);
                 log.debug("Found editor type: '" + type + "' with class: '" + claz + "'");
-	        } 
+            } 
         }
         
         String classname = (String) edittagTypes.get(getType());
         log.debug("Using editor: " + classname);
         Class c = null;
         try {
-        	c = Class.forName(classname);
-        	yaeditor = (Editor) c.newInstance();
+            c = Class.forName(classname);
+            yaeditor = (Editor) c.newInstance();
         } catch (ClassNotFoundException cnfe) {
-        	log.error("Class '" + classname + "' not found: " + cnfe);
+            log.error("Class '" + classname + "' not found: " + cnfe);
         } catch (InstantiationException ie) {
-        	log.error("Unable to instantiate class '" + classname + "': " + ie);
+            log.error("Unable to instantiate class '" + classname + "': " + ie);
         } catch (IllegalAccessException iae) {
-        	log.error("IllegalAccessException instantiating class " + classname + "': " + iae);	
+            log.error("IllegalAccessException instantiating class " + classname + "': " + iae); 
         }
                 
         return EVAL_BODY_INCLUDE;
@@ -144,27 +144,30 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      *
     */
     public int doEndTag() throws JspTagException {
-		String editorstr = "";
-		
-		yaeditor.setParameters(parameters);
-		
-		yaeditor.setQueryList(queryList);
-		yaeditor.setNodenrList(nodenrList);
-		yaeditor.setFieldList(fieldList);
-		
-		yaeditor.registerFields(queryList, nodenrList, fieldList);
-		
-		// resulting String
-		editorstr = yaeditor.getEditorHTML();
-		
-		helper.setValue(editorstr);
-		helper.useEscaper(false);
-		
-		parameters = null;
-		queryList = nodenrList = fieldList = null;
+        String editorstr = "";
+        
+        yaeditor.setParameters(parameters);
+        
+        yaeditor.setQueryList(queryList);
+        yaeditor.setNodenrList(nodenrList);
+        yaeditor.setFieldList(fieldList);
+        
+        yaeditor.registerFields(queryList, nodenrList, fieldList);
+        
+        // resulting String
+        editorstr = yaeditor.getEditorHTML();
+        
+        helper.setValue(editorstr);
+        helper.useEscaper(false);
+        
+        // make all lists null
+        parameters = null;
+        queryList = null;
+        nodenrList = null;
+        fieldList = null;
         log.debug("end of doEndTag of EditTag");
-		helper.doEndTag();
-		return super.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
     
     /**
@@ -176,10 +179,13 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      * @param field     String with the fieldname
      */ 
     public void registerField(Query query, int nodenr, String fieldName) {
+        log.debug("query: " + query);
+        log.debug("nodenr: " + nodenr);
+        log.debug("fieldName: " + fieldName);
         queryList.add(query);
         nodenrList.add(String.valueOf(nodenr));
         fieldList.add(fieldName);
-		
-		log.debug("ET registers nodenr '" + nodenr + "' and fieldName '" + fieldName + "'");
+        
+        log.debug("register nodenr '" + nodenr + "' and fieldName '" + fieldName + "'");
     }   
 }
