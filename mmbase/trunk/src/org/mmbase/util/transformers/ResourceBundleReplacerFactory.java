@@ -19,12 +19,12 @@ import org.mmbase.util.functions.*;
 /**
  * Factories new chartransformer based on {@link java.util.ResourceBundle}. The result transformers
  * are based on {@link ChunkedTransformer}, so using the 'mode' argument it can be controlled what
- * excactly must correspond to re resource bundle keys (e.g. words, lines, or the entire
+ * excactly must correspond to the resource bundle keys (e.g. words, lines, or the entire
  * string). Defaults to words.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ResourceBundleReplacerFactory.java,v 1.2 2005-10-31 07:58:59 michiel Exp $
+ * @version $Id: ResourceBundleReplacerFactory.java,v 1.3 2005-11-01 23:36:02 michiel Exp $
  */
 
 public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory {

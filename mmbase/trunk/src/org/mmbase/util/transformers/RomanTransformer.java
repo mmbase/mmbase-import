@@ -17,7 +17,7 @@ import java.util.regex.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: RomanTransformer.java,v 1.3 2005-07-09 11:14:38 nklasens Exp $
+ * @version $Id: RomanTransformer.java,v 1.4 2005-11-01 23:36:02 michiel Exp $
  */
 
 public class RomanTransformer extends StringTransformer {
@@ -133,6 +133,10 @@ public class RomanTransformer extends StringTransformer {
     // javadoc inherited        
     public String transformBack(String r) {
         return "" + romanToDecimal(r);
+    }
+
+    public String toString() {
+        return "ROMAN";
     }
 
 
