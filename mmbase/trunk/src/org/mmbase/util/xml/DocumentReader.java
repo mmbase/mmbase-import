@@ -32,11 +32,14 @@ import org.mmbase.util.logging.Logger;
  * It serves as the base class for DocumentWriter (which adds ways to write a document), and
  * XMLBasicReader, which adds path-like methods with which to retrieve elements.
  *
+ * This can also be a class for general static dom utilities.
+ * 
+ *
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.16 2005-10-12 08:27:31 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.17 2005-11-01 23:35:16 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -279,6 +282,30 @@ public class DocumentReader  {
     }
 
     /**
+     * Utility method to make a document of an element.
+     * @since MMBase-1.8
+     */
+    static public Document toDocument(Element element) {
+        DocumentBuilder documentBuilder = getDocumentBuilder(false, null, null);
+        DOMImplementation impl = documentBuilder.getDOMImplementation();
+        Document document = impl.createDocument(element.getNamespaceURI(), element.getLocalName(), null);
+        Element copy = (Element) document.importNode(element, true);
+        Element dest = document.getDocumentElement();
+        NamedNodeMap attributes = copy.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Attr attribute = (Attr) (attributes.item(i).cloneNode(true));
+            dest.setAttributeNode(attribute);
+            
+        }
+        NodeList childs = copy.getElementsByTagName("*");
+        for (int i = 0; i < childs.getLength() ; i++) {
+            dest.appendChild(childs.item(i));            
+        }
+        document.normalize();
+        return document;
+    }
+
+    /**
      * Returns the systemID of the InputSource used to read the document.
      * This is generally the document's file path.
      * @return the systemID as a String
@@ -449,6 +476,11 @@ public class DocumentReader  {
             }
         }
         return v.iterator();
+    }
+
+    public static void main(String[] argv) throws java.io.FileNotFoundException {
+        DocumentReader doc =  new DocumentReader(new InputSource(new java.io.FileInputStream(argv[0])));
+        System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
     }
 
 }
