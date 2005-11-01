@@ -73,9 +73,6 @@
         <xsd:sequence>
           <xsd:element ref="enumeration" maxOccurs="unbounded" minOccurs="1" />
         </xsd:sequence>
-        <xsd:sequence>
-          <xsd:element ref="mmsq:query" maxOccurs="1" minOccurs="1" />
-        </xsd:sequence>
       </xsd:choice>
 
       <xsd:element name="setprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
@@ -177,7 +174,8 @@
       <xsd:complexContent>
         <xsd:extension base="Restriction">
           <xsd:sequence>
-            <xsd:element ref="entry" maxOccurs="unbounded" minOccurs="0" />
+            <xsd:element ref="mmsq:query" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element ref="entry"      minOccurs="0" maxOccurs="unbounded" />
           </xsd:sequence>
         </xsd:extension>
       </xsd:complexContent>

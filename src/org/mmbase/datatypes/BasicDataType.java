@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.21 2005-10-27 13:05:01 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.22 2005-11-01 23:41:52 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -445,6 +445,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return enumerationRestriction.getEnumerationFactory();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public DataType.Restriction getEnumerationRestriction() {
         return enumerationRestriction;
     }
@@ -781,7 +784,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             if (value == null) return null;
             LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
             if (ef.size() == 0) return null;
-            return ef.get(locale);
+            return ef.get(locale, cloud);
         }
 
         protected Object cast(Object v) {
