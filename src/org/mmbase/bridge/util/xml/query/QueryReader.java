@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.4 2005-11-01 16:00:21 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.5 2005-11-01 18:01:44 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -351,9 +351,22 @@ public class QueryReader {
         queryDefinition.query.addSortOrder(stepField, order, casesensitive);
     }
 
+    /**
+     * As {@link #parseQuery(Element, QueryConfigurer, Cloud, String)}, but with default QueryConfigurer
+     */
     static public QueryDefinition parseQuery(Element queryElement, Cloud cloud, String relateFrom) throws SearchQueryException {
         return parseQuery(queryElement, null, cloud, relateFrom);
     }
+
+    /**
+     * Creates a Query object from an Element. The query is wrapped in a {@link QueryDefinition} and
+     * you can simply access the {@link QueryDefinition#query} member to have the actual Query.
+     *
+     * @param queryElement Any XML element which query sub-tags and attributes.
+     * @param configurer   The configure which is responsible for instantiating the QueryDefinition
+     * @param cloud        Cloud, needed to make Query objects.
+     * @param relateFrom   (optional) name of a node manager which can be used to base the query on, as the first element of the path (can be <code>null</code>)
+     */
 
     static public QueryDefinition parseQuery(Element queryElement, QueryConfigurer configurer, Cloud cloud, String relateFrom) throws SearchQueryException {
         if (configurer == null) {
