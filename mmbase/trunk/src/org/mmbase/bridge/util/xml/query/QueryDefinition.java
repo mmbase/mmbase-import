@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryDefinition.java,v 1.3 2005-11-01 16:00:21 michiel Exp $
+ * @version $Id: QueryDefinition.java,v 1.4 2005-11-01 18:01:44 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryDefinition {
@@ -31,29 +31,34 @@ public class QueryDefinition {
 
     /**
      * If <code>true</code>, the query in this definition returns cluster nodes
+     * XXX: how is this different from query instanceof NodeQuery
      */
     public boolean isMultiLevel = false;
 
     /**
      * A collection of FieldDefinition objects, containing properties for the fields to index.
+     * XXX: Is 'index' not specific for Lucene?
      */
     public Collection fields = null;
 
     /**
      * The NodeManager of the 'main' nodetype in this query (if appropriate).
+     * XXX: How is this different from NodeQuery#getNodeManager() ?
      */
     public NodeManager elementManager = null;
 
     /**
      * The step in the query describing the 'main' nodetype (if appropriate).
+     * XXX: How is this different from NodeQuery#getNodeStep() ?
      */
     public Step elementStep = null;
 
     /**
      * The Query configurer that instantiated this definition
+     * XXX: unused (logically, because it is instantatiated by it)
      */
     protected QueryConfigurer configurer = null;
-
+    
     /**
      * Constructor.
      */
