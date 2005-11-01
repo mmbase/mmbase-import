@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -81,17 +81,13 @@ public class NodeSearchQueryTest extends TestCase {
             StepField stepField = (StepField) iStepFields.next();
             CoreField field = images.getField(stepField.getFieldName());
             assertTrue(fields.contains(field));
-            assertTrue(field.getType() != Field.TYPE_BINARY &&
-                (field.getState() == Field.STATE_PERSISTENT
-                    || field.getState() == Field.STATE_SYSTEM));
+            assertTrue(field.getType() != Field.TYPE_BINARY && field.inStorage());
         }
         // Test all persistent fields from images are in query.
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             CoreField field = (CoreField) iFields.next();
-            if (field.getType() != Field.TYPE_BINARY &&
-                (field.getState() == Field.STATE_PERSISTENT
-                    || field.getState() == Field.STATE_SYSTEM)) {
+            if (field.getType() != Field.TYPE_BINARY && field.inStorage()) {
                 assertTrue(instance.getField(field) != null);
             }
         }
@@ -103,9 +99,7 @@ public class NodeSearchQueryTest extends TestCase {
         Collection fields = images.getFields();
         for (Iterator iFields = fields.iterator(); iFields.hasNext();) {
             CoreField field = (CoreField) iFields.next();
-            if (field.getType() != Field.TYPE_BINARY &&
-                (field.getState() == Field.STATE_PERSISTENT
-                    || field.getState() == Field.STATE_SYSTEM)) {
+            if (field.getType() != Field.TYPE_BINARY && field.inStorage()) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
                 assertTrue(stepField.getFieldName().equals(field.getName()));

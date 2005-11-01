@@ -20,11 +20,11 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.5 2005-10-18 21:57:13 michiel Exp $
+ * @version $Id: AbstractField.java,v 1.6 2005-11-01 22:13:51 nklasens Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
-
+    
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
     protected DataType dataType = null;
@@ -143,11 +143,42 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     abstract public int getMaxLength();
 
 
+    /**
+     * @see org.mmbase.bridge.Field#isRequired()
+     */
     public boolean isRequired() {
         return dataType.isRequired();
     }
 
+    /**
+     * @see org.mmbase.bridge.Field#isVirtual()
+     */
+    public boolean isVirtual() {
+       return getState() == STATE_VIRTUAL; 
+    }
 
+    /**
+     * @see org.mmbase.bridge.Field#isPersistent()
+     */
+    public boolean isPersistent() {
+        return getState() == STATE_PERSISTENT; 
+    }
+
+    /**
+     * @see org.mmbase.bridge.Field#isSystem()
+     */
+    public boolean isSystem() {
+        return getState() == STATE_SYSTEM;
+    }
+
+    /**
+     * @see org.mmbase.bridge.Field#inStorage() 
+     * @since MMBase 1.7
+     */
+    public boolean inStorage() {
+        return (state == STATE_PERSISTENT || state == STATE_SYSTEM);
+    }
+    
     abstract public String getGUIType();
 
     /**
