@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.28 2005-10-25 18:33:21 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.29 2005-11-01 23:41:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -85,12 +85,12 @@ public class DateTimeDataType extends ComparableDataType {
 
 
     /**
-     * The 'pattern' of a 'DateTime' value gives a SimpleDateFormat object which can be used as an
+     * The 'pattern' of a 'DateTime' value gives a <code>DateTimePattern</code> object which can be used as an
      * indication for presentation.
      *
-     * Basicly, this should indicate whether the objects present e.g. only a date, only a time and wheter e.g. this time includes seconds or not.
+     * Basicly, this can indicate whether the objects present e.g. only a date, only a time and whether e.g. this time includes seconds or not.
      *
-     * SimpleDateFormat is actually a wrapper arround a pattern, and that is used here.
+     * <code>DateTimePattern</code> is actually a wrapper arround a pattern, and that is used here.
      *
      */
     public DateTimePattern getPattern() {
