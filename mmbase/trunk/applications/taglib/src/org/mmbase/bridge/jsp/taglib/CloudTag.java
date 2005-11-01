@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.126 2005-10-24 09:53:39 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.127 2005-11-01 12:17:31 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -218,7 +218,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     protected int getMethod() throws JspTagException {
-        return cloudContext.getAuthentication().getMethod(method.getString(this));
+        String m = method.getString(this);
+        int r =  cloudContext.getAuthentication().getMethod(m);
+        log.debug("method '" + m + "' -> " + r);
+        return r;
     }
 
     /**
@@ -290,7 +293,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 String path = request.getContextPath();
                 if (path.equals("")) path = "/";
                 c.setPath(path);
-                c.setMaxAge(-1); // duration of browser
+                c.setMaxAge((int) (60 * 60 * 24 * 365.25)); // let it live one year
             } else {
                 c.setValue(r);
             }
@@ -634,25 +637,26 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
         session = pageContext.getSession();
         if (session != null) { // some people like to disable their session
-            Object c = session.getAttribute(getSessionName());
+            String sessionName = getSessionName();
+            Object c = session.getAttribute(sessionName);
             if (c != null && ! (c instanceof Cloud)) {
-                throw new TaglibException("The session variable '" + getSessionName() + "' is not of type Cloud (but it is a '" + c.getClass().getName() + "'), and perhaps is used for another goal. This error could be avoided by use of the 'sessionname' attribute of the cloud-tag.");
+                throw new TaglibException("The session variable '" + sessionName + "' is not of type Cloud (but it is a '" + c.getClass().getName() + "'), and perhaps is used for another goal. This error could be avoided by use of the 'sessionname' attribute of the cloud-tag.");
             }
             cloud = (Cloud) c;
             if (cloud != null) {
                 if (cloud.getUser().isValid()) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Created/found a session. Cloud in it is of: " + cloud.getUser());
+                        log.debug("Created/found a session. Cloud '" + sessionName + "' in it is of: " + cloud.getUser());
                     }
                     
                 } else {
                     if (log.isDebugEnabled()) {                        
-                        log.debug("Found invalid cloud in session of '" + cloud.getUser() + "'. Discarding.");
+                        log.debug("Found invalid cloud in session variable '" + sessionName + "' of '" + cloud.getUser() + "'. Discarding.");
                     }                    
                     cloud = null;
                 }
             } else {
-                log.debug("No cloud found");
+                log.debug("No cloud found in session variable '" + sessionName + "'");
             }
             
         } else {
@@ -734,7 +738,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
         if (log.isDebugEnabled()) {
-            log.debug("found cloud in session m: " + method + " l: " + logon + ". Checking it");
+            log.debug("found cloud m: " + method + " l: " + logon + ". Checking it.");
+;
         }
         if (cloud.getUser() == null) {
             log.debug("found a cloud in the session, but is has no user, throwing it away");
@@ -1199,7 +1204,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             if (session != null && sessionCloud) {
                 String sn = getSessionName();
                 cloud.setProperty(Cloud.PROP_SESSIONNAME, sn);
+                log.debug("Setting cloud in session variable '" + sn + "'");
                 session.setAttribute(sn, cloud);
+            } else {
+                log.debug("Not storing cloud because session: " + (session != null) + " put cloud " + sessionCloud);
             }
         }
         return EVAL_BODY;
