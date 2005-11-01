@@ -97,9 +97,7 @@
           <search>-1</search>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
-      </datatype>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>otype</name>
         <type state="system"  notnull="true" required="true" >NODE</type>
