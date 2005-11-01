@@ -299,13 +299,22 @@
   </mm:relatednodescontainer>
   </div>
 </div>
+<script type="text/javascript">
+function resize(){
+  var frameElem = document.getElementById("content");
+  iframedoc = window.frames[0].document;
+  iframedoc.onupdate = resize;
+  frameHeight = iframedoc.body.scrollHeight + 40;
+  frameElem.style.height = frameHeight + "px";
+}
+</script>
 <div class="mainContent">
   <div class="contentHeader">
     &nbsp;
   </div>
   <div class="contentBodywit">
-	<iframe width="100%" height="100%" name="content" frameborder="0">
-        </iframe>
+    <iframe width="100%" onload="resize()" height="100%" name="content" id="content" frameborder="0" scrolling="none">
+    </iframe>
   </div>
 </div>
 </div>
