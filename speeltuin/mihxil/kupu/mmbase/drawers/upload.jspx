@@ -24,7 +24,7 @@
       </mm:hasfield>
     </mm:createnode>
     <mm:node referid="node">
-      <mm:function name="mimetype" id="mimetype" />
+      <mm:function name="mimetype" id="mimetype" write="false" />
       <mm:hasfunction name="cache">
         <mm:image template="s(80)">
           <body onLoad="window.parent.kupu.getTool('drawertool').current_drawer.finishUpload('${_}', '${mimetype}');">

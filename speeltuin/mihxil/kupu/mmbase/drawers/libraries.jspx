@@ -7,13 +7,19 @@
   <mm:cloud>
     
     <mm:import externid="nodetypes" vartype="list">images,attachments,segments,urls</mm:import>
+    <mm:import id="s" externid="source" />
+    <mm:present referid="s">
+      <mm:node referid="s" id="s" />
+    </mm:present>
     <libraries>
       <mm:stringlist referid="nodetypes" id="nodetype">
         <mm:hasnodemanager name="$_">
-          <mm:context scope="request" id="drawer">	  
-            <mm:import from="parent" externid="nodetype" reset="true" />
-            <mm:include page="library.jspx" />
-          </mm:context>
+          <mm:hasrelationmanager sourcemanager="$s" destinationmanager="$_" role="idrel">
+            <mm:context scope="request" id="drawer">	  
+              <mm:import from="parent" externid="nodetype" reset="true" />
+              <mm:include page="library.jspx" />
+            </mm:context>
+          </mm:hasrelationmanager>
         </mm:hasnodemanager>
       </mm:stringlist>
     </libraries>
