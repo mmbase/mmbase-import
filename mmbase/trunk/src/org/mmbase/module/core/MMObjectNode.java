@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.165 2005-10-24 13:19:16 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.166 2005-11-01 12:57:01 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
@@ -674,6 +674,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
      */
     public boolean isNull(String fieldName) {
         if (checkFieldExistance(fieldName)) {
+            if (getBuilder().getField(fieldName).getType() == Field.TYPE_NODE) {
+                return getIntValue(fieldName) <= -1;
+            }
             return values.get(fieldName) == null;
         } else {
             return true;
