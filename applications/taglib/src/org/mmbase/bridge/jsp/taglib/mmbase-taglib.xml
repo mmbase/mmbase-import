@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.326 2005-10-31 21:10:58 andre Exp $
+version: $Id: mmbase-taglib.xml,v 1.327 2005-11-01 10:55:14 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2279,6 +2279,46 @@ access the value of title:
       <rtexprvalue>true</rtexprvalue>
       <info>
         Name of the node-manager.
+      </info>
+    </attribute>
+    <since>MMBase-1.8</since>
+  </tag>
+  <tag>
+    <name>hasrelationmanager</name>
+    <extends>condition</extends>
+    <extends>cloudreferrer</extends>
+    <extends>contextreader</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.HasRelationManagerTag</tagclass>
+    <info>
+      <p>
+        Checks only whether certain relation manager is available. To make it possible to make more generic code.
+      </p>
+    </info>
+    <attribute>
+      <name>sourcemanager</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Name of the source node-manager (defaults to 'object').
+        For convenience, one may also specify a node here (using $), in which case the nodes nodemanager is requested.
+      </info>
+    </attribute>
+    <attribute>
+      <name>destinationmanager</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Name of the destination node-manager (default to 'object').
+        For convenience, one may also specify a node here (using $), in which case the nodes nodemanager is requested.
+      </info>
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Role of the relation manager.
       </info>
     </attribute>
     <since>MMBase-1.8</since>
