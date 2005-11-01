@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.20 2005-10-27 18:00:37 andre Exp $
+ * @version $Id: ContextAuthentication.java,v 1.21 2005-11-01 12:16:30 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -113,6 +113,13 @@ public class ContextAuthentication extends Authentication {
             module.load(document, validKey, moduleName, manager);
             log.info("loaded module with the name: '" + moduleName + "' with class: " + className);
             loginModules.put(moduleName, module);
+        }
+
+        if (!loginModules.containsKey("class")) {
+            ContextLoginModule classModule =  new ClassLogin();
+            log.info("The class login module was not configured. It is needed sometimes. Now loading module with the name 'class' with class: " + classModule.getClass());
+            classModule.load(document, validKey, "class", manager);
+            loginModules.put("class", classModule);
         }
 
         log.debug("done loading the modules...");
