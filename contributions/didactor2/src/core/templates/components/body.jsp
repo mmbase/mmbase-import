@@ -21,19 +21,19 @@
            if (of == 0) { 
               %>&lt;<% 
            } else { 
-              %><a href="<mm:write referid="link_to_main"/>&of=<%= of-1 %>">&lt;</a><% 
+              %><a href="<mm:write referid="link_to_main" escape="text/plain"/>&of=<%= of-1 %>">&lt;</a><% 
            } 
            for (int i=0; i<=maxpage; i++) { 
               if (of==i) { 
                  %> <%= i+1 %><% 
               } else { 
-                 %> <a href="<mm:write referid="link_to_main"/>&of=<%= i %>"><%= i+1 %></a><% 
+                 %> <a href="<mm:write referid="link_to_main" escape="text/plain"/>&of=<%= i %>"><%= i+1 %></a><% 
               }
            }
            if (of == maxpage) {
               %> &gt;<% 
            } else { 
-              %> <a href="<mm:write referid="link_to_main"/>&of=<%= of+1 %>">&gt;</a><% 
+              %> <a href="<mm:write referid="link_to_main" escape="text/plain"/>&of=<%= of+1 %>">&gt;</a><% 
            } 
         }
      %>
@@ -59,8 +59,8 @@
 
                        <td class="field">
                           <mm:relatednodes type="providers" max="1">
-                             <mm:write referid="link" escape="none"/><mm:nodeinfo type="type"/></a>
-                          </mm:relatednodes>
+                             <mm:write referid="link" escape="none"/><mm:nodeinfo type="type"/></mm:relatednodes></a>
+                          
 
                           <mm:relatednodes type="educations" max="1">
                              <mm:write referid="link" escape="none"/><mm:nodeinfo type="type"/></a>
