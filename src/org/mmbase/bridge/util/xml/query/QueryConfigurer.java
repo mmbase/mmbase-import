@@ -14,7 +14,8 @@ import org.w3c.dom.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryConfigurer.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
+ * @version $Id: QueryConfigurer.java,v 1.3 2005-11-01 16:00:21 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class QueryConfigurer {
 
@@ -25,7 +26,7 @@ public class QueryConfigurer {
     }
 
     public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition) {
-        return new FieldDefinition(this,queryDefinition);
+        return new FieldDefinition(this, queryDefinition);
     }
 
     public static QueryConfigurer getDefaultConfigurer() {

@@ -19,7 +19,8 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
+ * @version $Id: FieldDefinition.java,v 1.3 2005-11-01 16:00:21 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class FieldDefinition {
 

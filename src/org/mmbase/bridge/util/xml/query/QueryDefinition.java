@@ -19,7 +19,8 @@ import org.mmbase.storage.search.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryDefinition.java,v 1.2 2005-07-08 08:00:42 pierre Exp $
+ * @version $Id: QueryDefinition.java,v 1.3 2005-11-01 16:00:21 michiel Exp $
+ * @since MMBase-1.8
  **/
 public class QueryDefinition {
 
