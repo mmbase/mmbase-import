@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.23 2005-10-28 13:39:03 michiel Exp $
+ * @version $Id: TransactionResolver.java,v 1.24 2005-11-01 12:57:45 nklasens Exp $
  */
 public class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
@@ -109,7 +109,7 @@ public class TransactionResolver {
             Map.Entry numberEntry = (Map.Entry)i.next();
             Object key = numberEntry.getKey();
             Integer num = (Integer)numberEntry.getValue();
-            if (num.intValue() == -1) {
+            if (num == null || num.intValue() == -1) {
                 numbers.put(key, new Integer(mmbase.getStorageManager().createKey()));
             }
         }
