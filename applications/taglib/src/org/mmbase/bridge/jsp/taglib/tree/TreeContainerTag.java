@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.4 2005-06-20 16:03:38 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.5 2005-11-01 09:32:56 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -39,7 +39,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
 
     protected GrowingTreeList tree;
 
-    public TreeList getTree() {
+    public GrowingTreeList getTree() {
         return tree;
     }
 
@@ -90,7 +90,8 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
 
         
         if (nodeManager != Attribute.NULL) {
-            tree = new GrowingTreeList(query, maxDepth.getInt(this, 5),  
+            tree = new GrowingTreeList(query, 
+                                       maxDepth.getInt(this, 5),  
                                        query.getCloud().getNodeManager(nodeManager.getString(this)),
                                        role.getString(this),
                                        searchDirs.getString(this));
