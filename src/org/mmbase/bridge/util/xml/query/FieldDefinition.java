@@ -19,13 +19,14 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.3 2005-11-01 16:00:21 michiel Exp $
+ * @version $Id: FieldDefinition.java,v 1.4 2005-11-01 18:01:44 michiel Exp $
  * @since MMBase-1.8
  **/
 public class FieldDefinition {
 
     /**
      * Name of the field
+     * XXX: How is this different from stepField.getFieldName() ?
      */
     public String fieldName = null;
 
@@ -41,6 +42,7 @@ public class FieldDefinition {
 
     /**
      * The Query configurer that instantiated this definition
+     * XXX: unused (logically, because it is instantiated by it)
      */
     protected QueryConfigurer configurer = null;
 

@@ -12,9 +12,11 @@ package org.mmbase.bridge.util.xml.query;
 import org.w3c.dom.*;
 
 /**
+ * A QueryConfigurer has the task to instantiate {@link QueryDefinition}s (wrappers around Query's)
+ * and {@link FieldDefinition}s (wrappers around StepFields).
  *
  * @author Pierre van Rooden
- * @version $Id: QueryConfigurer.java,v 1.3 2005-11-01 16:00:21 michiel Exp $
+ * @version $Id: QueryConfigurer.java,v 1.4 2005-11-01 18:01:44 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryConfigurer {
@@ -22,7 +24,7 @@ public class QueryConfigurer {
     public static QueryConfigurer defaultConfigurer = new QueryConfigurer();
 
     public QueryDefinition getQueryDefinition() {
-        return new QueryDefinition(this);
+        return new QueryDefinition(this); // using 'this' is ugly.
     }
 
     public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition) {
