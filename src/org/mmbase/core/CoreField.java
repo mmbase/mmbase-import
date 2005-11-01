@@ -267,14 +267,6 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         return storageIdentifier;
     }
 
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public boolean inStorage() {
-        return (state == STATE_PERSISTENT || state == STATE_SYSTEM);
-    }
-
     public int getStorageType() {
         return storageType;
     }

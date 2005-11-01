@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.67 2005-10-28 13:36:00 michiel Exp $
+ * @version $Id: Dove.java,v 1.68 2005-11-01 22:13:52 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -88,7 +88,7 @@ public class Dove extends AbstractDove {
     }
 
     private boolean isEditableField(NodeManager nodeManager, Field f) {
-        return isDataField(nodeManager, f) && f.getState() == Field.STATE_PERSISTENT;
+        return isDataField(nodeManager, f) && f.isPersistent();
     }
 
     /**
@@ -105,7 +105,7 @@ public class Dove extends AbstractDove {
     }
 
     private boolean isEditableField(NodeManager nodeManager, String fname) {
-        return isDataField(nodeManager, fname) && nodeManager.getField(fname).getState() == Field.STATE_PERSISTENT;
+        return isDataField(nodeManager, fname) && nodeManager.getField(fname).isPersistent();
     }
 
     /**

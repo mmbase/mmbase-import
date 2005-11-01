@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.123 2005-10-23 18:00:50 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.124 2005-11-01 22:13:51 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1207,12 +1207,12 @@ public class MMAdmin extends ProcessorModule {
             int oldState = def.getState();
             int newState = Fields.getState(value);
             if (oldState != newState) {
+                boolean oldInStorage = def.inStorage();
                 def.rewrite();
                 def.setState(newState);
                 try {
                     // add field if it was not persistent before
-                    if ((newState == Field.STATE_PERSISTENT || newState == Field.STATE_SYSTEM) &&
-                        (oldState != Field.STATE_PERSISTENT && oldState != Field.STATE_SYSTEM)) {
+                    if (def.inStorage() && !oldInStorage) {
                         // make change in storage
                         mmb.getStorageManager().create(def);
                         // only then add to builder

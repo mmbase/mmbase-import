@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.32 2005-10-26 20:10:57 michiel Exp $
+ * @version $Id: Field.java,v 1.33 2005-11-01 22:13:51 nklasens Exp $
  */
 public interface Field extends Descriptor {
 
@@ -60,6 +60,7 @@ public interface Field extends Descriptor {
     /** MMBase base type identifier for data types whose type is unknown */
     public final static int TYPE_UNKNOWN = -1;
 
+
     /** A field's state is 'virtual' if it is not persistent in storage. */
     public final static int STATE_VIRTUAL    = 0;
     /** A field's state is 'persistent' if it is persistent in storage, and editable. */
@@ -72,7 +73,8 @@ public interface Field extends Descriptor {
     public final static int STATE_SYSTEM_VIRTUAL = 4;
     /** The field's state when it is not (yet) known. */
     public final static int STATE_UNKNOWN    = -1;
-
+    
+    
     /**
      * Returns the node manager this field belongs to.
      *
@@ -196,4 +198,31 @@ public interface Field extends Descriptor {
      */
     public java.util.Collection validate(Object value);
 
+    /**
+     * A field's state is 'virtual' if it is not persistent in storage.
+     * @return <code>true</code> when a virtual field 
+     * @since MMBase-1.8
+     */
+    public boolean isVirtual();
+
+    /**
+     * A field's state is 'persistent' if it is persistent in storage, and editable.
+     * @return <code>true</code> when a persistent field 
+     * @since MMBase-1.8
+     */
+    public boolean isPersistent();
+
+    /**
+     * A field's state is 'system' if it is persistent in storage, but not editable by users.
+     * @return <code>true</code> when a system field 
+     * @since MMBase-1.8
+     */
+    public boolean isSystem();
+    
+    /**
+     * A field with state 'system' or 'persistent' is in storage.
+     * @return <code>true</code> when a field is in storage
+     * @since MMBase-1.8
+     */
+    public boolean inStorage();
 }
