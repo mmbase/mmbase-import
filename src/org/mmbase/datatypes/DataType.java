@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.40 2005-10-27 13:05:01 michiel Exp $
+ * @version $Id: DataType.java,v 1.41 2005-11-01 23:41:52 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -235,6 +235,9 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      */
     public LocalizedEntryListFactory getEnumerationFactory();
 
+    /**
+     * The enumeration for this datatype as a {@link Restriction}. 
+     */
     public DataType.Restriction getEnumerationRestriction();
 
 

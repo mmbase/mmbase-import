@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.38 2005-10-27 13:05:01 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.39 2005-11-01 23:41:52 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -314,7 +314,14 @@ public class DataTypeDefinition {
     protected void addEnumeration(Element enumerationElement) {
         setRestrictionData(dataType.getEnumerationRestriction(), enumerationElement);
         LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
-        NodeList childNodes = enumerationElement.getElementsByTagName("entry");
+        NodeList childNodes = enumerationElement.getElementsByTagName("query");
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Element queryElement = (Element) childNodes.item(i);
+            Locale locale = DataTypeXml.getLocale(queryElement);
+            log.info("XXX " + XMLWriter.write(queryElement, true) + " -->  " + XMLWriter.write(DocumentReader.toDocument(queryElement), true));
+            fact.addQuery(locale, DocumentReader.toDocument(queryElement));
+        }
+        childNodes = enumerationElement.getElementsByTagName("entry");
         for (int i = 0; i < childNodes.getLength(); i++) {
             Element entryElement = (Element) childNodes.item(i);
             String value = entryElement.getAttribute("value");
