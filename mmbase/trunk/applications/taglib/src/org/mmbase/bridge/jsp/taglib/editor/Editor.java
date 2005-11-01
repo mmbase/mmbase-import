@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.1 2005-10-31 20:57:01 andre Exp $
+ * @version $Id: Editor.java,v 1.2 2005-11-01 11:00:55 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTagYAMMe
  */
@@ -32,27 +32,27 @@ public class Editor {
     
     private static final Logger log = Logging.getLoggerInstance(Editor.class);
     
-    private static ArrayList queryList = new ArrayList();		// query List
-    private static ArrayList nodenrList = new ArrayList();      // nodenr List
-    private static ArrayList fieldList = new ArrayList();       // fieldname List
+    private List queryList = new ArrayList();       // query List
+    private List nodenrList = new ArrayList();      // nodenr List
+    private List fieldList = new ArrayList();       // fieldname List
 
     protected List parameters;
         
-	/**
-	 * @param parameters Parameters of the EditTag.
-	 */
-	public void setParameters(List params) {
-	   this.parameters = params;
-	}
+    /**
+     * @param parameters Parameters of the EditTag.
+     */
+    public void setParameters(List params) {
+       this.parameters = params;
+    }
     
-    public void setQueryList(ArrayList qlist) {
-    	this.queryList = qlist;
+    public void setQueryList(List qlist) {
+        this.queryList = qlist;
     }
-    public void setNodenrList(ArrayList nrlist) {
-    	this.nodenrList = nrlist;
+    public void setNodenrList(List nrlist) {
+        this.nodenrList = nrlist;
     }
-    public void setFieldList(ArrayList flist) {
-    	this.fieldList = flist;
+    public void setFieldList(List flist) {
+        this.fieldList = flist;
     }
 
     /**
@@ -64,8 +64,8 @@ public class Editor {
      * @param nodenr    Nodenumber of the node the field belongs to
      * @param field     Name of the field
      */ 
-    public void registerFields(ArrayList queryList, ArrayList nodenrList, ArrayList fieldList) {
-    	// do something usefull with this information
+    public void registerFields(List queryList, List nodenrList, List fieldList) {
+        // do something usefull with this information
     }
     
     /**
@@ -76,9 +76,9 @@ public class Editor {
      * @return A String with the generated results of the EditTag implementation
      */ 
     public String getEditorHTML() {
-    	String html = "Sorry. You should see an icon to click on here.";
-    	log.debug("returning: " + html);
-    	return html;
+        String html = "Sorry. You should see an icon to click on here.";
+        log.debug("returning: " + html);
+        return html;
     }
     
 }
