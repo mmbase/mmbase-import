@@ -128,7 +128,7 @@
       <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>dir</name>
-        <type state="persistent">INTEGER</type>
+        <type state="system">INTEGER</type>
       </db>
     </field>
   </fieldlist>
