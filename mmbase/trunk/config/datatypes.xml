@@ -165,13 +165,13 @@
 
       <specialization id="living-birthdate">
         <default value="today - 30 year" />
-        <minInclusive value="today - 140 year" />
+        <minInclusive enforce="never" value="today - 140 year" />
         <maxInclusive value="today"    />
       </specialization>
 
-      <specialization id="weeknumbers">
+      <specialization id="weeknumbers">        
         <pattern value="'dag: 'EEEEE 'week :'ww 'jaar: 'yyyy" xml:lang="nl" />
-        <pattern value="'day: 'EEEEE 'week':'ww 'year: 'yyyy" xml:lang="en" />
+        <pattern value="'day: 'EEEEE 'week :'ww 'year: 'yyyy" xml:lang="en" />
       </specialization>
       
     </specialization>
@@ -224,6 +224,11 @@
         <entry value="1" xml:lang="en" display="hocus pocus" />
       </enumeration>
     </specialization>
+    <specialization id="ordinals">
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.ordinals" />
+      </enumeration>
+    </specialization>
   </datatype>
 
   <datatype id="float">
@@ -240,11 +245,14 @@
   <datatype id="node">
     <class name="org.mmbase.datatypes.NodeDataType" />
     <specialization id="typedef">
-      <!-- this doesn't work yet -->
-      <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      <enumeration>
+        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
     </specialization>
     <specialization id="reldef">
-      <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      <enumeration>
+        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
     </specialization>
   </datatype>
 
