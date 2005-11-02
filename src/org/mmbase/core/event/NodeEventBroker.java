@@ -58,7 +58,7 @@ public class NodeEventBroker extends AbstractEventBroker {
         NodeEvent ne = (NodeEvent) event; //!!!!!
         NodeEventListener nel = (NodeEventListener) listener;
         Properties p = nel.getConstraintsForEvent(ne);
-        MMObjectBuilder builder = ne.getNode().getBuilder();
+        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(ne.getBuilderName()) ;
         if (builder.broadcastChanges()) {
             if (p != null) {
                 String nodeType = p.getProperty(PROPERTY_NODETYPE);

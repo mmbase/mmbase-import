@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.32 2005-09-22 19:51:07 ernst Exp $
+ * @version $Id: Jumpers.java,v 1.33 2005-11-02 19:15:39 ernst Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -253,8 +253,8 @@ public class Jumpers extends MMObjectBuilder {
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
-        log.debug("Jumpers=" + event.getMachine() + " " + event.getNode().getBuilder().getTableName() + " no="
-            + event.getNode().getNumber() + " " + NodeEvent.newTypeToOldType(event.getType()));
+        log.debug("Jumpers=" + event.getMachine() + " " + event.getBuilderName() + " no="
+            + event.getNodeNumber()+ " " + NodeEvent.newTypeToOldType(event.getType()));
         jumpCache.clear();
         super.notify(event);
     }
