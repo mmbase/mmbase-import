@@ -30,9 +30,7 @@ See http://www.MMBase.org/license
 		<attainGoal name="multiproject:install" />
 	</goal>
 
-<!-- prereqs="all:install"  -->
-
-	<goal name="all:install-snapshot" description="Install snapshot ALL Subprojects">
+	<goal name="all:install-snapshot" prereqs="all:install" description="Install snapshot ALL Subprojects">
 		<maven:reactor basedir="${maven.multiproject.basedir}" banner="Gathering project list"
 			includes="${maven.multiproject.includes}" excludes="${maven.multiproject.excludes}" postProcessing="true"
 			ignoreFailures="${maven.multiproject.ignoreFailures}" collectOnly="true" />
